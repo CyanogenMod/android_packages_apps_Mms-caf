@@ -129,9 +129,12 @@ public class RetrieveTransaction extends Transaction implements Runnable {
 
     public void run() {
         try {
+            DownloadManager downloadManager = DownloadManager.getInstance();
+            //Obtain Message Size from M-Notification.ind for original MMS
+            int msgSize = downloadManager.getMessageSize(mUri);
+
             // Change the downloading state of the M-Notification.ind.
-            DownloadManager.getInstance().markState(
-                    mUri, DownloadManager.STATE_DOWNLOADING);
+            downloadManager.markState( mUri, DownloadManager.STATE_DOWNLOADING);
 
             // Send GET request to MMSC and retrieve the response data.
             byte[] resp = getPdu(mContentLocation);
@@ -155,7 +158,7 @@ public class RetrieveTransaction extends Transaction implements Runnable {
                         MessagingPreferenceActivity.getIsGroupMmsEnabled(mContext), null);
 
                 // Use local time instead of PDU time
-                ContentValues values = new ContentValues(2);
+                ContentValues values = new ContentValues(3);
                 values.put(Mms.DATE, System.currentTimeMillis() / 1000L);
                 Cursor c = mContext.getContentResolver().query(mUri,
                         null, null, null, null);
@@ -170,6 +173,8 @@ public class RetrieveTransaction extends Transaction implements Runnable {
                         c.close();
                     }
                 }
+                // Update Message Size for Original MMS.
+                values.put(Mms.MESSAGE_SIZE, msgSize);
                 SqliteWrapper.update(mContext, mContext.getContentResolver(),
                         msgUri, values, null, null);
 
