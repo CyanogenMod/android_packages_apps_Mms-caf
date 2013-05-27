@@ -247,6 +247,7 @@
         <receiver android:name=".transaction.SmsReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="com.android.mms.action.REMOVE_BLACKLIST" />
             </intent-filter>
             <intent-filter>
                 <action android:name="com.android.mms.transaction.MESSAGE_SENT" />
