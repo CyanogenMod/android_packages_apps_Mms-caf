@@ -307,6 +307,13 @@ public class Contact {
         }
     }
 
+    public static void clearListener() {
+        synchronized (mListeners) {
+            if (mListeners != null)
+                mListeners.clear();
+        }
+    }
+
     public static void dumpListeners() {
         synchronized (mListeners) {
             int i = 0;
