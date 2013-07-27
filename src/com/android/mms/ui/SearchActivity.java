@@ -35,6 +35,7 @@ import android.provider.SearchRecentSuggestions;
 import android.provider.Telephony;
 import android.text.SpannableString;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.text.style.StyleSpan;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -48,6 +49,8 @@ import android.widget.TextView;
 import com.android.mms.MmsApp;
 import com.android.mms.R;
 import com.android.mms.data.Contact;
+import com.android.mms.data.ContactList;
+import com.android.mms.data.Conversation;
 
 /***
  * Presents a List of search results.  Each item in the list represents a thread which
@@ -316,19 +319,43 @@ public class SearchActivity extends ListActivity
                         final TextViewSnippet snippet = (TextViewSnippet)(view.findViewById(R.id.subtitle));
 
                         String address = cursor.getString(addressPos);
-                        Contact contact = address != null ? Contact.get(address, false) : null;
-
-                        String titleString = contact != null ? contact.getNameAndNumber() : "";
-                        title.setText(titleString);
-
-                        snippet.setText(cursor.getString(bodyPos), searchString);
-
                         // if the user touches the item then launch the compose message
                         // activity with some extra parameters to highlight the search
                         // results and scroll to the latest part of the conversation
                         // that has a match.
                         final long threadId = cursor.getLong(threadIdPos);
                         final long rowid = cursor.getLong(rowidPos);
+
+                        // The address of draft is null, but we should
+                        // show the numberAndName for it also, so we need
+                        // to use the thread_id to get the contactList.
+                        if (TextUtils.isEmpty(address)) {
+                            Conversation conversation = Conversation.get(SearchActivity.this,
+                                    threadId, false);
+                            if (null != conversation) {
+                                ContactList list = conversation.getRecipients();
+                                String sep = ", ";
+                                StringBuffer titleBuffer = new StringBuffer();
+                                for (Contact c : list) {
+                                    CharSequence charSequence = RecipientsEditor.contactToToken(c);
+                                    if (!TextUtils.isEmpty(charSequence)) {
+                                        titleBuffer.append(charSequence).append(sep);
+                                    }
+                                }
+                                // remove the last separator if there is
+                                int lastSepIndex = titleBuffer.lastIndexOf(sep);
+                                if (lastSepIndex != -1) {
+                                    titleBuffer.delete(lastSepIndex, titleBuffer.length());
+                                }
+                                title.setText(titleBuffer);
+                            }
+                        } else {
+                            Contact contact = Contact.get(address, false);
+                            String titleString = contact.getNameAndNumber();
+                            title.setText(titleString);
+                        }
+
+                        snippet.setText(cursor.getString(bodyPos), searchString);
 
                         view.setOnClickListener(new View.OnClickListener() {
                             public void onClick(View v) {
