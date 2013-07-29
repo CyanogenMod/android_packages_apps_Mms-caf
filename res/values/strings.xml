@@ -615,6 +615,8 @@
 
     <!-- Title for audio file picker -->
     <string name="select_audio">Choose audio</string>
+    <string name="system_audio_item">System audio</string>
+    <string name="external_audio_item">External audio</string>
     <!-- Menu title to copy an attachment to the shared storage [CHAR LIMIT=25] -->
     <string name="copy_to_sdcard">Save attachment</string>
     <!-- Toast message on successful copy to shared storage [CHAR LIMIT=30] -->
