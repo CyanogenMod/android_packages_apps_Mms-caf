@@ -31,6 +31,7 @@ import android.provider.MediaStore.Audio;
 import android.provider.Telephony.Mms.Part;
 import android.text.TextUtils;
 import android.util.Log;
+import android.webkit.MimeTypeMap;
 
 import com.android.mms.ContentRestrictionException;
 import com.android.mms.dom.events.EventImpl;
@@ -57,8 +58,15 @@ public class AudioModel extends MediaModel {
 
     private void initModelFromUri(Uri uri) throws MmsException {
         ContentResolver cr = mContext.getContentResolver();
-        Cursor c = SqliteWrapper.query(mContext, cr, uri, null, null, null, null);
-
+        Cursor c = null;
+        boolean initFromFile = false;
+        if (uri.getScheme().equals("file")) {
+            initFromFile = true;
+            c = cr.query(Audio.Media.EXTERNAL_CONTENT_URI, null,
+                    Audio.Media.DATA + "='" + uri.getPath() + "'", null, null);
+        } else {
+            c = SqliteWrapper.query(mContext, cr, uri, null, null, null, null);
+        }
         if (c != null) {
             try {
                 if (c.moveToFirst()) {
@@ -100,6 +108,30 @@ public class AudioModel extends MediaModel {
                                 + " mUri=" + uri
                                 + " mExtras=" + mExtras);
                     }
+                } else if (initFromFile) {
+                    // The audio file on sdcard but hasn't been scanned into media database.
+                    String path = uri.getPath();
+                    mSrc = path.substring(path.lastIndexOf('/') + 1);
+                    MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+                    String extension = MimeTypeMap.getFileExtensionFromUrl(mSrc);
+                    if (TextUtils.isEmpty(extension)) {
+                        // getMimeTypeFromExtension() doesn't handle spaces in filenames
+                        // nor can it handle urlEncoded strings. Let's try one last time
+                        // at finding the extension.
+                        int dotPos = mSrc.lastIndexOf('.');
+                        if (0 <= dotPos) {
+                            extension = mSrc.substring(dotPos + 1);
+                        }
+                    }
+                    mContentType = mimeTypeMap.getMimeTypeFromExtension(extension);
+                    // if mContentType is null , it will cause a RuntimeException, to avoid
+                    // this, set it as empty.
+                    if (null == mContentType) {
+                        Log.e(TAG,"initFromFile: mContentType is null!");
+                        mContentType = "";
+                    }
+                    mExtras.put("album", "sdcard");
+                    mExtras.put("artist", "<unknown>");
                 } else {
                     throw new MmsException("Nothing found: " + uri);
                 }
