@@ -245,8 +245,21 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         @Override
         public void onContentChanged(ConversationListAdapter adapter) {
             startAsyncQuery();
+            resetSearchView();
         }
     };
+
+    private void resetSearchView(){
+        //Only when user is searching, reset the SearchView.
+        if(mSearchView != null && !mSearchView.isIconified()){
+            SearchManager searchManager =
+                    (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+            if (searchManager != null) {
+                SearchableInfo info = searchManager.getSearchableInfo(this.getComponentName());
+                mSearchView.setSearchableInfo(info);
+            }
+        }
+    }
 
     private void initListAdapter() {
         mListAdapter = new ConversationListAdapter(this, null);
