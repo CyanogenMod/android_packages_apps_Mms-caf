@@ -907,6 +907,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                             mSavedFirstItemOffset);
                     mSavedFirstVisiblePosition = AdapterView.INVALID_POSITION;
                 }
+                invalidateOptionsMenu();
                 break;
 
             case UNREAD_THREADS_QUERY_TOKEN:
