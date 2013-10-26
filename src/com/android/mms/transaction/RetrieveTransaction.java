@@ -29,6 +29,8 @@ import android.provider.Telephony.Mms.Inbox;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.internal.util.HexDump;
+import com.android.mms.LogTag;
 import com.android.mms.MmsConfig;
 import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.MessagingPreferenceActivity;
@@ -142,6 +144,10 @@ public class RetrieveTransaction extends Transaction implements Runnable {
             RetrieveConf retrieveConf = (RetrieveConf) new PduParser(resp).parse();
             if (null == retrieveConf) {
                 throw new MmsException("Invalid M-Retrieve.conf PDU.");
+            }
+            if (Log.isLoggable(LogTag.TRANSACTION, Log.DEBUG)) {
+                Log.v(TAG, "RetrieveTransaction: retrieve data=" +
+                        HexDump.dumpHexString(resp));
             }
 
             Uri msgUri = null;
