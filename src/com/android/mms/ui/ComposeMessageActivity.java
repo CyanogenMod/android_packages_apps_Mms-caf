@@ -651,6 +651,10 @@ public class ComposeMessageActivity extends Activity
         Toast.makeText(this, R.string.converting_to_picture_message, Toast.LENGTH_SHORT).show();
     }
 
+    private void showConvertToSmsToast() {
+        Toast.makeText(this, R.string.converting_to_text_message, Toast.LENGTH_SHORT).show();
+    }
+
     private class DeleteMessageListener implements OnClickListener {
         private final MessageItem mMessageItem;
 
@@ -2689,6 +2693,9 @@ public class ComposeMessageActivity extends Activity
                     mTextCounter.setVisibility(View.GONE);
 
                     showConvertToMmsToast();
+                } else {
+                    mTextCounter.setVisibility(View.VISIBLE);
+                    showConvertToSmsToast();
                 }
             }
         });
