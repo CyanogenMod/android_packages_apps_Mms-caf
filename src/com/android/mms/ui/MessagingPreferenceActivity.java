@@ -185,6 +185,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         setPreferenceScreen(null);
         loadPrefs();
         updateSmsEnabledState();
+        registerListeners();
 
         // NOTE: After restoring preferences, the auto delete function (i.e. message recycler)
         // will be turned off by default. However, we really want the default to be turned on.
