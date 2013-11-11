@@ -16,6 +16,8 @@ import android.database.Cursor;
 import android.database.sqlite.SqliteWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -370,6 +372,14 @@ public class Contact {
             }
         }
         return mAvatar;
+    }
+
+    public synchronized Drawable getAvatar(Context context, Drawable defaultValue) {
+        Bitmap avatar = getAvatar(context);
+        if (avatar != null) {
+            return new BitmapDrawable(context.getResources(), avatar);
+        }
+        return defaultValue;
     }
 
     public int getAccentColor(Context context, boolean canBlock) {
