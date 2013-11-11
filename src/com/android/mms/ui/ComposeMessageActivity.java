@@ -2805,11 +2805,14 @@ public class ComposeMessageActivity extends Activity
 
         buildAddAddressToContactMenuItem(menu);
 
-        // Add to Blacklist item (if enabled)
-        if (BlacklistUtils.isBlacklistEnabled(this)) {
-            menu.add(0, MENU_ADD_TO_BLACKLIST, 0, R.string.add_to_blacklist)
-                    .setIcon(R.drawable.ic_block_message_holo_dark)
-                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        // Add to Blacklist item (if enabled) and we are running on CyanogenMod
+        // This allows the app to be run on non-blacklist enabled roms (including Stock)
+        if (MessageUtils.isCyanogenMod(this)) {
+            if (BlacklistUtils.isBlacklistEnabled(this)) {
+                menu.add(0, MENU_ADD_TO_BLACKLIST, 0, R.string.add_to_blacklist)
+                        .setIcon(R.drawable.ic_block_message_holo_dark)
+                        .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            }
         }
 
         menu.add(0, MENU_PREFERENCES, 0, R.string.menu_preferences).setIcon(

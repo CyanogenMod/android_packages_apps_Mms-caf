@@ -40,6 +40,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.SystemProperties;
 import android.provider.MediaStore;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Sms;
@@ -1026,5 +1027,16 @@ public class MessageUtils {
 
     private static void log(String msg) {
         Log.d(TAG, "[MsgUtils] " + msg);
+    }
+
+    public static boolean isCyanogenMod(Context context) {
+        try {
+            String version = SystemProperties.get("ro.cm.version");
+            if (!version.isEmpty()) {
+                return true;
+            }
+        } catch (RuntimeException ignored) {
+        }
+        return false;
     }
 }
