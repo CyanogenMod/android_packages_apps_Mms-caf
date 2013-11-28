@@ -95,11 +95,12 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
     private static final boolean DEBUG = false;
     private static final boolean DEBUGCLEANUP = true;
 
-    private static final int THREAD_LIST_QUERY_TOKEN       = 1701;
-    private static final int UNREAD_THREADS_QUERY_TOKEN    = 1702;
-    public static final int DELETE_CONVERSATION_TOKEN      = 1801;
-    public static final int HAVE_LOCKED_MESSAGES_TOKEN     = 1802;
-    private static final int DELETE_OBSOLETE_THREADS_TOKEN = 1803;
+    private static final int THREAD_LIST_QUERY_TOKEN        = 1701;
+    private static final int UNREAD_THREADS_QUERY_TOKEN     = 1702;
+    public static final int DELETE_CONVERSATION_TOKEN       = 1801;
+    public static final int HAVE_LOCKED_MESSAGES_TOKEN      = 1802;
+    private static final int DELETE_OBSOLETE_THREADS_TOKEN  = 1803;
+    private static final int MARK_CONVERSATION_UNREAD_TOKEN = 1804;
 
     // IDs of the context menu items for the list of conversations.
     public static final int MENU_DELETE               = 0;
@@ -785,6 +786,37 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             .show();
     }
 
+
+ /**
+     * Build and show the proper mark as unread thread dialog. The UI is slightly different
+     * depending on whether we're deleting single/multiple threads or all threads.
+     * @param listener gets called when the delete button is pressed
+     * @param threadIds the thread IDs to be deleted (pass null for all threads)
+     * @param context used to load the various UI elements
+     */
+    private static void confirmMarkAsUnreadDialog(final MarkAsUnreadThreadListener listener,
+            Collection<Long> threadIds,
+            Context context) {
+        View contents = View.inflate(context,R.layout.mark_unread_thread_dialog_view,null);
+        TextView msg = (TextView)contents.findViewById(R.id.message);
+        if (threadIds == null) {
+            msg.setText(R.string.confirm_mark_unread_all_conversations);
+        } else {
+            // Show the number of threads getting marked as unread in the confirmation dialog.
+            int cnt = threadIds.size();
+            msg.setText(context.getResources().getQuantityString(
+                R.plurals.confirm_mark_unread_conversation,cnt,cnt));
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.confirm_mark_unread_dialog_title)
+            .setIconAttribute(android.R.attr.alertDialogIcon)
+            .setCancelable(true)
+            .setPositiveButton(R.string.menu_as_unread,listener)
+            .setNegativeButton(R.string.no,null)
+            .setView(contents)
+            .show();
+    }
+
     private final OnKeyListener mThreadListKeyListener = new OnKeyListener() {
         @Override
         public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -802,6 +834,39 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             return false;
         }
     };
+
+
+    public static class MarkAsUnreadThreadListener implements OnClickListener {
+        private final Collection<Long> mThreadIds;
+        private final ConversationQueryHandler mHandler;
+        private final Context mContext;
+
+        public MarkAsUnreadThreadListener(Collection<Long> threadIds, ConversationQueryHandler handler,
+                Context context) {
+            mThreadIds = threadIds;
+            mHandler = handler;
+            mContext = context;
+        }
+
+        @Override
+        public void onClick(DialogInterface dialog, final int whichButton) {
+            MessageUtils.handleReadReport(mContext, mThreadIds,
+                    PduHeaders.READ_STATUS__DELETED_WITHOUT_BEING_READ, new Runnable() {
+                @Override
+                public void run() {
+                    int token = MARK_CONVERSATION_UNREAD_TOKEN;
+                    if (mThreadIds == null) {
+                        Conversation.startMarkAsUnreadAll(mContext,mHandler, token);
+                        DraftCache.getInstance().refresh();
+                    } else {
+                        Conversation.startMarkAsUnread(mContext,mHandler, token, mThreadIds);
+                    }
+                }
+            });
+            dialog.dismiss();
+        }
+    }
+
 
     public static class DeleteThreadListener implements OnClickListener {
         private final Collection<Long> mThreadIds;
@@ -1033,6 +1098,15 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                 case R.id.delete:
                     if (mSelectedThreadIds.size() > 0) {
                         confirmDeleteThreads(mSelectedThreadIds, mQueryHandler);
+                    }
+                    mode.finish();
+                    break;
+
+                case R.id.markAsUnread:
+                    if (mSelectedThreadIds.size() > 0) {
+                        confirmMarkAsUnreadDialog(new MarkAsUnreadThreadListener(mSelectedThreadIds, mQueryHandler,
+                        ConversationList.this), mSelectedThreadIds,
+                        ConversationList.this);
                     }
                     mode.finish();
                     break;

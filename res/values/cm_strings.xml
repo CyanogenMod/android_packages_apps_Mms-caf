@@ -137,6 +137,10 @@
     <string name="alert_dialog_yes">Yes</string>
     <string name="alert_dialog_no">No</string>
 
+    <!-- Context menu item on a message for marking as unread -->
+    <string name="menu_as_unread">Mark as unread</string>
+
+
     <!-- Multi recipients -->
     <string name="select_recipients">Select recipients</string>
     <string name="groups_header">Groups</string>

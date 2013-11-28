@@ -48,6 +48,7 @@ public class Conversation {
     private static final String TAG = "Mms/conv";
     private static final boolean DEBUG = false;
     private static final boolean DELETEDEBUG = false;
+    private static final boolean UNMARKDEBUG = false;
 
     public static final Uri sAllThreadsUri =
         Threads.CONTENT_URI.buildUpon().appendQueryParameter("simple", "true").build();
@@ -64,6 +65,7 @@ public class Conversation {
     };
 
     private static final String UNREAD_SELECTION = "(read=0 OR seen=0)";
+    private static final String READ_SELECTION = "(read=1 OR seen=1)";
 
     private static final String[] SEEN_PROJECTION = new String[] {
         "seen"
@@ -97,6 +99,7 @@ public class Conversation {
                                         // multi-operation such as delete.
 
     private static ContentValues sReadContentValues;
+    private static ContentValues sUnReadContentValues;
     private static boolean sLoadingThreads;
     private static boolean sDeletingThreads;
     private static Object sDeletingThreadsLock = new Object();
@@ -307,6 +310,14 @@ public class Conversation {
         }
     }
 
+    private void buildUnReadContentValues() {
+        if (sUnReadContentValues == null) {
+            sUnReadContentValues = new ContentValues(2);
+            sUnReadContentValues.put("read", 0);
+            sUnReadContentValues.put("seen", 0);
+        }
+    }
+
     private void sendReadReport(final Context context,
             final long threadId,
             final int status) {
@@ -340,6 +351,42 @@ public class Conversation {
                 c.close();
             }
         }
+    }
+
+
+    public void markAsUnread() {
+        final Uri threadUri = getUri();
+        new AsyncTask<Void,Void,Void>() {
+            protected Void doInBackground(Void... none) {
+                if (threadUri!=null) {
+                    buildUnReadContentValues();
+                    Long smsID = -1L;
+                    Cursor c = mContext.getContentResolver().query(threadUri,
+                            UNREAD_PROJECTION, READ_SELECTION, null, Sms._ID + " DESC");
+                    boolean needUpdate = false;
+                    if (c != null) {
+                        try {
+                            needUpdate = c.getCount() > 0;
+                            if (needUpdate && c.moveToFirst()) {
+                                smsID = c.getLong(0);
+                            }
+                        } finally {
+                            c.close();
+                        }
+                    }
+
+                    if (needUpdate && smsID!=-1) {
+                        LogTag.debug("markAsUnRead: update read/seen for thread uri: " +
+                                threadUri);
+                        mContext.getContentResolver().update(threadUri, sUnReadContentValues,
+                                Sms._ID + " = "+smsID,null);
+
+                        setHasUnreadMessages(true);
+                    }
+                }
+                return null;
+            }
+        }.execute();
     }
 
 
@@ -760,6 +807,67 @@ public class Conversation {
 
         handler.startQuery(token, null, sAllThreadsUri,
                 ALL_THREADS_PROJECTION, selection, null, Conversations.DEFAULT_SORT_ORDER);
+    }
+
+
+
+    /**
+     * Start mark as unread of the conversation with the specified thread ID.
+     *
+     * @param handler An AsyncQueryHandler that will receive onMarkAsUnreadComplete
+     *                upon completion of the conversation being marked as unread
+     * @param token   The token that will be passed to onMarkAsUnreadComplete
+     * @param threadIds Collection of thread IDs of the conversations to be marked as unread
+     */
+    public static void startMarkAsUnread(Context context, ConversationQueryHandler handler, int token,
+            Collection<Long> threadIds) {
+        synchronized(sDeletingThreadsLock) {
+            if (UNMARKDEBUG) {
+                Log.v(TAG,"Conversation startMarkAsUnread marking as unread:" +
+                    threadIds.size());
+            }
+            for (long threadId : threadIds) {
+                Conversation c = Conversation.get(context,threadId,true);
+                if (c!=null)
+                    c.markAsUnread();
+            }
+        }
+    }
+
+
+
+    /**
+     * Start mark as unread of the conversation with the specified thread ID.
+     *
+     * @param handler An AsyncQueryHandler that will receive onMarkAsUnreadComplete
+     *                upon completion of the conversation being marked as unread
+     * @param token   The token that will be passed to onMarkAsUnreadComplete
+     * @param threadIds Collection of thread IDs of the conversations to be marked as unread
+     */
+    public static void startMarkAsUnreadAll(Context context,  ConversationQueryHandler handler, int token) {
+        synchronized(sDeletingThreadsLock) {
+            if (UNMARKDEBUG) {
+                Log.v(TAG,"Conversation startMarkAsUnread marking all as unread");
+            }
+
+            Cursor c = context.getContentResolver().query(sAllThreadsUri,
+                ALL_THREADS_PROJECTION, null, null, null);
+            try {
+                if (c != null) {
+                    ContentResolver resolver = context.getContentResolver();
+                    while (c.moveToNext()) {
+                        long threadId = c.getLong(ID);
+                        Conversation con = Conversation.get(context,threadId,true);
+                        if (con!=null)
+                            con.markAsUnread();
+                   }
+                }
+            } finally {
+                if (c != null) {
+                    c.close();
+                }
+            }
+        }
     }
 
     /**
