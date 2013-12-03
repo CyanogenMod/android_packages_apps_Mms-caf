@@ -21,6 +21,7 @@ package com.android.mms.util;
 import android.app.Service;
 import android.telephony.MSimTelephonyManager;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 /**
@@ -28,7 +29,7 @@ import android.util.Log;
  */
 
     public class MultiSimUtility {
-
+        private static final String TAG = "MultiSimUtility";
         public static final String ORIGIN_SUB_ID = "origin_sub_id";
 
         public static int getCurrentDataSubscription(Context mContext) {
@@ -39,6 +40,20 @@ import android.util.Log;
                 return mtmgr.getPreferredDataSubscription();
             } else {
                 return 0;
+            }
+        }
+
+        public static void startSelectMmsSubsciptionServ(Context mContext, Intent svc) {
+            if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+                Log.d(TAG, "MMS silent transaction");
+                Intent silentIntent = new Intent(mContext,
+                        com.android.mms.ui.SelectMmsSubscription.class);
+                silentIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                silentIntent.putExtras(svc); //copy all extras
+                mContext.startService(silentIntent);
+
+            } else {
+                mContext.startService(svc);
             }
         }
     }

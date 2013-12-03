@@ -32,8 +32,11 @@ import android.net.Uri;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.MmsSms;
 import android.provider.Telephony.MmsSms.PendingMessages;
+import android.telephony.MSimTelephonyManager;
+import android.database.DatabaseUtils;
 import android.util.Log;
 
+import com.android.mms.util.MultiSimUtility;
 import com.android.mms.LogTag;
 import com.android.mms.R;
 import com.android.mms.util.DownloadManager;
@@ -283,9 +286,25 @@ public class RetryScheduler implements Observer {
                     // The result of getPendingMessages() is order by due time.
                     long retryAt = cursor.getLong(cursor.getColumnIndexOrThrow(
                             PendingMessages.DUE_TIME));
+                    int columnIndexOfMsgId = cursor.getColumnIndexOrThrow(PendingMessages.MSG_ID);
+                    Uri uri = ContentUris.withAppendedId(
+                            Mms.CONTENT_URI,
+                            cursor.getLong(columnIndexOfMsgId));
+                    int destSubId = getSubIdFromDb(uri, context);
 
-                    Intent service = new Intent(TransactionService.ACTION_ONALARM,
+
+                    Intent service;
+                    if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+                        service = new Intent(TransactionService.ACTION_ONALARM,
+                                        null, context,
+                                        com.android.mms.ui.SelectMmsSubscription.class);
+                        service.putExtra(Mms.SUB_ID, destSubId); //destination sub id
+                        service.putExtra(MultiSimUtility.ORIGIN_SUB_ID,
+                                MultiSimUtility.getCurrentDataSubscription(context));
+                    } else {
+                        service = new Intent(TransactionService.ACTION_ONALARM,
                                         null, context, TransactionService.class);
+                    }
                     PendingIntent operation = PendingIntent.getService(
                             context, 0, service, PendingIntent.FLAG_ONE_SHOT);
                     AlarmManager am = (AlarmManager) context.getSystemService(
@@ -301,5 +320,24 @@ public class RetryScheduler implements Observer {
                 cursor.close();
             }
         }
+    }
+
+    public static int getSubIdFromDb(Uri uri, Context context) {
+        int subId = 0;
+        Cursor c = context.getContentResolver().query(uri,
+                null, null, null, null);
+        Log.d(TAG, "Cursor= "+DatabaseUtils.dumpCursorToString(c));
+        if (c != null) {
+            try {
+                if (c.moveToFirst()) {
+                    subId = c.getInt(c.getColumnIndex(Mms.SUB_ID));
+                    Log.d(TAG, "subId in db="+subId );
+                    return subId;
+                }
+            } finally {
+               c.close();
+           }
+        }
+        return subId;
     }
 }
