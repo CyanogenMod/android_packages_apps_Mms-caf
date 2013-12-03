@@ -188,8 +188,10 @@ public class NotificationTransaction extends Transaction implements Runnable {
                             MessagingPreferenceActivity.getIsGroupMmsEnabled(mContext), null);
 
                     // Use local time instead of PDU time
-                    ContentValues values = new ContentValues(2);
+                    ContentValues values = new ContentValues(3);
                     values.put(Mms.DATE, System.currentTimeMillis() / 1000L);
+                    // Update Message Size for Original MMS.
+                    values.put(Mms.MESSAGE_SIZE, mNotificationInd.getMessageSize());
                     Cursor c = mContext.getContentResolver().query(mUri,
                             null, null, null, null);
                     if (c != null) {
