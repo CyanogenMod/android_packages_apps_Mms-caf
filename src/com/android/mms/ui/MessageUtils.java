@@ -133,6 +133,8 @@ public class MessageUtils {
     public static final int SUB1 = 0;  // for DSDS product of slot one
     public static final int SUB2 = 1;  // for DSDS product of slot two
     public static final String SUB_KEY  = MSimConstants.SUBSCRIPTION_KEY; // subscription
+    public static final int MESSAGE_READ = 1;
+    public static final int MESSAGE_SEEN = 1;
     private static final int SELECT_SYSTEM = 0;
     private static final int SELECT_EXTERNAL = 1;
     // add manage mode of multi select action
