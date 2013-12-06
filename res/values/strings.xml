@@ -72,8 +72,12 @@
     <string name="view_delivery_report">View report</string>
     <!-- Context menu item on an individual message for deleting only that message -->
     <string name="delete_message">Delete</string>
+    <!-- Time and date a message was sent -->
+    <string name="sent_on">"Sent: <xliff:g id="date">%s</xliff:g>"</string>
     <!-- Time and date a message is due to expire -->
     <string name="expire_on">"Expires: <xliff:g id="date">%s</xliff:g>"</string>
+    <!-- Time and date a message was received -->
+    <string name="received_on">"Received: <xliff:g id="date">%s</xliff:g>"</string>
     <!-- Abbreviation for "kilobyte" -->
     <string name="kilobyte">KB</string>
 
@@ -818,6 +822,23 @@
     <string name="progress_mms_title">MMS transaction on other sub in progress</string>
     <string name="progress_mms">Messaging: MMS in progress...</string>
     <string name="progress_mms_text ">Touch to retry again</string>
+    <!-- Message Template -->
+    <string name="pref_summary_message_template">Edit message template</string>
+    <string name="pref_title_message_template">Message template</string>
+    <string name="title_new_message_template">New template</string>
+    <string name="summary_new_message_template">Compose new message template</string>
+    <string name="message_template_title">Message template</string>
+    <string name="dialog_editSMSTemplate_title">Edit</string>
+    <string name="message_template">Message Template</string>
+    <string name="import_message_template">Import Template</string>
+    <string name="delete_template_message">Delete</string>
+    <string name="discard_message_reason_all_invalid">Your message will be discarded because all the recipients are invalid.</string>
+    <string name="discard_message_reason_some_invalid">Your message will be discarded because it has some invalid recipients.</string>
+    <string name="pref_sms_signature_title">SMS signature</string>
+    <string name="pref_title_enable_signature">SMS signature</string>
+    <string name="pref_summary_enable_signature">SMS signature enabled</string>
+    <string name="pref_summary_disable_signature">SMS signature disabled</string>
+    <string name="pref_title_edit_signature">Edit SMS signature</string>
 
     <string name="storage_warning_title">"Your phone's storage is full"</string>
     <string name="storage_warning_content">"You won't receive new SMS/MMS messages"</string>
