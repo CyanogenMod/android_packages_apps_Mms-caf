@@ -48,6 +48,7 @@ import android.util.Log;
 
 import com.android.internal.telephony.MSimConstants;
 import com.android.mms.MmsConfig;
+import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.MessagingPreferenceActivity;
 import com.android.mms.util.Recycler;
 import com.android.mms.R;
@@ -226,6 +227,13 @@ public class PushReceiver extends BroadcastReceiver {
                                     null);
 
                             SqliteWrapper.update(mContext, cr, uri, values, null, null);
+
+                            boolean enableMmsData = mContext.getResources().getBoolean(
+                                    com.android.internal.R.bool.config_setup_mms_data);
+                            if (MessageUtils.isMobileDataDisabled(mContext) && !enableMmsData) {
+                                MessagingNotification.nonBlockingUpdateNewMessageIndicator(mContext,
+                                        MessagingNotification.THREAD_ALL, false);
+                            }
                             // Start service to finish the notification transaction.
                             Intent svc = new Intent(mContext, TransactionService.class);
                             svc.putExtra(TransactionBundle.URI, uri.toString());

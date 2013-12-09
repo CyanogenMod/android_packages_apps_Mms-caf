@@ -38,6 +38,7 @@ import android.database.Cursor;
 import android.database.sqlite.SqliteWrapper;
 import android.media.CamcorderProfile;
 import android.media.RingtoneManager;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
@@ -1290,5 +1291,11 @@ public class MessageUtils {
         return (tm.getSimState(subscription) != TelephonyManager.SIM_STATE_ABSENT)
                     //&& (tm.getSimState(subscription) != TelephonyManager.SIM_STATE_DEACTIVATED)
                     && (tm.getSimState(subscription) != TelephonyManager.SIM_STATE_UNKNOWN);
+    }
+
+    public static boolean isMobileDataDisabled(Context context) {
+        ConnectivityManager mConnService = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        return !mConnService.getMobileDataEnabled();
     }
 }

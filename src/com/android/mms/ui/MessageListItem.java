@@ -68,12 +68,16 @@ import com.android.mms.model.SlideshowModel;
 import com.android.mms.transaction.Transaction;
 import com.android.mms.transaction.TransactionBundle;
 import com.android.mms.transaction.TransactionService;
+import com.android.mms.ui.MessageUtils;
 import com.android.mms.util.DownloadManager;
 import com.android.mms.util.ItemLoadedCallback;
 import com.android.mms.util.MultiSimUtility;
 import com.android.mms.util.ThumbnailManager.ImageLoaded;
 import com.google.android.mms.ContentType;
+import com.google.android.mms.MmsException;
+import com.google.android.mms.pdu.NotificationInd;
 import com.google.android.mms.pdu.PduHeaders;
+import com.google.android.mms.pdu.PduPersister;
 
 /**
  * This class provides view of a message in the messages list.
@@ -226,10 +230,12 @@ public class MessageListItem extends LinearLayout implements
                 boolean dataSuspended = (MmsApp.getApplication().getTelephonyManager()
                         .getDataState() == TelephonyManager.DATA_SUSPENDED);
 
+                boolean isMobileDataDisabled = MessageUtils.isMobileDataDisabled(mContext);
+
                 // If we're going to automatically start downloading the mms attachment, then
                 // don't bother showing the download button for an instant before the actual
                 // download begins. Instead, show downloading as taking place.
-                if (autoDownload && !dataSuspended) {
+                if (autoDownload && !dataSuspended && !isMobileDataDisabled) {
                     showDownloadingAttachment();
                     break;
                 }
@@ -243,32 +249,39 @@ public class MessageListItem extends LinearLayout implements
                 mDownloadButton.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mDownloadingLabel.setVisibility(View.VISIBLE);
-                        mDownloadButton.setVisibility(View.GONE);
-                        Intent intent = new Intent(mContext, TransactionService.class);
-                        intent.putExtra(TransactionBundle.URI, mMessageItem.mMessageUri.toString());
-                        intent.putExtra(TransactionBundle.TRANSACTION_TYPE,
-                                Transaction.RETRIEVE_TRANSACTION);
-                        intent.putExtra(Mms.SUB_ID, mMessageItem.mSubscription); //destination subId
-                        intent.putExtra(MultiSimUtility.ORIGIN_SUB_ID,
-                                MultiSimUtility.getCurrentDataSubscription(mContext));
-
-                        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
-                            Log.d(TAG, "Download button pressed for sub=" +
-                                       mMessageItem.mSubscription);
-                            Log.d(TAG, "Manual download is always silent transaction");
-
-                            Intent silentIntent = new Intent(mContext,
-                                    com.android.mms.ui.SelectMmsSubscription.class);
-                            silentIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            silentIntent.putExtras(intent); //copy all extras
-                            mContext.startService(silentIntent);
-                        } else {
-                            mContext.startService(intent);
+                        // Show enable mobile data dialog when click downlod button
+                        // with mobile data is disabled and config_setup_mms_data is true.
+                        // If click ok, turn on data and download MMS.
+                        // If not, don't download MMS.
+                        try {
+                            NotificationInd nInd = (NotificationInd) PduPersister.getPduPersister(
+                                    mContext).load(mMessageItem.mMessageUri);
+                            Log.d(TAG, "Download notify Uri = " + mMessageItem.mMessageUri);
+                            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                            builder.setTitle(R.string.download);
+                            builder.setCancelable(true);
+                            boolean enableMmsData = mContext.getResources().getBoolean(
+                                    com.android.internal.R.bool.config_setup_mms_data);
+                            // Judge whether mobile data is turned off and enableMmsData is true.
+                            if (MessageUtils.isMobileDataDisabled(mContext) && enableMmsData) {
+                                builder.setMessage(mContext.getString(
+                                        R.string.mobile_data_disable,
+                                        mContext.getString(R.string.mobile_data_download)));
+                                builder.setPositiveButton(R.string.yes,
+                                        new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        startDownloadAttachment();
+                                    }
+                                });
+                                builder.setNegativeButton(R.string.no, null);
+                                builder.show();
+                                return;
+                            }
+                        } catch (MmsException e) {
+                            Log.e(TAG, e.getMessage(), e);
+                            return;
                         }
-
-                        DownloadManager.getInstance().markState(
-                                 mMessageItem.mMessageUri, DownloadManager.STATE_PRE_DOWNLOADING);
+                        startDownloadAttachment();
                     }
                 });
                 break;
@@ -279,6 +292,33 @@ public class MessageListItem extends LinearLayout implements
         mDeliveredIndicator.setVisibility(View.GONE);
         mDetailsIndicator.setVisibility(View.GONE);
         updateAvatarView(mMessageItem.mAddress, false);
+    }
+
+    private void startDownloadAttachment() {
+        mDownloadingLabel.setVisibility(View.VISIBLE);
+        mDownloadButton.setVisibility(View.GONE);
+        Intent intent = new Intent(mContext, TransactionService.class);
+        intent.putExtra(TransactionBundle.URI, mMessageItem.mMessageUri.toString());
+        intent.putExtra(TransactionBundle.TRANSACTION_TYPE,
+                Transaction.RETRIEVE_TRANSACTION);
+        intent.putExtra(Mms.SUB_ID, mMessageItem.mSubscription); //destination subId
+        intent.putExtra(MultiSimUtility.ORIGIN_SUB_ID,
+                MultiSimUtility.getCurrentDataSubscription(mContext));
+
+        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+            Log.d(TAG, "Download button pressed for sub=" + mMessageItem.mSubscription);
+            Intent silentIntent = new Intent(mContext,
+                    com.android.mms.ui.SelectMmsSubscription.class);
+            silentIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            silentIntent.putExtras(intent); //copy all extras
+            mContext.startService(silentIntent);
+        } else {
+            mContext.startService(intent);
+        }
+
+        DownloadManager.getInstance().markState(
+                 mMessageItem.mMessageUri, DownloadManager.STATE_PRE_DOWNLOADING);
+
     }
 
     private String buildTimestampLine(String timestamp) {

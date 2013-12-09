@@ -579,6 +579,10 @@
     <string name="sms_full_body">An incoming message was rejected due to full memory. Delete some old messages.</string>
     <!-- Disk Storage Full Error Notification dialog text. -->
     <string name="disk_storage_full_error">Error: Storage is full.</string>
+    <!-- Mobile data disable dialog text. -->
+    <string name="mobile_data_disable">Mobile data is turned off, do you still want to <xliff:g>%1$s</xliff:g> MMS? If yes, it will generate mobile data traffic.</string>
+    <string name="mobile_data_send">send</string>
+    <string name="mobile_data_download">download</string>
 
     <!-- Sms's Being Rejected Notification dialog title. -->
     <string name="sms_rejected_title">Text message rejected</string>
