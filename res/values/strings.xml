@@ -87,6 +87,8 @@
     <string name="delete_thread">Delete thread</string>
     <!-- Context menu item on an individual message for forwarding it to another recipient -->
     <string name="menu_forward">Forward</string>
+    <!-- Context menu item on an failed message for resending -->
+    <string name="menu_resend">Resend</string>
     <!-- Text of a button appearing for MMS messages that have not yet been downloaded, causing the message
          to be downloaded (imperative verb) -->
     <string name="download">Download</string>
