@@ -29,6 +29,7 @@ import android.provider.Telephony.Sms;
 import android.provider.Telephony.Sms.Inbox;
 import android.util.Log;
 
+import com.android.internal.telephony.MSimConstants;
 import com.android.mms.LogTag;
 import com.android.mms.ui.MessagingPreferenceActivity;
 import com.google.android.mms.MmsException;
@@ -109,11 +110,11 @@ public class SmsMessageSender implements MessageSender {
                 SqliteWrapper.checkSQLiteException(mContext, e);
             }
         }
+        Intent intent = new Intent(SmsReceiverService.ACTION_SEND_MESSAGE, null, mContext,
+                SmsReceiver.class);
+        intent.putExtra(MSimConstants.SUBSCRIPTION_KEY, mSubscription);
         // Notify the SmsReceiverService to send the message out
-        mContext.sendBroadcast(new Intent(SmsReceiverService.ACTION_SEND_MESSAGE,
-                null,
-                mContext,
-                SmsReceiver.class));
+        mContext.sendBroadcast(intent);
         return false;
     }
 
