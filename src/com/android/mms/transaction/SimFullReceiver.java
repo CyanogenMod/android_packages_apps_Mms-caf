@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.provider.Settings;
 import android.provider.Telephony;
 
+import com.android.internal.telephony.MSimConstants;
 import com.android.mms.R;
 import com.android.mms.ui.ManageSimMessages;
 
@@ -42,10 +43,12 @@ public class SimFullReceiver extends BroadcastReceiver {
 
             NotificationManager nm = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
+            int subscription = intent.getIntExtra(MSimConstants.SUBSCRIPTION_KEY, 0);
 
             Intent viewSimIntent = new Intent(context, ManageSimMessages.class);
             viewSimIntent.setAction(Intent.ACTION_VIEW);
             viewSimIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            viewSimIntent.putExtra(MSimConstants.SUBSCRIPTION_KEY, subscription);
             PendingIntent pendingIntent = PendingIntent.getActivity(
                     context, 0, viewSimIntent, 0);
 
