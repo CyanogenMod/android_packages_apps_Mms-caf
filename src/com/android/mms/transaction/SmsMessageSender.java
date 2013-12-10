@@ -31,6 +31,7 @@ import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.android.internal.telephony.PhoneConstants;
 import com.android.mms.LogTag;
 import com.android.mms.R;
 import com.android.mms.ui.MessageUtils;
@@ -137,11 +138,11 @@ public class SmsMessageSender implements MessageSender {
                 SqliteWrapper.checkSQLiteException(mContext, e);
             }
         }
+        Intent intent = new Intent(SmsReceiverService.ACTION_SEND_MESSAGE, null, mContext,
+                SmsReceiver.class);
+        intent.putExtra(PhoneConstants.SUBSCRIPTION_KEY, mSubId);
         // Notify the SmsReceiverService to send the message out
-        mContext.sendBroadcast(new Intent(SmsReceiverService.ACTION_SEND_MESSAGE,
-                null,
-                mContext,
-                SmsReceiver.class));
+        mContext.sendBroadcast(intent);
         return false;
     }
 
