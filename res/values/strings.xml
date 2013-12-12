@@ -857,7 +857,7 @@
     <string name="pref_title_edit_signature">Edit SMS signature</string>
     <!-- SMSC -->
     <string name="pref_smsc_title">SMSC Setings</string>
-    <string name="pref_one_smcs">"Set the smsc number"</string>
+    <string name="pref_one_smcs">"Set the SIM's smsc number"</string>
     <string name="pref_more_smcs">"Set the SIM"<xliff:g id="slot_number">%d</xliff:g>"'s smsc number"</string>
     <string name="set_smsc_error">Set the smsc number error</string>
     <string name="set_smsc_success">Set the smsc number success</string>
