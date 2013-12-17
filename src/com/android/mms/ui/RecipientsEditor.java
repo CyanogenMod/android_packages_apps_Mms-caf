@@ -163,6 +163,10 @@ public class RecipientsEditor extends RecipientEditTextView {
         return mTokenizer.getNumbers();
     }
 
+    public String getExsitNumbers(){
+        return mTokenizer.getNumbersString();
+    }
+
     public ContactList constructContactsFromInput(boolean blocking) {
         List<String> numbers = mTokenizer.getNumbers();
         ContactList list = new ContactList();
@@ -271,10 +275,18 @@ public class RecipientsEditor extends RecipientEditTextView {
             // this special case.
             setText(null);
         } else {
+            // Clear the recipient when add contact again
+            setText("");
             for (Contact c : list) {
                 // Calling setText to set the recipients won't create chips,
                 // but calling append() will.
-                append(contactToToken(c) + ",");
+
+                // Need to judge  whether contactToToken(c) return valid data,if it is not,
+                // do not append it so that the comma can not be displayed.
+                CharSequence charSequence = contactToToken(c);
+                if (charSequence != null && charSequence.length() > 0) {
+                    append( charSequence+ ", ");
+                }
             }
         }
     }
@@ -489,6 +501,42 @@ public class RecipientsEditor extends RecipientEditTextView {
             }
 
             return list;
+        }
+
+        public String getNumbersString() {
+            Spanned sp = RecipientsEditor.this.getText();
+            int len = sp.length();
+            StringBuilder sb = new StringBuilder();
+            int start = 0;
+            int i = 0;
+            while (i < len + 1) {
+                char c;
+                if ((i == len) || ((c = sp.charAt(i)) == ',') || (c == ';')) {
+                    if (i > start) {
+                        sb.append("'"+getNumberAt(sp, start, i, mContext)+"',");
+                        // calculate the recipients total length. This is so if the name contains
+                        // commas or semis, we'll skip over the whole name to the next
+                        // recipient, rather than parsing this single name into multiple
+                        // recipients.
+                        int spanLen = getSpanLength(sp, start, i, mContext);
+                        if (spanLen > i) {
+                            i = spanLen;
+                        }
+                    }
+
+                    i++;
+
+                    while ((i < len) && (sp.charAt(i) == ' ')) {
+                        i++;
+                    }
+
+                    start = i;
+                } else {
+                    i++;
+                }
+            }
+
+            return (sb.length() != 0)?(sb.deleteCharAt(sb.length()-1).toString()) : null;
         }
     }
 
