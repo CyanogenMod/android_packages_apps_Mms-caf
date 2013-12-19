@@ -64,8 +64,7 @@
     <string name="select_copy_message_text">"选择性复制"</string>
     <string name="message_options" msgid="6838806653341967550">"信息选项"</string>
     <string name="slideshow_options" msgid="3501759384739796431">"幻灯片选项"</string>
-    <string name="done" msgid="7479926268660505871">"完成"</string>
-    <string name="slide_done">"完成"</string>
+    <string name="slide_done" msgid="7479926268660505871">"完成"</string>
     <string name="move_up" msgid="7307578107431739359">"上移"</string>
     <string name="move_down" msgid="6356509518429479053">"下移"</string>
     <string name="remove_slide" msgid="2225604354024914900">"删除幻灯片"</string>
