@@ -246,11 +246,17 @@ public class SlideshowActivity extends Activity implements EventListener {
             new OnClickListener() {
               public void onClick(View v) {
                   mSmilPlayer.next();
+                  if (mMediaController != null) {
+                      mMediaController.show();
+                  }
               }
             },
             new OnClickListener() {
               public void onClick(View v) {
                   mSmilPlayer.prev();
+                  if (mMediaController != null) {
+                      mMediaController.show();
+                  }
               }
             });
     }
