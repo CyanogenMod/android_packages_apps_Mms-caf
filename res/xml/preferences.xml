@@ -132,4 +132,7 @@
                         android:summary="@string/pref_summary_wap_push_enabled"
                         android:defaultValue="true" />
   </PreferenceCategory>
+  <PreferenceCategory android:title="@string/pref_smsc_title"
+                      android:key="pref_key_smsc" >
+  </PreferenceCategory>
 </PreferenceScreen>
