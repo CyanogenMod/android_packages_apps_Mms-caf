@@ -322,9 +322,9 @@ public class SlideshowActivity extends Activity implements EventListener {
             case KeyEvent.KEYCODE_DPAD_DOWN:
             case KeyEvent.KEYCODE_DPAD_LEFT:
             case KeyEvent.KEYCODE_DPAD_RIGHT:
+            case KeyEvent.KEYCODE_MENU:
                 break;
             case KeyEvent.KEYCODE_BACK:
-            case KeyEvent.KEYCODE_MENU:
                 if ((mSmilPlayer != null) &&
                         (mSmilPlayer.isPausedState()
                         || mSmilPlayer.isPlayingState()
