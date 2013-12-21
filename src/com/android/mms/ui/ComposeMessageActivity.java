@@ -347,6 +347,11 @@ public class ComposeMessageActivity extends Activity
     // sure we only load message+draft once.
     private boolean mMessagesAndDraftLoaded;
 
+    /**
+     * Whether the attachment error is in the case of sendMms.
+     */
+    private boolean mIsAttachmentErrorOnSend = false;
+
     // whether we should load the draft. For example, after attaching a photo and coming back
     // in onActivityResult(), we should not load the draft because that will mess up the draft
     // state of mWorkingMessage. Also, if we are handling a Send or Forward Message Intent,
@@ -2783,6 +2788,7 @@ public class ComposeMessageActivity extends Activity
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                mIsAttachmentErrorOnSend = true;
                 handleAddAttachmentError(error, R.string.type_picture);
                 onMessageSent();        // now requery the list of messages
             }
@@ -3419,8 +3425,16 @@ public class ComposeMessageActivity extends Activity
                     message = res.getString(R.string.select_different_media, mediaType);
                     break;
                 case WorkingMessage.MESSAGE_SIZE_EXCEEDED:
-                    title = res.getString(R.string.exceed_message_size_limitation, mediaType);
-                    message = res.getString(R.string.failed_to_add_media, mediaType);
+                    title = res.getString(R.string.exceed_message_size_limitation,
+                        mediaType);
+                    // We should better prompt the "message size limit reached,
+                    // cannot send out message" while we send out the Mms.
+                    if (mIsAttachmentErrorOnSend) {
+                        message = res.getString(R.string.media_size_limit);
+                        mIsAttachmentErrorOnSend = false;
+                    } else {
+                        message = res.getString(R.string.failed_to_add_media, mediaType);
+                    }
                     break;
                 case WorkingMessage.IMAGE_TOO_LARGE:
                     title = res.getString(R.string.failed_to_resize_image);

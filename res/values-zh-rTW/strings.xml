@@ -93,6 +93,7 @@
     <string name="select_different_media" msgid="6241623357299382183">"請選擇其他<xliff:g id="NAME">%1$s</xliff:g>。"</string>
     <string name="exceed_message_size_limitation" msgid="6027753647094742437">"已達最大簡訊長度。"</string>
     <string name="message_too_big_for_video" msgid="2639367545165352543">"訊息內容過多，無法附加影片。"</string>
+    <string name="media_size_limit" msgid="7207464170168708486">"已達到訊息大小上限，無法傳送。"</string>
     <string name="failed_to_add_media" msgid="7207464170168708485">"您無法在訊息中加入<xliff:g id="NAME">%1$s</xliff:g>。"</string>
     <string name="failed_to_resize_image" msgid="5608354151631833669">"圖片大小未改變。"</string>
     <string name="resize_image_error_information" msgid="3783200130776554475">"調整這個圖片的大小後仍然超過上限，因此無法傳送。"</string>

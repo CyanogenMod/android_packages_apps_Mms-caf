@@ -209,6 +209,7 @@
     <string name="message_too_big_for_video">The message is too big to attach a video.</string>
     <!-- Error message indicating that the item trying to be attached could not be added -->
     <string name="failed_to_add_media">You can\'t add this <xliff:g id="name">%1$s</xliff:g> to your message.</string>
+    <string name="media_size_limit">Message size limit reached, can\'t send out message.</string>
     <!-- Error message indicating that the picture being attached and resized could not be resized -->
     <string name="failed_to_resize_image">Picture not resized.</string>
     <!-- Error message indicating that an image being attached is still too large to send even after resize -->
