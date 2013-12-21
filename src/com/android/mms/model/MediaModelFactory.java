@@ -26,6 +26,7 @@ import org.w3c.dom.smil.Time;
 import org.w3c.dom.smil.TimeList;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.mms.LogTag;
@@ -144,6 +145,17 @@ public class MediaModelFactory {
         } else if (tag.equals(SmilHelper.ELEMENT_TAG_AUDIO)) {
             media = new AudioModel(context, contentType, src,
                     part.getDataUri());
+            // Add the extras value for the audio when load draft and
+            // build the MMS included the audio.
+            String artist = sme.getAttribute("artist");
+            String album = sme.getAttribute("album");
+            if (!TextUtils.isEmpty(artist)) {
+                ((AudioModel) media).getExtras().put("artist", unescapeXML(artist));
+            }
+
+            if (!TextUtils.isEmpty(album)) {
+                ((AudioModel) media).getExtras().put("album", unescapeXML(album));
+            }
         } else if (tag.equals(SmilHelper.ELEMENT_TAG_REF)) {
             if (ContentType.isTextType(contentType)) {
                 media = new TextModel(context, contentType, src,

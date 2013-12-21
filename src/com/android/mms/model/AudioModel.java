@@ -146,7 +146,7 @@ public class AudioModel extends MediaModel {
         notifyModelChanged(false);
     }
 
-    public Map<String, ?> getExtras() {
+    public Map<String, String> getExtras() {
         return mExtras;
     }
 
