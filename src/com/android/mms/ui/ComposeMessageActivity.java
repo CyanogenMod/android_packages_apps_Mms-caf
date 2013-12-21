@@ -1578,7 +1578,8 @@ public class ComposeMessageActivity extends Activity
             }
 
             if (ContentType.isImageType(type) || ContentType.isVideoType(type) ||
-                    ContentType.isAudioType(type) || DrmUtils.isDrmType(type)) {
+                    ContentType.isAudioType(type) || DrmUtils.isDrmType(type) ||
+                    type.toLowerCase().equals(ContentType.AUDIO_OGG.toLowerCase())) {
                 result = true;
                 break;
             }
