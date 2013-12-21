@@ -199,6 +199,8 @@
 
     <!-- Error message indicating the format for the specified media type (e.g. "picture") is unsupported -->
     <string name="unsupported_media_format">Unsupported <xliff:g id="name">%1$s</xliff:g> format.</string>
+    <!-- Error message indicating the format is unsupported -->
+    <string name="unsupported_format">Unsupported format.</string>
     <!-- Message prompting the user to select a different item; item string as type-appropriate (e.g. "picture") -->
     <string name="select_different_media">Choose a different <xliff:g id="name">%1$s</xliff:g>.</string>
     <!-- Message indicating that the message size limit has been reached -->

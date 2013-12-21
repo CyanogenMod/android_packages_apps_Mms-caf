@@ -262,6 +262,8 @@ public class ComposeMessageActivity extends Activity
     // messages+draft after the max delay.
     private static final int LOADING_MESSAGES_AND_DRAFT_MAX_DELAY_MS = 500;
 
+    private static final int MSG_ADD_ATTACHMENT_FAILED = 1;
+
     private ContentResolver mContentResolver;
 
     private BackgroundQueryHandler mBackgroundQueryHandler;
@@ -3599,9 +3601,59 @@ public class ComposeMessageActivity extends Activity
             } else if (type.startsWith("video/") ||
                     (wildcard && uri.toString().startsWith(mVideoUri))) {
                 addVideo(uri, append);
+            } else {
+                // Add prompt when file type is not image/video/audio.
+                Message msg = Message.obtain(mAddAttachmentHandler,
+                        MSG_ADD_ATTACHMENT_FAILED, uri);
+                mAddAttachmentHandler.sendMessage(msg);
             }
         }
     }
+
+    // handler for handle add attachment failt.
+    private Handler mAddAttachmentHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MSG_ADD_ATTACHMENT_FAILED:
+                    Toast.makeText(ComposeMessageActivity.this,
+                            getAttachmentPostfix((Uri) msg.obj), Toast.LENGTH_SHORT)
+                            .show();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private String getAttachmentPostfix(Uri uri) {
+            // if uri is valid,parse it as normal.
+            if (isValidUri(uri)) {
+                int lastDot = uri.toString().lastIndexOf(".");
+                String postfix = uri.toString().substring(lastDot + 1);
+                return getResourcesString(R.string.unsupported_media_format,
+                        postfix);
+            } else {
+                // if uri is invalid,show just show unsupported "Unsupported format".
+                return getResources().getString(R.string.unsupported_format);
+            }
+        }
+
+        //Used to check the uri is valid or not.
+        private boolean isValidUri(Uri uri) {
+            String path = uri == null ? null : uri.toString();
+            if (null != path && path.contains("/")) {
+                String fileName = path.substring(path.lastIndexOf("/"));
+                if (null != fileName && !fileName.isEmpty()
+                        && fileName.contains(".")) {
+                    String fileType = fileName.substring(fileName
+                            .lastIndexOf(".") + 1);
+                    return !fileType.isEmpty() && fileType.trim().length() > 0
+                            && fileType != "";
+                }
+            }
+            return false;
+        }
+    };
 
     private String getResourcesString(int id, String mediaName) {
         Resources r = getResources();
