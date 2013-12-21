@@ -84,6 +84,7 @@ import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Video;
 import android.provider.Settings;
 import android.provider.Telephony.Mms;
+import android.provider.Telephony.MmsSms;
 import android.provider.Telephony.Sms;
 import android.telephony.MSimSmsManager;
 import android.telephony.MSimTelephonyManager;
@@ -1214,7 +1215,9 @@ public class ComposeMessageActivity extends Activity
                         // Since we currently break outgoing messages to multiple
                         // recipients into one message per recipient, only allow
                         // editing a message for single-recipient conversations.
-                        if (getRecipients().size() == 1) {
+                        // Just Failed Mms should to be provided Edit function.
+                        if (getRecipients().size() == 1 &&
+                                (msgItem.mErrorType >= MmsSms.ERR_TYPE_GENERIC_PERMANENT)) {
                             menu.add(0, MENU_EDIT_MESSAGE, 0, R.string.menu_edit)
                                     .setOnMenuItemClickListener(l);
                         }
