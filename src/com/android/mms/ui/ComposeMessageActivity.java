@@ -358,6 +358,12 @@ public class ComposeMessageActivity extends Activity
     // we should not load the draft.
     private boolean mShouldLoadDraft;
 
+    // If a message A is currently being edited, and user decides to edit
+    // another sent message B, we need to send message A and put B in edit state
+    // after A is sent. This variable is used to save the message B during A is
+    // sending in progress.
+    private MessageItem mEditMessageItem;
+
     // Whether or not we are currently enabled for SMS. This field is updated in onStart to make
     // sure we notice if the user has changed the default SMS app.
     private boolean mIsSmsEnabled;
@@ -1284,7 +1290,27 @@ public class ComposeMessageActivity extends Activity
         if ("sms".equals(msgItem.mType)) {
             editSmsMessageItem(msgItem);
         } else {
-            editMmsMessageItem(msgItem);
+            // There is a bug, when we edit a sending Mms, this Mms will be
+            // draft status, at this moment, If we edit anther sending Mms, the
+            // first Mms will be delete and the second Mms will be a draft
+            // message and in edit status, becase one threadID just have only
+            // one draft message. So we must send the first Mms then make the
+            // second Mms to edit status to fix this bug. The
+            // isPreparedForSending method is check that if there is a edit
+            // message now, if there is, then we send this message first.
+            if (isPreparedForSending()) {
+                // Send the first edit message. Here we must not use parameter
+                // true to check emergency mode,if we do this. The Mms will not
+                // be send out but delete when now is emergency mode
+                // and the bug still exist.
+                sendMessage(false);
+                // Save the msgItem, and show it when the onMessageSend method
+                // called
+                mEditMessageItem = msgItem;
+                return;
+            } else {
+                editMmsMessageItem(msgItem);
+            }
         }
         if (msgItem.isFailedMessage() && mMsgListAdapter.getCount() <= 1) {
             // For messages with bad addresses, let the user re-edit the recipients.
@@ -2766,6 +2792,13 @@ public class ComposeMessageActivity extends Activity
                 // The thread ID could have changed if this is a new message that we just inserted
                 // into the database (and looked up or created a thread for it)
                 updateThreadIdIfRunning();
+
+                // If there is saved message waiting to be edited, edit it now.
+                if (null != mEditMessageItem) {
+                    editMessageItem(mEditMessageItem);
+                    drawBottomPanel();
+                    mEditMessageItem = null;
+                }
             }
         });
     }
