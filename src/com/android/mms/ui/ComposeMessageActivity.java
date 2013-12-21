@@ -489,6 +489,7 @@ public class ComposeMessageActivity extends Activity
                     case MessageListItem.MSG_LIST_EDIT:
                         editMessageItem(msgItem);
                         drawBottomPanel();
+                        invalidateOptionsMenu();
                         break;
 
                     case MessageListItem.MSG_LIST_PLAY:
