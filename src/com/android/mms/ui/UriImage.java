@@ -99,7 +99,7 @@ public class UriImage {
                 extension = mPath.substring(dotPos + 1);
             }
         }
-        mContentType = mimeTypeMap.getMimeTypeFromExtension(extension);
+        mContentType = mimeTypeMap.getMimeTypeFromExtension(extension.toLowerCase());
         // It's ok if mContentType is null. Eventually we'll show a toast telling the
         // user the picture couldn't be attached.
 
