@@ -1781,8 +1781,9 @@ public class ComposeMessageActivity extends Activity
                 if (isDrm) {
                     extension += DrmUtils.getConvertExtension(type);
                 }
+
                 // Remove leading periods. The gallery ignores files starting with a period.
-                fileName = fileName.replaceAll("^.", "");
+                fileName = fileName.replaceAll("^\\.", "");
 
                 File file = getUniqueDestination(dir + fileName, extension);
 
