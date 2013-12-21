@@ -443,6 +443,13 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        Contact.clearListener();
+    }
+
+    @Override
     public void onDraftChanged(final long threadId, final boolean hasDraft) {
         // Run notifyDataSetChanged() on the main thread.
         mQueryHandler.post(new Runnable() {
