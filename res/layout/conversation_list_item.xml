@@ -44,8 +44,8 @@
         android:ellipsize="middle"  />
 
     <TextView android:id="@+id/date"
-        android:layout_marginTop="2dip"
-        android:layout_marginBottom="10dip"
+        android:layout_marginTop="3dip"
+        android:layout_marginBottom="7dip"
         android:layout_marginLeft="5dip"
         android:layout_marginRight="10dip"
         android:layout_height="wrap_content"
@@ -78,7 +78,8 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:singleLine="true"
-        android:layout_marginBottom="10dip"
+        android:layout_marginTop="3dip"
+        android:layout_marginBottom="7dip"
         android:layout_marginLeft="10dip"
         android:layout_alignParentBottom="true"
         android:layout_toRightOf="@id/avatar"
