@@ -90,7 +90,15 @@ public class SlideModel extends Model implements List<MediaModel>, EventListener
             }
         }
 
-        updateDuration(maxDur);
+        // Since support set Duration function,so don't direct set maxDur.
+        updateDuration(getDuration(maxDur));
+    }
+
+    private int getDuration(int defaultVal) {
+       if (mDuration != defaultVal && mDuration > 0) {
+           return mDuration;
+       }
+       return defaultVal;
     }
 
     private void internalAdd(MediaModel media) throws IllegalStateException {
