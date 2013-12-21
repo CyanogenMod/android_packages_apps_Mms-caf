@@ -99,6 +99,10 @@ public class ImageModel extends RegionMediaModel {
                     + " mContentType=" + mContentType
                     + " mUri=" + uri);
         }
+        // If there is no data in this image, throw MmsException.
+        if (mWidth < 0 && mHeight < 0) {
+            throw new MmsException("No data in this media.");
+        }
     }
 
     private void decodeImageBounds(Uri uri) {
