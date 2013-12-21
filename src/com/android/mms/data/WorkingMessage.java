@@ -1649,12 +1649,12 @@ public class WorkingMessage {
         if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
             LogTag.debug("asyncUpdateDraftMmsMessage conv=%s mMessageUri=%s", conv, mMessageUri);
         }
-        final HashMap<Uri, InputStream> preOpenedFiles =
-                mSlideshow.openPartFiles(mContentResolver);
 
         new Thread(new Runnable() {
             @Override
             public void run() {
+                final HashMap<Uri, InputStream> preOpenedFiles =
+                        mSlideshow.openPartFiles(mContentResolver);
                 try {
                     DraftCache.getInstance().setSavingDraft(true);
 
