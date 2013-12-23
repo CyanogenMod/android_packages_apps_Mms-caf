@@ -68,6 +68,15 @@ public class MediaModelFactory {
                     part = pb.getPartByFileName(src);
                     if (part == null) {
                         part = pb.getPartByContentLocation(src);
+                        if (part == null) {
+                            Log.v(TAG, "findPart Remove the "
+                                    + "src suffix, src="+src);
+                            int index = src.lastIndexOf(".");
+                            if (index != -1) {
+                                src = src.substring(0, index);
+                                part = pb.getPartByContentLocation(src);
+                            }
+                        }
                     }
                 }
             }

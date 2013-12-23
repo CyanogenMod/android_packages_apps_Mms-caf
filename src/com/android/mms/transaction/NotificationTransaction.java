@@ -38,6 +38,8 @@ import android.provider.Telephony.Mms.Inbox;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.android.internal.util.HexDump;
+import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
 import com.android.mms.ui.MessagingPreferenceActivity;
@@ -175,6 +177,10 @@ public class NotificationTransaction extends Transaction implements Runnable {
             }
 
             if (retrieveConfData != null) {
+                if (Log.isLoggable(LogTag.TRANSACTION, Log.DEBUG)) {
+                    Log.v(TAG, "NotificationTransaction: retrieve data=" +
+                            HexDump.dumpHexString(retrieveConfData));
+                }
                 GenericPdu pdu = new PduParser(retrieveConfData).parse();
                 if ((pdu == null) || (pdu.getMessageType() != MESSAGE_TYPE_RETRIEVE_CONF)) {
                     Log.e(TAG, "Invalid M-RETRIEVE.CONF PDU. " +
