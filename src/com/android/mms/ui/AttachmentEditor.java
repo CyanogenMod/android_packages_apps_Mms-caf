@@ -53,6 +53,8 @@ public class AttachmentEditor extends LinearLayout {
     static final int MSG_PLAY_AUDIO       = 8;
     static final int MSG_VIEW_IMAGE       = 9;
     static final int MSG_REMOVE_ATTACHMENT = 10;
+    static final int MSG_VIEW_VCARD        = 11;
+    static final int MSG_REPLACE_VCARD     = 12;
 
     private static final int KILOBYTE = 1024;
 
@@ -172,6 +174,13 @@ public class AttachmentEditor extends LinearLayout {
                     R.id.audio_attachment_view,
                     R.id.play_audio_button, R.id.replace_audio_button, R.id.remove_audio_button,
                     MSG_PLAY_AUDIO, MSG_REPLACE_AUDIO, MSG_REMOVE_ATTACHMENT);
+        } else if (slide.hasVcard()) {
+            return createMediaView(R.id.vcard_attachment_view_stub,
+                    R.id.vcard_attachment_view,
+                    R.id.view_vcard_button,
+                    R.id.replace_vcard_button,
+                    R.id.remove_vcard_button,
+                    MSG_VIEW_VCARD, MSG_REPLACE_VCARD, MSG_REMOVE_ATTACHMENT);
         } else {
             throw new IllegalArgumentException();
         }

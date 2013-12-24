@@ -415,7 +415,6 @@
     <string name="set_smsc_success">设置短消息中心号码成功</string>
     <string name="set_smsc_confirm_message">修改短消息中心号码可能导致短信发送失败，确认修改吗？</string>
 
-
     <string name="open_wap_push_title">"浏览器信息"</string>
     <string name="open_wap_push_body">"是否要访问网站？"</string>
     <string name="menu_copy_url">"复制网址 <xliff:g id="extractedurl">%s</xliff:g>"</string>
@@ -454,4 +453,12 @@
     <string name="status_expired">已过期</string>
     <!-- select contact group -->
     <string name="no_contact_group">没有任何群组</string>
+    <!-- Add for share contact feature -->
+    <string name="type_vcard">电子名片</string>
+    <string name="import_vcard">导入</string>
+    <string name="attach_add_contact_as_text">联系人信息</string>
+    <string name="attach_add_contact_as_vcard">电子名片</string>
+    <string name="contact_info_text_as_name">姓名：</string>
+    <string name="contact_info_text_as_phone">电话：</string>
+    <string name="contact_info_text_as_email">电子邮件：</string>
 </resources>

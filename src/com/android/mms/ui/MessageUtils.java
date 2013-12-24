@@ -74,6 +74,7 @@ import com.android.mms.data.WorkingMessage;
 import com.android.mms.model.MediaModel;
 import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
+import com.android.mms.model.VcardModel;
 import com.android.mms.transaction.MessagingNotification;
 import com.android.mms.transaction.MmsMessageSender;
 import com.android.mms.util.AddressUtils;
@@ -116,6 +117,8 @@ public class MessageUtils {
     private static final String MMS_DATA_DATA_DIR = "/data/data";
     // the remaining space , format as MB
     public static final long MIN_AVAILABLE_SPACE_MMS = 2 * 1024 * 1024;
+    // distinguish view vcard from mms but not from contacts.
+    public static final String VIEW_VCARD = "VIEW_VCARD_FROM_MMS";
 
     // Cache of both groups of space-separated ids to their full
     // comma-separated display names, as well as individual ids to
@@ -472,6 +475,10 @@ public class MessageUtils {
                 return WorkingMessage.IMAGE;
             }
 
+            if (slide.hasVcard()) {
+                return WorkingMessage.VCARD;
+            }
+
             if (slide.hasText()) {
                 return WorkingMessage.TEXT;
             }
@@ -655,6 +662,23 @@ public class MessageUtils {
             mm = slide.getImage();
         } else if (slide.hasVideo()) {
             mm = slide.getVideo();
+        } else if (slide.hasVcard()) {
+            mm = slide.getVcard();
+            String lookupUri = ((VcardModel) mm).getLookupUri();
+
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            if (!TextUtils.isEmpty(lookupUri) && lookupUri.contains("contacts")) {
+                // if the uri is from the contact, we suggest to view the contact.
+                intent.setData(Uri.parse(lookupUri));
+            } else {
+                // we need open the saved part.
+                intent.setDataAndType(mm.getUri(), ContentType.TEXT_VCARD.toLowerCase());
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            }
+            // distinguish view vcard from mms or contacts.
+            intent.putExtra(VIEW_VCARD, true);
+            context.startActivity(intent);
+            return;
         }
 
         Intent intent = new Intent(Intent.ACTION_VIEW);
