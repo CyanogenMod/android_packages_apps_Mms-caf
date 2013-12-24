@@ -47,11 +47,14 @@
                 android:label="@string/label_mms_send_outbox_msg"
                 android:description="@string/desc_mms_send_outbox_msg"/>
     <uses-permission android:name="android.permission.MMS_SEND_OUTBOX_MSG"/>
+    <uses-permission android:name="android.permission.RECEIVE_WAP_PUSH" />
+
     <application android:name="MmsApp"
             android:label="@string/app_label"
             android:icon="@mipmap/ic_launcher_smsmms"
             android:taskAffinity="android.task.mms"
             android:allowTaskReparenting="true">
+        <uses-library android:name="com.qrd.wappush" android:required="false" />
 
         <service android:name=".transaction.TransactionService"
                  android:exported="false" />
@@ -207,6 +210,8 @@
             <intent-filter>
                 <action android:name="android.provider.Telephony.WAP_PUSH_DELIVER" />
                 <data android:mimeType="application/vnd.wap.mms-message" />
+                <data android:mimeType="application/vnd.wap.sic" />
+                <data android:mimeType="application/vnd.wap.slc" />
             </intent-filter>
         </receiver>
      <receiver android:name=".transaction.MmsPushOutboxMessages"
