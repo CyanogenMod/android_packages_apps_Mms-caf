@@ -38,4 +38,7 @@
 
     <!-- configuration for reconnect data call immediately -->
     <bool name="config_reconnect">false</bool>
+
+    <!-- configuration for prompt dialog for wap push link -->
+    <bool name="config_wap_push">false</bool>
 </resources>

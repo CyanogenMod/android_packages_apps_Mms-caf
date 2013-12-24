@@ -868,6 +868,8 @@
     <string name="pref_wap_push_title">"Auto Push Service Message Setting"</string>
     <string name="pref_title_wap_push_enabled">"Enable WAP PUSH Service"</string>
     <string name="pref_summary_wap_push_enabled">"Enable to receive service message"</string>
+    <string name="open_wap_push_title">Browser Information</string>
+    <string name="open_wap_push_body">Do you want to open the web site?</string>
 
     <!-- Banner in conversation list for making Messaging the default SMS app -->
     <string name="banner_sms_promo_title_initial">Messaging is not your SMS app</string>

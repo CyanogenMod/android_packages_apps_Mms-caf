@@ -396,5 +396,8 @@
     <string name="search_bar_hint">"搜索联系人"</string>
     <string name="select_all">"全选"</string>
 
+
+    <string name="open_wap_push_title">"浏览器信息"</string>
+    <string name="open_wap_push_body">"是否要访问网站？"</string>
     <string name="menu_copy_url">"复制网址 <xliff:g id="extractedurl">%s</xliff:g>"</string>
 </resources>
