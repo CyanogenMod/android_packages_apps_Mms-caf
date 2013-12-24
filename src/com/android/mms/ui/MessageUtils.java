@@ -168,6 +168,7 @@ public class MessageUtils {
 
     public static final int PREFER_SMS_STORE_PHONE = 0;
     public static final int PREFER_SMS_STORE_CARD = 1;
+    private static final Uri BOOKMARKS_URI = Uri.parse("content://browser/bookmarks");
 
     // Cache of both groups of space-separated ids to their full
     // comma-separated display names, as well as individual ids to
@@ -1912,6 +1913,188 @@ public class MessageUtils {
        new ShowDialog(context).execute();
     }
 
+    public static void onMessageContentClick(final Context context, final TextView contentText) {
+        // Check for links. If none, do nothing; if 1, open it; if >1, ask user to pick one
+        final URLSpan[] spans = contentText.getUrls();
+        if (spans.length == 1) {
+            String url = spans[0].getURL();
+            if (isWebUrl(url)) {
+                showUrlOptions(context, url);
+            } else {
+                final String telPrefix = "tel:";
+                if (url.startsWith(telPrefix)) {
+                    url = url.substring(telPrefix.length());
+                    if (PhoneNumberUtils.isWellFormedSmsAddress(url)) {
+                        showNumberOptions(context, url);
+                    }
+                } else {
+                    spans[0].onClick(contentText);
+                }
+            }
+        } else if (spans.length > 1) {
+            ArrayAdapter<URLSpan> adapter = new ArrayAdapter<URLSpan>(context,
+                    android.R.layout.select_dialog_item, spans) {
+
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    View v = super.getView(position, convertView, parent);
+                    try {
+                        URLSpan span = getItem(position);
+                        String url = span.getURL();
+                        Uri uri = Uri.parse(url);
+                        TextView tv = (TextView) v;
+                        Drawable d = context.getPackageManager().getActivityIcon(
+                                new Intent(Intent.ACTION_VIEW, uri));
+                        if (d != null) {
+                            d.setBounds(0, 0, d.getIntrinsicHeight(),
+                                    d.getIntrinsicHeight());
+                            tv.setCompoundDrawablePadding(10);
+                            tv.setCompoundDrawables(d, null, null, null);
+                        }
+                        // If prefix string is "mailto" then translate it.
+                        final String mailPrefix = "mailto:";
+                        String tmpUrl = null;
+                        if (url != null) {
+                            if (url.startsWith(mailPrefix)) {
+                                url = context.getResources().getString(R.string.mail_to) +
+                                        url.substring(mailPrefix.length());
+                            }
+                            tmpUrl = url.replaceAll("tel:", "");
+                        }
+                        tv.setText(tmpUrl);
+                    } catch (android.content.pm.PackageManager.NameNotFoundException ex) {
+                        // it's ok if we're unable to set the drawable for this view - the user
+                        // can still use it.
+                    }
+                    return v;
+                }
+            };
+
+            AlertDialog.Builder b = new AlertDialog.Builder(context);
+            DialogInterface.OnClickListener click = new DialogInterface.OnClickListener() {
+                @Override
+                public final void onClick(DialogInterface dialog, int which) {
+                    if (which >= 0) {
+                        String url = spans[which].getURL();
+                        if (isWebUrl(url)) {
+                            showUrlOptions(context, url);
+                        } else {
+                            final String telPrefix = "tel:";
+                            if (url.startsWith(telPrefix)) {
+                                url = url.substring(telPrefix.length());
+                                if (PhoneNumberUtils.isWellFormedSmsAddress(url)) {
+                                    showNumberOptions(context, url);
+                                }
+                            } else {
+                                spans[0].onClick(contentText);
+                            }
+                        }
+                    }
+                    dialog.dismiss();
+                }
+            };
+
+            b.setTitle(R.string.select_link_title);
+            b.setCancelable(true);
+            b.setAdapter(adapter, click);
+            b.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public final void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            b.show();
+        }
+    }
+
+    private static void showUrlOptions(final Context slideContext, final String messageUrl) {
+        final String[] texts = new String[] {
+                slideContext.getString(R.string.menu_connect_url),
+                slideContext.getString(R.string.menu_add_to_label),
+        };
+        AlertDialog.Builder builder = new AlertDialog.Builder(slideContext);
+        builder.setTitle(slideContext.getString(R.string.message_options));
+        builder.setCancelable(true);
+        builder.setItems(texts, new DialogInterface.OnClickListener() {
+            @Override
+            public final void onClick(DialogInterface dialog, int which) {
+                if (which == 0) {
+                    loadUrlDialog(slideContext, messageUrl);
+                } else if (which == 1) {
+                    addToLabel(slideContext, messageUrl);
+                }
+            }
+        });
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+    }
+
+    private static void loadUrlDialog(final Context context, final String urlString) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.menu_connect_url);
+        builder.setMessage(context.getString(R.string.loadurlinfo_str));
+        builder.setCancelable(true);
+        builder.setPositiveButton(R.string.yes, new OnClickListener() {
+            @Override
+            final public void onClick(DialogInterface dialog, int which) {
+                loadUrl(context, urlString);
+            }
+        });
+        builder.setNegativeButton(R.string.no, new OnClickListener() {
+            @Override
+            final public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+
+    }
+
+    private static void loadUrl(Context context, String url) {
+        if (!url.regionMatches(true, 0, "http://", 0, 7)
+                && !url.regionMatches(true, 0, "https://", 0, 8)
+                && !url.regionMatches(true, 0, "rtsp://", 0, 7)) {
+            url = "http://" + url;
+        }
+        url = url.replace("Http://", "http://");
+        url = url.replace("Https://", "https://");
+        url = url.replace("HTTP://", "http://");
+        url = url.replace("HTTPS://", "https://");
+        url = url.replace("Rtsp://", "rtsp://");
+        url = url.replace("RTSP://", "rtsp://");
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        intent.addCategory(Intent.CATEGORY_BROWSABLE);
+
+        if ((url.substring(url.length() - 4).compareToIgnoreCase(".mp4") == 0)
+                || (url.substring(url.length() - 4).compareToIgnoreCase(".3gp") == 0)) {
+            intent.setDataAndType(Uri.parse(url), "video/*");
+        }
+        try {
+            context.startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            return;
+        }
+    }
+
+    private static void addToLabel(Context context, String urlString) {
+        Intent i = new Intent(Intent.ACTION_INSERT, BOOKMARKS_URI);
+        i.putExtra("title", "");
+        i.putExtra("url", urlString);
+        i.putExtra("extend", "outside");
+        context.startActivity(i);
+    }
+
     private static class ShowDialog extends AsyncTask<String, Void, StringBuilder> {
         private Context mContext;
         public ShowDialog(Context context) {
@@ -1943,79 +2126,6 @@ public class MessageUtils {
                 memoryStatusDialog = builder.create();
                 memoryStatusDialog.show();
             }
-        }
-    }
-
-    public static void onMessageContentClick(final Context context, final TextView textView) {
-        // Check for links. If none, do nothing; if 1, open it; if >1, ask user
-        // to pick one
-        final URLSpan[] spans = textView.getUrls();
-        if (spans.length == 1) {
-            String url = spans[0].getURL();
-            if (isWebUrl(url)) {
-                Intent intent = new Intent(context, WwwContextMenuActivity.class);
-                intent.setData(Uri.parse(url));
-                context.startActivity(intent);
-            }
-        } else if (spans.length > 1) {
-            ArrayAdapter<URLSpan> adapter = new ArrayAdapter<URLSpan>(context,
-                    android.R.layout.select_dialog_item, spans) {
-
-                @Override
-                public View getView(int position, View convertView, ViewGroup parent) {
-                    View v = super.getView(position, convertView, parent);
-                    try {
-                        URLSpan span = getItem(position);
-                        String url = span.getURL();
-                        TextView tv = (TextView) v;
-                        Drawable d = context.getPackageManager().getActivityIcon(
-                                new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-                        if (d != null) {
-                            d.setBounds(0, 0, d.getIntrinsicHeight(),
-                                    d.getIntrinsicHeight());
-                            tv.setCompoundDrawablePadding(10);
-                            tv.setCompoundDrawables(d, null, null, null);
-                        }
-                        tv.setText(getDisplayUrl(context, url));
-                    } catch (android.content.pm.PackageManager.NameNotFoundException ex) {
-                        // it's ok if we're unable to set the drawable
-                        // for this view - the user
-                        // can still use it
-                    }
-                    return v;
-                }
-            };
-
-            AlertDialog.Builder b = new AlertDialog.Builder(context);
-
-            DialogInterface.OnClickListener click = new DialogInterface.OnClickListener() {
-                @Override
-                public final void onClick(DialogInterface dialog, int which) {
-                    if (which >= 0) {
-                        String url = spans[which].getURL();
-                        if (isWebUrl(url)) {
-                            Intent intent = new Intent(context,
-                                    WwwContextMenuActivity.class);
-                            intent.setData(Uri.parse(url));
-                            context.startActivity(intent);
-                        }
-                    }
-                    dialog.dismiss();
-                }
-            };
-
-            b.setTitle(R.string.select_link_title);
-            b.setCancelable(true);
-            b.setAdapter(adapter, click);
-
-            b.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                @Override
-                public final void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-
-            b.show();
         }
     }
 
