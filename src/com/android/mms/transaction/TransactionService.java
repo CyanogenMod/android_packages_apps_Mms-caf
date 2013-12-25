@@ -139,7 +139,12 @@ public class TransactionService extends Service implements Observer {
     private static final int EVENT_CONTINUE_MMS_CONNECTIVITY = 3;
     private static final int EVENT_HANDLE_NEXT_PENDING_TRANSACTION = 4;
     private static final int EVENT_NEW_INTENT = 5;
+    private static final int EVENT_MMS_CONNECTIVITY_TIMEOUT = 6;
     private static final int EVENT_QUIT = 100;
+
+    // delay 75 seconds to check whether we have enabled mms connectivity
+    private static final int MMS_CONNECTIVITY_DELAY = 75 * 1000;
+    private static final int MMS_CONNECTIVITY_RETRY_TIMES = 3;
 
     private static final int TOAST_MSG_QUEUED = 1;
     private static final int TOAST_DOWNLOAD_LATER = 2;
@@ -158,6 +163,7 @@ public class TransactionService extends Service implements Observer {
     private ConnectivityBroadcastReceiver mReceiver;
 
     private PowerManager.WakeLock mWakeLock;
+    private int mMmsConnecvivityRetryCount;
 
     public Handler mToastHandler = new Handler() {
         @Override
@@ -706,8 +712,15 @@ public class TransactionService extends Service implements Observer {
 
         switch (result) {
             case PhoneConstants.APN_ALREADY_ACTIVE:
+                acquireWakeLock();
+                return result;
             case PhoneConstants.APN_REQUEST_STARTED:
                 acquireWakeLock();
+                boolean reconnect = getResources().getBoolean(R.bool.config_reconnect);
+                if (reconnect) {
+                    mServiceHandler.sendEmptyMessageDelayed(EVENT_MMS_CONNECTIVITY_TIMEOUT,
+                            MMS_CONNECTIVITY_DELAY);
+                }
                 return result;
         }
 
@@ -932,6 +945,24 @@ public class TransactionService extends Service implements Observer {
                     return;
                 case EVENT_HANDLE_NEXT_PENDING_TRANSACTION:
                     processPendingTransaction(transaction, (TransactionSettings) msg.obj);
+                    return;
+                case EVENT_MMS_CONNECTIVITY_TIMEOUT:
+                    removeMessages(EVENT_MMS_CONNECTIVITY_TIMEOUT);
+                    mMmsConnecvivityRetryCount++;
+                    if (mMmsConnecvivityRetryCount > MMS_CONNECTIVITY_RETRY_TIMES) {
+                        Log.d(TAG, "MMS_CONNECTIVITY_TIMEOUT");
+                        mMmsConnecvivityRetryCount = 0;
+                        return;
+                    }
+
+                    if (!mPending.isEmpty()) {
+                        try {
+                            beginMmsConnectivity();
+                        } catch (IOException e) {
+                            Log.w(TAG, "Attempt to use of MMS connectivity failed");
+                            return;
+                        }
+                    }
                     return;
                 default:
                     Log.w(TAG, "what=" + msg.what);
