@@ -128,6 +128,8 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
     static private final String CHECKED_MESSAGE_LIMITS = "checked_message_limits";
     private final static int DELAY_TIME = 500;
 
+    private static boolean mIsDeleteLockChecked = false;
+
     // Whether or not we are currently enabled for SMS. This field is updated in onResume to make
     // sure we notice if the user has changed the default SMS app.
     private boolean mIsSmsEnabled;
@@ -790,6 +792,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                 @Override
                 public void onClick(View v) {
                     listener.setDeleteLockedMessage(checkbox.isChecked());
+                    mIsDeleteLockChecked = checkbox.isChecked();
                 }
             });
         }
@@ -821,6 +824,14 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             return false;
         }
     };
+
+    public static boolean getExitDialogueSign() {
+        return mIsDeleteLockChecked;
+    }
+
+    public static void setExitDialogueSign() {
+        mIsDeleteLockChecked = false;
+    }
 
     public static class DeleteThreadListener implements OnClickListener {
         private final Collection<Long> mThreadIds;

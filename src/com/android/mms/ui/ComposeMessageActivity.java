@@ -378,6 +378,7 @@ public class ComposeMessageActivity extends Activity
      * Whether the audio attachment player activity is launched and running
      */
     private boolean mIsAudioPlayerActivityRunning = false;
+    private boolean mIsLocked = false;
 
     @SuppressWarnings("unused")
     public static void log(String logMsg) {
@@ -4598,6 +4599,7 @@ public class ComposeMessageActivity extends Activity
                     return;
 
                 case ConversationList.HAVE_LOCKED_MESSAGES_TOKEN:
+                    mIsLocked = (cursor != null && cursor.getCount() > 0);
                     @SuppressWarnings("unchecked")
                     ArrayList<Long> threadIds = (ArrayList<Long>)cookie;
                     ConversationList.confirmDeleteThreadDialog(
@@ -4671,6 +4673,12 @@ public class ComposeMessageActivity extends Activity
             // If we're deleting the whole conversation, throw away
             // our current working message and bail.
             if (token == ConversationList.DELETE_CONVERSATION_TOKEN) {
+                if (mIsLocked && !ConversationList.getExitDialogueSign()) {
+                    mIsLocked = false;
+                    startMsgListQuery(MESSAGE_LIST_QUERY_AFTER_DELETE_TOKEN);
+                    return;
+                }
+                ConversationList.setExitDialogueSign();
                 ContactList recipients = mConversation.getRecipients();
                 mWorkingMessage.discard();
 
