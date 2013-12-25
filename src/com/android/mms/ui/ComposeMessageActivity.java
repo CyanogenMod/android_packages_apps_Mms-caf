@@ -352,6 +352,8 @@ public class ComposeMessageActivity extends Activity
      */
     private boolean mIsAttachmentErrorOnSend = false;
 
+    private boolean mIsFromSearchActivity = false;
+
     // whether we should load the draft. For example, after attaching a photo and coming back
     // in onActivityResult(), we should not load the draft because that will mess up the draft
     // state of mWorkingMessage. Also, if we are handling a Send or Forward Message Intent,
@@ -373,6 +375,8 @@ public class ComposeMessageActivity extends Activity
     // keys for extras and icicles
     public final static String THREAD_ID = "thread_id";
     private final static String RECIPIENTS = "recipients";
+
+    private boolean mIsMessageChanged = false;
 
     /**
      * Whether the audio attachment player activity is launched and running
@@ -2701,6 +2705,15 @@ public class ComposeMessageActivity extends Activity
         // If the message is empty, just quit -- finishing the
         // activity will cause an empty draft to be deleted.
         if (!mWorkingMessage.isWorthSaving()) {
+
+            // If is from SearchActivity, need set ResultCode is RESULT_OK
+            if (mIsFromSearchActivity) {
+                // If the msg database has changed (eg. delete or new message),
+                // we should set a result let SearchActivity refresh view.
+                setResult(mIsMessageChanged ?
+                        SearchActivity.RESULT_MSG_HAS_CHANGED : RESULT_OK, null);
+                mIsMessageChanged = false;
+            }
             exit.run();
             return;
         }
@@ -2712,6 +2725,16 @@ public class ComposeMessageActivity extends Activity
         }
 
         mToastForDraftSave = true;
+
+        // If is from SearchActivity, and save sms draft,
+        // need set ResultCode is SearchActivity.RESULT_SAVE_SMS_DRAFT
+        if (mIsFromSearchActivity) {
+            if (mWorkingMessage.hasAttachment() || mWorkingMessage.hasSubject()) {
+                this.setResult(SearchActivity.RESULT_SAVE_MMS_DRAFT, null);
+            } else {
+                this.setResult(SearchActivity.RESULT_SAVE_SMS_DRAFT, null);
+            }
+        }
         exit.run();
     }
 
@@ -4029,6 +4052,8 @@ public class ComposeMessageActivity extends Activity
             return;
         }
 
+        // Set the flag of mIsFromSearchActivity
+        mIsFromSearchActivity = getIntent().getBooleanExtra("from_search", false);
         String highlightString = getIntent().getStringExtra("highlight");
         Pattern highlight = highlightString == null
             ? null
@@ -4143,6 +4168,9 @@ public class ComposeMessageActivity extends Activity
     }
 
     private void sendMessage(boolean bCheckEcmMode) {
+        // If message is sent make the mIsMessageChanged is true
+        // when activity is from SearchActivity.
+        mIsMessageChanged = mIsFromSearchActivity;
         if (bCheckEcmMode) {
             // TODO: expose this in telephony layer for SDK build
             String inEcm = SystemProperties.get(TelephonyProperties.PROPERTY_INECM_MODE);
@@ -4652,6 +4680,9 @@ public class ComposeMessageActivity extends Activity
         @Override
         protected void onDeleteComplete(int token, Object cookie, int result) {
             super.onDeleteComplete(token, cookie, result);
+            // If message is deleted make the mIsMessageChanged is true
+            // when activity is from SearchActivity.
+            mIsMessageChanged = mIsFromSearchActivity;
             switch(token) {
                 case ConversationList.DELETE_CONVERSATION_TOKEN:
                     mConversation.setMessageCount(0);
