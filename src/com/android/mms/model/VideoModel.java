@@ -69,7 +69,7 @@ public class VideoModel extends RegionMediaModel {
         initMediaDuration();
     }
 
-    private void initFromFile(Uri uri) {
+    private void initFromFile(Uri uri) throws MmsException {
         String path = uri.getPath();
         mSrc = path.substring(path.lastIndexOf('/') + 1);
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
@@ -82,9 +82,13 @@ public class VideoModel extends RegionMediaModel {
                 extension = mSrc.substring(dotPos + 1);
             }
         }
-        mContentType = mimeTypeMap.getMimeTypeFromExtension(extension);
+        mContentType = mimeTypeMap.getMimeTypeFromExtension(extension.toLowerCase());
+
         // It's ok if mContentType is null. Eventually we'll show a toast telling the
         // user the video couldn't be attached.
+        if (TextUtils.isEmpty(mContentType)) {
+            throw new MmsException("Type of media is unknown.");
+        }
 
         if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
             Log.v(TAG, "New VideoModel initFromFile created:"
