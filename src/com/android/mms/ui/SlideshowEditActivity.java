@@ -80,6 +80,7 @@ public class SlideshowEditActivity extends ListActivity {
     private Intent mResultIntent;
     private boolean mDirty;
     private View mAddSlideItem;
+    private boolean mFirstCallOnPrepareOptionsMenu = true;
 
     @Override
     protected void onCreate(Bundle icicle) {
@@ -223,8 +224,32 @@ public class SlideshowEditActivity extends ListActivity {
     }
 
     @Override
+    public void onOptionsMenuClosed(Menu menu) {
+        super.onOptionsMenuClosed(menu);
+        //When call "onPrepareOptionsMenu(Menu menu)", the param "menu" is as last shown.
+        //We remove all items of option menu here for avoiding flickering when open option
+        //menu with max number(10) slideshows added.
+        if(menu.size() > 0) {
+            menu.removeGroup(0);
+        }
+    }
+
+    @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.clear();
+
+    //When first come into "SlideshowEditActivity", "onPrepareOptionsMenu(Menu menu)" is called.
+    //1.If we keep pressing "Touch to create new slide" util the number of slideshows gets to the
+    //max number(10), then press option menu, the "Add slide" option will still show.
+    //2."onPrepareOptionsMenu(Menu menu)" is called in main thread and "initSlideList()" is called
+    //in another thread, so mSlideshowModel(created in "initSlideList()") used below maybe
+    //still null here.
+    //So add a judgment. If press option menu after now, "onPrepareOptionsMenu(Menu menu)" will be
+    //called again.
+        if(mFirstCallOnPrepareOptionsMenu || mSlideshowModel == null) {
+            mFirstCallOnPrepareOptionsMenu = false;
+            return false;
+        }
 
         int position = mList.getSelectedItemPosition();
         if ((position >= 0) && (position != (mList.getCount() - 1))) {
@@ -238,12 +263,13 @@ public class SlideshowEditActivity extends ListActivity {
                         R.drawable.ic_menu_move_down);
             }
 
-            menu.add(0, MENU_ADD_SLIDE, 0, R.string.add_slide).setIcon(R.drawable.ic_menu_add_slide);
-
             menu.add(0, MENU_REMOVE_SLIDE, 0, R.string.remove_slide).setIcon(
                     android.R.drawable.ic_menu_delete);
-        } else {
-            menu.add(0, MENU_ADD_SLIDE, 0, R.string.add_slide).setIcon(R.drawable.ic_menu_add_slide);
+        }
+
+        if(mSlideshowModel.size() < SlideshowEditor.MAX_SLIDE_NUM) {
+            menu.add(0, MENU_ADD_SLIDE, 0, R.string.add_slide).setIcon(
+                    R.drawable.ic_menu_add_slide);
         }
 
         menu.add(0, MENU_DISCARD_SLIDESHOW, 0,
@@ -314,9 +340,6 @@ public class SlideshowEditActivity extends ListActivity {
             // Select the new slide.
             mList.requestFocus();
             mList.setSelection(mSlideshowModel.size() - 1);
-        } else {
-            Toast.makeText(this, R.string.cannot_add_slide_anymore,
-                    Toast.LENGTH_SHORT).show();
         }
     }
 
