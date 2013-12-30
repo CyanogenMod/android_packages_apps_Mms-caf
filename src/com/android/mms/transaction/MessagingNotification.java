@@ -1213,7 +1213,14 @@ public class MessagingNotification {
                 vibrate = "always".equals(vibrateWhen);
             }
             if (vibrate) {
-                defaults |= Notification.DEFAULT_VIBRATE;
+                String pattern = sp.getString(
+                        MessagingPreferenceActivity.NOTIFICATION_VIBRATE_PATTERN, "0,1200");
+
+                if (!TextUtils.isEmpty(pattern)) {
+                    noti.setVibrate(parseVibratePattern(pattern));
+                } else {
+                    defaults |= Notification.DEFAULT_VIBRATE;
+                }
             }
 
             String ringtoneStr = sp.getString(MessagingPreferenceActivity.NOTIFICATION_RINGTONE,
@@ -1440,6 +1447,22 @@ public class MessagingNotification {
                 context.startActivity(qmIntent);
             }
         }
+    }
+
+    // Parse the user provided custom vibrate pattern into a long[]
+    private static long[] parseVibratePattern(String pattern) {
+        String[] splitPattern = pattern.split(",");
+        long[] result = new long[splitPattern.length];
+
+        for (int i = 0; i < splitPattern.length; i++) {
+            try {
+                result[i] = Long.parseLong(splitPattern[i]);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+
+        return result;
     }
 
     protected static CharSequence buildTickerMessage(

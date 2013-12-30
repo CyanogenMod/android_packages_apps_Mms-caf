@@ -127,6 +127,10 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     // Blacklist
     public static final String BLACKLIST                 = "pref_blacklist";
 
+    // Vibrate pattern
+    public static final String NOTIFICATION_VIBRATE_PATTERN =
+            "pref_key_mms_notification_vibrate_pattern";
+
     // Menu entries
     private static final int MENU_RESTORE_DEFAULTS    = 1;
 
