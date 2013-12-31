@@ -556,7 +556,8 @@ public class MessageListItem extends LinearLayout implements
                                        String contentType) {
         SpannableStringBuilder buf = new SpannableStringBuilder();
 
-        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()
+                && !isSimCardMessage()) {
             int subscription = subId + 1;
             buf.append("SUB" + subscription + ":");
             buf.append("\n");
@@ -587,6 +588,10 @@ public class MessageListItem extends LinearLayout implements
             }
         }
         return buf;
+    }
+
+    private boolean isSimCardMessage() {
+        return (mContext instanceof ManageSimMessages);
     }
 
     private void drawPlaybackButton(MessageItem msgItem) {
