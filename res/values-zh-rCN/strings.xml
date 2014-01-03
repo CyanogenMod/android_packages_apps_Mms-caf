@@ -273,6 +273,7 @@
     <string name="mobile_data_disable">"移动数据已关闭，是否坚持<xliff:g>%1$s</xliff:g>彩信？若继续将会产生数据流量。"</string>
     <string name="mobile_data_send">发送</string>
     <string name="mobile_data_download">下载</string>
+    <string name="mms_too_large">"彩信过大，无法下载。"</string>
     <string name="sms_rejected_title" msgid="8548394922491529811">"短信遭拒"</string>
     <string name="sms_rejected_body" msgid="7813671133968158562">"由于未知原因导致收不到短信。"</string>
     <string name="type_audio" msgid="3842064092332309756">"音频"</string>

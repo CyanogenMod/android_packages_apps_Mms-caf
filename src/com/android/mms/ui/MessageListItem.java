@@ -60,6 +60,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.mms.MmsApp;
+import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.data.Contact;
 import com.android.mms.data.WorkingMessage;
@@ -249,10 +250,6 @@ public class MessageListItem extends LinearLayout implements
                 mDownloadButton.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // Show enable mobile data dialog when click downlod button
-                        // with mobile data is disabled and config_setup_mms_data is true.
-                        // If click ok, turn on data and download MMS.
-                        // If not, don't download MMS.
                         try {
                             NotificationInd nInd = (NotificationInd) PduPersister.getPduPersister(
                                     mContext).load(mMessageItem.mMessageUri);
@@ -260,22 +257,37 @@ public class MessageListItem extends LinearLayout implements
                             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                             builder.setTitle(R.string.download);
                             builder.setCancelable(true);
+                            if (MessageUtils.isMmsMemoryFull()) {
+                                builder.setMessage(mContext.getString(R.string.sms_full_body));
+                                builder.show();
+                                return;
+                            }
+                            if ((int) nInd.getMessageSize() >
+                                      MmsConfig.getMaxMessageSize()) {
+                                builder.setMessage(mContext.getString(R.string.mms_too_large));
+                                builder.show();
+                                return;
+                            }
+                            // Show enable mobile data dialog when click downlod button
+                            // with mobile data is disabled and config_setup_mms_data is true.
+                            // If click ok, turn on data and download MMS.
+                            // If not, don't download MMS.
                             boolean enableMmsData = mContext.getResources().getBoolean(
                                     com.android.internal.R.bool.config_setup_mms_data);
-                            // Judge whether mobile data is turned off and enableMmsData is true.
+                            // Judge whether mobile data is turned off and
+                            // enableMmsData is true.
                             if (MessageUtils.isMobileDataDisabled(mContext) && enableMmsData) {
                                 builder.setMessage(mContext.getString(
                                         R.string.mobile_data_disable,
                                         mContext.getString(R.string.mobile_data_download)));
                                 builder.setPositiveButton(R.string.yes,
                                         new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int whichButton) {
-                                        startDownloadAttachment();
-                                    }
-                                });
+                                            public void onClick(DialogInterface dialog,
+                                                    int whichButton) {
+                                                startDownloadAttachment();
+                                            }
+                                        });
                                 builder.setNegativeButton(R.string.no, null);
-                                builder.show();
-                                return;
                             }
                         } catch (MmsException e) {
                             Log.e(TAG, e.getMessage(), e);
