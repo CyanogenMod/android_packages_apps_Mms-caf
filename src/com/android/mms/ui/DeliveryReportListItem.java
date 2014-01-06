@@ -72,6 +72,7 @@ public class DeliveryReportListItem extends LinearLayout {
         String failedStr = context.getString(R.string.status_failed);
         String pendingStr = context.getString(R.string.status_pending);
         String rejectStr = context.getString(R.string.status_rejected);
+        String expiredStr = context.getString(R.string.status_expired);
 
         if (status.compareTo(receivedStr) == 0) {
             mIconView.setImageResource(R.drawable.ic_sms_mms_delivered);
@@ -79,7 +80,7 @@ public class DeliveryReportListItem extends LinearLayout {
             mIconView.setImageResource(R.drawable.ic_sms_mms_not_delivered);
         } else if (status.compareTo(pendingStr) == 0) {
             mIconView.setImageResource(R.drawable.ic_sms_mms_pending);
-        } else if (status.compareTo(rejectStr) == 0) {
+        } else if (status.compareTo(rejectStr) == 0 || status.compareTo(expiredStr) == 0) {
             // FIXME: need replace ic_sms_mms_not_delivered by a rejected icon.
             mIconView.setImageResource(R.drawable.ic_sms_mms_not_delivered);
         } else {
