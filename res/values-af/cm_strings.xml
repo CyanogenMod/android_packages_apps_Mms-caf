@@ -99,4 +99,12 @@
     <string name="menu_mobile">Slegs mobiele nommers</string>
     <string name="menu_groups">Wys groepe</string>
     <string name="fastscroll_index_groups">GR</string> <!-- CHAR LIMIT=3 -->
+    <string name="pref_title_send_delay">Vertraag aflewering</string>
+    <string name="send_delay_immediate">Stuur onmiddellik</string>
+    <string name="send_delay_3seconds">3 sekondes</string>
+    <string name="send_delay_5seconds">5 sekondes</string>
+    <string name="send_delay_10seconds">10 sekondes</string>
+    <string name="send_delay_20seconds">20 sekondes</string>
+    <string name="send_delay_30seconds">30 sekondes</string>
+    <string name="sent_countdown">Boodskap aflewering wag tydperk</string>
 </resources>

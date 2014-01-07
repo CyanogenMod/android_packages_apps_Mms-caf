@@ -18,4 +18,8 @@
         <item quantity="one">Een sjabloon sal verwyder word.</item>
         <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> sjablone sal verwyder word.</item>
     </plurals>
+    <plurals name="remaining_delay_time">
+        <item quantity="one">Stuur oor 1 sekonde, raak om te kanselleer.</item>
+        <item quantity="other">Stuur oor %1$d sekondes, raak om te kanselleer.</item>
+    </plurals>
 </resources>

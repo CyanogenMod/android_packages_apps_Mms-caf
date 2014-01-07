@@ -28,11 +28,4 @@
       <item>11</item>
       <item>12 (strengste)</item>
     </string-array>
-    <string-array name="pref_mms_notification_vibrate_pattern_entries">
-        <item>Normaal</item>
-        <item>Medium vibrasie</item>
-        <item>Lang vibrasie</item>
-        <item>Veelvuldige kort</item>
-        <item>Veelvuldige lang</item>
-    </string-array>
 </resources>
