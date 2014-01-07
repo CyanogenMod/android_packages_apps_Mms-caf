@@ -328,6 +328,14 @@
             </intent-filter>
         </receiver>
 
+        <!-- Require the sender to have this permission to prevent third party spoofing -->
+        <receiver android:name=".transaction.PrivilegedCbReceiver"
+            android:permission="android.permission.RECEIVE_EMERGENCY_BROADCAST">
+            <intent-filter>
+                <action android:name="android.cellbroadcastreceiver.CB_AREA_INFO_RECEIVED" />
+            </intent-filter>
+        </receiver>
+
         <!-- Catch-all receiver for broadcasts that don't have associated security -->
         <receiver android:name=".transaction.SmsReceiver"
              android:permission="android.permission.SEND_SMS">
