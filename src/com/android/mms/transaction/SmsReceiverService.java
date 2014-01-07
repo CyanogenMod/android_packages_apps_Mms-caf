@@ -36,6 +36,7 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SqliteWrapper;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -47,7 +48,9 @@ import android.provider.Telephony.Sms;
 import android.provider.Telephony.Sms.Inbox;
 import android.provider.Telephony.Sms.Intents;
 import android.provider.Telephony.Sms.Outbox;
+import android.telephony.CellBroadcastMessage;
 import android.telephony.ServiceState;
+import android.telephony.SmsCbMessage;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.telephony.SubscriptionManager;
@@ -104,6 +107,15 @@ public class SmsReceiverService extends Service {
         Sms.PHONE_ID,   //5
         SMS_PRIORITY,   //6
     };
+
+    static final String CB_AREA_INFO_RECEIVED_ACTION =
+            "android.cellbroadcastreceiver.CB_AREA_INFO_RECEIVED";
+
+    /* Cell Broadcast for channel 50 */
+    static final int CB_CHANNEL_50 = 50;
+
+    /* Cell Broadcast for channel 60 */
+    static final int CB_CHANNEL_60 = 60;
 
     public Handler mToastHandler = new Handler();
 
@@ -216,6 +228,8 @@ public class SmsReceiverService extends Service {
                     handleSmsSent(intent, error);
                 } else if (SMS_DELIVER_ACTION.equals(action)) {
                     handleSmsReceived(intent, error);
+                } else if (CB_AREA_INFO_RECEIVED_ACTION.equals(action)) {
+                    handleCbSmsReceived(intent, error);
                 } else if (ACTION_BOOT_COMPLETED.equals(action)) {
                     handleBootCompleted();
                 } else if (TelephonyIntents.ACTION_SERVICE_STATE_CHANGED.equals(action)) {
@@ -451,6 +465,34 @@ public class SmsReceiverService extends Service {
             Log.d(TAG, "handleSmsReceived messageUri: " + messageUri + " threadId: " + threadId);
             MessagingNotification.blockingUpdateNewMessageIndicator(this, threadId, false);
         }
+    }
+
+    private void handleCbSmsReceived(Intent intent, int error) {
+        Bundle extras = intent.getExtras();
+        if (extras == null) {
+            return;
+        }
+        CellBroadcastMessage cbMessage = (CellBroadcastMessage) extras.get("message");
+        if (cbMessage == null) {
+            return;
+        }
+        boolean isMSim = TelephonyManager.getDefault().isMultiSimEnabled();
+        String country = "";
+        if (isMSim) {
+            country = TelephonyManager.getDefault().getSimCountryIso(cbMessage.getSubId());
+        } else {
+            country = TelephonyManager.getDefault().getSimCountryIso();
+        }
+        int serviceCategory = cbMessage.getServiceCategory();
+        if ("in".equals(country) && (serviceCategory == CB_CHANNEL_50 ||
+                serviceCategory == CB_CHANNEL_60)) {
+            Uri cbMessageUri = storeCbMessage(this, cbMessage, error);
+            if (cbMessageUri != null) {
+                long threadId = MessagingNotification.getSmsThreadId(this, cbMessageUri);
+                // Called off of the UI thread so ok to block.
+                MessagingNotification.blockingUpdateNewMessageIndicator(this, threadId, false);
+            }
+        }
 
     }
 
@@ -682,6 +724,36 @@ public class SmsReceiverService extends Service {
 
         ContentResolver resolver = context.getContentResolver();
 
+        Uri insertedUri = SqliteWrapper.insert(context, resolver, Inbox.CONTENT_URI, values);
+
+        // Now make sure we're not over the limit in stored messages
+        Recycler.getSmsRecycler().deleteOldMessagesByThreadId(context, threadId);
+        MmsWidgetProvider.notifyDatasetChanged(context);
+
+        return insertedUri;
+    }
+
+    private Uri storeCbMessage(Context context, CellBroadcastMessage sms, int error) {
+        // Store the broadcast message in the content provider.
+        ContentValues values = new ContentValues();
+        values.put(Sms.ERROR_CODE, error);
+        values.put(Sms.PHONE_ID, SubscriptionManager.getPhoneId(sms.getSubId()));
+
+        // CB messages are concatenated by telephony framework into a single
+        // message in intent, so grab the body directly.
+        values.put(Inbox.BODY, sms.getMessageBody());
+
+        // Make sure we've got a thread id so after the insert we'll be able to
+        // delete excess messages.
+        String address = getString(R.string.cell_broadcast_sender)
+                + Integer.toString(sms.getServiceCategory());
+        values.put(Sms.ADDRESS, address);
+        Long threadId = Conversation.getOrCreateThreadId(context, address);
+        values.put(Sms.THREAD_ID, threadId);
+        values.put(Inbox.READ, 0);
+        values.put(Inbox.SEEN, 0);
+
+        ContentResolver resolver = context.getContentResolver();
         Uri insertedUri = SqliteWrapper.insert(context, resolver, Inbox.CONTENT_URI, values);
 
         // Now make sure we're not over the limit in stored messages
