@@ -62,6 +62,9 @@
     <!-- Subject to display in the conversation list if there is no subject -->
     <string name="no_subject_view">(No subject)</string>
 
+    <!-- Address to display when message is a cell broadcast on channel 50 or 60  -->
+    <string name="cell_broadcast_sender">Cell Broadcast Channel</string>
+
     <!-- Name of the local user when displaying sender of an outgoing message (personal pronoun) -->
     <string name="messagelist_sender_self">Me</string>
     <!-- Context menu item on an individual message for viewing an attached slideshow -->
