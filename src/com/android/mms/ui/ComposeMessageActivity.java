@@ -36,9 +36,11 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.Set;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -377,6 +379,14 @@ public class ComposeMessageActivity extends Activity
     // keys for extras and icicles
     public final static String THREAD_ID = "thread_id";
     private final static String RECIPIENTS = "recipients";
+    private boolean mIsPickingContact = false;
+    // List for contacts picked from People.
+    private ContactList mRecipientsPickList = null;
+    /**
+    * Whether the recipients is picked from Contacts
+    */
+    private boolean mIsProcessPickedRecipients = false;
+    private int mExistsRecipientsCount = 0;
 
     private boolean mIsMessageChanged = false;
 
@@ -930,28 +940,43 @@ public class ComposeMessageActivity extends Activity
                 return;
             }
 
-            List<String> numbers = mRecipientsEditor.getNumbers();
-            mWorkingMessage.setWorkingRecipients(numbers);
-            boolean multiRecipients = numbers != null && numbers.size() > 1;
-            mMsgListAdapter.setIsGroupConversation(multiRecipients);
-            mWorkingMessage.setHasMultipleRecipients(multiRecipients, true);
+            mWorkingMessage.setWorkingRecipients(mRecipientsEditor.getNumbers());
             mWorkingMessage.setHasEmail(mRecipientsEditor.containsEmail(), true);
 
             checkForTooManyRecipients();
 
-            // Walk backwards in the text box, skipping spaces.  If the last
-            // character is a comma, update the title bar.
-            for (int pos = s.length() - 1; pos >= 0; pos--) {
-                char c = s.charAt(pos);
-                if (c == ' ')
-                    continue;
+            // If pick recipients from Contacts,
+            // then only update title once when process finished
+            if (mIsProcessPickedRecipients) {
+                 return;
+            }
 
-                if (c == ',') {
+            if (mRecipientsPickList != null) {
+                // Update UI with mRecipientsPickList, which is picked from
+                // People.
+                updateTitle(mRecipientsPickList);
+                mRecipientsPickList = null;
+            } else {
+                // If we have gone to zero recipients, we need to update the title.
+                if (TextUtils.isEmpty(s.toString().trim())) {
                     ContactList contacts = mRecipientsEditor.constructContactsFromInput(false);
                     updateTitle(contacts);
                 }
 
-                break;
+                // Walk backwards in the text box, skipping spaces. If the last
+                // character is a comma, update the title bar.
+                for (int pos = s.length() - 1; pos >= 0; pos--) {
+                    char c = s.charAt(pos);
+                    if (c == ' ') continue;
+
+                    if (c == ',') {
+                        ContactList contacts = mRecipientsEditor
+                                .constructContactsFromInput(false);
+                        updateTitle(contacts);
+                    }
+
+                    break;
+                }
             }
 
             // If we have gone to zero recipients, disable send button.
@@ -1010,6 +1035,10 @@ public class ComposeMessageActivity extends Activity
 
         @Override
         public boolean onMenuItemClick(MenuItem item) {
+            if (null == mRecipient) {
+                return false;
+            }
+
             switch (item.getItemId()) {
                 // Context menu handlers for the recipients editor.
                 case MENU_VIEW_CONTACT: {
@@ -1996,6 +2025,8 @@ public class ComposeMessageActivity extends Activity
         }
         mDebugRecipients = list.serialize();
 
+        // the cnt is already be added recipients count
+        mExistsRecipientsCount = cnt;
         ActionBar actionBar = getActionBar();
         actionBar.setTitle(title);
         actionBar.setSubtitle(subTitle);
@@ -2482,6 +2513,7 @@ public class ComposeMessageActivity extends Activity
         //      there is out of our control.
         //Contact.startPresenceObserver();
 
+        mIsPickingContact = false;
         addRecipientsListeners();
 
         if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
@@ -3413,20 +3445,42 @@ public class ComposeMessageActivity extends Activity
     private void processPickResult(final Intent data) {
         // The EXTRA_PHONE_URIS stores the phone's urls that were selected by user in the
         // multiple phone picker.
-        final Parcelable[] uris =
-            data.getParcelableArrayExtra(Intents.EXTRA_PHONE_URIS);
+        Bundle bundle = data.getExtras().getBundle("result");
+        final Set<String> keySet = bundle.keySet();
+        final int recipientCount = (keySet != null) ? keySet.size() : 0;
 
-        final int recipientCount = uris != null ? uris.length : 0;
-
+        // If total recipients count > recipientLimit,
+        // then forbid add reipients to RecipientsEditor
         final int recipientLimit = MmsConfig.getRecipientLimit();
-        if (recipientLimit != Integer.MAX_VALUE && recipientCount > recipientLimit) {
+        int totalRecipientsCount = mExistsRecipientsCount + recipientCount;
+        if (recipientLimit != Integer.MAX_VALUE && totalRecipientsCount > recipientLimit) {
             new AlertDialog.Builder(this)
-                    .setMessage(getString(R.string.too_many_recipients, recipientCount, recipientLimit))
-                    .setPositiveButton(android.R.string.ok, null)
+                    .setMessage(getString(R.string.too_many_recipients, totalRecipientsCount,
+                            recipientLimit))
+                    .setPositiveButton(android.R.string.ok, new OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // if already exists some recipients,
+                            // then new pick recipients with exists recipients count
+                            // can't more than recipient limit count.
+                            int newPickRecipientsCount = recipientLimit - mExistsRecipientsCount;
+                            if (newPickRecipientsCount <= 0) {
+                                return;
+                            }
+                            processAddRecipients(keySet, newPickRecipientsCount);
+                        }
+                    })
+                    .setNegativeButton(android.R.string.cancel, null)
                     .create().show();
             return;
         }
 
+        processAddRecipients(keySet, recipientCount);
+    }
+
+    private void processAddRecipients(final Set<String> keySet, final int newPickRecipientsCount) {
+        // if process pick result that is pick recipients from Contacts
+        mIsProcessPickedRecipients = true;
         final Handler handler = new Handler();
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle(getText(R.string.pick_too_many_recipients));
@@ -3447,20 +3501,59 @@ public class ComposeMessageActivity extends Activity
         new Thread(new Runnable() {
             @Override
             public void run() {
+                Uri[] newuris = new Uri[newPickRecipientsCount];
                 final ContactList list;
                  try {
-                    list = ContactList.blockingGetByUris(uris);
+                    Iterator<String> it = keySet.iterator();
+                    int i = 0;
+                    while (it.hasNext()) {
+                        String id = it.next();
+                        newuris[i++] = ContentUris.withAppendedId(Phone.CONTENT_URI,
+                                Integer.parseInt(id));
+                        if (i == newPickRecipientsCount) {
+                            break;
+                        }
+                    }
+                    list = ContactList.blockingGetByUris(newuris);
                 } finally {
                     handler.removeCallbacks(showProgress);
-                    progressDialog.dismiss();
+                }
+                if (mRecipientsEditor != null) {
+                    ContactList exsitList = mRecipientsEditor.constructContactsFromInput(true);
+                    // Remove the repeat recipients.
+                  if(exsitList.equals(list)){
+                    exsitList.clear();
+                    list.addAll(0, exsitList);
+                  }else{
+                    list.removeAll(exsitList);
+                    list.addAll(0, exsitList);
+                     }
                 }
                 // TODO: there is already code to update the contact header widget and recipients
                 // editor if the contacts change. we can re-use that code.
                 final Runnable populateWorker = new Runnable() {
                     @Override
                     public void run() {
+                        // We must remove this listener before dealing with the contact list.
+                        // Because the listener will take a lot of time, this will cause an ANR.
+                        mRecipientsEditor.removeTextChangedListener(mRecipientsWatcher);
                         mRecipientsEditor.populate(list);
+                        // Set value for mRecipientsPickList and
+                        // mRecipientsWatcher will update the UI.
+                        mRecipientsPickList = list;
                         updateTitle(list);
+                        // When we finish dealing with the conatct list, the
+                        // RecipientsEditor will post the runnable "postHandlePendingChips"
+                        // to the message queue, then we add the TextChangedListener.
+                        // The mRecipientsWatcher will be call while UI thread deal
+                        // with the "postHandlePendingChips" runnable.
+                        mRecipientsEditor.addTextChangedListener(mRecipientsWatcher);
+
+                        // if process finished, then dismiss the progress dialog
+                        progressDialog.dismiss();
+
+                        // if populate finished, then recipients pick process end
+                        mIsProcessPickedRecipients = false;
                     }
                 };
                 handler.post(populateWorker);
@@ -3851,23 +3944,17 @@ public class ComposeMessageActivity extends Activity
     }
 
     private void launchMultiplePhonePicker() {
-        Intent intent = new Intent(Intents.ACTION_GET_MULTIPLE_PHONES);
-        intent.addCategory("android.intent.category.DEFAULT");
-        intent.setType(Phone.CONTENT_TYPE);
-        // We have to wait for the constructing complete.
-        ContactList contacts = mRecipientsEditor.constructContactsFromInput(true);
-        int urisCount = 0;
-        Uri[] uris = new Uri[contacts.size()];
-        urisCount = 0;
-        for (Contact contact : contacts) {
-            if (Contact.CONTACT_METHOD_TYPE_PHONE == contact.getContactMethodType()) {
-                    uris[urisCount++] = contact.getPhoneUri();
-            }
+        Intent intent = new Intent("com.android.contacts.action.MULTI_PICK",Contacts.CONTENT_URI);
+        String exsitNumbers = mRecipientsEditor.getExsitNumbers();
+        if (!TextUtils.isEmpty(exsitNumbers)) {
+            intent.putExtra(Intents.EXTRA_PHONE_URIS, exsitNumbers);
         }
-        if (urisCount > 0) {
-            intent.putExtra(Intents.EXTRA_PHONE_URIS, uris);
+        try {
+            mIsPickingContact = true;
+            startActivityForResult(intent, REQUEST_CODE_PICK);
+        } catch (ActivityNotFoundException ex) {
+            Toast.makeText(this, R.string.contact_app_not_found, Toast.LENGTH_SHORT).show();
         }
-        startActivityForResult(intent, REQUEST_CODE_PICK);
     }
 
     @Override
