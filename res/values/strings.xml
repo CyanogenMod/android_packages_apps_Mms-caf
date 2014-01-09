@@ -879,6 +879,8 @@
     <!-- Banner in conversation list for making Messaging the default SMS app -->
     <string name="banner_sms_promo_title_initial">Messaging is not your SMS app</string>
     <string name="banner_sms_promo_title_application"><xliff:g id="appName">%s</xliff:g> is your SMS app</string>
+    <!-- select contact group -->
+    <string name="no_contact_group">No group</string>
     <string name="banner_sms_promo_message">You can change this in Settings</string>
 
     <!-- title of mailboxmessagecontent -->

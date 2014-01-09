@@ -503,4 +503,6 @@
     <string name="sms_phone_capacity">"短信容量:"</string>
     <string name="mms_phone_used">"已用彩信:"</string>
     <string name="mms_phone_capacity">"彩信容量:"</string>
+    <!-- select contact group -->
+    <string name="no_contact_group">没有任何群组</string>
 </resources>
