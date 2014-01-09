@@ -227,8 +227,9 @@ public class ComposeMessageActivity extends Activity
     private static final int MENU_SAVE_RINGTONE         = 30;
     private static final int MENU_PREFERENCES           = 31;
     private static final int MENU_GROUP_PARTICIPANTS    = 32;
-    private static final int MENU_RESEND                = 35;
     private static final int MENU_IMPORT_TEMPLATE       = 34;
+    private static final int MENU_RESEND                = 35;
+    private static final int MENU_COPY_EXTRACT_URL      = 36;
 
     private static final int RECIPIENTS_MAX_LENGTH = 312;
 
@@ -1189,20 +1190,33 @@ public class ComposeMessageActivity extends Activity
                 uriString = uriString.substring(sep + 1);
             }
             Uri contactUri = null;
+            String extractedUrl = null;
             boolean knownPrefix = true;
+            boolean isUrl = false;
             if ("mailto".equalsIgnoreCase(prefix))  {
                 contactUri = getContactUriForEmail(uriString);
             } else if ("tel".equalsIgnoreCase(prefix)) {
                 contactUri = getContactUriForPhoneNumber(uriString);
+            } else if ("http".equalsIgnoreCase(prefix) || "https".equalsIgnoreCase(prefix)) {
+                extractedUrl = prefix + ":" + uriString;
+                isUrl = true;
             } else {
                 knownPrefix = false;
             }
-            if (knownPrefix && contactUri == null) {
+            if (knownPrefix && contactUri == null && !isUrl) {
                 Intent intent = ConversationList.createAddContactIntent(uriString);
 
                 String addContactString = getString(R.string.menu_add_address_to_contacts,
                         uriString);
                 menu.add(0, MENU_ADD_ADDRESS_TO_CONTACTS, 0, addContactString)
+                    .setOnMenuItemClickListener(l)
+                    .setIntent(intent);
+            } else if (isUrl) {
+                String copyurl = getString(R.string.menu_copy_url,
+                        extractedUrl);
+                Intent intent = new Intent();
+                intent.putExtra("copyurl", extractedUrl);
+                menu.add(0, MENU_COPY_EXTRACT_URL, 0, copyurl)
                     .setOnMenuItemClickListener(l)
                     .setIntent(intent);
             }
@@ -1625,6 +1639,11 @@ public class ComposeMessageActivity extends Activity
                     lockMessage(mMsgItem, false);
                     return true;
                 }
+
+                case MENU_COPY_EXTRACT_URL:
+                    String copyedUrl = item.getIntent().getStringExtra("copyurl");
+                    copyToClipboard(copyedUrl);
+                    return true;
 
                 default:
                     return false;

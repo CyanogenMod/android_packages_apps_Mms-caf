@@ -854,6 +854,7 @@
     <string name="set_smsc_success">Set the smsc number success</string>
     <string name="set_smsc_confirm_message">Change the smsc may lead to the SMS sending failure, to confirm the change?</string>
 
+    <string name="menu_copy_url">Copy url <xliff:g id="extractedurl">%s</xliff:g></string>
     <string name="storage_warning_title">"Your phone's storage is full"</string>
     <string name="storage_warning_content">"You won't receive new SMS/MMS messages"</string>
     <string name="contact_app_not_found">Can not find Contact application</string>
