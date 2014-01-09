@@ -395,6 +395,9 @@
     <string name="pref_title_wap_push_enabled">"数据服务开关"</string>
     <string name="slot1">"卡1"</string>
     <string name="slot2">"卡2"</string>
+    <string name="contact_app_not_found">"找不到联系人应用"</string>
+    <string name="search_bar_hint">"搜索联系人"</string>
+    <string name="select_all">"全选"</string>
     <string name="pref_summary_wap_push_enabled">"允许接收服务信息"</string>
    <!-- SMSC -->
     <string name="pref_smsc_title">短消息中心设置</string>
@@ -403,9 +406,6 @@
     <string name="set_smsc_error">设置短消息中心号码失败</string>
     <string name="set_smsc_success">设置短消息中心号码成功</string>
     <string name="set_smsc_confirm_message">修改短消息中心号码可能导致短信发送失败，确认修改吗？</string>
-    <string name="contact_app_not_found">"找不到联系人应用"</string>
-    <string name="search_bar_hint">"搜索联系人"</string>
-    <string name="select_all">"全选"</string>
 
 
     <string name="open_wap_push_title">"浏览器信息"</string>
@@ -444,4 +444,6 @@
     <string name="mms_max">最长</string>
     <string name="save_description">在服务器保存时间</string>
     <string name="status_expired">已过期</string>
+    <!-- select contact group -->
+    <string name="no_contact_group">没有任何群组</string>
 </resources>
