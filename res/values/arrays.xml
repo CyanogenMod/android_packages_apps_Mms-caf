@@ -53,4 +53,10 @@
         <item>604800</item>   <!--7*24*60*60 -->
         <item>172800</item>   <!--2*24*60*60 -->
     </string-array>
+
+    <string-array name="number_options">
+        <item>@string/menu_call</item>
+        <item>@string/title_send_message</item>
+        <item>@string/menu_add_to_contacts</item>
+    </string-array>
 </resources>
