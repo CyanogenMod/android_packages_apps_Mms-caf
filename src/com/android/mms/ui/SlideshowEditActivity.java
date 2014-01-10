@@ -38,6 +38,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.model.IModelChangedObserver;
 import com.android.mms.model.Model;
@@ -267,7 +268,7 @@ public class SlideshowEditActivity extends ListActivity {
                     android.R.drawable.ic_menu_delete);
         }
 
-        if(mSlideshowModel.size() < SlideshowEditor.MAX_SLIDE_NUM) {
+        if(mSlideshowModel.size() < MmsConfig.getMaxSlideNumber()) {
             menu.add(0, MENU_ADD_SLIDE, 0, R.string.add_slide).setIcon(
                     R.drawable.ic_menu_add_slide);
         }
@@ -325,7 +326,7 @@ public class SlideshowEditActivity extends ListActivity {
     }
 
     private void adjustAddSlideVisibility() {
-        if (mSlideshowModel.size() >= SlideshowEditor.MAX_SLIDE_NUM) {
+        if (mSlideshowModel.size() >= MmsConfig.getMaxSlideNumber()) {
             mAddSlideItem.setVisibility(View.GONE);
         } else {
             mAddSlideItem.setVisibility(View.VISIBLE);
