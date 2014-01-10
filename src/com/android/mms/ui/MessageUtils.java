@@ -1393,6 +1393,39 @@ public class MessageUtils {
         callBinder(context, METHOD_GET_SMSC, params);
     }
 
+    /**
+     * Return whether the card is activated according to Subscription
+     * used for DSDS
+     */
+    public static boolean isIccCardActivated(int subscription) {
+        TelephonyManager tm = TelephonyManager.getDefault();
+        log("isIccCardActivated subscription " + tm.getSimState(subscription));
+        return (tm.getSimState(subscription) != TelephonyManager.SIM_STATE_ABSENT)
+                    && (tm.getSimState(subscription) != TelephonyManager.SIM_STATE_UNKNOWN);
+    }
+
+    public static Drawable getMultiSimIcon(Context context, int subscription) {
+        if (context == null) {
+            // If the context is null, return 0 as no resource found.
+            return null;
+        }
+
+        /*TypedArray icons = context.getResources().obtainTypedArray(
+            com.android.internal.R.array.sim_icons);
+        String simIconIndex = Settings.System.getString(
+                context.getContentResolver(), PREFERRED_SIM_ICON_INDEX);
+        if (TextUtils.isEmpty(simIconIndex)) {
+            return icons.getDrawable(subscription);
+        } else {
+            String[] indexs = simIconIndex.split(",");
+            if (subscription >= indexs.length) {
+                return null;
+            }
+            return icons.getDrawable(Integer.parseInt(indexs[subscription]));
+        }*/
+        return null;
+    }
+
     private static void log(String msg) {
         Log.d(TAG, "[MsgUtils] " + msg);
     }
@@ -1519,45 +1552,6 @@ public class MessageUtils {
      */
     public static boolean isMultiSimEnabledMms() {
         return TelephonyManager.getDefault().isMultiSimEnabled();
-    }
-
-    /**
-     * Return whether the card is activated according to Subscription
-     * used for DSDS
-     */
-    public static boolean isIccCardActivated(int subscription) {
-        TelephonyManager tm = TelephonyManager.getDefault();
-        if (DEBUG) {
-            Log.d(TAG, "isIccCardActivated subscription " + tm.getSimState(subscription));
-        }
-        return (tm.getSimState(subscription) != TelephonyManager.SIM_STATE_ABSENT)
-                    //&& (tm.getSimState(subscription) != TelephonyManager.SIM_STATE_DEACTIVATED)
-                    && (tm.getSimState(subscription) != TelephonyManager.SIM_STATE_UNKNOWN);
-    }
-
-    /*
-     * @return the SIM icon for the special subscription.
-     */
-    public static Drawable getMultiSimIcon(Context context, int subscription) {
-        if (context == null) {
-            // If the context is null, return 0 as no resource found.
-            return null;
-        }
-
-        /*TypedArray icons = context.getResources().obtainTypedArray(
-            com.android.internal.R.array.sim_icons);
-        String simIconIndex = Settings.System.getString(
-                context.getContentResolver(), PREFERRED_SIM_ICON_INDEX);
-        if (TextUtils.isEmpty(simIconIndex)) {
-            return icons.getDrawable(subscription);
-        } else {
-            String[] indexs = simIconIndex.split(",");
-            if (subscription >= indexs.length) {
-                return null;
-            }
-            return icons.getDrawable(Integer.parseInt(indexs[subscription]));
-        }*/
-        return null;
     }
 
     private static boolean isCDMAPhone(int subscription) {

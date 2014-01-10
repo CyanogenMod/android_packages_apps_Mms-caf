@@ -170,6 +170,8 @@
 
     <!-- Button in conversation screen for sending the SMS message currently being composed (imperative verb) -->
     <string name="send">Send</string>
+    <string name="send_by_slot1">Send by slot1</string>
+    <string name="send_by_slot2">Send by slot2</string>
     <!-- Text to appear directly below the "Send" text on the SMS/MMS send button. The "MMS" text is on a second line in a smaller font. This is similar to saying "Send (mms)". -->
     <string name="mms">MMS</string>
     <!-- Content description for the send button when sending an mms (imperative verb) -->
