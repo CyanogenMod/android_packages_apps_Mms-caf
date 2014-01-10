@@ -98,4 +98,12 @@
     <string name="menu_mobile">Csak mobilszámok</string>
     <string name="menu_groups">Csoportok megjelenítése</string>
     <string name="fastscroll_index_groups">Cs</string>
+    <string name="pref_title_send_delay">Küldés késleltetése</string>
+    <string name="send_delay_immediate">Küldés azonnal</string>
+    <string name="send_delay_3seconds">3 másodperc</string>
+    <string name="send_delay_5seconds">5 másodperc</string>
+    <string name="send_delay_10seconds">10 másodperc</string>
+    <string name="send_delay_20seconds">20 másodperc</string>
+    <string name="send_delay_30seconds">30 másodperc</string>
+    <string name="sent_countdown">Üzenetkézbesítési visszaszámlálás</string>
 </resources>

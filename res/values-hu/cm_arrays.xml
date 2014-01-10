@@ -28,11 +28,4 @@
         <item>11</item>
         <item>12 (Pontosabb)</item>
     </string-array>
-    <string-array name="pref_mms_notification_vibrate_pattern_entries">
-        <item>Normál</item>
-        <item>Közepes</item>
-        <item>Hosszú</item>
-        <item>Többszöri rövid</item>
-        <item>Többszöri hosszú</item>
-    </string-array>
 </resources>
