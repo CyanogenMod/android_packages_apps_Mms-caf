@@ -146,6 +146,8 @@ public class MessageUtils {
     public static final int ALL_RECIPIENTS_EMPTY   = -2;
     // Save the thread id for same recipient forward mms
     public static ArrayList<Long> sSameRecipientList = new ArrayList<Long>();
+    private static final String[] WEB_SCHEMA =
+                        new String[] { "http://", "https://", "rtsp://" };
 
     static {
         for (int i = 0; i < NUMERIC_CHARS_SUGAR.length; i++) {
@@ -1356,4 +1358,14 @@ public class MessageUtils {
         }
         return false;
     }
+
+    public static boolean isWebUrl(String url) {
+        for (String schema : WEB_SCHEMA) {
+            if (url.startsWith(schema)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

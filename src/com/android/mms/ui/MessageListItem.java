@@ -21,8 +21,12 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SqliteWrapper;
@@ -33,6 +37,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Browser;
 import android.provider.ContactsContract.Profile;
 import android.provider.Telephony.Sms;
 import android.provider.Telephony.Mms;
@@ -53,6 +58,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -71,6 +77,7 @@ import com.android.mms.transaction.Transaction;
 import com.android.mms.transaction.TransactionBundle;
 import com.android.mms.transaction.TransactionService;
 import com.android.mms.ui.MessageUtils;
+import com.android.mms.ui.WwwContextMenuActivity;
 import com.android.mms.util.DownloadManager;
 import com.android.mms.util.ItemLoadedCallback;
 import com.android.mms.util.MultiSimUtility;
@@ -757,7 +764,12 @@ public class MessageListItem extends LinearLayout implements
                         .setCancelable(true)
                         .show();
             } else {
-                spans[0].onClick(mBodyTextView);
+                String url = spans[0].getURL();
+                if (MessageUtils.isWebUrl(url)) {
+                    Intent intent = new Intent(mContext, WwwContextMenuActivity.class);
+                    intent.setData(Uri.parse(url));
+                    mContext.startActivity(intent);
+                }
             }
         } else {
             ArrayAdapter<URLSpan> adapter =
@@ -768,10 +780,9 @@ public class MessageListItem extends LinearLayout implements
                     try {
                         URLSpan span = getItem(position);
                         String url = span.getURL();
-                        Uri uri = Uri.parse(url);
                         TextView tv = (TextView) v;
                         Drawable d = mContext.getPackageManager().getActivityIcon(
-                                new Intent(Intent.ACTION_VIEW, uri));
+                                new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
                         if (d != null) {
                             d.setBounds(0, 0, d.getIntrinsicHeight(), d.getIntrinsicHeight());
                             tv.setCompoundDrawablePadding(10);
@@ -802,7 +813,11 @@ public class MessageListItem extends LinearLayout implements
                 @Override
                 public final void onClick(DialogInterface dialog, int which) {
                     if (which >= 0) {
-                        spans[which].onClick(mBodyTextView);
+                        String url = spans[which].getURL();
+                        Intent intent = new Intent(mContext, WwwContextMenuActivity.class);
+                        intent.setData(Uri.parse(url));
+                        mContext.startActivity(intent);
+
                     }
                     dialog.dismiss();
                 }
