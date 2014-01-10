@@ -61,6 +61,7 @@ import com.android.mms.R;
 import com.android.mms.data.Contact;
 import com.android.mms.data.Conversation;
 import com.android.mms.ui.ClassZeroActivity;
+import com.android.mms.ui.MessageUtils;
 import com.android.mms.util.Recycler;
 import com.android.mms.util.SendingProgressTokenManager;
 import com.android.mms.widget.MmsWidgetProvider;
@@ -392,6 +393,8 @@ public class SmsReceiverService extends Service {
                     ", address: " + sms.getOriginatingAddress() +
                     ", body: " + sms.getMessageBody());
         }
+
+            MessageUtils.checkIsPhoneMessageFull(this);
 
         if (messageUri != null) {
             long threadId = MessagingNotification.getSmsThreadId(this, messageUri);
