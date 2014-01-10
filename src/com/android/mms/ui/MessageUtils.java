@@ -99,6 +99,7 @@ public class MessageUtils {
         void onResizeResult(PduPart part, boolean append);
     }
 
+
     private static final boolean DEBUG = false;
     // add the defination of subscription
     public static final int SUB_INVALID = -1;  //  for single card product
@@ -107,6 +108,14 @@ public class MessageUtils {
     public static final String SUB_KEY  = MSimConstants.SUBSCRIPTION_KEY; // subscription
     private static final int SELECT_SYSTEM = 0;
     private static final int SELECT_EXTERNAL = 1;
+    // add manage mode of multi select action
+    public static final int INVALID_MODE= -1;
+    public static final int FORWARD_MODE = 0;
+    public static final int SIM_MESSAGE_MODE = 1;
+    // add for obtaining icc uri when copying messages to card
+    public static final Uri ICC_URI = Uri.parse("content://sms/icc");
+    public static final Uri ICC1_URI = Uri.parse("content://sms/icc1");
+    public static final Uri ICC2_URI = Uri.parse("content://sms/icc2");
     private static final String TAG = LogTag.TAG;
     private static final String PREFERRED_SIM_ICON_INDEX = "preferred_sim_icon_index";
     private static String sLocalNumber;
@@ -1437,5 +1446,19 @@ public class MessageUtils {
 
         Log.d(TAG, "getSmsMessageCount : msgCount = " + msgCount);
         return msgCount;
+    }
+
+    /**
+     * Return the icc uri according to subscription
+     */
+    public static Uri getIccUriBySubscription(int subscription) {
+        switch (subscription) {
+            case MSimConstants.SUB1:
+                return ICC1_URI;
+            case MSimConstants.SUB2:
+                return ICC2_URI;
+            default:
+                return ICC_URI;
+        }
     }
 }

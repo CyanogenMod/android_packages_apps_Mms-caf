@@ -56,4 +56,11 @@
     <integer name="max_sms_message_count">-1</integer>
     <!-- configuration for add vCard to MMS -->
     <bool name="config_vcard">false</bool>
+
+    <!-- configuration for forwarding conversaction -->
+    <bool name="config_forwardconv">false</bool>
+    <!-- configuration for batch deleting messages -->
+    <bool name="config_batchdelete">false</bool>
+    <!-- configuration for showing messages by mailbox -->
+    <bool name="config_mailbox_enable">false</bool>
 </resources>

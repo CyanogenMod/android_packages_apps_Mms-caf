@@ -44,6 +44,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.internal.telephony.MSimConstants;
 import com.android.mms.R;
 import com.android.mms.transaction.MessagingNotification;
 
@@ -59,11 +60,13 @@ public class ManageSimMessages extends Activity
     private static final int MENU_VIEW = 2;
     private static final int OPTION_MENU_DELETE_ALL = 0;
 
+    private static final int SUB_INVALID = -1;
+
     private static final int SHOW_LIST = 0;
     private static final int SHOW_EMPTY = 1;
     private static final int SHOW_BUSY = 2;
     private int mState;
-
+    private int mSubscription;
 
     private ContentResolver mContentResolver;
     private Cursor mCursor = null;
@@ -85,6 +88,7 @@ public class ManageSimMessages extends Activity
     @Override
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+        mSubscription = getIntent().getIntExtra(MSimConstants.SUBSCRIPTION_KEY, SUB_INVALID);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
         mContentResolver = getContentResolver();
@@ -297,13 +301,26 @@ public class ManageSimMessages extends Activity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case OPTION_MENU_DELETE_ALL:
-                confirmDeleteDialog(new OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        updateState(SHOW_BUSY);
-                        deleteAllFromSim();
-                        dialog.dismiss();
-                    }
-                }, R.string.confirm_delete_all_SIM_messages);
+                if (getResources().getBoolean(R.bool.config_batchdelete)) {
+                    Intent intent = new Intent(this, ManageMultiSelectAction.class);
+                    intent.putExtra(MessageUtils.SUB_KEY, mSubscription);
+                    intent.putExtra(ComposeMessageActivity.MANAGE_MODE,
+                            MessageUtils.SIM_MESSAGE_MODE);
+                    startActivity(intent);
+                } else {
+                    confirmDeleteDialog(new OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            updateState(SHOW_BUSY);
+                            new Thread() {
+                                @Override
+                                public void run() {
+                                    deleteAllFromSim();
+                                }
+                            }.start();
+                            dialog.dismiss();
+                        }
+                    }, R.string.confirm_delete_all_SIM_messages);
+                };
                 break;
 
             case android.R.id.home:
