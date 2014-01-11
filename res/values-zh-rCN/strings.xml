@@ -382,8 +382,12 @@
     <string name="pref_title_edit_signature">编辑短信签名</string>
     <string name="normal_show">普通模式查看</string>
     <string name="cannot_play">无法播放该幻灯片</string>
-    <string name="pref_wap_push_title">"自动推送服务开关"</string>
+    <string name="operate_success">"操作成功！"</string>
+    <string name="operate_failure">"操作失败！"</string>
+    <string name="menu_reply">"回复"</string>
     <string name="pref_title_wap_push_enabled">"数据服务开关"</string>
+    <string name="slot1">"卡1"</string>
+    <string name="slot2">"卡2"</string>
     <string name="pref_summary_wap_push_enabled">"允许接收服务信息"</string>
    <!-- SMSC -->
     <string name="pref_smsc_title">短消息中心设置</string>
@@ -397,4 +401,29 @@
     <string name="select_all">"全选"</string>
 
     <string name="menu_copy_url">"复制网址 <xliff:g id="extractedurl">%s</xliff:g>"</string>
+    <string name="confirm_delete_selected_messages">选中的信息将被删除</string>
+    <!-- menu item of mailboxmessagecontent -->
+    <string name="menu_load_push">载入</string>
+    <string name="menu_delete_msg">删除</string>
+    <!-- toast for send result -->
+    <string name="send_failure">发送失败！</string>
+    <string name="send_success">发送成功！</string>
+    <!-- title of mailboxmessagecontent -->
+    <string name="message_detail">信息详情</string>
+    <string name="select_messages">选择信息</string>
+    <string name="no_message">无信息</string>
+    <string name="change_mode">切换模式</string>
+    <!-- Spinner item of box type in mailbox-mode -->
+    <string name="box_type_select">选择信箱</string>
+    <string name="type_inbox">收件箱</string>
+    <string name="type_sent">已发信息</string>
+    <string name="type_outbox">发件箱</string>
+    <string name="type_draft">草稿</string>
+    <!-- Spinner item of slot type in mailbox-mode -->
+    <string name="slot_type_select">选择卡槽</string>
+    <string name="type_all">全部</string>
+    <string name="type_slot1">卡1</string>
+    <string name="type_slot2">卡2</string>
+    <!-- add for showing slot type in MailBoxMessageContent -->
+    <string name="slot_type">卡槽 : %s</string>
 </resources>
