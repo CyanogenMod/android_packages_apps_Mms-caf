@@ -3459,8 +3459,11 @@ public class ComposeMessageActivity extends Activity
                 break;
 
             case REQUEST_CODE_ATTACH_SOUND: {
+                // Attempt to add the audio to the  attachment.
                 Uri uri = (Uri) data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
-                if (Settings.System.DEFAULT_RINGTONE_URI.equals(uri)) {
+                if (uri == null) {
+                    uri = data.getData();
+                } else if (Settings.System.DEFAULT_RINGTONE_URI.equals(uri)) {
                     break;
                 }
                 addAudio(uri, false);
