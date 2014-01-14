@@ -58,7 +58,7 @@ public class ImageModel extends RegionMediaModel {
      * These are the image content types that MMS supports. Anything else needs to be transcoded
      * into one of these content types before being sent over MMS.
      */
-    private static final Set<String> SUPPORTED_MMS_IMAGE_CONTENT_TYPES =
+    protected static final Set<String> SUPPORTED_MMS_IMAGE_CONTENT_TYPES =
         new HashSet<String>(Arrays.asList(new String[] {
                 "image/jpeg",
             }));

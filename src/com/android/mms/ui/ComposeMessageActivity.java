@@ -3434,7 +3434,8 @@ public class ComposeMessageActivity extends Activity
 
     public static long computeAttachmentSizeLimit(SlideshowModel slideShow, int currentSlideSize) {
         // Computer attachment size limit. Subtract 1K for some text.
-        long sizeLimit = MmsConfig.getMaxMessageSize() - SlideshowModel.SLIDESHOW_SLOP;
+        long sizeLimit = MmsConfig.getMaxMessageSize() - SlideshowModel.SLIDESHOW_SLOP -
+                slideShow.getTotalTextMessageSize();
         if (slideShow != null) {
             sizeLimit -= slideShow.getCurrentMessageSize();
 
@@ -3531,6 +3532,7 @@ public class ComposeMessageActivity extends Activity
                         mWorkingMessage = newMessage;
                         mWorkingMessage.setConversation(mConversation);
                         updateThreadIdIfRunning();
+                        updateMmsSizeIndicator();
                         drawTopPanel(false);
                         drawBottomPanel();
                         updateSendButtonState();
@@ -3609,6 +3611,20 @@ public class ComposeMessageActivity extends Activity
                 break;
         }
     }
+
+    private void updateMmsSizeIndicator() {
+        mAttachmentEditorHandler.post(mUpdateMmsSizeIndRunnable);
+    }
+
+    private Runnable mUpdateMmsSizeIndRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mWorkingMessage.getSlideshow() != null) {
+                mWorkingMessage.getSlideshow().updateTotalMessageSize();
+            }
+            mAttachmentEditor.update(mWorkingMessage);
+        }
+    };
 
     /**
      * Set newWorkingMessage's subject from mWorkingMessage. If we create a new
@@ -3769,6 +3785,7 @@ public class ComposeMessageActivity extends Activity
                 }
             }
 
+            updateMmsSizeIndicator();
             handleAddAttachmentError(result, R.string.type_picture);
         }
     };
@@ -3845,6 +3862,8 @@ public class ComposeMessageActivity extends Activity
                     uri, mAttachmentEditorHandler, mResizeImageCallback, append);
             return;
         }
+
+        updateMmsSizeIndicator();
         handleAddAttachmentError(result, R.string.type_picture);
     }
 
@@ -3964,6 +3983,7 @@ public class ComposeMessageActivity extends Activity
                         Parcelable uri = uris.get(i);
                         addAttachment(mimeType, (Uri) uri, true);
                     }
+                    updateMmsSizeIndicator();
                 }
             }, null, R.string.adding_attachments_title);
             return true;
@@ -4175,6 +4195,9 @@ public class ComposeMessageActivity extends Activity
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (mWorkingMessage.requiresMms()) {
+                mAttachmentEditor.onTextChangeForMms(s);
+            }
             // This is a workaround for bug 1609057.  Since onUserInteraction() is
             // not called when the user touches the soft keyboard, we pretend it was
             // called when textfields changes.  This should be removed when the bug
@@ -4266,15 +4289,20 @@ public class ComposeMessageActivity extends Activity
 
         mBottomPanel = findViewById(R.id.bottom_panel);
         mTextEditor = (EditText) findViewById(R.id.embedded_text_editor);
-        mTextEditor.setOnEditorActionListener(this);
-        mTextEditor.addTextChangedListener(mTextEditorWatcher);
-        mTextEditor.setFilters(new InputFilter[] {
-                new LengthFilter(MmsConfig.getMaxTextLimit())});
         mTextCounter = (TextView) findViewById(R.id.text_counter);
         mSendButtonMms = (TextView) findViewById(R.id.send_button_mms);
         mSendButtonSms = (ImageButton) findViewById(R.id.send_button_sms);
         mSendButtonMms.setOnClickListener(this);
         mSendButtonSms.setOnClickListener(this);
+        mTextEditor.setOnEditorActionListener(this);
+        mTextEditor.addTextChangedListener(mTextEditorWatcher);
+        if (getResources().getInteger(R.integer.limit_count) == 0) {
+            mTextEditor.setFilters(new InputFilter[] {
+                    new LengthFilter(MmsConfig.getMaxTextLimit())});
+        } else if (getResources().getInteger(R.integer.slide_text_limit_size) != 0) {
+            mTextEditor.setFilters(new InputFilter[] {
+                    new LengthFilter(getResources().getInteger(R.integer.slide_text_limit_size))});
+        }
         mTopPanel = findViewById(R.id.recipients_subject_linear);
         mTopPanel.setFocusable(false);
         mAttachmentEditor = (AttachmentEditor) findViewById(R.id.attachment_editor);
@@ -4392,6 +4420,7 @@ public class ComposeMessageActivity extends Activity
                 new Runnable() {
                     @Override
                     public void run() {
+                        updateMmsSizeIndicator();
                         // It decides whether or not to display the subject editText view,
                         // according to the situation whether there's subject
                         // or the editText view is visible before leaving it.
@@ -4462,7 +4491,30 @@ public class ComposeMessageActivity extends Activity
         return recipientCount;
     }
 
+    private boolean checkMessageSizeExceeded(){
+        int messageSizeLimit = MmsConfig.getMaxMessageSize();
+        int mmsCurrentSize = 0;
+        if (mWorkingMessage.getSlideshow() != null) {
+            mmsCurrentSize += mWorkingMessage.getSlideshow().getTotalMessageSize();
+        } else if (mWorkingMessage.hasText()) {
+            mmsCurrentSize += mWorkingMessage.getText().toString().getBytes().length;
+        }
+        Log.v(TAG, "compose mmsCurrentSize = " + mmsCurrentSize);
+        if (mmsCurrentSize >= messageSizeLimit) {
+            mIsAttachmentErrorOnSend = true;
+            handleAddAttachmentError(WorkingMessage.MESSAGE_SIZE_EXCEEDED,
+                    R.string.type_picture);
+            return true;
+        }
+        return false;
+    }
+
     private void sendMessage(boolean bCheckEcmMode) {
+        // Check message size, if >= max message size, do not send message.
+        if(checkMessageSizeExceeded()){
+            return;
+        }
+
         // If message is sent make the mIsMessageChanged is true
         // when activity is from SearchActivity.
         mIsMessageChanged = mIsFromSearchActivity;

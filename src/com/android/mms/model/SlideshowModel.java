@@ -52,6 +52,7 @@ import com.android.mms.LogTag;
 import com.android.mms.MmsConfig;
 import com.android.mms.dom.smil.parser.SmilXmlSerializer;
 import com.android.mms.layout.LayoutManager;
+import com.android.mms.ui.UriImage;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
 import com.google.android.mms.pdu.GenericPdu;
@@ -75,7 +76,7 @@ public class SlideshowModel extends Model
     private int mTotalMessageSize;      // This is the computed total message size
     private Context mContext;
 
-    // amount of space to leave in a slideshow for text and overhead.
+    // amount of space to leave in a slideshow for overhead.
     public static final int SLIDESHOW_SLOP = 1024;
     private static final int DEFAULT_MEDIA_NUMBER = 1;
     private static final float MIN_PAT_DURATION = (float)1.0;
@@ -369,6 +370,10 @@ public class SlideshowModel extends Model
         mCurrentMessageSize = size;
     }
 
+    public void setTotalMessageSize(int size) {
+        mTotalMessageSize = size;
+    }
+
     // getCurrentMessageSize returns the size of the message, not including resizable attachments
     // such as photos. mCurrentMessageSize is used when adding/deleting/replacing non-resizable
     // attachments (movies, sounds, etc) in order to compute how much size is left in the message.
@@ -385,6 +390,32 @@ public class SlideshowModel extends Model
     // MMS message.
     public int getTotalMessageSize() {
         return mTotalMessageSize;
+    }
+
+    public int getRemainMessageSize() {
+        int totalMediaSize = 0;
+        for (SlideModel slide : mSlides) {
+            for (MediaModel media : slide) {
+                totalMediaSize += media.getMediaSize();
+            }
+        }
+        int remainSize = MmsConfig.getMaxMessageSize() - totalMediaSize
+                - getTotalTextMessageSize();
+        return remainSize < SLIDESHOW_SLOP ? 0 : remainSize - SLIDESHOW_SLOP;
+    }
+
+    // getTotalTextMessageSize returns the total text size of the MMS.
+    public int getTotalTextMessageSize() {
+        int textSize = 0;
+        if (mSlides.size() > 0) {
+            for (SlideModel slide : mSlides) {
+                TextModel textMode = slide.getText();
+                if (textMode != null) {
+                    textSize += textMode.getMediaSize();
+                }
+            }
+        }
+        return textSize;
     }
 
     public void increaseMessageSize(int increaseSize) {
@@ -728,4 +759,19 @@ public class SlideshowModel extends Model
         }
     }
 
+    public void updateTotalMessageSize() {
+        int totalSize = 0;
+        for (SlideModel slide : mSlides) {
+            for (MediaModel media : slide) {
+                totalSize += media.getMediaSize();
+            }
+        }
+        if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
+            Log.v(TAG, "updateTotalMessageSize: message size: " + totalSize);
+        }
+        // mTotalMessageSize include resizable attachments, getTotalMessageSize
+        // is called by UI for displaying the size of the MMS message, so set
+        // mTotalMessageSize here rather than mCurrentMessageSize.
+        setTotalMessageSize(totalSize + getTotalTextMessageSize());
+    }
 }
