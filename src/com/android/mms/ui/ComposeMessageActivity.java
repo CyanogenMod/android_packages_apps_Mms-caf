@@ -390,6 +390,7 @@ public class ComposeMessageActivity extends Activity
     */
     private boolean mIsProcessPickedRecipients = false;
     private int mExistsRecipientsCount = 0;
+    private boolean enableMmsData = false;
 
     private boolean mIsMessageChanged = false;
 
@@ -765,7 +766,11 @@ public class ComposeMessageActivity extends Activity
     private class SendIgnoreInvalidRecipientListener implements OnClickListener {
         @Override
         public void onClick(DialogInterface dialog, int whichButton) {
-            if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+            boolean isMms = mWorkingMessage.requiresMms();
+            if (MessageUtils.isMobileDataDisabled(ComposeMessageActivity.this)
+                    && enableMmsData && isMms) {
+                showMobileDataDisabledDialog();
+            } else if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
                 sendMsimMessage(true);
             } else {
                 sendMessage(true);
@@ -868,8 +873,11 @@ public class ComposeMessageActivity extends Activity
     }
 
     private void confirmSendMessageIfNeeded() {
+        boolean isMms = mWorkingMessage.requiresMms();
         if (!isRecipientsEditorVisible()) {
-            if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+            if (MessageUtils.isMobileDataDisabled(this) && enableMmsData && isMms) {
+                showMobileDataDisabledDialog();
+            } else if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
                 sendMsimMessage(true);
             } else {
                 sendMessage(true);
@@ -877,9 +885,10 @@ public class ComposeMessageActivity extends Activity
             return;
         }
 
-        boolean isMms = mWorkingMessage.requiresMms();
         if (mRecipientsEditor.hasInvalidRecipient(isMms)) {
             showInvalidRecipientDialog();
+        } else if (MessageUtils.isMobileDataDisabled(this) && enableMmsData && isMms) {
+            showMobileDataDisabledDialog();
         } else {
             // The recipients editor is still open. Make sure we use what's showing there
             // as the destination.
@@ -915,6 +924,23 @@ public class ComposeMessageActivity extends Activity
         }
     }
 
+    private void showMobileDataDisabledDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.send)
+            .setMessage(this.getString(R.string.mobile_data_disable,
+                this.getString(R.string.mobile_data_send)))
+            .setPositiveButton(R.string.yes, new OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+                        sendMsimMessage(true);
+                    } else {
+                        sendMessage(true);
+                    }
+                    dialog.dismiss();
+                }
+            })
+            .setNegativeButton(R.string.no, null).show();
+    }
 
     private final TextWatcher mRecipientsWatcher = new TextWatcher() {
         @Override
@@ -2211,6 +2237,9 @@ public class ComposeMessageActivity extends Activity
     public void initialize(Bundle savedInstanceState, long originalThreadId) {
         // Create a new empty working message.
         mWorkingMessage = WorkingMessage.createEmpty(this);
+
+        enableMmsData = getResources().getBoolean(
+                com.android.internal.R.bool.config_setup_mms_data);
 
         // Read parameters or previously saved state of this activity. This will load a new
         // mConversation
