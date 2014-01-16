@@ -102,6 +102,7 @@ public class MessageListItem extends LinearLayout implements
     private ImageView mLockedIndicator;
     private ImageView mDeliveredIndicator;
     private ImageView mDetailsIndicator;
+    private ImageView mSimIndicatorView;
     private ImageButton mSlideShowButton;
     private TextView mBodyTextView;
     private Button mDownloadButton;
@@ -149,6 +150,7 @@ public class MessageListItem extends LinearLayout implements
         mDeliveredIndicator = (ImageView) findViewById(R.id.delivered_indicator);
         mDetailsIndicator = (ImageView) findViewById(R.id.details_indicator);
         mAvatar = (QuickContactDivot) findViewById(R.id.avatar);
+        mSimIndicatorView = (ImageView) findViewById(R.id.sim_indicator_icon);
         mMessageBlock = findViewById(R.id.message_block);
     }
 
@@ -220,6 +222,8 @@ public class MessageListItem extends LinearLayout implements
                                             mMessageItem.mTextContentType));
 
         mDateView.setText(buildTimestampLine(msgSizeText + " " + mMessageItem.mTimestamp));
+
+        updateSimIndicatorView(mMessageItem.mSubscription);
 
         switch (mMessageItem.getMmsDownloadStatus()) {
             case DownloadManager.STATE_PRE_DOWNLOADING:
@@ -332,7 +336,16 @@ public class MessageListItem extends LinearLayout implements
 
         DownloadManager.getInstance().markState(
                  mMessageItem.mMessageUri, DownloadManager.STATE_PRE_DOWNLOADING);
+    }
 
+    private void updateSimIndicatorView(int subscription) {
+        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()
+                && subscription >= 0) {
+            Drawable mSimIndicatorIcon = MessageUtils.getMultiSimIcon(mContext,
+                    subscription);
+            mSimIndicatorView.setImageDrawable(mSimIndicatorIcon);
+            mSimIndicatorView.setVisibility(View.VISIBLE);
+        }
     }
 
     private String buildTimestampLine(String timestamp) {
@@ -414,7 +427,7 @@ public class MessageListItem extends LinearLayout implements
         if (!sameItem || haveLoadedPdu) {
             mBodyTextView.setText(formattedMessage);
         }
-
+        updateSimIndicatorView(mMessageItem.mSubscription);
         // Debugging code to put the URI of the image attachment in the body of the list item.
         if (DEBUG) {
             String debugText = null;
