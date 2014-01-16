@@ -24,6 +24,16 @@ import static com.android.mms.transaction.ProgressCallbackEntity.PROGRESS_START;
 import static com.android.mms.transaction.ProgressCallbackEntity.PROGRESS_STATUS_ACTION;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_ID;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_MSG_TYPE;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_ADDRESS;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_BODY;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_DATE;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_DATE_SENT;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_LOCKED;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_READ;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_STATUS;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_TYPE;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_SUB_ID;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_THREAD_ID;
 import static com.android.mms.ui.MessageListAdapter.PROJECTION;
 
 import java.io.File;
@@ -230,6 +240,7 @@ public class ComposeMessageActivity extends Activity
     private static final int MENU_IMPORT_TEMPLATE       = 34;
     private static final int MENU_RESEND                = 35;
     private static final int MENU_COPY_EXTRACT_URL      = 36;
+    private static final int MENU_SELECT_COPY_MESSAGE_TEXT     = 37;
 
     private static final int RECIPIENTS_MAX_LENGTH = 312;
 
@@ -1325,6 +1336,11 @@ public class ComposeMessageActivity extends Activity
                         .setOnMenuItemClickListener(l);
             }
 
+            if (msgItem.isSms() || msgItem.isDownloaded()) {
+                menu.add(0, MENU_SELECT_COPY_MESSAGE_TEXT, 0, R.string.select_copy_message_text)
+                        .setOnMenuItemClickListener(l);
+            }
+
             // Only failed send message have resend function
             if (msgItem.isFailedMessage()) {
                     menu.add(0, MENU_RESEND, 0, R.string.menu_resend)
@@ -1671,6 +1687,24 @@ public class ComposeMessageActivity extends Activity
                     copyToClipboard(copyedUrl);
                     return true;
 
+                case MENU_SELECT_COPY_MESSAGE_TEXT:
+                    AdapterView.AdapterContextMenuInfo info;
+                    try {
+                         info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+                    } catch (ClassCastException exception) {
+                        Log.e(TAG, "Bad menuInfo.", exception);
+                        return false;
+                    }
+
+                    final Cursor cursor = (Cursor) mMsgListAdapter.getItem(info.position);
+                    if (mMsgItem.isSms()) {
+                        showSmsMessageContent(cursor);
+                    } else {
+                        MessageUtils.viewMmsMessageAttachment(ComposeMessageActivity.this,
+                                ContentUris.withAppendedId(Mms.CONTENT_URI, mMsgItem.mMsgId), null,
+                                getAsyncDialog());
+                    }
+                    return true;
                 default:
                     return false;
             }
@@ -3217,6 +3251,48 @@ public class ComposeMessageActivity extends Activity
                 break;
         }
         super.onPrepareDialog(id, dialog);
+    }
+
+    private void showSmsMessageContent(Cursor c) {
+        if (c == null || !c.moveToFirst()) {
+            return;
+        }
+
+        Intent i = new Intent(this, MailBoxMessageContent.class);
+
+        String addr = c.getString(COLUMN_SMS_ADDRESS);
+        Long date = c.getLong(COLUMN_SMS_DATE);
+        String dateStr = MessageUtils.formatTimeStampString(this, date, true);
+        String msgUriStr = "content://" + c.getString(COLUMN_MSG_TYPE)
+                + "/" + c.getString(COLUMN_ID);
+        int smsType = c.getInt(COLUMN_SMS_TYPE);
+
+        if (smsType == Sms.MESSAGE_TYPE_INBOX) {
+            i.putExtra("sms_fromtolabel", getString(R.string.from_label));
+            i.putExtra("sms_sendlabel", getString(R.string.received_label));
+        } else {
+            i.putExtra("sms_fromtolabel", getString(R.string.to_address_label));
+            i.putExtra("sms_sendlabel", getString(R.string.sent_label));
+        }
+        i.putExtra("sms_datelongformat", date);
+        i.putExtra("sms_datesentlongformat", c.getLong(COLUMN_SMS_DATE_SENT));
+        i.putExtra("sms_body", c.getString(COLUMN_SMS_BODY));
+        i.putExtra("sms_fromto", addr);
+        i.putExtra("sms_displayname", Contact.get(addr, true).getName());
+        i.putExtra("sms_date", dateStr);
+        i.putExtra("msg_uri", Uri.parse(msgUriStr));
+        i.putExtra("sms_threadid", c.getLong(COLUMN_THREAD_ID));
+        i.putExtra("sms_status", c.getInt(COLUMN_SMS_STATUS));
+        i.putExtra("sms_read", c.getInt(COLUMN_SMS_READ));
+        i.putExtra("mailboxId", smsType);
+        i.putExtra("sms_id", c.getInt(COLUMN_ID));
+        i.putExtra("sms_uri_str", msgUriStr);
+        i.putExtra("sms_on_uim", false);
+        i.putExtra("sms_type", smsType);
+        i.putExtra("sms_locked", c.getInt(COLUMN_SMS_LOCKED));
+        i.putExtra("sms_subid", c.getInt(COLUMN_SUB_ID));
+        i.putExtra("sms_select_text", true);
+        startActivity(i);
     }
 
     private Dialog showImportTemplateDialog(){

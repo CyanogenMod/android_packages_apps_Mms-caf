@@ -108,6 +108,7 @@
     <string name="insufficient_drm_rights">Insufficient DRM rights detected.</string>
     <!-- Individual message context menu item -->
     <string name="copy_message_text">Copy text</string>
+    <string name="select_copy_message_text">Select text to copy</string>
     <!-- Header for context menu on an individual message -->
     <string name="message_options">Message options</string>
     <!-- Header for context menu on an individual slideshow -->
