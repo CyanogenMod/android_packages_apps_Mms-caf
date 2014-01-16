@@ -17,6 +17,7 @@
 
 package com.android.mms.ui;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,6 +43,8 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.StatFs;
+import android.os.storage.StorageManager;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.provider.Telephony.Mms;
@@ -104,6 +107,11 @@ public class MessageUtils {
     private static String sLocalNumber;
     private static String[] sNoSubjectStrings;
     public static String MULTI_SIM_NAME = "perferred_name_sub";
+
+    // add for obtain mms data path
+    private static final String MMS_DATA_DATA_DIR = "/data/data";
+    // the remaining space , format as MB
+    public static final long MIN_AVAILABLE_SPACE_MMS = 2 * 1024 * 1024;
 
     // Cache of both groups of space-separated ids to their full
     // comma-separated display names, as well as individual ids to
@@ -1297,5 +1305,28 @@ public class MessageUtils {
         ConnectivityManager mConnService = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         return !mConnService.getMobileDataEnabled();
+    }
+
+    public static long getStoreUnused() {
+        File path = new File(MMS_DATA_DATA_DIR);
+        StatFs stat = new StatFs(path.getPath());
+        long blockSize = stat.getBlockSize();
+        long availableBlocks = stat.getAvailableBlocks();
+        return availableBlocks * blockSize;
+    }
+
+    public static boolean isPhoneMemoryFull() {
+        long available = getStoreUnused();
+        return available < MIN_AVAILABLE_SPACE_MMS ;
+    }
+
+    /* Used for check whether have memory for save mms */
+    public static boolean isMmsMemoryFull() {
+        boolean isMemoryFull = isPhoneMemoryFull();
+        if (isMemoryFull) {
+            Log.d(TAG, "Mms emory is full ");
+            return true;
+        }
+        return false;
     }
 }
