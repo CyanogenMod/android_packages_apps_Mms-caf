@@ -30,6 +30,12 @@
 -->
 
 <resources>
-    <!-- configuration for filtering illegal character in address-->
+    <!-- configuration for filtering illegal character in address -->
     <bool name="config_filter_char_address">false</bool>
+
+    <!-- configuration for retry immediately when send MMS failed -->
+    <bool name="config_retry_immediately">false</bool>
+
+    <!-- configuration for reconnect data call immediately -->
+    <bool name="config_reconnect">false</bool>
 </resources>
