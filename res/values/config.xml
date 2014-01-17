@@ -41,4 +41,7 @@
 
     <!-- configuration for prompt dialog for wap push link -->
     <bool name="config_wap_push">false</bool>
+
+    <!-- configuration for max slide num -->
+    <integer name="max_slide_num">10</integer>
 </resources>
