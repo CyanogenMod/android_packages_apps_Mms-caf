@@ -25,6 +25,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SqliteWrapper;
 import android.graphics.Bitmap;
 import android.graphics.Paint.FontMetricsInt;
 import android.graphics.Typeface;
@@ -263,26 +264,38 @@ public class MessageListItem extends LinearLayout implements
                             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                             builder.setTitle(R.string.download);
                             builder.setCancelable(true);
-                            if (MessageUtils.isMmsMemoryFull()) {
-                                builder.setMessage(mContext.getString(R.string.sms_full_body));
-                                builder.show();
-                                return;
-                            }
-                            if ((int) nInd.getMessageSize() >
-                                      MmsConfig.getMaxMessageSize()) {
-                                builder.setMessage(mContext.getString(R.string.mms_too_large));
-                                builder.show();
-                                return;
-                            }
                             // Show enable mobile data dialog when click downlod button
                             // with mobile data is disabled and config_setup_mms_data is true.
                             // If click ok, turn on data and download MMS.
                             // If not, don't download MMS.
                             boolean enableMmsData = mContext.getResources().getBoolean(
                                     com.android.internal.R.bool.config_setup_mms_data);
+                            // Judge notification weather is expired
+                            if (nInd.getExpiry() < System.currentTimeMillis() / 1000L) {
+                                // builder.setIcon(R.drawable.ic_dialog_alert_holo_light);
+                                builder.setMessage(mContext
+                                        .getString(R.string.service_message_not_found));
+                                builder.show();
+                                SqliteWrapper.delete(mContext, mContext.getContentResolver(),
+                                        mMessageItem.mMessageUri, null, null);
+                                return;
+                            }
+                            // Judge whether memory is full
+                            else if (MessageUtils.isMmsMemoryFull()) {
+                                builder.setMessage(mContext.getString(R.string.sms_full_body));
+                                builder.show();
+                                return;
+                            }
+                            // Judge whether message size is too large
+                            else if ((int) nInd.getMessageSize() >
+                                      MmsConfig.getMaxMessageSize()) {
+                                builder.setMessage(mContext.getString(R.string.mms_too_large));
+                                builder.show();
+                                return;
+                            }
                             // Judge whether mobile data is turned off and
                             // enableMmsData is true.
-                            if (MessageUtils.isMobileDataDisabled(mContext) && enableMmsData) {
+                            else if (MessageUtils.isMobileDataDisabled(mContext) && enableMmsData) {
                                 builder.setMessage(mContext.getString(
                                         R.string.mobile_data_disable,
                                         mContext.getString(R.string.mobile_data_download)));
@@ -294,6 +307,8 @@ public class MessageListItem extends LinearLayout implements
                                             }
                                         });
                                 builder.setNegativeButton(R.string.no, null);
+                                builder.show();
+                                return;
                             }
                         } catch (MmsException e) {
                             Log.e(TAG, e.getMessage(), e);

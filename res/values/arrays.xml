@@ -42,4 +42,15 @@
         <item>@string/type_slot2</item>
     </string-array>
 
+    <string-array name="save_time">
+        <item>@string/mms_max</item>
+        <item>@string/mms_one_week</item>
+        <item>@string/mms_two_days</item>
+    </string-array>
+
+    <string-array name="save_time_values">
+        <item>0</item>  <!-- maxmum -->
+        <item>604800</item>   <!--7*24*60*60 -->
+        <item>172800</item>   <!--2*24*60*60 -->
+    </string-array>
 </resources>
