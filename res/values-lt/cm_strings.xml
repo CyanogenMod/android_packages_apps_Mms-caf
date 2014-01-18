@@ -29,7 +29,7 @@
     <string name="template_ctx_menu_title">Veiksmai</string>
     <string name="template_list_title">Šablonai</string>
     <string name="template_new_title">Naujas šablonas</string>
-    <string name="template_insert">Įterpkite šabloną</string>
+    <string name="template_insert">Įterpti šabloną</string>
     <string name="template_gesture_draw">Nubrėžkite gestą į žemiau esantį laukelį</string>
     <string name="template_not_present_error">Nėra sudarytų šablonų</string>
     <string name="template_not_present_error_title">Klaida</string>
@@ -38,7 +38,7 @@
     <string name="gestures_already_present">Panašus gestas jau yra susietas su kitu šablonu</string>
     <string name="select_template">Pasirinkite šablonus</string>
     <string name="pref_title_notification_privacy_mode_enabled">Privatumo režimas</string>
-    <string name="pref_summary_notification_privacy_mode_enabled">Slėpti siuntėją ir pranešimą būsenos juostoje bei išjungti \'Greitą atsakymą\'</string>
+    <string name="pref_summary_notification_privacy_mode_enabled">Slėpti siuntėją ir pranešimą būsenos juostoje bei išjungti \„Greitą atsakymą\“</string>
     <string name="notification_single_title_privacy_mode">Naujas pranešimas</string>
     <string name="notification_single_text_privacy_mode">Neperskaitytas 1 pranešimas</string>
     <string name="notification_multiple_title_privacy_mode">Nauji pranešimai</string>
@@ -61,7 +61,7 @@
     <string name="pref_wake_unlock_title">Pažadinti ir atrakinti</string>
     <string name="pref_wake_unlock_summary">Pažadinti ir atrakinti įrenginį gaunamiems pranešimams (tik nesaugus ekrano užraktas)</string>
     <string name="pref_close_all_title">Uždaryti viską</string>
-    <string name="pref_close_all_summary">Mygtukas \'Uždaryti\' uždaro visas žinutes</string>
+    <string name="pref_close_all_summary">Mygtukas \„Uždaryti\“ uždaro visas žinutes</string>
     <string name="pref_dark_theme_title">Naudoti tamsią temą</string>
     <string name="pref_dark_theme_summary">Pagal nutylėjimą bus naudojama šviesi tema</string>
     <string name="message_counter_separator">iš</string>
@@ -73,10 +73,10 @@
     <string name="qm_quick_reply">Atsakyti</string>
     <string name="qm_mark_read">Skaityti</string>
     <string name="menu_add_to_calendar">Pridėti į kalendorių</string>
-    <string name="pref_title_unicode_stripping">Pašalinti \'Unicode\'</string>
+    <string name="pref_title_unicode_stripping">Pašalinti \„Unicode\“</string>
     <string name="pref_unicode_stripping_leave_intact">Palikti nepaliestus simbolius</string>
-    <string name="pref_unicode_stripping_non_encodable">Pašalinti \'non-encodable\' simbolius</string>
-    <string name="pref_unicode_stripping_all">Pašalinti visus \'unicode\' simbolius</string>
+    <string name="pref_unicode_stripping_non_encodable">Pašalinti \„non-encodable\“ simbolius</string>
+    <string name="pref_unicode_stripping_all">Pašalinti visus \„unicode\“ simbolius</string>
     <string name="blacklist_title">Juodasis sąrašas</string>
     <string name="blacklist_summary_disabled">Išjungtas</string>
     <string name="blacklist_summary">Gaunami pranešimai iš telefonų numerių kurie yra juodajame sąraše bus blokuojami</string>
@@ -93,7 +93,7 @@
     <string name="select_recipients">Pasirinkite gavėjus</string>
     <string name="groups_header">Grupės</string>
     <string name="no_recipients">Kontaktų nerasta</string>
-    <string name="no_recipients_mobile_only">Nerasti atitinkantys kontaktai. Išjunkite filtrą \'tik mobilieji numeriai\' ir bandykite dar kartą.</string>
+    <string name="no_recipients_mobile_only">Nerasti atitinkantys kontaktai. Išjunkite filtrą \„tik mobilieji numeriai\“ ir bandykite dar kartą.</string>
     <string name="menu_done">Atlikta</string>
     <string name="menu_mobile">Tik mobilieji numeriai</string>
     <string name="menu_groups">Rodyti grupes</string>
