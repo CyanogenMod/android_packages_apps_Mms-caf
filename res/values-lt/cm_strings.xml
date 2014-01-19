@@ -38,7 +38,7 @@
     <string name="gestures_already_present">Panašus gestas jau yra susietas su kitu šablonu</string>
     <string name="select_template">Pasirinkite šablonus</string>
     <string name="pref_title_notification_privacy_mode_enabled">Privatumo režimas</string>
-    <string name="pref_summary_notification_privacy_mode_enabled">Slėpti siuntėją ir pranešimą būsenos juostoje bei išjungti \„Greitą atsakymą\“</string>
+    <string name="pref_summary_notification_privacy_mode_enabled">"Slėpti siuntėją ir pranešimą būsenos juostoje bei išjungti „Greitą atsakymą“"</string>
     <string name="notification_single_title_privacy_mode">Naujas pranešimas</string>
     <string name="notification_single_text_privacy_mode">Neperskaitytas 1 pranešimas</string>
     <string name="notification_multiple_title_privacy_mode">Nauji pranešimai</string>
@@ -57,11 +57,11 @@
     <string name="pref_summary_sms_split_counter">Prideda skaitliuką pranešimuose pvz. (1/2)</string>
     <string name="pref_quickmessage">Greitas atsakymas</string>
     <string name="pref_quickmessage_title">Rodyti laikinąjį langą</string>
-    <string name="pref_quickmessage_summary">Rodyti greitų žinučių laikinąjį langą gaunamiems SMS pranešimams</string>
+    <string name="pref_quickmessage_summary">Rodyti greitų pranešimų laikinąjį langą gaunamiems SMS pranešimams</string>
     <string name="pref_wake_unlock_title">Pažadinti ir atrakinti</string>
     <string name="pref_wake_unlock_summary">Pažadinti ir atrakinti įrenginį gaunamiems pranešimams (tik nesaugus ekrano užraktas)</string>
     <string name="pref_close_all_title">Uždaryti viską</string>
-    <string name="pref_close_all_summary">Mygtukas \„Uždaryti\“ uždaro visas žinutes</string>
+    <string name="pref_close_all_summary">"Mygtukas „Uždaryti“ uždaro visus pranešimus"</string>
     <string name="pref_dark_theme_title">Naudoti tamsią temą</string>
     <string name="pref_dark_theme_summary">Pagal nutylėjimą bus naudojama šviesi tema</string>
     <string name="message_counter_separator">iš</string>
@@ -73,10 +73,10 @@
     <string name="qm_quick_reply">Atsakyti</string>
     <string name="qm_mark_read">Skaityti</string>
     <string name="menu_add_to_calendar">Pridėti į kalendorių</string>
-    <string name="pref_title_unicode_stripping">Pašalinti \„Unicode\“</string>
+    <string name="pref_title_unicode_stripping">"Pašalinti „Unicode“"</string>
     <string name="pref_unicode_stripping_leave_intact">Palikti nepaliestus simbolius</string>
-    <string name="pref_unicode_stripping_non_encodable">Pašalinti \„non-encodable\“ simbolius</string>
-    <string name="pref_unicode_stripping_all">Pašalinti visus \„unicode\“ simbolius</string>
+    <string name="pref_unicode_stripping_non_encodable">"Pašalinti „Non-encodable“ simbolius"</string>
+    <string name="pref_unicode_stripping_all">"Pašalinti visus „Unicode“ simbolius"</string>
     <string name="blacklist_title">Juodasis sąrašas</string>
     <string name="blacklist_summary_disabled">Išjungtas</string>
     <string name="blacklist_summary">Gaunami pranešimai iš telefonų numerių kurie yra juodajame sąraše bus blokuojami</string>
@@ -93,7 +93,7 @@
     <string name="select_recipients">Pasirinkite gavėjus</string>
     <string name="groups_header">Grupės</string>
     <string name="no_recipients">Kontaktų nerasta</string>
-    <string name="no_recipients_mobile_only">Nerasti atitinkantys kontaktai. Išjunkite filtrą \„tik mobilieji numeriai\“ ir bandykite dar kartą.</string>
+    <string name="no_recipients_mobile_only">"Nerasti atitinkantys kontaktai. Išjunkite filtrą „Tik mobilieji numeriai“ ir bandykite dar kartą."</string>
     <string name="menu_done">Atlikta</string>
     <string name="menu_mobile">Tik mobilieji numeriai</string>
     <string name="menu_groups">Rodyti grupes</string>
@@ -106,4 +106,11 @@
     <string name="send_delay_20seconds">20 sekundžių</string>
     <string name="send_delay_30seconds">30 sekundžių</string>
     <string name="sent_countdown">Pranešimo siuntimo laikmatis</string>
+    <string name="pref_title_mms_notification_vibrate_pattern">Vibracijos stilius</string>
+    <string name="pref_summary_mms_notification_vibrate_pattern">Pakeisti vibracijos stilių</string>
+    <string name="pref_mms_notification_vibrate_normal">Normali</string>
+    <string name="pref_mms_notification_vibrate_med_vib">Vidutinė vibracija</string>
+    <string name="pref_mms_notification_vibrate_long_vib">Ilga vibracija</string>
+    <string name="pref_mms_notification_vibrate_mult_short">Kartotinė trumpa</string>
+    <string name="pref_mms_notification_vibrate_mult_long">Kartotinė ilga</string>
 </resources>
