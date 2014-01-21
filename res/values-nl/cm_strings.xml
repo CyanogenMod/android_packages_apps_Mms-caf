@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2012-2013 The CyanogenMod Project
+     Copyright (C) 2012-2014 The CyanogenMod Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -107,4 +107,11 @@
     <string name="send_delay_20seconds">20 seconden</string>
     <string name="send_delay_30seconds">30 seconden</string>
     <string name="sent_countdown">Aftellen tot verzenden</string>
+    <string name="pref_title_mms_notification_vibrate_pattern">Trilpatroon</string>
+    <string name="pref_summary_mms_notification_vibrate_pattern">Trilpatroon wijzigen</string>
+    <string name="pref_mms_notification_vibrate_normal">Normaal</string>
+    <string name="pref_mms_notification_vibrate_med_vib">Middellang</string>
+    <string name="pref_mms_notification_vibrate_long_vib">Lang</string>
+    <string name="pref_mms_notification_vibrate_mult_short">Meerdere keren kort</string>
+    <string name="pref_mms_notification_vibrate_mult_long">Meerdere keren lang</string>
 </resources>
