@@ -85,7 +85,7 @@
         <item>@string/send_delay_30seconds</item>
     </string-array>
 
-    <string-array name="pref_mms_notification_vibrate_pattern_entries">
+    <string-array name="pref_mms_notification_vibrate_pattern_entries" translatable="false">
         <item>@string/pref_mms_notification_vibrate_normal</item>
         <item>@string/pref_mms_notification_vibrate_med_vib</item>
         <item>@string/pref_mms_notification_vibrate_long_vib</item>
