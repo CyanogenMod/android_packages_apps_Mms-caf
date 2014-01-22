@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2013 The CyanogenMod Project
+     Copyright (C) 2013-2014 The CyanogenMod Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -99,4 +99,19 @@
     <string name="menu_mobile">Μόνο κινητά τηλέφωνα</string>
     <string name="menu_groups">Εμφάνιση ομάδων</string>
     <string name="fastscroll_index_groups">OM</string> <!-- CHAR LIMIT=3 -->
+    <string name="pref_title_send_delay">Καθυστέρηση παράδοσης</string>
+    <string name="send_delay_immediate">Άμεση αποστολή</string>
+    <string name="send_delay_3seconds">3 δευτερόλεπτα</string>
+    <string name="send_delay_5seconds">5 δευτερόλεπτα</string>
+    <string name="send_delay_10seconds">10 δευτερόλεπτα</string>
+    <string name="send_delay_20seconds">20 δευτερόλεπτα</string>
+    <string name="send_delay_30seconds">30 δευτερόλεπτα</string>
+    <string name="sent_countdown">Αντίστροφη μέτρηση παράδοσης μηνύματος</string>
+    <string name="pref_title_mms_notification_vibrate_pattern">Μοτίβο δόνησης</string>
+    <string name="pref_summary_mms_notification_vibrate_pattern">Αλλαγή μοτίβου δόνησης</string>
+    <string name="pref_mms_notification_vibrate_normal">Κανονική</string>
+    <string name="pref_mms_notification_vibrate_med_vib">Μεσαία δόνηση</string>
+    <string name="pref_mms_notification_vibrate_long_vib">Εκτενής δόνηση</string>
+    <string name="pref_mms_notification_vibrate_mult_short">Πολλαπλές μικρές</string>
+    <string name="pref_mms_notification_vibrate_mult_long">Πολλαπλές εκτενείς</string>
 </resources>
