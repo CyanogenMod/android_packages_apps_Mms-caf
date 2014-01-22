@@ -41,6 +41,7 @@ import android.database.sqlite.SqliteWrapper;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Telephony.Mms;
+import android.provider.Telephony.MmsSms;
 import android.provider.Telephony.Sms;
 import android.text.TextUtils;
 import android.util.Log;
@@ -75,23 +76,27 @@ import com.android.mms.ui.SelectionMenu;
 import com.android.mms.ui.MessageUtils;
 import com.google.android.mms.pdu.PduHeaders;
 
-import static com.android.mms.ui.MessageListAdapter.MAILBOX_PROJECTION;
-import static com.android.mms.ui.MessageListAdapter.COLUMN_MSG_TYPE;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_ID;
-import static com.android.mms.ui.MessageListAdapter.COLUMN_THREAD_ID;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_DELIVERY_REPORT;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_ERROR_TYPE;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_LOCKED;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_MESSAGE_BOX;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_MESSAGE_TYPE;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_READ;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_SUBJECT;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_SUBJECT_CHARSET;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_MSG_TYPE;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_ADDRESS;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_BODY;
-import static com.android.mms.ui.MessageListAdapter.COLUMN_SUB_ID;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_DATE;
-import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_READ;
-import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_TYPE;
-import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_STATUS;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_DATE_SENT;
-import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_READ;
-import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_MESSAGE_BOX;
-import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_DELIVERY_REPORT;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_LOCKED;
-import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_LOCKED;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_READ;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_STATUS;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_TYPE;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_SUB_ID;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_THREAD_ID;
+import static com.android.mms.ui.MessageListAdapter.MAILBOX_PROJECTION;
 
 /**
  * This activity provides a list view of MailBox-Mode.
@@ -113,6 +118,13 @@ public class MailBoxMessageList extends ListActivity implements
     private static final int TYPE_SLOT_TWO = 2;
 
     private static final String NONE_SELECTED = "0";
+    private final static String THREAD_ID = "thread_id";
+    private final static String MESSAGE_ID = "message_id";
+    private final static String MESSAGE_TYPE = "message_type";
+    private final static String MESSAGE_BODY = "message_body";
+    private final static String MESSAGE_SUBJECT = "message_subject";
+    private final static String MESSAGE_SUBJECT_CHARSET = "message_subject_charset";
+    private final static String NEED_RESEND = "needResend";
 
     private boolean mIsPause = false;
     private boolean mQueryDone = true;
@@ -190,11 +202,53 @@ public class MailBoxMessageList extends ListActivity implements
         }
 
         try {
-            if ("sms".equals(c.getString(COLUMN_MSG_TYPE))) {
+            String type = c.getString(COLUMN_MSG_TYPE);
+            long msgId = c.getLong(COLUMN_ID);
+            long threadId = c.getLong(COLUMN_THREAD_ID);
+            boolean isDraft = "sms".equals(type)
+                    && (c.getInt(COLUMN_SMS_TYPE) == Sms.MESSAGE_TYPE_DRAFT);
+            isDraft |= "mms".equals(type)
+                    && (c.getInt(MessageListAdapter.COLUMN_MMS_MESSAGE_BOX)
+                            == Mms.MESSAGE_BOX_DRAFTS);
+
+            if (isDraft) {
+                Intent intent = new Intent(this, ComposeMessageActivity.class);
+                intent.putExtra(THREAD_ID, threadId);
+                startActivity(intent);
+                return;
+            } else if ("sms".equals(type)) {
+                // If the message is a failed one, clicking it should reload it in the compose view,
+                // regardless of whether it has links in it
+                if (c.getInt(COLUMN_SMS_TYPE) == Sms.MESSAGE_TYPE_FAILED) {
+                    Intent intent = new Intent(this, ComposeMessageActivity.class);
+                    intent.putExtra(THREAD_ID, threadId);
+                    intent.putExtra(MESSAGE_ID, msgId);
+                    intent.putExtra(MESSAGE_TYPE, type);
+                    intent.putExtra(MESSAGE_BODY, c.getString(COLUMN_SMS_BODY));
+                    intent.putExtra(NEED_RESEND, true);
+                    startActivity(intent);
+                    return;
+                }
                 showSmsMessageContent(c);
             } else {
-                MessageUtils.viewMmsMessageAttachment(MailBoxMessageList.this,
-                        ContentUris.withAppendedId(Mms.CONTENT_URI, c.getInt(COLUMN_ID)), null,
+                int errorType = c.getInt(COLUMN_MMS_ERROR_TYPE);
+                // Assuming the current message is a failed one, reload it into the compose view so
+                // the user can resend it.
+                if ( c.getInt(COLUMN_MMS_MESSAGE_BOX) == Mms.MESSAGE_BOX_OUTBOX
+                        && (errorType >= MmsSms.ERR_TYPE_GENERIC_PERMANENT)) {
+                    Intent intent = new Intent(this, ComposeMessageActivity.class);
+                    intent.putExtra(THREAD_ID, threadId);
+                    intent.putExtra(MESSAGE_ID, msgId);
+                    intent.putExtra(MESSAGE_TYPE, type);
+                    intent.putExtra(MESSAGE_SUBJECT, c.getString(COLUMN_MMS_SUBJECT));
+                    intent.putExtra(MESSAGE_SUBJECT_CHARSET, c.getInt(COLUMN_MMS_SUBJECT_CHARSET));
+                    intent.putExtra(NEED_RESEND, true);
+                    startActivity(intent);
+                    return;
+                }
+
+                Uri msgUri = ContentUris.withAppendedId(Mms.CONTENT_URI, msgId);
+                MessageUtils.viewMmsMessageAttachment(MailBoxMessageList.this, msgUri, null,
                         new AsyncDialog(MailBoxMessageList.this));
             }
         } finally {

@@ -422,6 +422,15 @@ public class ComposeMessageActivity extends Activity
     public final static String THREAD_ID = "thread_id";
     private final static String RECIPIENTS = "recipients";
     public final static String MANAGE_MODE = "manage_mode";
+    private final static String MESSAGE_ID = "message_id";
+    private final static String MESSAGE_TYPE = "message_type";
+    private final static String MESSAGE_BODY = "message_body";
+    private final static String MESSAGE_SUBJECT = "message_subject";
+    private final static String MESSAGE_SUBJECT_CHARSET = "message_subject_charset";
+    private final static String NEED_RESEND = "needResend";
+
+    private boolean isLocked = false;
+
     private boolean mIsPickingContact = false;
     // List for contacts picked from People.
     private ContactList mRecipientsPickList = null;
@@ -1547,6 +1556,10 @@ public class ComposeMessageActivity extends Activity
     }
 
     private void editSmsMessageItem(MessageItem msgItem) {
+        editSmsMessageItem(msgItem.mMsgId, msgItem.mBody);
+    }
+
+    private void editSmsMessageItem(long msgId, String msgBody) {
         // When the message being edited is the only message in the conversation, the delete
         // below does something subtle. The trigger "delete_obsolete_threads_pdu" sees that a
         // thread contains no messages and silently deletes the thread. Meanwhile, the mConversation
@@ -1562,16 +1575,21 @@ public class ComposeMessageActivity extends Activity
             }
         }
         // Delete the old undelivered SMS and load its content.
-        Uri uri = ContentUris.withAppendedId(Sms.CONTENT_URI, msgItem.mMsgId);
+        Uri uri = ContentUris.withAppendedId(Sms.CONTENT_URI, msgId);
         SqliteWrapper.delete(ComposeMessageActivity.this,
                 mContentResolver, uri, null, null);
 
-        mWorkingMessage.setText(msgItem.mBody);
+        mWorkingMessage.setText(msgBody);
     }
 
+
     private void editMmsMessageItem(MessageItem msgItem) {
+        editMmsMessageItem(msgItem.mMessageUri, msgItem.mSubject);
+    }
+
+    private void editMmsMessageItem(Uri uri, String subject) {
         // Load the selected message in as the working message.
-        WorkingMessage newWorkingMessage = WorkingMessage.load(this, msgItem.mMessageUri);
+        WorkingMessage newWorkingMessage = WorkingMessage.load(this, uri);
         if (newWorkingMessage == null) {
             return;
         }
@@ -1587,7 +1605,7 @@ public class ComposeMessageActivity extends Activity
         // WorkingMessage.load() above only loads the slideshow. Set the
         // subject here because we already know what it is and avoid doing
         // another DB lookup in load() just to get it.
-        mWorkingMessage.setSubject(msgItem.mSubject, false);
+        mWorkingMessage.setSubject(subject, false);
 
         if (mWorkingMessage.hasSubject()) {
             showSubjectEditor(true);
@@ -2153,9 +2171,8 @@ public class ComposeMessageActivity extends Activity
 
     private void showDeliveryReport(long messageId, String type) {
         Intent intent = new Intent(this, DeliveryReportActivity.class);
-        intent.putExtra("message_id", messageId);
-        intent.putExtra("message_type", type);
-
+        intent.putExtra(MESSAGE_ID, messageId);
+        intent.putExtra(MESSAGE_TYPE, type);
         startActivity(intent);
     }
 
@@ -2444,6 +2461,8 @@ public class ComposeMessageActivity extends Activity
         // Let the working message know what conversation it belongs to
         mWorkingMessage.setConversation(mConversation);
 
+        handleResendMessage();
+
         // Show the recipients editor if we don't have a valid thread. Hide it otherwise.
         if (mConversation.getThreadId() <= 0) {
             // Hide the recipients editor so the call to initRecipientsEditor won't get
@@ -2477,6 +2496,40 @@ public class ComposeMessageActivity extends Activity
         }
 
         mMsgListAdapter.setIsGroupConversation(mConversation.getRecipients().size() > 1);
+    }
+
+    private void handleResendMessage(){
+        // In mailbox mode, click sent failed message in outbox folder, re-send message.
+        Intent intent = getIntent();
+        boolean needResend = intent.getBooleanExtra(NEED_RESEND, false);
+        if (!needResend) {
+            return;
+        }
+        long messageId = intent.getLongExtra(MESSAGE_ID, 0);
+        String messageType = intent.getStringExtra(MESSAGE_TYPE);
+        if (messageId != 0 && !TextUtils.isEmpty(messageType)) {
+            if ("sms".equals(messageType)) {
+                String messageBody = intent.getStringExtra(MESSAGE_BODY);
+                editSmsMessageItem(messageId, messageBody);
+                drawBottomPanel();
+                invalidateOptionsMenu();
+                return;
+            } else if ("mms".equals(messageType)) {
+                Uri messageUri = ContentUris.withAppendedId(Mms.CONTENT_URI, messageId);
+                String messageSubject = "";
+                String subject = intent.getStringExtra(MESSAGE_SUBJECT);
+                if (!TextUtils.isEmpty(subject)) {
+                    int subjectCharset = intent.getIntExtra(MESSAGE_SUBJECT_CHARSET, 0);
+                    EncodedStringValue v = new EncodedStringValue(subjectCharset,
+                            PduPersister.getBytes(subject));
+                    messageSubject = MessageUtils.cleanseMmsSubject(this, v.getString());
+                }
+                editMmsMessageItem(messageUri, messageSubject);
+                drawBottomPanel();
+                invalidateOptionsMenu();
+                return;
+            }
+        }
     }
 
     @Override
