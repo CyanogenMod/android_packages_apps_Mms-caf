@@ -107,4 +107,11 @@
     <string name="send_delay_20seconds">20 sekondes</string>
     <string name="send_delay_30seconds">30 sekondes</string>
     <string name="sent_countdown">Boodskap aflewering wag tydperk</string>
+    <string name="pref_title_mms_notification_vibrate_pattern">Vibreer patroon</string>
+    <string name="pref_summary_mms_notification_vibrate_pattern">Verander vibreer patroon</string>
+    <string name="pref_mms_notification_vibrate_normal">Normaal</string>
+    <string name="pref_mms_notification_vibrate_med_vib">Medium vibreer</string>
+    <string name="pref_mms_notification_vibrate_long_vib">Lank vibreer</string>
+    <string name="pref_mms_notification_vibrate_mult_short">Meerdere kort</string>
+    <string name="pref_mms_notification_vibrate_mult_long">Meerdere lank</string>
 </resources>
