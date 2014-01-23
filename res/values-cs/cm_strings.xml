@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2013 The CyanogenMod Project
+<!--
+     Copyright (C) 2013-2014 The CyanogenMod Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,7 +15,6 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-
     <string name="menu_add_to_calendar">Přidat do kalendáře</string>
     <string name="button_close">Zavřít</string>
     <string name="button_view">Zobrazit</string>
@@ -96,8 +96,6 @@
     <string name="alert_dialog_yes">Ano</string>
     <string name="alert_dialog_no">Ne</string>
 
-
-
     <string name="select_recipients">Zvolte příjemce</string>
     <string name="groups_header">Skupiny</string>
     <string name="no_recipients">Nenalezen žádný kontakt</string>
@@ -107,4 +105,20 @@
     <string name="menu_groups">Zobrazit skupiny</string>
     <string name="fastscroll_index_groups">SK</string>
 
+    <string name="pref_title_send_delay">Zpožděné doručení</string>
+    <string name="send_delay_immediate">Odeslat okamžitě</string>
+    <string name="send_delay_3seconds">3 sekundy</string>
+    <string name="send_delay_5seconds">5 sekund</string>
+    <string name="send_delay_10seconds">10 sekund</string>
+    <string name="send_delay_20seconds">20 sekund</string>
+    <string name="send_delay_30seconds">30 sekund</string>
+    <string name="sent_countdown">Odpočet doručení zprávy</string>
+
+    <string name="pref_title_mms_notification_vibrate_pattern">Vzor vibrace</string>
+    <string name="pref_summary_mms_notification_vibrate_pattern">Změnit vzor vibrování</string>
+    <string name="pref_mms_notification_vibrate_normal">Normální</string>
+    <string name="pref_mms_notification_vibrate_med_vib">Střední vibrace</string>
+    <string name="pref_mms_notification_vibrate_long_vib">Dlouhá vibrace</string>
+    <string name="pref_mms_notification_vibrate_mult_short">Více krátkých</string>
+    <string name="pref_mms_notification_vibrate_mult_long">Více dlouhých</string>
 </resources>
