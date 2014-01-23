@@ -82,12 +82,6 @@
     <string name="blacklist_title">Čierna listina</string>
     <string name="blacklist_summary_disabled">Zakázané</string>
     <string name="blacklist_summary">Prichádzajúce správy z telefónnych čísel, ktoré su na čiernej listine budú blokované</string>
-    <string name="blacklist_notification">Blokovaná správa od %s</string>
-    <string name="blacklist_notification_private_number">Blokovaná správa zo súkromného čísla</string>
-    <string name="blacklist_notification_list_private">Súkromné</string>
-    <string name="blacklist_notification_unknown_number">Blokovaná správa z neznámeho čísla %s</string>
-    <string name="blacklist_notification_multiple">Zablokovaných správ: <xliff:g id="count">%d</xliff:g></string>
-    <string name="unblock_number">Odblokovať</string>
     <string name="add_to_blacklist">Pridať na čiernu listinu</string>
     <string name="add_to_blacklist_message">Ďalšie správy od %s budú blokované</string>
     <string name="select_recipients">Vyberte príjemcov</string>

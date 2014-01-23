@@ -83,13 +83,6 @@
     <string name="blacklist_summary_disabled">Zakázána</string>
     <string name="blacklist_summary">Příchozí zprávy z čísel na černé listině budou blokovány</string>
 
-    <string name="blacklist_notification">Blokovaná zpráva z čísla %s</string>
-    <string name="blacklist_notification_private_number">Blokovaná zpráva ze skrytého čísla</string>
-    <string name="blacklist_notification_list_private">Skryté</string>
-    <string name="blacklist_notification_unknown_number">Blokovaná zpráva z neznámého čísla %s</string>
-    <string name="blacklist_notification_multiple">Blokovaných zpráv: <xliff:g id="count">%d</xliff:g></string>
-    <string name="unblock_number">Neblokovat</string>
-
     <string name="add_to_blacklist">Přidat na černou listinu</string>
     <string name="add_to_blacklist_message">Příští zprávy z čísla %s budou blokovány</string>
 

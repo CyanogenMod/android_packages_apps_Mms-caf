@@ -80,12 +80,6 @@
     <string name="blacklist_title">Tiltólista</string>
     <string name="blacklist_summary_disabled">Letiltva</string>
     <string name="blacklist_summary">Bejövő üzenetek blokkolása, melyek szerepelnek a tiltólistán</string>
-    <string name="blacklist_notification">Blokkolt üzenet a következő számról: %s</string>
-    <string name="blacklist_notification_private_number">Blokkolt szám nélküli üzenet</string>
-    <string name="blacklist_notification_list_private">Rejtett szám</string>
-    <string name="blacklist_notification_unknown_number">Blokkolt ismeretlen üzenet: %s</string>
-    <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> blokkolt üzenet</string>
-    <string name="unblock_number">Eltávolítás</string>
     <string name="add_to_blacklist">Hozzáadás a tiltólistához</string>
     <string name="add_to_blacklist_message">%s számról érkező üzenetek blokkolva lesznek</string>
     <string name="alert_dialog_yes">Igen</string>

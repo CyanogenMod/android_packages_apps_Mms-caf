@@ -80,12 +80,6 @@
     <string name="blacklist_title">Sortliste</string>
     <string name="blacklist_summary_disabled">Deaktiveret</string>
     <string name="blacklist_summary">Indgående beskeder fra telefonnumre på sortlisten vil blive blokeret</string>
-    <string name="blacklist_notification">Blokerede en besked fra %s</string>
-    <string name="blacklist_notification_private_number">Blokerede en besked fra et privat nummer</string>
-    <string name="blacklist_notification_list_private">Privat</string>
-    <string name="blacklist_notification_unknown_number">Blokerede en besked fra et ukendt nummer %s</string>
-    <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> beskeder blev blokeret</string>
-    <string name="unblock_number">Fjern blokering</string>
     <string name="add_to_blacklist">Føj til sortliste</string>
     <string name="add_to_blacklist_message">Fremtidige beskeder fra %s vil blive blokeret</string>
     <string name="alert_dialog_yes">Ja</string>

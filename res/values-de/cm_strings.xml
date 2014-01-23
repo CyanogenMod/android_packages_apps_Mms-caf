@@ -81,12 +81,6 @@
     <string name="blacklist_title">Sperrliste</string>
     <string name="blacklist_summary_disabled">Deaktiviert</string>
     <string name="blacklist_summary">Eingehende Nachrichten von Nummern, die sich in der Sperrliste befinden, werden abgewiesen</string>
-    <string name="blacklist_notification">Eine Nachricht von % wurde abgewiesens</string>
-    <string name="blacklist_notification_private_number">Eine Nachricht mit unterdrückter Nummer wurde abgewiesen</string>
-    <string name="blacklist_notification_list_private">Unterdrückte Nummer</string>
-    <string name="blacklist_notification_unknown_number">Eine Nachricht von %s wurde abgewiesen</string>
-    <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> abgewiesene Nachrichten</string>
-    <string name="unblock_number">Sperre aufheben</string>
     <string name="add_to_blacklist">Zur Sperrliste hinzufügen</string>
     <string name="add_to_blacklist_message">Zukünftige Nachrichten von %s werden abgewiesen</string>
     <string name="alert_dialog_yes">Ja</string>

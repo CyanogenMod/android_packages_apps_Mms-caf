@@ -80,12 +80,6 @@
     <string name="blacklist_title">Lista de bloqueio</string>
     <string name="blacklist_summary_disabled">Desativado</string>
     <string name="blacklist_summary">Mensagens recebidas de números de telefone na lista de bloqueio irão ser bloqueadas</string>
-    <string name="blacklist_notification">Uma mensagem de %s foi bloqueada</string>
-    <string name="blacklist_notification_private_number">Uma mensagem de um número privado foi bloqueada</string>
-    <string name="blacklist_notification_list_private">Privacidade</string>
-    <string name="blacklist_notification_unknown_number">Uma mensagem de um número desconhecido %s foi bloqueada</string>
-    <string name="blacklist_notification_multiple"><xliff:g id="count" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">%d</xliff:g> mensagens foram bloqueadas</string>
-    <string name="unblock_number">Desbloquear</string>
     <string name="add_to_blacklist">Adicionar à lista de bloqueio</string>
     <string name="add_to_blacklist_message">Futuras mensagens de %s serão bloqueadas</string>
     <string name="alert_dialog_yes">Sim</string>

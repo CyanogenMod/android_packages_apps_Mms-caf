@@ -81,12 +81,6 @@
     <string name="blacklist_title">Μαύρη λίστα</string>
     <string name="blacklist_summary_disabled">Απενεργοποιημένη</string>
     <string name="blacklist_summary">Εισερχόμενα μηνύματα από αριθμούς που είναι στη μαύρη λίστα θα απορρίπτονται</string>
-    <string name="blacklist_notification">Απορρίφθηκε μήνυμα από %s</string>
-    <string name="blacklist_notification_private_number">Απορρίφθηκε μήνυμα από απόρρητο αριθμό</string>
-    <string name="blacklist_notification_list_private">Απόρρητο</string>
-    <string name="blacklist_notification_unknown_number">Απορρίφθηκε μήνυμα από άγνωστο αριθμό %s</string>
-    <string name="blacklist_notification_multiple">Απορρίφθηκαν <xliff:g id="count">%d</xliff:g> μηνύματα</string>
-    <string name="unblock_number">Ακύρωση φραγής</string>
     <string name="add_to_blacklist">Προσθήκη στη μαύρη λίστα</string>
     <string name="add_to_blacklist_message">Μελλοντικά μηνύματα από το %s θα απορρίπτονται</string>
     <string name="alert_dialog_yes">Ναι</string>
