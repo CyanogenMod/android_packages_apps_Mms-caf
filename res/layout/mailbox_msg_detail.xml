@@ -38,7 +38,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:autoLink="all"
-                    android:linksClickable="true"
+                    android:linksClickable="false"
                     android:paddingLeft="20dip"
                     android:paddingRight="20dip"
                     android:textColor="#000000"

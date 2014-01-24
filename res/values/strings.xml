@@ -838,6 +838,12 @@
     <string name="progress_mms_title">MMS transaction on other sub in progress</string>
     <string name="progress_mms">Messaging: MMS in progress...</string>
     <string name="progress_mms_text ">Touch to retry again</string>
+    <string name="mail_to">mailto:</string>
+    <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
+    <string name="menu_connect_url">Connect</string>
+    <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
+    <string name="menu_add_to_label">Save to bookmark</string>
+    <string name="loadurlinfo_str">Load the URL?</string>
     <!-- Message Template -->
     <string name="pref_summary_message_template">Edit message template</string>
     <string name="pref_title_message_template">Message template</string>
