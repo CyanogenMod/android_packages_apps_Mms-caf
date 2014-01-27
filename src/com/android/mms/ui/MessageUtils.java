@@ -74,6 +74,7 @@ import com.android.mms.data.WorkingMessage;
 import com.android.mms.model.MediaModel;
 import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
+import com.android.mms.transaction.MessagingNotification;
 import com.android.mms.transaction.MmsMessageSender;
 import com.android.mms.util.AddressUtils;
 import com.google.android.mms.ContentType;
@@ -148,6 +149,10 @@ public class MessageUtils {
     public static ArrayList<Long> sSameRecipientList = new ArrayList<Long>();
     private static final String[] WEB_SCHEMA =
                         new String[] { "http://", "https://", "rtsp://" };
+
+    // add for obtaining all short message count
+    public static final Uri MAILBOX_SMS_MESSAGES_COUNT =
+            Uri.parse("content://mms-sms/messagescount");
 
     static {
         for (int i = 0; i < NUMERIC_CHARS_SUGAR.length; i++) {
@@ -1368,4 +1373,45 @@ public class MessageUtils {
         return false;
     }
 
+    /* check to see whether short message count is up to 2000 */
+    public static void checkIsPhoneMessageFull(Context context) {
+        boolean isPhoneMemoryFull = isPhoneMemoryFull();
+        boolean isPhoneSmsCountFull = false;
+        int maxSmsMessageCount = context.getResources().getInteger(R.integer.max_sms_message_count);
+        if (maxSmsMessageCount != -1) {
+            int msgCount = getSmsMessageCount(context);
+            isPhoneSmsCountFull = msgCount >= maxSmsMessageCount;
+        }
+
+        Log.d(TAG, "checkIsPhoneMessageFull : isPhoneMemoryFull = " + isPhoneMemoryFull
+                + "isPhoneSmsCountFull = " + isPhoneSmsCountFull);
+
+        if (isPhoneMemoryFull || isPhoneSmsCountFull) {
+            MessagingNotification.updateSmsMessageFullIndicator(context, true);
+        } else {
+            MessagingNotification.updateSmsMessageFullIndicator(context, false);
+        }
+    }
+
+    public static int getSmsMessageCount(Context context) {
+        int msgCount = -1;
+
+        Cursor cursor = SqliteWrapper.query(context, context.getContentResolver(),
+                MAILBOX_SMS_MESSAGES_COUNT, null, null, null, null);
+
+        if (cursor != null) {
+            try {
+                if (cursor.moveToFirst()) {
+                    msgCount = cursor.getInt(0);
+                } else {
+                    Log.d(TAG, "getSmsMessageCount returned no rows!");
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+
+        Log.d(TAG, "getSmsMessageCount : msgCount = " + msgCount);
+        return msgCount;
+    }
 }

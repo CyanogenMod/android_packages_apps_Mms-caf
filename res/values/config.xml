@@ -51,4 +51,7 @@
     <integer name="limit_count">0</integer>
     <!-- configuration for slide text limit size -->
     <integer name="slide_text_limit_size">0</integer>
+
+    <!-- configuration for max sms message count -->
+    <integer name="max_sms_message_count">-1</integer>
 </resources>
