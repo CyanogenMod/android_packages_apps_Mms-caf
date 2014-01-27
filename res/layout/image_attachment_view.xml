@@ -27,11 +27,25 @@
     android:paddingRight="5dip"
     android:background="@drawable/attachment_editor_bg">
 
-    <ImageView
-        android:id="@+id/image_content"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="135dip"
-        android:layout_weight="1" />
+        android:layout_height="match_parent"
+        android:layout_weight="1" >
+
+        <ImageView
+            android:id="@+id/image_content"
+            android:layout_width="match_parent"
+            android:layout_height="135dip" />
+
+        <TextView
+            android:id="@+id/mms_size_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|right"
+            android:alpha="0.5"
+            android:background="@android:color/black"
+            android:textColor="@android:color/white" />
+    </FrameLayout>
 
     <LinearLayout
         android:orientation="vertical"

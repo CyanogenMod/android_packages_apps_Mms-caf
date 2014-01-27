@@ -57,7 +57,10 @@ public class CarrierContentRestriction implements ContentRestriction {
         }
         int newSize = messageSize + increaseSize;
 
-        if ( (newSize < 0) || (newSize > MmsConfig.getMaxMessageSize()) ) {
+        // 0, and MmsConfig.getMaxMessageSize() - SlideshowModel.SLIDESHOW_SLOP is limitation.
+        // Reserve SlideshowModel.SLIDESHOW_SLOP(1k) for overhead.
+        if ( (newSize < 0) || ((newSize + SlideshowModel.SLIDESHOW_SLOP)
+                      > MmsConfig.getMaxMessageSize() )) {
             throw new ExceedMessageSizeException("Exceed message size limitation");
         }
     }

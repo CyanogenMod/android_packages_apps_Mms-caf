@@ -27,24 +27,38 @@
     android:paddingRight="5dip"
     android:background="@drawable/attachment_editor_bg">
 
-    <RelativeLayout
-        android:layout_weight="1"
-        android:gravity="center"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_weight="1" >
 
-        <ImageView
-            android:id="@+id/video_thumbnail"
-            android:scaleType="fitCenter"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:gravity="center" >
 
-        <ImageView
+            <ImageView
+                android:id="@+id/video_thumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitCenter" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_gallery_video_overlay" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/mms_size_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:src="@drawable/ic_gallery_video_overlay" />
-    </RelativeLayout>
+            android:layout_gravity="top|right"
+            android:alpha="0.5"
+            android:background="@android:color/black"
+            android:textColor="@android:color/white" />
+    </FrameLayout>
 
     <LinearLayout
         android:orientation="vertical"

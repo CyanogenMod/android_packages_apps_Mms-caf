@@ -55,6 +55,7 @@ import com.android.mms.model.LayoutModel;
 import com.android.mms.model.Model;
 import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
+import com.android.mms.model.TextModel;
 import com.android.mms.ui.BasicSlideEditorView.OnTextChangedListener;
 import com.android.mms.ui.MessageUtils.ResizeImageResultCallback;
 import com.google.android.mms.ContentType;
@@ -152,6 +153,13 @@ public class SlideEditorActivity extends Activity {
         mTextEditor.setFilters(new InputFilter[] {
                 new LengthFilter(MmsConfig.getMaxTextLimit())});
 
+        if (getResources().getInteger(R.integer.limit_count) == 0) {
+            mTextEditor.setFilters(new InputFilter[] {
+                    new LengthFilter(MmsConfig.getMaxTextLimit())});
+        } else if (getResources().getInteger(R.integer.slide_text_limit_size) != 0) {
+            mTextEditor.setFilters(new InputFilter[] {
+                    new LengthFilter(getResources().getInteger(R.integer.slide_text_limit_size))});
+        }
         mDone = (Button) findViewById(R.id.done_button);
         mDone.setOnClickListener(mDoneClickListener);
 
@@ -266,9 +274,36 @@ public class SlideEditorActivity extends Activity {
     };
 
     private final OnTextChangedListener mOnTextChangedListener = new OnTextChangedListener() {
+        // Add this flag to prevent "StackOverflowError" exception.
+        private boolean mIsChanged = false;
+
         public void onTextChanged(String s) {
+            if (mIsChanged) {
+                return;
+            }
             if (!isFinishing()) {
-                mSlideshowEditor.changeText(mPosition, s);
+                TextModel textMode = mSlideshowModel.get(mPosition).getText();
+                int currentTextSize = textMode == null ? 0 : textMode.getText().getBytes().length;
+                if (mSlideshowModel.getRemainMessageSize() == 0 ||
+                        (mSlideshowModel.getRemainMessageSize() + currentTextSize)
+                        < s.getBytes().length) {
+                    Toast.makeText(SlideEditorActivity.this, R.string.cannot_add_text_anymore,
+                            Toast.LENGTH_SHORT).show();
+
+                    // Set mIsChanged is true before mTextEditor.setText(...),
+                    // because "setText" will invoke "onTextChanged" again and again.
+                    // And finally throw "StackOverflowError". So add this flag.
+                    mIsChanged = true;
+                    if (textMode != null) {
+                        mTextEditor.setText(textMode.getText());
+                    } else {
+                        mTextEditor.setText("");
+                    }
+                    // Set mIsChanged is false, do not affect next nomal invoke "onTextChanged".
+                    mIsChanged = false;
+                } else {
+                    mSlideshowEditor.changeText(mPosition, s);
+                }
             }
         }
     };
