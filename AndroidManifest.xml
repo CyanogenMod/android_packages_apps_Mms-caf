@@ -21,6 +21,7 @@
         package="com.android.mms">
 
     <original-package android:name="com.android.mms" />
+    <uses-sdk android:minSdkVersion="19" android:targetSdkVersion="19" />
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
@@ -51,6 +52,7 @@
             android:label="@string/app_label"
             android:icon="@mipmap/ic_launcher_smsmms"
             android:taskAffinity="android.task.mms"
+            android:backupAgent="QTIBackupAgent"
             android:allowTaskReparenting="true">
 
         <service android:name=".transaction.TransactionService"
