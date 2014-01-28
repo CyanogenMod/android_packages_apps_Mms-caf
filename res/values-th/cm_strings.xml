@@ -80,12 +80,6 @@
   <string name="blacklist_title">บัญชีดำ</string>
   <string name="blacklist_summary_disabled">ปิด</string>
   <string name="blacklist_summary">ข้อความเข้าจากหมายเลขในบัญชีดำจะถูกบล็อค</string>
-  <string name="blacklist_notification">บล็อคข้อความจาก %s</string>
-  <string name="blacklist_notification_private_number">บล็อคข้อความจากหมายเลขส่วนตัว</string>
-  <string name="blacklist_notification_list_private">ส่วนตัว</string>
-  <string name="blacklist_notification_unknown_number">บล็อคข้อความจากหมายเลขที่ไม่รู้จัก  %s</string>
-  <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g>ข้อความโดนบล็อค</string>
-  <string name="unblock_number">ปลดล็อค</string>
   <string name="add_to_blacklist">เพิ่มไปยังบัญชีดำ</string>
   <string name="add_to_blacklist_message">ข้อความในอนาคตจาก %s จะโดนบล็อค</string>
   <string name="alert_dialog_yes">ใช่</string>

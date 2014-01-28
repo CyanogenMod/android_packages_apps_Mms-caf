@@ -80,12 +80,6 @@
     <string name="blacklist_title">黑名單</string>
     <string name="blacklist_summary_disabled">停用</string>
     <string name="blacklist_summary">黑名單內電話號碼傳來的訊息將會被封鎖</string>
-    <string name="blacklist_notification">已封鎖 %s 傳來的訊息</string>
-    <string name="blacklist_notification_private_number">已封鎖私人號碼傳來的訊息</string>
-    <string name="blacklist_notification_list_private">私人</string>
-    <string name="blacklist_notification_unknown_number">已封鎖不明號碼 %s 傳來的訊息</string>
-    <string name="blacklist_notification_multiple">已封鎖 <xliff:g id="count">%d</xliff:g> 則訊息</string>
-    <string name="unblock_number">解除封鎖</string>
     <string name="add_to_blacklist">新增至黑名單</string>
     <string name="add_to_blacklist_message">%s 以後傳來的訊息將會被封鎖</string>
     <string name="alert_dialog_yes">是</string>

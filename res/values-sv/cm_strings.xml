@@ -80,12 +80,6 @@
     <string name="blacklist_title">Svartlista</string>
     <string name="blacklist_summary_disabled">Avaktiverad</string>
     <string name="blacklist_summary">Inkommande meddelanden från telefonnummer i svartlistan kommer att blockeras</string>
-    <string name="blacklist_notification">Blockerade meddelande från %s</string>
-    <string name="blacklist_notification_private_number">Blockerade meddelande från hemligt nummer</string>
-    <string name="blacklist_notification_list_private">Hemligt</string>
-    <string name="blacklist_notification_unknown_number">Blockerade meddelande från okänt nummer %s</string>
-    <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> meddelanden har blockerats</string>
-    <string name="unblock_number">Häv blockering</string>
     <string name="add_to_blacklist">Lägg till i svartlista</string>
     <string name="add_to_blacklist_message">Framtida meddelanden från %s kommer att blockeras</string>
     <string name="alert_dialog_yes">Ja</string>

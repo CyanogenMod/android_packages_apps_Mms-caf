@@ -80,12 +80,6 @@
     <string name="blacklist_title">Llista negra</string>
     <string name="blacklist_summary_disabled">Desactivada</string>
     <string name="blacklist_summary">Els missatges entrants dels números de telèfon a la llista negra seran bloquejats</string>
-    <string name="blacklist_notification">S\'ha bloquejat un missatge de %s</string>
-    <string name="blacklist_notification_private_number">S\'ha bloquejat un missatge d\'un número privat</string>
-    <string name="blacklist_notification_list_private">Privat</string>
-    <string name="blacklist_notification_unknown_number">S\'ha bloquejat un missatge d\'un número desconegut %s</string>
-    <string name="blacklist_notification_multiple">S\'han bloquejat <xliff:g id="count">%d</xliff:g> missatges</string>
-    <string name="unblock_number">Desbloqueja</string>
     <string name="add_to_blacklist">Afegeix a la llista negra</string>
     <string name="add_to_blacklist_message">Els missatges futurs de %s seran bloquejats</string>
     <string name="alert_dialog_yes">Si</string>

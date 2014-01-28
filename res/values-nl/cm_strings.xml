@@ -81,12 +81,6 @@
     <string name="blacklist_title">Zwarte lijst</string>
     <string name="blacklist_summary_disabled">Uitgeschakeld</string>
     <string name="blacklist_summary">Inkomende berichten van telefoonnummers op de zwarte lijst worden geblokkeerd</string>
-    <string name="blacklist_notification">Bericht van %s geblokkeerd</string>
-    <string name="blacklist_notification_private_number">Bericht van afgeschermd nummer geblokkeerd</string>
-    <string name="blacklist_notification_list_private">Afgeschermd</string>
-    <string name="blacklist_notification_unknown_number">Bericht van onbekend nummer %s geblokkeerd</string>
-    <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> berichten geblokkeerd</string>
-    <string name="unblock_number">Deblokkeren</string>
     <string name="add_to_blacklist">Toevoegen aan zwarte lijst</string>
     <string name="add_to_blacklist_message">Berichten van %s worden geblokkeerd</string>
     <string name="alert_dialog_yes">Ja</string>

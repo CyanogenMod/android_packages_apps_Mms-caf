@@ -80,12 +80,6 @@
     <string name="blacklist_title">قارا تىزىم</string>
     <string name="blacklist_summary_disabled">چەكلەنگەن</string>
     <string name="blacklist_summary">قارا تىزىمغا كىرگۈزۈلگەن تېلېفون نومۇرىدىن كەلگەن ئۇچۇرلار توسۇلىدۇ</string>
-    <string name="blacklist_notification">%s نىڭ ئۇچۇرىنى توستى</string>
-    <string name="blacklist_notification_private_number">شەخسىي نومۇردىن كەلگەن ئۇچۇرنى توستى</string>
-    <string name="blacklist_notification_list_private">شەخسىي</string>
-    <string name="blacklist_notification_unknown_number">يوچۇن نومۇر %s دىن كەلگەن بىر ئۇچۇرنى توستى</string>
-    <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> ئۇچۇر توسۇلدى</string>
-    <string name="unblock_number">توسما</string>
     <string name="add_to_blacklist">قارا تىزىمغا قوش</string>
     <string name="add_to_blacklist_message">كەلگۈسىدە %s دىن كەلگەن ئۇچۇرنى توسىدۇ</string>
     <string name="alert_dialog_yes">ھەئە</string>

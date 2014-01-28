@@ -80,12 +80,6 @@
     <string name="blacklist_title">Чёрный список</string>
     <string name="blacklist_summary_disabled">Выключен</string>
     <string name="blacklist_summary">Входящие сообщения от абонентов из чёрного списка будут блокироваться</string>
-    <string name="blacklist_notification">Сообщение от %s заблокировано</string>
-    <string name="blacklist_notification_private_number">Сообщение от неизвестного номера заблокировано</string>
-    <string name="blacklist_notification_list_private">Скрытый</string>
-    <string name="blacklist_notification_unknown_number">Заблокирован неизвестный номер %s</string>
-    <string name="blacklist_notification_multiple">Заблокировано сообщений: <xliff:g id="count">%d</xliff:g></string>
-    <string name="unblock_number">Разблокировать</string>
     <string name="add_to_blacklist">Добавить в чёрный список</string>
     <string name="add_to_blacklist_message">Будущие сообщения от %s будут блокироваться</string>
     <string name="alert_dialog_yes">Да</string>

@@ -80,12 +80,6 @@
     <string name="blacklist_title">黑名单</string>
     <string name="blacklist_summary_disabled">禁用</string>
     <string name="blacklist_summary">来自于黑名单中电话号码的短信信息将会被阻止</string>
-    <string name="blacklist_notification">来自于 %s 的信息已被阻止</string>
-    <string name="blacklist_notification_private_number">阻止来自于私人号码的信息</string>
-    <string name="blacklist_notification_list_private">私人号码</string>
-    <string name="blacklist_notification_unknown_number">来自于未知号码 %s 的信息已阻止</string>
-    <string name="blacklist_notification_multiple">已阻止<xliff:g id="count">%d</xliff:g> 条信息</string>
-    <string name="unblock_number">解除阻止</string>
     <string name="add_to_blacklist">添加到黑名单</string>
     <string name="add_to_blacklist_message">未来来自于 %s 的信息将会被阻止</string>
     <string name="alert_dialog_yes">是</string>

@@ -25,9 +25,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import android.app.Activity;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -53,15 +50,11 @@ import android.provider.Telephony.Sms.Outbox;
 import android.telephony.ServiceState;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.text.format.DateUtils;
-import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.android.internal.telephony.TelephonyIntents;
-import com.android.internal.telephony.util.BlacklistUtils;
 import com.android.mms.LogTag;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
@@ -125,27 +118,6 @@ public class SmsReceiverService extends Service {
     public static final String DATA_COUNTDOWN = "DATA_COUNTDOWN";
     public static final String DATA_MESSAGE_URI = "DATA_MESSAGE_URI";
     private static final long TIMER_DURATION = 1000;
-
-    // Blacklist support
-    private static final String REMOVE_BLACKLIST = "com.android.mms.action.REMOVE_BLACKLIST";
-    private static final String EXTRA_NUMBER = "number";
-    private static final String EXTRA_FROM_NOTIFICATION = "fromNotification";
-    private static final int BLACKLISTED_MESSAGE_NOTIFICATION = 119911;
-
-    // Used to track blacklisted messages
-    private static class BlacklistedMessageInfo {
-        String number;
-        long date;
-        int matchType;
-
-        BlacklistedMessageInfo(String number, long date, int matchType) {
-            this.number = number;
-            this.date = date;
-            this.matchType = matchType;
-        }
-    };
-    private ArrayList<BlacklistedMessageInfo> mBlacklistedMessages =
-            new ArrayList<BlacklistedMessageInfo>();
 
     @Override
     public void onCreate() {
@@ -254,14 +226,6 @@ public class SmsReceiverService extends Service {
                     handleSendMessage();
                 } else if (ACTION_SEND_INACTIVE_MESSAGE.equals(action)) {
                     handleSendInactiveMessage();
-                } else if (REMOVE_BLACKLIST.equals(action)) {
-                    if (intent.getBooleanExtra(EXTRA_FROM_NOTIFICATION, false)) {
-                        // Dismiss the notification that brought us here
-                        cancelBlacklistedMessageNotification();
-                        BlacklistUtils.addOrUpdate(SmsReceiverService.this,
-                                intent.getStringExtra(EXTRA_NUMBER),
-                                0, BlacklistUtils.BLOCK_MESSAGES);
-                    }
                 }
             }
             // NOTE: We MUST not call stopSelf() directly, since we need to
@@ -585,140 +549,6 @@ public class SmsReceiverService extends Service {
         } else {
             return storeMessage(context, msgs, error);
         }
-    }
-
-    private boolean isBlacklisted(Context context, String number, long date) {
-        if (DEBUG) {
-            Log.d(TAG, "isBlacklisted(). number: " + number
-                + ", date: " + date + " is being checked against the blacklist");
-        }
-
-        int listType = BlacklistUtils.isListed(context, number, BlacklistUtils.BLOCK_MESSAGES);
-        if (listType != BlacklistUtils.MATCH_NONE) {
-            if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE) || LogTag.DEBUG_SEND) {
-                Log.v(TAG, "Incoming message from " + number + " blocked.");
-            }
-            showBlacklistNotification(context, number, date, listType);
-            return true;
-        }
-        return false;
-    }
-
-    private void showBlacklistNotification(Context context, String number, long date, int matchType) {
-        if (!BlacklistUtils.isBlacklistNotifyEnabled(context)) {
-            return;
-        }
-
-        if (DEBUG) {
-            Log.d(TAG, "notifyBlacklistedCall(). number: " + number
-                + ", match type: " + matchType + ", date: " + date);
-        }
-
-        // Keep track of the message, keeping list sorted from newest to oldest
-        mBlacklistedMessages.add(0, new BlacklistedMessageInfo(number, date, matchType));
-
-        // Get the intent to open Blacklist settings if user taps on content ready
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setClassName("com.android.settings", "com.android.settings.Settings$BlacklistSettingsActivity");
-        PendingIntent blSettingsIntent = PendingIntent.getActivity(context, 0, intent, 0);
-
-        // Start building the notification
-        Notification.Builder builder = new Notification.Builder(context);
-        builder.setSmallIcon(R.drawable.ic_block_message_holo_dark)
-                .setContentIntent(blSettingsIntent)
-                .setContentTitle(context.getString(R.string.blacklist_title))
-                .setWhen(date);
-
-        // Add the 'Remove block' notification action only for MATCH_LIST items since
-        // MATCH_REGEX and MATCH_PRIVATE items does not have an associated specific number
-        // to unblock, and MATCH_UNKNOWN unblock for a single number does not make sense.
-        boolean addUnblockAction = true;
-
-        if (mBlacklistedMessages.size() == 1) {
-            String message;
-            switch (matchType) {
-                case BlacklistUtils.MATCH_PRIVATE:
-                    message = context.getString(R.string.blacklist_notification_private_number);
-                    break;
-                case BlacklistUtils.MATCH_UNKNOWN:
-                    message = context.getString(R.string.blacklist_notification_unknown_number, number);
-                    break;
-                default:
-                    message = context.getString(R.string.blacklist_notification, number);
-            }
-            builder.setContentText(message);
-
-            if (matchType != BlacklistUtils.MATCH_LIST) {
-                addUnblockAction = false;
-            }
-        } else {
-            String message = context.getString(R.string.blacklist_notification_multiple,
-                    mBlacklistedMessages.size());
-
-            builder.setContentText(message)
-                    .setNumber(mBlacklistedMessages.size());
-
-            Notification.InboxStyle style = new Notification.InboxStyle(builder);
-
-            for (BlacklistedMessageInfo info : mBlacklistedMessages) {
-                // Takes care of displaying "Private" instead of an empty string
-                String numberString = TextUtils.isEmpty(info.number)
-                        ? context.getString(R.string.blacklist_notification_list_private)
-                        : info.number;
-                style.addLine(formatSingleCallLine(numberString, info.date));
-
-                if (!TextUtils.equals(number, info.number)) {
-                    addUnblockAction = false;
-                } else if (info.matchType != BlacklistUtils.MATCH_LIST) {
-                    addUnblockAction = false;
-                }
-            }
-            style.setBigContentTitle(message);
-            style.setSummaryText(" ");
-            builder.setStyle(style);
-        }
-
-        if (addUnblockAction) {
-            CharSequence action = context.getText(R.string.unblock_number);
-            builder.addAction(R.drawable.ic_unblock_message_holo_dark,
-                    context.getString(R.string.unblock_number),
-                    getUnblockNumberFromNotificationPendingIntent(context, number));
-        }
-
-        NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.notify(BLACKLISTED_MESSAGE_NOTIFICATION, builder.getNotification());
-    }
-
-    private void cancelBlacklistedMessageNotification() {
-        mBlacklistedMessages.clear();
-        NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.cancel(BLACKLISTED_MESSAGE_NOTIFICATION);
-    }
-
-    private PendingIntent getUnblockNumberFromNotificationPendingIntent(Context context, String number) {
-        Intent intent = new Intent(REMOVE_BLACKLIST);
-        intent.putExtra(EXTRA_NUMBER, number);
-        intent.putExtra(EXTRA_FROM_NOTIFICATION, true);
-        return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-    }
-
-    private static final RelativeSizeSpan TIME_SPAN = new RelativeSizeSpan(0.7f);
-
-    private CharSequence formatSingleCallLine(String caller, long date) {
-        int flags = DateUtils.FORMAT_SHOW_TIME;
-        if (!DateUtils.isToday(date)) {
-            flags |= DateUtils.FORMAT_SHOW_WEEKDAY;
-        }
-
-        SpannableStringBuilder lineBuilder = new SpannableStringBuilder();
-        lineBuilder.append(caller);
-        lineBuilder.append("  ");
-
-        int timeIndex = lineBuilder.length();
-        lineBuilder.append(DateUtils.formatDateTime(getApplicationContext(), date, flags));
-        lineBuilder.setSpan(TIME_SPAN, timeIndex, lineBuilder.length(), 0);
-
-        return lineBuilder;
     }
 
     /**
