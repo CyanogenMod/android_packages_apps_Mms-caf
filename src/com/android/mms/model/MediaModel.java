@@ -34,6 +34,7 @@ import android.util.Log;
 
 import com.android.mms.LogTag;
 import com.android.mms.MmsConfig;
+import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
 // TODO: remove dependency for SDK build
 
@@ -204,6 +205,11 @@ public abstract class MediaModel extends Model implements EventListener {
 
     public boolean isAudio() {
         return mTag.equals(SmilHelper.ELEMENT_TAG_AUDIO);
+    }
+
+    public boolean isVcard() {
+        return mTag.equals(SmilHelper.ELEMENT_TAG_REF)
+                && mContentType.toLowerCase().equals(ContentType.TEXT_VCARD.toLowerCase());
     }
 
     protected void initMediaDuration() throws MmsException {

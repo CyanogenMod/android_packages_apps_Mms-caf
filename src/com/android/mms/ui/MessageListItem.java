@@ -840,6 +840,7 @@ public class MessageListItem extends LinearLayout implements
 
     private void setOnClickListener(final MessageItem msgItem) {
         switch(msgItem.mAttachmentType) {
+            case WorkingMessage.VCARD:
             case WorkingMessage.IMAGE:
             case WorkingMessage.VIDEO:
                 mImageView.setOnClickListener(new OnClickListener() {
@@ -985,5 +986,18 @@ public class MessageListItem extends LinearLayout implements
     public void seekVideo(int seekTo) {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public void setVcard(Uri lookupUri, String name) {
+        showMmsView(true);
+
+        try {
+            mImageView.setImageResource(R.drawable.ic_attach_vcard);
+            mImageView.setVisibility(VISIBLE);
+        } catch (java.lang.OutOfMemoryError e) {
+            // shouldn't be here.
+            Log.e(TAG, "setVcard: out of memory: ", e);
+        }
     }
 }

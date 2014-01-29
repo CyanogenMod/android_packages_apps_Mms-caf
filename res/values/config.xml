@@ -54,4 +54,6 @@
 
     <!-- configuration for max sms message count -->
     <integer name="max_sms_message_count">-1</integer>
+    <!-- configuration for add vCard to MMS -->
+    <bool name="config_vcard">false</bool>
 </resources>
