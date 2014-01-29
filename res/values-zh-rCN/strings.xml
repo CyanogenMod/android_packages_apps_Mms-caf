@@ -87,6 +87,8 @@
     <string name="replace" msgid="7587904998114459388">"替换"</string>
     <string name="remove" msgid="4625444913256213175">"删除"</string>
     <string name="send" msgid="4589898724889248486">"发送"</string>
+    <string name="send_by_slot1">通过卡槽1发送</string>
+    <string name="send_by_slot2">通过卡槽2发送</string>
     <string name="mms" msgid="1587631213714914559">"彩信"</string>
     <string name="send_mms" msgid="2933162044872550662">"发送彩信"</string>
     <string name="all_threads" msgid="2663426830306307194">"所有会话"</string>

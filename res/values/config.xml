@@ -63,4 +63,6 @@
     <bool name="config_batchdelete">false</bool>
     <!-- configuration for showing messages by mailbox -->
     <bool name="config_mailbox_enable">false</bool>
+    <!-- configuration for display two send buttons -->
+    <bool name="config_btnstyle">false</bool>
 </resources>

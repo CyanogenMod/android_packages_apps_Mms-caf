@@ -280,4 +280,10 @@ public class AttachmentEditor extends LinearLayout {
     private int getSizeWithOverHead(int size) {
         return (size + KILOBYTE -1) / KILOBYTE + 1;
     }
+
+    public void hideSlideshowSendButton() {
+        if (mSendButton != null) {
+            mSendButton.setVisibility(View.GONE);
+        }
+    }
 }
