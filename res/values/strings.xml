@@ -92,6 +92,7 @@
     <string name="delete_thread">Delete thread</string>
     <!-- Context menu item on an individual message for forwarding it to another recipient -->
     <string name="menu_forward">Forward</string>
+    <string name="menu_forward_conversation">Forward conversation</string>
     <!-- Context menu item on an failed message for resending -->
     <string name="menu_resend">Resend</string>
     <!-- Text of a button appearing for MMS messages that have not yet been downloaded, causing the message
@@ -865,6 +866,7 @@
     <string name="pref_summary_enable_signature">SMS signature enabled</string>
     <string name="pref_summary_disable_signature">SMS signature disabled</string>
     <string name="pref_title_edit_signature">Edit SMS signature</string>
+    <string name="operate_success">Operate successfully!</string>
     <!-- SMSC -->
     <string name="pref_smsc_title">SMSC Setings</string>
     <string name="pref_one_smcs">"Set the SIM's smsc number"</string>
@@ -880,7 +882,7 @@
     <!-- Gray hint displayed in the search field in Contacts when empty -->
     <string name="search_bar_hint">Search contacts</string>
     <string name="select_all">All</string>
-    <string name="operate_success">Operate successfully!</string>
+
     <string name="operate_failure">Operate unsuccessfully!</string>
     <string name="menu_reply">Reply</string>
 
@@ -947,4 +949,14 @@
     <string name="status_expired">Mms expired</string>
 
     <string name="mms_size_indicator"><xliff:g id="mms_size">%1$s</xliff:g>K/<xliff:g id="all_size">%2$s</xliff:g>K</string>
+    <!-- batch delete message in ConversationList and MailBoxMessageList -->
+    <string name="selected_all">Select all</string>
+    <string name="deselected_all">Deselect all</string>
+    <string name="selected_count"><xliff:g id="COUNT">%d</xliff:g> selected</string>
+    <!--add for toast when deleting -->
+    <string name="deleting_title">Deleting</string>
+    <string name="please_wait">Please waiting...</string>
+    <string name="done_delete">DONE</string>
+    <!--add for toast when merging sms -->
+    <string name="merging_sms_title">Merging sms</string>
 </resources>

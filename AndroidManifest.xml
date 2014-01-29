@@ -282,6 +282,12 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ui.ManageMultiSelectAction"
+              android:theme="@style/MmsHoloTheme"
+              android:uiOptions="splitActionBarWhenNarrow"
+              android:configChanges="orientation|screenSize|keyboardHidden">
+        </activity>
+
         <service android:name=".ui.SelectMmsSubscription"
             android:exported="true">
         </service>

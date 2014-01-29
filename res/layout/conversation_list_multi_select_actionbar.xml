@@ -44,4 +44,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+     <ImageView
+        android:id="@+id/selecte_all"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:paddingRight="2dip"
+        android:layout_marginTop="-5dip"
+        android:layout_width="58dip"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_menu_select_all"/>
+
 </LinearLayout>
