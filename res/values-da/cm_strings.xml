@@ -92,4 +92,19 @@
     <string name="menu_mobile">Kun mobilnumre</string>
     <string name="menu_groups">Vis grupper</string>
     <string name="fastscroll_index_groups">GR</string>
+    <string name="pref_title_send_delay">Forsinket afsendelse</string>
+    <string name="send_delay_immediate">Send straks</string>
+    <string name="send_delay_3seconds">3 sekunder</string>
+    <string name="send_delay_5seconds">5 sekunder</string>
+    <string name="send_delay_10seconds">10 sekunder</string>
+    <string name="send_delay_20seconds">20 sekunder</string>
+    <string name="send_delay_30seconds">30 sekunder</string>
+    <string name="sent_countdown">Nedtælling til afsendelse af besked</string>
+    <string name="pref_title_mms_notification_vibrate_pattern">Vibrationsmønster</string>
+    <string name="pref_summary_mms_notification_vibrate_pattern">Skift vibrationsmønster</string>
+    <string name="pref_mms_notification_vibrate_normal">Normal</string>
+    <string name="pref_mms_notification_vibrate_med_vib">Medium vibration</string>
+    <string name="pref_mms_notification_vibrate_long_vib">Lang vibration</string>
+    <string name="pref_mms_notification_vibrate_mult_short">Flere korte</string>
+    <string name="pref_mms_notification_vibrate_mult_long">Flere lange</string>
 </resources>
