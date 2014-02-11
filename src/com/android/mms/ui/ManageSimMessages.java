@@ -32,8 +32,14 @@ import android.database.sqlite.SqliteWrapper;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.ContactsContract.Contacts;
+import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.Telephony.Sms;
 import android.telephony.SmsManager;
+import android.text.TextUtils;
+import android.text.SpannableString;
+import android.text.style.URLSpan;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -45,8 +51,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.internal.telephony.MSimConstants;
+import com.android.mms.data.Contact;
 import com.android.mms.R;
 import com.android.mms.transaction.MessagingNotification;
+import java.util.ArrayList;
 
 /**
  * Displays a list of the SMS messages stored on the ICC.
@@ -54,13 +62,18 @@ import com.android.mms.transaction.MessagingNotification;
 public class ManageSimMessages extends Activity
         implements View.OnCreateContextMenuListener {
     private static final Uri ICC_URI = Uri.parse("content://sms/icc");
+    private static final Uri ICC1_URI = Uri.parse("content://sms/icc1");
+    private static final Uri ICC2_URI = Uri.parse("content://sms/icc2");
     private static final String TAG = "ManageSimMessages";
     private static final int MENU_COPY_TO_PHONE_MEMORY = 0;
     private static final int MENU_DELETE_FROM_SIM = 1;
     private static final int MENU_VIEW = 2;
+    private static final int MENU_REPLY = 3;
+    private static final int MENU_FORWARD = 4;
+    private static final int MENU_CALL_BACK = 5;
+    private static final int MENU_ADD_ADDRESS_TO_CONTACTS = 6;
+    private static final int MENU_SEND_EMAIL = 7;
     private static final int OPTION_MENU_DELETE_ALL = 0;
-
-    private static final int SUB_INVALID = -1;
 
     private static final int SHOW_LIST = 0;
     private static final int SHOW_EMPTY = 1;
@@ -68,6 +81,7 @@ public class ManageSimMessages extends Activity
     private int mState;
     private int mSubscription;
 
+    private Uri mIccUri;
     private ContentResolver mContentResolver;
     private Cursor mCursor = null;
     private ListView mSimList;
@@ -88,7 +102,11 @@ public class ManageSimMessages extends Activity
     @Override
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        mSubscription = getIntent().getIntExtra(MSimConstants.SUBSCRIPTION_KEY, SUB_INVALID);
+
+        mSubscription = getIntent().getIntExtra(MSimConstants.SUBSCRIPTION_KEY,
+                MSimConstants.INVALID_SUBSCRIPTION);
+        mIccUri = getIccUriBySubscription(mSubscription);
+
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
         mContentResolver = getContentResolver();
@@ -116,6 +134,17 @@ public class ManageSimMessages extends Activity
 
         updateState(SHOW_BUSY);
         startQuery();
+    }
+
+    private Uri getIccUriBySubscription(int subscription) {
+        switch (subscription) {
+            case MSimConstants.SUB1:
+                return ICC1_URI;
+            case MSimConstants.SUB2:
+                return ICC2_URI;
+            default:
+                return ICC_URI;
+        }
     }
 
     private class QueryHandler extends AsyncQueryHandler {
@@ -161,7 +190,7 @@ public class ManageSimMessages extends Activity
 
     private void startQuery() {
         try {
-            mQueryHandler.startQuery(0, null, ICC_URI, null, null, null, null);
+            mQueryHandler.startQuery(0, null, mIccUri, null, null, null, null);
         } catch (SQLiteException e) {
             SqliteWrapper.checkSQLiteException(this, e);
         }
@@ -184,8 +213,109 @@ public class ManageSimMessages extends Activity
                  R.string.sim_copy_to_phone_memory);
         menu.add(0, MENU_DELETE_FROM_SIM, 0, R.string.sim_delete);
 
+        Cursor cursor = mListAdapter.getCursor();
+        if (isIncomingMessage(cursor)) {
+            String address = cursor.getString(cursor.getColumnIndexOrThrow("address"));
+            Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("smsto", address, null));
+            menu.add(0, MENU_REPLY, 0, R.string.menu_reply).setIntent(intent);
+        }
+        menu.add(0, MENU_FORWARD, 0, R.string.menu_forward);
+        addCallAndContactMenuItems(menu, cursor);
+
         // TODO: Enable this once viewMessage is written.
         // menu.add(0, MENU_VIEW, 0, R.string.sim_view);
+    }
+
+    // refs to ComposeMessageActivity.java
+    private final void addCallAndContactMenuItems(
+            ContextMenu menu, Cursor cursor) {
+        String address = cursor.getString(cursor.getColumnIndexOrThrow("address"));
+        String body = cursor.getString(cursor.getColumnIndexOrThrow("body"));
+        // Add all possible links in the address & message
+        StringBuilder textToSpannify = new StringBuilder();
+        if (address != null) {
+            textToSpannify.append(address + ": ");
+        }
+        textToSpannify.append(body);
+
+        SpannableString msg = new SpannableString(textToSpannify.toString());
+        Linkify.addLinks(msg, Linkify.ALL);
+        ArrayList<String> uris =
+            MessageUtils.extractUris(msg.getSpans(0, msg.length(), URLSpan.class));
+
+        while (uris.size() > 0) {
+            String uriString = uris.remove(0);
+            // Remove any dupes so they don't get added to the menu multiple times
+            while (uris.contains(uriString)) {
+                uris.remove(uriString);
+            }
+
+            int sep = uriString.indexOf(":");
+            String prefix = null;
+            if (sep >= 0) {
+                prefix = uriString.substring(0, sep);
+                uriString = uriString.substring(sep + 1);
+            }
+            boolean addToContacts = false;
+            if ("mailto".equalsIgnoreCase(prefix))  {
+                String sendEmailString = getString(
+                        R.string.menu_send_email).replace("%s", uriString);
+                Intent intent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("mailto:" + uriString));
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                menu.add(0, MENU_SEND_EMAIL, 0, sendEmailString)
+                    .setIntent(intent);
+                addToContacts = !haveEmailContact(uriString);
+            } else if ("tel".equalsIgnoreCase(prefix)) {
+                String callBackString = getString(
+                        R.string.menu_call_back).replace("%s", uriString);
+                Intent intent = new Intent(Intent.ACTION_CALL,
+                        Uri.parse("tel:" + uriString));
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                addToContacts = !isNumberInContacts(uriString);
+                if (addToContacts) {
+                    menu.add(0, MENU_CALL_BACK, 0, callBackString).setIntent(intent);
+                } else {
+                    // Get the name by the number if the number has been saved
+                    // in Contacts.
+                    String name = Contact.get(uriString, false).getName();
+                    menu.add(0, MENU_CALL_BACK, 0,
+                            getString(R.string.menu_call_back).replace("%s", name)).setIntent(
+                            intent);
+                }
+            }
+            if (addToContacts) {
+                Intent intent = ConversationList.createAddContactIntent(uriString);
+                String addContactString = getString(
+                        R.string.menu_add_address_to_contacts).replace("%s", uriString);
+                menu.add(0, MENU_ADD_ADDRESS_TO_CONTACTS, 0, addContactString)
+                    .setIntent(intent);
+            }
+        }
+    }
+
+    private boolean haveEmailContact(String emailAddress) {
+        Cursor cursor = SqliteWrapper.query(this, getContentResolver(),
+                Uri.withAppendedPath(Email.CONTENT_LOOKUP_URI, Uri.encode(emailAddress)),
+                new String[] { Contacts.DISPLAY_NAME }, null, null, null);
+
+        if (cursor != null) {
+            try {
+                while (cursor.moveToNext()) {
+                    String name = cursor.getString(0);
+                    if (!TextUtils.isEmpty(name)) {
+                        return true;
+                    }
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        return false;
+    }
+
+    private boolean isNumberInContacts(String phoneNumber) {
+        return Contact.get(phoneNumber, true).existsInDatabase();
     }
 
     @Override
@@ -210,14 +340,31 @@ public class ManageSimMessages extends Activity
                         updateState(SHOW_BUSY);
                         deleteFromSim(cursor);
                         dialog.dismiss();
+                        invalidateOptionsMenu();
                     }
                 }, R.string.confirm_delete_SIM_message);
                 return true;
+            case MENU_FORWARD: {
+                String smsBody = cursor.getString(cursor.getColumnIndexOrThrow("body"));
+                forwardMessage(smsBody);
+                return true;
+            }
             case MENU_VIEW:
                 viewMessage(cursor);
                 return true;
         }
         return super.onContextItemSelected(item);
+    }
+
+    private void forwardMessage(String smsBody) {
+        Intent intent = new Intent(this, ComposeMessageActivity.class);
+
+        intent.putExtra("exit_on_sent", true);
+        intent.putExtra("forwarded_message", true);
+
+        intent.putExtra("sms_body", smsBody);
+        intent.setClassName(this, "com.android.mms.ui.ForwardMessageActivity");
+        startActivity(intent);
     }
 
     @Override
@@ -234,7 +381,7 @@ public class ManageSimMessages extends Activity
 
     private void registerSimChangeObserver() {
         mContentResolver.registerContentObserver(
-                ICC_URI, true, simChangeObserver);
+                mIccUri, true, simChangeObserver);
     }
 
     private void copyToPhoneMemory(Cursor cursor) {

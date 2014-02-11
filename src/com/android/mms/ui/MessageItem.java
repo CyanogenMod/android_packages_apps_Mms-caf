@@ -110,6 +110,7 @@ public class MessageItem {
     private PduLoadedCallback mPduLoadedCallback;
     private ItemLoadedFuture mItemLoadedFuture;
     int mLayoutType = LayoutModel.DEFAULT_LAYOUT_TYPE;
+    long mDate;
 
     MessageItem(Context context, String type, final Cursor cursor,
             final ColumnsMap columnsMap, Pattern highlight) throws MmsException {
@@ -156,9 +157,25 @@ public class MessageItem {
             mSubscription = cursor.getInt(columnsMap.mColumnSubId);
             // Unless the message is currently in the progress of being sent, it gets a time stamp.
             if (!isOutgoingMessage()) {
-                // Set "received" or "sent" time stamp
-                long date = cursor.getLong(columnsMap.mColumnSmsDate);
-                mTimestamp = MessageUtils.formatTimeStampString(context, date);
+                if (mBoxId == Sms.MESSAGE_TYPE_SENT) {
+                    // Set "sent" time stamp
+                    mDate = cursor.getLong(columnsMap.mColumnSmsDate);
+                    //cdma sms stored in UIM card don not have timestamp
+                    if (0 == mDate) {
+                        mDate = System.currentTimeMillis();
+                    }
+                    mTimestamp = String.format(context.getString(R.string.sent_on),
+                            MessageUtils.formatTimeStampString(context, mDate));
+                } else {
+                    // Set "received" time stamp
+                    mDate = cursor.getLong(columnsMap.mColumnSmsDate);
+                    //cdma sms stored in UIM card don not have timestamp
+                    if (0 == mDate) {
+                        mDate = System.currentTimeMillis();
+                    }
+                    mTimestamp = String.format(context.getString(R.string.received_on),
+                            MessageUtils.formatTimeStampString(context, mDate));
+                }
             }
 
             mLocked = cursor.getInt(columnsMap.mColumnSmsLocked) != 0;
@@ -409,7 +426,14 @@ public class MessageItem {
                     mTimestamp = mContext.getString(R.string.expire_on,
                             MessageUtils.formatTimeStampString(mContext, timestamp));
                 } else {
-                    mTimestamp =  MessageUtils.formatTimeStampString(mContext, timestamp);
+                    // add judgement the Mms is sent or received and format mTimestamp
+                    if (mBoxId == Sms.MESSAGE_TYPE_SENT) {
+                        mTimestamp = String.format(mContext.getString(R.string.sent_on),
+                                MessageUtils.formatTimeStampString(mContext, timestamp));
+                    } else {
+                        mTimestamp = String.format(mContext.getString(R.string.received_on),
+                                MessageUtils.formatTimeStampString(mContext, timestamp));
+                    }
                 }
             }
             if (mPduLoadedCallback != null) {
