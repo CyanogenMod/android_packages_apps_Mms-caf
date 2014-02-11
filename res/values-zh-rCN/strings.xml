@@ -418,6 +418,11 @@
     <string name="set_smsc_error">设置短消息中心号码失败</string>
     <string name="set_smsc_success">设置短消息中心号码成功</string>
     <string name="set_smsc_confirm_message">修改短消息中心号码可能导致短信发送失败，确认修改吗？</string>
+    <string name="copy_to_sim">"复制到SIM卡"</string>
+    <string name="copy_to_sim_success">"信息已保存"</string>
+    <string name="copy_to_sim_fail">"信息保存失败"</string>
+    <string name="copy_to_phone_success">"信息已保存"</string>
+    <string name="copy_to_phone_fail">"信息保存失败"</string>
 
     <string name="open_wap_push_title">"浏览器信息"</string>
     <string name="open_wap_push_body">"是否要访问网站？"</string>

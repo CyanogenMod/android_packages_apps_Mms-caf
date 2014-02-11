@@ -872,6 +872,11 @@
     <string name="pref_summary_disable_signature">SMS signature disabled</string>
     <string name="pref_title_edit_signature">Edit SMS signature</string>
     <string name="operate_success">Operate successfully!</string>
+    <string name="copy_to_sim">Copy message to SIM card</string>
+    <string name="copy_to_sim_success">Message saved</string>
+    <string name="copy_to_sim_fail">Unable to save message</string>
+    <string name="copy_to_phone_success">Message saved</string>
+    <string name="copy_to_phone_fail">Unable to save message</string>
     <!-- SMSC -->
     <string name="pref_smsc_title">SMSC Setings</string>
     <string name="pref_one_smcs">"Set the SIM's smsc number"</string>
