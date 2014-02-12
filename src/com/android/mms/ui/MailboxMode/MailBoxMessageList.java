@@ -362,27 +362,26 @@ public class MailBoxMessageList extends ListActivity implements
                                 MailBoxMessageList.this, cursor);
                         invalidateOptionsMenu();
                         MailBoxMessageList.this.setListAdapter(mListAdapter);
-                        View emptyView = (View) findViewById(R.id.emptyview);
-                        mListView.setEmptyView(emptyView);
-                    } else {
-                        mListAdapter.changeCursor(mCursor);
-                        if (cursor.getCount() > 0) {
-                            mCountTextView.setVisibility(View.VISIBLE);
-                            if (mQueryBoxType == TYPE_INBOX) {
-                                int count = 0;
-                                while (cursor.moveToNext()) {
-                                    if (cursor.getInt(COLUMN_SMS_READ) == 0
-                                            || cursor.getInt(COLUMN_MMS_READ) == 0) {
-                                        count++;
-                                    }
+                    }
+                    View emptyView = (View) findViewById(R.id.emptyview);
+                    mListAdapter.changeCursor(mCursor);
+                    if (cursor.getCount() > 0) {
+                        mCountTextView.setVisibility(View.VISIBLE);
+                        if (mQueryBoxType == TYPE_INBOX) {
+                            int count = 0;
+                            while (cursor.moveToNext()) {
+                                if (cursor.getInt(COLUMN_SMS_READ) == 0
+                                        || cursor.getInt(COLUMN_MMS_READ) == 0) {
+                                    count++;
                                 }
-                                mCountTextView.setText("" + count + "/" + cursor.getCount());
-                            } else {
-                                mCountTextView.setText("" + cursor.getCount());
                             }
+                            mCountTextView.setText("" + count + "/" + cursor.getCount());
                         } else {
-                            mCountTextView.setVisibility(View.INVISIBLE);
+                            mCountTextView.setText("" + cursor.getCount());
                         }
+                    } else {
+                        mListView.setEmptyView(emptyView);
+                        mCountTextView.setVisibility(View.INVISIBLE);
                     }
                 } else {
                     if (LogTag.VERBOSE || Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
