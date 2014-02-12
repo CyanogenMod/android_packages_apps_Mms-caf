@@ -58,6 +58,7 @@ import com.android.internal.telephony.TelephonyProperties;
 import com.android.mms.LogTag;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
+import com.android.mms.ui.MessageUtils;
 import com.android.mms.util.DownloadManager;
 import com.android.mms.util.MultiSimUtility;
 import com.android.mms.util.RateController;
@@ -269,8 +270,7 @@ public class TransactionService extends Service implements Observer {
             stopSelf(serviceId);
             return;
         }
-        NetworkInfo ni = mConnMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE_MMS);
-        boolean noNetwork = ni == null || !ni.isAvailable();
+        boolean noNetwork = !isNetworkAvailable();
 
         if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE) || DEBUG) {
             Log.v(TAG, "onNewIntent: serviceId: " + serviceId + ": " + intent.getExtras() +
@@ -498,6 +498,19 @@ public class TransactionService extends Service implements Observer {
 
     private static boolean isTransientFailure(int type) {
         return type >= MmsSms.NO_ERROR && type < MmsSms.ERR_TYPE_GENERIC_PERMANENT;
+    }
+
+    private boolean isNetworkAvailable() {
+        if (mConnMgr == null) {
+            return false;
+        } else {
+            NetworkInfo ni = mConnMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE_MMS);
+            if (ni == null) {
+                return false;
+            } else {
+                return ni.isAvailable() && !MessageUtils.isMobileDataDisabled(this);
+            }
+        }
     }
 
     private int getTransactionType(int msgType) {
