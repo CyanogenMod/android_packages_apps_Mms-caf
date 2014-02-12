@@ -70,4 +70,6 @@
     <integer name="config_max_smstomms">0</integer>
     <!-- configuration for prefer SMS save location -->
     <bool name="config_savelocation">false</bool>
+    <!-- configuration for sms priority -->
+    <bool name="support_sms_priority">false</bool>
 </resources>

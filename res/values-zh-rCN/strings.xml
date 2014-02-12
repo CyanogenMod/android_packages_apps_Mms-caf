@@ -497,4 +497,12 @@
     <string name="sms_phone_capacity">"短信容量:"</string>
     <string name="mms_phone_used">"已用彩信:"</string>
     <string name="mms_phone_capacity">"彩信容量:"</string>
+    <!-- priority of cdma message -->
+    <string name="cdma_priority_normal">一般</string>
+    <string name="cdma_priority_interactive">交互</string>
+    <string name="cdma_priority_urgent">急</string>
+    <string name="cdma_priority_emergency">紧急</string>
+    <string name="pref_title_cdma_priority">短信优先级</string>
+    <string name="pref_summary_cdma_priority">CDMA短信优先级设置</string>
+    <string name="prefDialogTitle_cdma_priority">优先级</string>
 </resources>

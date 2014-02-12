@@ -91,6 +91,15 @@ public class SmsMessageSender implements MessageSender {
                 MessagingPreferenceActivity.SMS_DELIVERY_REPORT_MODE,
                 DEFAULT_DELIVERY_REPORT_MODE);
 
+        int priority = -1;
+        try {
+            String priorityStr = PreferenceManager.getDefaultSharedPreferences(mContext).getString(
+                    "pref_key_sms_cdma_priority", "");
+            priority = Integer.parseInt(priorityStr);
+        } catch (Exception e) {
+            Log.w(TAG, "get priority error:" + e);
+        }
+
         for (int i = 0; i < mNumberOfDests; i++) {
             try {
                 if (LogTag.DEBUG_SEND) {
@@ -102,7 +111,7 @@ public class SmsMessageSender implements MessageSender {
                         mMessageText, null, mTimestamp,
                         true /* read */,
                         requestDeliveryReport,
-                        mThreadId, mSubscription);
+                        mThreadId, mSubscription, priority);
             } catch (SQLiteException e) {
                 if (LogTag.DEBUG_SEND) {
                     Log.e(TAG, "queueMessage SQLiteException", e);

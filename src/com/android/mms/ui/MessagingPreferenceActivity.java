@@ -87,6 +87,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     public static final String RETRIEVAL_DURING_ROAMING = "pref_key_mms_retrieval_during_roaming";
     public static final String AUTO_DELETE              = "pref_key_auto_delete";
     public static final String GROUP_MMS_MODE           = "pref_key_mms_group_mms";
+    public static final String SMS_CDMA_PRIORITY        = "pref_key_sms_cdma_priority";
 
     // Expiry of MMS
     private final static String EXPIRY_ONE_WEEK = "604800"; // 7 * 24 * 60 * 60
@@ -232,6 +233,11 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mSmsStoreCard1Pref = (ListPreference) findPreference("pref_key_sms_store_card1");
         mSmsStoreCard2Pref = (ListPreference) findPreference("pref_key_sms_store_card2");
 
+        if (!getResources().getBoolean(R.bool.support_sms_priority)) {
+            Preference priorotySettings = findPreference(SMS_CDMA_PRIORITY);
+            PreferenceScreen prefSet = getPreferenceScreen();
+            prefSet.removePreference(priorotySettings);
+        }
         setMessagePreferences();
     }
 
