@@ -48,7 +48,9 @@ import android.provider.Settings;
 import android.telephony.MSimSmsManager;
 import android.telephony.MSimTelephonyManager;
 import android.telephony.TelephonyManager;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
@@ -89,6 +91,9 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private final static String EXPIRY_ONE_WEEK = "604800"; // 7 * 24 * 60 * 60
     private final static String EXPIRY_TWO_DAYS = "172800"; // 2 * 24 * 60 * 60
 
+    private final static int MAX_SIGNATURE_LENGTH = 64;
+
+    private static final String TAG = "MessagingPreferenceActivity";
     // Menu entries
     private static final int MENU_RESTORE_DEFAULTS    = 1;
 
@@ -556,7 +561,25 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
     private void registerListeners() {
         mRingtonePref.setOnPreferenceChangeListener(this);
+        mSmsSignatureEditPref.getEditText().addTextChangedListener(mTextEditorWatcher);
     }
+
+    private final TextWatcher mTextEditorWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (s != null && s.length() == MAX_SIGNATURE_LENGTH) {
+                showToast(R.string.signature_full_toast);
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+        }
+    };
 
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         boolean result = false;

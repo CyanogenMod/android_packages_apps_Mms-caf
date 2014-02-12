@@ -398,6 +398,7 @@
     <string name="pref_summary_enable_signature">短信签名已启用</string>
     <string name="pref_summary_disable_signature">短信签名已禁用</string>
     <string name="pref_title_edit_signature">编辑短信签名</string>
+    <string name="signature_full_toast">"签名已达最大长度。"</string>
     <string name="normal_show">普通模式查看</string>
     <string name="cannot_play">无法播放该幻灯片</string>
     <string name="operate_success">"操作成功！"</string>
