@@ -287,7 +287,7 @@
     <string name="type_video" msgid="8521556159545168441">"视频"</string>
     <string name="confirm" msgid="3155110885840591914">"确认"</string>
     <string name="message_send_read_report" msgid="6997117678914261250">"将会发送已读报告。"</string>
-    <string name="message_queued" msgid="7975945623873194737">"目前无法发送短信，系统会在服务恢复后发送。"</string>
+    <string name="message_queued" msgid="7975945623873194737">"目前无法发送信息，系统会在服务恢复后发送。"</string>
     <string name="fdn_check_failure" msgid="7880740763778173551">"您只能向固定拨号号码发送信息。"</string>
     <string name="no_subject" msgid="4168963736134552285">"（无主题）"</string>
     <string name="unknown_sender" msgid="4929330613278853635">"未知发送者"</string>
