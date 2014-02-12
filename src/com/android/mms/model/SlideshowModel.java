@@ -407,8 +407,9 @@ public class SlideshowModel extends Model
                 totalMediaSize += media.getMediaSize();
             }
         }
-        int remainSize = MmsConfig.getMaxMessageSize() - totalMediaSize
-                - getTotalTextMessageSize();
+        // The totalMediaSize include text size which inputting before.
+        // So we don't calculate text size again.
+        int remainSize = MmsConfig.getMaxMessageSize() - totalMediaSize;
         return remainSize < SLIDESHOW_SLOP ? 0 : remainSize - SLIDESHOW_SLOP;
     }
 
@@ -793,6 +794,6 @@ public class SlideshowModel extends Model
         // mTotalMessageSize include resizable attachments, getTotalMessageSize
         // is called by UI for displaying the size of the MMS message, so set
         // mTotalMessageSize here rather than mCurrentMessageSize.
-        setTotalMessageSize(totalSize + getTotalTextMessageSize());
+        setTotalMessageSize(totalSize);
     }
 }
