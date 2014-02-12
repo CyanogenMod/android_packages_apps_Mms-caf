@@ -28,6 +28,7 @@
     <string name="menu_preferences" msgid="4693148116114749414">"设置"</string>
     <string name="menu_add_address_to_contacts" msgid="4491980950419914944">"将 <xliff:g id="CONTACTEMAILORNUMBER">%s</xliff:g> 添加到通讯录"</string>
     <string name="menu_call" msgid="5877123227307074690">"呼叫"</string>
+    <string name="menu_videocall">"可视电话"</string>
     <string name="menu_search" msgid="2289469305728821360">"搜索"</string>
     <string name="menu_delete_all" msgid="808729454898114735">"删除所有会话"</string>
     <string name="menu_delete" msgid="1851666911396479006">"删除会话"</string>
@@ -478,4 +479,13 @@
     <string name="please_wait">请稍等...</string>
     <string name="done_delete">完成</string>
     <string name="merging_sms_title">合并短信</string>
+    <!-- title of mailboxmessagecontent -->
+    <string name="sim_card">SIM卡</string>
+
+    <!-- String used in MemoryStatusActivity.java -->
+    <string name="memory_status_title">"存储状态"</string>
+    <string name="sms_phone_used">"已用短信:"</string>
+    <string name="sms_phone_capacity">"短信容量:"</string>
+    <string name="mms_phone_used">"已用彩信:"</string>
+    <string name="mms_phone_capacity">"彩信容量:"</string>
 </resources>

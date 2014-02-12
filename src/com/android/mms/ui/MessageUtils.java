@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
@@ -62,6 +63,7 @@ import android.telephony.MSimSmsManager;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.os.AsyncTask;
 import android.text.format.DateUtils;
 import android.text.format.Time;
 import android.text.style.URLSpan;
@@ -147,10 +149,15 @@ public class MessageUtils {
 
     // add for obtain mms data path
     private static final String MMS_DATA_DATA_DIR = "/data/data";
+    private static final String MMS_DATA_DIR = "/data/phonedata";
     // the remaining space , format as MB
     public static final long MIN_AVAILABLE_SPACE_MMS = 2 * 1024 * 1024;
     // distinguish view vcard from mms but not from contacts.
     public static final String VIEW_VCARD = "VIEW_VCARD_FROM_MMS";
+    private static final long BYTE_SIZE = 1024;
+
+    // add for query message count from iccsms table
+    public static final Uri ICC_SMS_URI = Uri.parse("content://sms/iccsms");
 
     // Cache of both groups of space-separated ids to their full
     // comma-separated display names, as well as individual ids to
@@ -174,7 +181,13 @@ public class MessageUtils {
         '-', '.', ',', '(', ')', ' ', '/', '\\', '*', '#', '+'
     };
 
+    // Dialog item options for number
+    private static final int DIALOG_ITEM_CALL         = 0;
+    private static final int DIALOG_ITEM_SMS          = 1;
+    private static final int DIALOG_ITEM_ADD_CONTACTS = 2;
     private static HashMap numericSugarMap = new HashMap (NUMERIC_CHARS_SUGAR.length);
+    //for showing memory status dialog.
+    private static AlertDialog memoryStatusDialog = null;
 
     public static final int ALL_RECIPIENTS_VALID   = 0;
     public static final int ALL_RECIPIENTS_INVALID = -1;
@@ -298,7 +311,7 @@ public class MessageUtils {
         // Message size: *** KB
         details.append('\n');
         details.append(res.getString(R.string.message_size_label));
-        details.append(String.valueOf((nInd.getMessageSize() + 1023) / 1024));
+        details.append(String.valueOf((nInd.getMessageSize() + 1023) / BYTE_SIZE));
         details.append(context.getString(R.string.kilobyte));
 
         return details.toString();
@@ -1405,11 +1418,6 @@ public class MessageUtils {
         return availableBlocks * blockSize;
     }
 
-    public static boolean isPhoneMemoryFull() {
-        long available = getStoreUnused();
-        return available < MIN_AVAILABLE_SPACE_MMS ;
-    }
-
     /* Used for check whether have memory for save mms */
     public static boolean isMmsMemoryFull() {
         boolean isMemoryFull = isPhoneMemoryFull();
@@ -1447,6 +1455,114 @@ public class MessageUtils {
         } else {
             MessagingNotification.updateSmsMessageFullIndicator(context, false);
         }
+    }
+
+    private static String getMmsDataDir() {
+        File data_file = new File(MMS_DATA_DIR);
+        if (data_file.exists()) {
+            return MMS_DATA_DIR;
+        }
+        return MMS_DATA_DATA_DIR;
+    }
+
+    public static long getMmsUsed(Context mContext) {
+        long dbSize = 0;
+        String dbPath = MMS_DATA_DATA_DIR + "/com.android.providers.telephony/databases/mmssms.db";
+        File dfFile = new File(dbPath);
+        dbSize = dfFile.length();
+        int mmsCount = 0;
+        int smsCount = 0;
+        long mmsfileSize = 0;
+        Uri MMS_URI = Uri.parse("content://mms");
+        Uri SMS_URI = Uri.parse("content://sms");
+        Cursor cursor = SqliteWrapper.query(mContext, mContext.getContentResolver(), MMS_URI,
+                new String[] {
+                    "m_size"
+                }, null, null, null);
+
+        if (cursor != null) {
+            try {
+                mmsCount = cursor.getCount();
+                if (mmsCount > 0) {
+                    cursor.moveToPosition(-1);
+                    while (cursor.moveToNext()) {
+                        mmsfileSize += (cursor.getInt(0) == 0 ? 50 * BYTE_SIZE : cursor.getInt(0));
+                    }
+                } else {
+                    return 0;
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        cursor = SqliteWrapper.query(mContext, mContext.getContentResolver(), SMS_URI,
+                new String[] {
+                    "_id"
+                }, null, null, null);
+        if (cursor != null) {
+            try {
+                smsCount = cursor.getCount();
+            } finally {
+                cursor.close();
+            }
+        }
+
+        Log.v(TAG, "mmsUsed =" + mmsfileSize);
+        long mmsMaxSize = dbSize;
+        long mmsMinSize = mmsCount * 3 * BYTE_SIZE;
+        long smsSize = smsCount * BYTE_SIZE;
+        return (mmsfileSize < mmsMinSize ? mmsMinSize : mmsfileSize);
+    }
+
+    public static long getStoreAll() {
+        File path = new File(getMmsDataDir());
+        StatFs stat = new StatFs(path.getPath());
+        long blockSize = stat.getBlockSize();
+        long allBlocks = stat.getBlockCount();
+        return allBlocks * blockSize;
+    }
+
+    public static long getStoreUsed() {
+        return getStoreAll() - getStoreUnused();
+    }
+
+    public static boolean isPhoneMemoryFull() {
+        long available = getStoreUnused();
+        if (available < MIN_AVAILABLE_SPACE_MMS) {
+            return true;
+        }
+        return false;
+    }
+
+    public static String formatMemorySize(long size) {
+        String suffix = null;
+        String kbStr = null;
+        boolean hasMb = false;
+        DecimalFormat formatter = new DecimalFormat();
+
+        // add KB or MB suffix if size is greater than 1K or 1M
+        if (size >= BYTE_SIZE) {
+            suffix = " KB";
+            size /= BYTE_SIZE;
+            kbStr = formatter.format(size);
+            if (size >= BYTE_SIZE) {
+                suffix = " MB";
+                size /= BYTE_SIZE;
+                hasMb = true;
+            }
+        }
+
+        formatter.setGroupingSize(3);
+        String result = formatter.format(size);
+
+        if (suffix != null) {
+            if (hasMb && kbStr != null) {
+                result = result + suffix + " (" + kbStr + " KB)";
+            } else {
+                result = result + suffix;
+            }
+        }
+        return result;
     }
 
     public static int getSmsMessageCount(Context context) {
@@ -1769,6 +1885,51 @@ public class MessageUtils {
             return c - '0';
         } else {
             throw new RuntimeException ("invalid char for BCD " + c);
+        }
+    }
+
+    public static void removeDialogs() {
+        if(memoryStatusDialog != null && memoryStatusDialog.isShowing()) {
+            memoryStatusDialog.dismiss();
+            memoryStatusDialog = null;
+        }
+    }
+
+    public static void showMemoryStatusDialog(Context context) {
+       new ShowDialog(context).execute();
+    }
+
+    private static class ShowDialog extends AsyncTask<String, Void, StringBuilder> {
+        private Context mContext;
+        public ShowDialog(Context context) {
+            mContext = context;
+        }
+
+        @Override
+        protected StringBuilder doInBackground(String... params) {
+            StringBuilder memoryStatus = new StringBuilder();
+            memoryStatus.append(mContext.getString(R.string.sms_phone_used));
+            memoryStatus.append(" " + getSmsMessageCount(mContext) + "\n");
+            memoryStatus.append(mContext.getString(R.string.sms_phone_capacity));
+            memoryStatus.append(" " + mContext.getResources()
+                    .getInteger(R.integer.max_sms_message_count) + "\n\n");
+            memoryStatus.append(mContext.getString(R.string.mms_phone_used));
+            memoryStatus.append(" " + formatMemorySize(getMmsUsed(mContext)) + "\n");
+            memoryStatus.append(mContext.getString(R.string.mms_phone_capacity));
+            memoryStatus.append(" " + formatMemorySize(getStoreAll()) + "\n");
+            return memoryStatus;
+        }
+        @Override
+        protected void onPostExecute(StringBuilder memoryStatus) {
+            if(memoryStatus != null && !memoryStatus.toString().isEmpty()) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle(R.string.memory_status_title);
+                builder.setCancelable(true);
+                builder.setPositiveButton(R.string.yes, null);
+                builder.setMessage(memoryStatus);
+                memoryStatusDialog = builder.create();
+                memoryStatusDialog.show();
+            }
         }
     }
 }

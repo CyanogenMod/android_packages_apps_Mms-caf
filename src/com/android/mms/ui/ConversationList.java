@@ -452,6 +452,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         super.onDestroy();
 
         Contact.clearListener();
+        MessageUtils.removeDialogs();
     }
 
     @Override
@@ -554,6 +555,10 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             if (item != null) {
                 item.setVisible(false);
             }
+            item = menu.findItem(R.id.action_memory_status);
+            if (item != null) {
+                item.setVisible(false);
+            }
         }
 
         if (!LogTag.DEBUG_DUMP) {
@@ -603,6 +608,9 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                 break;
             case R.id.action_debug_dump:
                 LogTag.dumpInternalTables(this);
+                break;
+            case R.id.action_memory_status:
+                MessageUtils.showMemoryStatusDialog(this);
                 break;
             case R.id.action_cell_broadcasts:
                 Intent cellBroadcastIntent = new Intent(Intent.ACTION_MAIN);

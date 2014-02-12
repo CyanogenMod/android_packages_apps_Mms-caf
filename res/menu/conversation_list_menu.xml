@@ -34,6 +34,9 @@
     <item android:id="@+id/action_change_mode"
         android:title="@string/change_mode"/>
 
+    <item android:id="@+id/action_memory_status"
+        android:title="@string/memory_status_title"/>
+
     <item android:id="@+id/action_delete_all"
         android:title="@string/menu_delete_all"
         android:icon="@drawable/ic_menu_trash_holo_dark" />

@@ -72,6 +72,7 @@ import com.android.mms.R;
 import com.android.mms.ui.MessageListAdapter;
 import com.android.mms.ui.PopupList;
 import com.android.mms.ui.SelectionMenu;
+import com.android.mms.ui.MessageUtils;
 import com.google.android.mms.pdu.PduHeaders;
 
 import static com.android.mms.ui.MessageListAdapter.MAILBOX_PROJECTION;
@@ -461,6 +462,9 @@ public class MailBoxMessageList extends ListActivity implements
                 startActivityIfNeeded(modeIntent, -1);
                 finish();
                 break;
+            case R.id.action_memory_status:
+                MessageUtils.showMemoryStatusDialog(this);
+                break;
             default:
                 return true;
         }
@@ -479,6 +483,7 @@ public class MailBoxMessageList extends ListActivity implements
         if (mListAdapter != null) {
             mListAdapter.changeCursor(null);
         }
+        MessageUtils.removeDialogs();
     }
 
     private void confirmDeleteMessages() {
