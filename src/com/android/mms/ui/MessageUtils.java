@@ -40,6 +40,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.Cursor;
@@ -53,6 +54,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.StatFs;
 import android.os.storage.StorageManager;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.provider.Telephony.Mms;
@@ -161,6 +163,9 @@ public class MessageUtils {
 
     // add for query message count from iccsms table
     public static final Uri ICC_SMS_URI = Uri.parse("content://sms/iccsms");
+
+    public static final int PREFER_SMS_STORE_PHONE = 0;
+    public static final int PREFER_SMS_STORE_CARD = 1;
 
     // Cache of both groups of space-separated ids to their full
     // comma-separated display names, as well as individual ids to
@@ -1409,7 +1414,7 @@ public class MessageUtils {
             if (subscription >= indexs.length) {
                 return null;
             }
-            return icons.getDrawable(Integer.parseInt(indexs[subscription]));
+            return null;// icons.getDrawable(Integer.parseInt(indexs[subscription]));
         }
     }
 
@@ -2022,4 +2027,20 @@ public class MessageUtils {
         return "";
     }
 
+    public static int getSmsPreferStoreLocation(Context context, int subscription) {
+        SharedPreferences prefsms = PreferenceManager.getDefaultSharedPreferences(context);
+        int preferStore = PREFER_SMS_STORE_PHONE;
+
+        if (isMultiSimEnabledMms()) {
+            if (subscription == MSimConstants.SUB1) {
+                preferStore = Integer.parseInt(prefsms.getString("pref_key_sms_store_card1", "0"));
+            } else {
+                preferStore = Integer.parseInt(prefsms.getString("pref_key_sms_store_card2", "0"));
+            }
+        } else {
+            preferStore = Integer.parseInt(prefsms.getString("pref_key_sms_store", "0"));
+        }
+
+        return preferStore;
+    }
 }

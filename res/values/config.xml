@@ -68,4 +68,6 @@
 
     <!-- configuration for max sms to mms text size -->
     <integer name="config_max_smstomms">0</integer>
+    <!-- configuration for prefer SMS save location -->
+    <bool name="config_savelocation">false</bool>
 </resources>
