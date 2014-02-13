@@ -42,6 +42,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
+import android.preference.PreferenceManager;
 import android.provider.Telephony.Sms;
 import android.provider.Telephony.Sms.Inbox;
 import android.provider.Telephony.Sms.Intents;
@@ -63,6 +64,7 @@ import com.android.mms.R;
 import com.android.mms.data.Contact;
 import com.android.mms.data.Conversation;
 import com.android.mms.ui.ClassZeroActivity;
+import com.android.mms.ui.MessageUtils;
 import com.android.mms.util.Recycler;
 import com.android.mms.util.SendingProgressTokenManager;
 import com.android.mms.widget.MmsWidgetProvider;
@@ -384,21 +386,43 @@ public class SmsReceiverService extends Service {
     private void handleSmsReceived(Intent intent, int error) {
         SmsMessage[] msgs = Intents.getMessagesFromIntent(intent);
         String format = intent.getStringExtra("format");
-        Uri messageUri = insertMessage(this, msgs, error, format);
 
-        if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE) || LogTag.DEBUG_SEND) {
-            SmsMessage sms = msgs[0];
-            Log.v(TAG, "handleSmsReceived" + (sms.isReplace() ? "(replace)" : "") +
-                    " messageUri: " + messageUri +
-                    ", address: " + sms.getOriginatingAddress() +
-                    ", body: " + sms.getMessageBody());
-        }
+        int saveLoc = MessageUtils.getSmsPreferStoreLocation(this, msgs[0].getSubId());
+        if (false/*getResources().getBoolean(R.bool.config_savelocation)*/
+                && saveLoc == MessageUtils.PREFER_SMS_STORE_CARD) {
+            for (int i = 0; i < msgs.length; i++) {
+                SmsMessage sms = msgs[i];
+                boolean saveSuccess = saveMessageToIcc(sms);
+                if (saveSuccess) {
+                    int subId = TelephonyManager.getDefault().isMultiSimEnabled()
+                            ? (int)sms.getSubId() : MessageUtils.SUB_INVALID;
+                    MessagingNotification.blockingUpdateNewIccMessageIndicator(this,
+                            sms.getDisplayOriginatingAddress(), sms.getDisplayMessageBody(),
+                            subId, sms.getTimestampMillis());
+                } else {
+                    Toast.makeText(this, getString(R.string.pref_sms_store_card_unknown_fail),
+                            Toast.LENGTH_LONG).show();
+                    break;
+                }
+            }
 
-        if (messageUri != null) {
-            long threadId = MessagingNotification.getSmsThreadId(this, messageUri);
-            // Called off of the UI thread so ok to block.
-            Log.d(TAG, "handleSmsReceived messageUri: " + messageUri + " threadId: " + threadId);
-            MessagingNotification.blockingUpdateNewMessageIndicator(this, threadId, false);
+        } else {
+            Uri messageUri = insertMessage(this, msgs, error, format);
+
+            if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE) || LogTag.DEBUG_SEND) {
+                SmsMessage sms = msgs[0];
+                Log.v(TAG, "handleSmsReceived" + (sms.isReplace() ? "(replace)" : "") +
+                        " messageUri: " + messageUri +
+                        ", address: " + sms.getOriginatingAddress() +
+                        ", body: " + sms.getMessageBody());
+            }
+
+            if (messageUri != null) {
+                long threadId = MessagingNotification.getSmsThreadId(this, messageUri);
+                // Called off of the UI thread so ok to block.
+                Log.d(TAG, "handleSmsReceived messageUri: " + messageUri + " threadId: " + threadId);
+                MessagingNotification.blockingUpdateNewMessageIndicator(this, threadId, false);
+            }
         }
     }
 
@@ -718,6 +742,16 @@ public class SmsReceiverService extends Service {
             // Allow un-matched register-unregister calls
         }
     }
+
+    private boolean saveMessageToIcc(SmsMessage sms) {
+        boolean result = true;
+        SmsManager sm = SmsManager.getDefault();
+        long subscription = sm.getDefaultSmsSubId();
+        byte pdu[] = MessageUtils.getDeliveryPdu(null, sms.getOriginatingAddress(),
+                sms.getMessageBody(), sms.getTimestampMillis(), subscription);
+        result &= TelephonyManager.getDefault().isMultiSimEnabled()
+                ? sm.copyMessageToIcc(subscription, null, pdu, SmsManager.STATUS_ON_ICC_READ)
+                : sm.copyMessageToIcc(null, pdu, SmsManager.STATUS_ON_ICC_READ);
+        return result;
+    }
 }
-
-

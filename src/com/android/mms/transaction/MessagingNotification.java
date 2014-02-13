@@ -26,11 +26,13 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.List;
 
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -76,6 +78,7 @@ import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
 import com.android.mms.ui.ComposeMessageActivity;
 import com.android.mms.ui.ConversationList;
+import com.android.mms.ui.ManageSimMessages;
 import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.MessagingPreferenceActivity;
 import com.android.mms.ui.MailBoxMessageList;
@@ -101,6 +104,10 @@ public class MessagingNotification {
     private static final boolean DEBUG = false;
 
     private static final int NOTIFICATION_ID = 123;
+    public static final int FULL_NOTIFICATION_ID   = 125;
+    private static final int ICC_NOTIFICATION_ID_SLOT1 = 126;
+    private static final int ICC_NOTIFICATION_ID_SLOT2 = 127;
+    private static final int ICC_NOTIFICATION_ID = 128;
     public static final int MESSAGE_FAILED_NOTIFICATION_ID = 789;
     public static final int DOWNLOAD_FAILED_NOTIFICATION_ID = 531;
     /**
@@ -116,6 +123,10 @@ public class MessagingNotification {
     // This must be consistent with the column constants below.
     private static final String[] SMS_STATUS_PROJECTION = new String[] {
         Sms.THREAD_ID, Sms.DATE, Sms.ADDRESS, Sms.SUBJECT, Sms.BODY, Sms.PHONE_ID };
+
+    private static final int[] NEW_ICC_NOTIFICATION_ID = new int[] {
+        ICC_NOTIFICATION_ID_SLOT1, ICC_NOTIFICATION_ID_SLOT2
+    };
 
     // These must be consistent with MMS_STATUS_PROJECTION and
     // SMS_STATUS_PROJECTION.
@@ -315,6 +326,90 @@ public class MessagingNotification {
 
         notificationSet.clear();
         threads.clear();
+    }
+
+    public static void blockingUpdateNewIccMessageIndicator(Context context, String address,
+            String message, int subId, long timeMillis) {
+        final Notification.Builder noti = new Notification.Builder(context).setWhen(timeMillis);
+        Contact contact = Contact.get(address, false);
+        NotificationInfo info = getNewIccMessageNotificationInfo(context, true /* isSms */,
+                address, message, null /* subject */, subId, timeMillis,
+                null /* attachmentBitmap */, contact, WorkingMessage.TEXT);
+        noti.setSmallIcon(R.drawable.stat_notify_sms);
+        NotificationManager nm = (NotificationManager)
+                context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+//        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        // Update the notification.
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,  info.mClickIntent, 0);
+        String title = info.mTitle;
+        noti.setContentTitle(title)
+            .setContentIntent(pendingIntent)
+                    //taskStackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT))
+            .setCategory(Notification.CATEGORY_MESSAGE)
+            .setPriority(Notification.PRIORITY_DEFAULT);
+
+        int defaults = 0;
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean vibrate = false;
+        if (sp.contains(MessagingPreferenceActivity.NOTIFICATION_VIBRATE)) {
+            // The most recent change to the vibrate preference is to store a boolean
+            // value in NOTIFICATION_VIBRATE. If prefs contain that preference, use that
+            // first.
+            vibrate = sp.getBoolean(MessagingPreferenceActivity.NOTIFICATION_VIBRATE,
+                    false);
+        } else if (sp.contains(MessagingPreferenceActivity.NOTIFICATION_VIBRATE_WHEN)) {
+            // This is to support the pre-JellyBean MR1.1 version of vibrate preferences
+            // when vibrate was a tri-state setting. As soon as the user opens the Messaging
+            // app's settings, it will migrate this setting from NOTIFICATION_VIBRATE_WHEN
+            // to the boolean value stored in NOTIFICATION_VIBRATE.
+            String vibrateWhen =
+                    sp.getString(MessagingPreferenceActivity.NOTIFICATION_VIBRATE_WHEN, null);
+            vibrate = "always".equals(vibrateWhen);
+        }
+        if (vibrate) {
+            defaults |= Notification.DEFAULT_VIBRATE;
+        }
+        String ringtoneStr = sp.getString(MessagingPreferenceActivity.NOTIFICATION_RINGTONE,
+                null);
+        noti.setSound(TextUtils.isEmpty(ringtoneStr) ? null : Uri.parse(ringtoneStr));
+        Log.d(TAG, "blockingUpdateNewIccMessageIndicator: adding sound to the notification");
+
+        defaults |= Notification.DEFAULT_LIGHTS;
+
+        noti.setDefaults(defaults);
+
+        // set up delete intent
+        noti.setDeleteIntent(PendingIntent.getBroadcast(context, 0,
+                sNotificationOnDeleteIntent, 0));
+
+        final Notification notification;
+        // This sets the text for the collapsed form:
+        noti.setContentText(info.formatBigMessage(context));
+
+        if (info.mAttachmentBitmap != null) {
+            // The message has a picture, show that
+
+            notification = new Notification.BigPictureStyle(noti)
+                .bigPicture(info.mAttachmentBitmap)
+                // This sets the text for the expanded picture form:
+                .setSummaryText(info.formatPictureMessage(context))
+                .build();
+        } else {
+            // Show a single notification -- big style with the text of the whole message
+            notification = new Notification.BigTextStyle(noti)
+                .bigText(info.formatBigMessage(context))
+                .build();
+        }
+
+        notifyUserIfFullScreen(context, title);
+
+        if (subId == MessageUtils.SUB_INVALID) {
+            nm.notify(ICC_NOTIFICATION_ID, notification);
+        } else {
+            nm.notify(NEW_ICC_NOTIFICATION_ID[subId], notification);
+        }
+
     }
 
     /**
@@ -803,6 +898,35 @@ public class MessagingNotification {
                 senderInfoName, attachmentBitmap, contact, attachmentType, threadId);
     }
 
+    private static final NotificationInfo getNewIccMessageNotificationInfo(
+            Context context,
+            boolean isSms,
+            String address,
+            String message,
+            String subject,
+            int phoneId,
+            long timeMillis,
+            Bitmap attachmentBitmap,
+            Contact contact,
+            int attachmentType) {
+        Intent clickIntent = new Intent(context, ManageSimMessages.class);
+        clickIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP
+                | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        clickIntent.putExtra(MessageUtils.SUBSCRIPTION_KEY, phoneId);
+        String senderInfo = buildTickerMessage(
+                context, address, null, null, phoneId).toString();
+        String senderInfoName = senderInfo.substring(
+                0, senderInfo.length());
+        CharSequence ticker = buildTickerMessage(
+                context, address, subject, message, phoneId);
+
+        return new NotificationInfo(isSms,
+                clickIntent, message, subject, ticker, timeMillis,
+                senderInfoName, attachmentBitmap, contact, attachmentType, 0);
+    }
+
     public static void cancelNotification(Context context, int notificationId) {
         NotificationManager nm = (NotificationManager) context.getSystemService(
                 Context.NOTIFICATION_SERVICE);
@@ -1078,6 +1202,7 @@ public class MessagingNotification {
             }
         }
 
+        notifyUserIfFullScreen(context, title);
         nm.notify(NOTIFICATION_ID, notification);
     }
 
@@ -1427,6 +1552,30 @@ public class MessagingNotification {
             }
         } finally {
             cursor.close();
+        }
+    }
+
+    private static void notifyUserIfFullScreen(Context context, String from) {
+        ActivityManager am = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> runningTasks = am.getRunningTasks(1);
+
+        if (runningTasks.size() > 0) {
+            String topActivity = runningTasks.get(0).topActivity.getClassName();
+            Log.d(TAG, "checkIsFullScreenMode: the top activity is: " + topActivity);
+            if ((topActivity != null)
+                    && (topActivity.equals("com.android.browser.BrowserActivity"))) {
+                Intent intent = new Intent("com.android.mms.transaction.MESSAGE_RECEIVED");
+                intent.putExtra("from", from);
+                context.sendBroadcast(intent);
+            }
+        }
+    }
+
+    public static void blockingRemoveIccNotifications(Context context, int subscription) {
+        if (subscription == MessageUtils.SUB_INVALID) {
+            cancelNotification(context, ICC_NOTIFICATION_ID);
+        } else {
+            cancelNotification(context, NEW_ICC_NOTIFICATION_ID[subscription]);
         }
     }
 }

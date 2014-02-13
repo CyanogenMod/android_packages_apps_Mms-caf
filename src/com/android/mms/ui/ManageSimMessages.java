@@ -85,7 +85,7 @@ public class ManageSimMessages extends Activity
     private static final int SHOW_EMPTY = 1;
     private static final int SHOW_BUSY = 2;
     private int mState;
-    private long mSubscription;
+    private int mSubscription;
 
     private Uri mIccUri;
     private ContentResolver mContentResolver;
@@ -148,7 +148,7 @@ public class ManageSimMessages extends Activity
     private void init() {
         MessagingNotification.cancelNotification(getApplicationContext(),
                 SIM_FULL_NOTIFICATION_ID);
-        mSubscription = getIntent().getLongExtra(MessageUtils.SUBSCRIPTION_KEY,
+        mSubscription = getIntent().getIntExtra(MessageUtils.SUBSCRIPTION_KEY,
                 MessageUtils.SUB_INVALID);
         mIccUri = MessageUtils.getIccUriBySubscription(mSubscription);
 
@@ -398,6 +398,8 @@ public class ManageSimMessages extends Activity
     public void onResume() {
         super.onResume();
         registerSimChangeObserver();
+        // Clean up the notification according to the SIM number.
+        MessagingNotification.blockingRemoveIccNotifications(this, mSubscription);
     }
 
     @Override

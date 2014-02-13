@@ -434,4 +434,12 @@
     <string name="contact_app_not_found">"找不到联系人应用"</string>
     <string name="search_bar_hint">"搜索联系人"</string>
     <string name="select_all">"全选"</string>
+
+    <!-- Settings item description for Preferred storage -->
+    <string name="pref_title_sms_store">优先存储器</string>
+    <string name="pref_title_sms_store_card1">卡1优先存储器</string>
+    <string name="pref_title_sms_store_card2">卡2优先存储器</string>
+    <string name="pref_sms_store_phone">话机</string>
+    <string name="pref_sms_store_card">SIM卡</string>
+    <string name="pref_sms_store_card_unknown_fail">新短信接收失败，无法正确读取SIM卡</string>
 </resources>

@@ -888,4 +888,12 @@
     <!-- add for showing slot type in MailBoxMessageContent -->
     <string name="slot_type">Slot : %s</string>
     <string name="download_dialog_title">Comfirm download this MMS?</string>
+
+    <!-- Settings item description for Preferred storage -->
+    <string name="pref_title_sms_store">Preferred storage</string>
+    <string name="pref_title_sms_store_card1">Card1 preferred storage</string>
+    <string name="pref_title_sms_store_card2">Card2 preferred storage</string>
+    <string name="pref_sms_store_phone">Phone</string>
+    <string name="pref_sms_store_card">SIM card</string>
+    <string name="pref_sms_store_card_unknown_fail">Failure to receive new messages, the SIM card can\'t be read correctly</string>
 </resources>

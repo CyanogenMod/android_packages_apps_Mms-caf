@@ -38,6 +38,7 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.ContentResolver;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -137,6 +138,9 @@ public class MessageUtils {
     private static String[] sNoSubjectStrings;
     public static String MULTI_SIM_NAME = "perferred_name_sub";
     private static final String VIEW_MODE_NAME = "current_view";
+
+    public static final int PREFER_SMS_STORE_PHONE = 0;
+    public static final int PREFER_SMS_STORE_CARD = 1;
 
     // Cache of both groups of space-separated ids to their full
     // comma-separated display names, as well as individual ids to
@@ -1719,5 +1723,22 @@ public class MessageUtils {
         } else {
             throw new RuntimeException ("invalid char for BCD " + c);
         }
+    }
+
+    public static int getSmsPreferStoreLocation(Context context, long subscription) {
+        SharedPreferences prefsms = PreferenceManager.getDefaultSharedPreferences(context);
+        int preferStore = PREFER_SMS_STORE_PHONE;
+
+        if (isMultiSimEnabledMms()) {
+            if (subscription == SUB1) {
+                preferStore = Integer.parseInt(prefsms.getString("pref_key_sms_store_card1", "0"));
+            } else {
+                preferStore = Integer.parseInt(prefsms.getString("pref_key_sms_store_card2", "0"));
+            }
+        } else {
+            preferStore = Integer.parseInt(prefsms.getString("pref_key_sms_store", "0"));
+        }
+
+        return preferStore;
     }
 }
