@@ -1679,7 +1679,7 @@ public class ComposeMessageActivity extends Activity
                     intent.putExtra("subject", subject);
                     String[] numbers = mConversation.getRecipients().getNumbers();
                     if (numbers != null) {
-                        intent.putExtra("msg_recipient",numbers[0]);
+                        intent.putExtra("msg_recipient",numbers);
                     }
                 }
                 // ForwardMessageActivity is simply an alias in the manifest for
@@ -4263,7 +4263,7 @@ public class ComposeMessageActivity extends Activity
 
         if (mConversation != null) {
             mConversation.setHasMmsForward(true);
-            String recipientNumber = intent.getStringExtra("msg_recipient");
+            String[] recipientNumber = intent.getStringArrayExtra("msg_recipient");
             mConversation.setForwardRecipientNumber(recipientNumber);
         }
         Uri uri = intent.getParcelableExtra("msg_uri");
