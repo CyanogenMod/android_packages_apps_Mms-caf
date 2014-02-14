@@ -207,10 +207,11 @@ public class AttachmentEditor extends LinearLayout {
             } else {
                 mMediaSize = mSlideshow.getCurrentMessageSize();
             }
-            int currentSize = getSizeWithOverHead(mMediaSize);
+            int currentSize = getSizeWithOverHead(mMediaSize + mSlideshow.getSubjectSize());
             if (DEBUG) {
                 Log.v(TAG,"createMediaView currentSize = " + currentSize
-                        + ", mMediaSize = " + mMediaSize);
+                        + ", mMediaSize = " + mMediaSize
+                        + ", subject size is "+mSlideshow.getSubjectSize());
             }
             mSizeIndicator.setText(mContext.getString(R.string.mms_size_indicator,
                             currentSize, MmsConfig.getMaxMessageSize() / KILOBYTE));
@@ -235,10 +236,11 @@ public class AttachmentEditor extends LinearLayout {
         mSizeIndicator = (TextView) view.findViewById(R.id.mms_size_indicator);
         mMediaSize = mSlideshow.getTotalMessageSize();
         if (mSizeIndicator != null) {
-            int currentSize = getSizeWithOverHead(mMediaSize);
+            int currentSize = getSizeWithOverHead(mMediaSize + mSlideshow.getSubjectSize());
             if (DEBUG) {
                 Log.v(TAG,"createSlideshowView currentSize = " + currentSize
-                        + ", mMediaSize = " + mMediaSize);
+                        + ", mMediaSize = " + mMediaSize
+                        + ", subject size is "+mSlideshow.getSubjectSize());
             }
             mSizeIndicator.setText(mContext.getString(R.string.mms_size_indicator,
                             currentSize, MmsConfig.getMaxMessageSize() / KILOBYTE));
@@ -267,10 +269,11 @@ public class AttachmentEditor extends LinearLayout {
             totalSize = mMediaSize + textSize;
         }
         if (mSizeIndicator != null) {
-            int currentSize = getSizeWithOverHead(totalSize);
+            int currentSize = getSizeWithOverHead(totalSize + mSlideshow.getSubjectSize());
             if (DEBUG) {
                 Log.v(TAG,"onTextChangeForMms currentSize = " + currentSize
-                        + ", totalSize = " + totalSize);
+                        + ", totalSize = " + totalSize
+                        + ", subject size is "+mSlideshow.getSubjectSize());
             }
             mSizeIndicator.setText(mContext.getString(R.string.mms_size_indicator,
                             currentSize, MmsConfig.getMaxMessageSize() / KILOBYTE));

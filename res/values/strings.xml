@@ -1002,4 +1002,5 @@
     <string name="pref_title_cdma_priority">Message priority</string>
     <string name="pref_summary_cdma_priority">Priority of CDMA message</string>
     <string name="prefDialogTitle_cdma_priority">Priority</string>
+    <string name="forward_size_over">Forbid forwarding, new message size over 300K.</string>
 </resources>
