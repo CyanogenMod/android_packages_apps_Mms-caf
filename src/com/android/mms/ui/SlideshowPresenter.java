@@ -207,10 +207,14 @@ public class SlideshowPresenter extends Presenter {
             RegionModel r, boolean dataChanged) {
         final int transformedWidth = transformWidth(r.getWidth());
         final int transformedHeight = transformWidth(r.getHeight());
+        final int normalSlideH = (int)((float)transformedHeight * mHeightTransformRatio / 2);
+        final int normalSlideW = (int)((float)transformedWidth * mWidthTransformRatio / 2);
 
         if (LOCAL_LOGV) {
             Log.v(TAG, "presentImage r.getWidth: " + r.getWidth()
                     + ", r.getHeight: " + r.getHeight() +
+                    " normalSlideW: " + normalSlideW +
+                    " normalSlideH: " + normalSlideH+
                     " transformedWidth: " + transformedWidth +
                     " transformedHeight: " + transformedHeight);
         }
@@ -225,7 +229,12 @@ public class SlideshowPresenter extends Presenter {
             Thread bitmapLoaderThread = new Thread() {
                 @Override
                 public void run() {
-                    Bitmap drawable = image.getBitmap(transformedWidth, transformedHeight);
+                    Bitmap drawable;
+                    if (view instanceof SlideListItemView) {
+                        drawable = image.getBitmap(normalSlideW, normalSlideH);
+                    } else {
+                        drawable = image.getBitmap(transformedWidth, transformedHeight);
+                    }
                     Message message = bitmapHandler.obtainMessage(1, drawable);
                     bitmapHandler.sendMessage(message);
                 }
