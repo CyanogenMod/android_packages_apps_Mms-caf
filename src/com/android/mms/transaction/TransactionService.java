@@ -344,7 +344,8 @@ public class TransactionService extends Service implements Observer {
                                             isTransientFailure(failureType) + " autoDownload=" +
                                             autoDownload);
                                 }
-                                if (!autoDownload || !isMobileDataEnabled) {
+                                if (!autoDownload || MessageUtils.isMmsMemoryFull()
+                                        || !isMobileDataEnabled) {
                                     // If autodownload is turned off, don't process the
                                     // transaction.
                                     if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE) || DEBUG) {
