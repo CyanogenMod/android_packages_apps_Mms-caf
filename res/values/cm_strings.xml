@@ -145,7 +145,8 @@
     <string name="menu_done">Done</string>
     <string name="menu_mobile">Mobile numbers only</string>
     <string name="menu_groups">Show groups</string>
-    <string name="fastscroll_index_groups">GR</string> <!-- CHAR LIMIT=3 -->
+    <!-- Abbreviation of "Group" - CHAR LIMIT=3 -->
+    <string name="fastscroll_index_groups">GR</string>
 
     <!-- Delay delivery -->
     <string name="pref_title_send_delay">Delivery delay</string>
