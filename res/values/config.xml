@@ -65,4 +65,7 @@
     <bool name="config_mailbox_enable">false</bool>
     <!-- configuration for display two send buttons -->
     <bool name="config_btnstyle">false</bool>
+
+    <!-- configuration for max sms to mms text size -->
+    <integer name="config_max_smstomms">0</integer>
 </resources>
