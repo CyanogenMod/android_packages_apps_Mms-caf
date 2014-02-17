@@ -184,6 +184,12 @@ public class DownloadManager {
         return "true".equals(roaming);
     }
 
+    public int getMessageSize(Uri uri) throws MmsException {
+        NotificationInd ind = (NotificationInd) PduPersister
+                .getPduPersister(mContext).load(uri);
+        return (int) ind.getMessageSize();
+    }
+
     public void markState(final Uri uri, int state) {
         // Notify user if the message has expired.
         try {
