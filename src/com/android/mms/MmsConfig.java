@@ -31,6 +31,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.internal.telephony.TelephonyProperties;
+import com.android.mms.R;
 import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.MessagingPreferenceActivity;
 
@@ -405,7 +406,10 @@ public class MmsConfig {
                         } else if ("aliasMaxChars".equalsIgnoreCase(value)) {
                             mAliasRuleMaxChars = Integer.parseInt(text);
                         } else if ("smsToMmsTextThreshold".equalsIgnoreCase(value)) {
-                            mSmsToMmsTextThreshold = Integer.parseInt(text);
+                            int maxSmstomms = context.getResources().getInteger(R.integer
+                                    .config_max_smstomms);
+                            mSmsToMmsTextThreshold = (maxSmstomms == 0) ? Integer.parseInt(text)
+                                    : maxSmstomms;
                         } else if ("maxMessageTextSize".equalsIgnoreCase(value)) {
                             mMaxTextLength = Integer.parseInt(text);
                         } else if ("maxSubjectLength".equalsIgnoreCase(value)) {
