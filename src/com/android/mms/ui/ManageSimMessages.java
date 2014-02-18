@@ -106,7 +106,6 @@ public class ManageSimMessages extends Activity
         mSubscription = getIntent().getIntExtra(MSimConstants.SUBSCRIPTION_KEY,
                 MSimConstants.INVALID_SUBSCRIPTION);
         mIccUri = getIccUriBySubscription(mSubscription);
-
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
         mContentResolver = getContentResolver();
@@ -412,7 +411,7 @@ public class ManageSimMessages extends Activity
     private void deleteFromSim(Cursor cursor) {
         String messageIndexString =
                 cursor.getString(cursor.getColumnIndexOrThrow("index_on_icc"));
-        Uri simUri = ICC_URI.buildUpon().appendPath(messageIndexString).build();
+        Uri simUri = mIccUri.buildUpon().appendPath(messageIndexString).build();
 
         SqliteWrapper.delete(this, mContentResolver, simUri, null, null);
     }

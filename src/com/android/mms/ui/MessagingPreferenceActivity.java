@@ -57,6 +57,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.internal.telephony.MSimConstants;
 import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
@@ -128,8 +129,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private ArrayList<Preference> mSmscPrefList = new ArrayList<Preference>();
     private static final int CONFIRM_CLEAR_SEARCH_HISTORY_DIALOG = 3;
 
-    // Whether or not we are currently enabled for SMS. This field is updated in onResume to make
-    // sure we notice if the user has changed the default SMS app.
+    private static final String TARGET_PACKAGE = "com.android.mms";
+    private static final String TARGET_CLASS = "com.android.mms.ui.ManageSimMessages";
     private boolean mIsSmsEnabled;
     private static final String SMSC_DIALOG_TITLE = "title";
     private static final String SMSC_DIALOG_NUMBER = "smsc";
@@ -476,7 +477,19 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         } else if (preference == mSmsTemplate) {
             startActivity(new Intent(this, MessageTemplate.class));
         } else if (preference == mManageSimPref) {
-            startActivity(new Intent(this, ManageSimMessages.class));
+            // If one SIM card valid, display the valid subcription messages.
+            // If two SIM card valid, display select subcription activity.
+            if (!MSimTelephonyManager.getDefault().isMultiSimEnabled()
+                    || MessageUtils.getActivatedIccCardCount() < 2) {
+                Intent intent = new Intent(this, ManageSimMessages.class);
+                intent.putExtra(MSimConstants.SUBSCRIPTION_KEY, getSubscriptionKey());
+                startActivity(intent);
+            } else {
+                Intent intent = new Intent(this, SelectSubscription.class);
+                intent.putExtra(SelectSubscription.PACKAGE, TARGET_PACKAGE);
+                intent.putExtra(SelectSubscription.TARGET_CLASS, TARGET_CLASS);
+                startActivity(intent);
+            }
         } else if (preference == mClearHistoryPref) {
             showDialog(CONFIRM_CLEAR_SEARCH_HISTORY_DIALOG);
             return true;
@@ -492,6 +505,14 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         }
 
         return super.onPreferenceTreeClick(preferenceScreen, preference);
+    }
+
+    private int getSubscriptionKey(){
+        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+            return MessageUtils.isIccCardActivated(MessageUtils.SUB1)
+                    ? MessageUtils.SUB1: MessageUtils.SUB2;
+        }
+        return MessageUtils.SUB_INVALID;
     }
 
     /**

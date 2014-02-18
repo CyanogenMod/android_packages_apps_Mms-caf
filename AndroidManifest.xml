@@ -288,6 +288,14 @@
               android:configChanges="orientation|screenSize|keyboardHidden">
         </activity>
 
+        <activity android:name=".ui.SelectSubscription"
+            android:theme="@android:style/Theme.Holo.Light"
+            android:label="@string/select_subscription_title">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
+
         <service android:name=".ui.SelectMmsSubscription"
             android:exported="true">
         </service>
