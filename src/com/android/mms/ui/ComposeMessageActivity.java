@@ -1774,7 +1774,7 @@ public class ComposeMessageActivity extends Activity
                     return true;
 
                 case MENU_FORWARD_MESSAGE:
-                    if (!isAllowForwardMessage(mMsgItem)) {
+                    if (mMsgItem.isMms() && !isAllowForwardMessage(mMsgItem)) {
                         Toast.makeText(ComposeMessageActivity.this,
                                 R.string.forward_size_over, Toast.LENGTH_SHORT).show();
                         return false;
