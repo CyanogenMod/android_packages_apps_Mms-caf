@@ -921,6 +921,8 @@
     <string name="sms_phone_capacity">Sms Capacity:</string>
     <string name="mms_phone_used">Mms Used:</string>
     <string name="mms_phone_capacity">Mms Capacity:</string>
+    <string name="normal_show">View normal mode</string>
+    <string name="cannot_play">Cannot present the slide show.</string>
     <!--  Strings used forh MMS push of messages in outbox -->
     <string name="label_mms_send_outbox_msg">MMS Wakeup</string>
     <string name="desc_mms_send_outbox_msg">Sends out all MMSs from the outbox to the network</string>

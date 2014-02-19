@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2013-2014, The Linux Foundation. All rights reserved.
  * Not a Contribution.
  *
  * Copyright (C) 2012 The Android Open Source Project.
@@ -414,7 +414,7 @@ public class MailBoxMessageContent extends Activity {
         mBodyTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onMailBoxMessageClick(MailBoxMessageContent.this);
+                MessageUtils.onMessageContentClick(MailBoxMessageContent.this, mBodyTextView);
             }
         });
         TextView mFromTextView = (TextView) findViewById(R.id.textViewFrom);
@@ -455,92 +455,6 @@ public class MailBoxMessageContent extends Activity {
 
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-    }
-
-    public void onMailBoxMessageClick(final Context context) {
-        // Check for links. If none, do nothing; if 1, open it; if >1, ask user
-        // to pick one
-        final URLSpan[] spans = mBodyTextView.getUrls();
-        if (spans.length == 1) {
-            String url = spans[0].getURL();
-            if (MessageUtils.isWebUrl(url)) {
-                Intent intent = new Intent(context, WwwContextMenuActivity.class);
-                intent.setData(Uri.parse(url));
-                context.startActivity(intent);
-            }
-        } else if (spans.length > 1) {
-            ArrayAdapter<URLSpan> adapter = new ArrayAdapter<URLSpan>(context,
-                    android.R.layout.select_dialog_item, spans) {
-
-                @Override
-                public View getView(int position, View convertView, ViewGroup parent) {
-                    View v = super.getView(position, convertView, parent);
-                    try {
-                        URLSpan span = getItem(position);
-                        String url = span.getURL();
-                        TextView tv = (TextView) v;
-                        Drawable d = context.getPackageManager().getActivityIcon(
-                                new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-                        if (d != null) {
-                            d.setBounds(0, 0, d.getIntrinsicHeight(),
-                                    d.getIntrinsicHeight());
-                            tv.setCompoundDrawablePadding(10);
-                            tv.setCompoundDrawables(d, null, null, null);
-                        }
-                        tv.setText(getUrlWithMailPrefix(context, url).replaceAll("tel:", ""));
-                    } catch (android.content.pm.PackageManager.NameNotFoundException ex) {
-                        // it's ok if we're unable to set the drawable
-                        // for this view - the user
-                        // can still use it
-                    }
-                    return v;
-                }
-            };
-
-            AlertDialog.Builder b = new AlertDialog.Builder(context);
-
-            DialogInterface.OnClickListener click = new DialogInterface.OnClickListener() {
-                @Override
-                public final void onClick(DialogInterface dialog, int which) {
-                    if (which >= 0) {
-                        String url = spans[which].getURL();
-                        if (MessageUtils.isWebUrl(url)) {
-                            Intent intent = new Intent(MailBoxMessageContent.this,
-                                    WwwContextMenuActivity.class);
-                            intent.setData(Uri.parse(url));
-                            context.startActivity(intent);
-                        }
-                    }
-                    dialog.dismiss();
-                }
-            };
-
-            b.setTitle(R.string.select_link_title);
-            b.setCancelable(true);
-            b.setAdapter(adapter, click);
-
-            b.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                @Override
-                public final void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-
-            b.show();
-        }
-    }
-
-    private String getUrlWithMailPrefix(Context context, String url) {
-        // If prefix string is "mailto" then translate it.
-        final String mailPrefix = "mailto:";
-        if (!TextUtils.isEmpty(url)) {
-            if (url.startsWith(mailPrefix)) {
-                url = context.getResources().getString(R.string.mail_to) +
-                        url.substring(mailPrefix.length());
-                return url;
-            }
-        }
-        return "";
     }
 
     private class DeleteMessageListener implements OnClickListener {
