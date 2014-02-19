@@ -603,6 +603,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                 break;
             case R.id.action_change_mode:
                 Intent modeIntent = new Intent(this, MailBoxMessageList.class);
+                MessageUtils.setMailboxMode(true);
                 startActivityIfNeeded(modeIntent, -1);
                 finish();
                 break;

@@ -43,6 +43,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SqliteWrapper;
 import android.graphics.drawable.Drawable;
@@ -153,6 +154,7 @@ public class MessageUtils {
     private static String sLocalNumber;
     private static String[] sNoSubjectStrings;
     public static String MULTI_SIM_NAME = "perferred_name_sub";
+    private static final String VIEW_MODE_NAME = "current_view";
 
     // add for obtain mms data path
     private static final String MMS_DATA_DATA_DIR = "/data/data";
@@ -1333,6 +1335,19 @@ public class MessageUtils {
 
     private static void log(String msg) {
         Log.d(TAG, "[MsgUtils] " + msg);
+    }
+
+    public static boolean isMailboxMode() {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(MmsApp
+                .getApplication());
+        boolean ViewMode = sp.getBoolean(VIEW_MODE_NAME, false);
+        return ViewMode;
+    }
+
+    public static void setMailboxMode(boolean mode) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(MmsApp
+                .getApplication());
+        sp.edit().putBoolean(VIEW_MODE_NAME, mode).commit();
     }
 
     /**
