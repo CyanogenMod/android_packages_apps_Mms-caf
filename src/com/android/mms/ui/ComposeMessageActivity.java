@@ -3281,11 +3281,7 @@ public class ComposeMessageActivity extends Activity
     private void dialRecipient(int subscription) {
         if (isRecipientCallable()) {
             String number = getRecipients().get(0).getNumber();
-            Intent dialIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + number));
-            if (subscription != MessageUtils.SUB_INVALID) {
-                dialIntent.putExtra("dial_widget_switched", subscription);
-            }
-            startActivity(dialIntent);
+            MessageUtils.dialRecipient(this, number, subscription);
         }
     }
 
