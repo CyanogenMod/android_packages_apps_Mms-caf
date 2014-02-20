@@ -191,7 +191,8 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
 
     public void updateItemBackgroud(int position) {
         Cursor cursor = (Cursor)getItem(position);
-        View view = mListView.getChildAt(position);
+        int firstPosition = mListView.getFirstVisiblePosition();
+        View view = mListView.getChildAt(position - firstPosition);
         if (cursor == null || view == null) {
             return;
         }
