@@ -14,6 +14,7 @@ import android.telephony.PhoneNumberUtils;
 import android.telephony.SmsManager;
 import android.util.Log;
 
+import com.android.internal.telephony.MSimConstants;
 import com.android.mms.LogTag;
 import com.android.mms.MmsConfig;
 import com.android.mms.data.Conversation;
@@ -25,14 +26,16 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
     private final boolean mRequestDeliveryReport;
     private String mDest;
     private Uri mUri;
+    private boolean isExpectMore;
     private static final String TAG = "SmsSingleRecipientSender";
 
     public SmsSingleRecipientSender(Context context, String dest, String msgText, long threadId,
-            boolean requestDeliveryReport, Uri uri, int subscription) {
+            boolean requestDeliveryReport, Uri uri, int subscription, boolean expectMore) {
         super(context, null, msgText, threadId, subscription);
         mRequestDeliveryReport = requestDeliveryReport;
         mDest = dest;
         mUri = uri;
+        isExpectMore = expectMore;
     }
 
     public boolean sendMessage(long token) throws MmsException {
@@ -69,6 +72,7 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
         }
 
         boolean moved = Sms.moveMessageToFolder(mContext, mUri, Sms.MESSAGE_TYPE_OUTBOX, 0);
+
         if (!moved) {
             throw new MmsException("SmsMessageSender.sendMessage: couldn't move message " +
                     "to outbox: " + mUri);
@@ -100,7 +104,7 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
                     mUri,
                     mContext,
                     SmsReceiver.class);
-
+            intent.putExtra(MSimConstants.SUBSCRIPTION_KEY, mSubscription);
             int requestCode = 0;
             if (i == messageCount -1) {
                 // Changing the requestCode so that a different pending intent
@@ -118,10 +122,10 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
             if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
                 MSimSmsManager smsManagerMSim = MSimSmsManager.getDefault();
                 smsManagerMSim.sendMultipartTextMessage(mDest, mServiceCenter, messages,
-                           sentIntents, deliveryIntents, mSubscription);
+                           sentIntents, deliveryIntents, -1, isExpectMore, mSubscription);
             } else {
                 smsManager.sendMultipartTextMessage(mDest, mServiceCenter, messages, sentIntents,
-                           deliveryIntents);
+                           deliveryIntents, -1, isExpectMore);
             }
         } catch (Exception ex) {
             Log.e(TAG, "SmsMessageSender.sendMessage: caught", ex);

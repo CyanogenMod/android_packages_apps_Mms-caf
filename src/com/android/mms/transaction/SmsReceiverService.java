@@ -84,7 +84,7 @@ public class SmsReceiverService extends Service {
 
     private ServiceHandler mServiceHandler;
     private Looper mServiceLooper;
-    private boolean mSending;
+    private boolean[] mSending = new boolean[MSimTelephonyManager.getDefault().getPhoneCount()];
 
     public static final String MESSAGE_SENT_ACTION =
         "com.android.mms.transaction.MESSAGE_SENT";
@@ -235,7 +235,7 @@ public class SmsReceiverService extends Service {
                 } else if (TelephonyIntents.ACTION_SERVICE_STATE_CHANGED.equals(action)) {
                     handleServiceStateChanged(intent);
                 } else if (ACTION_SEND_MESSAGE.endsWith(action)) {
-                    handleSendMessage();
+                    handleSendMessage(intent);
                 } else if (ACTION_SEND_INACTIVE_MESSAGE.equals(action)) {
                     handleSendInactiveMessage();
                 }
@@ -249,38 +249,46 @@ public class SmsReceiverService extends Service {
     private void handleServiceStateChanged(Intent intent) {
         // If service just returned, start sending out the queued messages
         ServiceState serviceState = ServiceState.newFromBundle(intent.getExtras());
-        int subscription = intent.getIntExtra(SUBSCRIPTION_KEY, 0);
-        int prefSubscription = MSimSmsManager.getDefault().getPreferredSmsSubscription();
-        // if service state is IN_SERVICE & current subscription is same as
-        // preferred SMS subscription.i.e.as set under MultiSIM Settings,then
-        // sendFirstQueuedMessage.
-        if (serviceState.getState() == ServiceState.STATE_IN_SERVICE &&
-            subscription == prefSubscription) {
-            sendFirstQueuedMessage();
+        int subscription = intent.getIntExtra(SUBSCRIPTION_KEY, MSimConstants.DEFAULT_SUBSCRIPTION);
+        // if service state is IN_SERVICE then sendFirstQueuedMessage of the
+        // service state changed subscription
+        if (serviceState.getState() == ServiceState.STATE_IN_SERVICE) {
+            sendFirstQueuedMessage(subscription);
         }
     }
 
-    private void handleSendMessage() {
-        if (!mSending) {
-            sendFirstQueuedMessage();
+    private void handleSendMessage(Intent intent) {
+        int subscription = intent.getIntExtra(SUBSCRIPTION_KEY,
+                MSimSmsManager.getDefault().getPreferredSmsSubscription());
+        if (!mSending[subscription]) {
+            sendFirstQueuedMessage(subscription);
         }
     }
 
     private void handleSendInactiveMessage() {
         // Inactive messages includes all messages in outbox and queued box.
         moveOutboxMessagesToQueuedBox();
-        sendFirstQueuedMessage();
+        // Process queued messages on all SUB's
+        for (int i = 0; i < MSimTelephonyManager.getDefault().getPhoneCount(); i++) {
+            if (!mSending[i]) {
+                sendFirstQueuedMessage(i);
+            }
+        }
     }
 
-    public synchronized void sendFirstQueuedMessage() {
+    // Send first queued message of the given subscription
+    public synchronized void sendFirstQueuedMessage(int subscription) {
         boolean success = true;
+        boolean isExpectMore = false;
         // get all the queued messages from the database
         final Uri uri = Uri.parse("content://sms/queued");
         ContentResolver resolver = getContentResolver();
+        String where = "sub_id=?";
+        String[] whereArgs = new String[] {Integer.toString(subscription)};
         Cursor c = SqliteWrapper.query(this, resolver, uri,
-                        SEND_PROJECTION, null, null, "date ASC");   // date ASC so we send out in
-                                                                    // same order the user tried
-                                                                    // to send messages.
+                        SEND_PROJECTION, where, whereArgs, "date ASC"); // date ASC so we send out
+                                                                       // in same order the user
+                                                                       // tried to send messages.
         if (c != null) {
             try {
                 if (c.moveToFirst()) {
@@ -292,10 +300,15 @@ public class SmsReceiverService extends Service {
                     int msgId = c.getInt(SEND_COLUMN_ID);
                     int subId = c.getInt(SEND_COLUMN_SUB_ID);
                     Uri msgUri = ContentUris.withAppendedId(Sms.CONTENT_URI, msgId);
-
+                    // Get the information of is there any messages are pending to process.
+                    // If yes, send this inforamtion to framework to control the link and send all
+                    // messages on same link based on the support in framework
+                    if (c.moveToNext()) {
+                        isExpectMore = true;
+                    }
                     SmsMessageSender sender = new SmsSingleRecipientSender(this,
                             address, msgText, threadId, status == Sms.STATUS_PENDING,
-                            msgUri, subId);
+                            msgUri, subId, isExpectMore);
 
                     if (LogTag.DEBUG_SEND ||
                             LogTag.VERBOSE ||
@@ -307,19 +320,20 @@ public class SmsReceiverService extends Service {
 
                     try {
                         sender.sendMessage(SendingProgressTokenManager.NO_TOKEN);;
-                        mSending = true;
+                        mSending[subscription] = true;
                     } catch (MmsException e) {
                         Log.e(TAG, "sendFirstQueuedMessage: failed to send message " + msgUri
                                 + ", caught ", e);
-                        mSending = false;
+                        mSending[subscription] = false;
                         messageFailedToSend(msgUri, SmsManager.RESULT_ERROR_GENERIC_FAILURE);
                         success = false;
                         // Sending current message fails. Try to send more pending messages
                         // if there is any.
-                        sendBroadcast(new Intent(SmsReceiverService.ACTION_SEND_MESSAGE,
-                                null,
+                        Intent intent = new Intent(SmsReceiverService.ACTION_SEND_MESSAGE, null,
                                 this,
-                                SmsReceiver.class));
+                                SmsReceiver.class);
+                        intent.putExtra(MSimConstants.SUBSCRIPTION_KEY, subscription);
+                        sendBroadcast(intent);
                     }
                 }
             } finally {
@@ -329,15 +343,22 @@ public class SmsReceiverService extends Service {
         if (success) {
             // We successfully sent all the messages in the queue. We don't need to
             // be notified of any service changes any longer.
-            unRegisterForServiceStateChanges();
+            // In case of MSIM don't unregister service state change if there are any messages
+            // pending for process on other subscriptions. There may be a chance of other
+            // subscription is register and waiting for sevice state changes to process the message.
+            if (!MSimTelephonyManager.getDefault().isMultiSimEnabled() ||
+                    isUnRegisterAllowed(subscription)) {
+                unRegisterForServiceStateChanges();
+            }
         }
     }
 
     private void handleSmsSent(Intent intent, int error) {
         Uri uri = intent.getData();
-        mSending = false;
         boolean sendNextMsg = intent.getBooleanExtra(EXTRA_MESSAGE_SENT_SEND_NEXT, false);
-
+        int subscription = intent.getIntExtra(SUBSCRIPTION_KEY,
+                MSimSmsManager.getDefault().getPreferredSmsSubscription());
+        mSending[subscription] = false;
         if (LogTag.DEBUG_SEND) {
             Log.v(TAG, "handleSmsSent uri: " + uri + " sendNextMsg: " + sendNextMsg +
                     " mResultCode: " + mResultCode +
@@ -352,7 +373,7 @@ public class SmsReceiverService extends Service {
                 Log.e(TAG, "handleSmsSent: failed to move message " + uri + " to sent folder");
             }
             if (sendNextMsg) {
-                sendFirstQueuedMessage();
+                sendFirstQueuedMessage(subscription);
             }
 
             // Update the notification for failed messages since they may be deleted.
@@ -385,7 +406,7 @@ public class SmsReceiverService extends Service {
         } else {
             messageFailedToSend(uri, error);
             if (sendNextMsg) {
-                sendFirstQueuedMessage();
+                sendFirstQueuedMessage(subscription);
             }
         }
     }
@@ -459,8 +480,12 @@ public class SmsReceiverService extends Service {
         }
 
         // Send any queued messages that were waiting from before the reboot.
-        sendFirstQueuedMessage();
-
+        // // Process queued messages on all SUB's
+        for (int i = 0; i < MSimTelephonyManager.getDefault().getPhoneCount(); i++) {
+            if (!mSending[i]) {
+                sendFirstQueuedMessage(i);
+            }
+        }
         // Called off of the UI thread so ok to block.
         MessagingNotification.blockingUpdateNewMessageIndicator(
                 this, MessagingNotification.THREAD_ALL, false);
@@ -790,6 +815,27 @@ public class SmsReceiverService extends Service {
         } catch (IllegalArgumentException e) {
             // Allow un-matched register-unregister calls
         }
+    }
+
+    // Returns true, if there are no queued messages on other subscriptions
+    private boolean isUnRegisterAllowed(int subscription) {
+        boolean success = true;
+        final Uri uri = Uri.parse("content://sms/queued");
+        ContentResolver resolver = getContentResolver();
+        String where = "sub_id != ?";
+        String[] whereArgs = new String[] {Integer.toString(subscription)};
+        Cursor c = SqliteWrapper.query(this, resolver, uri,
+                        SEND_PROJECTION, where, whereArgs, "date ASC");
+        if (c != null) {
+            try {
+                if (c.moveToFirst()) {
+                    success = false;
+                }
+            } finally {
+                    c.close();
+            }
+        }
+        return success;
     }
 }
 
