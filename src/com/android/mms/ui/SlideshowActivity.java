@@ -435,44 +435,4 @@ public class SlideshowActivity extends Activity implements EventListener {
             }
         });
     }
-
-    public static void viewMmsMessageAttachmentMobilepaper(Context context,
-            Uri msgUri, SlideshowModel slideshow, PduPersister persister,
-            ArrayList<String> allIdList,boolean report) {
-
-        boolean isSimple = (slideshow == null) ? false : slideshow.isSimple();
-        if (isSimple || msgUri == null) {
-            // In attachment-editor mode, we only ever have one slide.
-            MessageUtils.viewSimpleSlideshow(context, slideshow);
-        } else {
-            Intent intent = new Intent(context, MobilePaperShowActivity.class);
-            intent.setData(msgUri);
-            intent.putExtra("mms_report", report);
-            intent.putStringArrayListExtra("sms_id_list", allIdList);
-            context.startActivity(intent);
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(0, MENU_NORMALSHOW, 0, R.string.normal_show);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case MENU_NORMALSHOW:
-                Intent intent = getIntent();
-                Uri msg = intent.getData();
-                viewMmsMessageAttachmentMobilepaper(this,msg,null,null,
-                        intent.getStringArrayListExtra("sms_id_list"),
-                        intent.getBooleanExtra("mms_report", false));
-                finish();
-                break;
-            default:
-                break;
-        }
-        return true;
-    }
 }

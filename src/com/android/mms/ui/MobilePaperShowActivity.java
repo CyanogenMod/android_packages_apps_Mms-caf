@@ -86,6 +86,8 @@ public class MobilePaperShowActivity extends Activity {
     private static final int FONTSIZEMIN = 18;
     private static final int FONTSIZE_DEFAULT = 27;
     private static final int FONTSIZEMAX = 48;
+    // If the finger move over 100px, we don't think it's for click.
+    private static final int CLICK_LIMIT = 100;
     private static final int MESSAGE_READ = 1;
 
     private int mMailboxId = -1;
@@ -253,6 +255,7 @@ public class MobilePaperShowActivity extends Activity {
             mScrollViewPort = new ScrollView(this) {
                 private int currentX;
                 private int currentY;
+                private int move;
 
                 @Override
                 public boolean onTouchEvent(MotionEvent ev) {
@@ -284,18 +287,20 @@ public class MobilePaperShowActivity extends Activity {
                         case MotionEvent.ACTION_DOWN: {
                             currentX = (int) ev.getRawX();
                             currentY = (int) ev.getRawY();
+                            move = 0;
                             break;
                         }
                         case MotionEvent.ACTION_MOVE: {
                             int x2 = (int) ev.getRawX();
                             int y2 = (int) ev.getRawY();
                             mScrollViewPort.scrollBy(currentX - x2 , currentY - y2);
+                            move += Math.abs(currentY - y2);
                             currentX = x2;
                             currentY = y2;
                             break;
                         }
                     }
-                    return false;
+                    return move > CLICK_LIMIT;
                 }
             };
 
