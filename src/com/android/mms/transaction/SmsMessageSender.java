@@ -45,6 +45,7 @@ public class SmsMessageSender implements MessageSender {
     protected final String mServiceCenter;
     protected final long mThreadId;
     protected long mTimestamp;
+    protected int mSubscription;
     private static final String TAG = "SmsMessageSender";
 
     // Default preference values
@@ -59,7 +60,8 @@ public class SmsMessageSender implements MessageSender {
     private static final int COLUMN_REPLY_PATH_PRESENT = 0;
     private static final int COLUMN_SERVICE_CENTER     = 1;
 
-    public SmsMessageSender(Context context, String[] dests, String msgText, long threadId) {
+    public SmsMessageSender(Context context, String[] dests,
+                 String msgText, long threadId, int subscription) {
         mContext = context;
         mMessageText = msgText;
         if (dests != null) {
@@ -73,6 +75,7 @@ public class SmsMessageSender implements MessageSender {
         mTimestamp = System.currentTimeMillis();
         mThreadId = threadId;
         mServiceCenter = getOutgoingServiceCenter(mThreadId);
+        mSubscription = subscription;
     }
 
     public boolean sendMessage(long token) throws MmsException {
@@ -137,22 +140,22 @@ public class SmsMessageSender implements MessageSender {
                     }
                 }
         } else { // Send without split or counter
-        for (int i = 0; i < mNumberOfDests; i++) {
-            try {
-                if (LogTag.DEBUG_SEND) {
-                    Log.v(TAG, "queueMessage mDests[i]: " + mDests[i] + " mThreadId: " + mThreadId);
-                }
-                Sms.addMessageToUri(mContext.getContentResolver(),
-                    Uri.parse("content://sms/queued"), mDests[i],
-                    mMessageText, null, mTimestamp,
-                    true /* read */,
-                    requestDeliveryReport,
-                    mThreadId);
+            for (int i = 0; i < mNumberOfDests; i++) {
+                try {
+                    if (LogTag.DEBUG_SEND) {
+                        Log.v(TAG, "queueMessage mDests[i]: " + mDests[i] + " mThreadId: " + mThreadId);
+                    }
+                    log("updating Database with sub = " + mSubscription);
+                    Sms.addMessageToUri(mContext.getContentResolver(),
+                            Uri.parse("content://sms/queued"), mDests[i],
+                            mMessageText, null, mTimestamp,
+                            true /* read */,
+                            requestDeliveryReport,
+                            mThreadId, mSubscription);
                 } catch (SQLiteException e) {
                     if (LogTag.DEBUG_SEND) {
                         Log.e(TAG, "queueMessage SQLiteException", e);
                     }
-                    SqliteWrapper.checkSQLiteException(mContext, e);
                 }
             }
         }

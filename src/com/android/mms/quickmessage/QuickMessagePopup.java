@@ -625,7 +625,7 @@ public class QuickMessagePopup extends Activity implements
         if (message != null && qm != null) {
             long threadId = qm.getThreadId();
             SmsMessageSender sender = new SmsMessageSender(getBaseContext(),
-                    qm.getFromNumber(), message, threadId);
+                    qm.getFromNumber(), message, threadId, qm.getSubId());
             try {
                 if (DEBUG)
                     Log.d(LOG_TAG, "sendQuickMessage(): Sending message to " + qm.getFromName()

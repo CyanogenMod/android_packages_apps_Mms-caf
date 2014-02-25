@@ -39,6 +39,8 @@ import android.preference.PreferenceScreen;
 import android.preference.RingtonePreference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.provider.SearchRecentSuggestions;
+import android.telephony.MSimSmsManager;
+import android.telephony.MSimTelephonyManager;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -337,6 +339,14 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                     TextUtils.isEmpty(MessageUtils.getLocalNumber())) {
                 mMmsPrefCategory.removePreference(mMmsGroupMmsPref);
             }
+        }
+
+        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+            int preferredSmsSub = MSimSmsManager.getDefault()
+                    .getPreferredSmsSubscription();
+            mManageSimPref.setSummary(
+                    getString(R.string.pref_summary_manage_sim_messages)
+                    + (preferredSmsSub + 1));
         }
 
         setEnabledNotificationsPref();
