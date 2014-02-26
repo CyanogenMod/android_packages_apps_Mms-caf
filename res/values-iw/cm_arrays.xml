@@ -28,11 +28,4 @@
         <item>11</item>
         <item>12 (הכי מדויקת)</item>
     </string-array>
-    <string-array name="pref_mms_notification_vibrate_pattern_entries">
-        <item>רגיל</item>
-        <item>רטט בינוני</item>
-        <item>רטט ארוך</item>
-        <item>הרבה קצרים</item>
-        <item>הרבה ארוכים</item>
-    </string-array>
 </resources>
