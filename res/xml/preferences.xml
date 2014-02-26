@@ -61,6 +61,24 @@
                       android:persistent="false"
                       android:summary="@string/pref_summary_delete_limit"
                       android:title="@string/pref_title_mms_delete" />
+    <ListPreference android:key="pref_key_sms_store"
+                      android:title="@string/pref_title_sms_store"
+                      android:defaultValue="0"
+                      android:dialogTitle="@string/pref_title_sms_store"
+                      android:entries="@array/entries_sms_store"
+                      android:entryValues="@array/entries_sms_store_value" />
+    <ListPreference android:key="pref_key_sms_store_card1"
+                      android:title="@string/pref_title_sms_store_card1"
+                      android:defaultValue="0"
+                      android:dialogTitle="@string/pref_title_sms_store"
+                      android:entries="@array/entries_sms_store"
+                      android:entryValues="@array/entries_sms_store_value" />
+    <ListPreference android:key="pref_key_sms_store_card2"
+                      android:title="@string/pref_title_sms_store_card2"
+                      android:defaultValue="0"
+                      android:dialogTitle="@string/pref_title_sms_store"
+                      android:entries="@array/entries_sms_store"
+                      android:entryValues="@array/entries_sms_store_value" />
   </PreferenceCategory>
   <PreferenceCategory android:title="@string/pref_sms_settings_title"
                       android:key="pref_key_sms_settings" >

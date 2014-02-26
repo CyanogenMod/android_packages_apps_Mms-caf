@@ -520,6 +520,8 @@ public class ManageSimMessages extends Activity
             default:
                 Log.e(TAG, "Invalid State");
         }
+        // Clean up the notification.
+        MessagingNotification.blockingRemoveIccNotifications(this, mSubscription);
     }
 
     private void viewMessage(Cursor cursor) {
