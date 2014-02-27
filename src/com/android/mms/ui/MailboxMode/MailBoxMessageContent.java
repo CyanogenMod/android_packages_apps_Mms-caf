@@ -51,12 +51,12 @@ import android.text.method.HideReturnsTransformationMethod;
 import android.text.style.URLSpan;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.util.Log;
@@ -99,7 +99,6 @@ public class MailBoxMessageContent extends Activity {
     /*Operations for gesture to scale the current text fontsize of content*/
     private float mScaleFactor = 1;
     private  ScaleGestureDetector mScaleDetector;
-    private  GestureDetector mGestureDetector;
 
     private static final int MENU_CALL_RECIPIENT = Menu.FIRST;
     private static final int MENU_DELETE = Menu.FIRST + 1;
@@ -407,6 +406,9 @@ public class MailBoxMessageContent extends Activity {
 
     private void initUi() {
         setProgressBarIndeterminateVisibility(true);
+
+        mScaleDetector = new ScaleGestureDetector(this, new MyScaleListener());
+
         mBodyTextView = (TextView) findViewById(R.id.textViewBody);
         mBodyTextView.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
         mBodyTextView.setTextIsSelectable(true);
@@ -415,6 +417,11 @@ public class MailBoxMessageContent extends Activity {
             @Override
             public void onClick(View v) {
                 MessageUtils.onMessageContentClick(MailBoxMessageContent.this, mBodyTextView);
+            }
+        });
+        mBodyTextView.setOnTouchListener(new OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                return doZoomInOutAction(event);
             }
         });
         TextView mFromTextView = (TextView) findViewById(R.id.textViewFrom);
@@ -427,11 +434,6 @@ public class MailBoxMessageContent extends Activity {
         mTimeDetailTextView.setText(mMsgTime);
         TextView mSlotTypeView = (TextView) findViewById(R.id.textViewSlotType);
 
-        mScaleDetector = new ScaleGestureDetector(this, new MyScaleListener());
-        mGestureDetector = new GestureDetector(this,
-                new GestureDetector.SimpleOnGestureListener() {
-                });
-        mGestureDetector.setOnDoubleTapListener(null);
 
         if (MessageUtils.isMultiSimEnabledMms()) {
             mSlotTypeView.setVisibility(View.VISIBLE);
@@ -572,59 +574,23 @@ public class MailBoxMessageContent extends Activity {
         }
     }
 
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        mScaleDetector.onTouchEvent(ev);
-        final int action = ev.getAction();
-        switch (action) {
-            case MotionEvent.ACTION_DOWN:
-                mGestureDetector.onTouchEvent(ev);
-                return false;
-
-            case MotionEvent.ACTION_MOVE:
-                mGestureDetector.onTouchEvent(ev);
-                return false;
-
-            case MotionEvent.ACTION_UP:
-                mGestureDetector.onTouchEvent(ev);
-                Message msg = Message.obtain();
-                msg.what = mZoomMsg;
-                mUiHandler.sendMessage(msg);
-                mZoomMsg = -1;
-                return false;
-        }
-        return true;
+    public boolean onTouchEvent(MotionEvent ev) {
+        return doZoomInOutAction(ev);
     }
 
-    public boolean onTouchEvent(MotionEvent ev) {
+    private boolean doZoomInOutAction(MotionEvent ev) {
         mScaleDetector.onTouchEvent(ev);
         final int action = ev.getAction();
-
         switch (action) {
-            case MotionEvent.ACTION_DOWN:
-                mGestureDetector.onTouchEvent(ev);
-                return true;
-
-            case MotionEvent.ACTION_MOVE:
-                mGestureDetector.onTouchEvent(ev);
-                return true;
-
             case MotionEvent.ACTION_UP:
-                mGestureDetector.onTouchEvent(ev);
                 Message msg = Message.obtain();
                 msg.what = mZoomMsg;
                 mUiHandler.sendMessage(msg);
                 mZoomMsg = -1;
-                return true;
-
-            case MotionEvent.ACTION_CANCEL:
-                mGestureDetector.onTouchEvent(ev);
-                return true;
-
+                return false;
+            case MotionEvent.ACTION_DOWN:
+                return false;
             default:
-                if (mGestureDetector.onTouchEvent(ev)) {
-                    return true;
-                }
-
                 return true;
         }
     }
