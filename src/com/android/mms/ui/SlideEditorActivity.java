@@ -283,9 +283,22 @@ public class SlideEditorActivity extends Activity {
             }
             if (!isFinishing()) {
                 TextModel textMode = mSlideshowModel.get(mPosition).getText();
-                int currentTextSize = textMode == null ? 0 : textMode.getText().getBytes().length;
-                if (mSlideshowModel.getRemainMessageSize() == 0 ||
-                        (mSlideshowModel.getRemainMessageSize() + currentTextSize)
+
+                // beforeInputSize is size for inputting before.
+                int beforeInputSize = textMode == null ? 0 : textMode.getText().getBytes().length;
+                // currentInputSize include size for inputting current and before.
+                int currentInputSize = s.getBytes().length;
+                // so we need re-calculate the current input size.
+                int inputSize = currentInputSize - beforeInputSize;
+
+                // Add input size which inputting current to re-calculate the remain message size.
+                int remainSize = mSlideshowModel.getRemainMessageSize() - inputSize;
+                remainSize = remainSize < 0 ? 0 : remainSize;
+                if (DEBUG) {
+                    Log.v(TAG,"remainSize = "+remainSize);
+                }
+
+                if (remainSize == 0 || (mSlideshowModel.getRemainMessageSize() + beforeInputSize)
                         < s.getBytes().length) {
                     Toast.makeText(SlideEditorActivity.this, R.string.cannot_add_text_anymore,
                             Toast.LENGTH_SHORT).show();
