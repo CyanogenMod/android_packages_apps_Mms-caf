@@ -88,6 +88,7 @@ public class ManageSimMessages extends Activity
     private TextView mMessage;
     private MessageListAdapter mListAdapter = null;
     private AsyncQueryHandler mQueryHandler = null;
+    private boolean mIsDeleteAll = false;
 
     public static final int SIM_FULL_NOTIFICATION_ID = 234;
 
@@ -378,6 +379,15 @@ public class ManageSimMessages extends Activity
         mContentResolver.unregisterContentObserver(simChangeObserver);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (mIsDeleteAll) {
+            mIsDeleteAll = false;
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     private void registerSimChangeObserver() {
         mContentResolver.registerContentObserver(
                 mIccUri, true, simChangeObserver);
@@ -417,18 +427,31 @@ public class ManageSimMessages extends Activity
     }
 
     private void deleteAllFromSim() {
+        mIsDeleteAll = true;
         Cursor cursor = (Cursor) mListAdapter.getCursor();
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {
+                mContentResolver.unregisterContentObserver(simChangeObserver);
                 int count = cursor.getCount();
 
                 for (int i = 0; i < count; ++i) {
+                    if (!mIsDeleteAll || cursor.isClosed()) {
+                        break;
+                    }
+                    cursor.moveToPosition(i);
                     deleteFromSim(cursor);
-                    cursor.moveToNext();
                 }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        refreshMessageList();
+                        registerSimChangeObserver();
+                    }
+                });
             }
         }
+        mIsDeleteAll = false;
     }
 
     @Override
