@@ -814,9 +814,20 @@ public class MessageListItem extends LinearLayout implements
             } else {
                 String url = spans[0].getURL();
                 if (MessageUtils.isWebUrl(url)) {
+                    Uri uri = Uri.parse(url);
                     Intent intent = new Intent(mContext, WwwContextMenuActivity.class);
-                    intent.setData(Uri.parse(url));
+                    intent.setData(uri);
                     mContext.startActivity(intent);
+                } else {
+                    final String telPrefix = "tel:";
+                    if (url.startsWith(telPrefix)) {
+                        url = url.substring(telPrefix.length());
+                        if (PhoneNumberUtils.isWellFormedSmsAddress(url)) {
+                            MessageUtils.showNumberOptions(mContext, url);
+                        }
+                    } else {
+                        spans[0].onClick(mBodyTextView);
+                    }
                 }
             }
         } else {
@@ -828,15 +839,17 @@ public class MessageListItem extends LinearLayout implements
                     try {
                         URLSpan span = getItem(position);
                         String url = span.getURL();
+                        Uri uri = Uri.parse(url);
                         TextView tv = (TextView) v;
                         Drawable d = mContext.getPackageManager().getActivityIcon(
-                                new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                                new Intent(Intent.ACTION_VIEW, uri));
                         if (d != null) {
                             d.setBounds(0, 0, d.getIntrinsicHeight(), d.getIntrinsicHeight());
                             tv.setCompoundDrawablePadding(10);
                             tv.setCompoundDrawables(d, null, null, null);
                         }
                         final String telPrefix = "tel:";
+                        final String mailToPrefix = "mailto:";
                         if (url.startsWith(telPrefix)) {
                             if ((mDefaultCountryIso == null) || mDefaultCountryIso.isEmpty()) {
                                 url = url.substring(telPrefix.length());
@@ -845,6 +858,8 @@ public class MessageListItem extends LinearLayout implements
                                 url = PhoneNumberUtils.formatNumber(
                                         url.substring(telPrefix.length()), mDefaultCountryIso);
                             }
+                        } else if (url.startsWith(mailToPrefix)) {
+                            url = url.substring(mailToPrefix.length());
                         }
                         tv.setText(url);
                     } catch (android.content.pm.PackageManager.NameNotFoundException ex) {
@@ -862,10 +877,24 @@ public class MessageListItem extends LinearLayout implements
                 public final void onClick(DialogInterface dialog, int which) {
                     if (which >= 0) {
                         String url = spans[which].getURL();
-                        Intent intent = new Intent(mContext, WwwContextMenuActivity.class);
-                        intent.setData(Uri.parse(url));
-                        mContext.startActivity(intent);
-
+                        if (MessageUtils.isWebUrl(url)) {
+                            Uri uri = Uri.parse(url);
+                            Intent intent = new Intent(mContext, WwwContextMenuActivity.class);
+                            intent.setData(uri);
+                            mContext.startActivity(intent);
+                        } else {
+                            final String telPrefix = "tel:";
+                            if (url.startsWith(telPrefix)) {
+                                url = url.substring(telPrefix.length());
+                                if (PhoneNumberUtils.isWellFormedSmsAddress(url)) {
+                                    MessageUtils.showNumberOptions(mContext, url);
+                                } else {
+                                    spans[which].onClick(mBodyTextView);
+                                }
+                            } else {
+                                spans[which].onClick(mBodyTextView);
+                            }
+                        }
                     }
                     dialog.dismiss();
                 }
