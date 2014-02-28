@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2013, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2010-2014, The Linux Foundation. All rights reserved.
  * Not a Contribution.
  * Copyright (C) 2007-2008 Esmertec AG.
  * Copyright (C) 2007-2008 The Android Open Source Project
@@ -306,7 +306,7 @@ public class SmsReceiverService extends Service {
                     if (c.moveToNext()) {
                         isExpectMore = true;
                     }
-                    SmsMessageSender sender = new SmsSingleRecipientSender(this,
+                    SmsMessageSender sender = new StandaloneMessagingSingleRecipientSender(this,
                             address, msgText, threadId, status == Sms.STATUS_PENDING,
                             msgUri, subId, isExpectMore);
 
