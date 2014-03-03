@@ -100,4 +100,11 @@
     <string name="send_delay_20seconds">20 secondes</string>
     <string name="send_delay_30seconds">30 secondes</string>
     <string name="sent_countdown">Décompte avant l\'envoi</string>
+    <string name="pref_title_mms_notification_vibrate_pattern">Style de vibration</string>
+    <string name="pref_summary_mms_notification_vibrate_pattern">Changer le style de vibration</string>
+    <string name="pref_mms_notification_vibrate_normal">Normal</string>
+    <string name="pref_mms_notification_vibrate_med_vib">Vibration moyenne</string>
+    <string name="pref_mms_notification_vibrate_long_vib">Vibration longue</string>
+    <string name="pref_mms_notification_vibrate_mult_short">Plusieurs courtes</string>
+    <string name="pref_mms_notification_vibrate_mult_long">Plusieurs longues</string>
 </resources>
