@@ -993,4 +993,13 @@
     <string name="done_delete">DONE</string>
     <!--add for toast when merging sms -->
     <string name="merging_sms_title">Merging sms</string>
+    <!-- priority of cdma message -->
+    <string translatable="false" name="default_cdma_priority">0</string>
+    <string name="cdma_priority_normal">Normal</string>
+    <string name="cdma_priority_interactive">Interactive</string>
+    <string name="cdma_priority_urgent">Urgent</string>
+    <string name="cdma_priority_emergency">Emergency</string>
+    <string name="pref_title_cdma_priority">Message priority</string>
+    <string name="pref_summary_cdma_priority">Priority of CDMA message</string>
+    <string name="prefDialogTitle_cdma_priority">Priority</string>
 </resources>

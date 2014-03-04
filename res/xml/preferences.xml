@@ -94,6 +94,15 @@
                       android:title="@string/pref_title_manage_sim_messages" />
   </PreferenceCategory>
 
+  <ListPreference
+        android:key="pref_key_sms_cdma_priority"
+        android:title="@string/pref_title_cdma_priority"
+        android:summary="@string/pref_summary_cdma_priority"
+        android:entries="@array/entries_cdma_priority"
+        android:entryValues="@array/values_cdma_priority"
+        android:defaultValue="@string/default_cdma_priority"
+        android:dialogTitle="@string/prefDialogTitle_cdma_priority" />
+
   <PreferenceCategory android:title="@string/pref_sms_signature_title"
                       android:key="pref_key_sms_signature" >
     <CheckBoxPreference android:key="pref_key_enable_signature"
