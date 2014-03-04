@@ -1338,7 +1338,7 @@ public class MessageUtils {
             return null;
         }
         String multiSimName = Settings.System.getString(context.getContentResolver(),
-                MULTI_SIM_NAME + subscription);
+                MULTI_SIM_NAME + (subscription + 1));
         if (multiSimName == null) {
             if (subscription == MSimConstants.SUB1) {
                 return context.getString(R.string.slot1);
