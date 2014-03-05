@@ -866,9 +866,13 @@ public class MessageUtils {
     }
 
     public static String getLocalNumber() {
-        if (null == sLocalNumber) {
-            sLocalNumber = MmsApp.getApplication().getTelephonyManager().getLine1Number();
-        }
+        sLocalNumber = MmsApp.getApplication().getTelephonyManager().getLine1Number();
+        return sLocalNumber;
+    }
+
+    public static String getLocalNumber(int subscription) {
+        sLocalNumber = MmsApp.getApplication().getMSimTelephonyManager().
+                getLine1Number(subscription);
         return sLocalNumber;
     }
 
