@@ -432,9 +432,11 @@ public class SmsReceiverService extends Service {
                 SmsMessage sms = msgs[i];
                 boolean saveSuccess = saveMessageToIcc(sms);
                 if (saveSuccess) {
+                    int subId = MSimTelephonyManager.getDefault().isMultiSimEnabled()
+                            ? sms.getSubId() : MessageUtils.SUB_INVALID;
                     MessagingNotification.blockingUpdateNewIccMessageIndicator(this,
                             sms.getDisplayOriginatingAddress(), sms.getDisplayMessageBody(),
-                            sms.getSubId(), sms.getTimestampMillis());
+                            subId, sms.getTimestampMillis());
                 } else {
                     Toast.makeText(this, getString(R.string.pref_sms_store_card_unknown_fail),
                             Toast.LENGTH_LONG).show();
