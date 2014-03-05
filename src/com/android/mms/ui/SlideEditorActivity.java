@@ -72,6 +72,8 @@ public class SlideEditorActivity extends Activity {
     private static final boolean DEBUG = false;
     private static final boolean LOCAL_LOGV = false;
 
+    private final static String MSG_SUBJECT_SIZE = "subject_size";
+
     // Key for extra data.
     public static final String SLIDE_INDEX = "slide_index";
 
@@ -120,6 +122,8 @@ public class SlideEditorActivity extends Activity {
     private SlideshowPresenter mPresenter;
     private boolean mDirty;
 
+    private int mSubjectSize;
+
     private int mPosition;
     private Uri mUri;
 
@@ -164,6 +168,7 @@ public class SlideEditorActivity extends Activity {
         mDone.setOnClickListener(mDoneClickListener);
 
         initActivityState(savedInstanceState, getIntent());
+        mSubjectSize = getIntent().getIntExtra(MSG_SUBJECT_SIZE, 0);
 
         try {
             mSlideshowModel = SlideshowModel.createFromMessageUri(this, mUri);
@@ -292,14 +297,14 @@ public class SlideEditorActivity extends Activity {
                 int inputSize = currentInputSize - beforeInputSize;
 
                 // Add input size which inputting current to re-calculate the remain message size.
-                int remainSize = mSlideshowModel.getRemainMessageSize() - inputSize;
+                int remainSize = mSlideshowModel.getRemainMessageSize() - mSubjectSize - inputSize;
                 remainSize = remainSize < 0 ? 0 : remainSize;
                 if (DEBUG) {
                     Log.v(TAG,"remainSize = "+remainSize);
                 }
 
                 if (remainSize == 0 || (mSlideshowModel.getRemainMessageSize() + beforeInputSize)
-                        < s.getBytes().length) {
+                        < currentInputSize) {
                     Toast.makeText(SlideEditorActivity.this, R.string.cannot_add_text_anymore,
                             Toast.LENGTH_SHORT).show();
 
