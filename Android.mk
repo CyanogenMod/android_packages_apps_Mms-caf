@@ -21,19 +21,6 @@ LOCAL_JAVA_LIBRARIES += telephony-common mms-common
 LOCAL_STATIC_JAVA_LIBRARIES += android-common jsr305
 LOCAL_STATIC_JAVA_LIBRARIES += android-common-chips
 
-ifdef IMS_RCS_DBG
-    ifeq ($(call is-board-platform-in-list,msm8960 msm8974 msm8226),true)
-    RCS_MESSAGING_FEATURE := true
-endif
-endif
-
-ifdef RCS_MESSAGING_FEATURE
-    LOCAL_JAVA_LIBRARIES += rcsservice
-else
-    SM_SRC_FILES := src/com/android/mms/transaction/StandaloneMessagingService.java
-    LOCAL_SRC_FILES := $(filter-out $(SM_SRC_FILES),$(LOCAL_SRC_FILES))
-endif
-
 LOCAL_RESOURCE_DIR := $(addprefix $(LOCAL_PATH)/, $(res_dirs))
 LOCAL_AAPT_FLAGS := --auto-add-overlay
 LOCAL_AAPT_FLAGS += --extra-packages com.android.ex.chips

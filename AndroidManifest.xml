@@ -51,7 +51,6 @@
     <uses-permission android:name="com.android.browser.permission.WRITE_HISTORY_BOOKMARKS"/>
     <uses-permission android:name="android.permission.RECEIVE_WAP_PUSH" />
     <uses-permission android:name="android.permission.GET_TASKS"/>
-    <uses-permission android:name="com.qualcomm.rcsbootstraputil.permission.ACCESS_RCS_SERVICE"/>
 
     <application android:name="MmsApp"
             android:label="@string/app_label"
@@ -59,15 +58,11 @@
             android:taskAffinity="android.task.mms"
             android:allowTaskReparenting="true">
         <uses-library android:name="com.qrd.wappush" android:required="false" />
-        <uses-library android:name="com.qualcomm.rcsservice" android:required="false" />
 
         <service android:name=".transaction.TransactionService"
                  android:exported="false" />
 
         <service android:name=".transaction.SmsReceiverService"
-                 android:exported="false" />
-
-        <service android:name=".transaction.StandaloneMessagingService"
                  android:exported="false" />
 
         <activity android:name=".ui.ConversationList"
@@ -342,12 +337,6 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="com.android.mms.transaction.SEND_MESSAGE" />
-            </intent-filter>
-        </receiver>
-
-        <receiver android:name=".transaction.StandaloneMessagingReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
