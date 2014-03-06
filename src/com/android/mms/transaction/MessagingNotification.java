@@ -103,6 +103,7 @@ public class MessagingNotification {
     public static final int FULL_NOTIFICATION_ID   = 125;
     private static final int ICC_NOTIFICATION_ID_SLOT1 = 126;
     private static final int ICC_NOTIFICATION_ID_SLOT2 = 127;
+    private static final int ICC_NOTIFICATION_ID = 128;
     public static final int MESSAGE_FAILED_NOTIFICATION_ID = 789;
     public static final int DOWNLOAD_FAILED_NOTIFICATION_ID = 531;
     /**
@@ -320,17 +321,16 @@ public class MessagingNotification {
         NotificationInfo info = getNewIccMessageNotificationInfo(context, true /* isSms */,
                 address, message, null /* subject */, subId, timeMillis,
                 null /* attachmentBitmap */, contact, WorkingMessage.TEXT);
+        noti.setTicker(info.mTicker);
         noti.setSmallIcon(R.drawable.stat_notify_sms);
         NotificationManager nm = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-//        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        // Update the notification.
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,  info.mClickIntent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,  info.mClickIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
         String title = info.mTitle;
         noti.setContentTitle(title)
             .setContentIntent(pendingIntent)
-                    //taskStackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT))
             .addKind(Notification.KIND_MESSAGE)
             .setPriority(Notification.PRIORITY_DEFAULT);
 
@@ -358,7 +358,6 @@ public class MessagingNotification {
         String ringtoneStr = sp.getString(MessagingPreferenceActivity.NOTIFICATION_RINGTONE,
                 null);
         noti.setSound(TextUtils.isEmpty(ringtoneStr) ? null : Uri.parse(ringtoneStr));
-        Log.d(TAG, "blockingUpdateNewIccMessageIndicator: adding sound to the notification");
 
         defaults |= Notification.DEFAULT_LIGHTS;
 
@@ -389,7 +388,12 @@ public class MessagingNotification {
 
         notifyUserIfFullScreen(context, title);
 
-        nm.notify(NEW_ICC_NOTIFICATION_ID[subId], notification);
+        if (subId == MessageUtils.SUB_INVALID) {
+            nm.notify(ICC_NOTIFICATION_ID, notification);
+        } else {
+            nm.notify(NEW_ICC_NOTIFICATION_ID[subId], notification);
+        }
+
     }
 
     /**
@@ -884,11 +888,10 @@ public class MessagingNotification {
             Contact contact,
             int attachmentType) {
         Intent clickIntent = new Intent(context, ManageSimMessages.class);
+        clickIntent.putExtra(MSimConstants.SUBSCRIPTION_KEY, subId);
         clickIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_SINGLE_TOP
                 | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        clickIntent.putExtra(MSimConstants.SUBSCRIPTION_KEY, subId);
         String senderInfo = buildTickerMessage(
                 context, address, null, null, subId).toString();
         String senderInfoName = senderInfo.substring(
@@ -1566,8 +1569,9 @@ public class MessagingNotification {
 
     public static void blockingRemoveIccNotifications(Context context, int subscription) {
         if (subscription == MessageUtils.SUB_INVALID) {
-            subscription = MSimConstants.SUB1;
+            cancelNotification(context, ICC_NOTIFICATION_ID);
+        } else {
+            cancelNotification(context, NEW_ICC_NOTIFICATION_ID[subscription]);
         }
-        cancelNotification(context, NEW_ICC_NOTIFICATION_ID[subscription]);
     }
 }

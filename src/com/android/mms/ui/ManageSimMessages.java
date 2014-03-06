@@ -173,6 +173,15 @@ public class ManageSimMessages extends Activity
                             mParent, mCursor, mSimList, false, null);
                     mSimList.setAdapter(mListAdapter);
                     mSimList.setOnCreateContextMenuListener(mParent);
+                    mSimList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view,
+                                                int position, long id) {
+                            if (view != null) {
+                                ((MessageListItem) view).onMessageListItemClick();
+                            }
+                        }
+                    });
                     updateState(SHOW_LIST);
                 } else {
                     mListAdapter.changeCursor(mCursor);
