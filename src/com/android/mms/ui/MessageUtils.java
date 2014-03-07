@@ -154,6 +154,8 @@ public class MessageUtils {
     private static String[] sNoSubjectStrings;
     public static String MULTI_SIM_NAME = "perferred_name_sub";
 
+    // add threshold for low memory
+    private static final int THRESHOLD_LOW_MEM_PERCENTAGE = 5;
     // add for obtain mms data path
     private static final String MMS_DATA_DATA_DIR = "/data/data";
     private static final String MMS_DATA_DIR = "/data/phonedata";
@@ -2194,5 +2196,12 @@ public class MessageUtils {
             }
         });
         builder.show();
+    }
+
+    public static boolean isMemoryLow() {
+        File path = Environment.getDataDirectory();
+        long lowBytes = (path.getTotalSpace() * THRESHOLD_LOW_MEM_PERCENTAGE) / 100;
+
+        return lowBytes > path.getFreeSpace();
     }
 }
