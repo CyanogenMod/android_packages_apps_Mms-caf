@@ -1976,7 +1976,7 @@ public class MessageUtils {
                             tv.setCompoundDrawablePadding(10);
                             tv.setCompoundDrawables(d, null, null, null);
                         }
-                        tv.setText(getUrlWithMailPrefix(context, url).replaceAll("tel:", ""));
+                        tv.setText(getDisplayUrl(context, url));
                     } catch (android.content.pm.PackageManager.NameNotFoundException ex) {
                         // it's ok if we're unable to set the drawable
                         // for this view - the user
@@ -2019,17 +2019,20 @@ public class MessageUtils {
         }
     }
 
-    private static String getUrlWithMailPrefix(Context context, String url) {
+    private static String getDisplayUrl(Context context, String url) {
         // If prefix string is "mailto" then translate it.
         final String mailPrefix = "mailto:";
+        final String telPrefix = "tel:";
         if (!TextUtils.isEmpty(url)) {
             if (url.startsWith(mailPrefix)) {
                 url = context.getResources().getString(R.string.mail_to) +
                         url.substring(mailPrefix.length());
                 return url;
+            } else if (url.startsWith(telPrefix)) {
+                url = url.replaceAll(telPrefix, "");
             }
         }
-        return "";
+        return url;
     }
 
     public static int getSmsPreferStoreLocation(Context context, int subscription) {
