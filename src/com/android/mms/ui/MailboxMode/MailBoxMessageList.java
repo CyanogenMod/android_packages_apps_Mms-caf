@@ -71,6 +71,7 @@ import com.android.mms.data.Contact;
 import com.android.mms.LogTag;
 import com.android.mms.R;
 import com.android.mms.ui.MessageListAdapter;
+import com.android.mms.transaction.MessagingNotification;
 import com.android.mms.ui.PopupList;
 import com.android.mms.ui.SelectionMenu;
 import com.android.mms.ui.MessageUtils;
@@ -250,10 +251,33 @@ public class MailBoxMessageList extends ListActivity implements
                 Uri msgUri = ContentUris.withAppendedId(Mms.CONTENT_URI, msgId);
                 MessageUtils.viewMmsMessageAttachment(MailBoxMessageList.this, msgUri, null,
                         new AsyncDialog(MailBoxMessageList.this));
+                int hasRead = c.getInt(COLUMN_MMS_READ);
+                if (hasRead == 0) {
+                    markAsRead(msgUri);
+                }
             }
         } finally {
             c.close();
         }
+    }
+
+    private void markAsRead(final Uri msgUri) {
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    ContentValues values = new ContentValues(2);
+                    values.put(Mms.READ, MessageUtils.MESSAGE_READ);
+                    values.put(Mms.SEEN, MessageUtils.MESSAGE_SEEN);
+                    SqliteWrapper.update(MailBoxMessageList.this, getContentResolver(),
+                            msgUri, values, null, null);
+                    MessagingNotification.nonBlockingUpdateNewMessageIndicator(
+                            MailBoxMessageList.this, MessagingNotification.THREAD_NONE,
+                            false);
+                } catch (Exception e) {
+                    Log.e(TAG, "Update Read Error", e);
+                }
+            }
+        }).start();
     }
 
 

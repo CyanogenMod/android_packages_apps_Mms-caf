@@ -602,8 +602,9 @@ public class MailBoxMessageContent extends Activity {
 
         public void run() {
             try {
-                ContentValues values = new ContentValues(1);
-                values.put(Sms.READ, 1);
+                ContentValues values = new ContentValues(2);
+                values.put(Sms.READ, MessageUtils.MESSAGE_READ);
+                values.put(Sms.SEEN, MessageUtils.MESSAGE_SEEN);
                 SqliteWrapper.update(MailBoxMessageContent.this, getContentResolver(),
                         mMessageUri, values, null, null);
                 MessagingNotification.nonBlockingUpdateNewMessageIndicator(
