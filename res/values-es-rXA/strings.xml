@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
+<!--
 /*
  * Copyright (C) 2007-2008 Esmertec AG.
  * Copyright (C) 2007-2008 The Android Open Source Project
@@ -17,7 +17,6 @@
  * limitations under the License.
  */
  -->
-
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_label" msgid="1503967887341230795">Mensaxes</string>
     <string name="new_message" msgid="1530369762346003973">Mensaxe nuevu</string>
@@ -32,7 +31,7 @@
     <string name="menu_delete" msgid="1851666911396479006">Desaniciar cadena</string>
     <string name="menu_view" msgid="7448852683948080108">Ver conversación</string>
     <string name="menu_debug_dump" msgid="6855869130206549643">VOLCÁU DE DEPURACIÓN</string>
-    <string name="refreshing" msgid="987335057871404222">Anovando...</string>
+    <string name="refreshing" msgid="987335057871404222">Anovando\u2026</string>
     <string name="menu_cell_broadcasts" msgid="5646161375983084660">Difusiones móviles</string>
     <string name="has_draft" msgid="2487465595514636160">Borrador</string>
     <string name="no_subject_view" msgid="7795086723069563537">(Ensin asuntu)</string>
@@ -49,7 +48,7 @@
     <string name="delete_thread" msgid="757258847736632791">Desaniciar cadena</string>
     <string name="menu_forward" msgid="9026858380050046756">Reunviar</string>
     <string name="download" msgid="4488877642230207631">Descargar</string>
-    <string name="downloading" msgid="1779557575565350637">Descargando...</string>
+    <string name="downloading" msgid="1779557575565350637">Descargando\u2026</string>
     <string name="inline_subject" msgid="4057621785274119260">&lt;Asuntu: <xliff:g id="SUBJECT">%s</xliff:g>&gt;</string>
     <string name="drm_protected_text" msgid="1396394157870730742">* testu protexíu por DRM *</string>
     <string name="insufficient_drm_rights" msgid="6989074725969164383">Derechos DRM insuficientes</string>
@@ -90,7 +89,7 @@
     <string name="compressing" msgid="1961357529661045180">La imaxe ye enforma grande. Comprimiendo…</string>
     <string name="unsupported_media_format" msgid="1350489690977363764">Formatu de <xliff:g id="NAME">%1$s</xliff:g> non almitíu</string>
     <string name="select_different_media" msgid="6241623357299382183">Esbillar otru <xliff:g id="NAME">%1$s</xliff:g></string>
-    <string name="exceed_message_size_limitation" msgid="6027753647094742437">Algamóse\'l llímite de tamañu del mensaxe.</string>
+    <string name="exceed_message_size_limitation" msgid="6027753647094742437">Algamóse la llende de tamañu del mensaxe.</string>
     <string name="message_too_big_for_video" msgid="2639367545165352543">El mensaxe ye enforma grande p\'axuntar un videu.</string>
     <string name="failed_to_add_media" msgid="7207464170168708485">Nun pues amestar <xliff:g id="NAME">%1$s</xliff:g> al mensaxe.</string>
     <string name="failed_to_resize_image" msgid="5608354151631833669">Nun pudo axustase\'l tamañu de la imaxe.</string>
@@ -106,16 +105,16 @@
     <string name="cannot_send_message" msgid="3414307479833622644">Nun pue unviase\'l mensaxe</string>
     <string name="cannot_send_message_reason" msgid="8745080126044054343">Los destinatarios del mensaxe nun son válidos.</string>
     <string name="cannot_forward_drm_obj" msgid="5047623751430559077">Nun pue reunviase l\'oxetu DRM incluyíu nel mensaxe.</string>
-    <string name="converting_to_picture_message" msgid="2980023239017588627">Convirtiendo en mensaxe multimedia...</string>
+    <string name="converting_to_picture_message" msgid="2980023239017588627">Convirtiendo en mensaxe multimedia\u2026</string>
     <string name="cannot_add_slide_anymore" msgid="4631404749618820994">Nun pues amestar más diapositives.</string>
     <string name="cannot_add_picture_and_video" msgid="4954353772391381447">Nun pues amestar vídeos a una diapositiva que yá tenga imáxenes o viceversa.</string>
     <string name="cannot_save_message" msgid="3375907366965264446">Nun pue guardase\'l mensaxe.</string>
     <string name="message_saved_as_draft" msgid="2503018972659880692">Mensaxe guardáu como borrador</string>
     <string name="too_many_recipients" msgid="7003415094007176931">El mensaxe tien abondos destinatarios (<xliff:g id="CURRENTCOUNT">%1$s</xliff:g>). Nun s\'almiten más de <xliff:g id="MAXLIMIT">%2$s</xliff:g> destinatarios.</string>
-    <string name="too_many_attachments" msgid="3774037894899750070">Esiste un llímite de <xliff:g id="MAXLIMIT">%1$s</xliff:g> ficheros axuntos. Namái van amestase los <xliff:g id="CURRENTCOUNT">%2$s</xliff:g> primeros.</string>
+    <string name="too_many_attachments" msgid="3774037894899750070">Esiste una llende de <xliff:g id="MAXLIMIT">%1$s</xliff:g> ficheros axuntos. Namái van amestase los <xliff:g id="CURRENTCOUNT">%2$s</xliff:g> primeros.</string>
     <string name="adding_attachments_title" msgid="2034535554212405529">Amestando axuntos</string>
     <string name="adding_attachments" msgid="5871373105122355632">Espera mientres s\'amiesten los elementos a la presentación.</string>
-    <string name="building_slideshow_title" msgid="1232338692400726385">Creando presentación...</string>
+    <string name="building_slideshow_title" msgid="1232338692400726385">Creando presentación\u2026</string>
     <string name="cannot_play_audio" msgid="253920977253666735">Nun pue reproducise l\'audio.</string>
     <string name="preview" msgid="5438149136136446756">Vista previa</string>
     <string name="preview_slideshow" msgid="6824095909448728427">Vista previa</string>
@@ -165,7 +164,7 @@
     <string name="pref_summary_mms_delivery_reports" msgid="4874657984217756112">Solicitar un informe d\'entrega al unviar un mensaxe</string>
     <string name="pref_summary_mms_read_reports" msgid="2748323864008907440">Solicitar un informe de mensaxe lleíu al unviar un mensaxe</string>
     <string name="pref_summary_sms_delivery_reports" msgid="5852207702358546129">Solicitar un informe d\'entrega cada vegada que s\'unvie un mensaxe</string>
-    <string name="pref_summary_auto_delete" msgid="7719538116486177613">Desaniciar mensaxes antiguos al pasar el llímite de mensaxes</string>
+    <string name="pref_summary_auto_delete" msgid="7719538116486177613">Desaniciar mensaxes antiguos al pasar la llende de mensaxes</string>
     <string name="pref_summary_delete_limit" msgid="597128041393045216"><xliff:g id="COUNT">%1$s</xliff:g> mensaxes por conversación</string>
     <string name="pref_summary_mms_group_mms" msgid="2266928687440696745">Usa MMS pa unviar un únicu mensaxe a dellos destinatarios.</string>
     <string name="pref_title_manage_sim_messages" msgid="7820895261757881177">Alministrar mensaxes de SIM</string>
@@ -174,8 +173,8 @@
     <string name="pref_title_mms_read_reports" msgid="4882179829495828541">Informes de lleíos</string>
     <string name="pref_title_sms_delivery_reports" msgid="876064208254451038">Informes d\'entrega</string>
     <string name="pref_title_auto_delete" msgid="7227835692631701134">Desaniciar mensaxes antiguos</string>
-    <string name="pref_title_sms_delete" msgid="6890538316799296878">Llímite de mensaxes de testu</string>
-    <string name="pref_title_mms_delete" msgid="7265878070847351664">Llímite de mensaxes multimedia</string>
+    <string name="pref_title_sms_delete" msgid="6890538316799296878">Llende de mensaxes de testu</string>
+    <string name="pref_title_mms_delete" msgid="7265878070847351664">Llende de mensaxes multimedia</string>
     <string name="pref_title_notification_enabled" msgid="9118792213953729414">Notificaciones</string>
     <string name="pref_title_notification_vibrateWhen" msgid="4251208067092761057">Vibración</string>
     <string name="pref_title_notification_ringtone" msgid="8667533917574559659">Soníu</string>
@@ -201,7 +200,7 @@
     <string name="delete" msgid="1409973060081564612">Desaniciar</string>
     <string name="select_conversations" msgid="7816517565640002844">Seleicionar conversaciones</string>
     <string name="no_conversations" msgid="6773767655149258445">Nun hai conversaciones.</string>
-    <string name="loading_conversations" msgid="5510430408235967094">Cargando conversaciones...</string>
+    <string name="loading_conversations" msgid="5510430408235967094">Cargando conversaciones\u2026</string>
     <string name="cannot_get_details" msgid="850292987983026806">Nun pue obtenese información detallao.</string>
     <string name="message_details_title" msgid="9223295113731634528">Detalles del mensaxe</string>
     <string name="message_type_label" msgid="7975373966795945566">Tipu: </string>
@@ -238,7 +237,7 @@
     <string name="status_read" msgid="7576195253780627332">Lleíos</string>
     <string name="status_received" msgid="7264334589461906965">Recibíu</string>
     <string name="status_failed" msgid="1998776666856593544">Con fallu</string>
-    <string name="status_unread" msgid="8555305495998700198">Non lleíos</string>
+    <string name="status_unread" msgid="8555305495998700198">Ensin lleer</string>
     <string name="status_rejected" msgid="2613641949065942678">Refugaos:</string>
     <string name="recipient_label" msgid="3922667485312634446">Destinatariu: </string>
     <string name="status_label" msgid="7283375460919181660">Estáu: </string>
@@ -296,7 +295,7 @@
     <item quantity="other" msgid="3736425355579939863"><xliff:g id="NUMBER">%s</xliff:g> segundos</item>
   </plurals>
     <string name="delivery_report_activity" msgid="2957463094232916364">Informe d\'entrega</string>
-    <string name="storage_limits_activity" msgid="8810530813311077716">Llímites d\'almacenamientu</string>
+    <string name="storage_limits_activity" msgid="8810530813311077716">Llendes d\'almacenamientu</string>
     <string name="change_duration_activity" msgid="7048606979485031693">Camudar duración</string>
     <string name="edit_slideshow_activity" msgid="8751493388760050529">Editar diapositiva</string>
     <string name="recipient_list_activity" msgid="1254938236543727019">Participantes del grupu</string>
@@ -318,7 +317,7 @@
     <string name="pref_mms_clear_search_history_title" msgid="6159758850628148164">Desaniciar historial de gueta</string>
     <string name="pref_mms_clear_search_history_summary" msgid="7960005384066460035">Permite desaniciar guetes de mensaxes anteriores pa que nun apaezan nel cuadru de gueta.</string>
     <string name="save" msgid="6847069284991531310">Guardar</string>
-    <string name="storage_limits_title" msgid="7074684882530693016">Llímite d\'almacenamientu</string>
+    <string name="storage_limits_title" msgid="7074684882530693016">Llendes d\'almacenamientu</string>
     <string name="storage_limits_message" msgid="2010501485394745696">¿Quies llendar el númberu de mensaxes que van guardase por conversación?</string>
     <string name="storage_limits_setting" msgid="4952781049308537373">Establecer llendes</string>
     <string name="storage_limits_setting_dismiss" msgid="1433841310158458034">Ensin llendes</string>
@@ -340,7 +339,7 @@
   </plurals>
     <string name="disable_notifications_dialog_message" msgid="7644011234972074096">¿Quies dexar de recibir notificaciones de mensaxes de testu duplicaes procedentes de l\'aplicación Mensaxes?</string>
     <string name="view_more_conversations" msgid="7275920132410734671">Ver más conversaciones</string>
-    <string name="attachment_audio" msgid="2867960243300539143">Audio</string>
+    <string name="attachment_audio" msgid="2867960243300539143">Audiu</string>
     <string name="attachment_slideshow" msgid="5867689101881763318">Presentación</string>
     <string name="attachment_video" msgid="4252062022156694591">Videu</string>
     <string name="attachment_picture" msgid="3709286281567284296">Imaxe</string>
@@ -353,5 +352,5 @@
     <string name="desc_mms_send_outbox_msg" msgid="1837156781311437148">Unvia tolos MMS de la bandexa de salida a la rede</string>
     <string name="banner_sms_promo_title_initial" msgid="510014388581481569">Mensaxes nun ye la to aplicación de SMS</string>
     <string name="banner_sms_promo_title_application" msgid="8123569785369713254"><xliff:g id="APPNAME">%s</xliff:g> ye la to aplicación de SMS</string>
-    <string name="banner_sms_promo_message" msgid="3536714414252763826">Pues camudar esta opción en Axustes</string>
+    <string name="banner_sms_promo_message" msgid="3536714414252763826">Pues camudar esta opción n\'Axustes</string>
 </resources>
