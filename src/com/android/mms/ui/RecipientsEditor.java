@@ -38,6 +38,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
 import android.widget.AdapterView;
 import android.widget.MultiAutoCompleteTextView;
 
@@ -160,6 +161,13 @@ public class RecipientsEditor extends RecipientEditTextView {
 
         return end == len;
 
+    }
+
+    @Override
+    public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
+        InputConnection connection = super.onCreateInputConnection(outAttrs);
+        outAttrs.actionLabel = getContext().getString(R.string.slide_done);
+        return connection;
     }
 
     public int getRecipientCount() {
