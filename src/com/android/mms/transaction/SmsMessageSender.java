@@ -27,6 +27,7 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.Telephony.Sms;
 import android.provider.Telephony.Sms.Inbox;
+import android.telephony.MSimTelephonyManager;
 import android.util.Log;
 
 import com.android.internal.telephony.MSimConstants;
@@ -87,9 +88,17 @@ public class SmsMessageSender implements MessageSender {
         }
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-        boolean requestDeliveryReport = prefs.getBoolean(
-                MessagingPreferenceActivity.SMS_DELIVERY_REPORT_MODE,
-                DEFAULT_DELIVERY_REPORT_MODE);
+        boolean requestDeliveryReport = false;
+        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+            requestDeliveryReport = prefs.getBoolean((mSubscription == 0) ?
+                    MessagingPreferenceActivity.SMS_DELIVERY_REPORT_SUB1 :
+                    MessagingPreferenceActivity.SMS_DELIVERY_REPORT_SUB2,
+                    DEFAULT_DELIVERY_REPORT_MODE);
+        } else {
+            requestDeliveryReport = prefs.getBoolean(
+                    MessagingPreferenceActivity.SMS_DELIVERY_REPORT_MODE,
+                    DEFAULT_DELIVERY_REPORT_MODE);
+        }
 
         int priority = -1;
         try {

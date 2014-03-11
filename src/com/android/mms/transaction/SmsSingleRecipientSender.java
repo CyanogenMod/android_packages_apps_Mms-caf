@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Sms;
 import android.telephony.MSimSmsManager;
@@ -125,27 +127,18 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
             }
             sentIntents.add(PendingIntent.getBroadcast(mContext, requestCode, intent, 0));
         }
+
+        int validityPeriod = getValidityPeriod(mSubscription);
+        Log.d(TAG, "sendMessage validityPeriod = "+validityPeriod);
         try {
             if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
-                MSimSmsManager smsManagerMSim = MSimSmsManager.getDefault();
-                if (MSimTelephonyManager.getDefault().getPhoneType(mSubscription)
-                        == PhoneConstants.PHONE_TYPE_CDMA) {
-                    Log.d(TAG,"priority = " + priority + " mSubscription = " + mSubscription);
-                    smsManagerMSim.sendMultipartTextMessage(mDest, mServiceCenter,
-                            messages, sentIntents, deliveryIntents, priority, mIsExpectMore, mSubscription);
-                } else {
-                    smsManagerMSim.sendMultipartTextMessage(mDest, mServiceCenter, messages,
-                            sentIntents, deliveryIntents, mSubscription);
-                }
+                MSimSmsManager.getDefault().sendMultipartTextMessage(mDest, mServiceCenter,
+                            messages, sentIntents, deliveryIntents, priority, mIsExpectMore,
+                            validityPeriod, mSubscription);
             } else {
-                if (TelephonyManager.getDefault().getPhoneType()
-                        == PhoneConstants.PHONE_TYPE_CDMA) {
-                    smsManager.sendMultipartTextMessage(mDest, mServiceCenter,
-                            messages, sentIntents, deliveryIntents, priority, mIsExpectMore);
-                } else {
-                    smsManager.sendMultipartTextMessage(mDest, mServiceCenter, messages,
-                            sentIntents, deliveryIntents);
-                }
+                smsManager.sendMultipartTextMessage(mDest, mServiceCenter,
+                            messages, sentIntents, deliveryIntents, priority, mIsExpectMore,
+                            validityPeriod);
             }
         } catch (Exception ex) {
             Log.e(TAG, "SmsMessageSender.sendMessage: caught", ex);
@@ -157,6 +150,25 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
                     ", uri=" + mUri + ", msgs.count=" + messageCount);
         }
         return false;
+    }
+
+    private int getValidityPeriod(int subscription) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String valitidyPeriod = null;
+        switch (subscription) {
+            case MSimConstants.INVALID_SUBSCRIPTION:
+                valitidyPeriod = prefs.getString("pref_key_sms_validity_period", null);
+                break;
+            case MSimConstants.SUB1:
+                valitidyPeriod = prefs.getString("pref_key_sms_validity_period_slot1", null);
+                break;
+            case MSimConstants.SUB2:
+                valitidyPeriod = prefs.getString("pref_key_sms_validity_period_slot2", null);
+                break;
+            default:
+                break;
+        }
+        return (valitidyPeriod == null) ? -1 : Integer.parseInt(valitidyPeriod);
     }
 
     private void log(String msg) {
