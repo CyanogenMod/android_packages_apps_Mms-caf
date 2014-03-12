@@ -104,6 +104,7 @@ public class MessagingNotification {
     private static final int ICC_NOTIFICATION_ID_SLOT1 = 126;
     private static final int ICC_NOTIFICATION_ID_SLOT2 = 127;
     private static final int ICC_NOTIFICATION_ID = 128;
+    private static final int LOW_MEM_NOTIFICATION_ID = 129;
     public static final int MESSAGE_FAILED_NOTIFICATION_ID = 789;
     public static final int DOWNLOAD_FAILED_NOTIFICATION_ID = 531;
     /**
@@ -1549,6 +1550,22 @@ public class MessagingNotification {
         notification.tickerText = title;
         notification.setLatestEventInfo(context, title, description, intent);
         nm.notify(FULL_NOTIFICATION_ID, notification);
+    }
+
+    public static void notifyMemoryLow(Context context) {
+        NotificationManager nm = (NotificationManager)
+                context.getSystemService(Context.NOTIFICATION_SERVICE);
+        int icon = android.R.drawable.stat_notify_chat;
+        long when = System.currentTimeMillis();
+        Notification notification = new Notification(icon, null, when);
+        Intent notificationIntent = new Intent(context, ConversationList.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
+                    notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        notification.setLatestEventInfo(context, context.getString(R.string.memory_low_title),
+                    context.getString(R.string.memory_low_body), contentIntent);
+        notification.flags = Notification.FLAG_AUTO_CANCEL;
+
+        nm.notify(LOW_MEM_NOTIFICATION_ID, notification);
     }
 
     private static void notifyUserIfFullScreen(Context context, String from) {

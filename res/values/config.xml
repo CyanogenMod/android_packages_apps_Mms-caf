@@ -74,4 +74,7 @@
     <bool name="config_savelocation">false</bool>
     <!-- configuration for sms priority -->
     <bool name="support_sms_priority">false</bool>
+
+    <!-- configuration for low memory notification -->
+    <bool name="config_detect_low_memory">false</bool>
 </resources>
