@@ -222,8 +222,7 @@ public class PushReceiver extends BroadcastReceiver {
                             values.put(Mms.SUB_ID, subId);
 
                             Uri uri = p.persist(pdu, Inbox.CONTENT_URI,
-                                    MessageUtils.isMmsMemoryFull() ||
-                                    NotificationTransaction.isMmsSizeTooLarge(nInd),
+                                    true,
                                     MessagingPreferenceActivity.getIsGroupMmsEnabled(mContext),
                                     null);
 
