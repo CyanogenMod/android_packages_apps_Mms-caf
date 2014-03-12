@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2013-2014, The Linux Foundation. All rights reserved.
  * Not a Contribution.
  *
  * Copyright (C) 2012 The Android Open Source Project.
@@ -537,6 +537,7 @@ public class MailBoxMessageList extends ListActivity implements
                 break;
             case R.id.action_change_mode:
                 Intent modeIntent = new Intent(this, ConversationList.class);
+                MessageUtils.setMailboxMode(false);
                 startActivityIfNeeded(modeIntent, -1);
                 finish();
                 break;
