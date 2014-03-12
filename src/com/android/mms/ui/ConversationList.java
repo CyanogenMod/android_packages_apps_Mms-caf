@@ -255,21 +255,33 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         @Override
         public void onContentChanged(ConversationListAdapter adapter) {
             startAsyncQuery();
-            resetSearchView();
         }
     };
 
-    private void resetSearchView(){
-        //Only when user is searching, reset the SearchView.
-        if(mSearchView != null && !mSearchView.isIconified()){
-            SearchManager searchManager =
-                    (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-            if (searchManager != null) {
-                SearchableInfo info = searchManager.getSearchableInfo(this.getComponentName());
-                mSearchView.setSearchableInfo(info);
+    private void resetSearchView() {
+        mHandler.removeCallbacks(resetSearchRunnable);
+        mHandler.postDelayed(resetSearchRunnable, DELAY_TIME);
+    }
+
+    private Runnable resetSearchRunnable = new Runnable() {
+        @Override
+        public void run() {
+            // Only when user is searching, reset the SearchView.
+            if (mSearchView != null && !mSearchView.isIconified()) {
+                final CharSequence query = mSearchView.getQuery();
+                invalidateOptionsMenu();
+                mHandler.postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        mSearchView.setQuery(query, false);
+                    }
+                }, DELAY_TIME);
+            } else {
+                invalidateOptionsMenu();
             }
         }
-    }
+    };
 
     private void initListAdapter() {
         mListAdapter = new ConversationListAdapter(this, null);
@@ -972,7 +984,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                             mSavedFirstItemOffset);
                     mSavedFirstVisiblePosition = AdapterView.INVALID_POSITION;
                 }
-                invalidateOptionsMenu();
+                resetSearchView();
                 break;
 
             case UNREAD_THREADS_QUERY_TOKEN:
