@@ -119,7 +119,6 @@
     <string name="slideshow_options">Slideshow options</string>
 
     <!-- Button text on edit slide screen indicating the user wants to finish editing that slide -->
-    <string name="done">Done</string>
     <string name="slide_done">Done</string>
 
     <!-- Menu item in slideshow edit screen for moving the selected slide up in the order -->
