@@ -45,6 +45,9 @@
     <!-- configuration for show two call button in conversation -->
     <bool name="config_two_call_button">true</bool>
 
+    <!-- configuration for cancel mms -->
+    <bool name="config_mms_cancelable">false</bool>
+
     <!-- configuration for max slide num -->
     <integer name="max_slide_num">10</integer>
     <!-- configuration for limit count -->
