@@ -373,4 +373,8 @@
     <!-- Original timestamps -->
     <string name="pref_title_mms_use_sent_timestamp">Original timestamps</string>
     <string name="pref_summary_mms_use_sent_timestamp">Display sent date instead of received date in timestamps</string>
+
+    <!-- Smart Dialer -->
+    <string name="pref_title_mms_smart_dialer">Smart Call</string>
+    <string name="pref_summary_mms_smart_dialer">Automatically call the contact by putting device near your ear</string>
 </resources>
