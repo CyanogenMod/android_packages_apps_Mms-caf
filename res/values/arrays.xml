@@ -33,8 +33,8 @@
     <string-array name="box_type">
         <item>@string/type_inbox</item>
         <item>@string/type_sent</item>
-        <item>@string/type_outbox</item>
         <item>@string/type_draft</item>
+        <item>@string/type_outbox</item>
     </string-array>
     <string-array name="slot_type">
         <item>@string/type_all</item>
