@@ -273,6 +273,12 @@
     <!-- Extra Settings -->
     <PreferenceCategory android:title="@string/pref_extra_settings">
 
+        <SwitchPreference
+            android:key="pref_key_mms_smart_dialer"
+            android:title="@string/pref_title_mms_smart_dialer"
+            android:summary="@string/pref_summary_mms_smart_dialer"
+            android:defaultValue="false" />
+
         <PreferenceScreen
                 android:key="pref_blacklist"
                 android:title="@string/blacklist_title"

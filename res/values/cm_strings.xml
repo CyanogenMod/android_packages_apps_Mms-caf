@@ -376,4 +376,8 @@
 
     <!-- Select recipients dialog -->
     <string name="adding_selected_recipients_dialog_text">Adding contacts\u2026</string>
+
+    <!-- Smart Dialer -->
+    <string name="pref_title_mms_smart_dialer">Smart call</string>
+    <string name="pref_summary_mms_smart_dialer">Automatically call the contact by moving your phone to your ear</string>
 </resources>
