@@ -123,6 +123,9 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private final static String EXPIRY_ONE_WEEK = "604800"; // 7 * 24 * 60 * 60
     private final static String EXPIRY_TWO_DAYS = "172800"; // 2 * 24 * 60 * 60
 
+    // Smart Dialer
+    public static final String SMART_DIALER_ENABLED = "pref_key_mms_smart_dialer";
+
     // QuickMessage
     public static final String QUICKMESSAGE_ENABLED      = "pref_key_quickmessage";
     public static final String QM_LOCKSCREEN_ENABLED     = "pref_key_qm_lockscreen";
@@ -173,6 +176,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private SwitchPreference mVibratePref;
     private SwitchPreference mEnableNotificationsPref;
     private SwitchPreference mMmsAutoRetrievialPref;
+    private SwitchPreference mSmartCall;
     private ListPreference mMmsExpiryPref;
     private ListPreference mMmsExpiryCard1Pref;
     private ListPreference mMmsExpiryCard2Pref;
@@ -274,6 +278,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mSmsPrefCategory.setEnabled(mIsSmsEnabled);
         mMmsPrefCategory.setEnabled(mIsSmsEnabled);
         mNotificationPrefCategory.setEnabled(mIsSmsEnabled);
+        mSmartCall.setEnabled(mIsSmsEnabled);
     }
 
     @Override
@@ -319,6 +324,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mClearHistoryPref = findPreference("pref_key_mms_clear_history");
         mEnableNotificationsPref = (SwitchPreference) findPreference(NOTIFICATION_ENABLED);
         mMmsAutoRetrievialPref = (SwitchPreference) findPreference(AUTO_RETRIEVAL);
+        mSmartCall = (SwitchPreference) findPreference(SMART_DIALER_ENABLED);
         mMmsExpiryPref = (ListPreference) findPreference("pref_key_mms_expiry");
         mMmsExpiryCard1Pref = (ListPreference) findPreference("pref_key_mms_expiry_slot1");
         mMmsExpiryCard2Pref = (ListPreference) findPreference("pref_key_mms_expiry_slot2");
@@ -425,6 +431,9 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
         setEnabledNotificationsPref();
 
+        // smart dialer
+        setEnabledSmartCallPref();
+
         if (getResources().getBoolean(R.bool.config_savelocation)) {
             if (MessageUtils.isMultiSimEnabledMms()) {
                 PreferenceCategory storageOptions =
@@ -510,6 +519,11 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             mMmsPrefCategory.removePreference(mMmsExpiryCard1Pref);
             mMmsPrefCategory.removePreference(mMmsExpiryCard2Pref);
         }
+    }
+
+    private void setEnabledSmartCallPref() {
+        boolean isSmartCallEnabled = getSmartCallEnabled(this);
+        mSmartCall.setChecked(isSmartCallEnabled);
     }
 
     private void setMessagePriorityPref() {
@@ -759,6 +773,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             if (mMmsAutoRetrievialPref.isChecked()) {
                 startMmsDownload();
             }
+        } else if (preference == mSmartCall) {
+            enableSmartDialer(mSmartCall.isChecked(), this);
         }
 
         return super.onPreferenceTreeClick(preferenceScreen, preference);
@@ -1189,6 +1205,20 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         boolean qmDarkThemeEnabled =
             prefs.getBoolean(MessagingPreferenceActivity.QM_DARK_THEME_ENABLED, false);
         return qmDarkThemeEnabled;
+    }
+
+    public static boolean getSmartCallEnabled(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean smartCallEnabled =
+            prefs.getBoolean(MessagingPreferenceActivity.SMART_DIALER_ENABLED, false);
+        return smartCallEnabled;
+    }
+
+    public static void enableSmartDialer(boolean enabled, Context context) {
+        SharedPreferences.Editor editor =
+            PreferenceManager.getDefaultSharedPreferences(context).edit();
+        editor.putBoolean(MessagingPreferenceActivity.SMART_DIALER_ENABLED, enabled);
+        editor.apply();
     }
 
     private void registerListeners() {
