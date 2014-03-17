@@ -80,4 +80,7 @@
 
     <!-- configuration for low memory notification -->
     <bool name="config_detect_low_memory">false</bool>
+
+    <bool name="config_manual_resend">false</bool>
+    <bool name="config_retry_always">false</bool>
 </resources>
