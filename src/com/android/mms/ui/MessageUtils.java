@@ -1437,7 +1437,7 @@ public class MessageUtils {
             if (subscription >= indexs.length) {
                 return null;
             }
-            return null;// icons.getDrawable(Integer.parseInt(indexs[subscription]));
+            return icons.getDrawable(Integer.parseInt(indexs[subscription]));
         }
     }
 
