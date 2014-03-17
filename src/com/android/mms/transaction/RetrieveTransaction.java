@@ -67,6 +67,7 @@ public class RetrieveTransaction extends Transaction implements Runnable {
     private final Uri mUri;
     private final String mContentLocation;
     private boolean mLocked;
+    private boolean isCancelMyself;
 
     static final String[] PROJECTION = new String[] {
         Mms.CONTENT_LOCATION,
@@ -137,9 +138,17 @@ public class RetrieveTransaction extends Transaction implements Runnable {
             // Change the downloading state of the M-Notification.ind.
             downloadManager.markState( mUri, DownloadManager.STATE_DOWNLOADING);
 
+            if (isCancelMyself) {
+                DownloadManager.getInstance().markState(mUri, DownloadManager.STATE_UNSTARTED);
+                return;
+            }
             // Send GET request to MMSC and retrieve the response data.
             byte[] resp = getPdu(mContentLocation);
 
+            if (isCancelMyself) {
+                DownloadManager.getInstance().markState(mUri, DownloadManager.STATE_UNSTARTED);
+                return;
+            }
             // Parse M-Retrieve.conf
             RetrieveConf retrieveConf = (RetrieveConf) new PduParser(resp).parse();
             if (null == retrieveConf) {
@@ -212,7 +221,11 @@ public class RetrieveTransaction extends Transaction implements Runnable {
             Log.e(TAG, Log.getStackTraceString(t));
         } finally {
             if (mTransactionState.getState() != TransactionState.SUCCESS) {
-                mTransactionState.setState(TransactionState.FAILED);
+                if (isCancelMyself) {
+                    mTransactionState.setState(TransactionState.CANCELED);
+                } else {
+                    mTransactionState.setState(TransactionState.FAILED);
+                }
                 mTransactionState.setContentUri(mUri);
                 Log.e(TAG, "Retrieval failed.");
             }
@@ -325,5 +338,12 @@ public class RetrieveTransaction extends Transaction implements Runnable {
     @Override
     public int getType() {
         return RETRIEVE_TRANSACTION;
+    }
+
+    @Override
+    public void cancelTransaction(Uri uri) {
+        if (mUri.equals(uri)) {
+            isCancelMyself = true;
+        }
     }
 }
