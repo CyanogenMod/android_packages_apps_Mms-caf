@@ -3612,7 +3612,7 @@ public class ComposeMessageActivity extends Activity
     }
 
     private void showSmsMessageContent(Cursor c) {
-        if (c == null || !c.moveToFirst()) {
+        if (c == null) {
             return;
         }
 
