@@ -1447,8 +1447,7 @@ public class ComposeMessageActivity extends Activity
             addCallAndContactMenuItems(menu, l, msgItem);
 
             // Forward is not available for undownloaded messages.
-            if (msgItem.isDownloaded() && (msgItem.isSms() || isForwardable(msgId))
-                    && mIsSmsEnabled) {
+            if (msgItem.isDownloaded() && (msgItem.isSms() || msgItem.mIsForwardable)) {
                 menu.add(0, MENU_FORWARD_MESSAGE, 0, R.string.menu_forward)
                         .setOnMenuItemClickListener(l);
             }
@@ -1486,7 +1485,7 @@ public class ComposeMessageActivity extends Activity
                     case WorkingMessage.VIDEO:
                     case WorkingMessage.IMAGE:
                     case WorkingMessage.VCARD:
-                        if (haveSomethingToCopyToSDCard(msgItem.mMsgId)) {
+                        if (msgItem.mHaveSomethingToCopyToSDCard) {
                             menu.add(0, MENU_COPY_TO_SDCARD, 0, R.string.copy_to_sdcard)
                             .setOnMenuItemClickListener(l);
                         }
@@ -1495,13 +1494,13 @@ public class ComposeMessageActivity extends Activity
                     default:
                         menu.add(0, MENU_VIEW_SLIDESHOW, 0, R.string.view_slideshow)
                         .setOnMenuItemClickListener(l);
-                        if (haveSomethingToCopyToSDCard(msgItem.mMsgId)) {
+                        if (msgItem.mHaveSomethingToCopyToSDCard) {
                             menu.add(0, MENU_COPY_TO_SDCARD, 0, R.string.copy_to_sdcard)
                             .setOnMenuItemClickListener(l);
                         }
-                        if (isDrmRingtoneWithRights(msgItem.mMsgId)) {
+                        if (msgItem.mIsDrmRingtoneWithRights) {
                             menu.add(0, MENU_SAVE_RINGTONE, 0,
-                                    getDrmMimeMenuStringRsrc(msgItem.mMsgId))
+                                    getDrmMimeMenuStringRsrc(msgItem.mIsDrmRingtoneWithRights))
                             .setOnMenuItemClickListener(l);
                         }
                         break;
@@ -1814,7 +1813,7 @@ public class ComposeMessageActivity extends Activity
                 }
 
                 case MENU_SAVE_RINGTONE: {
-                    int resId = getDrmMimeSavedStringRsrc(mMsgItem.mMsgId,
+                    int resId = getDrmMimeSavedStringRsrc(mMsgItem.mIsDrmRingtoneWithRights,
                             saveRingtone(mMsgItem.mMsgId));
                     Toast.makeText(ComposeMessageActivity.this, resId, Toast.LENGTH_SHORT).show();
                     return true;
@@ -1914,42 +1913,6 @@ public class ComposeMessageActivity extends Activity
     }
 
     /**
-     * Looks to see if there are any valid parts of the attachment that can be copied to a SD card.
-     * @param msgId
-     */
-    private boolean haveSomethingToCopyToSDCard(long msgId) {
-        PduBody body = null;
-        try {
-            body = SlideshowModel.getPduBody(this,
-                        ContentUris.withAppendedId(Mms.CONTENT_URI, msgId));
-        } catch (MmsException e) {
-            Log.e(TAG, "haveSomethingToCopyToSDCard can't load pdu body: " + msgId);
-        }
-        if (body == null) {
-            return false;
-        }
-
-        boolean result = false;
-        int partNum = body.getPartsNum();
-        for(int i = 0; i < partNum; i++) {
-            PduPart part = body.getPart(i);
-            String type = new String(part.getContentType());
-
-            if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
-                log("[CMA] haveSomethingToCopyToSDCard: part[" + i + "] contentType=" + type);
-            }
-
-            if (ContentType.isImageType(type) || ContentType.isVideoType(type) ||
-                    ContentType.isAudioType(type) || DrmUtils.isDrmType(type) ||
-                    type.toLowerCase().equals(ContentType.AUDIO_OGG.toLowerCase())) {
-                result = true;
-                break;
-            }
-        }
-        return result;
-    }
-
-    /**
      * Copies media from an Mms to the DrmProvider
      * @param msgId
      */
@@ -1980,79 +1943,15 @@ public class ComposeMessageActivity extends Activity
         return result;
     }
 
-    /**
-     * Returns true if any part is drm'd audio with ringtone rights.
-     * @param msgId
-     * @return true if one of the parts is drm'd audio with rights to save as a ringtone.
-     */
-    private boolean isDrmRingtoneWithRights(long msgId) {
-        PduBody body = null;
-        try {
-            body = SlideshowModel.getPduBody(this,
-                        ContentUris.withAppendedId(Mms.CONTENT_URI, msgId));
-        } catch (MmsException e) {
-            Log.e(TAG, "isDrmRingtoneWithRights can't load pdu body: " + msgId);
-        }
-        if (body == null) {
-            return false;
-        }
-
-        int partNum = body.getPartsNum();
-        for (int i = 0; i < partNum; i++) {
-            PduPart part = body.getPart(i);
-            String type = new String(part.getContentType());
-
-            if (DrmUtils.isDrmType(type)) {
-                String mimeType = MmsApp.getApplication().getDrmManagerClient()
-                        .getOriginalMimeType(part.getDataUri());
-                if (ContentType.isAudioType(mimeType) && DrmUtils.haveRightsForAction(part.getDataUri(),
-                        DrmStore.Action.RINGTONE)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Returns true if all drm'd parts are forwardable.
-     * @param msgId
-     * @return true if all drm'd parts are forwardable.
-     */
-    private boolean isForwardable(long msgId) {
-        PduBody body = null;
-        try {
-            body = SlideshowModel.getPduBody(this,
-                        ContentUris.withAppendedId(Mms.CONTENT_URI, msgId));
-        } catch (MmsException e) {
-            Log.e(TAG, "getDrmMimeType can't load pdu body: " + msgId);
-        }
-        if (body == null) {
-            return false;
-        }
-
-        int partNum = body.getPartsNum();
-        for (int i = 0; i < partNum; i++) {
-            PduPart part = body.getPart(i);
-            String type = new String(part.getContentType());
-
-            if (DrmUtils.isDrmType(type) && !DrmUtils.haveRightsForAction(part.getDataUri(),
-                        DrmStore.Action.TRANSFER)) {
-                    return false;
-            }
-        }
-        return true;
-    }
-
-    private int getDrmMimeMenuStringRsrc(long msgId) {
-        if (isDrmRingtoneWithRights(msgId)) {
+    private int getDrmMimeMenuStringRsrc(boolean isDrmRingtoneWithRights) {
+        if (isDrmRingtoneWithRights) {
             return R.string.save_ringtone;
         }
         return 0;
     }
 
-    private int getDrmMimeSavedStringRsrc(long msgId, boolean success) {
-        if (isDrmRingtoneWithRights(msgId)) {
+    private int getDrmMimeSavedStringRsrc(boolean isDrmRingtoneWithRights, boolean success) {
+        if (isDrmRingtoneWithRights) {
             return success ? R.string.saved_ringtone : R.string.saved_ringtone_fail;
         }
         return 0;
