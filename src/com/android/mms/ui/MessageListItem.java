@@ -840,7 +840,7 @@ public class MessageListItem extends LinearLayout implements
         } else if (spans.length == 1) {
             boolean wap_push = mContext.getResources().getBoolean(R.bool.config_wap_push);
             if((mMessageItem != null)
-                    && BROWSER_ADDRESS.equals(mMessageItem.mAddress)
+                    && MessageUtils.isWapPushNumber(mMessageItem.mAddress)
                     && wap_push) {
                 DialogInterface.OnClickListener click = new DialogInterface.OnClickListener() {
                     @Override

@@ -83,4 +83,6 @@
 
     <bool name="config_manual_resend">false</bool>
     <bool name="config_retry_always">false</bool>
+
+    <integer name="wap_push_address_index">1</integer>
 </resources>
