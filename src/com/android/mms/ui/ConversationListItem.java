@@ -103,9 +103,15 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
 
     private CharSequence formatMessage() {
         final int color = android.R.styleable.Theme_textColorSecondary;
+        SpannableStringBuilder buf = null;
         String from = mConversation.getRecipients().formatNames(", ");
-
-        SpannableStringBuilder buf = new SpannableStringBuilder(from);
+        if (MessageUtils.isWapPushNumber(from)) {
+            String[] mAddresses = from.split(":");
+            buf = new SpannableStringBuilder(mAddresses[mContext.getResources().getInteger(
+                    R.integer.wap_push_address_index)]);
+        } else {
+            buf = new SpannableStringBuilder(from);
+        }
 
         if (mConversation.getMessageCount() > 1) {
             int before = buf.length();
@@ -144,6 +150,9 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
 
             if (contact.existsInDatabase()) {
                 mAvatarView.assignContactUri(contact.getUri());
+            } else if (MessageUtils.isWapPushNumber(contact.getNumber())) {
+                mAvatarView.assignContactFromPhone(
+                        MessageUtils.getWapPushNumber(contact.getNumber()), true);
             } else {
                 mAvatarView.assignContactFromPhone(contact.getNumber(), true);
             }

@@ -879,6 +879,11 @@ public class MessagingNotification {
         try {
             while (cursor.moveToNext()) {
                 String address = cursor.getString(COLUMN_SMS_ADDRESS);
+                if (MessageUtils.isWapPushNumber(address)) {
+                    String[] mAddresses = address.split(":");
+                    address = mAddresses[context.getResources().getInteger(
+                            R.integer.wap_push_address_index)];
+                }
 
                 Contact contact = Contact.get(address, false);
                 if (contact.getSendToVoicemail()) {

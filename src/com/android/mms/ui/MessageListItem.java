@@ -390,6 +390,9 @@ public class MessageListItem extends LinearLayout implements
             } else {
                 if (contact.existsInDatabase()) {
                     mAvatar.assignContactUri(contact.getUri());
+                } else if (MessageUtils.isWapPushNumber(contact.getNumber())) {
+                    mAvatar.assignContactFromPhone(
+                            MessageUtils.getWapPushNumber(contact.getNumber()), true);
                 } else {
                     mAvatar.assignContactFromPhone(contact.getNumber(), true);
                 }

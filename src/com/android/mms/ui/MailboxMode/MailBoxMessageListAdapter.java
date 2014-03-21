@@ -156,6 +156,9 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
 
         if (contact.existsInDatabase()) {
             mAvatarView.assignContactUri(contact.getUri());
+        } else if (MessageUtils.isWapPushNumber(contact.getNumber())) {
+            mAvatarView.assignContactFromPhone(
+                    MessageUtils.getWapPushNumber(contact.getNumber()), true);
         } else {
             mAvatarView.assignContactFromPhone(contact.getNumber(), true);
         }
@@ -299,7 +302,29 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
         mAvatarView = (QuickContactBadge) view.findViewById(R.id.avatar);
         mAddress = addr;
         mName = nameContact;
-        formatNameView(mAddress, mName);
+
+        if (MessageUtils.isWapPushNumber(addr) && MessageUtils.isWapPushNumber(nameContact)) {
+            String[] mMailBoxAddresses = addr.split(":");
+            String[] mMailBoxName = nameContact.split(":");
+            formatNameView(
+                    mMailBoxAddresses[context.getResources().getInteger(
+                            R.integer.wap_push_address_index)],
+                    mMailBoxName[context.getResources()
+                            .getInteger(R.integer.wap_push_address_index)]);
+        } else if (MessageUtils.isWapPushNumber(addr)) {
+            String[] mMailBoxAddresses = addr.split(":");
+            formatNameView(
+                    mMailBoxAddresses[context.getResources().getInteger(
+                            R.integer.wap_push_address_index)], mName);
+        } else if (MessageUtils.isWapPushNumber(nameContact)) {
+            String[] mMailBoxName = nameContact.split(":");
+            formatNameView(mAddress,
+                    mMailBoxName[context.getResources()
+                            .getInteger(R.integer.wap_push_address_index)]);
+        } else {
+            formatNameView(mAddress, mName);
+        }
+
         updateAvatarView();
 
         mImageViewLock.setVisibility(isLocked ? View.VISIBLE : View.GONE);

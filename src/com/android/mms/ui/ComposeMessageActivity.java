@@ -1788,13 +1788,28 @@ public class ComposeMessageActivity extends Activity
                 if (mRecipientsEditor != null) {
                     recipient = mRecipientsEditor.getText().toString();
                 }
-                title = TextUtils.isEmpty(recipient) ? getString(R.string.new_message) : recipient;
+                if (MessageUtils.isWapPushNumber(recipient)) {
+                    String[] mAddresses = recipient.split(":");
+                    title = mAddresses[getResources().getInteger(R.integer.wap_push_address_index)];
+                } else {
+                    title = TextUtils.isEmpty(recipient)
+                            ? getString(R.string.new_message) : recipient;
+                }
                 break;
             }
             case 1: {
                 title = list.get(0).getName();      // get name returns the number if there's no
                                                     // name available.
                 String number = list.get(0).getNumber();
+                if (MessageUtils.isWapPushNumber(number)) {
+                    String[] mTitleNumber = number.split(":");
+                    number = mTitleNumber[getResources().getInteger(
+                            R.integer.wap_push_address_index)];
+                }
+                if (MessageUtils.isWapPushNumber(title)) {
+                    String[] mTitle = title.split(":");
+                    title = mTitle[getResources().getInteger(R.integer.wap_push_address_index)];
+                }
                 if (!title.equals(number)) {
                     subTitle = PhoneNumberUtils.formatNumber(number, number,
                             MmsApp.getApplication().getCurrentCountryIso());
@@ -2757,7 +2772,8 @@ public class ComposeMessageActivity extends Activity
     // recipient and it's a phone number.
     private boolean isRecipientCallable() {
         ContactList recipients = getRecipients();
-        return (recipients.size() == 1 && !recipients.containsEmail());
+        return (recipients.size() == 1 && !recipients.containsEmail()
+                && !(MessageUtils.isWapPushNumber(recipients.get(0).getNumber())));
     }
 
     private void dialRecipient() {

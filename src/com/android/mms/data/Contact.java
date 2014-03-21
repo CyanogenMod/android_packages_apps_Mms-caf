@@ -846,6 +846,9 @@ public class Contact {
          * @return a Contact containing the caller id info corresponding to the number.
          */
         private Contact getContactInfoForPhoneNumber(String number) {
+            if (MessageUtils.isWapPushNumber(number)) {
+               number = PhoneNumberUtils.stripSeparators(number);
+            }
             Contact entry = new Contact(number);
             entry.mContactMethodType = CONTACT_METHOD_TYPE_PHONE;
             entry.mPeopleReferenceUri = Uri.fromParts("tel", number, null);
@@ -1110,7 +1113,8 @@ public class Contact {
                 // See if we can find "number" in the hashtable.
                 // If so, just return the result.
                 final boolean isNotRegularPhoneNumber = isMe || Mms.isEmailAddress(numberOrEmail) ||
-                        MessageUtils.isAlias(numberOrEmail);
+                        MessageUtils.isAlias(numberOrEmail) ||
+                        MessageUtils.isWapPushNumber(numberOrEmail);
                 final String key = isNotRegularPhoneNumber ?
                         numberOrEmail : key(numberOrEmail, sStaticKeyBuffer);
 

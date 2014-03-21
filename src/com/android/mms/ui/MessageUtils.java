@@ -511,7 +511,15 @@ public class MessageUtils {
         } else {
             details.append(res.getString(R.string.from_label));
         }
-        details.append(cursor.getString(cursor.getColumnIndexOrThrow(Sms.ADDRESS)));
+
+        if (cursor.getString(MessageListAdapter.COLUMN_SMS_ADDRESS).contains(WAPPUSH)) {
+            String[] mAddresses = cursor.getString(
+                    MessageListAdapter.COLUMN_SMS_ADDRESS).split(":");
+            details.append(mAddresses[context.getResources().getInteger(
+                    R.integer.wap_push_address_index)]);
+        } else {
+            details.append(cursor.getString(cursor.getColumnIndexOrThrow(Sms.ADDRESS)));
+        }
 
         // Sent: ***
         if (smsType == Sms.MESSAGE_TYPE_SENT) {
@@ -1351,6 +1359,13 @@ public class MessageUtils {
         } else {
             return address.contains(WAPPUSH);
         }
+    }
+
+    public static String getWapPushNumber(String address) {
+        String[] number = address.split(":");
+        int index = MmsApp.getApplication().getResources()
+                .getInteger(R.integer.wap_push_address_index);
+        return number[index];
     }
 
     /**

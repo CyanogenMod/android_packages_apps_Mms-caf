@@ -74,6 +74,7 @@ public class PushReceiver extends BroadcastReceiver {
     private static final String WAP_PUSH_MESSAGE = "pref_key_enable_wap_push";
     private static final String WAP_PUSH_TYPE_SIC = "application/vnd.wap.sic";
     private static final String WAP_PUSH_TYPE_SLC = "application/vnd.wap.slc";
+    private static final String WAP_PUSH = ":Browser Information"; // Wap push key
 
     private class ReceivePushTask extends AsyncTask<Intent,Void,Void> {
         private Context mContext;
@@ -138,10 +139,12 @@ public class PushReceiver extends BroadcastReceiver {
                     Class mWapPushHandler = Class.forName("com.qrd.wappush.WapPushHandler");
                     Object WapPushHandlerObj = mWapPushHandler.newInstance();
                     Method mHandleWapPush = mWapPushHandler.getDeclaredMethod("handleWapPush",
-                            InputStream.class, String.class, Context.class, int.class);
+                            InputStream.class, String.class, Context.class,
+                            int.class, String.class);
                     Method mGetThreadID = mWapPushHandler.getDeclaredMethod("getThreadID");
                     Uri pushMsgUri = (Uri)mHandleWapPush.invoke(WapPushHandlerObj, bais,
-                            intent.getType(), mContext, intent.getIntExtra("subscription", 0));
+                            intent.getType(), mContext, intent.getIntExtra("subscription", 0),
+                            intent.getStringExtra("address") + WAP_PUSH);
 
                     if (pushMsgUri != null) {
                         // Called off of the UI thread so ok to block.
