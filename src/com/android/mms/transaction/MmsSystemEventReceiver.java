@@ -28,6 +28,7 @@ import android.util.Log;
 
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
+import com.android.mms.util.MultiSimUtility;
 
 /**
  * MmsSystemEventReceiver receives the
@@ -45,11 +46,10 @@ public class MmsSystemEventReceiver extends BroadcastReceiver {
     private static ConnectivityManager mConnMgr = null;
 
     public static void wakeUpService(Context context) {
-        if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
-            Log.v(TAG, "wakeUpService: start transaction service ...");
-        }
-
-        context.startService(new Intent(context, TransactionService.class));
+        Log.d(TAG, "wakeUpService: start service ...");
+        MultiSimUtility.startSelectMmsSubsciptionServ(
+                context,
+                new Intent(context, TransactionService.class));
     }
 
     @Override
@@ -84,10 +84,8 @@ public class MmsSystemEventReceiver extends BroadcastReceiver {
                 isConnected = mmsNetworkInfo.isConnected();
             }
 
-            if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
-                Log.v(TAG, "TYPE_MOBILE_MMS available = " + available +
+            Log.d(TAG, "TYPE_MOBILE_MMS available = " + available +
                            ", isConnected = " + isConnected);
-            }
 
             // Wake up transact service when MMS data is available and isn't connected.
             if (available && !isConnected) {
