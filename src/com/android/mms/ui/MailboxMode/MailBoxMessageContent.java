@@ -71,6 +71,7 @@ import com.android.mms.R;
 import com.android.mms.transaction.MessageSender;
 import com.android.mms.transaction.MessagingNotification;
 import com.android.mms.transaction.SmsMessageSender;
+import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.WwwContextMenuActivity;
 import com.google.android.mms.MmsException;
 
@@ -427,7 +428,13 @@ public class MailBoxMessageContent extends Activity {
         TextView mFromTextView = (TextView) findViewById(R.id.textViewFrom);
         mFromTextView.setText(mFromtoLabel);
         TextView mNumberView = (TextView) findViewById(R.id.textViewNumber);
-        mNumberView.setText(mMsgFrom);
+        if (MessageUtils.isWapPushNumber(mMsgFrom)) {
+            String[] mAddresses = mMsgFrom.split(":");
+            mNumberView.setText(mAddresses[getResources().getInteger(
+                    R.integer.wap_push_address_index)]);
+        } else {
+            mNumberView.setText(mMsgFrom);
+        }
         TextView mTimeTextView = (TextView) findViewById(R.id.textViewTime);
         mTimeTextView.setText(mSendLabel);
         TextView mTimeDetailTextView = (TextView) findViewById(R.id.textViewTimeDetail);
@@ -442,8 +449,14 @@ public class MailBoxMessageContent extends Activity {
         }
 
         if (!TextUtils.isEmpty(mDisplayName) && !mDisplayName.equals(mMsgFrom)) {
-            String numberStr = mDisplayName + " <" + mMsgFrom + ">";
-            mNumberView.setText(numberStr);
+            if (MessageUtils.isWapPushNumber(mDisplayName)) {
+                String[] mName = mDisplayName.split(":");
+                mNumberView.setText(mName[getResources().getInteger(
+                        R.integer.wap_push_address_index)]);
+            } else {
+                String numberStr = mDisplayName + " <" + mMsgFrom + ">";
+                mNumberView.setText(numberStr);
+            }
         }
 
         if (mRead == 0) {

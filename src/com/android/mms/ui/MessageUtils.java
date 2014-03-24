@@ -204,6 +204,8 @@ public class MessageUtils {
     //for showing memory status dialog.
     private static AlertDialog memoryStatusDialog = null;
 
+    public static String WAPPUSH = "Browser Information"; // Wap push key
+
     public static final int ALL_RECIPIENTS_VALID   = 0;
     public static final int ALL_RECIPIENTS_INVALID = -1;
     // Indentify RECIPIENT editText is empty
@@ -446,7 +448,15 @@ public class MessageUtils {
         } else {
             details.append(res.getString(R.string.from_label));
         }
-        details.append(cursor.getString(MessageListAdapter.COLUMN_SMS_ADDRESS));
+
+        if (cursor.getString(MessageListAdapter.COLUMN_SMS_ADDRESS).contains(WAPPUSH)) {
+            String[] mAddresses = cursor.getString(
+                    MessageListAdapter.COLUMN_SMS_ADDRESS).split(":");
+            details.append(mAddresses[context.getResources().getInteger(
+                    R.integer.wap_push_address_index)]);
+        } else {
+            details.append(cursor.getString(MessageListAdapter.COLUMN_SMS_ADDRESS));
+        }
 
         // Sent: ***
         if (smsType == Sms.MESSAGE_TYPE_INBOX) {
@@ -1272,6 +1282,17 @@ public class MessageUtils {
     public static boolean isValidMmsAddress(String address) {
         String retVal = parseMmsAddress(address);
         return (retVal != null);
+    }
+
+    /**
+     * Returns true if the address passed in is a Browser wap push MMS address.
+     */
+    public static boolean isWapPushNumber(String address) {
+        if (TextUtils.isEmpty(address)) {
+            return false;
+        } else {
+            return address.contains(WAPPUSH);
+        }
     }
 
     /**
