@@ -26,7 +26,9 @@ import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
+import android.content.ActivityNotFoundException;
 import android.content.AsyncQueryHandler;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -551,6 +553,18 @@ public class MailBoxMessageList extends ListActivity implements
             case R.id.action_memory_status:
                 MessageUtils.showMemoryStatusDialog(this);
                 break;
+            case R.id.action_cell_broadcasts:
+                Intent cellBroadcastIntent = new Intent(Intent.ACTION_MAIN);
+                cellBroadcastIntent.setComponent(new ComponentName(
+                        "com.android.cellbroadcastreceiver",
+                        "com.android.cellbroadcastreceiver.CellBroadcastListActivity"));
+                cellBroadcastIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                try {
+                    startActivity(cellBroadcastIntent);
+                } catch (ActivityNotFoundException ignored) {
+                    Log.e(TAG, "ActivityNotFoundException for CellBroadcastListActivity");
+                }
+                return true;
             default:
                 return true;
         }
