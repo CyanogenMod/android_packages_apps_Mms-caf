@@ -445,13 +445,12 @@ public class TransactionService extends Service implements Observer {
         mConnMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         boolean enableMmsData = getApplicationContext().getResources().getBoolean(
                 com.android.internal.R.bool.config_setup_mms_data);
-        if (mConnMgr == null || (!mConnMgr.getMobileDataEnabled() && !enableMmsData)
-                || !MmsConfig.isSmsEnabled(getApplicationContext())) {
+        if (mConnMgr == null || !MmsConfig.isSmsEnabled(getApplicationContext())) {
             endMmsConnectivity();
             decRefCount();
             return;
         }
-        boolean noNetwork = !isNetworkAvailable();
+        boolean noNetwork = !isNetworkAvailable(enableMmsData);
 
         Log.d(TAG, "onNewIntent: serviceId: " + serviceId + ": " + intent.getExtras() +
                 " intent=" + intent);
@@ -748,7 +747,7 @@ public class TransactionService extends Service implements Observer {
         return type >= MmsSms.NO_ERROR && type < MmsSms.ERR_TYPE_GENERIC_PERMANENT;
     }
 
-    private boolean isNetworkAvailable() {
+    private boolean isNetworkAvailable(boolean enableMmsData) {
         if (mConnMgr == null) {
             return false;
         } else {
@@ -756,7 +755,8 @@ public class TransactionService extends Service implements Observer {
             if (ni == null) {
                 return false;
             } else {
-                return ni.isAvailable() && !MessageUtils.isMobileDataDisabled(this);
+                return ni.isAvailable() &&
+                        (enableMmsData || mConnMgr.getMobileDataEnabled());
             }
         }
     }
