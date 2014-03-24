@@ -28,6 +28,7 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.Button;
+import android.widget.TextView;
 
 /**
  *
@@ -67,7 +68,8 @@ public class MmsStability extends ActivityInstrumentationTestCase2 <ComposeMessa
         public void run() {
             Instrumentation inst = getInstrumentation();
 
-            Button mSendButton = (Button) getActivity().getWindow().findViewById(R.id.send_button);
+            TextView mSendButton = (TextView) getActivity().getWindow().findViewById(
+                    R.id.send_button_mms);
             mSendButton.performClick();
 
             boolean messageSend = mSendButton.performClick();
