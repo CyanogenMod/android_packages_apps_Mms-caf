@@ -522,6 +522,13 @@ public class MailBoxMessageList extends ListActivity implements
         if (mQueryText != null && mSearchView != null) {
             mSearchView.setQuery(mQueryText, false);
         }
+
+        if (!LogTag.DEBUG_DUMP) {
+            item = menu.findItem(R.id.action_debug_dump);
+            if (item != null) {
+                item.setVisible(false);
+            }
+        }
         return true;
     }
 
