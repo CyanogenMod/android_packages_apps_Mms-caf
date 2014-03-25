@@ -382,6 +382,21 @@
     <string name="banner_sms_promo_title_initial" msgid="510014388581481569">"“短信”不是您的短信应用"</string>
     <string name="banner_sms_promo_title_application" msgid="8123569785369713254">"“<xliff:g id="APPNAME">%s</xliff:g>”是您的短信应用"</string>
     <string name="banner_sms_promo_message" msgid="3536714414252763826">"您可以在“设置”中更改此设置。"</string>
+    <!-- Subscription selection strings -->
+    <string name="pending_mms_title">"彩信等待由另一个卡槽处理"</string>
+    <string name="pending_mms">"信息：一条或多条彩信正在等待中"</string>
+    <string name="pending_mms_text">"点击切换卡槽"</string>
+
+    <string name="switch_data_subscription">数据通道切换</string>
+    <string name="switch_data_subscription_success">成功。</string>
+    <string name="switch_data_subscription_failed">失败。</string>
+
+    <string name="abort_mms">"信息: 终止彩信发送"</string>
+    <string name="abort_mms_text ">"点击可终止发送并返回"</string>
+
+    <string name="progress_mms_title">"彩信正在另一个卡槽处理中"</string>
+    <string name="progress_mms">"信息: 彩信正在处理中..."</string>
+    <string name="progress_mms_text ">"点击重试"</string>
     <string name="mail_to">发送邮件至:</string>
     <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
     <string name="menu_connect_url">连接</string>
