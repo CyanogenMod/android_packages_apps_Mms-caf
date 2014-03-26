@@ -852,6 +852,10 @@
     <string name="pending_mms">Messaging: One or more MMS are pending.</string>
     <string name="pending_mms_text">Touch to switch the subscription.</string>
 
+    <string name="switch_data_subscription">Data subscription switch </string>
+    <string name="switch_data_subscription_success">was success.</string>
+    <string name="switch_data_subscription_failed">failed.</string>
+
     <string name="abort_mms">Messaging: Abort MMS</string>
     <string name="abort_mms_text ">Touch to abort and switch back.</string>
 
