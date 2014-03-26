@@ -306,7 +306,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             }
         }
 
-        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()
+                && MessageUtils.getActivatedIccCardCount() < 2) {
             int preferredSmsSub = MSimSmsManager.getDefault()
                     .getPreferredSmsSubscription();
             mManageSimPref.setSummary(
