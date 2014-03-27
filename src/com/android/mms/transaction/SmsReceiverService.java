@@ -446,36 +446,48 @@ public class SmsReceiverService extends Service {
                             sms.getDisplayOriginatingAddress(), sms.getDisplayMessageBody(),
                             subId, sms.getTimestampMillis());
                 } else {
-                    Toast.makeText(this, getString(R.string.pref_sms_store_card_unknown_fail),
-                            Toast.LENGTH_LONG).show();
-                    break;
+                    mToastHandler.post(new Runnable() {
+                        public void run() {
+                            Toast.makeText(getApplicationContext(),
+                                    getString(R.string.pref_sim_card_full_save_to_phone),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    // save message to phone if failed save to icc.
+                    saveMessageToPhone(msgs, error, format);
                 }
             }
 
         } else {
-            Uri messageUri = insertMessage(this, msgs, error, format);
-
-            if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE) || LogTag.DEBUG_SEND) {
-                SmsMessage sms = msgs[0];
-                Log.v(TAG, "handleSmsReceived" + (sms.isReplace() ? "(replace)" : "") +
-                        " messageUri: " + messageUri +
-                        ", address: " + sms.getOriginatingAddress() +
-                        ", body: " + sms.getMessageBody());
-            }
-            if (getResources().getBoolean(R.bool.config_detect_low_memory)
-                    && MessageUtils.isMemoryLow()) {
-                MessagingNotification.notifyMemoryLow(this);
-            }
-
-                MessageUtils.checkIsPhoneMessageFull(this);
-
-            if (messageUri != null) {
-                long threadId = MessagingNotification.getSmsThreadId(this, messageUri);
-                // Called off of the UI thread so ok to block.
-                Log.d(TAG, "handleSmsReceived messageUri: " + messageUri + " threadId: " + threadId);
-                MessagingNotification.blockingUpdateNewMessageIndicator(this, threadId, false);
-            }
+            saveMessageToPhone(msgs, error, format);
         }
+    }
+
+    private void saveMessageToPhone(SmsMessage[] msgs, int error, String format){
+
+        Uri messageUri = insertMessage(this, msgs, error, format);
+
+        if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE) || LogTag.DEBUG_SEND) {
+            SmsMessage sms = msgs[0];
+            Log.v(TAG, "handleSmsReceived" + (sms.isReplace() ? "(replace)" : "") +
+                    " messageUri: " + messageUri +
+                    ", address: " + sms.getOriginatingAddress() +
+                    ", body: " + sms.getMessageBody());
+        }
+        if (getResources().getBoolean(R.bool.config_detect_low_memory)
+                && MessageUtils.isMemoryLow()) {
+            MessagingNotification.notifyMemoryLow(this);
+        }
+
+        MessageUtils.checkIsPhoneMessageFull(this);
+
+        if (messageUri != null) {
+            long threadId = MessagingNotification.getSmsThreadId(this, messageUri);
+            // Called off of the UI thread so ok to block.
+            Log.d(TAG, "handleSmsReceived messageUri: " + messageUri + " threadId: " + threadId);
+            MessagingNotification.blockingUpdateNewMessageIndicator(this, threadId, false);
+        }
+
     }
 
     private void handleCbSmsReceived(Intent intent, int error) {
