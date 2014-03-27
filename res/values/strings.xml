@@ -995,6 +995,7 @@
     <string name="pref_sms_store_phone">Phone</string>
     <string name="pref_sms_store_card">SIM card</string>
     <string name="pref_sms_store_card_unknown_fail">Failure to receive new messages, the SIM card can\'t be read correctly</string>
+    <string name="pref_sim_card_full_save_to_phone">SIM card full, save new message to phone.</string>
 
     <string name="mms_size_indicator"><xliff:g id="mms_size">%1$s</xliff:g>K/<xliff:g id="all_size">%2$s</xliff:g>K</string>
     <!-- batch delete message in ConversationList and MailBoxMessageList -->
