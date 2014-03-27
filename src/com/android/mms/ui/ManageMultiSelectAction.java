@@ -260,12 +260,13 @@ public class ManageMultiSelectAction extends Activity {
                         forwardContent.append(msgItem.mAddress + COLON + LINE_BREAK);
                     }
                 }
-                forwardContent.append(msgItem.mBody);
+                forwardContent.append(msgItem.mBody + LINE_BREAK + msgItem.mTimestamp);
                 forwardContent.append(LINE_BREAK);
             }
         } else if (mMessageItems.size() == 1) {
             // we don't add the recipient's information if only forward one sms.
-            forwardContent.append(mMessageItems.get(0).mBody);
+            forwardContent.append(mMessageItems.get(0).mBody + LINE_BREAK
+                    + mMessageItems.get(0).mTimestamp);
         }
 
         forwardMessage(forwardContent.toString());
