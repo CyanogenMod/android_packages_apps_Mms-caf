@@ -532,6 +532,7 @@
     <string name="pref_summary_wap_push_enabled">"允许接收服务信息"</string>
 
     <string name="sim_card">SIM卡</string>
+    <string name="pref_sim_card_full_save_to_phone">SIM卡短信存储已满，自动保存到手机内存。</string>
 
     <!-- String used in MemoryStatusActivity.java -->
     <string name="memory_status_title">"存储状态"</string>
