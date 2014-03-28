@@ -1505,4 +1505,8 @@ public class Conversation {
     public void setForwardRecipientNumber(String[] forwardRecipientNumber) {
         mForwardRecipientNumber = forwardRecipientNumber;
     }
+
+    public void setThreadId(long id) {
+        mThreadId = id;
+    }
 }
