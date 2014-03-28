@@ -46,6 +46,7 @@ import android.widget.Toast;
 
 import com.android.mms.R;
 import com.google.android.mms.ContentType;
+import com.android.mms.model.LayoutModel;
 
 /**
  * A simplified view of slide in the slides list.
@@ -73,8 +74,6 @@ public class SlideListItemView extends LinearLayout implements SlideViewInterfac
 
     @Override
     protected void onFinishInflate() {
-        mTextPreview = (TextView) findViewById(R.id.text_preview);
-        mTextPreview.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
         mImagePreview = (ImageView) findViewById(R.id.image_preview);
         mAttachmentName = (TextView) findViewById(R.id.attachment_name);
         mAttachmentIcon = (ImageView) findViewById(R.id.attachment_icon);
@@ -345,4 +344,16 @@ public class SlideListItemView extends LinearLayout implements SlideViewInterfac
         }
     }
 
+    public void setLayoutModel(int model) {
+        if (model == LayoutModel.LAYOUT_TOP_TEXT) {
+            mTextPreview = (TextView) findViewById(R.id.text_preview_top);
+        } else {
+            mTextPreview = (TextView) findViewById(R.id.text_preview_bottom);
+        }
+        mTextPreview.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+    }
+
+    public TextView getContentText() {
+        return mTextPreview;
+    }
 }
