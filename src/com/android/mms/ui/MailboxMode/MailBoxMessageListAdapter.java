@@ -110,9 +110,9 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
         mBgSelectedDrawable = context.getResources().getDrawable(
                 R.drawable.list_selected_holo_light);
         mBgUnReadDrawable = context.getResources().getDrawable(
-                R.drawable.conversation_item_background_unread);
+                R.drawable.mailbox_item_background_unread);
         mBgReadDrawable = context.getResources().getDrawable(
-                R.drawable.conversation_item_background_read);
+                R.drawable.mailbox_item_background_read);
     }
 
     public BoxMessageItem getCachedMessageItem(String type, long msgId, Cursor c) {
