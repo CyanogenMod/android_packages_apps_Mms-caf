@@ -164,7 +164,6 @@ public class MailBoxMessageList extends ListActivity implements
         mListView = getListView();
         getListView().setItemsCanFocus(true);
         mModeCallback = new ModeCallback();
-        mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         mListView.setMultiChoiceModeListener(mModeCallback);
 
         ActionBar actionBar = getActionBar();
@@ -330,6 +329,7 @@ public class MailBoxMessageList extends ListActivity implements
         super.onResume();
         mIsPause = false;
         startAsyncQuery();
+        mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         getListView().invalidateViews();
     }
 
