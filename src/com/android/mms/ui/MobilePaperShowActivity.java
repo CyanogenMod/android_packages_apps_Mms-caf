@@ -33,15 +33,21 @@ import java.util.ArrayList;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.AsyncQueryHandler;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.PixelFormat;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.Telephony.Mms;
 import android.text.TextUtils;
@@ -60,6 +66,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.mms.data.WorkingMessage;
+import com.android.mms.MmsApp;
 import com.android.mms.model.LayoutModel;
 import com.android.mms.model.RegionModel;
 import com.android.mms.model.SlideModel;
@@ -82,6 +90,7 @@ public class MobilePaperShowActivity extends Activity {
     private static final int MENU_CALL = 2;
     private static final int MENU_REPLY = 3;
     private static final int MENU_FORWARD = 4;
+    private static final int MENU_DELETE = 5;
 
     private static final int ZOOMIN = 4;
     private static final int ZOOMOUT = 5;
@@ -105,6 +114,15 @@ public class MobilePaperShowActivity extends Activity {
     private ScaleGestureDetector mScaleDetector;
     private ScrollView mScrollViewPort;
     private String mSubject;
+
+    private boolean mLock = false;
+    private static final int OPERATE_DEL_SINGLE_OVER = 1;
+    private static final int DELETE_MESSAGE_TOKEN = 6701;
+    private BackgroundDeleteHandler mBackgroundDeleteHandler;
+    private static final String[] MMS_LOCK_PROJECTION = {
+        Mms._ID,
+        Mms.LOCKED
+    };
 
     private void setCurrentTextSet(Context context, int value) {
         SharedPreferences prefsms = PreferenceManager.getDefaultSharedPreferences(context);
@@ -228,6 +246,7 @@ public class MobilePaperShowActivity extends Activity {
                 this, MessagingNotification.THREAD_NONE, false);
 
         }
+        mBackgroundDeleteHandler = new BackgroundDeleteHandler(getContentResolver());
 
         // Register a BroadcastReceiver to listen on HTTP I/O process.
         ActionBar actionBar = getActionBar();
@@ -333,6 +352,9 @@ public class MobilePaperShowActivity extends Activity {
             menu.add(0, MENU_REPLY, 0, R.string.menu_reply);
             menu.add(0, MENU_CALL, 0, R.string.menu_call);
         }
+        if (Mms.MESSAGE_BOX_DRAFTS != mMailboxId) {
+            menu.add(0, MENU_DELETE, 0, R.string.menu_delete_msg);
+        }
         menu.add(0, MENU_FORWARD, 0, R.string.menu_forward);
         menu.add(0, MENU_SLIDESHOW, 0, R.string.view_slideshow);
         return true;
@@ -404,6 +426,11 @@ public class MobilePaperShowActivity extends Activity {
                     }
                 }, R.string.building_slideshow_title);
                 break;
+            case MENU_DELETE:
+                mLock = isLockMessage();
+                DeleteMessageListener l = new DeleteMessageListener();
+                confirmDeleteDialog(l, mLock);
+                break;
             case android.R.id.home:
                 finish();
                 break;
@@ -411,6 +438,91 @@ public class MobilePaperShowActivity extends Activity {
                 break;
         }
         return true;
+    }
+
+    private boolean isLockMessage() {
+        boolean locked = false;
+
+        Cursor c = SqliteWrapper.query(this, getContentResolver(), mUri,
+                MMS_LOCK_PROJECTION, null, null, null);
+
+        try {
+            if (c != null && c.moveToFirst()) {
+                locked = c.getInt(1) != 0;
+            }
+        } finally {
+            if (c != null) c.close();
+        }
+        return locked;
+    }
+
+    private class DeleteMessageListener implements OnClickListener {
+        @Override
+        public void onClick(DialogInterface dialog, int whichButton) {
+            dialog.dismiss();
+
+            new AsyncTask<Void, Void, Void>() {
+                protected Void doInBackground(Void... none) {
+                    mBackgroundDeleteHandler.startDelete(DELETE_MESSAGE_TOKEN, null, mUri,
+                            mLock ? null : "locked=0", null);
+                    return null;
+                }
+            }.execute();
+        }
+    }
+
+    private void confirmDeleteDialog(OnClickListener listener, boolean locked) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setMessage(locked ? R.string.confirm_delete_locked_message
+                : R.string.confirm_delete_message);
+        builder.setPositiveButton(R.string.delete, listener);
+        builder.setNegativeButton(R.string.no, null);
+        builder.show();
+    }
+
+    private Handler mUiHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case OPERATE_DEL_SINGLE_OVER:
+                    int result = msg.arg1;
+                    if (result > 0) {
+                        Toast.makeText(MobilePaperShowActivity.this,
+                                R.string.operate_success, Toast.LENGTH_SHORT)
+                                .show();
+                    } else {
+                        Toast.makeText(MobilePaperShowActivity.this,
+                                R.string.operate_failure, Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                    finish();
+                default:
+                    break;
+            }
+        }
+    };
+
+    private final class BackgroundDeleteHandler extends AsyncQueryHandler {
+        public BackgroundDeleteHandler(ContentResolver contentResolver) {
+            super(contentResolver);
+        }
+
+        @Override
+        protected void onDeleteComplete(int token, Object cookie, int result) {
+            switch (token) {
+                case DELETE_MESSAGE_TOKEN:
+                    WorkingMessage.removeThumbnailsFromCache(mSlideModel);
+                    MmsApp.getApplication().getPduLoaderManager()
+                            .removePdu(mUri);
+
+                    Message msg = Message.obtain();
+                    msg.what = OPERATE_DEL_SINGLE_OVER;
+                    msg.arg1 = result;
+                    mUiHandler.sendMessage(msg);
+                    break;
+            }
+        }
     }
 
     private void replyMessage(Context context, String number) {
