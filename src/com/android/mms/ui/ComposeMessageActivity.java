@@ -3324,6 +3324,11 @@ public class ComposeMessageActivity extends Activity
                     item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
                 }
             }
+        } else {
+            if (mIndicatorContainer1 != null && mIndicatorContainer2 != null) {
+                mIndicatorContainer1.setVisibility(View.GONE);
+                mIndicatorContainer2.setVisibility(View.GONE);
+            }
         }
 
         if (MmsConfig.getMmsEnabled() && mIsSmsEnabled) {
