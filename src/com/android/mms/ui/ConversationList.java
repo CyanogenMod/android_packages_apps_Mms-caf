@@ -141,6 +141,13 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (MessageUtils.isMailboxMode()) {
+            Intent modeIntent = new Intent(this, MailBoxMessageList.class);
+            finish();
+            startActivityIfNeeded(modeIntent, -1);
+            return;
+        }
+
 
         setContentView(R.layout.conversation_list_screen);
 
