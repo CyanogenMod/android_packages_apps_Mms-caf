@@ -74,6 +74,8 @@ public class SlideListItemView extends LinearLayout implements SlideViewInterfac
 
     @Override
     protected void onFinishInflate() {
+        mTextPreview = (TextView) findViewById(R.id.text_preview_bottom);
+        mTextPreview.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
         mImagePreview = (ImageView) findViewById(R.id.image_preview);
         mAttachmentName = (TextView) findViewById(R.id.attachment_name);
         mAttachmentIcon = (ImageView) findViewById(R.id.attachment_icon);
