@@ -223,6 +223,16 @@ public class SelectMmsSubscription extends Service {
                         Log.d(TAG, "isNetworkAvailable = false, sleep..");
                         sleep(1000);
                     }
+                } else {
+                    synchronized (mQueue) {
+                        enqueueTxnReq(req);
+                        dumpQ();
+                        if (mQueue.size() == 1) {
+                            //set alarm only when the very first record is added in Q.
+                            setAlarm();
+                        }
+                    }
+                    Log.d(TAG, "DDS switch failed, enqueue the request again for later processing");
                 }
                 return result;
             }
