@@ -4486,18 +4486,15 @@ public class ComposeMessageActivity extends Activity
 
     @Override
     public void onClick(View v) {
-        if (mShowTwoButtons && isPreparedForSending()) {
-            if (v == mSendButtonSms || v == mSendButtonMms) {
-                confirmSendMessageIfNeeded(MSimConstants.SUB1);
-            } else if (v == mSendButtonSmsViewSec || v == mSendButtonMmsViewSec) {
-                confirmSendMessageIfNeeded(MSimConstants.SUB2);
-            }
-        } else if ((v == mSendButtonSms || v == mSendButtonMms) && isPreparedForSending()) {
+        if ((v == mSendButtonSms || v == mSendButtonMms) && isPreparedForSending()) {
             if (mShowTwoButtons) {
                 confirmSendMessageIfNeeded(MSimConstants.SUB1);
             } else {
                 confirmSendMessageIfNeeded();
             }
+        } else if ((v == mSendButtonSmsViewSec || v == mSendButtonMmsViewSec) &&
+                mShowTwoButtons && isPreparedForSending()) {
+            confirmSendMessageIfNeeded(MSimConstants.SUB2);
         } else if ((v == mRecipientsPicker)) {
             launchMultiplePhonePicker();
         } else if ((v == mRecipientsPickerGroups)) {
