@@ -5021,9 +5021,6 @@ public class ComposeMessageActivity extends Activity
         mAttachmentEditor.hideView();
         mAttachmentEditorScrollView.setVisibility(View.GONE);
 
-        // Hide the subject editor.
-        showSubjectEditor(false);
-
         // Focus to the text editor.
         mTextEditor.requestFocus();
 
@@ -5039,6 +5036,9 @@ public class ComposeMessageActivity extends Activity
         mWorkingMessage.clearConversation(mConversation, false);
         mWorkingMessage = WorkingMessage.createEmpty(this);
         mWorkingMessage.setConversation(mConversation);
+
+        // Hide the subject editor
+        showSubjectEditor(false);
 
         hideRecipientEditor();
         drawBottomPanel();
