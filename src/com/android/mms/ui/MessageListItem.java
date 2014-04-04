@@ -229,6 +229,8 @@ public class MessageListItem extends LinearLayout implements
                 bindCommonMessage(sameItem);
                 break;
         }
+
+        customSIMSmsView();
     }
 
     public void unbind() {
@@ -1123,6 +1125,17 @@ public class MessageListItem extends LinearLayout implements
         } catch (java.lang.OutOfMemoryError e) {
             // shouldn't be here.
             Log.e(TAG, "setVcard: out of memory: ", e);
+        }
+    }
+
+    protected void customSIMSmsView() {
+        if (isSimCardMessage()) {
+            // hide delivered indicator in SIM message
+            mDeliveredIndicator.setVisibility(GONE);
+            // SIM message have no send date, hide date view
+            if (mMessageItem.isOutgoingMessage() || mMessageItem.mBoxId == Sms.MESSAGE_TYPE_SENT) {
+                mDateView.setVisibility(View.GONE);
+            }
         }
     }
 }
