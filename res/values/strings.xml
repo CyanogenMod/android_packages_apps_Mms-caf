@@ -391,6 +391,8 @@
     <string name="pref_title_mms_read_reports">Read reports</string>
     <!-- Settings item for boolean option to enable/disable SMS delivery reports -->
     <string name="pref_title_sms_delivery_reports">Delivery reports</string>
+    <string name="pref_title_sms_delivery_reports_slot1">Sub1\'s delivery reports</string>
+    <string name="pref_title_sms_delivery_reports_slot2">Sub2\'s delivery reports</string>
     <!-- Settings item for boolean option to enable/disable auto-deletion of messages -->
     <string name="pref_title_auto_delete">Delete old messages</string>
     <!-- Settings item for integer option to set SMS delete limit -->
@@ -886,6 +888,18 @@
     <string name="pref_summary_disable_signature">SMS signature disabled</string>
     <string name="pref_title_edit_signature">Edit SMS signature</string>
     <string name="signature_full_toast">Signature has reached to maximum length.</string>
+
+    <!-- Settings item description for SMS Validity period -->
+    <string name="pref_title_sms_validity_period">SMS Validity Period</string>
+    <string name="pref_title_sms_validity_period_slot1">SMS Validity Period for Card1</string>
+    <string name="pref_title_sms_validity_period_slot2">SMS Validity Period for Card2</string>
+    <string name="sms_validity_period_not_set">Not set</string>
+    <string name="sms_validity_period_one_hour">1 hour</string>
+    <string name="sms_validity_period_six_hours">6 hours</string>
+    <string name="sms_validity_period_twelve_hours">12 hours</string>
+    <string name="sms_validity_period_one_day">1 day</string>
+    <string name="sms_validity_period_maximum">Maximum</string>
+
     <!-- Copy message to sim -->
     <string name="menu_copy_to">Copy</string>
     <string name="operation_to_card_memory">Copy message to SIM card</string>
@@ -981,7 +995,9 @@
     <string name="slot_type">Slot : %s</string>
 
     <!-- Settings item description for Mms Validity period -->
-    <string name="pref_title_mms_save_time">Validity period</string>
+    <string name="pref_title_mms_save_time">MMS Validity period</string>
+    <string name="pref_title_mms_save_time_slot1">Sub1\'s MMS validity period</string>
+    <string name="pref_title_mms_save_time_slot2">Sub2\'s MMS validity period</string>
     <string name="mms_one_week">One week</string>
     <string name="mms_two_days">Two days</string>
     <string name="mms_max">Maximum</string>

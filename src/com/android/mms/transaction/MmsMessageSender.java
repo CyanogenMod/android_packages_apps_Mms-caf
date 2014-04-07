@@ -129,7 +129,6 @@ public class MmsMessageSender implements MessageSender {
         intent.putExtra(MultiSimUtility.ORIGIN_SUB_ID,
                 MultiSimUtility.getCurrentDataSubscription(mContext));
         if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
-
             Intent silentIntent = new Intent(mContext,
                     com.android.mms.ui.SelectMmsSubscription.class);
             silentIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -147,8 +146,8 @@ public class MmsMessageSender implements MessageSender {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 
         // Expiry.
-        long expiryTime = Long.parseLong(
-                prefs.getString(MessagingPreferenceActivity.EXPIRY_TIME, "0"));
+        long expiryTime = getExpiryTime(prefs);
+
         String expiryStr = prefs.getString(MessagingPreferenceActivity.EXPIRY_TIME, "0");
         Log.v(TAG, "updatePreferencesHeaders expiryTime = " + expiryTime + ", expiryStr = "
                 + expiryStr);
@@ -169,6 +168,20 @@ public class MmsMessageSender implements MessageSender {
         boolean rr = prefs.getBoolean(MessagingPreferenceActivity.READ_REPORT_MODE,
                 DEFAULT_READ_REPORT_MODE);
         sendReq.setReadReport(rr?PduHeaders.VALUE_YES:PduHeaders.VALUE_NO);
+    }
+
+    private long getExpiryTime(SharedPreferences prefs) {
+        long expiryTime = 0;
+        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+            expiryTime = Long.parseLong(
+                    prefs.getString((mSubscription == 0) ?
+                            MessagingPreferenceActivity.EXPIRY_TIME_SLOT1:
+                            MessagingPreferenceActivity.EXPIRY_TIME_SLOT2, "0"));
+        } else {
+            expiryTime = Long.parseLong(
+                    prefs.getString(MessagingPreferenceActivity.EXPIRY_TIME, "0"));
+        }
+        return expiryTime;
     }
 
     public static void sendReadRec(Context context, String to, String messageId, int status) {

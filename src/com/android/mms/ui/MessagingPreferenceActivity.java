@@ -76,9 +76,13 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     // Symbolic names for the keys used for preference lookup
     public static final String MMS_DELIVERY_REPORT_MODE = "pref_key_mms_delivery_reports";
     public static final String EXPIRY_TIME              = "pref_key_mms_expiry";
+    public static final String EXPIRY_TIME_SLOT1        = "pref_key_mms_expiry_slot1";
+    public static final String EXPIRY_TIME_SLOT2        = "pref_key_mms_expiry_slot2";
     public static final String PRIORITY                 = "pref_key_mms_priority";
     public static final String READ_REPORT_MODE         = "pref_key_mms_read_reports";
     public static final String SMS_DELIVERY_REPORT_MODE = "pref_key_sms_delivery_reports";
+    public static final String SMS_DELIVERY_REPORT_SUB1 = "pref_key_sms_delivery_reports_slot1";
+    public static final String SMS_DELIVERY_REPORT_SUB2 = "pref_key_sms_delivery_reports_slot2";
     public static final String NOTIFICATION_ENABLED     = "pref_key_enable_notifications";
     public static final String NOTIFICATION_VIBRATE     = "pref_key_vibrate";
     public static final String NOTIFICATION_VIBRATE_WHEN= "pref_key_vibrateWhen";
@@ -110,6 +114,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
     private Preference mSmsLimitPref;
     private Preference mSmsDeliveryReportPref;
+    private Preference mSmsDeliveryReportPrefSub1;
+    private Preference mSmsDeliveryReportPrefSub2;
     private Preference mMmsLimitPref;
     private Preference mMmsDeliveryReportPref;
     private Preference mMmsGroupMmsPref;
@@ -120,10 +126,15 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private CheckBoxPreference mEnableNotificationsPref;
     private CheckBoxPreference mMmsAutoRetrievialPref;
     private ListPreference mMmsExpiryPref;
+    private ListPreference mMmsExpiryCard1Pref;
+    private ListPreference mMmsExpiryCard2Pref;
     private RingtonePreference mRingtonePref;
     private ListPreference mSmsStorePref;
     private ListPreference mSmsStoreCard1Pref;
     private ListPreference mSmsStoreCard2Pref;
+    private ListPreference mSmsValidityPref;
+    private ListPreference mSmsValidityCard1Pref;
+    private ListPreference mSmsValidityCard2Pref;
     private Recycler mSmsRecycler;
     private Recycler mMmsRecycler;
     private Preference mSmsTemplate;
@@ -217,6 +228,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mManageSimPref = findPreference("pref_key_manage_sim_messages");
         mSmsLimitPref = findPreference("pref_key_sms_delete_limit");
         mSmsDeliveryReportPref = findPreference("pref_key_sms_delivery_reports");
+        mSmsDeliveryReportPrefSub1 = findPreference("pref_key_sms_delivery_reports_slot1");
+        mSmsDeliveryReportPrefSub2 = findPreference("pref_key_sms_delivery_reports_slot2");
         mMmsDeliveryReportPref = findPreference("pref_key_mms_delivery_reports");
         mMmsGroupMmsPref = findPreference("pref_key_mms_group_mms");
         mMmsReadReportPref = findPreference("pref_key_mms_read_reports");
@@ -225,6 +238,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mEnableNotificationsPref = (CheckBoxPreference) findPreference(NOTIFICATION_ENABLED);
         mMmsAutoRetrievialPref = (CheckBoxPreference) findPreference(AUTO_RETRIEVAL);
         mMmsExpiryPref = (ListPreference) findPreference("pref_key_mms_expiry");
+        mMmsExpiryCard1Pref = (ListPreference) findPreference("pref_key_mms_expiry_slot1");
+        mMmsExpiryCard2Pref = (ListPreference) findPreference("pref_key_mms_expiry_slot2");
         mVibratePref = (CheckBoxPreference) findPreference(NOTIFICATION_VIBRATE);
         mSmsSignaturePref = (CheckBoxPreference) findPreference("pref_key_enable_signature");
         mSmsSignatureEditPref = (EditTextPreference) findPreference("pref_key_edit_signature");
@@ -232,12 +247,14 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mSmsStorePref = (ListPreference) findPreference("pref_key_sms_store");
         mSmsStoreCard1Pref = (ListPreference) findPreference("pref_key_sms_store_card1");
         mSmsStoreCard2Pref = (ListPreference) findPreference("pref_key_sms_store_card2");
+        mSmsTemplate = findPreference("pref_key_message_template");
+        mSmscPrefCate = (PreferenceCategory) findPreference("pref_key_smsc");
+        mSmsValidityPref = (ListPreference) findPreference("pref_key_sms_validity_period");
+        mSmsValidityCard1Pref
+            = (ListPreference) findPreference("pref_key_sms_validity_period_slot1");
+        mSmsValidityCard2Pref
+            = (ListPreference) findPreference("pref_key_sms_validity_period_slot2");
 
-        if (!getResources().getBoolean(R.bool.support_sms_priority)) {
-            Preference priorotySettings = findPreference(SMS_CDMA_PRIORITY);
-            PreferenceScreen prefSet = getPreferenceScreen();
-            prefSet.removePreference(priorotySettings);
-        }
         setMessagePreferences();
     }
 
@@ -261,17 +278,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     }
 
     private void setMessagePreferences() {
-        mManageSimPref = findPreference("pref_key_manage_sim_messages");
-        mSmsLimitPref = findPreference("pref_key_sms_delete_limit");
-        mSmsDeliveryReportPref = findPreference("pref_key_sms_delivery_reports");
-        mMmsDeliveryReportPref = findPreference("pref_key_mms_delivery_reports");
-        mMmsReadReportPref = findPreference("pref_key_mms_read_reports");
-        mMmsLimitPref = findPreference("pref_key_mms_delete_limit");
-        mClearHistoryPref = findPreference("pref_key_mms_clear_history");
-        mEnableNotificationsPref = (CheckBoxPreference) findPreference(NOTIFICATION_ENABLED);
-        mSmsTemplate = findPreference("pref_key_message_template");
-        mSmscPrefCate = (PreferenceCategory) findPreference("pref_key_smsc");
-
+        setMessagePriorityPref();
         updateSignatureStatus();
         showSmscPref();
 
@@ -282,11 +289,54 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
         if (!MmsConfig.getSMSDeliveryReportsEnabled()) {
             mSmsPrefCategory.removePreference(mSmsDeliveryReportPref);
+            mSmsPrefCategory.removePreference(mSmsDeliveryReportPrefSub1);
+            mSmsPrefCategory.removePreference(mSmsDeliveryReportPrefSub2);
             if (!MmsApp.getApplication().getTelephonyManager().hasIccCard()) {
                 getPreferenceScreen().removePreference(mSmsPrefCategory);
             }
+        } else {
+            if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+                mSmsPrefCategory.removePreference(mSmsDeliveryReportPref);
+            } else {
+                mSmsPrefCategory.removePreference(mSmsDeliveryReportPrefSub1);
+                mSmsPrefCategory.removePreference(mSmsDeliveryReportPrefSub2);
+            }
         }
 
+        setMmsRelatedPref();
+
+        setEnabledNotificationsPref();
+
+        setSmsPreferStoragePref();
+        setSmsValidityPeriodPref();
+
+        // If needed, migrate vibration setting from the previous tri-state setting stored in
+        // NOTIFICATION_VIBRATE_WHEN to the boolean setting stored in NOTIFICATION_VIBRATE.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (sharedPreferences.contains(NOTIFICATION_VIBRATE_WHEN)) {
+            String vibrateWhen = sharedPreferences.
+                    getString(MessagingPreferenceActivity.NOTIFICATION_VIBRATE_WHEN, null);
+            boolean vibrate = "always".equals(vibrateWhen);
+            SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
+            prefsEditor.putBoolean(NOTIFICATION_VIBRATE, vibrate);
+            prefsEditor.remove(NOTIFICATION_VIBRATE_WHEN);  // remove obsolete setting
+            prefsEditor.apply();
+            mVibratePref.setChecked(vibrate);
+        }
+
+        mSmsRecycler = Recycler.getSmsRecycler();
+        mMmsRecycler = Recycler.getMmsRecycler();
+
+        // Fix up the recycler's summary with the correct values
+        setSmsDisplayLimit();
+        setMmsDisplayLimit();
+        setMmsExpiryPref();
+
+        String soundValue = sharedPreferences.getString(NOTIFICATION_RINGTONE, null);
+        setRingtoneSummary(soundValue);
+    }
+
+    private void setMmsRelatedPref() {
         if (!MmsConfig.getMmsEnabled()) {
             // No Mms, remove all the mms-related preferences
             getPreferenceScreen().removePreference(mMmsPrefCategory);
@@ -313,14 +363,26 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             mManageSimPref.setSummary(
                     getString(R.string.pref_summary_manage_sim_messages)
                     + (preferredSmsSub + 1));
+            mMmsPrefCategory.removePreference(mMmsExpiryPref);
+        } else {
+            mMmsPrefCategory.removePreference(mMmsExpiryCard1Pref);
+            mMmsPrefCategory.removePreference(mMmsExpiryCard2Pref);
         }
+    }
 
-        setEnabledNotificationsPref();
+    private void setMessagePriorityPref() {
+        if (!getResources().getBoolean(R.bool.support_sms_priority)) {
+            Preference priorotySettings = findPreference(SMS_CDMA_PRIORITY);
+            PreferenceScreen prefSet = getPreferenceScreen();
+            prefSet.removePreference(priorotySettings);
+        }
+    }
 
+    private void setSmsPreferStoragePref() {
         if (getResources().getBoolean(R.bool.config_savelocation)) {
-            if (MessageUtils.isMultiSimEnabledMms()) {
-                PreferenceCategory storageOptions =
+            PreferenceCategory storageOptions =
                     (PreferenceCategory)findPreference("pref_key_storage_settings");
+            if (MessageUtils.isMultiSimEnabledMms()) {
                 storageOptions.removePreference(mSmsStorePref);
 
                 if (!MessageUtils.hasIccCard(MSimConstants.SUB1)) {
@@ -334,8 +396,6 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                     setSmsPreferStoreSummary(MSimConstants.SUB2);
                 }
             } else {
-                PreferenceCategory storageOptions =
-                    (PreferenceCategory)findPreference("pref_key_storage_settings");
                 storageOptions.removePreference(mSmsStoreCard1Pref);
                 storageOptions.removePreference(mSmsStoreCard2Pref);
 
@@ -352,31 +412,26 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             storageOptions.removePreference(mSmsStoreCard1Pref);
             storageOptions.removePreference(mSmsStoreCard2Pref);
         }
+    }
 
-        // If needed, migrate vibration setting from the previous tri-state setting stored in
-        // NOTIFICATION_VIBRATE_WHEN to the boolean setting stored in NOTIFICATION_VIBRATE.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if (sharedPreferences.contains(NOTIFICATION_VIBRATE_WHEN)) {
-            String vibrateWhen = sharedPreferences.
-                    getString(MessagingPreferenceActivity.NOTIFICATION_VIBRATE_WHEN, null);
-            boolean vibrate = "always".equals(vibrateWhen);
-            SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
-            prefsEditor.putBoolean(NOTIFICATION_VIBRATE, vibrate);
-            prefsEditor.remove(NOTIFICATION_VIBRATE_WHEN);  // remove obsolete setting
-            prefsEditor.apply();
-            mVibratePref.setChecked(vibrate);
+    private void setSmsValidityPeriodPref() {
+        PreferenceCategory storageOptions =
+                (PreferenceCategory)findPreference("pref_key_sms_settings");
+        if (getResources().getBoolean(R.bool.config_sms_validity)) {
+            if (MessageUtils.isMultiSimEnabledMms()) {
+                storageOptions.removePreference(mSmsValidityPref);
+                setSmsPreferValiditySummary(MSimConstants.SUB1);
+                setSmsPreferValiditySummary(MSimConstants.SUB2);
+            } else {
+                storageOptions.removePreference(mSmsValidityCard1Pref);
+                storageOptions.removePreference(mSmsValidityCard2Pref);
+                setSmsPreferValiditySummary(MSimConstants.INVALID_SUBSCRIPTION);
+            }
+        } else {
+            storageOptions.removePreference(mSmsValidityPref);
+            storageOptions.removePreference(mSmsValidityCard1Pref);
+            storageOptions.removePreference(mSmsValidityCard2Pref);
         }
-
-        mSmsRecycler = Recycler.getSmsRecycler();
-        mMmsRecycler = Recycler.getMmsRecycler();
-
-        // Fix up the recycler's summary with the correct values
-        setSmsDisplayLimit();
-        setMmsDisplayLimit();
-        setMmsExpirySummary();
-
-        String soundValue = sharedPreferences.getString(NOTIFICATION_RINGTONE, null);
-        setRingtoneSummary(soundValue);
     }
 
     private void setRingtoneSummary(String soundValue) {
@@ -466,6 +521,52 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         }
     }
 
+    private void setSmsPreferValiditySummary(int subscription) {
+        switch (subscription) {
+            case MSimConstants.INVALID_SUBSCRIPTION:
+                mSmsValidityPref.setOnPreferenceChangeListener(
+                        new Preference.OnPreferenceChangeListener() {
+                    public boolean onPreferenceChange(Preference preference, Object newValue) {
+                        final String summary = newValue.toString();
+                        int index = mSmsValidityPref.findIndexOfValue(summary);
+                        mSmsValidityPref.setSummary(mSmsValidityPref.getEntries()[index]);
+                        mSmsValidityPref.setValue(summary);
+                        return true;
+                    }
+                });
+                mSmsValidityPref.setSummary(mSmsValidityPref.getEntry());
+                break;
+            case MSimConstants.SUB1:
+                mSmsValidityCard1Pref.setOnPreferenceChangeListener(
+                        new Preference.OnPreferenceChangeListener() {
+                    public boolean onPreferenceChange(Preference preference, Object newValue) {
+                        final String summary = newValue.toString();
+                        int index = mSmsValidityCard1Pref.findIndexOfValue(summary);
+                        mSmsValidityCard1Pref.setSummary(mSmsValidityCard1Pref.getEntries()[index]);
+                        mSmsValidityCard1Pref.setValue(summary);
+                        return true;
+                    }
+                });
+                mSmsValidityCard1Pref.setSummary(mSmsValidityCard1Pref.getEntry());
+                break;
+            case MSimConstants.SUB2:
+                mSmsValidityCard2Pref.setOnPreferenceChangeListener(
+                        new Preference.OnPreferenceChangeListener() {
+                    public boolean onPreferenceChange(Preference preference, Object newValue) {
+                        final String summary = newValue.toString();
+                        int index = mSmsValidityCard2Pref.findIndexOfValue(summary);
+                        mSmsValidityCard2Pref.setSummary(mSmsValidityCard2Pref.getEntries()[index]);
+                        mSmsValidityCard2Pref.setValue(summary);
+                        return true;
+                    }
+                });
+                mSmsValidityCard2Pref.setSummary(mSmsValidityCard2Pref.getEntry());
+                break;
+            default:
+                break;
+        }
+    }
+
     private void setEnabledNotificationsPref() {
         // The "enable notifications" setting is really stored in our own prefs. Read the
         // current value and set the checkbox to match.
@@ -484,32 +585,63 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                         mMmsRecycler.getMessageLimit(this)));
     }
 
-    private void setMmsExpirySummary() {
-        mMmsExpiryPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                final String value = newValue.toString();
-                mMmsExpiryPref.setValue(value);
-
-                if (value.equals(EXPIRY_ONE_WEEK)) {
-                    mMmsExpiryPref.setSummary(getString(R.string.mms_one_week));
-                } else if (value.equals(EXPIRY_TWO_DAYS)) {
-                    mMmsExpiryPref.setSummary(getString(R.string.mms_two_days));
-                } else {
-                    mMmsExpiryPref.setSummary(getString(R.string.mms_max));
-                }
-                return false;
-            }
-        });
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String expiry = prefs.getString("pref_key_mms_expiry", "");
-
-        if (expiry.equals(EXPIRY_ONE_WEEK)) {
-            mMmsExpiryPref.setSummary(getString(R.string.mms_one_week));
-        } else if (expiry.equals(EXPIRY_TWO_DAYS)) {
-            mMmsExpiryPref.setSummary(getString(R.string.mms_two_days));
+    private void setMmsExpiryPref() {
+        PreferenceCategory mmsSettings =
+                (PreferenceCategory)findPreference("pref_key_mms_settings");
+        if (MessageUtils.isMultiSimEnabledMms()) {
+            mmsSettings.removePreference(mMmsExpiryPref);
+            setMmsExpirySummary(MSimConstants.SUB1);
+            setMmsExpirySummary(MSimConstants.SUB2);
         } else {
-            mMmsExpiryPref.setSummary(getString(R.string.mms_max));
+            mmsSettings.removePreference(mMmsExpiryCard1Pref);
+            mmsSettings.removePreference(mMmsExpiryCard2Pref);
+            setMmsExpirySummary(MSimConstants.INVALID_SUBSCRIPTION);
+        }
+    }
+
+    private void setMmsExpirySummary(int subscription) {
+        switch (subscription) {
+            case MSimConstants.INVALID_SUBSCRIPTION:
+                mMmsExpiryPref.setOnPreferenceChangeListener(
+                        new Preference.OnPreferenceChangeListener() {
+                    public boolean onPreferenceChange(Preference preference, Object newValue) {
+                        final String value = newValue.toString();
+                        int index = mMmsExpiryPref.findIndexOfValue(value);
+                        mMmsExpiryPref.setValue(value);
+                        mMmsExpiryPref.setSummary(mMmsExpiryPref.getEntryValues()[index]);
+                        return false;
+                    }
+                });
+                mMmsExpiryPref.setSummary(mMmsExpiryPref.getEntry());
+                break;
+            case MSimConstants.SUB1:
+                mMmsExpiryCard1Pref.setOnPreferenceChangeListener(
+                        new Preference.OnPreferenceChangeListener() {
+                    public boolean onPreferenceChange(Preference preference, Object newValue) {
+                        final String value = newValue.toString();
+                        int index = mMmsExpiryCard1Pref.findIndexOfValue(value);
+                        mMmsExpiryCard1Pref.setValue(value);
+                        mMmsExpiryCard1Pref.setSummary(mMmsExpiryCard1Pref.getEntryValues()[index]);
+                        return false;
+                    }
+                });
+                mMmsExpiryCard1Pref.setSummary(mMmsExpiryCard1Pref.getEntry());
+                break;
+            case MSimConstants.SUB2:
+                mMmsExpiryCard2Pref.setOnPreferenceChangeListener(
+                        new Preference.OnPreferenceChangeListener() {
+                    public boolean onPreferenceChange(Preference preference, Object newValue) {
+                        final String value = newValue.toString();
+                        int index = mMmsExpiryCard2Pref.findIndexOfValue(value);
+                        mMmsExpiryCard2Pref.setValue(value);
+                        mMmsExpiryCard2Pref.setSummary(mMmsExpiryCard2Pref.getEntryValues()[index]);
+                        return false;
+                    }
+                });
+                mMmsExpiryCard2Pref.setSummary(mMmsExpiryCard2Pref.getEntry());
+                break;
+            default:
+                break;
         }
     }
 
