@@ -397,21 +397,6 @@
     <!-- Settings item description for boolean MMS auto-retrieve while roaming option -->
     <string name="pref_summary_mms_retrieval_during_roaming">Automatically retrieve messages while roaming</string>
 
-
-    <!-- Confirm Mark As Unread -->
-    <string name="confirm_mark_unread_dialog_title">Mark as unread?</string>
-    <plurals name="confirm_mark_unread_conversation">
-        <!-- Case of 1 result. -->
-        <item quantity="one">One conversation will be marked as unread.</item>
-        <!-- Case of 0 or 2 or more results. -->
-        <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> conversations will be marked as unread.</item>
-    </plurals>
-    <string name="confirm_mark_unread_conversation">The conversation will be marked as unread.</string>
-    <!-- Mark all threads confirmation dialog message -->
-    <string name="confirm_mark_unread_all_conversations">All threads will be marked as unread.</string>
-
-
-
     <!-- Confirm Delete -->
     <!-- Delete confirmation dialog title -->
     <string name="confirm_dialog_title">Delete?</string>

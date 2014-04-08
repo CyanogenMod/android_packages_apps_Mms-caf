@@ -23,4 +23,8 @@
         <item quantity="one">Sending in %1$d second, touch to cancel.</item>
         <item quantity="other">Sending in %1$d seconds, touch to cancel.</item>
     </plurals>
+    <plurals name="confirm_mark_unread_conversation">
+        <item quantity="one"><xliff:g id="number">%1$s</xliff:g> conversation will be marked as unread.</item>
+        <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> conversations will be marked as unread.</item>
+    </plurals>
 </resources>
