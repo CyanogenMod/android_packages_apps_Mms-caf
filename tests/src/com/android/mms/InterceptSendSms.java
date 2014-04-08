@@ -35,6 +35,7 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -91,7 +92,8 @@ public class InterceptSendSms extends ActivityInstrumentationTestCase2 <ComposeM
             mRecipientsView.setText(RECIPIENTS);
             mTextEditor.setText(MESSAGE);
 
-            Button mSendButton = (Button) getActivity().getWindow().findViewById(R.id.send_button);
+            ImageButton mSendButton = (ImageButton) getActivity().getWindow().findViewById(
+                    R.id.send_button_sms);
             mSendButton.performClick();
 
             Log.v(TAG, "sendMms hitting send now");

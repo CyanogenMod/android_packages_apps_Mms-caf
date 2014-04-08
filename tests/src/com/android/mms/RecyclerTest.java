@@ -79,53 +79,29 @@ public class RecyclerTest extends AndroidTestCase {
 
         // Read in dictionary of words
         mWords = new ArrayList<String>(98568);      // count of words in words file
-        StringBuilder sb = new StringBuilder();
-        try {
-            Log.v(TAG, "Loading dictionary of words");
-            FileInputStream words = context.openFileInput("words");
-            int c;
-            while ((c = words.read()) != -1) {
-                if (c == '\r' || c == '\n') {
-                    String word = sb.toString().trim();
-                    if (word.length() > 0) {
-                        mWords.add(word);
-                    }
-                    sb.setLength(0);
-                } else {
-                    sb.append((char)c);
-                }
-            }
-            words.close();
-            mWordCount = mWords.size();
-            Log.v(TAG, "Loaded dictionary word count: " + mWordCount);
-        } catch (Exception e) {
-            Log.e(TAG, "can't open words file at /data/data/com.android.mms/files/words");
-            return;
-        }
-
+        mWords.add("Sent message 0");
+        mWords.add("Sent message 1");
+        mWords.add("Sent message 2");
+        mWords.add("Sent message 3");
+        mWords.add("Sent message 4");
+        mWords.add("Sent message 5");
+        mWords.add("Sent message 6");
+        mWords.add("Sent message 7");
+        mWords.add("Sent message 8");
+        mWords.add("Sent message 9");
+        mWordCount = mWords.size();
         // Read in list of recipients
         mRecipients = new ArrayList<String>();
-        try {
-            Log.v(TAG, "Loading recipients");
-            FileInputStream recipients = context.openFileInput("recipients");
-            int c;
-            while ((c = recipients.read()) != -1) {
-                if (c == '\r' || c == '\n' || c == ',') {
-                    String recipient = sb.toString().trim();
-                    if (recipient.length() > 0) {
-                        mRecipients.add(recipient);
-                    }
-                    sb.setLength(0);
-                } else {
-                    sb.append((char)c);
-                }
-            }
-            recipients.close();
-            Log.v(TAG, "Loaded recipients: " + mRecipients.size());
-        } catch (Exception e) {
-            Log.e(TAG, "can't open recipients file at /data/data/com.android.mms/files/recipients");
-            return;
-        }
+        mRecipients.add("1388957890");
+        mRecipients.add("1388957891");
+        mRecipients.add("1388957892");
+        mRecipients.add("1388957893");
+        mRecipients.add("1388957894");
+        mRecipients.add("1388957895");
+        mRecipients.add("1388957896");
+        mRecipients.add("1388957897");
+        mRecipients.add("1388957898");
+        mRecipients.add("1388957899");
         mRecipientCnt = mRecipients.size();
     }
 
@@ -159,6 +135,7 @@ public class RecyclerTest extends AndroidTestCase {
         // Make sure we've got a thread id so after the insert we'll be able to delete
         // excess messages.
         Long threadId = 0L;
+        Contact.init(context);
         Contact cacheContact = Contact.get(address,true);
         if (cacheContact != null) {
             address = cacheContact.getNumber();

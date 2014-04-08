@@ -419,6 +419,9 @@ extends ActivityInstrumentationTestCase2<ComposeMessageActivity> {
                 }
             });
 
+            if (MMS_FREQ == 0)
+                assertTrue(false);
+
             for (int i = 0; i < MSG_PER_RECIPIENT; i++) {
                 Log.v(TAG, "Sending msg: " + i);
                 if (i % MMS_FREQ == 0) {
