@@ -27,7 +27,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SqliteWrapper;
 import android.net.Uri;
+import android.provider.DocumentsContract.Document;
 import android.provider.MediaStore.Audio;
+import android.provider.OpenableColumns;
 import android.provider.Telephony.Mms.Part;
 import android.text.TextUtils;
 import android.util.Log;
@@ -60,6 +62,7 @@ public class AudioModel extends MediaModel {
         ContentResolver cr = mContext.getContentResolver();
         Cursor c = null;
         boolean initFromFile = false;
+        Log.d(TAG, "Audio uri:" + uri);
         if (uri.getScheme().equals("file")) {
             initFromFile = true;
             c = cr.query(Audio.Media.EXTERNAL_CONTENT_URI, null,
@@ -79,24 +82,28 @@ public class AudioModel extends MediaModel {
                     if (isFromMms) {
                         path = c.getString(c.getColumnIndexOrThrow(Part._DATA));
                         mContentType = c.getString(c.getColumnIndexOrThrow(Part.CONTENT_TYPE));
+                        mSrc = path.substring(path.lastIndexOf('/') + 1);
                     } else {
-                        path = c.getString(c.getColumnIndexOrThrow(Audio.Media.DATA));
+                        mSrc = c.getString(c.getColumnIndexOrThrow(Document.COLUMN_DISPLAY_NAME));
                         mContentType = c.getString(c.getColumnIndexOrThrow(
-                                Audio.Media.MIME_TYPE));
+                                Document.COLUMN_MIME_TYPE));
                         // Get more extras information which would be useful
                         // to the user.
-                        String album = c.getString(c.getColumnIndexOrThrow("album"));
-                        if (!TextUtils.isEmpty(album)) {
-                            mExtras.put("album", album);
-                        }
+                        if (initFromFile) {
+                            try {
+                                String album = c.getString(c.getColumnIndexOrThrow("album"));
+                                if (!TextUtils.isEmpty(album)) {
+                                    mExtras.put("album", album);
+                                }
 
-                        String artist = c.getString(c.getColumnIndexOrThrow("artist"));
-                        if (!TextUtils.isEmpty(artist)) {
-                            mExtras.put("artist", artist);
+                                String artist = c.getString(c.getColumnIndexOrThrow("artist"));
+                                if (!TextUtils.isEmpty(artist)) {
+                                    mExtras.put("artist", artist);
+                                }
+                            }  catch (IllegalArgumentException e) {
+                            }
                         }
                     }
-                    mSrc = path.substring(path.lastIndexOf('/') + 1);
-
                     if (TextUtils.isEmpty(mContentType)) {
                         throw new MmsException("Type of media is unknown.");
                     }
