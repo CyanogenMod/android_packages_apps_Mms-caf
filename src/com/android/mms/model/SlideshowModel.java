@@ -66,6 +66,9 @@ import com.android.mms.UnsupportContentTypeException;
 public class SlideshowModel extends Model
         implements List<SlideModel>, IModelChangedObserver {
     private static final String TAG = "Mms/slideshow";
+    // Consider oct-strean as the content type of vCard
+    private static final String OCT_STREAM = "application/oct-stream";
+    private static final String VCARD = "vcf";
 
     private final LayoutModel mLayout;
     private final ArrayList<SlideModel> mSlides;
@@ -150,6 +153,7 @@ public class SlideshowModel extends Model
         int slidesNum = slideNodes.getLength();
         ArrayList<SlideModel> slides = new ArrayList<SlideModel>(slidesNum);
         int totalMessageSize = 0;
+        boolean isClassCastFailed = false;
 
         for (int i = 0; i < slidesNum; i++) {
             // FIXME: This is NOT compatible with the SMILDocument which is
@@ -162,7 +166,14 @@ public class SlideshowModel extends Model
             ArrayList<MediaModel> mediaSet = new ArrayList<MediaModel>(mediaNum);
 
             for (int j = 0; j < mediaNum; j++) {
-                SMILMediaElement sme = (SMILMediaElement) mediaNodes.item(j);
+                SMILMediaElement sme = null;
+                try {
+                    sme = (SMILMediaElement) mediaNodes.item(j);
+                } catch (ClassCastException e) {
+                    isClassCastFailed = true;
+                    Log.e(TAG, e.getMessage());
+                    continue;
+                }
                 try {
                     MediaModel media = MediaModelFactory.getMediaModel(
                             context, sme, layouts, pb);
@@ -223,6 +234,27 @@ public class SlideshowModel extends Model
                     Log.e(TAG, e.getMessage(), e);
                 }
             }
+            // Add vcard when receive from other products without ref target in smil.
+            boolean isNeedAddFromPart = ((mediaNum == 0 || isClassCastFailed) && slidesNum == 1);
+            if (isNeedAddFromPart) {
+                int partsNum = pb.getPartsNum();
+                for (int k = 0; k < partsNum; k++) {
+                    PduPart part = pb.getPart(k);
+                    String contentType = (new String(part.getContentType())).toLowerCase();
+                    if (OCT_STREAM.equals(contentType)) {
+                        contentType = getOctStreamContentType(part);
+                    }
+
+                    if (ContentType.TEXT_VCARD.toLowerCase().equals(contentType)) {
+                        MediaModel vMedia = new VcardModel(context, ContentType.TEXT_VCARD,
+                                new String(part.getContentLocation()), part.getDataUri());
+                        mediaSet = new ArrayList<MediaModel>(DEFAULT_MEDIA_NUMBER);
+                        mediaSet.add(vMedia);
+                        totalMessageSize += vMedia.getMediaSize();
+                        break;
+                    }
+                }
+            }
             float duration = par.getDur();
             if (duration < MIN_PAT_DURATION) {
                 duration = MIN_PAT_DURATION;
@@ -237,6 +269,24 @@ public class SlideshowModel extends Model
         slideshow.mTotalMessageSize = totalMessageSize;
         slideshow.registerModelChangedObserver(slideshow);
         return slideshow;
+    }
+
+    private static String getOctStreamContentType(PduPart part) {
+        byte[] name = part.getName();
+        if (name == null) {
+            name = part.getContentLocation();
+        }
+        if (name != null) {
+            String src = new String(name);
+            int index = src.lastIndexOf('.');
+            if (index > 0) {
+                String extension = src.substring(index + 1, src.length());
+                if (extension.toLowerCase().equals(VCARD)) {
+                    return ContentType.TEXT_VCARD.toLowerCase();
+                }
+            }
+        }
+        return null;
     }
 
     public PduBody toPduBody() {
