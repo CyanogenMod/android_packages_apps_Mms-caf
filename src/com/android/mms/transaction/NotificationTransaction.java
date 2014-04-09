@@ -304,4 +304,8 @@ public class NotificationTransaction extends Transaction implements Runnable {
     public int getType() {
         return NOTIFICATION_TRANSACTION;
     }
+
+    public Uri getUri() {
+        return mUri;
+    }
 }

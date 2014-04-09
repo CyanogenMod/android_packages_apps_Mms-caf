@@ -346,4 +346,8 @@ public class RetrieveTransaction extends Transaction implements Runnable {
             isCancelMyself = true;
         }
     }
+
+    public Uri getUri() {
+        return mUri;
+    }
 }

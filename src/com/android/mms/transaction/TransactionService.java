@@ -1460,8 +1460,34 @@ public class TransactionService extends Service implements Observer {
             transaction.process();
             return true;
         }
-    }
 
+        public void removePendingTransactionsOnNoConnectivity() {
+        Log.d(TAG, "removePendingTransactionsOnNoConnectivity entry ");
+            // Check if transaction already processing
+            synchronized (mProcessing) {
+                while (mPending.size() != 0) {
+                    Uri uri = null;
+                    Transaction transaction = mPending.remove(0);
+                    transaction.mTransactionState.setState(TransactionState.FAILED);
+                    // Get uri from transaction
+                    if (transaction instanceof SendTransaction) {
+                        uri = ((SendTransaction)transaction).mSendReqURI;
+                    } else if (transaction instanceof NotificationTransaction) {
+                        uri = ((NotificationTransaction)transaction).getUri();
+                    } else if (transaction instanceof RetrieveTransaction) {
+                        uri = ((RetrieveTransaction)transaction).getUri();
+                    } else {
+                        continue;
+                    }
+                    // Set Error Type to MMS_PROTO_TRANSIENT
+                    transaction.mTransactionState.setContentUri(uri);
+                    if (getResources().getBoolean(R.bool.config_manual_resend)) {
+                        updateMsgErrorType(uri, MmsSms.ERR_TYPE_MMS_PROTO_TRANSIENT);
+                    }
+                }
+            }
+        }
+    }
     private void renewMmsConnectivity() {
         // Set a timer to keep renewing our "lease" on the MMS connection
         mServiceHandler.sendMessageDelayed(
@@ -1507,6 +1533,19 @@ public class TransactionService extends Service implements Observer {
             if (mmsNetworkInfo == null) {
                 if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE) || DEBUG) {
                     Log.v(TAG, "mms type is null or mobile data is turned off, bail");
+                }
+                if (mProcessing.isEmpty() && !mPending.isEmpty()) {
+                    Transaction transaction = mPending.get(0);
+
+                    int type = transaction.getType();
+                    if (type == Transaction.SEND_TRANSACTION) {
+                        mToastHandler.sendEmptyMessage(TOAST_MSG_QUEUED);
+                    } else if ((type == Transaction.RETRIEVE_TRANSACTION) ||
+                        (type == Transaction.NOTIFICATION_TRANSACTION)) {
+                        mToastHandler.sendEmptyMessage(TOAST_DOWNLOAD_LATER);
+                    }
+                    mServiceHandler.removePendingTransactionsOnNoConnectivity();
+                    endMmsConnectivity();
                 }
             } else {
                 // This is a very specific fix to handle the case where the phone receives an
