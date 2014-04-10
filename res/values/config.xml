@@ -83,6 +83,7 @@
 
     <bool name="config_manual_resend">false</bool>
     <bool name="config_retry_always">false</bool>
+    <bool name="config_classify_search">false</bool>
 
     <bool name="config_sms_validity">true</bool>
 

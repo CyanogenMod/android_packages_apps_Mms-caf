@@ -523,17 +523,19 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         }
         getMenuInflater().inflate(R.menu.conversation_list_menu, menu);
 
-        mSearchItem = menu.findItem(R.id.search);
-        mSearchView = (SearchView) mSearchItem.getActionView();
+        if (!getResources().getBoolean(R.bool.config_classify_search)) {
+            mSearchItem = menu.findItem(R.id.search);
+            mSearchItem.setActionView(new SearchView(getApplicationContext()));
+            mSearchView = (SearchView) mSearchItem.getActionView();
+            mSearchView.setOnQueryTextListener(mQueryTextListener);
+            mSearchView.setQueryHint(getString(R.string.search_hint));
+            mSearchView.setIconifiedByDefault(true);
+            SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 
-        mSearchView.setOnQueryTextListener(mQueryTextListener);
-        mSearchView.setQueryHint(getString(R.string.search_hint));
-        mSearchView.setIconifiedByDefault(true);
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-
-        if (searchManager != null) {
-            SearchableInfo info = searchManager.getSearchableInfo(this.getComponentName());
-            mSearchView.setSearchableInfo(info);
+            if (searchManager != null) {
+                SearchableInfo info = searchManager.getSearchableInfo(this.getComponentName());
+                mSearchView.setSearchableInfo(info);
+            }
         }
 
         MenuItem cellBroadcastItem = menu.findItem(R.id.action_cell_broadcasts);
@@ -599,6 +601,11 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
 
     @Override
     public boolean onSearchRequested() {
+        if (getResources().getBoolean(R.bool.config_classify_search)) {
+            // block search entirely (by simply returning false).
+            return false;
+        }
+
         if (mSearchItem != null) {
             mSearchItem.expandActionView();
         }
@@ -608,6 +615,13 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
+            case R.id.search:
+                if (getResources().getBoolean(R.bool.config_classify_search)) {
+                    Intent searchintent = new Intent(this, SearchActivityExtend.class);
+                    startActivityIfNeeded(searchintent, -1);
+                    break;
+                }
+                return true;
             case R.id.action_compose_new:
                 if (mIsSmsEnabled) {
                     createNewMessage();
