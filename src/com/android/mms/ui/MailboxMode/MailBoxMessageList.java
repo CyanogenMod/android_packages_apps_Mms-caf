@@ -42,6 +42,7 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SqliteWrapper;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.MmsSms;
 import android.provider.Telephony.Sms;
@@ -120,6 +121,7 @@ public class MailBoxMessageList extends ListActivity implements
     private static final int TYPE_SLOT_ONE = 1;
     private static final int TYPE_SLOT_TWO = 2;
 
+    private final static int DELAY_TIME = 500;
     private static final String NONE_SELECTED = "0";
     private final static String THREAD_ID = "thread_id";
     private final static String MESSAGE_ID = "message_id";
@@ -151,6 +153,7 @@ public class MailBoxMessageList extends ListActivity implements
     private MenuItem mSearchItem;
     private SearchView mSearchView;
     private CharSequence mQueryText;
+    private Handler mHandler;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -169,6 +172,7 @@ public class MailBoxMessageList extends ListActivity implements
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(false);
         setupActionBar();
+        mHandler = new Handler();
     }
 
     @Override
@@ -425,6 +429,18 @@ public class MailBoxMessageList extends ListActivity implements
         }
     }
 
+    private void resetSearchView() {
+        mHandler.removeCallbacks(resetSearchRunnable);
+        mHandler.postDelayed(resetSearchRunnable, DELAY_TIME);
+    }
+
+    private Runnable resetSearchRunnable = new Runnable() {
+        @Override
+        public void run() {
+            mSearchView.setQuery(mSearchView.getQuery(), false);
+        }
+    };
+
     private final class BoxMsgListQueryHandler extends AsyncQueryHandler {
         public BoxMsgListQueryHandler(ContentResolver contentResolver) {
             super(contentResolver);
@@ -446,6 +462,9 @@ public class MailBoxMessageList extends ListActivity implements
                     }
                     View emptyView = (View) findViewById(R.id.emptyview);
                     mListAdapter.changeCursor(mCursor);
+                    if (mSearchView != null && !mSearchView.isIconified()) {
+                        resetSearchView();
+                    }
                     if (cursor.getCount() > 0) {
                         mCountTextView.setVisibility(View.VISIBLE);
                         if (mQueryBoxType == TYPE_INBOX) {
