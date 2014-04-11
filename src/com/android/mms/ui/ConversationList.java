@@ -141,15 +141,13 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.conversation_list_screen);
         if (MessageUtils.isMailboxMode()) {
             Intent modeIntent = new Intent(this, MailBoxMessageList.class);
-            finish();
             startActivityIfNeeded(modeIntent, -1);
+            finish();
             return;
         }
-
-
-        setContentView(R.layout.conversation_list_screen);
 
         mSmsPromoBannerView = findViewById(R.id.banner_sms_promo);
 
@@ -518,6 +516,11 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        //In folder mode, it will jump to MailBoxMessageList,finish current
+        //activity, no need create option menu.
+        if (MessageUtils.isMailboxMode()) {
+            return true;
+        }
         getMenuInflater().inflate(R.menu.conversation_list_menu, menu);
 
         mSearchItem = menu.findItem(R.id.search);
@@ -559,6 +562,11 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        //In folder mode, it will jump to MailBoxMessageList,finish current
+        //activity, no need prepare option menu.
+        if (MessageUtils.isMailboxMode()) {
+            return true;
+        }
         MenuItem item = menu.findItem(R.id.action_delete_all);
         if (item != null) {
             item.setVisible((mListAdapter.getCount() > 0) && mIsSmsEnabled);
