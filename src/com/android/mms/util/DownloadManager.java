@@ -223,7 +223,7 @@ public class DownloadManager {
                     }
                 }
             });
-        } else if (!mAutoDownload) {
+        } else if (!mAutoDownload && state != STATE_PRE_DOWNLOADING) {
             state |= DEFERRED_MASK;
         }
 

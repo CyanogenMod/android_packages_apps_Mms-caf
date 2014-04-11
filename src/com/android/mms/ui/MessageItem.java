@@ -333,7 +333,13 @@ public class MessageItem {
     }
 
     public int getMmsDownloadStatus() {
-        return mMmsStatus & ~DownloadManager.DEFERRED_MASK;
+        if(DownloadManager.STATE_PERMANENT_FAILURE == mMmsStatus) {
+            return mMmsStatus;
+        } else if (!DownloadManager.getInstance().isAuto()
+                && DownloadManager.STATE_PRE_DOWNLOADING != mMmsStatus) {
+            return mMmsStatus & ~DownloadManager.DEFERRED_MASK;
+        }
+        return mMmsStatus;
     }
 
     @Override
