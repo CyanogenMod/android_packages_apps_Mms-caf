@@ -299,7 +299,6 @@ public class MessageListItem extends LinearLayout implements
                 }
             case DownloadManager.STATE_TRANSIENT_FAILURE:
             case DownloadManager.STATE_PERMANENT_FAILURE:
-            case DownloadManager.STATE_SKIP_RETRYING:
             default:
                 setLongClickable(true);
                 inflateDownloadControls();
