@@ -789,6 +789,8 @@ public class Contact {
                 return getContactInfoForSelf();
             } else if (Mms.isEmailAddress(c.mNumber)) {
                 return getContactInfoForEmailAddress(c.mNumber);
+            } else if (MessageUtils.isWapPushNumber(c.mNumber)) {
+                return c;
             } else if (isAlphaNumber(c.mNumber)) {
                 // first try to look it up in the email field
                 Contact contact = getContactInfoForEmailAddress(c.mNumber);
@@ -844,9 +846,6 @@ public class Contact {
          * @return a Contact containing the caller id info corresponding to the number.
          */
         private Contact getContactInfoForPhoneNumber(String number) {
-            if (MessageUtils.isWapPushNumber(number)) {
-               number = PhoneNumberUtils.stripSeparators(number);
-            }
             Contact entry = new Contact(number);
             entry.mContactMethodType = CONTACT_METHOD_TYPE_PHONE;
 
