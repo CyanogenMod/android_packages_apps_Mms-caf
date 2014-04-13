@@ -2027,7 +2027,7 @@ public class MessageUtils {
                                     showNumberOptions(context, url);
                                 }
                             } else {
-                                spans[0].onClick(contentText);
+                                spans[which].onClick(contentText);
                             }
                         }
                     }
