@@ -86,7 +86,7 @@ import com.android.mms.util.UnicodeFilter;
 import com.google.android.mms.MmsException;
 //import com.android.mms.ui.ImageAdapter;
 //import com.android.mms.util.EmojiParser;
-//import com.android.mms.util.SmileyParser;
+import com.android.mms.util.SmileyParser;
 
 public class QuickMessagePopup extends Activity implements
     LoaderManager.LoaderCallbacks<Cursor> {
@@ -796,7 +796,8 @@ public class QuickMessagePopup extends Activity implements
                 qmFromName.setText(qm.getFromName());
                 qmTimestamp.setText(MessageUtils.formatTimeStampString(mContext, qm.getTimestamp(), mFullTimestamp));
                 updateContactBadge(qmContactBadge, qm.getFromNumber()[0], false);
-                qmMessageText.setText(qm.getMessageBody());
+                SmileyParser parser = SmileyParser.getInstance();
+                qmMessageText.setText(parser.addSmileySpans(qm.getMessageBody()));
 
                 if (!mDarkTheme) {
                     // We are using a holo.light background with a holo.dark activity theme

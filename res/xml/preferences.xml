@@ -254,6 +254,12 @@
             android:entryValues="@array/pref_unicode_stripping_values" />
 
         <CheckBoxPreference
+            android:key="pref_key_enable_emoticons"
+            android:title="@string/pref_title_enable_emoticons"
+            android:summary="@string/pref_summary_enable_emoticons"
+            android:defaultValue="true" />
+
+        <CheckBoxPreference
             android:key="pref_key_mms_full_timestamp"
             android:title="@string/pref_title_mms_full_timestamp"
             android:summary="@string/pref_summary_mms_full_timestamp"
