@@ -280,6 +280,13 @@
             android:entries="@array/pref_unicode_stripping_entries"
             android:entryValues="@array/pref_unicode_stripping_values"
             android:defaultValue="0" />
+
+        <SwitchPreference
+            android:key="pref_key_enable_emoticons"
+            android:title="@string/pref_title_enable_emoticons"
+            android:summary="@string/pref_summary_enable_emoticons"
+            android:defaultValue="true" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>
