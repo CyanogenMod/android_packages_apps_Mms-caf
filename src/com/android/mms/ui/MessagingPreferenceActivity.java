@@ -113,6 +113,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     public static final String AUTO_DELETE              = "pref_key_auto_delete";
     public static final String GROUP_MMS_MODE           = "pref_key_mms_group_mms";
     public static final String SMS_CDMA_PRIORITY        = "pref_key_sms_cdma_priority";
+    public static final String ENABLE_EMOTICONS         = "pref_key_enable_emoticons";
 
     // Unicode
     public static final String UNICODE_STRIPPING            = "pref_key_unicode_stripping_value";
@@ -168,6 +169,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private Preference mClearHistoryPref;
     private SwitchPreference mVibratePref;
     private SwitchPreference mEnableNotificationsPref;
+    private SwitchPreference mEnableEmoticonsPref;
     private SwitchPreference mMmsAutoRetrievialPref;
     private ListPreference mMmsExpiryPref;
     private ListPreference mMmsExpiryCard1Pref;
