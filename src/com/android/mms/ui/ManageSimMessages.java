@@ -89,6 +89,7 @@ public class ManageSimMessages extends Activity
     private MessageListAdapter mListAdapter = null;
     private AsyncQueryHandler mQueryHandler = null;
     private boolean mIsDeleteAll = false;
+    private boolean mIsQuery = false;
 
     public static final int SIM_FULL_NOTIFICATION_ID = 234;
 
@@ -194,11 +195,16 @@ public class ManageSimMessages extends Activity
             }
             // Show option menu when query complete.
             invalidateOptionsMenu();
+            mIsQuery = false;
         }
     }
 
     private void startQuery() {
         try {
+            if (mIsQuery) {
+                return;
+            }
+            mIsQuery = true;
             mQueryHandler.startQuery(0, null, mIccUri, null, null, null, null);
         } catch (SQLiteException e) {
             SqliteWrapper.checkSQLiteException(this, e);
