@@ -489,6 +489,10 @@ public class SelectMmsSubscription extends Service {
             }
         } else {
             if (req.triggerSwitchOnly == true) {
+                int defaultDataSub = MultiSimUtility.getDefaultDataSubscription(mContext);
+                Log.d(TAG, "Updating default data sub to handle Hot swap/Deactivate cases"
+                        + "dest Sub: " + req.destSub + "default data sub: " + defaultDataSub);
+                req.destSub = defaultDataSub;
                 Log.d(TAG, "This txn is just for dds switch. txn=" + req);
             } else {
                 Log.d(TAG, "This txn is for diff sub and txnServ is idle, init dds switch, txn="

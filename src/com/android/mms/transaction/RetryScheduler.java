@@ -300,7 +300,7 @@ public class RetryScheduler implements Observer {
                                         com.android.mms.ui.SelectMmsSubscription.class);
                         service.putExtra(Mms.SUB_ID, destSubId); //destination sub id
                         service.putExtra(MultiSimUtility.ORIGIN_SUB_ID,
-                                MultiSimUtility.getCurrentDataSubscription(context));
+                                MultiSimUtility.getDefaultDataSubscription(context));
                     } else {
                         service = new Intent(TransactionService.ACTION_ONALARM,
                                         null, context, TransactionService.class);

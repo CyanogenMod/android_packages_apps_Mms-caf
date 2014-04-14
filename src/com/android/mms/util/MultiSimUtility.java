@@ -43,6 +43,17 @@ import android.util.Log;
             }
         }
 
+        public static int getDefaultDataSubscription(Context mContext) {
+
+            if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+                MSimTelephonyManager mtmgr = (MSimTelephonyManager)
+                    mContext.getSystemService (Context.MSIM_TELEPHONY_SERVICE);
+                return mtmgr.getDefaultDataSubscription();
+            } else {
+                return 0;
+            }
+        }
+
         public static void startSelectMmsSubsciptionServ(Context mContext, Intent svc) {
             if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
                 Log.d(TAG, "MMS silent transaction");

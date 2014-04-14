@@ -244,7 +244,7 @@ public class PushReceiver extends BroadcastReceiver {
                                     Transaction.NOTIFICATION_TRANSACTION);
                             svc.putExtra(Mms.SUB_ID, subId); //destination sub id
                             svc.putExtra(MultiSimUtility.ORIGIN_SUB_ID,
-                                    MultiSimUtility.getCurrentDataSubscription(mContext));
+                                    MultiSimUtility.getDefaultDataSubscription(mContext));
 
                             if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
                                 boolean isSilent = true; //default, silent enabled.

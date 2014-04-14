@@ -127,7 +127,7 @@ public class MmsMessageSender implements MessageSender {
         Intent intent = new Intent(mContext, TransactionService.class);
         intent.putExtra(Mms.SUB_ID, mSubscription); //destination sub id
         intent.putExtra(MultiSimUtility.ORIGIN_SUB_ID,
-                MultiSimUtility.getCurrentDataSubscription(mContext));
+                MultiSimUtility.getDefaultDataSubscription(mContext));
         if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
             Intent silentIntent = new Intent(mContext,
                     com.android.mms.ui.SelectMmsSubscription.class);

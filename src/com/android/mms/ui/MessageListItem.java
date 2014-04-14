@@ -394,7 +394,7 @@ public class MessageListItem extends LinearLayout implements
                 Transaction.RETRIEVE_TRANSACTION);
         intent.putExtra(Mms.SUB_ID, mMessageItem.mSubscription); //destination subId
         intent.putExtra(MultiSimUtility.ORIGIN_SUB_ID,
-                MultiSimUtility.getCurrentDataSubscription(mContext));
+                MultiSimUtility.getDefaultDataSubscription(mContext));
 
         if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
             Log.d(TAG, "Download button pressed for sub=" + mMessageItem.mSubscription);
