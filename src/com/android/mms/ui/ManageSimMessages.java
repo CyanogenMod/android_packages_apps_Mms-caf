@@ -45,6 +45,7 @@ import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Sms;
 import android.telephony.SmsManager;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.text.SpannableString;
 import android.text.style.URLSpan;
@@ -462,6 +463,10 @@ public class ManageSimMessages extends Activity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case OPTION_MENU_SIM_CAPACITY:
+                showSimCapacityDialog();
+                break;
+
             case android.R.id.home:
                 // The user clicked on the Messaging icon in the action bar. Take them back from
                 // wherever they came from
@@ -480,6 +485,29 @@ public class ManageSimMessages extends Activity
         builder.setPositiveButton(R.string.yes, listener);
         builder.setNegativeButton(R.string.no, null);
         builder.setMessage(messageId);
+
+        builder.show();
+    }
+
+    private void showSimCapacityDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.sim_capacity_title);
+        builder.setCancelable(true);
+        builder.setPositiveButton(R.string.yes, null);
+        StringBuilder capacityMessage = new StringBuilder();
+        capacityMessage.append(getString(R.string.sim_capacity_used));
+        capacityMessage.append(" " + mCursor.getCount() + "\n");
+        capacityMessage.append(getString(R.string.sim_capacity));
+        int iccCapacityAll = -1;
+        if (TelephonyManager.getDefault().isMultiSimEnabled()) {
+            iccCapacityAll = SmsManager.getSmsManagerForSubscriber(mSubscription)
+                    .getSmsCapacityOnIcc();
+        } else {
+            iccCapacityAll = SmsManager.getDefault().getSmsCapacityOnIcc();
+        }
+
+        capacityMessage.append(" " + iccCapacityAll);
+        builder.setMessage(capacityMessage);
 
         builder.show();
     }
