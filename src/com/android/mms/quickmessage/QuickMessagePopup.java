@@ -90,6 +90,7 @@ import com.android.mms.transaction.SmsMessageSender;
 import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.MessagingPreferenceActivity;
 import com.android.mms.ui.MsimDialog;
+import com.android.mms.util.SmileyParser;
 import com.android.mms.util.UnicodeFilter;
 import com.google.android.mms.MmsException;
 
@@ -745,7 +746,8 @@ public class QuickMessagePopup extends Activity {
                         false));
                 qmContactBadge.setOverlay(null);
                 updateContactBadge(qmContactBadge, qm.getFromNumber()[0], false);
-                qmMessageText.setText(qm.getMessageBody());
+                SmileyParser parser = SmileyParser.getInstance();
+                qmMessageText.setText(parser.addSmileySpans(qm.getMessageBody()));
 
                 if (!mDarkTheme) {
                     // We are using a holo.light background with a holo.dark activity theme

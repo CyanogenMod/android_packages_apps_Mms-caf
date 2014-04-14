@@ -45,6 +45,8 @@ import com.android.mms.R;
 import com.android.mms.data.Contact;
 import com.android.mms.data.ContactList;
 import com.android.mms.data.Conversation;
+import com.android.mms.util.SmileyParser;
+
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -274,13 +276,14 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         Contact.addListener(this);
 
         // Subject
+        SmileyParser parser = SmileyParser.getInstance();
         final String snippet = conversation.getSnippet();
         if (mConversation.hasUnreadMessages()) {
-            SpannableStringBuilder buf = new SpannableStringBuilder(snippet);
+            SpannableStringBuilder buf = new SpannableStringBuilder(parser.addSmileySpans(snippet));
             buf.setSpan(STYLE_BOLD, 0, buf.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
             mSubjectView.setText(buf);
         } else {
-            mSubjectView.setText(snippet);
+            mSubjectView.setText(parser.addSmileySpans(snippet));
         }
 
         // Transmission error indicator.
