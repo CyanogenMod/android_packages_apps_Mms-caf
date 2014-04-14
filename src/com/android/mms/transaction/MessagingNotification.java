@@ -57,6 +57,8 @@ import android.provider.Telephony.Mms;
 import android.provider.Telephony.Sms;
 import android.telephony.MSimSmsManager;
 import android.telephony.MSimTelephonyManager;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -190,6 +192,13 @@ public class MessagingNotification {
 
     private static final int MAX_MESSAGES_TO_SHOW = 8;  // the maximum number of new messages to
                                                         // show in a single notification.
+    private static int mPhoneState;
+    private static PhoneStateListener mPhoneStateListener = new PhoneStateListener() {
+        @Override
+        public void onCallStateChanged(int state, String ignored) {
+            mPhoneState = state;
+        }
+    };
 
 
     private MessagingNotification() {
@@ -208,6 +217,10 @@ public class MessagingNotification {
         sNotificationOnDeleteIntent = new Intent(NOTIFICATION_DELETED_ACTION);
 
         sScreenDensity = context.getResources().getDisplayMetrics().density;
+
+        TelephonyManager telephonyManager = (TelephonyManager) context
+                .getSystemService(Context.TELEPHONY_SERVICE);
+        telephonyManager.listen(mPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
     }
 
     /**
@@ -1063,7 +1076,12 @@ public class MessagingNotification {
 
             String ringtoneStr = sp.getString(MessagingPreferenceActivity.NOTIFICATION_RINGTONE,
                     null);
-            noti.setSound(TextUtils.isEmpty(ringtoneStr) ? null : Uri.parse(ringtoneStr));
+            if (isInCall()) {
+                noti.setSound(TextUtils.isEmpty(ringtoneStr) ? null : Uri.parse(ringtoneStr),
+                        AudioManager.STREAM_ALARM);
+            } else {
+                noti.setSound(TextUtils.isEmpty(ringtoneStr) ? null : Uri.parse(ringtoneStr));
+            }
             Log.d(TAG, "updateNotification: new message, adding sound to the notification");
         }
 
@@ -1595,5 +1613,13 @@ public class MessagingNotification {
         } else {
             cancelNotification(context, NEW_ICC_NOTIFICATION_ID[subscription]);
         }
+    }
+
+    /**
+     * This method check whether phone is in call status
+     */
+    protected static boolean isInCall() {
+        return mPhoneState == TelephonyManager.CALL_STATE_RINGING
+                || mPhoneState == TelephonyManager.CALL_STATE_OFFHOOK;
     }
 }
