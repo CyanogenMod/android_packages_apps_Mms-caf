@@ -27,10 +27,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract.Contacts;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
-import android.util.Log;
+import android.widget.TextView;
 
 import com.android.mms.R;
 
@@ -53,22 +55,30 @@ public class WwwContextMenuActivity extends Activity {
     private static final String HTTP_STR = "http://";
     private static final String HTTPS_STR = "https://";
     private static final String RTSP_STR = "rtsp://";
-    private static final int MENU_CONNECT_URL = 0;
-    private static final int MENU_ADD_TO_LABEL = 1;
     private String mUrlString = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.select_dialog);
 
-        initUI(getIntent());
-    }
-
-    private void initUI(Intent intent) {
-        Uri uri = intent.getData();
+        Uri uri = getIntent().getData();
         mUrlString = uri.toString();
-        showMenu();
+
+        TextView connectUrl = (TextView) findViewById(R.id.connect_url);
+        connectUrl.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                loadUrl();
+            }
+        });
+
+        TextView addToLabel = (TextView) findViewById(R.id.add_to_label);
+        addToLabel.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                addToLabel();
+                WwwContextMenuActivity.this.finish();
+            }
+        });
     }
 
     private void loadUrl() {
@@ -146,33 +156,5 @@ public class WwwContextMenuActivity extends Activity {
         i.putExtra("url", mUrlString);
         i.putExtra("extend", "outside");
         startActivity(i);
-    }
-
-    private void showMenu() {
-        final String[] texts = new String[] {
-                            getString(R.string.menu_connect_url),
-                            getString(R.string.menu_add_to_label),
-                            };
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.message_options));
-        builder.setItems(texts, new DialogInterface.OnClickListener() {
-            @Override
-            public final void onClick(DialogInterface dialog, int which) {
-                if (which == MENU_CONNECT_URL) {
-                    loadUrl();
-                } else if (which == MENU_ADD_TO_LABEL) {
-                    addToLabel();
-                    WwwContextMenuActivity.this.finish();
-                }
-            }
-        });
-        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                WwwContextMenuActivity.this.finish();
-            }
-        });
-        builder.setCancelable(true);
-        builder.show();
     }
 }
