@@ -43,7 +43,7 @@
     <bool name="config_wap_push">false</bool>
 
     <!-- configuration for show two call button in conversation -->
-    <bool name="config_two_call_button">true</bool>
+    <bool name="config_two_call_button">false</bool>
 
     <!-- configuration for cancel mms -->
     <bool name="config_mms_cancelable">false</bool>
