@@ -741,13 +741,6 @@ public class MessageListItem extends LinearLayout implements
                                        String contentType) {
         SpannableStringBuilder buf = new SpannableStringBuilder();
 
-        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()
-                && !isSimCardMessage()) {
-            int subscription = subId + 1;
-            buf.append("SUB" + subscription + ":");
-            buf.append("\n");
-        }
-
         boolean hasSubject = !TextUtils.isEmpty(subject);
         if (hasSubject) {
             buf.append(mContext.getResources().getString(R.string.inline_subject, subject));
