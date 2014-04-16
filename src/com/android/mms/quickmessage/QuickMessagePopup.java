@@ -182,6 +182,8 @@ public class QuickMessagePopup extends Activity {
         // Load the views and Parse the intent to show the QuickMessage
         setupViews();
         parseIntent(getIntent().getExtras(), false);
+
+        setFinishOnTouchOutside(false);
     }
 
     private void setupViews() {
