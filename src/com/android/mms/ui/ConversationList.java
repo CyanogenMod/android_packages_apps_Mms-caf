@@ -132,6 +132,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
     private final static int DELAY_TIME = 500;
 
     private static boolean mIsDeleteLockChecked = false;
+    private static long mLastDeletedThread = -1;
 
     // Whether or not we are currently enabled for SMS. This field is updated in onResume to make
     // sure we notice if the user has changed the default SMS app.
@@ -932,6 +933,12 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                         Conversation.startDeleteAll(mHandler, token, mDeleteLockedMessages);
                         DraftCache.getInstance().refresh();
                     } else {
+                        int size = mThreadIds.size();
+                        if(size > 0 && mCallBack != null) {
+                            // Save the last thread id.
+                            // And cancel deleting dialog after this thread been deleted.
+                            mLastDeletedThread = (mThreadIds.toArray(new Long[size]))[size - 1];
+                        }
                         Conversation.startDelete(mHandler, token, mDeleteLockedMessages,
                                 mThreadIds);
                     }
@@ -1048,11 +1055,14 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             super.onDeleteComplete(token, cookie, result);
             switch (token) {
             case DELETE_CONVERSATION_TOKEN:
-                mHandler.removeCallbacks(mShowProgressDialogRunnable);
-                if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                    mProgressDialog.dismiss();
-                }
                 long threadId = cookie != null ? (Long)cookie : -1;     // default to all threads
+                if (threadId < 0 || threadId == mLastDeletedThread) {
+                    mHandler.removeCallbacks(mShowProgressDialogRunnable);
+                    if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                        mProgressDialog.dismiss();
+                    }
+                    mLastDeletedThread = -1;
+                }
 
                 if (threadId == -1) {
                     // Rebuild the contacts cache now that all threads and their associated unique
