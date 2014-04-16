@@ -192,8 +192,8 @@ public class SlideshowActivity extends Activity implements EventListener {
 
             public void run() {
                 mSmilPlayer = SmilPlayer.getPlayer();
-                if (mSlideCount > 1) {
-                    // Only show the slideshow controller if we have more than a single slide.
+                if (mSlideCount >= 1) {
+                    // Only show the slideshow controller if we have slides.
                     // Otherwise, when we play a sound on a single slide, it appears like
                     // the slide controller should control the sound (seeking, ff'ing, etc).
                     initMediaController();
