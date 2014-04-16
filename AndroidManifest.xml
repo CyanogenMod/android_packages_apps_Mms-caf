@@ -244,6 +244,7 @@
             android:label="@string/preferences_title" />
 
        <activity android:name=".ui.WwwContextMenuActivity"
+            android:label="@string/message_options"
             android:theme="@android:style/Theme.Holo.Light.Dialog"
             android:excludeFromRecents="true">
             <intent-filter>
