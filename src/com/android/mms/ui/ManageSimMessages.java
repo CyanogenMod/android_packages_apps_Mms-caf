@@ -397,7 +397,6 @@ public class ManageSimMessages extends Activity
     @Override
     public void onPause() {
         super.onPause();
-        mContentResolver.unregisterContentObserver(simChangeObserver);
     }
 
     @Override
@@ -407,6 +406,12 @@ public class ManageSimMessages extends Activity
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        mContentResolver.unregisterContentObserver(simChangeObserver);
+        super.onDestroy();
     }
 
     private void registerSimChangeObserver() {
