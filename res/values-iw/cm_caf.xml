@@ -16,6 +16,7 @@
      limitations under the License.
 -->
 <resources>
+  <string name="cell_broadcast_sender">ערוץ שידור לאנטנה</string>
   <string name="mms1">MMS אחד</string>
   <string name="mms2">MMS שני</string>
   <string name="mms3">MMS שלישי</string>
@@ -30,5 +31,11 @@
   <string name="subscription2_title">הרשמה 2</string>
   <string name="subscription3_title">הרשמה 3</string>
   <string name="pending_mms_title">MMS ממתיi במנוי אחר</string>
+  <string name="pending_mms">הודעות: הודעת MMS אחת או יותר בתהליך</string>
+  <string name="pending_mms_text">גע כדי להחליף הרשמה</string>
+  <string name="abort_mms">הודעות: בטל MMS</string>
+  <string name="abort_mms_text">גע כדי לבטל ולחזור אחורה</string>
+  <string name="progress_mms_title">העברת MMS בהרשמה אחרת בתהליך</string>
+  <string name="progress_mms">הודעות: MMS בהתליך\u2026</string>
   <string name="progress_mms_text">גע כדי לנסות שוב</string>
 </resources>

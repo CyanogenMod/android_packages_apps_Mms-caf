@@ -15,6 +15,19 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="blacklist_summary_disabled">முடக்கப்பட்டது</string>
+<resources>
+  <string-array name="pref_templates_gestures_sensitivity_entries">
+    <item>1（最も曖昧）</item>
+    <item>2</item>
+    <item>3</item>
+    <item>4</item>
+    <item>5</item>
+    <item>6</item>
+    <item>7</item>
+    <item>8</item>
+    <item>9</item>
+    <item>10</item>
+    <item>11</item>
+    <item>12（最も厳密）</item>
+  </string-array>
 </resources>

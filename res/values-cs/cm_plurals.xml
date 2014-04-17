@@ -26,4 +26,9 @@
     <item quantity="few">Odeslání za %1$d sekundy - dotykem zrušíte.</item>
     <item quantity="other">Odeslání za %1$d sekund - dotykem zrušíte.</item>
   </plurals>
+  <plurals name="confirm_mark_unread_conversation">
+    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> konverzace bude označena jako nepřečtená.</item>
+    <item quantity="few"><xliff:g id="number">%1$s</xliff:g> konverzace bude označeny jako nepřečtené.</item>
+    <item quantity="other"><xliff:g id="number">%1$s</xliff:g> konverzací bude označeno jako nepřečtené.</item>
+  </plurals>
 </resources>

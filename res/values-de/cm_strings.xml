@@ -89,6 +89,7 @@
   <string name="menu_as_unread">Als ungelesen markieren</string>
   <string name="confirm_mark_unread_dialog_title">Als ungelesen markieren?</string>
   <string name="confirm_mark_unread_conversation">Diese Konversation wird als ungelesen markiert.</string>
+  <string name="confirm_mark_unread_all_conversations">Alle Konversationen werden als ungelesen markiert.</string>
   <string name="select_recipients">Empfänger auswählen</string>
   <string name="groups_header">Gruppen</string>
   <string name="no_recipients">Keine Kontakte gefunden</string>

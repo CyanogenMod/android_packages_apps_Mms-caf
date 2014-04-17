@@ -27,9 +27,6 @@
   <string name="system_audio_item">System audio</string>
   <string name="external_audio_item">Zewnętrzne audio</string>
   <string name="select_subscription_title">Wybierz usługę</string>
-  <string name="subscription1_title">Usługa 1</string>
-  <string name="subscription2_title">Usługa 2</string>
-  <string name="subscription3_title">Usługa 3</string>
   <string name="pending_mms_title">Oczekująca wiadomość MMS w innej usłudze</string>
   <string name="pending_mms">Wiadomość: Jeden lub więcej MMS-ów oczekuje</string>
   <string name="pending_mms_text">Dotknij, aby przełączyć usługę</string>

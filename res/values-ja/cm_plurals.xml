@@ -16,5 +16,13 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="template_edit">編輯</string>
+  <plurals name="template_confirm_delete_conversation">
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g>個のテンプレートが削除されます。</item>
+  </plurals>
+  <plurals name="remaining_delay_time">
+    <item quantity="other">%1$d秒以内に送信します、タッチするとキャンセルします。</item>
+  </plurals>
+  <plurals name="confirm_mark_unread_conversation">
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g>件の会話が未読になります。</item>
+  </plurals>
 </resources>

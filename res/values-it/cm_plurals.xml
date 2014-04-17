@@ -25,7 +25,7 @@
     <item quantity="other">Invio in %1$d secondi, tocca per annullare.</item>
   </plurals>
   <plurals name="confirm_mark_unread_conversation">
-    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> conversazione verrà contrassegnata come non letta.</item>
+    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> conversazione verrà segnata come non letta.</item>
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> conversazione verranno contrassegnate come non lette.</item>
   </plurals>
 </resources>

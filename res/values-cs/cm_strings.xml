@@ -86,6 +86,10 @@
   <string name="add_to_blacklist_message">Příští zprávy z čísla %s budou blokovány</string>
   <string name="alert_dialog_yes">Ano</string>
   <string name="alert_dialog_no">Ne</string>
+  <string name="menu_as_unread">Označit jako nepřečtené</string>
+  <string name="confirm_mark_unread_dialog_title">Označit jako nepřečtené?</string>
+  <string name="confirm_mark_unread_conversation">Konverzace bude označena jako nepřečtená.</string>
+  <string name="confirm_mark_unread_all_conversations">Všechny vlákna budou označena jako nepřečtená.</string>
   <string name="select_recipients">Zvolte příjemce</string>
   <string name="groups_header">Skupiny</string>
   <string name="no_recipients">Nenalezen žádný kontakt</string>

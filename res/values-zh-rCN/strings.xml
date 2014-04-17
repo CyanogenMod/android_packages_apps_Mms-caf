@@ -282,8 +282,6 @@
     <string name="download_later" msgid="5531365714424360903">"目前无法下载。请稍后再试。"</string>
     <string name="no_apn" msgid="505932916503312015">"设备上未指定任何 APN。"</string>
     <string name="select_audio" msgid="3528161449756771832">"选择音频"</string>
-    <string name="system_audio_item">"系统音频"</string>
-    <string name="external_audio_item">"外部存储的音频"</string>
     <string name="copy_to_sdcard" msgid="757028609638184856">"保存附件"</string>
     <string name="copy_to_sdcard_success" msgid="7948625615155992014">"已保存附件。"</string>
     <string name="copy_to_sdcard_fail" msgid="4944606369631916737">"无法保存附件。"</string>

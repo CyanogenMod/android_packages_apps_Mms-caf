@@ -48,7 +48,6 @@
   <string name="template_insert_hint">Insérer ici le modèle du texte</string>
   <string name="template_empty_text">Le champ de texte ne peut être vide</string>
   <string name="template_save">Enregistrer</string>
-  <string name="template_ctx_menu_title">Actions</string>
   <string name="template_edit">Modifier</string>
   <string name="template_delete">Supprimer</string>
   <string name="template_list_title">Modèles</string>

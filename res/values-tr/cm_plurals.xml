@@ -16,5 +16,7 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="template_edit">編輯</string>
+  <plurals name="confirm_mark_unread_conversation">
+    <item quantity="other"><xliff:g id="number">%1$s</xliff:g> sohbet okunmadı olarak işaretlenecek.</item>
+  </plurals>
 </resources>
