@@ -424,12 +424,13 @@ public class ManageSimMessages extends Activity
                 cursor.getColumnIndexOrThrow("address"));
         String body = cursor.getString(cursor.getColumnIndexOrThrow("body"));
         Long date = cursor.getLong(cursor.getColumnIndexOrThrow("date"));
-
+        int subscription = cursor.getInt(cursor.getColumnIndexOrThrow("sub_id"));
         try {
             if (isIncomingMessage(cursor)) {
-                Sms.Inbox.addMessage(mContentResolver, address, body, null, date, true /* read */);
+                Sms.Inbox.addMessage(mContentResolver, address, body, null,
+                        date, true /* read */, subscription);
             } else {
-                Sms.Sent.addMessage(mContentResolver, address, body, null, date);
+                Sms.Sent.addMessage(mContentResolver, address, body, null, date, subscription);
             }
         } catch (SQLiteException e) {
             SqliteWrapper.checkSQLiteException(this, e);
