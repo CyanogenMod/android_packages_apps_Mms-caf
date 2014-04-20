@@ -17,19 +17,9 @@
 -->
 <resources>
   <string name="cell_broadcast_sender">Vysielací kanál bunky</string>
-  <string name="mms1">MMS 1</string>
-  <string name="mms2">MMS 2</string>
-  <string name="mms3">MMS 3</string>
-  <string name="sub1">SUB 1</string>
-  <string name="sub2">SUB 2</string>
-  <string name="sub3">SUB 3</string>
   <string name="disk_storage_full_error">Chyba: Úložisko je plné.</string>
   <string name="system_audio_item">Systémový zvuk</string>
   <string name="external_audio_item">Externý zvuk</string>
-  <string name="select_subscription_title">Vyberte poskytovateľa</string>
-  <string name="subscription1_title">Poskytovateľ 1</string>
-  <string name="subscription2_title">Poskytovateľ 2</string>
-  <string name="subscription3_title">Poskytovateľ 3</string>
   <string name="pending_mms_title">Neodoslaná MMS na inom poskytovateľovi</string>
   <string name="pending_mms">Správy: neodoslaná jedna alebo viacero MMS</string>
   <string name="pending_mms_text">Dotykom prepnete poskytovateľa</string>

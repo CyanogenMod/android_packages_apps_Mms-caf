@@ -17,19 +17,9 @@
 -->
 <resources>
   <string name="cell_broadcast_sender">Canale cella broadcast</string>
-  <string name="mms1">MMS 1</string>
-  <string name="mms2">MMS 2</string>
-  <string name="mms3">MMS 3</string>
-  <string name="sub1">ABB 1</string>
-  <string name="sub2">ABB 2</string>
-  <string name="sub3">ABB 3</string>
   <string name="disk_storage_full_error">Errore: memoria esaurita.</string>
   <string name="system_audio_item">Audio di sistema</string>
   <string name="external_audio_item">Audio esterno</string>
-  <string name="select_subscription_title">Seleziona abbonamento</string>
-  <string name="subscription1_title">Abbonamento 1</string>
-  <string name="subscription2_title">Abbonamento 2</string>
-  <string name="subscription3_title">Abbonamento 3</string>
   <string name="pending_mms_title">MMS in sospeso su un altro abbonamento</string>
   <string name="pending_mms">Messaggistica: uno o più MMS sono in sospeso</string>
   <string name="pending_mms_text">Tocca per cambiare l\'abbonamento</string>

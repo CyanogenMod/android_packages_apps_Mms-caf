@@ -20,10 +20,6 @@
   <string name="disk_storage_full_error">Chyba: úložiště je plné!</string>
   <string name="system_audio_item">Systémový zvuk</string>
   <string name="external_audio_item">Externí zvuk</string>
-  <string name="select_subscription_title">Zvolte poskytovatele</string>
-  <string name="subscription1_title">Poskytovatel 1</string>
-  <string name="subscription2_title">Poskytovatel 2</string>
-  <string name="subscription3_title">Poskytovatel 3</string>
   <string name="pending_mms_title">Neodeslaná MMS na jiném poskytovateli</string>
   <string name="pending_mms">Zprávy: neodesláno jedna nebo více MMS</string>
   <string name="pending_mms_text">Dotykem přepnout poskytovatele</string>

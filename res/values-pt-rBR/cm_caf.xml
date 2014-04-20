@@ -17,19 +17,9 @@
 -->
 <resources>
   <string name="cell_broadcast_sender">Canal de transmissão celular</string>
-  <string name="mms1">MMS 1</string>
-  <string name="mms2">MMS 2</string>
-  <string name="mms3">MMS 3</string>
-  <string name="sub1">ASS 1</string>
-  <string name="sub2">ASS 2</string>
-  <string name="sub3">ASS 3</string>
   <string name="disk_storage_full_error">Erro: O armazenamento está cheio.</string>
   <string name="system_audio_item">Áudio do sistema</string>
   <string name="external_audio_item">Áudio externo</string>
-  <string name="select_subscription_title">Selecionar assinatura</string>
-  <string name="subscription1_title">Assinatura 1</string>
-  <string name="subscription2_title">Assinatura 2</string>
-  <string name="subscription3_title">Assinatura 3</string>
   <string name="pending_mms_title">MMS pendente em outra assinatura</string>
   <string name="pending_mms">Mensagem: Um ou mais MMS estão pendentes</string>
   <string name="pending_mms_text">Toque para alternar a assinatura</string>

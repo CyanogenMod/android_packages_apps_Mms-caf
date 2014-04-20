@@ -17,19 +17,9 @@
 -->
 <resources>
   <string name="cell_broadcast_sender">Celletransmissionskanal</string>
-  <string name="mms1">MMS 1</string>
-  <string name="mms2">MMS 2</string>
-  <string name="mms3">MMS 3</string>
-  <string name="sub1">ABN 1</string>
-  <string name="sub2">ABN 2</string>
-  <string name="sub3">ABN 3</string>
   <string name="disk_storage_full_error">Fejl: Lagerplads er fyldt.</string>
   <string name="system_audio_item">Systemlyd</string>
   <string name="external_audio_item">Ekstern lyd</string>
-  <string name="select_subscription_title">Vælg abonnement</string>
-  <string name="subscription1_title">Abonnement 1</string>
-  <string name="subscription2_title">Abonnement 2</string>
-  <string name="subscription3_title">Abonnement 3</string>
   <string name="pending_mms_title">Ventende MMS på andet abonnement</string>
   <string name="pending_mms">Beskeder: En eller flere MMS\'er venter</string>
   <string name="pending_mms_text">Tryk for at skifte abonnement</string>

@@ -17,19 +17,9 @@
 -->
 <resources>
   <string name="cell_broadcast_sender">Hücre yayın kanalı</string>
-  <string name="mms1">MMS 1</string>
-  <string name="mms2">MMS 2</string>
-  <string name="mms3">MMS 3</string>
-  <string name="sub1">SUB 1</string>
-  <string name="sub2">SUB 2</string>
-  <string name="sub3">SUB 3</string>
   <string name="disk_storage_full_error">Hata: Depolama alanı dolu.</string>
   <string name="system_audio_item">Sistem sesi</string>
   <string name="external_audio_item">Harici ses</string>
-  <string name="select_subscription_title">Abonelik seçin</string>
-  <string name="subscription1_title">Abonelik 1</string>
-  <string name="subscription2_title">Abonelik 2</string>
-  <string name="subscription3_title">Abonelik 3</string>
   <string name="pending_mms_title">Diğer abonelik üzerinde MMS bekliyor</string>
   <string name="pending_mms">Mesajlaşma: Bir veya daha fazla MMS bekliyor</string>
   <string name="pending_mms_text">Abonelik değiştirmek için dokunun</string>

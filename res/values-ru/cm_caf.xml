@@ -17,19 +17,9 @@
 -->
 <resources>
   <string name="cell_broadcast_sender">Канал оповещения населения</string>
-  <string name="mms1">MMS1</string>
-  <string name="mms2">MMS2</string>
-  <string name="mms3">MMS3</string>
-  <string name="sub1">Слот 1</string>
-  <string name="sub2">Слот 2</string>
-  <string name="sub3">Слот 3</string>
   <string name="disk_storage_full_error">Ошибка: память заполнена.</string>
   <string name="system_audio_item">Системное аудио</string>
   <string name="external_audio_item">Внешнее аудио</string>
-  <string name="select_subscription_title">Выберите оператора</string>
-  <string name="subscription1_title">Оператор 1</string>
-  <string name="subscription2_title">Оператор 2</string>
-  <string name="subscription3_title">Оператор 3</string>
   <string name="pending_mms_title">Имеется MMS на SIM-карте другого оператора</string>
   <string name="pending_mms">Сообщения: Имеется одно или более ожидающих MMS</string>
   <string name="pending_mms_text">Нажмите, чтобы переключить оператора.</string>

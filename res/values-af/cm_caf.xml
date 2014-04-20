@@ -17,19 +17,9 @@
 -->
 <resources>
   <string name="cell_broadcast_sender">Sel uitsendings kanaal</string>
-  <string name="mms1">MMS 1</string>
-  <string name="mms2">MMS 2</string>
-  <string name="mms3">MMS 3</string>
-  <string name="sub1">INS 1</string>
-  <string name="sub2">INS 2</string>
-  <string name="sub3">INS 3</string>
   <string name="disk_storage_full_error">Fout: Spasie is vol.</string>
   <string name="system_audio_item">Stelsel klank</string>
   <string name="external_audio_item">Eksterne klank</string>
-  <string name="select_subscription_title">Kies inskrywing</string>
-  <string name="subscription1_title">Inskrywing 1</string>
-  <string name="subscription2_title">Inskrywing 2</string>
-  <string name="subscription3_title">Inskrywing 3</string>
   <string name="pending_mms_title">Hangende MMS op ander inskrywing</string>
   <string name="pending_mms">Boodskappe: Een of meer hangende MMS</string>
   <string name="pending_mms_text">Raak die inskrywing om oor te skakel</string>

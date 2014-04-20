@@ -17,19 +17,9 @@
 -->
 <resources>
   <string name="cell_broadcast_sender">Cell broadcast-kanaal</string>
-  <string name="mms1">MMS1</string>
-  <string name="mms2">MMS2</string>
-  <string name="mms3">MMS3</string>
-  <string name="sub1">ABON.1</string>
-  <string name="sub2">ABON.2</string>
-  <string name="sub3">ABON.3</string>
   <string name="disk_storage_full_error">Fout: opslag is vol.</string>
   <string name="system_audio_item">Systeemgeluid</string>
   <string name="external_audio_item">Extern geluid</string>
-  <string name="select_subscription_title">Abonnement selecteren</string>
-  <string name="subscription1_title">Abonnement 1</string>
-  <string name="subscription2_title">Abonnement 2</string>
-  <string name="subscription3_title">Abonnement 3</string>
   <string name="pending_mms_title">Er wordt nog mms verwerkt op ander abonnement.</string>
   <string name="pending_mms">Berichten: één of meer mms worden verwerkt.</string>
   <string name="pending_mms_text">Tik om van abonnement te wisselen.</string>

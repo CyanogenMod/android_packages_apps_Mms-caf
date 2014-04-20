@@ -17,19 +17,9 @@
 -->
 <resources>
   <string name="cell_broadcast_sender">Canal de radiodifusión</string>
-  <string name="mms1">MMS 1</string>
-  <string name="mms2">MMS 2</string>
-  <string name="mms3">MMS 3</string>
-  <string name="sub1">SUB 1</string>
-  <string name="sub2">SUB 2</string>
-  <string name="sub3">SUB 3</string>
   <string name="disk_storage_full_error">Fallu. L\'almacenamientu ta llenu.</string>
   <string name="system_audio_item">Sistema d\'audiu</string>
   <string name="external_audio_item">Audiu esternu</string>
-  <string name="select_subscription_title">Seleicionar soscripción</string>
-  <string name="subscription1_title">Soscripción 1</string>
-  <string name="subscription2_title">Soscripción 2</string>
-  <string name="subscription3_title">Soscripción 3</string>
   <string name="pending_mms_title">MMS pendiente n\'otra soscripción</string>
   <string name="pending_mms">Mensaxería: Tán pendientes ún o más MMS</string>
   <string name="pending_mms_text">Toca pa cambiar la soscripción</string>

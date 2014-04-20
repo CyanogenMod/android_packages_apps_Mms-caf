@@ -17,19 +17,9 @@
 -->
 <resources>
   <string name="cell_broadcast_sender">Canal de radiodifusión</string>
-  <string name="mms1">MMS 1</string>
-  <string name="mms2">MMS 2</string>
-  <string name="mms3">MMS 3</string>
-  <string name="sub1">SUS 1</string>
-  <string name="sub2">SUS 2</string>
-  <string name="sub3">SUS 3</string>
   <string name="disk_storage_full_error">Error. El almacenamiento está lleno</string>
   <string name="system_audio_item">Sistema de audio</string>
   <string name="external_audio_item">Audio externo</string>
-  <string name="select_subscription_title">Seleccionar suscripción</string>
-  <string name="subscription1_title">Suscripción 1</string>
-  <string name="subscription2_title">Suscripción 2</string>
-  <string name="subscription3_title">Suscripción 3</string>
   <string name="pending_mms_title">MMS pendiente en otra suscripción</string>
   <string name="pending_mms">Mensajería: Uno o más MMS están pendientes</string>
   <string name="pending_mms_text">Toca para cambiar la suscripción</string>

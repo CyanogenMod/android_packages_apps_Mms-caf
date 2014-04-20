@@ -1218,8 +1218,8 @@ public class MessagingNotification {
 
         if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
             int subscription = subId + 1;
-            buf.append("SUB" + subscription);
-            buf.append("-");
+            buf.append(MSimTelephonyManager.getDefault().getNetworkOperatorName(subId)
+                    + "-" + subscription);
         }
 
         int offset = buf.length();

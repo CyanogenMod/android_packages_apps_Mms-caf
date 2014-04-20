@@ -17,16 +17,9 @@
 -->
 <resources>
   <string name="cell_broadcast_sender">小区广播信道</string>
-  <string name="mms1">彩信 1</string>
-  <string name="mms2">彩信 2</string>
-  <string name="mms3">彩信 3</string>
   <string name="disk_storage_full_error">错误: 存储空间已满。</string>
   <string name="system_audio_item">系统音频</string>
   <string name="external_audio_item">外部音频</string>
-  <string name="select_subscription_title">选择订阅</string>
-  <string name="subscription1_title">订阅 1</string>
-  <string name="subscription2_title">订阅 2</string>
-  <string name="subscription3_title">订阅 3</string>
   <string name="pending_mms_text">触摸以切换订阅</string>
   <string name="progress_mms_text">触摸以重试</string>
 </resources>

@@ -17,19 +17,9 @@
 -->
 <resources>
   <string name="cell_broadcast_sender">Canal de radiodifusió</string>
-  <string name="mms1">MMS 1</string>
-  <string name="mms2">MMS 2</string>
-  <string name="mms3">MMS 3</string>
-  <string name="sub1">SUB 1</string>
-  <string name="sub2">SUB 2</string>
-  <string name="sub3">SUB 3</string>
   <string name="disk_storage_full_error">Error: Emmagatzematge ple.</string>
   <string name="system_audio_item">Àudio del sistema</string>
   <string name="external_audio_item">Àudio extern</string>
-  <string name="select_subscription_title">Selecciona la subscripció</string>
-  <string name="subscription1_title">Subscripció 1</string>
-  <string name="subscription2_title">Subscripció 2</string>
-  <string name="subscription3_title">Subscripció 3</string>
   <string name="pending_mms_title">MMS pendent en una altra subscripció</string>
   <string name="pending_mms">Missatgeria: Un o més MMS estan pendents</string>
   <string name="pending_mms_text">Toca per canviar la subscripció</string>

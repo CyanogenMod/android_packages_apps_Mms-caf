@@ -17,19 +17,9 @@
 -->
 <resources>
   <string name="cell_broadcast_sender">Cell Broadcast-kanava</string>
-  <string name="mms1">MMS 1</string>
-  <string name="mms2">MMS 2</string>
-  <string name="mms3">MMS 3</string>
-  <string name="sub1">SUB 1</string>
-  <string name="sub2">SUB 2</string>
-  <string name="sub3">SUB 3</string>
   <string name="disk_storage_full_error">Virhe: Muisti on täynnä.</string>
   <string name="system_audio_item">Järjestelmän ääni</string>
   <string name="external_audio_item">Ulkoinen ääni</string>
-  <string name="select_subscription_title">Valitse tilaus</string>
-  <string name="subscription1_title">Tilaus 1</string>
-  <string name="subscription2_title">Tilaus 2</string>
-  <string name="subscription3_title">Tilaus 3</string>
   <string name="pending_mms_title">Odottava MMS toisella tilauksella</string>
   <string name="pending_mms">Viestit: Vähintään yksi MMS odottaa</string>
   <string name="pending_mms_text">Kosketa vaihtaaksesi tilausta</string>

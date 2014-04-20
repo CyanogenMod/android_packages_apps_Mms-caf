@@ -17,19 +17,9 @@
 -->
 <resources>
   <string name="cell_broadcast_sender">Κανάλι εκπομπών κινητής τηλεφωνίας</string>
-  <string name="mms1">MMS 1</string>
-  <string name="mms2">MMS 2</string>
-  <string name="mms3">MMS 3</string>
-  <string name="sub1">ΣΥΝΔΡ 1</string>
-  <string name="sub2">ΣΥΝΔΡ 2</string>
-  <string name="sub3">ΣΥΝΔΡ 3</string>
   <string name="disk_storage_full_error">Σφάλμα: Ο αποθηκευτικός χώρος είναι γεμάτος.</string>
   <string name="system_audio_item">Ήχοι συστήματος</string>
   <string name="external_audio_item">Εξωτερικοί ήχοι</string>
-  <string name="select_subscription_title">Επιλογή συνδρομής</string>
-  <string name="subscription1_title">Συνδρομή 1</string>
-  <string name="subscription2_title">Συνδρομή 2</string>
-  <string name="subscription3_title">Συνδρομή 3</string>
   <string name="pending_mms_title">Εκκρεμεί MMS σε άλλη συνδρομή</string>
   <string name="pending_mms">Μηνύματα: Ένα ή περισσότερα MMS εκκρεμούν</string>
   <string name="pending_mms_text">Πιέστε για εναλλαγή της συνδρομής</string>

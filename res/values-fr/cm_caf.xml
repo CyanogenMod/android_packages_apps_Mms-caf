@@ -17,19 +17,9 @@
 -->
 <resources>
   <string name="cell_broadcast_sender">Canal de diffusion cellulaire</string>
-  <string name="mms1">MMS 1</string>
-  <string name="mms2">MMS 2</string>
-  <string name="mms3">MMS 3</string>
-  <string name="sub1">SUB 1</string>
-  <string name="sub2">SUB 2</string>
-  <string name="sub3">SUB 3</string>
   <string name="disk_storage_full_error">Erreur : Le stockage est plein.</string>
   <string name="system_audio_item">Système audio</string>
   <string name="external_audio_item">Audio externe</string>
-  <string name="select_subscription_title">Sélectionnez l\'abonnement</string>
-  <string name="subscription1_title">Abonnement 1</string>
-  <string name="subscription2_title">Abonnement 2</string>
-  <string name="subscription3_title">Abonnement 2</string>
   <string name="pending_mms_title">MMS en attente sur l\'autre abonnement</string>
   <string name="pending_mms">Messagerie : un ou plusieurs MMS sont en attente</string>
   <string name="pending_mms_text">Appuyez pour bascculer d\'abonnement</string>

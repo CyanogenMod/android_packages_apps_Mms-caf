@@ -17,19 +17,9 @@
 -->
 <resources>
   <string name="cell_broadcast_sender">Hírszolgálati csatorna</string>
-  <string name="mms1">MMS 1</string>
-  <string name="mms2">MMS 2</string>
-  <string name="mms3">MMS 3</string>
-  <string name="sub1">SUB 1</string>
-  <string name="sub2">SUB 2</string>
-  <string name="sub3">SUB 3</string>
   <string name="disk_storage_full_error">Hiba: Tárterülete megtelt.</string>
   <string name="system_audio_item">Rendszerhang</string>
   <string name="external_audio_item">Külső hang</string>
-  <string name="select_subscription_title">Válasszon feliratkozást</string>
-  <string name="subscription1_title">Előfizetés 1</string>
-  <string name="subscription2_title">Előfizetés 2</string>
-  <string name="subscription3_title">Előfizetés 3</string>
   <string name="pending_mms_title">Függőben lévő MMS egy másik előfizetésen</string>
   <string name="pending_mms">Üzenetkezelés: Egy vagy több MMS folyamatban van</string>
   <string name="pending_mms_text">Érintse meg az előfizetés váltásához</string>

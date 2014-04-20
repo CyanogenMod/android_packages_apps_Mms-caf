@@ -17,19 +17,9 @@
 -->
 <resources>
   <string name="cell_broadcast_sender">Cell Broadcast-Kanal</string>
-  <string name="mms1">MMS 1</string>
-  <string name="mms2">MMS 2</string>
-  <string name="mms3">MMS 3</string>
-  <string name="sub1">SIM 1</string>
-  <string name="sub2">SIM 2</string>
-  <string name="sub3">SIM 3</string>
   <string name="disk_storage_full_error">Fehler: Speicher voll</string>
   <string name="system_audio_item">Klingelton</string>
   <string name="external_audio_item">Audiodatei</string>
-  <string name="select_subscription_title">SIM auswählen</string>
-  <string name="subscription1_title">SIM 1</string>
-  <string name="subscription2_title">SIM 2</string>
-  <string name="subscription3_title">SIM 3</string>
   <string name="pending_mms_title">Auf einer anderen SIM-Karte stehen MMS aus</string>
   <string name="pending_mms">Nachrichten: Eine oder mehrere MMS stehen noch aus</string>
   <string name="pending_mms_text">Berühren, um die SIM-Karte zu wechseln</string>
