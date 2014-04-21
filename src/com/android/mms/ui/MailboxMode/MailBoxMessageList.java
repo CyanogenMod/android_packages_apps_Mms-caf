@@ -71,6 +71,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.mms.data.Contact;
+import com.android.mms.data.Conversation;
 import com.android.mms.LogTag;
 import com.android.mms.R;
 import com.android.mms.ui.MessageListAdapter;
@@ -384,6 +385,10 @@ public class MailBoxMessageList extends ListActivity implements
         startAsyncQuery();
         if (!isSearchMode()) {
             mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        }
+
+        if (!Conversation.loadingThreads()) {
+            Contact.invalidateCache();
         }
 
         getListView().invalidateViews();
