@@ -266,8 +266,27 @@ public class AttachmentEditor extends LinearLayout {
         int totalSize = 0;
         int textSize = s.toString().getBytes().length;
         if (mMediaSize != 0) {
-            totalSize = mMediaSize + textSize;
+            // The AttachmentEditor only can edit text if there only one silde.
+            // Here mSlideshow already includes text size, need to recalculate the totalsize.
+            int totalTextSize = mSlideshow.getTotalTextMessageSize();
+            if (DEBUG) {
+                Log.v(TAG,"onTextChangeForMms totalTextSize = "+totalTextSize);
+            }
+            if (textSize != 0 && mSlideshow.size() == 1) {
+                totalSize = mMediaSize - totalTextSize + textSize;
+            } else {
+                totalSize = mMediaSize + textSize;
+
+            }
         }
+
+        if (DEBUG) {
+            Log.v(TAG,"onTextChangeForMms textSize = " + textSize
+                    + ", mMediaSize = " + mMediaSize
+                    + ", totalSize = " + totalSize
+                    );
+        }
+
         if (mSizeIndicator != null) {
             int currentSize = getSizeWithOverHead(totalSize + mSlideshow.getSubjectSize());
             if (DEBUG) {

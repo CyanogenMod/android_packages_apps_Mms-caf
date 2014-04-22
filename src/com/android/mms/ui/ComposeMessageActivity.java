@@ -294,6 +294,8 @@ public class ComposeMessageActivity extends Activity
     private static final int NUMBER_OF_BUTTONS = 2;
     private static final int MSG_ADD_ATTACHMENT_FAILED = 1;
 
+    private static final int KILOBYTE = 1024;
+
     private ContentResolver mContentResolver;
 
     private BackgroundQueryHandler mBackgroundQueryHandler;
@@ -4905,19 +4907,40 @@ public class ComposeMessageActivity extends Activity
     private boolean checkMessageSizeExceeded(){
         int messageSizeLimit = MmsConfig.getMaxMessageSize();
         int mmsCurrentSize = 0;
-        if (mWorkingMessage.getSlideshow() != null) {
-            mmsCurrentSize += mWorkingMessage.getSlideshow().getTotalMessageSize();
+        boolean indicatorSizeOvered = false;
+        SlideshowModel slideShow = mWorkingMessage.getSlideshow();
+        if (slideShow != null) {
+            mmsCurrentSize = slideShow.getTotalMessageSize();
+            // The AttachmentEditor only can edit text if there only one silde.
+            // And the slide already includes text size, need to recalculate the total size.
+            if (mWorkingMessage.hasText() && slideShow.size() == 1) {
+                int totalTextSize = slideShow.getTotalTextMessageSize();
+                int currentTextSize = mWorkingMessage.getText().toString().getBytes().length;
+                int subjectSize = slideShow.getSubjectSize();
+                mmsCurrentSize = mmsCurrentSize - totalTextSize + currentTextSize;
+                indicatorSizeOvered = getSizeWithOverHead(mmsCurrentSize + subjectSize)
+                        > (MmsConfig.getMaxMessageSize() / KILOBYTE);
+            }
         } else if (mWorkingMessage.hasText()) {
-            mmsCurrentSize += mWorkingMessage.getText().toString().getBytes().length;
+            mmsCurrentSize = mWorkingMessage.getText().toString().getBytes().length;
         }
-        Log.v(TAG, "compose mmsCurrentSize = " + mmsCurrentSize);
-        if (mmsCurrentSize >= messageSizeLimit) {
+        Log.v(TAG, "compose mmsCurrentSize = " + mmsCurrentSize
+                + ", indicatorSizeOvered = " + indicatorSizeOvered);
+        // Mms max size is 300k, but we reserved 1k just in case there are other over size problem.
+        // In this way, here the first condition will always false.
+        // Therefore add indicatorSizeOvered in it.
+        // If indicator displays larger than 300k, it can not send this Mms.
+        if (mmsCurrentSize > messageSizeLimit || indicatorSizeOvered) {
             mIsAttachmentErrorOnSend = true;
             handleAddAttachmentError(WorkingMessage.MESSAGE_SIZE_EXCEEDED,
                     R.string.type_picture);
             return true;
         }
         return false;
+    }
+
+    private int getSizeWithOverHead(int size) {
+        return (size + KILOBYTE -1) / KILOBYTE + 1;
     }
 
     private void sendMessage(boolean bCheckEcmMode) {
