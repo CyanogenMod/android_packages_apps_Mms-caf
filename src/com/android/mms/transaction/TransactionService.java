@@ -821,7 +821,7 @@ public class TransactionService extends Service implements Observer {
             mToastHandler.sendEmptyMessage(toastType);
         }
 
-        if (getResources().getBoolean(R.bool.config_retry_always) && inRetry
+        if (getResources().getBoolean(R.bool.config_retry_always)
                 && !isLastRetry(uri.getLastPathSegment())) {
             RetryScheduler.scheduleRetry(getApplicationContext(), uri);
             RetryScheduler.setRetryAlarm(getApplicationContext());
