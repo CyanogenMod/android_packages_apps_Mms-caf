@@ -43,11 +43,11 @@ public class MediaModelFactory {
     private static final String VCARD = "vcf";
 
     public static MediaModel getMediaModel(Context context,
-            SMILMediaElement sme, LayoutModel layouts, PduBody pb)
+            SMILMediaElement sme, LayoutModel layouts, PduBody pb, int index)
             throws IOException, IllegalArgumentException, MmsException {
         String tag = sme.getTagName();
         String src = sme.getSrc();
-        PduPart part = findPart(pb, src);
+        PduPart part = findPart(pb, src, index);
 
         if (sme instanceof SMILRegionMediaElement) {
             return getRegionMediaModel(
@@ -58,7 +58,7 @@ public class MediaModelFactory {
         }
     }
 
-    private static PduPart findPart(PduBody pb, String src) {
+    private static PduPart findPart(PduBody pb, String src, int partIndex) {
         PduPart part = null;
 
         if (src != null) {
@@ -86,6 +86,12 @@ public class MediaModelFactory {
         }
 
         if (part != null) {
+            return part;
+        }
+
+        // deal with some exception, couldn't get the right name for the part.
+        if (partIndex < pb.getPartsNum()) {
+            part = pb.getPart(partIndex);
             return part;
         }
 
