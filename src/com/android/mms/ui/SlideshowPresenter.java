@@ -36,6 +36,7 @@ import com.android.mms.model.SlideshowModel;
 import com.android.mms.model.TextModel;
 import com.android.mms.model.VcardModel;
 import com.android.mms.model.VideoModel;
+import com.android.mms.R;
 import com.android.mms.ui.AdaptableSlideViewInterface.OnSizeChangedListener;
 import com.android.mms.util.ItemLoadedCallback;
 import android.net.Uri;
@@ -48,6 +49,8 @@ public class SlideshowPresenter extends Presenter {
     private static final String TAG = "SlideshowPresenter";
     private static final boolean DEBUG = false;
     private static final boolean LOCAL_LOGV = false;
+
+    private Context mContext;
 
     protected int mLocation;
     protected final int mSlideNumber;
@@ -62,6 +65,7 @@ public class SlideshowPresenter extends Presenter {
 
     public SlideshowPresenter(Context context, ViewInterface view, Model model) {
         super(context, view, model);
+        mContext = context;
         mLocation = 0;
         mSlideNumber = ((SlideshowModel) mModel).size();
 
@@ -189,7 +193,14 @@ public class SlideshowPresenter extends Presenter {
     protected void presentText(SlideViewInterface view, TextModel text,
             RegionModel r, boolean dataChanged) {
         if (dataChanged) {
-            view.setText(text.getSrc(), text.getText());
+            int text_limit = mContext.getResources().getInteger(R.integer.slide_text_limit_size);
+            if ((text_limit > 0) && (text.getText().length() > text_limit)) {
+                // It will drop the extra characters in slideview once text
+                // exceeds the size of text_limit.
+                view.setText(text.getSrc(), text.getText().substring(0, text_limit));
+            } else {
+                view.setText(text.getSrc(), text.getText());
+            }
         }
 
         if (view instanceof AdaptableSlideViewInterface) {
