@@ -23,6 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -154,6 +155,7 @@ public class SlideshowModel extends Model
         ArrayList<SlideModel> slides = new ArrayList<SlideModel>(slidesNum);
         int totalMessageSize = 0;
         boolean isClassCastFailed = false;
+        int index = hasSmilPart(pb) ? 0 : -1;
 
         for (int i = 0; i < slidesNum; i++) {
             // FIXME: This is NOT compatible with the SMILDocument which is
@@ -175,8 +177,9 @@ public class SlideshowModel extends Model
                     continue;
                 }
                 try {
+                    index++;
                     MediaModel media = MediaModelFactory.getMediaModel(
-                            context, sme, layouts, pb);
+                            context, sme, layouts, pb, index);
 
                     /*
                     * This is for slide duration value set.
@@ -287,6 +290,19 @@ public class SlideshowModel extends Model
             }
         }
         return null;
+    }
+
+    private static boolean hasSmilPart(PduBody body) {
+        // According to the SMIL define, the SMIL doc will be the first part of the pdu.
+        if (body == null || body.getPartsNum() < 1) return false;
+
+        PduPart part = body.getPart(0);
+        if (Arrays.equals(part.getContentType(),
+                        ContentType.APP_SMIL.getBytes())) {
+            // Sure only one SMIL part.
+            return true;
+        }
+        return false;
     }
 
     public PduBody toPduBody() {
