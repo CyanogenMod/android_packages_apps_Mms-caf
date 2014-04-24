@@ -80,6 +80,7 @@ import com.android.mms.ui.PopupList;
 import com.android.mms.ui.SearchActivityExtend;
 import com.android.mms.ui.SelectionMenu;
 import com.android.mms.ui.MessageUtils;
+import com.android.mms.util.DownloadManager;
 import com.google.android.mms.pdu.PduHeaders;
 
 import static com.android.mms.ui.MessageListAdapter.COLUMN_ID;
@@ -248,7 +249,10 @@ public class MailBoxMessageList extends ListActivity implements
                     && (c.getInt(MessageListAdapter.COLUMN_MMS_MESSAGE_BOX)
                             == Mms.MESSAGE_BOX_DRAFTS);
 
-            if (isDraft) {
+            boolean isDownloaded = c.getInt(MessageListAdapter.COLUMN_MMS_STATUS)
+                    != DownloadManager.STATE_UNKNOWN;
+            // If the mms has not been downloaded, launch ComposeMessageActivity.
+            if (isDraft || isDownloaded) {
                 Intent intent = new Intent(this, ComposeMessageActivity.class);
                 intent.putExtra(THREAD_ID, threadId);
                 startActivity(intent);
