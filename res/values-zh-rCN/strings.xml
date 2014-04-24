@@ -386,6 +386,7 @@
     <string name="banner_sms_promo_title_application" msgid="8123569785369713254">"“<xliff:g id="APPNAME">%s</xliff:g>”是您的短信应用"</string>
     <string name="banner_sms_promo_message" msgid="3536714414252763826">"您可以在“设置”中更改此设置。"</string>
     <!-- Subscription selection strings -->
+    <string name="select_subscription_title">"选择SIM卡"</string>
     <string name="pending_mms_title">"彩信等待由另一个卡槽处理"</string>
     <string name="pending_mms">"信息：一条或多条彩信正在等待中"</string>
     <string name="pending_mms_text">"点击切换卡槽"</string>
