@@ -42,6 +42,7 @@ import android.os.SystemProperties;
 import android.preference.PreferenceManager;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Mms.Inbox;
+import android.provider.Telephony.Mms.Sent;
 import android.telephony.MSimTelephonyManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -194,7 +195,7 @@ public class PushReceiver extends BroadcastReceiver {
                             break;
                         }
 
-                        Uri uri = p.persist(pdu, Inbox.CONTENT_URI, true,
+                        Uri uri = p.persist(pdu, Sent.CONTENT_URI, true,
                                 MessagingPreferenceActivity.getIsGroupMmsEnabled(mContext), null);
                         // Update thread ID for ReadOrigInd & DeliveryInd.
                         ContentValues values = new ContentValues(1);
