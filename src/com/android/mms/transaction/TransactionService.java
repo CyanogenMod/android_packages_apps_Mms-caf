@@ -1399,21 +1399,11 @@ public class TransactionService extends Service implements Observer {
                 for (Transaction t : mPending) {
                     if (t.isEquivalent(transaction)) {
                         decRefCount();
-                        if (mProcessing.size() == 0) {
-                            // Process next transaction if current pending list is empty.
-                            if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE) || DEBUG) {
-                                Log.v(TAG, "Process next pending transaction: "
-                                        + transaction.getServiceId());
-                            }
-                            mPending.remove(transaction);
-                            break;
-                        } else {
-                            if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE) || DEBUG) {
-                                Log.v(TAG, "Transaction already pending: " +
-                                        transaction.getServiceId());
-                            }
-                            return true;
+                        if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE) || DEBUG) {
+                            Log.v(TAG, "Transaction already pending: " +
+                                    transaction.getServiceId());
                         }
+                        return true;
                     }
                 }
                 for (Transaction t : mProcessing) {
