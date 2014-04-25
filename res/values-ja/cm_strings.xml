@@ -105,8 +105,8 @@
   <string name="send_delay_20seconds">20秒</string>
   <string name="send_delay_30seconds">30秒</string>
   <string name="sent_countdown">メッセージ送信のカウントダウン</string>
-  <string name="pref_title_mms_notification_vibrate_pattern">バイブレーションパターン</string>
-  <string name="pref_summary_mms_notification_vibrate_pattern">バイブレーションパターンを変更する</string>
+  <string name="pref_title_mms_notification_vibrate_pattern">バイブレーションのパターン</string>
+  <string name="pref_summary_mms_notification_vibrate_pattern">バイブレーションのパターンを変更する</string>
   <string name="pref_mms_notification_vibrate_normal">標準</string>
   <string name="pref_mms_notification_vibrate_med_vib">中くらいの振動</string>
   <string name="pref_mms_notification_vibrate_long_vib">長い振動</string>

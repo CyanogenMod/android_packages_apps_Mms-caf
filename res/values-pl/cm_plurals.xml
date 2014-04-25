@@ -26,4 +26,9 @@
     <item quantity="few">Wysłanie w ciągu %1$d sekund, dotknij aby przerwać.</item>
     <item quantity="other">Wysłanie w ciągu %1$d sekund, dotknij aby przerwać.</item>
   </plurals>
+  <plurals name="confirm_mark_unread_conversation">
+    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> konwersacja zostanie oznaczona jako nieprzeczytana.</item>
+    <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> konwersacje zostaną oznaczone jako nieprzeczytane.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> konwersacji zostanie oznaczone jako nieprzeczytane.</item>
+  </plurals>
 </resources>
