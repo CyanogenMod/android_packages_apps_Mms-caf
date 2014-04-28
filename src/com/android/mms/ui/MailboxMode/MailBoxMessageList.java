@@ -530,20 +530,21 @@ public class MailBoxMessageList extends ListActivity implements
                         mCursor.close();
                     }
                     mCursor = cursor;
+                    TextView emptyView = (TextView) findViewById(R.id.emptyview);
                     if (mListAdapter == null) {
                         mListAdapter = new MailBoxMessageListAdapter(MailBoxMessageList.this,
                                 MailBoxMessageList.this, cursor);
                         invalidateOptionsMenu();
                          MailBoxMessageList.this.setListAdapter(mListAdapter);
 
-                        TextView emptyView = (TextView) findViewById(R.id.emptyview);
-                        mListView.setEmptyView(emptyView);
                         if (isSearchMode()) {
                             int count = cursor.getCount();
                             setMessageTitle(count);
                             if (count == 0) {
                                 emptyView.setText(getString(R.string.search_empty));
                              }
+                         } else if (cursor.getCount() == 0) {
+                             mListView.setEmptyView(emptyView);
                          }
                      } else {
                         mListAdapter.changeCursor(mCursor);
@@ -564,6 +565,7 @@ public class MailBoxMessageList extends ListActivity implements
                         } else if (isSearchMode()) {
                             setMessageTitle(cursor.getCount());
                         } else {
+                            mListView.setEmptyView(emptyView);
                             mCountTextView.setVisibility(View.INVISIBLE);
                         }
                     }
