@@ -97,6 +97,8 @@ public class ManageSimMessages extends Activity
 
     public static final int SIM_FULL_NOTIFICATION_ID = 234;
 
+    public static final int BATCH_DELETE = 100;
+
     private final ContentObserver simChangeObserver =
             new ContentObserver(new Handler()) {
         @Override
@@ -121,7 +123,7 @@ public class ManageSimMessages extends Activity
 
         mSubscription = getIntent().getIntExtra(MSimConstants.SUBSCRIPTION_KEY,
                 MSimConstants.INVALID_SUBSCRIPTION);
-        mIccUri = getIccUriBySubscription(mSubscription);
+        mIccUri = MessageUtils.getIccUriBySubscription(mSubscription);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
         mContentResolver = getContentResolver();
@@ -153,17 +155,6 @@ public class ManageSimMessages extends Activity
 
         updateState(SHOW_BUSY);
         startQuery();
-    }
-
-    private Uri getIccUriBySubscription(int subscription) {
-        switch (subscription) {
-            case MSimConstants.SUB1:
-                return ICC1_URI;
-            case MSimConstants.SUB2:
-                return ICC2_URI;
-            default:
-                return ICC_URI;
-        }
     }
 
     private class QueryHandler extends AsyncQueryHandler {
@@ -520,7 +511,7 @@ public class ManageSimMessages extends Activity
                     intent.putExtra(MessageUtils.SUB_KEY, mSubscription);
                     intent.putExtra(ComposeMessageActivity.MANAGE_MODE,
                             MessageUtils.SIM_MESSAGE_MODE);
-                    startActivity(intent);
+                    startActivityForResult(intent, BATCH_DELETE);
                 } else {
                     confirmDeleteDialog(new OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
@@ -594,6 +585,15 @@ public class ManageSimMessages extends Activity
 
     private void viewMessage(Cursor cursor) {
         // TODO: Add this.
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == BATCH_DELETE) {
+            if (resultCode == RESULT_OK) {
+                refreshMessageList();
+            }
+        }
     }
 }
 

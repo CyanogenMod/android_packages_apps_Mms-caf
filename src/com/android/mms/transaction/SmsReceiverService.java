@@ -445,6 +445,8 @@ public class SmsReceiverService extends Service {
                     MessagingNotification.blockingUpdateNewIccMessageIndicator(this,
                             sms.getDisplayOriginatingAddress(), sms.getDisplayMessageBody(),
                             subId, sms.getTimestampMillis());
+                    getContentResolver().notifyChange(MessageUtils.getIccUriBySubscription(subId),
+                            null);
                 } else {
                     mToastHandler.post(new Runnable() {
                         public void run() {

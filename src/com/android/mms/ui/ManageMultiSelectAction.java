@@ -151,6 +151,7 @@ public class ManageMultiSelectAction extends Activity {
                         mProgressDialog.dismiss();
                         mProgressDialog = null;
                     }
+                    setResult(RESULT_OK);
                     finish();
                     break;
                 }
