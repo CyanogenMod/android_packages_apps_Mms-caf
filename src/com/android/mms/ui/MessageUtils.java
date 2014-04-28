@@ -1591,7 +1591,7 @@ public class MessageUtils {
     }
 
     /* check to see whether short message count is up to 2000 */
-    public static void checkIsPhoneMessageFull(Context context) {
+    public static boolean checkIsPhoneMessageFull(Context context) {
         boolean isPhoneMemoryFull = isPhoneMemoryFull();
         boolean isPhoneSmsCountFull = false;
         int maxSmsMessageCount = context.getResources().getInteger(R.integer.max_sms_message_count);
@@ -1605,8 +1605,10 @@ public class MessageUtils {
 
         if (isPhoneMemoryFull || isPhoneSmsCountFull) {
             MessagingNotification.updateSmsMessageFullIndicator(context, true);
+            return true;
         } else {
             MessagingNotification.updateSmsMessageFullIndicator(context, false);
+            return false;
         }
     }
 

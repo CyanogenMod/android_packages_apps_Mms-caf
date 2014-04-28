@@ -32,6 +32,7 @@ import android.util.Log;
 
 import com.android.internal.telephony.MSimConstants;
 import com.android.mms.LogTag;
+import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.MessagingPreferenceActivity;
 import com.google.android.mms.MmsException;
 
@@ -115,6 +116,10 @@ public class SmsMessageSender implements MessageSender {
                     Log.v(TAG, "queueMessage mDests[i]: " + mDests[i] + " mThreadId: " + mThreadId);
                 }
                 log("updating Database with sub = " + mSubscription);
+                // Check to see whether short message count is up to 2000 for cmcc
+                if (MessageUtils.checkIsPhoneMessageFull(mContext)) {
+                    break;
+                }
                 Sms.addMessageToUri(mContext.getContentResolver(),
                         Uri.parse("content://sms/queued"), mDests[i],
                         mMessageText, null, mTimestamp,
