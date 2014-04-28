@@ -595,7 +595,7 @@
     <!-- Device Full Notification dialog title. -->
     <string name="sms_full_title">Text message memory full</string>
     <!-- Device Full Notification dialog text. -->
-    <string name="sms_full_body">An incoming message was rejected due to full memory. Delete some old messages.</string>
+    <string name="sms_full_body">Phone memory is full, can\'t send and receive new messages, please delete some old messages.</string>
     <!-- Device Low Notification dialog title. -->
     <string name="memory_low_title">Phone memory low</string>
     <!-- Device Low Notification dialog text. -->
