@@ -91,6 +91,7 @@ public class MobilePaperShowActivity extends Activity {
     private static final int MENU_REPLY = 3;
     private static final int MENU_FORWARD = 4;
     private static final int MENU_DELETE = 5;
+    private static final int MENU_DETAIL = 6;
 
     private static final int ZOOMIN = 4;
     private static final int ZOOMOUT = 5;
@@ -114,11 +115,13 @@ public class MobilePaperShowActivity extends Activity {
     private ScaleGestureDetector mScaleDetector;
     private ScrollView mScrollViewPort;
     private String mSubject;
+    private Cursor mCursor;
 
     private boolean mLock = false;
     private static final int OPERATE_DEL_SINGLE_OVER = 1;
     private static final int DELETE_MESSAGE_TOKEN = 6701;
-    private BackgroundDeleteHandler mBackgroundDeleteHandler;
+    private static final int QUERY_MESSAGE_TOKEN = 6702;
+    private BackgroundQueryHandler mAsyncQueryHandler;
     private static final String[] MMS_LOCK_PROJECTION = {
         Mms._ID,
         Mms.LOCKED
@@ -246,7 +249,14 @@ public class MobilePaperShowActivity extends Activity {
                 this, MessagingNotification.THREAD_NONE, false);
 
         }
-        mBackgroundDeleteHandler = new BackgroundDeleteHandler(getContentResolver());
+
+        String mailboxUri = "content://mms-sms/mailbox/" + mMailboxId;
+        mAsyncQueryHandler = new BackgroundQueryHandler(getContentResolver());
+        mAsyncQueryHandler.startQuery(QUERY_MESSAGE_TOKEN, 0,
+            Uri.parse(mailboxUri),
+            MessageListAdapter.MAILBOX_PROJECTION,
+            "pdu._id= " + msg.getPathSegments().get(0),
+            null, "normalized_date DESC");
 
         // Register a BroadcastReceiver to listen on HTTP I/O process.
         ActionBar actionBar = getActionBar();
@@ -348,12 +358,16 @@ public class MobilePaperShowActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        menu.clear();
         if (Mms.MESSAGE_BOX_INBOX == mMailboxId) {
             menu.add(0, MENU_REPLY, 0, R.string.menu_reply);
             menu.add(0, MENU_CALL, 0, R.string.menu_call);
         }
         if (Mms.MESSAGE_BOX_DRAFTS != mMailboxId) {
             menu.add(0, MENU_DELETE, 0, R.string.menu_delete_msg);
+            if (mCursor != null) {
+                menu.add(0, MENU_DETAIL, 0, R.string.view_message_details);
+            }
         }
         menu.add(0, MENU_FORWARD, 0, R.string.menu_forward);
         menu.add(0, MENU_SLIDESHOW, 0, R.string.view_slideshow);
@@ -434,9 +448,24 @@ public class MobilePaperShowActivity extends Activity {
             case android.R.id.home:
                 finish();
                 break;
+            case MENU_DETAIL:
+                showMessageDetails();
+                break;
             default:
                 break;
         }
+        return true;
+    }
+
+    private boolean showMessageDetails() {
+        int mediaSize = mSlideModel.getTotalMessageSize();
+        String messageDetails = MessageUtils.getMessageDetails(
+                MobilePaperShowActivity.this, mCursor, mediaSize);
+        new AlertDialog.Builder(MobilePaperShowActivity.this)
+                .setTitle(R.string.message_details_title)
+                .setMessage(messageDetails)
+                .setCancelable(true)
+                .show();
         return true;
     }
 
@@ -463,7 +492,7 @@ public class MobilePaperShowActivity extends Activity {
 
             new AsyncTask<Void, Void, Void>() {
                 protected Void doInBackground(Void... none) {
-                    mBackgroundDeleteHandler.startDelete(DELETE_MESSAGE_TOKEN, null, mUri,
+                    mAsyncQueryHandler.startDelete(DELETE_MESSAGE_TOKEN, null, mUri,
                             mLock ? null : "locked=0", null);
                     return null;
                 }
@@ -503,9 +532,21 @@ public class MobilePaperShowActivity extends Activity {
         }
     };
 
-    private final class BackgroundDeleteHandler extends AsyncQueryHandler {
-        public BackgroundDeleteHandler(ContentResolver contentResolver) {
+    private final class BackgroundQueryHandler extends AsyncQueryHandler {
+        public BackgroundQueryHandler(ContentResolver contentResolver) {
             super(contentResolver);
+        }
+
+        @Override
+        protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
+            if (cursor != null) {
+                if (mCursor != null) {
+                    mCursor.close();
+                }
+                mCursor = cursor;
+                mCursor.moveToFirst();
+            }
+            invalidateOptionsMenu();
         }
 
         @Override
