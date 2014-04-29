@@ -517,6 +517,17 @@ public class MailBoxMessageList extends ListActivity implements
         }
     };
 
+    private void showMessageCount(Cursor cursor) {
+        mCountTextView.setVisibility(View.VISIBLE);
+        if (mQueryBoxType == TYPE_INBOX) {
+            mCountTextView.setText(COUNT_TEXT_DECOLLATOR_1
+                    + getUnReadMessageCount(cursor)
+                    + COUNT_TEXT_DECOLLATOR_2 + cursor.getCount());
+        } else {
+            mCountTextView.setText("" + cursor.getCount());
+        }
+    }
+
     private final class BoxMsgListQueryHandler extends AsyncQueryHandler {
         public BoxMsgListQueryHandler(ContentResolver contentResolver) {
             super(contentResolver);
@@ -545,6 +556,8 @@ public class MailBoxMessageList extends ListActivity implements
                              }
                          } else if (cursor.getCount() == 0) {
                              mListView.setEmptyView(emptyView);
+                         } else if (needShowCountNum(cursor)) {
+                            showMessageCount(cursor);
                          }
                      } else {
                         mListAdapter.changeCursor(mCursor);
@@ -554,14 +567,7 @@ public class MailBoxMessageList extends ListActivity implements
                             }
                         }
                         if (needShowCountNum(cursor)) {
-                            mCountTextView.setVisibility(View.VISIBLE);
-                            if (mQueryBoxType == TYPE_INBOX) {
-                                mCountTextView.setText(COUNT_TEXT_DECOLLATOR_1
-                                        + getUnReadMessageCount(cursor)
-                                        + COUNT_TEXT_DECOLLATOR_2 + cursor.getCount());
-                            } else {
-                                mCountTextView.setText("" + cursor.getCount());
-                            }
+                            showMessageCount(cursor);
                         } else if (isSearchMode()) {
                             setMessageTitle(cursor.getCount());
                         } else {
