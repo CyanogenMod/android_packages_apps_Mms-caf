@@ -553,4 +553,5 @@
     <string name="pref_summary_cdma_priority">CDMA短信优先级设置</string>
     <string name="prefDialogTitle_cdma_priority">优先级</string>
     <string name="forward_size_over">禁止转发，新彩信内容超过300k。</string>
+    <string name="sub">卡</string>
 </resources>
