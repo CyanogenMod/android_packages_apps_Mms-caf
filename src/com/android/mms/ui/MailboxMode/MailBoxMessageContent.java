@@ -260,6 +260,9 @@ public class MailBoxMessageContent extends Activity {
             case MENU_SAVE_TO_CONTACT:
                 saveToContact();
                 break;
+            case android.R.id.home:
+                finish();
+                break;
             default:
                 return true;
         }
