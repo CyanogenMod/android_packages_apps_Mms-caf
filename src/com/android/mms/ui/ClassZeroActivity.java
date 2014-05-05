@@ -56,7 +56,7 @@ public class ClassZeroActivity extends Activity {
     private static final String[] REPLACE_PROJECTION = new String[] { Sms._ID,
             Sms.ADDRESS, Sms.PROTOCOL };
     private static final int REPLACE_COLUMN_ID = 0;
-
+    private static final String SUBID_STR = "subId";
     /** Default timer to dismiss the dialog. */
     private static final long DEFAULT_TIMER = 5 * 60 * 1000;
 
@@ -72,6 +72,7 @@ public class ClassZeroActivity extends Activity {
     private long mTimerSet = 0;
     private AlertDialog mDialog = null;
 
+    private Integer mSubId;
     private ArrayList<SmsMessage> mMessageQueue = null;
 
     private Handler mHandler = new Handler() {
@@ -90,6 +91,7 @@ public class ClassZeroActivity extends Activity {
     private boolean queueMsgFromIntent(Intent msgIntent) {
         byte[] pdu = msgIntent.getByteArrayExtra("pdu");
         String format = msgIntent.getStringExtra("format");
+        mSubId = msgIntent.getIntExtra(SUBID_STR, MessageUtils.SUB_INVALID);
         SmsMessage rawMessage = SmsMessage.createFromPdu(pdu, format);
         String message = rawMessage.getMessageBody();
         if (TextUtils.isEmpty(message)) {
@@ -239,6 +241,7 @@ public class ClassZeroActivity extends Activity {
         }
         values.put(Inbox.REPLY_PATH_PRESENT, sms.isReplyPathPresent() ? 1 : 0);
         values.put(Inbox.SERVICE_CENTER, sms.getServiceCenterAddress());
+        values.put(Inbox.SUB_ID, mSubId);
         return values;
     }
 
