@@ -1017,7 +1017,7 @@ public class MessageListItem extends LinearLayout implements
         // we show the icon if the read report or delivery report setting was set when the
         // message was sent. Showing the icon tells the user there's more information
         // by selecting the "View report" menu.
-        if (msgItem.mDeliveryStatus == MessageItem.DeliveryStatus.INFO || msgItem.mReadReport
+        if (msgItem.mDeliveryStatus == MessageItem.DeliveryStatus.INFO
                 || (msgItem.isMms() && !msgItem.isSending() &&
                         msgItem.mDeliveryStatus == MessageItem.DeliveryStatus.PENDING)) {
             mDetailsIndicator.setImageResource(R.drawable.ic_sms_mms_details);
@@ -1025,6 +1025,9 @@ public class MessageListItem extends LinearLayout implements
         } else if (msgItem.isMms() && !msgItem.isSending() &&
                 msgItem.mDeliveryStatus == MessageItem.DeliveryStatus.RECEIVED) {
             mDetailsIndicator.setImageResource(R.drawable.ic_sms_mms_delivered);
+            mDetailsIndicator.setVisibility(View.VISIBLE);
+        } else if (msgItem.mReadReport) {
+            mDetailsIndicator.setImageResource(R.drawable.ic_sms_mms_details);
             mDetailsIndicator.setVisibility(View.VISIBLE);
         } else {
             mDetailsIndicator.setVisibility(View.GONE);
