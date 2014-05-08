@@ -307,13 +307,12 @@ public class MultiPickContactsActivity extends ExpandableListActivity implements
         return cursor;
     }
 
-    private class ContactsAdapter extends SimpleCursorTreeAdapter implements SectionIndexer {
+    private class ContactsAdapter extends SimpleCursorTreeAdapter {
         private MultiPickContactsActivity mActivity;
         private AsyncQueryHandler mQueryHandler;
         private String mConstraint = null;
         private boolean mConstraintIsValid = false;
 
-        private AlphabetIndexer mIndexer;
         private String mAlphabet;
 
         private int mContactIdIndex = -1;
@@ -474,27 +473,6 @@ public class MultiPickContactsActivity extends ExpandableListActivity implements
             return c;
         }
 
-        @Override
-        public Object[] getSections() {
-            if (mIndexer != null) {
-                return mIndexer.getSections();
-            }
-            return null;
-        }
-
-        @Override
-        public int getPositionForSection(int section) {
-            if (mIndexer != null) {
-                return mIndexer.getPositionForSection(section);
-            }
-            return 0;
-        }
-
-        @Override
-        public int getSectionForPosition(int position) {
-            return 0;
-        }
-
         private void getColumnIndex(Cursor cursor) {
             if (cursor == null) {
                 Log.w(TAG, "getColumnsIndex, the cursor is null, couldn't get the index.");
@@ -507,11 +485,6 @@ public class MultiPickContactsActivity extends ExpandableListActivity implements
                     .getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME);
             mSortedIndex = cursor.getColumnIndexOrThrow(ContactsContract.Contacts.SORT_KEY_PRIMARY);
 
-            if (mIndexer == null) {
-                mIndexer = new AlphabetIndexer(cursor, mSortedIndex, mAlphabet);
-            } else {
-                mIndexer.setCursor(cursor);
-            }
         }
     }
 
