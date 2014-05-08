@@ -2499,6 +2499,8 @@ public class ComposeMessageActivity extends Activity
         // the thread will get a threadId behind the UI thread's back.
         long originalThreadId = mConversation.getThreadId();
         long threadId = intent.getLongExtra(THREAD_ID, 0);
+        boolean needReload = intent.getBooleanExtra(MessageUtils.EXTRA_KEY_NEW_MESSAGE_NEED_RELOAD,
+                false);
         Uri intentUri = intent.getData();
 
         boolean sameThread = false;
@@ -2549,6 +2551,9 @@ public class ComposeMessageActivity extends Activity
         } else {
             if (LogTag.VERBOSE || Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
                 log("onNewIntent: different conversation");
+            }
+            if (needReload) {
+                mMessagesAndDraftLoaded = false;
             }
             saveDraft(false);    // if we've got a draft, save it first
 
