@@ -38,7 +38,7 @@
   <string name="pref_quickmessage_title">Snelbericht tonen</string>
   <string name="pref_quickmessage_summary">Snelbericht-pop-up tonen voor inkomende sms-berichten</string>
   <string name="pref_wake_unlock_title">Ontwaken en ontgrendelen</string>
-  <string name="pref_wake_unlock_summary">Bij inkomend bericht apparaat ontwaken en ontgrendelen (onbeveiligd vergrendelscherm vereist)</string>
+  <string name="pref_wake_unlock_summary">Bij inkomend bericht apparaat ontwaken en ontgrendelen (onbeveiligd vergrendelingsscherm vereist)</string>
   <string name="pref_close_all_title">Alles sluiten</string>
   <string name="pref_close_all_summary">Sluiten-knop sluit alle berichten</string>
   <string name="prefs_templates_settings">Sms-sjablonen</string>

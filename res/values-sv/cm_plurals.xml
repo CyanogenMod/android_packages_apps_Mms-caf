@@ -17,18 +17,15 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <plurals name="template_confirm_delete_conversation">
-    <item quantity="one">Šablonas bus ištrintas.</item>
-    <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> šablonai bus ištrinti.</item>
-    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> šablonai bus ištrinti.</item>
+    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> mall kommer att tas bort.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> mallar kommer att tas bort.</item>
   </plurals>
   <plurals name="remaining_delay_time">
-    <item quantity="one">Siųs po 1 sekundės, palieskite norėdami atšaukti.</item>
-    <item quantity="few">Siųs po %1$d sekundžių, palieskite norėdami atšaukti.</item>
-    <item quantity="other">Siųs po %1$d sekundžių, palieskite norėdami atšaukti.</item>
+    <item quantity="one">Skickar om %1$d sekund, tryck för att avbryta.</item>
+    <item quantity="other">Skickar om %1$d sekunder, tryck för att avbryta.</item>
   </plurals>
   <plurals name="confirm_mark_unread_conversation">
-    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> pokalbis bus pažymėtas kaip neskaitytas.</item>
-    <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> pokalbiai bus pažymėti kaip neskaityti.</item>
-    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> pokalbių bus pažymėti kaip neskaityti.</item>
+    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> konversation kommer att märkas som oläst.</item>
+    <item quantity="other"><xliff:g id="number">%1$s</xliff:g> konversationer kommer att märkas som olästa.</item>
   </plurals>
 </resources>

@@ -33,7 +33,7 @@
   <string name="notification_multiple_text_privacy_mode"><xliff:g id="number" example="3">%1$s</xliff:g> непрочитане поруке</string>
   <string name="notification_ticker_privacy_mode">Нова порука је примљена</string>
   <string name="pref_quickmessage">Брзи одговор</string>
-  <string name="pref_dark_theme_title">Користите тамну тему</string>
+  <string name="pref_dark_theme_title">Користи тамну тему</string>
   <string name="pref_dark_theme_summary">Ако није изабрано, подразумевана \'светло\' тема ће се користити</string>
   <string name="pref_quickmessage_title">Прикажи искачући прозор</string>
   <string name="pref_quickmessage_summary">Прикажи искачући прозор за долазне SMS поруке</string>

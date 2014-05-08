@@ -20,10 +20,13 @@
   <string name="pref_dark_theme_summary">如果未選取，預設的「淺色」主題將被使用</string>
   <string name="template_delete">刪除</string>
   <string name="template_confirm_dialog_title">刪除？</string>
+  <string name="pref_extra_settings">更多設定</string>
   <string name="menu_mobile">僅手機號碼</string>
   <string name="send_delay_3seconds">3 秒</string>
   <string name="send_delay_5seconds">5 秒</string>
   <string name="send_delay_10seconds">10 秒</string>
   <string name="send_delay_20seconds">20 秒</string>
   <string name="send_delay_30seconds">30 秒</string>
+  <string name="pref_title_mms_notification_vibrate_pattern">震動模式</string>
+  <string name="pref_summary_mms_notification_vibrate_pattern">更改震動模式</string>
 </resources>
