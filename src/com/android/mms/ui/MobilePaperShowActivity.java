@@ -68,6 +68,7 @@ import android.widget.Toast;
 
 import com.android.mms.data.WorkingMessage;
 import com.android.mms.MmsApp;
+import com.android.mms.MmsConfig;
 import com.android.mms.model.LayoutModel;
 import com.android.mms.model.RegionModel;
 import com.android.mms.model.SlideModel;
@@ -356,6 +357,14 @@ public class MobilePaperShowActivity extends Activity {
         drawRootView();
     }
 
+    private boolean isAllowForwardMessage() {
+        int messageSize = mSlideModel.getTotalMessageSize();
+        int forwardStrSize = getString(R.string.forward_prefix).getBytes().length;
+        int subjectSize =  mSubject == null ? 0 : mSubject.getBytes().length;
+        int totalSize = messageSize + forwardStrSize + subjectSize;
+        return totalSize <= (MmsConfig.getMaxMessageSize() - SlideshowModel.SLIDESHOW_SLOP);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.clear();
@@ -393,6 +402,12 @@ public class MobilePaperShowActivity extends Activity {
                 call();
                 break;
             case MENU_FORWARD:
+                if (!isAllowForwardMessage()) {
+                    Toast.makeText(MobilePaperShowActivity.this,
+                            R.string.forward_size_over, Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+
                 new AsyncDialog(this).runAsync(new Runnable() {
                     @Override
                     public void run() {
