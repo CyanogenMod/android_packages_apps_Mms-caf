@@ -41,6 +41,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.mms.ExceedMessageSizeException;
@@ -107,6 +108,8 @@ public class SlideEditorActivity extends Activity {
     // number of items in the duration selector dialog that directly map from
     // item index to duration in seconds (duration = index + 1)
     private final static int NUM_DIRECT_DURATIONS = 10;
+
+    private static final int KILOBYTE = 1024;
 
     private ImageButton mNextSlide;
     private ImageButton mPreSlide;
@@ -192,6 +195,7 @@ public class SlideEditorActivity extends Activity {
             }
 
             showCurrentSlide();
+            updateMmsSizeIndicator();
         } catch (MmsException e) {
             Log.e(TAG, "Create SlideshowModel failed!", e);
             finish();
@@ -255,6 +259,8 @@ public class SlideEditorActivity extends Activity {
                 synchronized (SlideEditorActivity.this) {
                     mDirty = true;
                 }
+                // If mSlideshowModel is changed, update the mms size indicator.
+                updateMmsSizeIndicator();
                 setResult(RESULT_OK);
             }
         };
@@ -857,6 +863,25 @@ public class SlideEditorActivity extends Activity {
             setReplaceButtonText(R.string.replace_image);
         } else {
             setReplaceButtonText(R.string.add_picture);
+        }
+    }
+
+    private int getSizeWithOverHead(int size) {
+        return (size + KILOBYTE -1) / KILOBYTE + 1;
+    }
+
+    private void updateMmsSizeIndicator() {
+        TextView sizeIndicator = (TextView) findViewById(R.id.mms_size_indicator);
+
+        mSlideshowModel.updateTotalMessageSize();
+        int mediaSize = mSlideshowModel.getTotalMessageSize();
+        if (mediaSize == 0){
+            sizeIndicator.setVisibility(View.GONE);
+        } else {
+            sizeIndicator.setVisibility(View.VISIBLE);
+            int currentSize = getSizeWithOverHead(mediaSize + mSlideshowModel.getSubjectSize());
+            sizeIndicator.setText(getString(R.string.mms_size_indicator,
+                    currentSize, MmsConfig.getMaxMessageSize() / KILOBYTE));
         }
     }
 }
