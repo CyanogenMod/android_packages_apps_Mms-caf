@@ -838,6 +838,29 @@ public class TransactionService extends Service implements Observer {
                 values, PendingMessages.MSG_ID + "=" + msgId, null);
     }
 
+    private int getRetryIndex(String msgId) {
+        Uri.Builder uriBuilder = PendingMessages.CONTENT_URI.buildUpon();
+        uriBuilder.appendQueryParameter("protocol", "mms");
+        uriBuilder.appendQueryParameter("message", msgId);
+
+        Cursor cursor = null;
+        try {
+             cursor = SqliteWrapper.query(this, getContentResolver(),
+                    uriBuilder.build(), null, null, null, null);
+            if (cursor != null && (cursor.getCount() == 1) && cursor.moveToFirst()) {
+                int index = cursor.getInt(cursor.getColumnIndexOrThrow(
+                        PendingMessages.RETRY_INDEX));
+                Log.v(TAG, "getRetryIndex:" + index) ;
+                return index;
+            }
+            return 0;
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
     private boolean isLastRetry(String msgId) {
         Uri.Builder uriBuilder = PendingMessages.CONTENT_URI.buildUpon();
         uriBuilder.appendQueryParameter("protocol", "mms");
@@ -1040,7 +1063,8 @@ public class TransactionService extends Service implements Observer {
                 return result;
             case PhoneConstants.APN_REQUEST_STARTED:
                 acquireWakeLock();
-                boolean reconnect = getResources().getBoolean(R.bool.config_reconnect);
+                boolean reconnect = getResources().getBoolean(R.bool.config_reconnect)
+                        || getResources().getBoolean(R.bool.config_retry_always);
                 if (reconnect) {
                     mServiceHandler.sendEmptyMessageDelayed(EVENT_MMS_CONNECTIVITY_TIMEOUT,
                             MMS_CONNECTIVITY_DELAY);
@@ -1285,6 +1309,10 @@ public class TransactionService extends Service implements Observer {
                     if (mMmsConnecvivityRetryCount > MMS_CONNECTIVITY_RETRY_TIMES) {
                         Log.d(TAG, "MMS_CONNECTIVITY_TIMEOUT");
                         mMmsConnecvivityRetryCount = 0;
+                        if (getResources().getBoolean(R.bool.config_retry_always)
+                                && !mPending.isEmpty()) {
+                            abortPendingTransaction(true);
+                        }
                         return;
                     }
 
@@ -1456,17 +1484,11 @@ public class TransactionService extends Service implements Observer {
             // Check if transaction already processing
             synchronized (mProcessing) {
                 while (mPending.size() != 0) {
-                    Uri uri = null;
                     Transaction transaction = mPending.remove(0);
                     transaction.mTransactionState.setState(TransactionState.FAILED);
+                    Uri uri = getTransactionUri(transaction);
                     // Get uri from transaction
-                    if (transaction instanceof SendTransaction) {
-                        uri = ((SendTransaction)transaction).mSendReqURI;
-                    } else if (transaction instanceof NotificationTransaction) {
-                        uri = ((NotificationTransaction)transaction).getUri();
-                    } else if (transaction instanceof RetrieveTransaction) {
-                        uri = ((RetrieveTransaction)transaction).getUri();
-                    } else {
+                    if (uri == null) {
                         continue;
                     }
                     // Set Error Type to MMS_PROTO_TRANSIENT
@@ -1486,6 +1508,42 @@ public class TransactionService extends Service implements Observer {
         mServiceHandler.sendMessageDelayed(
                 mServiceHandler.obtainMessage(EVENT_CONTINUE_MMS_CONNECTIVITY),
                            APN_EXTENSION_WAIT);
+    }
+
+    private Uri getTransactionUri(Transaction transaction) {
+        Uri uri = null;
+        // Get uri from transaction
+        if (transaction instanceof SendTransaction) {
+            uri = ((SendTransaction)transaction).mSendReqURI;
+        } else if (transaction instanceof NotificationTransaction) {
+            uri = ((NotificationTransaction)transaction).getUri();
+        } else if (transaction instanceof RetrieveTransaction) {
+            uri = ((RetrieveTransaction)transaction).getUri();
+        }
+        return uri;
+    }
+
+    private void abortPendingTransaction(boolean retry) {
+        Transaction transaction = mPending.get(0);
+        Uri uri = getTransactionUri(transaction);
+        if (uri == null) {
+            return;
+        }
+
+        String msgId = uri.getLastPathSegment();
+        boolean first = getRetryIndex(msgId) ==  0;
+
+        int type = transaction.getType();
+        if (type == Transaction.SEND_TRANSACTION) {
+            mToastHandler.sendEmptyMessage(first ?
+                TOAST_MSG_QUEUED : TOAST_SEND_FAILED_RETRY);
+        } else if ((type == Transaction.RETRIEVE_TRANSACTION) ||
+            (type == Transaction.NOTIFICATION_TRANSACTION)) {
+            mToastHandler.sendEmptyMessage(first ?
+                TOAST_DOWNLOAD_LATER : TOAST_DOWNLOAD_FAILED_RETRY);
+        }
+        mServiceHandler.removePendingTransactionsOnNoConnectivity(retry);
+        endMmsConnectivity();
     }
 
     private class ConnectivityBroadcastReceiver extends BroadcastReceiver {
@@ -1528,17 +1586,7 @@ public class TransactionService extends Service implements Observer {
                     Log.v(TAG, "mms type is null or mobile data is turned off, bail");
                 }
                 if (mProcessing.isEmpty() && !mPending.isEmpty()) {
-                    Transaction transaction = mPending.get(0);
-
-                    int type = transaction.getType();
-                    if (type == Transaction.SEND_TRANSACTION) {
-                        mToastHandler.sendEmptyMessage(TOAST_MSG_QUEUED);
-                    } else if ((type == Transaction.RETRIEVE_TRANSACTION) ||
-                        (type == Transaction.NOTIFICATION_TRANSACTION)) {
-                        mToastHandler.sendEmptyMessage(TOAST_DOWNLOAD_LATER);
-                    }
-                    mServiceHandler.removePendingTransactionsOnNoConnectivity(false);
-                    endMmsConnectivity();
+                    abortPendingTransaction(false);
                 }
             } else {
                 // This is a very specific fix to handle the case where the phone receives an
@@ -1582,17 +1630,7 @@ public class TransactionService extends Service implements Observer {
                         renewMmsConnectivity();
                     } else {
                         if (!mPending.isEmpty()) {
-                            Transaction transaction = mPending.get(0);
-
-                            int type = transaction.getType();
-                            if (type == Transaction.SEND_TRANSACTION) {
-                                mToastHandler.sendEmptyMessage(TOAST_SEND_FAILED_RETRY);
-                            } else if ((type == Transaction.RETRIEVE_TRANSACTION) ||
-                                (type == Transaction.NOTIFICATION_TRANSACTION)) {
-                                mToastHandler.sendEmptyMessage(TOAST_DOWNLOAD_FAILED_RETRY);
-                            }
-                            mServiceHandler.removePendingTransactionsOnNoConnectivity(true);
-                            endMmsConnectivity();
+                            abortPendingTransaction(true);
                         }
                     }
                 }
