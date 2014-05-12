@@ -1004,6 +1004,10 @@
     <!-- add for showing slot type in MailBoxMessageContent -->
     <string name="slot_type">Slot : %s</string>
 
+    <string name="sim_capacity_title">SIM Capacity</string>
+    <string name="sim_capacity_used">Used:  </string>
+    <string name="sim_capacity">Capacity:  </string>
+
     <!-- Settings item description for Mms Validity period -->
     <string name="pref_title_mms_save_time">MMS Validity period</string>
     <string name="pref_title_mms_save_time_slot1">Sub1\'s MMS validity period</string>
