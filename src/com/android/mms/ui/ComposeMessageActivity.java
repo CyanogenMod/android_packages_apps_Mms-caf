@@ -93,6 +93,7 @@ import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.Intents;
+import android.provider.DocumentsContract.Document;
 import android.provider.MediaStore.Audio;
 import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Video;
@@ -4286,9 +4287,13 @@ public class ComposeMessageActivity extends Activity
             getAsyncDialog().runAsync(new Runnable() {
                 @Override
                 public void run() {
+                    String type = mimeType;
                     for (int i = 0; i < numberToImport; i++) {
                         Parcelable uri = uris.get(i);
-                        addAttachment(mimeType, (Uri) uri, true);
+                        if (uri != null && "*/*".equals(mimeType)) {
+                            type = getAttachmentMimeType((Uri) uri);
+                        }
+                        addAttachment(type, (Uri) uri, true);
                     }
                     updateMmsSizeIndicator();
                 }
@@ -4298,6 +4303,38 @@ public class ComposeMessageActivity extends Activity
         return false;
     }
 
+    private String getAttachmentMimeType(Uri uri) {
+        ContentResolver contentResolver = getContentResolver();
+        String scheme = uri.getScheme();
+        String attachmentType = "*/*";
+        // Support uri with "content" scheme
+        if ("content".equals(scheme)) {
+            Cursor metadataCursor = null;
+            try {
+                metadataCursor = contentResolver.query(uri, new String[] {
+                        Document.COLUMN_MIME_TYPE}, null, null, null);
+            } catch (SQLiteException e) {
+                // some content providers don't support the COLUMN_MIME_TYPE columns
+                if (metadataCursor != null) {
+                    metadataCursor.close();
+                }
+                metadataCursor = null;
+            } catch (Exception e) {
+                metadataCursor = null;
+            }
+            if (metadataCursor != null) {
+                try {
+                    if (metadataCursor.moveToFirst()) {
+                        attachmentType = metadataCursor.getString(0);
+                        Log.d(TAG, "attachmentType = " + attachmentType);
+                    }
+                } finally {
+                    metadataCursor.close();
+                }
+            }
+        }
+        return attachmentType;
+    }
     private boolean isAudioFile(Uri uri) {
         String path = uri.getPath();
         String mimeType = MediaFile.getMimeTypeForFile(path);
