@@ -222,15 +222,11 @@ public class PushReceiver extends BroadcastReceiver {
 
                         if (!isDuplicateNotification(mContext, nInd)) {
                             int subId = intent.getIntExtra(MSimConstants.SUBSCRIPTION_KEY, 0);
-                            ContentValues values = new ContentValues(1);
-                            values.put(Mms.SUB_ID, subId);
 
                             Uri uri = p.persist(pdu, Inbox.CONTENT_URI,
                                     true,
                                     MessagingPreferenceActivity.getIsGroupMmsEnabled(mContext),
-                                    null);
-
-                            SqliteWrapper.update(mContext, cr, uri, values, null, null);
+                                    null, subId);
 
                             boolean enableMmsData = mContext.getResources().getBoolean(
                                     com.android.internal.R.bool.config_setup_mms_data);
