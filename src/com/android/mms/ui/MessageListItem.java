@@ -837,12 +837,11 @@ public class MessageListItem extends LinearLayout implements
 
         // Check for links. If none, do nothing; if 1, open it; if >1, ask user to pick one
         final URLSpan[] spans = mBodyTextView.getUrls();
-
         if (spans.length == 0) {
-            sendMessage(mMessageItem, MSG_LIST_DETAILS);    // show the message details dialog
-        } else if (spans.length == 1) {
+            sendMessage(mMessageItem, MSG_LIST_DETAILS);
+        } else {
             boolean wap_push = mContext.getResources().getBoolean(R.bool.config_wap_push);
-            if((mMessageItem != null)
+            if (spans.length == 1 && mMessageItem != null
                     && MessageUtils.isWapPushNumber(mMessageItem.mAddress)
                     && wap_push) {
                 DialogInterface.OnClickListener click = new DialogInterface.OnClickListener() {
@@ -859,106 +858,8 @@ public class MessageListItem extends LinearLayout implements
                         .setCancelable(true)
                         .show();
             } else {
-                String url = spans[0].getURL();
-                if (MessageUtils.isWebUrl(url)) {
-                    Uri uri = Uri.parse(url);
-                    Intent intent = new Intent(mContext, WwwContextMenuActivity.class);
-                    intent.setData(uri);
-                    mContext.startActivity(intent);
-                } else {
-                    final String telPrefix = "tel:";
-                    if (url.startsWith(telPrefix)) {
-                        url = url.substring(telPrefix.length());
-                        if (PhoneNumberUtils.isWellFormedSmsAddress(url)) {
-                            MessageUtils.showNumberOptions(mContext, url);
-                        }
-                    } else {
-                        spans[0].onClick(mBodyTextView);
-                    }
-                }
+                MessageUtils.onMessageContentClick(mContext, mBodyTextView);
             }
-        } else {
-            ArrayAdapter<URLSpan> adapter =
-                new ArrayAdapter<URLSpan>(mContext, android.R.layout.select_dialog_item, spans) {
-                @Override
-                public View getView(int position, View convertView, ViewGroup parent) {
-                    View v = super.getView(position, convertView, parent);
-                    try {
-                        URLSpan span = getItem(position);
-                        String url = span.getURL();
-                        Uri uri = Uri.parse(url);
-                        TextView tv = (TextView) v;
-                        Drawable d = mContext.getPackageManager().getActivityIcon(
-                                new Intent(Intent.ACTION_VIEW, uri));
-                        if (d != null) {
-                            d.setBounds(0, 0, d.getIntrinsicHeight(), d.getIntrinsicHeight());
-                            tv.setCompoundDrawablePadding(10);
-                            tv.setCompoundDrawables(d, null, null, null);
-                        }
-                        final String telPrefix = "tel:";
-                        final String mailToPrefix = "mailto:";
-                        if (url.startsWith(telPrefix)) {
-                            if ((mDefaultCountryIso == null) || mDefaultCountryIso.isEmpty()) {
-                                url = url.substring(telPrefix.length());
-                            }
-                            else {
-                                url = PhoneNumberUtils.formatNumber(
-                                        url.substring(telPrefix.length()), mDefaultCountryIso);
-                            }
-                        } else if (url.startsWith(mailToPrefix)) {
-                            url = url.substring(mailToPrefix.length());
-                        }
-                        tv.setText(url);
-                    } catch (android.content.pm.PackageManager.NameNotFoundException ex) {
-                        // it's ok if we're unable to set the drawable for this view - the user
-                        // can still use it
-                    }
-                    return v;
-                }
-            };
-
-            AlertDialog.Builder b = new AlertDialog.Builder(mContext);
-
-            DialogInterface.OnClickListener click = new DialogInterface.OnClickListener() {
-                @Override
-                public final void onClick(DialogInterface dialog, int which) {
-                    if (which >= 0) {
-                        String url = spans[which].getURL();
-                        if (MessageUtils.isWebUrl(url)) {
-                            Uri uri = Uri.parse(url);
-                            Intent intent = new Intent(mContext, WwwContextMenuActivity.class);
-                            intent.setData(uri);
-                            mContext.startActivity(intent);
-                        } else {
-                            final String telPrefix = "tel:";
-                            if (url.startsWith(telPrefix)) {
-                                url = url.substring(telPrefix.length());
-                                if (PhoneNumberUtils.isWellFormedSmsAddress(url)) {
-                                    MessageUtils.showNumberOptions(mContext, url);
-                                } else {
-                                    spans[which].onClick(mBodyTextView);
-                                }
-                            } else {
-                                spans[which].onClick(mBodyTextView);
-                            }
-                        }
-                    }
-                    dialog.dismiss();
-                }
-            };
-
-            b.setTitle(R.string.select_link_title);
-            b.setCancelable(true);
-            b.setAdapter(adapter, click);
-
-            b.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                @Override
-                public final void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-
-            b.show();
         }
     }
 
