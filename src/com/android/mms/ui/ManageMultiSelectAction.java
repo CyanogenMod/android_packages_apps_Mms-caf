@@ -38,6 +38,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -49,6 +50,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Telephony.Sms;
+import android.provider.Telephony.Threads;
 import android.provider.Telephony.Sms.Conversations;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
@@ -63,6 +65,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.android.mms.data.Contact;
 import com.android.mms.R;
 import com.android.mms.ui.PopupList;
@@ -119,7 +122,8 @@ public class ManageMultiSelectAction extends Activity {
         Intent intent = getIntent();
         mManageMode = intent.getIntExtra(ComposeMessageActivity.MANAGE_MODE,
                 MessageUtils.INVALID_MODE);
-        if (mManageMode == MessageUtils.FORWARD_MODE) {
+        if (mManageMode == MessageUtils.FORWARD_MODE
+                || mManageMode == MessageUtils.BATCH_DELETE_MODE) {
             mThreadId = intent.getLongExtra(ComposeMessageActivity.THREAD_ID, INVALID_THREAD);
         } else if (mManageMode == MessageUtils.SIM_MESSAGE_MODE){
             mSubscription = intent.getIntExtra(MessageUtils.SUB_KEY, SUB_INVALID);
@@ -220,13 +224,18 @@ public class ManageMultiSelectAction extends Activity {
                     mMessageItems.add(mMsgListAdapter.getCachedMessageItem(type, msgId, c));
                 } else if (mManageMode == MessageUtils.SIM_MESSAGE_MODE) {
                     mSelectedUris.add(getUriStrByCursor(c));
+                } else if (mManageMode == MessageUtils.BATCH_DELETE_MODE) {
+                    long msgId = c.getLong(COLUMN_ID);
+                    Uri uri = ContentUris.withAppendedId(Sms.CONTENT_URI, msgId);
+                    mSelectedUris.add(uri.toString());
                 }
             }
         }
 
         if (mManageMode == MessageUtils.FORWARD_MODE) {
             forwardSmsConversation();
-        } else if (mManageMode == MessageUtils.SIM_MESSAGE_MODE) {
+        } else if (mManageMode == MessageUtils.SIM_MESSAGE_MODE
+                || mManageMode == MessageUtils.BATCH_DELETE_MODE) {
             MultiMessagesListener l = new MultiMessagesListener();
             confirmDeleteDialog(l);
         }
@@ -349,6 +358,10 @@ public class ManageMultiSelectAction extends Activity {
                         new String[]{String.valueOf(mThreadId)}, SORT_ORDER);
             } else if (mManageMode == MessageUtils.SIM_MESSAGE_MODE) {
                 mBackgroundQueryHandler.startQuery(0, null, mIccUri, null, null, null, null);
+            } else if (mManageMode == MessageUtils.BATCH_DELETE_MODE) {
+                Uri uri = ContentUris.withAppendedId(Threads.CONTENT_URI, mThreadId);
+                mBackgroundQueryHandler.startQuery(0, null, uri,
+                        MessageListAdapter.PROJECTION, null, null, null);
             }
         } catch (SQLiteException e) {
             SqliteWrapper.checkSQLiteException(this, e);
@@ -369,6 +382,8 @@ public class ManageMultiSelectAction extends Activity {
                 mActionButton.setText(R.string.menu_forward);
             } else if (mManageMode == MessageUtils.SIM_MESSAGE_MODE) {
                 mActionButton.setText(R.string.done_delete);
+            } else if (mManageMode == MessageUtils.BATCH_DELETE_MODE) {
+                mActionButton.setText(R.string.menu_batch_delete);
             }
             mActionButton.setEnabled(false);
             mActionButton.setOnClickListener(new View.OnClickListener() {
@@ -430,7 +445,8 @@ public class ManageMultiSelectAction extends Activity {
         public void run() {
             if (mManageMode == MessageUtils.FORWARD_MODE) {
                 mergeMessagesAndForward();
-            } else if (mManageMode == MessageUtils.SIM_MESSAGE_MODE) {
+            } else if (mManageMode == MessageUtils.SIM_MESSAGE_MODE
+                    || mManageMode == MessageUtils.BATCH_DELETE_MODE) {
                 deleteMessages();
             }
         }

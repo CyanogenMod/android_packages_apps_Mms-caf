@@ -252,6 +252,7 @@ public class ComposeMessageActivity extends Activity
     private static final int MENU_RESEND                = 35;
     private static final int MENU_COPY_EXTRACT_URL      = 36;
     private static final int MENU_SELECT_COPY_MESSAGE_TEXT     = 37;
+    private static final int MENU_BATCH_DELETE          = 38;
 
     private static final int RECIPIENTS_MAX_LENGTH = 312;
 
@@ -3368,6 +3369,7 @@ public class ComposeMessageActivity extends Activity
             if ((null != cursor) && (cursor.getCount() > 0)) {
                 menu.add(0, MENU_DELETE_THREAD, 0, R.string.delete_thread).setIcon(
                     android.R.drawable.ic_menu_delete);
+                menu.add(0, MENU_BATCH_DELETE, 0, R.string.menu_batch_delete);
                 if (getResources().getBoolean(R.bool.config_forwardconv)
                         && mMsgListAdapter.hasSmsInConversation(cursor)) {
                     menu.add(0, MENU_FORWARD_CONVERSATION, 0, R.string.menu_forward_conversation);
@@ -3447,7 +3449,13 @@ public class ComposeMessageActivity extends Activity
             case MENU_DELETE_THREAD:
                 confirmDeleteThread(mConversation.getThreadId());
                 break;
-
+            case MENU_BATCH_DELETE: {
+                Intent intent = new Intent(this, ManageMultiSelectAction.class);
+                intent.putExtra(MANAGE_MODE, MessageUtils.BATCH_DELETE_MODE);
+                intent.putExtra(THREAD_ID, mConversation.getThreadId());
+                startActivity(intent);
+                break;
+            }
             case android.R.id.home:
             case MENU_CONVERSATION_LIST:
                 exitComposeMessageActivity(new Runnable() {

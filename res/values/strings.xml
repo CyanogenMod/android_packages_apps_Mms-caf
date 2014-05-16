@@ -1049,4 +1049,5 @@
     <string name="prefDialogTitle_cdma_priority">Priority</string>
     <string name="forward_size_over">Forbid forwarding, new message size over 300K.</string>
     <string name="sub">SUB</string>
+    <string name="menu_batch_delete">Batch delete conversation</string>
 </resources>
