@@ -356,13 +356,17 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             }
         }
 
-        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()
-                && MessageUtils.getActivatedIccCardCount() < 2) {
-            int preferredSmsSub = MSimSmsManager.getDefault()
-                    .getPreferredSmsSubscription();
-            mManageSimPref.setSummary(
-                    getString(R.string.pref_summary_manage_sim_messages)
-                    + (preferredSmsSub + 1));
+        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+            if(MessageUtils.getActivatedIccCardCount() < MSimConstants.MAX_PHONE_COUNT_DUAL_SIM) {
+                int preferredSmsSub = MSimSmsManager.getDefault()
+                        .getPreferredSmsSubscription();
+                mManageSimPref.setSummary(
+                        getString(R.string.pref_summary_manage_sim_messages_slot,
+                                preferredSmsSub + 1));
+            } else {
+                mManageSimPref.setSummary(
+                        getString(R.string.pref_summary_manage_sim_messages));
+            }
             mMmsPrefCategory.removePreference(mMmsExpiryPref);
         } else {
             mMmsPrefCategory.removePreference(mMmsExpiryCard1Pref);
