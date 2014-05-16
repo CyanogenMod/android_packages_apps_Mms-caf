@@ -559,4 +559,5 @@
     <string name="prefDialogTitle_cdma_priority">优先级</string>
     <string name="forward_size_over">禁止转发，新彩信内容超过300k。</string>
     <string name="sub">卡</string>
+    <string name="menu_batch_delete">"批量删除会话"</string>
 </resources>
