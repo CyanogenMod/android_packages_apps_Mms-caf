@@ -65,6 +65,9 @@ public class AsyncDialog {
     };
 
     public void clearPendingProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
         // remove any callback to display a progress spinner
         mHandler.removeCallbacks(mShowProgressDialogRunnable);
         // clear the dialog so any pending dialog.dismiss() call can be avoided
