@@ -2357,7 +2357,9 @@ public class ComposeMessageActivity extends Activity
             mSubjectTextEditor.removeTextChangedListener(mSubjectEditorWatcher);
         }
 
-        mSubjectTextEditor.setText(mWorkingMessage.getSubject());
+        if (!TextUtils.isEmpty(mWorkingMessage.getSubject())) {
+            mSubjectTextEditor.setText(mWorkingMessage.getSubject());
+        }
         mSubjectTextEditor.setVisibility(show ? View.VISIBLE : View.GONE);
         hideOrShowTopPanel();
     }
