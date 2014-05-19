@@ -2364,4 +2364,14 @@ public class MessageUtils {
         SqliteWrapper.delete(context, context.getContentResolver(),
                 Threads.CONTENT_URI, "thread_id = -1", null);
     }
+
+    private static boolean isNetworkRoaming(int subscription) {
+        return isMultiSimEnabledMms()
+                ? MSimTelephonyManager.getDefault().isNetworkRoaming(subscription)
+                : TelephonyManager.getDefault().isNetworkRoaming();
+    }
+
+    public static boolean isCDMAInternationalRoaming(int subscription) {
+        return isCDMAPhone(subscription) && isNetworkRoaming(subscription);
+    }
 }
