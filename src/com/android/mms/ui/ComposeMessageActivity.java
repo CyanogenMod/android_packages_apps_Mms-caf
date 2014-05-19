@@ -3232,7 +3232,11 @@ public class ComposeMessageActivity extends Activity
     private void dialRecipient() {
         if (isRecipientCallable()) {
             String number = getRecipients().get(0).getNumber();
-            Intent dialIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("tel:" + number));
+            Intent dialIntent;
+            if (isMsimIccCardActive())
+                dialIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("tel:" + number));
+            else
+                dialIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + number));
             startActivity(dialIntent);
         }
     }
