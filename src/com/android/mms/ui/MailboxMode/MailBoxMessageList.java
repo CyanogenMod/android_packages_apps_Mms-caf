@@ -36,6 +36,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
@@ -43,6 +44,7 @@ import android.database.sqlite.SqliteWrapper;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.MmsSms;
 import android.provider.Telephony.Sms;
@@ -117,7 +119,7 @@ public class MailBoxMessageList extends ListActivity implements
     private static final int MESSAGE_LIST_QUERY_TOKEN = 9001;
     private static final int MESSAGE_SEARCH_LIST_QUERY_TOKEN = 9002;
 
-    // IDs of the spinner items for the box type.
+    // IDs of the spinner items for the box type, the values are based on original database.
     private static final int TYPE_INBOX = 1;
     private static final int TYPE_SENTBOX = 2;
     private static final int TYPE_DRAFTBOX = 3;
@@ -129,6 +131,8 @@ public class MailBoxMessageList extends ListActivity implements
 
     private final static int DELAY_TIME = 500;
     private static final String NONE_SELECTED = "0";
+    private static final String BOX_SPINNER_TYPE = "box_spinner_type";
+    private static final String SLOT_SPINNER_TYPE = "slot_spinner_type";
     private final static String THREAD_ID = "thread_id";
     private final static String MESSAGE_ID = "message_id";
     private final static String MESSAGE_TYPE = "message_type";
@@ -405,11 +409,17 @@ public class MailBoxMessageList extends ListActivity implements
     }
 
     private void initSpinner() {
+        final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         Spinner mBoxSpinner = (Spinner) findViewById(R.id.box_spinner);
         Spinner mSlotSpinner = (Spinner) findViewById(R.id.slot_spinner);
+        // "TYPE_INBOX - 1" means the first value of "box type" in sharedpreference,
+        // because "box type" 1-4 means box: inbox, sent, outbox, draft, but position
+        // value is 0-3.
+        mBoxSpinner.setSelection(sp.getInt(BOX_SPINNER_TYPE, TYPE_INBOX - 1));
         mBoxSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                sp.edit().putInt(BOX_SPINNER_TYPE, position).commit();
                 int oldQueryType = mQueryBoxType;
                 // position 0-3 means box: inbox, sent, outbox, draft
                 mQueryBoxType = position + 1;
@@ -434,10 +444,12 @@ public class MailBoxMessageList extends ListActivity implements
                     R.array.slot_type, android.R.layout.simple_spinner_item);
             slotAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
             mSlotSpinner.setAdapter(slotAdapter);
+            mSlotSpinner.setSelection(sp.getInt(SLOT_SPINNER_TYPE, TYPE_ALL_SLOT));
             mSlotSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent,
                                            View view, int position, long id) {
+                    sp.edit().putInt(SLOT_SPINNER_TYPE, position).commit();
                     // position 0-2 means slotType: slot_all, slot_one, slot_two
                     int oldQuerySlotType = mQuerySlotType;
                     if (position > TYPE_SLOT_TWO) {
