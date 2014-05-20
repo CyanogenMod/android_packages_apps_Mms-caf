@@ -28,9 +28,9 @@
   <string name="pref_title_notification_privacy_mode_enabled">Mode privat</string>
   <string name="pref_summary_notification_privacy_mode_enabled">Amaga el remitent i el missatge de la barra d\'estat i desactiva la \'Resposta ràpida\'</string>
   <string name="notification_single_title_privacy_mode">Nou missatge</string>
-  <string name="notification_single_text_privacy_mode">1 missatge no llegit</string>
+  <string name="notification_single_text_privacy_mode">1 missatge sense llegir</string>
   <string name="notification_multiple_title_privacy_mode">Nous missatges</string>
-  <string name="notification_multiple_text_privacy_mode"><xliff:g id="number" example="3">%1$s</xliff:g> missatges no llegits</string>
+  <string name="notification_multiple_text_privacy_mode"><xliff:g id="number" example="3">%1$s</xliff:g> missatges sense llegir</string>
   <string name="notification_ticker_privacy_mode">Nou missatge rebut</string>
   <string name="pref_quickmessage">Resposta ràpida</string>
   <string name="pref_dark_theme_title">Utilitza un tema fosc</string>
@@ -86,8 +86,8 @@
   <string name="add_to_blacklist_message">Els missatges futurs de %s seran bloquejats</string>
   <string name="alert_dialog_yes">Si</string>
   <string name="alert_dialog_no">No</string>
-  <string name="menu_as_unread">Marca\'l com a no llegit</string>
-  <string name="confirm_mark_unread_dialog_title">Marcar com a no llegit?</string>
+  <string name="menu_as_unread">Marca\'l com a sense llegir</string>
+  <string name="confirm_mark_unread_dialog_title">Marcar com a sense llegir?</string>
   <string name="confirm_mark_unread_conversation">La conversa es marcarà com a no llegida.</string>
   <string name="confirm_mark_unread_all_conversations">Tots els fils seran marcats com a no llegits.</string>
   <string name="select_recipients">Selecciona recipients</string>

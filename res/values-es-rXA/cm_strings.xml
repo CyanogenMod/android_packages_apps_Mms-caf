@@ -28,7 +28,7 @@
   <string name="pref_title_notification_privacy_mode_enabled">Mou privacidá</string>
   <string name="pref_summary_notification_privacy_mode_enabled">Tapecer remitente y mensaxe na barra d\'estáu y deshabilitar la rempuesta rápida</string>
   <string name="notification_single_title_privacy_mode">Mensaxe nuevu</string>
-  <string name="notification_single_text_privacy_mode">1 mensaxe non lleíu</string>
+  <string name="notification_single_text_privacy_mode">1 mensaxe ensin lleer</string>
   <string name="notification_multiple_title_privacy_mode">Mensaxes nuevos</string>
   <string name="notification_multiple_text_privacy_mode"><xliff:g id="number" example="3">%1$s</xliff:g> mensaxes non lleíos</string>
   <string name="notification_ticker_privacy_mode">Mensaxe nuevu recibíu</string>
@@ -55,7 +55,7 @@
   <string name="template_new_title">Plantía nueva</string>
   <string name="template_insert">Inxertar plantía</string>
   <string name="template_gesture_draw">Dibuxar el xestu nel espaciu d\'abaxo</string>
-  <string name="template_not_present_error">Nun se definió denguna plantía</string>
+  <string name="template_not_present_error">Nun se definió nenguna plantía</string>
   <string name="template_not_present_error_title">Fallu</string>
   <string name="template_select">Seleicionar una plantía</string>
   <string name="template_confirm_dialog_title">¿Desaniciar?</string>

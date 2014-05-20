@@ -34,7 +34,7 @@
   <string name="notification_ticker_privacy_mode">Yeni mesaj alındı</string>
   <string name="pref_quickmessage">Hızlı cevap</string>
   <string name="pref_dark_theme_title">Koyu temayı kullan</string>
-  <string name="pref_dark_theme_summary">Seçilmeze varsayılan \'açık renk\' tema kullanılacak</string>
+  <string name="pref_dark_theme_summary">Seçilmezse varsayılan \'açık renk\' tema kullanılacak</string>
   <string name="pref_quickmessage_title">Açılır pencereyi göster</string>
   <string name="pref_quickmessage_summary">Gelen SMS mesajları için HızlıMesaj açılır penceresini göster</string>
   <string name="pref_wake_unlock_title">Uyan ve kilidi aç</string>
@@ -64,7 +64,7 @@
   <string name="pref_title_templates_show_gesture">Kısayol</string>
   <string name="pref_summary_templates_show_gesture">Kısayol izini göster</string>
   <string name="pref_title_template_gestures_sensitivity">Kısayol hassasiyeti</string>
-  <string name="pref_extra_settings">Ek seçenekle</string>
+  <string name="pref_extra_settings">Ek seçenekler</string>
   <string name="pref_title_unicode_stripping">Unicode\'u strip et</string>
   <string name="pref_unicode_stripping_leave_intact">Karakterleri olduğu gibi bırak</string>
   <string name="pref_unicode_stripping_non_encodable">Görüntülünemeyen karakterleri strip et</string>
@@ -95,7 +95,7 @@
   <string name="no_recipients">Kişi bulunmadı</string>
   <string name="no_recipients_mobile_only">Eşleşen kişi bulunamadı. \'Sadece cep telefonları\' filtresi olmadan deneyin</string>
   <string name="menu_done">Tamamlandı</string>
-  <string name="menu_mobile">Sadece cep telefonları</string>
+  <string name="menu_mobile">Sadece cep telefonu numaraları</string>
   <string name="menu_groups">Grupları göster</string>
   <string name="fastscroll_index_groups">GR</string>
   <string name="pref_title_send_delay">Ulaştırma gecikmesi</string>

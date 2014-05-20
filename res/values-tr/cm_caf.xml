@@ -15,7 +15,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="cell_broadcast_sender">Hücre yayın kanalı</string>
   <string name="disk_storage_full_error">Hata: Depolama alanı dolu.</string>
   <string name="system_audio_item">Sistem sesi</string>
@@ -24,8 +24,8 @@
   <string name="pending_mms">Mesajlaşma: Bir veya daha fazla MMS bekliyor</string>
   <string name="pending_mms_text">Abonelik değiştirmek için dokunun</string>
   <string name="abort_mms">Mesajlaşma: MMS iptal</string>
-  <string name="abort_mms_text">İptal etmek ve geri geçiş yapmak için dokunun</string>
-  <string name="progress_mms_title">Diğer subtaki MMS işlemi devam etmekte</string>
+  <string name="abort_mms_text">İptal etmek ve geri dönmek için dokunun</string>
+  <string name="progress_mms_title">Diğer abonelikteki MMS işlemi devam etmekte</string>
   <string name="progress_mms">Mesajlaşma: MMS gönderiliyor\u2026</string>
   <string name="progress_mms_text">Yeniden denemek için dokunun</string>
 </resources>

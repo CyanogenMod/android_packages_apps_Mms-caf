@@ -107,10 +107,10 @@
   <string name="send_delay_30seconds">30 秒</string>
   <string name="sent_countdown">延迟发送倒计时</string>
   <string name="pref_title_mms_notification_vibrate_pattern">振动模式</string>
-  <string name="pref_summary_mms_notification_vibrate_pattern">更改震动模式</string>
+  <string name="pref_summary_mms_notification_vibrate_pattern">更改振动模式</string>
   <string name="pref_mms_notification_vibrate_normal">正常</string>
-  <string name="pref_mms_notification_vibrate_med_vib">中等震动</string>
-  <string name="pref_mms_notification_vibrate_long_vib">长震动</string>
-  <string name="pref_mms_notification_vibrate_mult_short">多个短震动</string>
-  <string name="pref_mms_notification_vibrate_mult_long">多个长震动</string>
+  <string name="pref_mms_notification_vibrate_med_vib">中等振动</string>
+  <string name="pref_mms_notification_vibrate_long_vib">长振动</string>
+  <string name="pref_mms_notification_vibrate_mult_short">多个短振动</string>
+  <string name="pref_mms_notification_vibrate_mult_long">多个长振动</string>
 </resources>

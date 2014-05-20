@@ -15,12 +15,12 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="cell_broadcast_sender">ערוץ שידור לאנטנה</string>
   <string name="disk_storage_full_error">שגיאה: האחסון מלא.</string>
   <string name="system_audio_item">שמע מערכת</string>
   <string name="external_audio_item">שמע חיצוני</string>
-  <string name="pending_mms_title">MMS ממתיi במנוי אחר</string>
+  <string name="pending_mms_title">MMS ממתין במנוי אחר</string>
   <string name="pending_mms">הודעות: הודעת MMS אחת או יותר בתהליך</string>
   <string name="pending_mms_text">גע כדי להחליף הרשמה</string>
   <string name="abort_mms">הודעות: בטל MMS</string>

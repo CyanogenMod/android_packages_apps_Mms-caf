@@ -15,7 +15,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="cell_broadcast_sender">小区广播信道</string>
   <string name="disk_storage_full_error">错误: 存储空间已满。</string>
   <string name="system_audio_item">系统音频</string>

@@ -15,7 +15,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="cell_broadcast_sender">Canal de radiodifusió</string>
   <string name="disk_storage_full_error">Error: Emmagatzematge ple.</string>
   <string name="system_audio_item">Àudio del sistema</string>

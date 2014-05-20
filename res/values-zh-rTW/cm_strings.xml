@@ -16,5 +16,21 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="menu_add_to_calendar">新增至日曆</string>
+  <string name="button_close">關閉</string>
+  <string name="button_view">檢視</string>
+  <string name="button_templates">範本</string>
+  <string name="type_to_reply_text_enter_to_send">輸入即可回覆</string>
+  <string name="toast_sending_message">正在傳送訊息</string>
+  <string name="qm_quick_reply">回覆</string>
+  <string name="qm_mark_read">已讀</string>
+  <string name="pref_title_notification_privacy_mode_enabled">隱私模式</string>
+  <string name="notification_single_title_privacy_mode">新訊息</string>
+  <string name="notification_single_text_privacy_mode">1 則未讀訊息</string>
+  <string name="notification_multiple_title_privacy_mode">新訊息</string>
+  <string name="notification_multiple_text_privacy_mode"><xliff:g id="number" example="3">%1$s</xliff:g> 則未讀訊息</string>
+  <string name="notification_ticker_privacy_mode">收到新訊息</string>
+  <string name="pref_quickmessage">快速回覆</string>
+  <string name="pref_dark_theme_title">使用深色主題</string>
   <string name="template_edit">編輯</string>
 </resources>

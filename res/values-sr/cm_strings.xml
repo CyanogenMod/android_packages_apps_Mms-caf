@@ -17,7 +17,7 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="menu_add_to_calendar">Додајте у календар</string>
-  <string name="button_close">Затвори</string>
+  <string name="button_close">Затворите</string>
   <string name="button_view">Погледајте</string>
   <string name="button_templates">Шаблони</string>
   <string name="type_to_reply_text_enter_to_send">Додирните да одговорите</string>
@@ -62,7 +62,7 @@
   <string name="gestures_already_present">Сличан гест је већ повезан са другим шаблонима</string>
   <string name="select_template">Изаберите шаблоне</string>
   <string name="pref_title_templates_show_gesture">Гест</string>
-  <string name="pref_summary_templates_show_gesture">Покажи траг геста</string>
+  <string name="pref_summary_templates_show_gesture">Прикажи траг геста</string>
   <string name="pref_title_template_gestures_sensitivity">Осетљивост геста</string>
   <string name="pref_extra_settings">Екстра подешавања</string>
   <string name="pref_title_unicode_stripping">Нацртајте уникод</string>

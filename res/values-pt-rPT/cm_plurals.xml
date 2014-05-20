@@ -17,8 +17,8 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <plurals name="template_confirm_delete_conversation">
-    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> modelo será excluído.</item>
-    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> modelos serão excluídos.</item>
+    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> modelo será eliminado.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> modelos serão eliminados.</item>
   </plurals>
   <plurals name="remaining_delay_time">
     <item quantity="one">Envio em %1$d segundo, toque para cancelar.</item>

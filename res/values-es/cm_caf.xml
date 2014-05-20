@@ -15,7 +15,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="cell_broadcast_sender">Canal de radiodifusión</string>
   <string name="disk_storage_full_error">Error. El almacenamiento está lleno</string>
   <string name="system_audio_item">Sistema de audio</string>
@@ -25,7 +25,7 @@
   <string name="pending_mms_text">Toca para cambiar la suscripción</string>
   <string name="abort_mms">Mensajería: Cancelar MMS</string>
   <string name="abort_mms_text">Toca para cancelar y volver atrás</string>
-  <string name="progress_mms_title">Operación MMS en otra suscripción en progreso</string>
+  <string name="progress_mms_title">Operación MMS de otra suscripción en progreso</string>
   <string name="progress_mms">Mensajería: MMS en progreso\u2026</string>
   <string name="progress_mms_text">Toca para reintentar</string>
 </resources>

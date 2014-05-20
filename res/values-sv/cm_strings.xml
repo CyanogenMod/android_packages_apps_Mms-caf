@@ -37,6 +37,7 @@
   <string name="pref_dark_theme_summary">Om avmarkerat kommer det vanliga ljusa temat att användas</string>
   <string name="pref_quickmessage_title">Visa pop-up</string>
   <string name="pref_wake_unlock_title">Väck och lås upp</string>
+  <string name="pref_wake_unlock_summary">Väck och lås upp enhet vid inkommande meddelande (endast osäkra låsskärmar)</string>
   <string name="pref_close_all_title">Stäng alla</string>
   <string name="pref_close_all_summary">Stängknappen stänger alla meddelanden</string>
   <string name="prefs_templates_settings">SMS-mallar</string>
@@ -48,7 +49,7 @@
   <string name="template_save">Spara</string>
   <string name="template_ctx_menu_title">Åtgärder</string>
   <string name="template_edit">Ändra</string>
-  <string name="template_delete">Radera</string>
+  <string name="template_delete">Ta bort</string>
   <string name="template_list_title">Mallar</string>
   <string name="template_new_title">Ny mall</string>
   <string name="template_insert">Lägg till mall</string>
@@ -57,6 +58,7 @@
   <string name="template_not_present_error_title">Fel</string>
   <string name="template_select">Välj en mall</string>
   <string name="template_confirm_dialog_title">Ta bort?</string>
+  <string name="gestures_already_present">En liknande gest finns redan assocerad med en annan mall</string>
   <string name="select_template">Välj mallar</string>
   <string name="pref_title_templates_show_gesture">Gest</string>
   <string name="pref_summary_templates_show_gesture">Visa gestspår</string>
@@ -66,13 +68,16 @@
   <string name="pref_title_mms_full_timestamp">Fullständiga tidsstämplar</string>
   <string name="pref_summary_mms_full_timestamp">Visa både datum och tid i tidsstämplar</string>
   <string name="pref_title_mms_use_sent_timestamp">Ursprungliga tidsstämplar</string>
+  <string name="pref_summary_mms_use_sent_timestamp">Visa skickadatum istället för mottagelsedatum i tidsstämplar</string>
   <string name="pref_title_input_type">Tangentbordsläge</string>
   <string name="pref_keyboard_emoji">Visa smileyknapp</string>
   <string name="pref_keyboard_new_line">Visa enterknapp</string>
+  <string name="pref_keyboard_unknown">Okänt, var god välj om</string>
   <string name="pref_title_sms_split_counter">SMS-räknare</string>
   <string name="pref_summary_sms_split_counter">Visa antal SMS vid meddelande, ex. (1/2)</string>
   <string name="blacklist_title">Svartlista</string>
   <string name="blacklist_summary_disabled">Avaktiverad</string>
+  <string name="blacklist_summary">Inkommande meddelanden från telefonnummer i svartlistan kommer att blockeras</string>
   <string name="add_to_blacklist">Lägg till i svartlista</string>
   <string name="add_to_blacklist_message">Framtida meddelanden från %s kommer att blockeras</string>
   <string name="alert_dialog_yes">Ja</string>

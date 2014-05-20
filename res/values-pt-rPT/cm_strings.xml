@@ -50,7 +50,7 @@
   <string name="template_save">Gravar</string>
   <string name="template_ctx_menu_title">AÇÕES</string>
   <string name="template_edit">Editar</string>
-  <string name="template_delete">Remover</string>
+  <string name="template_delete">Eliminar</string>
   <string name="template_list_title">Modelos</string>
   <string name="template_new_title">Novo modelo</string>
   <string name="template_insert">Inserir modelo</string>
@@ -58,7 +58,7 @@
   <string name="template_not_present_error">Não há nenhum modelo definido</string>
   <string name="template_not_present_error_title">Erro</string>
   <string name="template_select">Selecione um modelo</string>
-  <string name="template_confirm_dialog_title">Apagar?</string>
+  <string name="template_confirm_dialog_title">Eliminar?</string>
   <string name="gestures_already_present">Um gesto semelhante já está associado a outro modelo</string>
   <string name="select_template">Selecionar modelos</string>
   <string name="pref_title_templates_show_gesture">Gestos</string>

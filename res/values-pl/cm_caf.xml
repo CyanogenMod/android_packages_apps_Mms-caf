@@ -15,17 +15,13 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="cell_broadcast_sender">Kanał transmisji komórki</string>
   <string name="disk_storage_full_error">Błąd: Pamięć zapełniona.</string>
-  <string name="system_audio_item">System audio</string>
+  <string name="system_audio_item">Systemowe audio</string>
   <string name="external_audio_item">Zewnętrzne audio</string>
-  <string name="pending_mms_title">Oczekująca wiadomość MMS w innej usłudze</string>
-  <string name="pending_mms">Wiadomość: Jeden lub więcej MMS-ów oczekuje</string>
-  <string name="pending_mms_text">Dotknij, aby przełączyć usługę</string>
   <string name="abort_mms">Wiadomość: MMS anulowany</string>
   <string name="abort_mms_text">Dotknij, aby przerwać i wrócić</string>
-  <string name="progress_mms_title">Aktywna transmisja MMS w innej usłudze</string>
   <string name="progress_mms">Wiadomość: MMS w toku\u2026</string>
   <string name="progress_mms_text">Dotknij, aby ponowić próbę</string>
 </resources>

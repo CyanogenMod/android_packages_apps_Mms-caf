@@ -19,7 +19,7 @@
   <plurals name="template_confirm_delete_conversation">
     <item quantity="one">Šablonas bus ištrintas.</item>
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> šablonai bus ištrinti.</item>
-    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> šablonai bus ištrinti.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> šablonų bus ištrinta.</item>
   </plurals>
   <plurals name="remaining_delay_time">
     <item quantity="one">Siųs po 1 sekundės, palieskite norėdami atšaukti.</item>
