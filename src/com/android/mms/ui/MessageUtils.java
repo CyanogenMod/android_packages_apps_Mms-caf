@@ -1406,7 +1406,12 @@ public class MessageUtils {
                 .getApplication());
         sp.edit().putBoolean(VIEW_MODE_NAME, mode).commit();
         if (!mode) {
-            updateThreadCount(MmsApp.getApplication());
+            new Thread() {
+                @Override
+                public void run() {
+                    updateThreadCount(MmsApp.getApplication());
+                }
+            }.start();
         }
     }
 
