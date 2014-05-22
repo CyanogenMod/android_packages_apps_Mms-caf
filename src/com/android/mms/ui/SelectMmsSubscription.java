@@ -81,6 +81,10 @@ public class SelectMmsSubscription extends Service {
                 return txnSwitchResult;
             }
 
+            do {
+                Log.d(TAG, "isNetworkAvailable = false, sleep...");
+                sleep(1000);
+            } while(!isNetworkAvailable());
             return txnSwitchResult; //no change.
         }
 
@@ -218,11 +222,10 @@ public class SelectMmsSubscription extends Service {
                 int result = (mtmgr.setPreferredDataSubscription(req.destSub))? 1: 0;
                 if (result == 1) { //Success.
                     Log.d(TAG, "Subscription switch done.");
-
-                    while(!isNetworkAvailable()) {
+                    do {
                         Log.d(TAG, "isNetworkAvailable = false, sleep..");
                         sleep(1000);
-                    }
+                    } while(!isNetworkAvailable());
                 } else {
                     synchronized (mQueue) {
                         enqueueTxnReq(req);
