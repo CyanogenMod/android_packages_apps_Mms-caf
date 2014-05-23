@@ -181,20 +181,18 @@ public class MessageListItem extends LinearLayout implements
 
     // add for setting the background according to whether the item is selected
     public void markAsSelected(boolean selected) {
-        if (getResources().getBoolean(R.bool.config_batchdelete)) {
-            if (selected) {
-                if (mChecked != null) {
-                    mChecked.setChecked(selected);
-                }
-                mMessageBlock.getBackground().setAlpha(ALPHA_TRANSPARENT);
-                mMmsLayout.setBackgroundResource(R.drawable.list_selected_holo_light);
-            } else {
-                if (mChecked != null) {
-                    mChecked.setChecked(selected);
-                }
-                mMessageBlock.setBackgroundResource(R.drawable.listitem_background);
-                mMmsLayout.setBackgroundResource(R.drawable.listitem_background);
+        if (selected) {
+            if (mChecked != null) {
+                mChecked.setChecked(selected);
             }
+            mMessageBlock.getBackground().setAlpha(ALPHA_TRANSPARENT);
+            mMmsLayout.setBackgroundResource(R.drawable.list_selected_holo_light);
+        } else {
+            if (mChecked != null) {
+                mChecked.setChecked(selected);
+            }
+            mMessageBlock.setBackgroundResource(R.drawable.listitem_background);
+            mMmsLayout.setBackgroundResource(R.drawable.listitem_background);
         }
     }
 
