@@ -3909,12 +3909,6 @@ public class ComposeMessageActivity extends Activity
 
             case REQUEST_CODE_ATTACH_ADD_CONTACT_VCARD:
                 if (data != null) {
-                    // In a case that a draft message has an attachment whose type is slideshow,
-                    // then reopen it and replace the attachment through attach icon, we have to
-                    // remove the old attachement silently first.
-                    if (mWorkingMessage != null) {
-                        mWorkingMessage.removeAttachment(false);
-                    }
                     String extraVCard = data.getStringExtra(MultiPickContactsActivity.EXTRA_VCARD);
                     if (extraVCard != null) {
                         Uri vcard = Uri.parse(extraVCard);
