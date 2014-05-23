@@ -4648,7 +4648,8 @@ public class ComposeMessageActivity extends Activity
             if (s.toString().getBytes().length <= SUBJECT_MAX_LENGTH) {
                 mWorkingMessage.setSubject(s, true);
                 updateSendButtonState();
-                if(s.toString().getBytes().length == SUBJECT_MAX_LENGTH) {
+                if(s.toString().getBytes().length == SUBJECT_MAX_LENGTH
+                        && before < SUBJECT_MAX_LENGTH) {
                     Toast.makeText(ComposeMessageActivity.this,
                             R.string.subject_full, Toast.LENGTH_SHORT).show();
                 }
