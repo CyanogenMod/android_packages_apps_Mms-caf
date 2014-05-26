@@ -242,6 +242,12 @@
     <string name="priority_normal" msgid="5715227727384683550">"正常"</string>
     <string name="priority_low" msgid="8928782666023373987">"低"</string>
     <string name="message_class_label" msgid="5115748690481550562">"信息类别： "</string>
+
+    <string name="local_message_class_personal">个人</string>
+    <string name="local_message_class_advertisement">广告</string>
+    <string name="local_message_class_informational">信息</string>
+    <string name="local_message_class_auto">自动</string>
+
     <string name="error_code_label" msgid="5810068247647058769">"错误代码： "</string>
     <string name="menu_edit" msgid="3056513240155967777">"编辑"</string>
     <string name="menu_delete_messages" msgid="2610286783513247420">"删除信息"</string>
