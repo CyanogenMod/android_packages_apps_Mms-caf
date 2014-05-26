@@ -355,7 +355,10 @@ public class MessageUtils {
         // Message class: Personal/Advertisement/Infomational/Auto
         details.append('\n');
         details.append(res.getString(R.string.message_class_label));
-        details.append(new String(nInd.getMessageClass()));
+        details.append(android.util.NativeTextHelper.getInternalLocalString(context,
+                new String(nInd.getMessageClass()),
+                R.array.original_message_class_names,
+                R.array.local_message_class_names));
 
         // Message size: *** KB
         details.append('\n');

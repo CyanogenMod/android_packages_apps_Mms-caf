@@ -502,6 +502,11 @@
     <!-- Label in "Message details" dialog -->
     <string name="error_code_label">Error code:\u0020</string>
 
+    <string name="local_message_class_personal">personal</string>
+    <string name="local_message_class_advertisement">advertisement</string>
+    <string name="local_message_class_informational">informational</string>
+    <string name="local_message_class_auto">auto</string>
+
    <!-- Menu title for editing a message -->
    <string name="menu_edit">Edit</string>
    <!-- Menu title for deleting undelivered messages or messages on

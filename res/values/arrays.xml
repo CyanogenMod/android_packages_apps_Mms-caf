@@ -99,6 +99,20 @@
         <item>@string/sms_validity_period_maximum</item>
     </string-array>
 
+    <string-array name="original_message_class_names">
+        <item>personal</item>
+        <item>advertisement</item>
+        <item>informational</item>
+        <item>auto</item>
+    </string-array>
+
+    <string-array name="local_message_class_names">
+        <item>local_message_class_personal</item>
+        <item>local_message_class_advertisement</item>
+        <item>local_message_class_informational</item>
+        <item>local_message_class_auto</item>
+    </string-array>
+
     <string-array name="entries_sms_validity_period_value" translatable="false">
         <item>-1</item>
         <item>60</item>
