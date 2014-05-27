@@ -2319,7 +2319,7 @@ public class ComposeMessageActivity extends Activity
         setProgressBarVisibility(false);
 
         boolean isBtnStyle = getResources().getBoolean(R.bool.config_btnstyle);
-        mShowTwoButtons = isBtnStyle && isMsimIccCardActive();
+        mShowTwoButtons = isBtnStyle && MessageUtils.isMsimIccCardActive();
         // Initialize members for UI elements.
         initResourceRefs();
 
@@ -3232,12 +3232,7 @@ public class ComposeMessageActivity extends Activity
     private void dialRecipient() {
         if (isRecipientCallable()) {
             String number = getRecipients().get(0).getNumber();
-            Intent dialIntent;
-            if (isMsimIccCardActive())
-                dialIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("tel:" + number));
-            else
-                dialIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + number));
-            startActivity(dialIntent);
+            MessageUtils.dialNumber(this,number);
         }
     }
 
@@ -4732,16 +4727,6 @@ public class ComposeMessageActivity extends Activity
         if (getResources().getBoolean(R.bool.config_two_call_button)) {
             initTwoCallButtonOnActionBar();
         }
-    }
-
-    private boolean isMsimIccCardActive() {
-        if (MessageUtils.isMultiSimEnabledMms()) {
-            if (MessageUtils.isIccCardActivated(MessageUtils.SUB1)
-                    && MessageUtils.isIccCardActivated(MessageUtils.SUB2)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void initTwoSendButton() {
