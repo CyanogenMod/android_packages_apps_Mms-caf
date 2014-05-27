@@ -139,6 +139,7 @@ public class MessageUtils {
 
 
     private static final boolean DEBUG = false;
+    private static boolean mCanShowDialog;
     // add the defination of subscription
     public static final int SUB_INVALID = -1;  //  for single card product
     public static final int SUB1 = 0;  // for DSDS product of slot one
@@ -2058,6 +2059,7 @@ public class MessageUtils {
     }
 
     public static void removeDialogs() {
+        mCanShowDialog = false;
         if(memoryStatusDialog != null && memoryStatusDialog.isShowing()) {
             memoryStatusDialog.dismiss();
             memoryStatusDialog = null;
@@ -2065,6 +2067,7 @@ public class MessageUtils {
     }
 
     public static void showMemoryStatusDialog(Context context) {
+       mCanShowDialog = true;
        new ShowDialog(context).execute();
     }
 
@@ -2272,7 +2275,7 @@ public class MessageUtils {
         }
         @Override
         protected void onPostExecute(StringBuilder memoryStatus) {
-            if(memoryStatus != null && !memoryStatus.toString().isEmpty()) {
+            if(memoryStatus != null && !memoryStatus.toString().isEmpty() && mCanShowDialog) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                 builder.setTitle(R.string.memory_status_title);
                 builder.setCancelable(true);
