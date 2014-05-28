@@ -32,7 +32,7 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
     private Uri mUri;
     private boolean mIsExpectMore;
     private static final String TAG = "SmsSingleRecipientSender";
-    private int priority = -1;
+    private int mPriority = -1;
 
     public SmsSingleRecipientSender(Context context, String dest, String msgText, long threadId,
             boolean requestDeliveryReport, Uri uri, int subscription, boolean expectMore) {
@@ -44,7 +44,7 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
     }
 
     public void setPriority(int priority) {
-        this.priority = priority;
+        this.mPriority = priority;
      }
 
     public boolean sendMessage(long token) throws MmsException {
@@ -130,14 +130,21 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
 
         int validityPeriod = getValidityPeriod(mSubscription);
         Log.d(TAG, "sendMessage validityPeriod = "+validityPeriod);
+        // Remove all attributes for CDMA international roaming.
+        if (MessageUtils.isCDMAInternationalRoaming(mSubscription)) {
+            Log.v(TAG, "sendMessage during CDMA international roaming.");
+            mPriority = -1;
+            deliveryIntents = null;
+            validityPeriod = -1;
+        }
         try {
             if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
                 MSimSmsManager.getDefault().sendMultipartTextMessage(mDest, mServiceCenter,
-                            messages, sentIntents, deliveryIntents, priority, mIsExpectMore,
+                            messages, sentIntents, deliveryIntents, mPriority, mIsExpectMore,
                             validityPeriod, mSubscription);
             } else {
                 smsManager.sendMultipartTextMessage(mDest, mServiceCenter,
-                            messages, sentIntents, deliveryIntents, priority, mIsExpectMore,
+                            messages, sentIntents, deliveryIntents, mPriority, mIsExpectMore,
                             validityPeriod);
             }
         } catch (Exception ex) {
