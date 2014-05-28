@@ -42,7 +42,6 @@ import com.android.mms.model.SlideshowModel;
 import com.android.mms.model.TextModel;
 import com.android.mms.ui.MessageListAdapter.ColumnsMap;
 import com.android.mms.util.AddressUtils;
-import com.android.mms.util.DownloadManager;
 import com.android.mms.util.ItemLoadedCallback;
 import com.android.mms.util.ItemLoadedFuture;
 import com.android.mms.util.PduLoaderManager;
@@ -333,13 +332,7 @@ public class MessageItem {
     }
 
     public int getMmsDownloadStatus() {
-        if(DownloadManager.STATE_PERMANENT_FAILURE == mMmsStatus) {
-            return mMmsStatus;
-        } else if (!DownloadManager.getInstance().isAuto()
-                && DownloadManager.STATE_PRE_DOWNLOADING != mMmsStatus) {
-            return mMmsStatus & ~DownloadManager.DEFERRED_MASK;
-        }
-        return mMmsStatus;
+        return MessageUtils.getMmsDownloadStatus(mMmsStatus);
     }
 
     @Override

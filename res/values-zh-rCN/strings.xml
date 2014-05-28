@@ -568,4 +568,5 @@
     <string name="forward_size_over">禁止转发，新彩信内容超过300k。</string>
     <string name="sub">卡</string>
     <string name="menu_batch_delete">"批量删除会话"</string>
+    <string name="download_dialog_title">确认下载信息？</string>
 </resources>

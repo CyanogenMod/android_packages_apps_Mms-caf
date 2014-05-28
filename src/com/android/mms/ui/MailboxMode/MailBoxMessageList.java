@@ -48,6 +48,7 @@ import android.preference.PreferenceManager;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.MmsSms;
 import android.provider.Telephony.Sms;
+import android.telephony.MSimTelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -78,11 +79,15 @@ import com.android.mms.LogTag;
 import com.android.mms.R;
 import com.android.mms.ui.MessageListAdapter;
 import com.android.mms.transaction.MessagingNotification;
+import com.android.mms.transaction.Transaction;
+import com.android.mms.transaction.TransactionBundle;
+import com.android.mms.transaction.TransactionService;
 import com.android.mms.ui.PopupList;
 import com.android.mms.ui.SearchActivityExtend;
 import com.android.mms.ui.SelectionMenu;
 import com.android.mms.ui.MessageUtils;
 import com.android.mms.util.DownloadManager;
+import com.android.mms.util.MultiSimUtility;
 import com.google.android.mms.pdu.PduHeaders;
 
 import static com.android.mms.ui.MessageListAdapter.COLUMN_ID;
@@ -253,13 +258,9 @@ public class MailBoxMessageList extends ListActivity implements
                     && (c.getInt(MessageListAdapter.COLUMN_MMS_MESSAGE_BOX)
                             == Mms.MESSAGE_BOX_DRAFTS);
 
-            boolean isDownloaded = c.getInt(MessageListAdapter.COLUMN_MMS_STATUS)
-                    != DownloadManager.STATE_UNKNOWN;
-            // If the mms has not been downloaded, launch ComposeMessageActivity.
-            if (isDraft || isDownloaded) {
-                Intent intent = new Intent(this, ComposeMessageActivity.class);
-                intent.putExtra(THREAD_ID, threadId);
-                startActivity(intent);
+            // If it's draft, launch ComposeMessageActivity.
+            if (isDraft) {
+                startActivity(ComposeMessageActivity.createIntent(this, threadId));
                 return;
             } else if ("sms".equals(type)) {
                 // If the message is a failed one, clicking it should reload it in the compose view,
@@ -293,16 +294,77 @@ public class MailBoxMessageList extends ListActivity implements
                 }
 
                 Uri msgUri = ContentUris.withAppendedId(Mms.CONTENT_URI, msgId);
-                MessageUtils.viewMmsMessageAttachment(MailBoxMessageList.this, msgUri, null,
-                        new AsyncDialog(MailBoxMessageList.this));
-                int hasRead = c.getInt(COLUMN_MMS_READ);
-                if (hasRead == 0) {
-                    markAsRead(msgUri);
+                int subId = c.getInt(COLUMN_SUB_ID);
+                int mmsStatus = c.getInt(MessageListAdapter.COLUMN_MMS_STATUS);
+                int downloadStatus = MessageUtils.getMmsDownloadStatus(mmsStatus);
+                if (PduHeaders.MESSAGE_TYPE_NOTIFICATION_IND == c.getInt(COLUMN_MMS_MESSAGE_TYPE)) {
+                    switch (downloadStatus) {
+                        case DownloadManager.STATE_PRE_DOWNLOADING:
+                        case DownloadManager.STATE_DOWNLOADING:
+                            Toast.makeText(MailBoxMessageList.this, getString(R.string.downloading),
+                                    Toast.LENGTH_LONG).show();
+                            break;
+                        case DownloadManager.STATE_UNKNOWN:
+                        case DownloadManager.STATE_UNSTARTED:
+                        case DownloadManager.STATE_TRANSIENT_FAILURE:
+                        case DownloadManager.STATE_PERMANENT_FAILURE:
+                        default:
+                            showDownloadDialog(msgUri, subId);
+                            break;
+                    }
+                } else {
+                    MessageUtils.viewMmsMessageAttachment(MailBoxMessageList.this, msgUri, null,
+                            new AsyncDialog(MailBoxMessageList.this));
+                    int hasRead = c.getInt(COLUMN_MMS_READ);
+                    if (hasRead == 0) {
+                        markAsRead(msgUri);
+                    }
                 }
             }
-        } finally {
-            c.close();
+        } catch (Exception e) {
+            Log.e(TAG, "Open message error", e);
         }
+    }
+
+    private void showDownloadDialog(final Uri uri, final int subId) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.download);
+        builder.setIconAttribute(android.R.attr.alertDialogIcon);
+        builder.setCancelable(true);
+        builder.setMessage(R.string.download_dialog_title);
+        builder.setPositiveButton(R.string.yes, new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        startDownloadAttachment(uri, subId);
+                    }
+                });
+        builder.setNegativeButton(R.string.no, null);
+        builder.show();
+    }
+
+    private void startDownloadAttachment(Uri uri, int subId) {
+        Intent intent = new Intent(this, TransactionService.class);
+        intent.putExtra(TransactionBundle.URI, uri.toString());
+        intent.putExtra(TransactionBundle.TRANSACTION_TYPE,
+                Transaction.RETRIEVE_TRANSACTION);
+        intent.putExtra(Mms.SUB_ID, subId); //destination subId
+        intent.putExtra(MultiSimUtility.ORIGIN_SUB_ID,
+                MultiSimUtility.getDefaultDataSubscription(this));
+
+        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+            Log.d(TAG, "Download button pressed for sub=" + subId);
+            Intent silentIntent = new Intent(this,
+                    com.android.mms.ui.SelectMmsSubscription.class);
+            silentIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            silentIntent.putExtras(intent); //copy all extras
+            startService(silentIntent);
+        } else {
+            startService(intent);
+        }
+
+        DownloadManager.getInstance().markState(uri, DownloadManager.STATE_PRE_DOWNLOADING);
+        Toast.makeText(MailBoxMessageList.this, getString(R.string.downloading),
+                Toast.LENGTH_LONG).show();
     }
 
     private void markAsRead(final Uri msgUri) {

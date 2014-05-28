@@ -81,6 +81,7 @@ import com.android.mms.ui.ConversationList;
 import com.android.mms.ui.ManageSimMessages;
 import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.MessagingPreferenceActivity;
+import com.android.mms.ui.MailBoxMessageList;
 import com.android.mms.util.AddressUtils;
 import com.android.mms.util.DownloadManager;
 import com.android.mms.widget.MmsWidgetProvider;
@@ -878,7 +879,12 @@ public class MessagingNotification {
             Bitmap attachmentBitmap,
             Contact contact,
             int attachmentType) {
-        Intent clickIntent = ComposeMessageActivity.createIntent(context, threadId);
+        Intent clickIntent = null;
+        if (MessageUtils.isMailboxMode()) {
+            clickIntent = new Intent(context, MailBoxMessageList.class);
+        } else {
+            clickIntent = ComposeMessageActivity.createIntent(context, threadId);
+        }
         clickIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_SINGLE_TOP
                 | Intent.FLAG_ACTIVITY_CLEAR_TOP);
