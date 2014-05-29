@@ -33,6 +33,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SqliteWrapper;
 import android.graphics.drawable.Drawable;
@@ -42,6 +43,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.Contacts;
 import android.provider.Telephony.Mms;
@@ -116,14 +118,6 @@ public class MailBoxMessageContent extends Activity {
     private static final int UPDATE_TITLE = 2;
     private static final int SHOW_TOAST = 3;
 
-    private static final int ZOOM_IN = 4;
-    private static final int ZOOM_OUT = 5;
-    private final int MAX_ZOOM_IN_SIZE = 60;
-    private final int MAX_ZOOM_OUT_SIZE = 20;
-    private final int THE_SIZE_OF_PER_ZOOM = 9;
-    private float mTextSize = 27;
-    private int mZoomMsg = -1;
-
     private SetReadThread mSetReadThread = null;
     private ContentResolver mContentResolver;
     private static final String[] SMS_LOCK_PROJECTION = {
@@ -152,6 +146,29 @@ public class MailBoxMessageContent extends Activity {
     private static final int SMS_BODY_INDEX = 1;
     private static final int SMS_SUB_ID_INDEX = 2;
 
+    private float mFontSizeForSave = MessageUtils.FONT_SIZE_DEFAULT;
+
+    private ArrayList<TextView> mSlidePaperItemTextViews;
+
+    private class MyScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            mFontSizeForSave = MessageUtils.onFontSizeScale(mSlidePaperItemTextViews,
+                    detector.getScaleFactor(), mFontSizeForSave);
+            return true;
+        }
+
+        @Override
+        public boolean onScaleBegin(ScaleGestureDetector detector) {
+            return true;
+        }
+
+        @Override
+        public void onScaleEnd(ScaleGestureDetector detector) {
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -161,9 +178,29 @@ public class MailBoxMessageContent extends Activity {
         setContentView(R.layout.mailbox_msg_detail);
         mContentResolver = getContentResolver();
         mBackgroundDeleteHandler = new BackgroundDeleteHandler(mContentResolver);
+        mSlidePaperItemTextViews = new ArrayList<TextView>();
 
         getIntentData();
         initUi();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        MessageUtils.saveTextFontSize(this, mFontSizeForSave);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mUiHandler.removeCallbacksAndMessages(null);
+    }
+
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getPointerCount() > 1) {
+            mScaleDetector.onTouchEvent(ev);
+        }
+        return super.dispatchTouchEvent(ev);
     }
 
     @Override
@@ -411,15 +448,12 @@ public class MailBoxMessageContent extends Activity {
 
     private void initUi() {
         setProgressBarIndeterminateVisibility(true);
-        findViewById(R.id.message_detail).setOnTouchListener(new OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent event) {
-                return doZoomInOutAction(event);
-            }
-        });
 
         mScaleDetector = new ScaleGestureDetector(this, new MyScaleListener());
 
         mBodyTextView = (TextView) findViewById(R.id.textViewBody);
+        mBodyTextView
+                .setTextSize(TypedValue.COMPLEX_UNIT_PX, MessageUtils.getTextFontSize(this));
         mBodyTextView.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
         mBodyTextView.setTextIsSelectable(true);
         mBodyTextView.setText(mMsgText);
@@ -429,11 +463,7 @@ public class MailBoxMessageContent extends Activity {
                 MessageUtils.onMessageContentClick(MailBoxMessageContent.this, mBodyTextView);
             }
         });
-        mBodyTextView.setOnTouchListener(new OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent event) {
-                return doZoomInOutAction(event);
-            }
-        });
+        mSlidePaperItemTextViews.add(mBodyTextView);
         TextView mFromTextView = (TextView) findViewById(R.id.textViewFrom);
         mFromTextView.setText(mFromtoLabel);
         TextView mNumberView = (TextView) findViewById(R.id.textViewNumber);
@@ -526,14 +556,6 @@ public class MailBoxMessageContent extends Activity {
                     Toast.makeText(MailBoxMessageContent.this, toastStr,
                             Toast.LENGTH_SHORT).show();
                     break;
-                case ZOOM_IN:
-                    zoomIn();
-                    mBodyTextView.invalidate();
-                    break;
-                case ZOOM_OUT:
-                    zoomOut();
-                    mBodyTextView.invalidate();
-                    break;
                 case OPERATE_DEL_SINGLE_OVER:
                     int result = msg.arg1;
                     if (result > 0) {
@@ -551,71 +573,6 @@ public class MailBoxMessageContent extends Activity {
             }
         }
     };
-
-    private void zoomIn() {
-        mTextSize = mTextSize + THE_SIZE_OF_PER_ZOOM <= MAX_ZOOM_IN_SIZE ?
-                mTextSize + THE_SIZE_OF_PER_ZOOM : MAX_ZOOM_IN_SIZE;
-        if (mTextSize >= MAX_ZOOM_IN_SIZE) {
-            mTextSize = MAX_ZOOM_IN_SIZE;
-        }
-        mBodyTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize);
-    }
-
-    private void zoomOut() {
-        mTextSize = mTextSize - THE_SIZE_OF_PER_ZOOM < MAX_ZOOM_OUT_SIZE ?
-                MAX_ZOOM_OUT_SIZE : mTextSize - THE_SIZE_OF_PER_ZOOM;
-        if (mTextSize <= MAX_ZOOM_OUT_SIZE) {
-            mTextSize = MAX_ZOOM_OUT_SIZE;
-        }
-        mBodyTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize);
-    }
-
-    private class MyScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
-        @Override
-        public boolean onScale(ScaleGestureDetector detector) {
-            float scale = detector.getScaleFactor();
-            if (scale < 0.999999 || scale > 1.00001) {
-                mScaleFactor = scale;
-            }
-            return true;
-        }
-
-        @Override
-        public boolean onScaleBegin(ScaleGestureDetector detector) {
-            return true;
-        }
-
-        @Override
-        public void onScaleEnd(ScaleGestureDetector detector) {
-            float scale = detector.getScaleFactor();
-            if (mScaleFactor > 1.0) {
-                mZoomMsg = ZOOM_IN;
-            } else if (mScaleFactor < 1.0) {
-                mZoomMsg = ZOOM_OUT;
-            }
-        }
-    }
-
-    public boolean onTouchEvent(MotionEvent ev) {
-        return doZoomInOutAction(ev);
-    }
-
-    private boolean doZoomInOutAction(MotionEvent ev) {
-        mScaleDetector.onTouchEvent(ev);
-        final int action = ev.getAction();
-        switch (action) {
-            case MotionEvent.ACTION_UP:
-                Message msg = Message.obtain();
-                msg.what = mZoomMsg;
-                mUiHandler.sendMessage(msg);
-                mZoomMsg = -1;
-                return false;
-            case MotionEvent.ACTION_DOWN:
-                return false;
-            default:
-                return true;
-        }
-    }
 
     private class SetReadThread extends Thread {
         public SetReadThread() {
@@ -637,11 +594,5 @@ public class MailBoxMessageContent extends Activity {
             msg.what = UPDATE_TITLE;
             mUiHandler.sendMessage(msg);
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mUiHandler.removeCallbacksAndMessages(null);
     }
 }

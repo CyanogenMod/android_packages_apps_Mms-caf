@@ -86,7 +86,6 @@ import com.google.android.mms.util.SqliteWrapper;
 
 public class MobilePaperShowActivity extends Activity {
     private static final String TAG = "MobilePaperShowActivity";
-    private static final String SMS_FONTSIZE = "smsfontsize";
     private static final int MENU_SLIDESHOW = 1;
     private static final int MENU_CALL = 2;
     private static final int MENU_REPLY = 3;
@@ -94,12 +93,6 @@ public class MobilePaperShowActivity extends Activity {
     private static final int MENU_DELETE = 5;
     private static final int MENU_DETAIL = 6;
 
-    private static final int ZOOMIN = 4;
-    private static final int ZOOMOUT = 5;
-    private static final int FONTSIZESTEP = 9;
-    private static final int FONTSIZEMIN = 18;
-    private static final int FONTSIZE_DEFAULT = 27;
-    private static final int FONTSIZEMAX = 48;
     // If the finger move over 100px, we don't think it's for click.
     private static final int CLICK_LIMIT = 100;
     private static final int MESSAGE_READ = 1;
@@ -128,75 +121,45 @@ public class MobilePaperShowActivity extends Activity {
         Mms.LOCKED
     };
 
-    private void setCurrentTextSet(Context context, int value) {
-        SharedPreferences prefsms = PreferenceManager.getDefaultSharedPreferences(context);
-        prefsms.edit().putString(SMS_FONTSIZE, String.valueOf(value)).commit();
-    }
+    private float mFontSizeForSave = MessageUtils.FONT_SIZE_DEFAULT;
+    private Handler mHandler;
+    private ArrayList<TextView> mSlidePaperItemTextViews;
+    private boolean mOnScale;
 
-    private int getCurrentTextSize(Context context) {
-        SharedPreferences prefsms = PreferenceManager.
-                                    getDefaultSharedPreferences(context);
-        String textSize = prefsms.getString(SMS_FONTSIZE, String.valueOf(FONTSIZE_DEFAULT));
-        return Integer.parseInt(textSize);
-    }
-
-    private void zoomIn() {
-        int curFontSet = getCurrentTextSize(this);
-        if (curFontSet >= FONTSIZEMAX) {
-            curFontSet = FONTSIZEMAX;
-        } else {
-            curFontSet = (curFontSet + FONTSIZESTEP) > FONTSIZEMAX
-                            ? FONTSIZEMAX : (curFontSet + FONTSIZESTEP);
+    private Runnable mStopScaleRunnable = new Runnable() {
+        @Override
+        public void run() {
+            /* Delay the execution to ensure scroll and zoom no conflict */
+            mOnScale = false;
         }
-        setCurrentTextSet(this, curFontSet);
-        redrawPaper();
-    }
+    };
 
-    private void zoomOut() {
-        int curFontSet = getCurrentTextSize(this);
-        if (curFontSet <= FONTSIZEMIN) {
-            curFontSet = FONTSIZEMIN;
-        } else {
-            curFontSet = (curFontSet - FONTSIZESTEP) < FONTSIZEMIN
-                            ? FONTSIZEMIN : (curFontSet - FONTSIZESTEP) ;
-        }
-        setCurrentTextSet(this, curFontSet);
-        redrawPaper();
-    }
-
-    private class MyScaleListener
-            extends ScaleGestureDetector.SimpleOnScaleGestureListener {
-        private float mScaleFactor = 1;
+    private class MyScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
 
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
-            float scale = detector.getScaleFactor();
-            if(scale < 0.999999 || scale > 1.00001) {
-                mScaleFactor = scale;
-            }
+            mFontSizeForSave = MessageUtils.onFontSizeScale(mSlidePaperItemTextViews,
+                    detector.getScaleFactor(), mFontSizeForSave);
             return true;
         }
 
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
+            mHandler.removeCallbacks(mStopScaleRunnable);
+            mOnScale = true;
             return true;
         }
 
         @Override
         public void onScaleEnd(ScaleGestureDetector detector) {
-            float scale = detector.getScaleFactor();
-            if (mScaleFactor > 1.0) {
-                zoomIn();
-            } else if (mScaleFactor < 1.0) {
-                zoomOut();
-            }
+            mHandler.postDelayed(mStopScaleRunnable, MessageUtils.DELAY_TIME);
         }
     }
 
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-
+        mHandler = new Handler();
         Intent intent = getIntent();
         Uri msg = intent.getData();
         setContentView(R.layout.mobile_paper_view);
@@ -264,7 +227,25 @@ public class MobilePaperShowActivity extends Activity {
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        MessageUtils.saveTextFontSize(this, mFontSizeForSave);
+    }
+
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getPointerCount() > 1) {
+            mScaleDetector.onTouchEvent(ev);
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
     private void drawRootView(){
+        if (mSlidePaperItemTextViews == null) {
+            mSlidePaperItemTextViews = new ArrayList<TextView>();
+        } else {
+            mSlidePaperItemTextViews.clear();
+        }
         LayoutInflater mInflater = LayoutInflater.from(this);
         for(int index = 0; index < mSlideModel.size();index++) {
             SlideListItemView view = (SlideListItemView) mInflater
@@ -276,7 +257,7 @@ public class MobilePaperShowActivity extends Activity {
             TextView contentText = view.getContentText();
             contentText.setTextIsSelectable(true);
             mPresenter.presentSlide((SlideViewInterface)view, mSlideModel.get(index));
-            contentText.setTextSize(TypedValue.COMPLEX_UNIT_PX, getCurrentTextSize(this));
+            contentText.setTextSize(TypedValue.COMPLEX_UNIT_PX, MessageUtils.getTextFontSize(this));
             contentText.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -288,6 +269,7 @@ public class MobilePaperShowActivity extends Activity {
             text.setFocusableInTouchMode(false);
             text.setText(getString(R.string.slide_number, index + 1));
             mRootView.addView(view);
+            mSlidePaperItemTextViews.add(contentText);
         }
 
         if (mScrollViewPort == null) {
@@ -309,7 +291,10 @@ public class MobilePaperShowActivity extends Activity {
                         case MotionEvent.ACTION_MOVE: {
                             int x2 = (int) ev.getRawX();
                             int y2 = (int) ev.getRawY();
-                            mScrollViewPort.scrollBy(currentX - x2 , currentY - y2);
+                            /* To ensure that no conflict between zoom and scroll */
+                            if (!mOnScale) {
+                                mScrollViewPort.scrollBy(currentX - x2 , currentY - y2);
+                            }
                             currentX = x2;
                             currentY = y2;
                             break;
@@ -332,7 +317,10 @@ public class MobilePaperShowActivity extends Activity {
                         case MotionEvent.ACTION_MOVE: {
                             int x2 = (int) ev.getRawX();
                             int y2 = (int) ev.getRawY();
-                            mScrollViewPort.scrollBy(currentX - x2 , currentY - y2);
+                            /* To ensure that no conflict between zoom and scroll */
+                            if (!mOnScale) {
+                                mScrollViewPort.scrollBy(currentX - x2 , currentY - y2);
+                            }
                             move += Math.abs(currentY - y2);
                             currentX = x2;
                             currentY = y2;
