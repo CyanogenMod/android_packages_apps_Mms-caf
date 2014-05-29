@@ -34,7 +34,10 @@ import android.os.Handler;
 import android.provider.Telephony.Sms;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.MmsSms;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -93,6 +96,9 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
     private String mMsgType; // "sms" or "mms"
     private String mAddress;
     private String mName;
+    private boolean mIsUnread;
+
+    public static final StyleSpan STYLE_BOLD = new StyleSpan(Typeface.BOLD);
 
     public MailBoxMessageListAdapter(Context context, OnListContentChangedListener changedListener,
             Cursor cursor) {
@@ -300,6 +306,7 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
         mAvatarView = (QuickContactBadge) view.findViewById(R.id.avatar);
         mAddress = addr;
         mName = nameContact;
+        mIsUnread = isUnread;
 
         if (MessageUtils.isWapPushNumber(addr) && MessageUtils.isWapPushNumber(nameContact)) {
             String[] mMailBoxAddresses = addr.split(":");
@@ -336,10 +343,17 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
 
     public void formatNameView(String address, String name) {
         if (TextUtils.isEmpty(name)) {
-            mNameView.setText(address);
+            mNameView.setText(mIsUnread ? changeTextToBold(address) : address);
         } else {
-            mNameView.setText(name);
+            mNameView.setText(mIsUnread ? changeTextToBold(name) : name);
         }
+    }
+
+    private CharSequence changeTextToBold(String text) {
+        SpannableStringBuilder buf = new SpannableStringBuilder(text);
+        buf.setSpan(STYLE_BOLD, 0, buf.length(),
+                Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        return buf;
     }
 
     public void cleanItemCache() {
