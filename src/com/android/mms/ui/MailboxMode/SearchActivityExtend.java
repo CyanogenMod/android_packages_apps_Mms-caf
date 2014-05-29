@@ -105,6 +105,9 @@ public class SearchActivityExtend extends Activity {
         case MENU_SEARCH:
             doSearch();
             break;
+        case android.R.id.home:
+            finish();
+            break;
         default:
             return true;
         }
