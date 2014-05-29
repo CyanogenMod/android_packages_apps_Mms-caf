@@ -459,9 +459,10 @@ public class SelectMmsSubscription extends Service {
         }
 
         int currentDds = MultiSimUtility.getCurrentDataSubscription(mContext);
+        int defaultDataSub = MultiSimUtility.getDefaultDataSubscription(mContext);
 
         int destSub = intent.getIntExtra(Mms.SUB_ID, currentDds);
-        int originSub = intent.getIntExtra(MultiSimUtility.ORIGIN_SUB_ID, currentDds);
+        int originSub = intent.getIntExtra(MultiSimUtility.ORIGIN_SUB_ID, defaultDataSub);
         int triggerSwitchOnly = intent.getIntExtra("TRIGGER_SWITCH_ONLY", 0);
 
         mTransactionService = TransactionService.getInstance();
@@ -472,6 +473,7 @@ public class SelectMmsSubscription extends Service {
         Log.d(TAG, "Destination sub = " + destSub);
         Log.d(TAG, "triggerSwitchOnly = " + triggerSwitchOnly);
         Log.d(TAG, "currentDds = " + currentDds);
+        Log.d(TAG, "defaultDataSub = " + defaultDataSub);
 
         TxnRequest req = new TxnRequest(intent, destSub, originSub,
                 (triggerSwitchOnly == 1)? true : false);
@@ -492,7 +494,6 @@ public class SelectMmsSubscription extends Service {
             }
         } else {
             if (req.triggerSwitchOnly == true) {
-                int defaultDataSub = MultiSimUtility.getDefaultDataSubscription(mContext);
                 Log.d(TAG, "Updating default data sub to handle Hot swap/Deactivate cases"
                         + "dest Sub: " + req.destSub + "default data sub: " + defaultDataSub);
                 req.destSub = defaultDataSub;
