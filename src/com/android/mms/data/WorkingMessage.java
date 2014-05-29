@@ -49,6 +49,7 @@ import android.telephony.SmsMessage;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
+import android.widget.Toast;
 
 import com.android.common.contacts.DataUsageStatUpdater;
 import com.android.common.userhappiness.UserHappinessSignals;
@@ -64,6 +65,7 @@ import com.android.mms.model.ImageModel;
 import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
 import com.android.mms.model.TextModel;
+import com.android.mms.R;
 import com.android.mms.transaction.MessageSender;
 import com.android.mms.transaction.MmsMessageSender;
 import com.android.mms.transaction.SmsMessageSender;
@@ -1512,6 +1514,12 @@ public class WorkingMessage {
                 // Create a new MMS message if one hasn't been made yet.
                 mmsUri = createDraftMmsMessage(persister, sendReq, slideshow, mmsUri,
                         mActivity, null);
+                // Remove the sd card mmsUri will be null
+                if (mmsUri == null) {
+                    Toast.makeText(mActivity, R.string.cannot_send_attach_reason,
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
             } else {
                 // Otherwise, sync the MMS message in progress to disk.
                 updateDraftMmsMessage(mmsUri, persister, slideshow, sendReq, null);
