@@ -110,6 +110,8 @@ public class MessageListItem extends LinearLayout implements
     static final int MSG_LIST_PLAY    = 2;
     static final int MSG_LIST_DETAILS = 3;
 
+    private boolean mMultiChoiceMode = false;
+
     private View mMmsView;
     private ImageView mImageView;
     private ImageView mLockedIndicator;
@@ -659,6 +661,11 @@ public class MessageListItem extends LinearLayout implements
 
     @Override
     public void setImage(String name, Bitmap bitmap) {
+        // is Multi choice mode
+        if (mMultiChoiceMode) {
+            showMmsView(false);
+            return;
+        }
         showMmsView(true);
 
         try {
@@ -776,6 +783,10 @@ public class MessageListItem extends LinearLayout implements
     }
 
     private void drawPlaybackButton(MessageItem msgItem) {
+        // is Multi choice mode
+        if (mMultiChoiceMode) {
+            return;
+        }
         switch (msgItem.mAttachmentType) {
             case WorkingMessage.SLIDESHOW:
             case WorkingMessage.AUDIO:
@@ -861,6 +872,10 @@ public class MessageListItem extends LinearLayout implements
     }
 
     private void setOnClickListener(final MessageItem msgItem) {
+        // is Multi choice mode
+        if (mMultiChoiceMode) {
+            return;
+        }
         switch(msgItem.mAttachmentType) {
             case WorkingMessage.VCARD:
             case WorkingMessage.IMAGE:
@@ -1038,5 +1053,9 @@ public class MessageListItem extends LinearLayout implements
                 mDateView.setVisibility(View.GONE);
             }
         }
+    }
+
+    public void setMultiChoiceMode(boolean isMultiChoiceMode) {
+        mMultiChoiceMode = isMultiChoiceMode;
     }
 }
