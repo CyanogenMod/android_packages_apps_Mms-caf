@@ -16,7 +16,7 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="menu_add_to_calendar">添加到日曆</string>
+  <string name="menu_add_to_calendar">新增到日曆</string>
   <string name="button_close">關閉</string>
   <string name="button_view">檢視</string>
   <string name="button_templates">範本</string>
@@ -82,7 +82,7 @@
   <string name="blacklist_title">黑名單</string>
   <string name="blacklist_summary_disabled">已停用</string>
   <string name="blacklist_summary">黑名單內電話號碼傳來的訊息將會被封鎖</string>
-  <string name="add_to_blacklist">添加到黑名單</string>
+  <string name="add_to_blacklist">新增到黑名單</string>
   <string name="add_to_blacklist_message">來自 %s 的訊息將被封鎖</string>
   <string name="alert_dialog_yes">是</string>
   <string name="alert_dialog_no">否</string>

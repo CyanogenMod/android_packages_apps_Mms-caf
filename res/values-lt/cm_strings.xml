@@ -34,7 +34,7 @@
   <string name="notification_ticker_privacy_mode">Gautas naujas pranešimas</string>
   <string name="pref_quickmessage">Greitas atsakymas</string>
   <string name="pref_dark_theme_title">Naudoti tamsią temą</string>
-  <string name="pref_dark_theme_summary">Jei nepasirinkta, pagal nutylėjimą bus naudojama „Šviesi” tema</string>
+  <string name="pref_dark_theme_summary">Jei nepasirinkta, pagal nutylėjimą bus naudojama „Šviesi“ tema</string>
   <string name="pref_quickmessage_title">Rodyti laikinąjį langą</string>
   <string name="pref_quickmessage_summary">Rodyti greitųjų pranešimų laikinąjį langą gaunamiems SMS pranešimams</string>
   <string name="pref_wake_unlock_title">Pažadinti ir atrakinti</string>

@@ -17,4 +17,9 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="cell_broadcast_sender">區域廣播頻道</string>
+  <string name="pending_mms_title">在其他訂閱上有待決多媒體簡訊</string>
+  <string name="pending_mms">簡訊：一個或多個多媒體簡訊正在等待</string>
+  <string name="abort_mms">簡訊：中止多媒體簡訊</string>
+  <string name="progress_mms_title">正有多媒體簡訊在其他訂閱處理中</string>
+  <string name="progress_mms">簡訊：多媒體簡訊正在處理\u2026</string>
 </resources>

@@ -64,7 +64,7 @@
   <string name="pref_title_templates_show_gesture">Gestos</string>
   <string name="pref_summary_templates_show_gesture">Mostra les traces del gestos</string>
   <string name="pref_title_template_gestures_sensitivity">Sensibilitat dels gestos</string>
-  <string name="pref_extra_settings">Ajustaments addicionals</string>
+  <string name="pref_extra_settings">Configuracions addicionals</string>
   <string name="pref_title_unicode_stripping">Esquinça unicode</string>
   <string name="pref_unicode_stripping_leave_intact">Deixa els caràcters intactes</string>
   <string name="pref_unicode_stripping_non_encodable">Esquinça els caràcters no codificables</string>

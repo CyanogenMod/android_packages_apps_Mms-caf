@@ -16,7 +16,7 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="menu_add_to_calendar">新增至日曆</string>
+  <string name="menu_add_to_calendar">新增到日曆</string>
   <string name="button_close">關閉</string>
   <string name="button_view">檢視</string>
   <string name="button_templates">範本</string>
@@ -24,7 +24,9 @@
   <string name="toast_sending_message">正在傳送訊息</string>
   <string name="qm_quick_reply">回覆</string>
   <string name="qm_mark_read">已讀</string>
+  <string name="message_counter_separator">/</string>
   <string name="pref_title_notification_privacy_mode_enabled">隱私模式</string>
+  <string name="pref_summary_notification_privacy_mode_enabled">隱藏狀態列中的寄件者和訊息並停用「快速回覆」</string>
   <string name="notification_single_title_privacy_mode">新訊息</string>
   <string name="notification_single_text_privacy_mode">1 則未讀訊息</string>
   <string name="notification_multiple_title_privacy_mode">新訊息</string>
@@ -32,5 +34,27 @@
   <string name="notification_ticker_privacy_mode">收到新訊息</string>
   <string name="pref_quickmessage">快速回覆</string>
   <string name="pref_dark_theme_title">使用深色主題</string>
+  <string name="pref_quickmessage_title">顯示彈出式視窗</string>
+  <string name="pref_quickmessage_summary">為收到的簡訊顯示 QuickMessage 彈出式視窗</string>
+  <string name="pref_close_all_title">全部關閉</string>
+  <string name="prefs_templates_settings">簡訊範本</string>
+  <string name="pref_title_templates_manage">範本</string>
+  <string name="pref_summary_templates_manage">管理您的簡訊範本</string>
+  <string name="template_save">儲存</string>
   <string name="template_edit">編輯</string>
+  <string name="template_delete">刪除</string>
+  <string name="template_list_title">範本</string>
+  <string name="template_new_title">新範本</string>
+  <string name="template_not_present_error_title">錯誤</string>
+  <string name="template_confirm_dialog_title">刪除？</string>
+  <string name="pref_title_templates_show_gesture">手勢</string>
+  <string name="pref_title_sms_split_counter">分段計數器</string>
+  <string name="pref_summary_sms_split_counter">在訊息中加入計數器，例如：(1/2)</string>
+  <string name="blacklist_summary_disabled">已停用</string>
+  <string name="send_delay_3seconds">3 秒</string>
+  <string name="send_delay_5seconds">5 秒</string>
+  <string name="send_delay_10seconds">10 秒</string>
+  <string name="send_delay_20seconds">20 秒</string>
+  <string name="send_delay_30seconds">30 秒</string>
+  <string name="pref_mms_notification_vibrate_normal">正常</string>
 </resources>

@@ -21,11 +21,11 @@
   <string name="system_audio_item">系統音效</string>
   <string name="external_audio_item">外部音效</string>
   <string name="pending_mms_title">在其他訂閱上有待決多媒體簡訊</string>
-  <string name="pending_mms">簡訊：一個或多個多媒體簡訊正在等待</string>
+  <string name="pending_mms">訊息：一個或多個多媒體簡訊正在等待</string>
   <string name="pending_mms_text">輕觸可切換訂閱</string>
-  <string name="abort_mms">簡訊：中止多媒體簡訊</string>
+  <string name="abort_mms">訊息：中止多媒體簡訊</string>
   <string name="abort_mms_text">輕觸中止並返回</string>
   <string name="progress_mms_title">正有多媒體簡訊在其他訂閱處理中</string>
-  <string name="progress_mms">簡訊：多媒體簡訊正在處理\u2026</string>
+  <string name="progress_mms">訊息：多媒體簡訊正在處理\u2026</string>
   <string name="progress_mms_text">輕觸以重試</string>
 </resources>

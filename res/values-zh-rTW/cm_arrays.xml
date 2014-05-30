@@ -16,10 +16,18 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <plurals name="template_confirm_delete_conversation">
-    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> 個範本將會被刪除。</item>
-  </plurals>
-  <plurals name="remaining_delay_time">
-    <item quantity="other">%1$d 秒後寄出，輕觸以取消。</item>
-  </plurals>
+  <string-array name="pref_templates_gestures_sensitivity_entries">
+    <item>1 (最寬鬆)</item>
+    <item>2</item>
+    <item>3</item>
+    <item>4</item>
+    <item>5</item>
+    <item>6</item>
+    <item>7</item>
+    <item>8</item>
+    <item>9</item>
+    <item>10</item>
+    <item>11</item>
+    <item>12 (最嚴格)</item>
+  </string-array>
 </resources>
