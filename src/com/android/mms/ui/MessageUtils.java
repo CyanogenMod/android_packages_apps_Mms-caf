@@ -109,6 +109,7 @@ import com.android.mms.model.VcardModel;
 import com.android.mms.transaction.MessagingNotification;
 import com.android.mms.transaction.MmsMessageSender;
 import com.android.mms.util.AddressUtils;
+import com.android.mms.util.DownloadManager;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
 import com.google.android.mms.pdu.CharacterSets;
@@ -2447,5 +2448,15 @@ public class MessageUtils {
             return MAX_FONT_SIZE;
         }
         return size;
+    }
+
+    public static int getMmsDownloadStatus(int mmsStatus) {
+        if(DownloadManager.STATE_PERMANENT_FAILURE == mmsStatus) {
+            return mmsStatus;
+        } else if (!DownloadManager.getInstance().isAuto()
+                && DownloadManager.STATE_PRE_DOWNLOADING != mmsStatus) {
+            return mmsStatus & ~DownloadManager.DEFERRED_MASK;
+        }
+        return mmsStatus;
     }
 }
