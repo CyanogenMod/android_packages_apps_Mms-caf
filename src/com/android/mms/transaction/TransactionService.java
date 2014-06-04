@@ -1486,6 +1486,7 @@ public class TransactionService extends Service implements Observer {
                 while (mPending.size() != 0) {
                     Transaction transaction = mPending.remove(0);
                     transaction.mTransactionState.setState(TransactionState.FAILED);
+                    decRefCount();
                     Uri uri = getTransactionUri(transaction);
                     // Get uri from transaction
                     if (uri == null) {

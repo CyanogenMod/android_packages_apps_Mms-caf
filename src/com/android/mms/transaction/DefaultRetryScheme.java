@@ -37,7 +37,7 @@ public class DefaultRetryScheme extends AbstractRetryScheme {
         0, 1 * 60 * 1000, 5 * 60 * 1000, 10 * 60 * 1000, 30 * 60 * 1000};
 
     private static final int[] sCmccRetryScheme = {
-        0, 5 * 1000, 5 * 60 * 1000, 10 * 60 * 1000, 30 * 60 * 1000};
+        0, 5 * 1000, 1 * 60 * 1000, 5 * 60 * 1000, 10 * 60 * 1000, 30 * 60 * 1000};
 
     private static final int[] sCtRetryScheme = {
         0, 5 * 60 * 1000, 5 * 60 * 1000, 5 * 60 * 1000};
