@@ -485,8 +485,17 @@ public class SlideshowModel extends Model
         setTotalMessageSize(totalMediaSize);
         // The totalMediaSize include text size which inputting before.
         // So we don't calculate text size again.
-        int remainSize = MmsConfig.getMaxMessageSize() - totalMediaSize - mSubjectSize;
+        int remainSize = MmsConfig.getMaxMessageSize() - getSMILSize() - totalMediaSize
+                - mSubjectSize;
         return remainSize < SLIDESHOW_SLOP ? 0 : remainSize - SLIDESHOW_SLOP;
+    }
+
+    /*
+     * Get SMIL size when create and edit MMS. Not used for received MMS.
+     */
+    public int getSMILSize() {
+        // first pdu part is SMIL
+        return toPduBody().getPart(0).getData().length;
     }
 
     // getTotalTextMessageSize returns the total text size of the MMS.
