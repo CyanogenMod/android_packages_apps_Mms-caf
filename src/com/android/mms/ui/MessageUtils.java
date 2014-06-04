@@ -1417,14 +1417,6 @@ public class MessageUtils {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(MmsApp
                 .getApplication());
         sp.edit().putBoolean(VIEW_MODE_NAME, mode).commit();
-        if (!mode) {
-            new Thread() {
-                @Override
-                public void run() {
-                    updateThreadCount(MmsApp.getApplication());
-                }
-            }.start();
-        }
     }
 
     /**
@@ -2366,12 +2358,6 @@ public class MessageUtils {
         long lowBytes = (path.getTotalSpace() * THRESHOLD_LOW_MEM_PERCENTAGE) / 100;
 
         return lowBytes > path.getFreeSpace();
-    }
-
-    private static void updateThreadCount(Context context) {
-        //it will delete nothing and just update the message_count in theads table.
-        SqliteWrapper.delete(context, context.getContentResolver(),
-                Threads.CONTENT_URI, "thread_id = -1", null);
     }
 
     private static boolean isNetworkRoaming(int subscription) {
