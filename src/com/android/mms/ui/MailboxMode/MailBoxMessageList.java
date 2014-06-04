@@ -907,7 +907,9 @@ public class MailBoxMessageList extends ListActivity implements
         for (int i = 0; i < count; i++) {
             getListView().setItemChecked(i, false);
         }
-        mListAdapter.notifyDataSetChanged();
+        if (mListAdapter != null) {
+            mListAdapter.notifyDataSetChanged();
+        }
     }
 
     private void setupActionBar() {
