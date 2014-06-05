@@ -110,6 +110,9 @@ public class SelectMmsSubscription extends Service {
                 if (result == -1 || result == 1) {
                     if (resultObj.req.triggerSwitchOnly == true) {
                         removeAbortNotification(resultObj.req);
+                        if (result == 1) {
+                            removeStatusBarNotification(resultObj.req);
+                        }
                         return;
 
                     }
