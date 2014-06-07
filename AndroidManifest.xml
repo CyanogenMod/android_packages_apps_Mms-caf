@@ -72,7 +72,6 @@
                   android:label="@string/app_label"
                   android:configChanges="orientation|screenSize|keyboardHidden"
                   android:theme="@style/MmsHoloTheme"
-                  android:uiOptions="splitActionBarWhenNarrow"
                   android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
