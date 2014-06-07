@@ -456,6 +456,8 @@ public class ComposeMessageActivity extends Activity
     private boolean mIsMessageChanged = false;
     private boolean mShowTwoButtons = false;
 
+    private Object mAddAttachmentLock = new Object();
+
     /**
      * Whether the audio attachment player activity is launched and running
      */
@@ -4074,20 +4076,22 @@ public class ComposeMessageActivity extends Activity
             Context context = ComposeMessageActivity.this;
             PduPersister persister = PduPersister.getPduPersister(context);
             int result;
-
-            Uri messageUri = mWorkingMessage.saveAsMms(true);
-            if (messageUri == null) {
-                result = WorkingMessage.UNKNOWN_ERROR;
-            } else {
-                try {
-                    Uri dataUri = persister.persistPart(part,
-                            ContentUris.parseId(messageUri), null);
-                    result = mWorkingMessage.setAttachment(WorkingMessage.IMAGE, dataUri, append);
-                    if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
-                        log("ResizeImageResultCallback: dataUri=" + dataUri);
-                    }
-                } catch (MmsException e) {
+            synchronized(mAddAttachmentLock) {
+                Uri messageUri = mWorkingMessage.saveAsMms(true);
+                if (messageUri == null) {
                     result = WorkingMessage.UNKNOWN_ERROR;
+                } else {
+                    try {
+                        Uri dataUri = persister.persistPart(part,
+                                ContentUris.parseId(messageUri), null);
+                        result = mWorkingMessage.setAttachment(
+                                WorkingMessage.IMAGE, dataUri, append);
+                        if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
+                            log("ResizeImageResultCallback: dataUri=" + dataUri);
+                        }
+                    } catch (MmsException e) {
+                        result = WorkingMessage.UNKNOWN_ERROR;
+                    }
                 }
             }
 
@@ -4296,7 +4300,9 @@ public class ComposeMessageActivity extends Activity
                         if (uri != null && "*/*".equals(mimeType)) {
                             type = getAttachmentMimeType((Uri) uri);
                         }
-                        addAttachment(type, (Uri) uri, true);
+                        synchronized(mAddAttachmentLock) {
+                            addAttachment(type, (Uri) uri, true);
+                        }
                     }
                     updateMmsSizeIndicator();
                 }
