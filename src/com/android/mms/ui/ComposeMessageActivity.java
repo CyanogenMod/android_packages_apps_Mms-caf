@@ -408,6 +408,9 @@ public class ComposeMessageActivity extends Activity
     private AsyncDialog mAsyncDialog;   // Used for background tasks.
 
     private String mDebugRecipients;
+
+    private boolean mEnableEmoticons;
+
     private int mLastSmoothScrollPosition;
     private boolean mScrollOnSend;      // Flag that we need to scroll the list to the end.
 
@@ -2021,6 +2024,8 @@ public class ComposeMessageActivity extends Activity
             mUnicodeFilter = new UnicodeFilter(stripNonDecodableOnly);
         }
 
+        mEnableEmoticons = prefs.getBoolean(MessagingPreferenceActivity.ENABLE_EMOTICONS, true);
+
         View inflate = getLayoutInflater().inflate(R.layout.compose_message_activity, null);
         mZoomGestureOverlayView = new ZoomGestureOverlayView(this);
         mZoomGestureOverlayView.addZoomListener(this);
@@ -3014,7 +3019,7 @@ public class ComposeMessageActivity extends Activity
             menu.add(0, MENU_IMPORT_TEMPLATE, 0, R.string.import_message_template);
         }
 
-        if (!mWorkingMessage.hasSlideshow() && mIsSmsEnabled) {
+        if (!mWorkingMessage.hasSlideshow() && mIsSmsEnabled && mEnableEmoticons) {
             menu.add(0, MENU_INSERT_SMILEY, 0, R.string.menu_insert_smiley).setIcon(
                     R.drawable.ic_menu_emoticons);
         }
