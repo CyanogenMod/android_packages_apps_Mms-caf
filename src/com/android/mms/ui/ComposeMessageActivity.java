@@ -841,7 +841,7 @@ public class ComposeMessageActivity extends Activity
                             mMessageItem.mLocked ? null : "locked=0", null);
                     return null;
                 }
-            }.execute();
+            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     }
 
