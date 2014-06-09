@@ -30,6 +30,7 @@ package com.android.mms.ui;
 
 import static com.android.mms.ui.MessageListAdapter.COLUMN_ID;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_MSG_TYPE;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_LOCKED;
 import static com.android.mms.ui.MessageListAdapter.FORWARD_PROJECTION;
 
 import android.app.ActionBar;
@@ -62,6 +63,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -95,6 +97,7 @@ public class ManageMultiSelectAction extends Activity {
     private OperateThread mOperateThread = null;
     ArrayList<Cursor> mSelectedCursors = new ArrayList<Cursor>();
     ArrayList<String> mSelectedUris = new ArrayList<String>();
+    ArrayList<String> mSelectedLockedUris = new ArrayList<String>();
     ArrayList<MessageItem> mMessageItems = new ArrayList<MessageItem>();
 
     private int mManageMode;
@@ -103,6 +106,9 @@ public class ManageMultiSelectAction extends Activity {
     private static final int INVALID_THREAD = -1;
     private static final int SHOW_TOAST = 1;
     private static final int FOWARD_DONE = 2;
+
+    private static boolean mIsDeleteLockChecked = false;
+    private static final int MESSAGE_LOCKED = 1;
 
     private static final int DELAY_TIME = 500;
     private static final String SORT_ORDER = "date ASC";
@@ -207,6 +213,8 @@ public class ManageMultiSelectAction extends Activity {
         SparseBooleanArray booleanArray = mMsgListView.getCheckedItemPositions();
         int size = booleanArray.size();
 
+        mSelectedLockedUris.clear();
+
         if (size > 0) {
             for (int j = 0; j < size; j++) {
                 int position = booleanArray.keyAt(j);
@@ -227,6 +235,9 @@ public class ManageMultiSelectAction extends Activity {
                 } else if (mManageMode == MessageUtils.BATCH_DELETE_MODE) {
                     long msgId = c.getLong(COLUMN_ID);
                     Uri uri = ContentUris.withAppendedId(Sms.CONTENT_URI, msgId);
+                    if (c.getInt(COLUMN_SMS_LOCKED) == MESSAGE_LOCKED) {
+                        mSelectedLockedUris.add(uri.toString());
+                    }
                     mSelectedUris.add(uri.toString());
                 }
             }
@@ -317,8 +328,10 @@ public class ManageMultiSelectAction extends Activity {
 
     private void deleteMessages() {
         for (String uri : mSelectedUris) {
-            SqliteWrapper.delete(ManageMultiSelectAction.this, mContentResolver,
-                    Uri.parse(uri), null, null);
+            if (mIsDeleteLockChecked || !mSelectedLockedUris.contains(uri)) {
+                SqliteWrapper.delete(ManageMultiSelectAction.this, mContentResolver,
+                        Uri.parse(uri), null, null);
+            }
         }
 
         Message msg = Message.obtain();
@@ -337,12 +350,29 @@ public class ManageMultiSelectAction extends Activity {
 
     private void confirmDeleteDialog(OnClickListener listener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        View contents = View.inflate(this, R.layout.delete_thread_dialog_view, null);
+        TextView msg = (TextView)contents.findViewById(R.id.message);
+        msg.setText(R.string.confirm_delete_selected_messages);
+
+        final CheckBox checkbox = (CheckBox)contents.findViewById(R.id.delete_locked);
+
+        if (mSelectedLockedUris.size() == 0) {
+            checkbox.setVisibility(View.GONE);
+        } else {
+            checkbox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mIsDeleteLockChecked = checkbox.isChecked();
+                }
+            });
+        }
         builder.setTitle(R.string.confirm_dialog_title);
         builder.setIconAttribute(android.R.attr.alertDialogIcon);
         builder.setCancelable(true);
         builder.setPositiveButton(R.string.yes, listener);
         builder.setNegativeButton(R.string.no, null);
-        builder.setMessage(R.string.confirm_delete_selected_messages);
+        builder.setView(contents);
         builder.show();
     }
 
