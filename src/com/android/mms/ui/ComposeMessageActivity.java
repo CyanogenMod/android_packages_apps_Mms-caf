@@ -2359,9 +2359,7 @@ public class ComposeMessageActivity extends Activity
             mSubjectTextEditor.removeTextChangedListener(mSubjectEditorWatcher);
         }
 
-        if (!TextUtils.isEmpty(mWorkingMessage.getSubject())) {
-            mSubjectTextEditor.setText(mWorkingMessage.getSubject());
-        }
+        mSubjectTextEditor.setText(mWorkingMessage.getSubject());
         mSubjectTextEditor.setVisibility(show ? View.VISIBLE : View.GONE);
         hideOrShowTopPanel();
     }
@@ -5065,6 +5063,9 @@ public class ComposeMessageActivity extends Activity
         mAttachmentEditor.hideView();
         mAttachmentEditorScrollView.setVisibility(View.GONE);
 
+        // Hide the subject editor
+        showSubjectEditor(false);
+
         // Focus to the text editor.
         mTextEditor.requestFocus();
 
@@ -5080,9 +5081,6 @@ public class ComposeMessageActivity extends Activity
         mWorkingMessage.clearConversation(mConversation, false);
         mWorkingMessage = WorkingMessage.createEmpty(this);
         mWorkingMessage.setConversation(mConversation);
-
-        // Hide the subject editor
-        showSubjectEditor(false);
 
         hideRecipientEditor();
         drawBottomPanel();
