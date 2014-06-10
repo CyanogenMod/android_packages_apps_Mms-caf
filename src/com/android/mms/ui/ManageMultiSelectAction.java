@@ -50,6 +50,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Telephony.Mms;
 import android.provider.Telephony.Sms;
 import android.provider.Telephony.Threads;
 import android.provider.Telephony.Sms.Conversations;
@@ -234,7 +235,9 @@ public class ManageMultiSelectAction extends Activity {
                     mSelectedUris.add(getUriStrByCursor(c));
                 } else if (mManageMode == MessageUtils.BATCH_DELETE_MODE) {
                     long msgId = c.getLong(COLUMN_ID);
-                    Uri uri = ContentUris.withAppendedId(Sms.CONTENT_URI, msgId);
+                    Uri uri = c.getString(COLUMN_MSG_TYPE).equals("sms")
+                            ? ContentUris.withAppendedId(Sms.CONTENT_URI, msgId)
+                            : ContentUris.withAppendedId(Mms.CONTENT_URI, msgId);
                     if (c.getInt(COLUMN_SMS_LOCKED) == MESSAGE_LOCKED) {
                         mSelectedLockedUris.add(uri.toString());
                     }
