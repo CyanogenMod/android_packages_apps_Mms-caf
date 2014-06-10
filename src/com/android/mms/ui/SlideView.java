@@ -62,10 +62,10 @@ public class SlideView extends AbsoluteLayout implements
     private static final boolean LOCAL_LOGV = false;
     // FIXME: Need getHeight from mAudioInfoView instead of constant AUDIO_INFO_HEIGHT.
     private static final int AUDIO_INFO_HEIGHT = 82;
-    private static final int FONTSIZESTEP = 9;
-    private static final int FONTSIZEMAX = 48;
-    private static final int FONTSIZEMIN = 18;
-    private static final int FONTSIZE_DEFAULT = 27;
+    private static final float FONTSIZESTEP = 9f;
+    private static final float FONTSIZEMAX = 48f;
+    private static final float FONTSIZEMIN = 18f;
+    private static final float FONTSIZE_DEFAULT = 27f;
 
     private View mAudioInfoView;
     private ImageView mImageView;
@@ -154,7 +154,7 @@ public class SlideView extends AbsoluteLayout implements
     }
 
     private void zoomIn() {
-        int curFontSet = getCurrentTextSize(mContext);
+        float curFontSet = getCurrentTextSize(mContext);
         if (curFontSet >= FONTSIZEMAX) {
             curFontSet = FONTSIZEMAX;
         } else {
@@ -168,7 +168,7 @@ public class SlideView extends AbsoluteLayout implements
     }
 
     private void zoomOut() {
-        int curFontSet = getCurrentTextSize(mContext);
+        float curFontSet = getCurrentTextSize(mContext);
         if (curFontSet <= FONTSIZEMIN) {
             curFontSet = FONTSIZEMIN;
         } else {
@@ -181,14 +181,14 @@ public class SlideView extends AbsoluteLayout implements
         }
     }
 
-    private int getCurrentTextSize(Context context) {
+    private float getCurrentTextSize(Context context) {
         SharedPreferences prefsms = PreferenceManager.
                                     getDefaultSharedPreferences(context);
         String textSize = prefsms.getString(SMS_FONTSIZE, String.valueOf(FONTSIZE_DEFAULT));
-        return Integer.parseInt(textSize);
+        return Float.parseFloat(textSize);
     }
 
-    private void setCurrentTextSet(Context context, int value){
+    private void setCurrentTextSet(Context context, float value){
         SharedPreferences prefsms = PreferenceManager.getDefaultSharedPreferences(context);
         prefsms.edit().putString(SMS_FONTSIZE, String.valueOf(value)).commit();
     }
