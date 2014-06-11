@@ -612,7 +612,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                         final String value = newValue.toString();
                         int index = mMmsExpiryPref.findIndexOfValue(value);
                         mMmsExpiryPref.setValue(value);
-                        mMmsExpiryPref.setSummary(mMmsExpiryPref.getEntryValues()[index]);
+                        mMmsExpiryPref.setSummary(mMmsExpiryPref.getEntries()[index]);
                         return false;
                     }
                 });
@@ -625,7 +625,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                         final String value = newValue.toString();
                         int index = mMmsExpiryCard1Pref.findIndexOfValue(value);
                         mMmsExpiryCard1Pref.setValue(value);
-                        mMmsExpiryCard1Pref.setSummary(mMmsExpiryCard1Pref.getEntryValues()[index]);
+                        mMmsExpiryCard1Pref.setSummary(mMmsExpiryCard1Pref.getEntries()[index]);
                         return false;
                     }
                 });
@@ -638,7 +638,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                         final String value = newValue.toString();
                         int index = mMmsExpiryCard2Pref.findIndexOfValue(value);
                         mMmsExpiryCard2Pref.setValue(value);
-                        mMmsExpiryCard2Pref.setSummary(mMmsExpiryCard2Pref.getEntryValues()[index]);
+                        mMmsExpiryCard2Pref.setSummary(mMmsExpiryCard2Pref.getEntries()[index]);
                         return false;
                     }
                 });
