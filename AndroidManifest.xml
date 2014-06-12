@@ -256,6 +256,11 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ui.ConversationOptionsActivity"
+                  android:theme="@style/MmsTheme"
+                  android:configChanges="orientation|screenSize|keyboardHidden"
+                  android:label="@string/menu_conversation_options" />
+
         <receiver android:name=".transaction.PushReceiver"
             android:permission="android.permission.BROADCAST_WAP_PUSH">
             <intent-filter>
