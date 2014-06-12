@@ -263,7 +263,12 @@ public class SelectMmsSubscription extends Service {
         Bundle tempBundle = req.startUpIntent.getExtras();
         if (tempBundle != null) {
             svc.putExtras(tempBundle); //copy all extras
+        } else {
+            svc.putExtra(Mms.SUB_ID, req.destSub);
+            svc.putExtra(MultiSimUtility.ORIGIN_SUB_ID, req.originSub);
+            Log.d(TAG, "Add proper subscription values if extras are not available");
         }
+
         mContext.startService(svc);
 
     }
