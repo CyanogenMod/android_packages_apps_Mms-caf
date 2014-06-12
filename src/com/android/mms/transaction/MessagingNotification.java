@@ -341,8 +341,16 @@ public class MessagingNotification {
         NotificationManager nm = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,  info.mClickIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent;
+        if (subId == MessageUtils.SUB_INVALID) {
+            pendingIntent = PendingIntent.getActivity(context, 0, info.mClickIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+        } else {
+            // Use requestCode to avoid updating all intents of previous notifications
+            pendingIntent = PendingIntent.getActivity(context,
+                    NEW_ICC_NOTIFICATION_ID[subId], info.mClickIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+        }
         String title = info.mTitle;
         noti.setContentTitle(title)
             .setContentIntent(pendingIntent)
