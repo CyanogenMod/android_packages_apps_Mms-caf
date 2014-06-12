@@ -113,4 +113,7 @@
   <string name="pref_mms_notification_vibrate_long_vib">Vibració llarga</string>
   <string name="pref_mms_notification_vibrate_mult_short">Múltiples curtes</string>
   <string name="pref_mms_notification_vibrate_mult_long">Múltiples llargues</string>
+  <string name="menu_insert_smiley">Insereix una emoticona</string>
+  <string name="pref_title_enable_emoticons">Suport d\'emoticones</string>
+  <string name="pref_summary_enable_emoticons">Substitueix les emoticones de text amb els seus equivalents gràfics</string>
 </resources>

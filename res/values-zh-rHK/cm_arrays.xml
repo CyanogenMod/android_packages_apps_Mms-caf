@@ -30,4 +30,27 @@
     <item>11</item>
     <item>12 (最嚴格)</item>
   </string-array>
+  <string-array name="default_smiley_names">
+    <item>開心</item>
+    <item>傷心</item>
+    <item>眨眼</item>
+    <item>吐舌頭</item>
+    <item>驚訝</item>
+    <item>紅唇</item>
+    <item>大喊</item>
+    <item>超酷</item>
+    <item>滿嘴錢</item>
+    <item>說錯話</item>
+    <item>害羞</item>
+    <item>天使</item>
+    <item>還沒決定</item>
+    <item>嚎啕大哭</item>
+    <item>不要告訴別人</item>
+    <item>開懷大笑</item>
+    <item>疑惑</item>
+    <item>愛心</item>
+    <item>生氣</item>
+    <item>傻笑</item>
+    <item>撲克臉</item>
+  </string-array>
 </resources>

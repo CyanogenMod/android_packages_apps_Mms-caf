@@ -30,4 +30,27 @@
     <item>11</item>
     <item>12 (strengest)</item>
   </string-array>
+  <string-array name="default_smiley_names">
+    <item>Glad</item>
+    <item>Trist</item>
+    <item>Blinker</item>
+    <item>Tungen stikker ud</item>
+    <item>Overrasket</item>
+    <item>Kysser</item>
+    <item>Råber</item>
+    <item>Cool</item>
+    <item>Pengemund</item>
+    <item>Fod i munden</item>
+    <item>Flov</item>
+    <item>Engel</item>
+    <item>Uafklaret</item>
+    <item>Græder</item>
+    <item>Læber forseglet</item>
+    <item>Griner</item>
+    <item>Forvirret</item>
+    <item>Hjerte</item>
+    <item>Gal</item>
+    <item>Smørret grin</item>
+    <item>Pokerfjæs</item>
+  </string-array>
 </resources>

@@ -51,6 +51,8 @@
   <string name="pref_title_sms_split_counter">分段計數器</string>
   <string name="pref_summary_sms_split_counter">在訊息中加入計數器，例如：(1/2)</string>
   <string name="blacklist_summary_disabled">已停用</string>
+  <string name="alert_dialog_yes">是</string>
+  <string name="alert_dialog_no">否</string>
   <string name="send_delay_3seconds">3 秒</string>
   <string name="send_delay_5seconds">5 秒</string>
   <string name="send_delay_10seconds">10 秒</string>

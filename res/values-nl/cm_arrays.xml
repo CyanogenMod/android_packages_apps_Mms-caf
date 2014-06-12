@@ -30,4 +30,27 @@
     <item>11</item>
     <item>12 (meest strikt)</item>
   </string-array>
+  <string-array name="default_smiley_names">
+    <item>Blij</item>
+    <item>Bedroefd</item>
+    <item>Knipoog</item>
+    <item>Tong uitsteken</item>
+    <item>Verrast</item>
+    <item>Kussend</item>
+    <item>Schreeuwend</item>
+    <item>Gaaf</item>
+    <item>Geldzoeker</item>
+    <item>Mond vol tanden</item>
+    <item>Beschaamd</item>
+    <item>Engel</item>
+    <item>Twijfelend</item>
+    <item>Huilend</item>
+    <item>Lippen op elkaar</item>
+    <item>Lachend</item>
+    <item>Verward</item>
+    <item>Hart</item>
+    <item>Boos</item>
+    <item>Grijns</item>
+    <item>Pokergezicht</item>
+  </string-array>
 </resources>

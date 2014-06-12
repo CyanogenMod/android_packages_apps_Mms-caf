@@ -30,4 +30,27 @@
     <item>11</item>
     <item>12 (nejméně citlivé)</item>
   </string-array>
+  <string-array name="default_smiley_names">
+    <item>Šťastný</item>
+    <item>Smutný</item>
+    <item>Mrkací</item>
+    <item>Vyplazující jazyk</item>
+    <item>Překvapený</item>
+    <item>Líbací</item>
+    <item>Kříčící</item>
+    <item>Cool</item>
+    <item>Peníze v puse</item>
+    <item>Noha v puse</item>
+    <item>V rozpacích</item>
+    <item>Andílek</item>
+    <item>Nerozhodný</item>
+    <item>Brečící</item>
+    <item>Uzavřené rty</item>
+    <item>Smějící</item>
+    <item>Zmatený</item>
+    <item>Srdce</item>
+    <item>Šílený</item>
+    <item>Šklebící</item>
+    <item>Pokrový</item>
+  </string-array>
 </resources>

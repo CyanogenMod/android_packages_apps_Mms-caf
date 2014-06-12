@@ -113,4 +113,7 @@
   <string name="pref_mms_notification_vibrate_long_vib">Lank vibreer</string>
   <string name="pref_mms_notification_vibrate_mult_short">Meerdere kort</string>
   <string name="pref_mms_notification_vibrate_mult_long">Meerdere lank</string>
+  <string name="menu_insert_smiley">Voeg gesiggie by</string>
+  <string name="pref_title_enable_emoticons">Emosikone ondersteuning</string>
+  <string name="pref_summary_enable_emoticons">Vervang teks emosikone met grafiese ekwivalente</string>
 </resources>

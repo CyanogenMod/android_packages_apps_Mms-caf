@@ -113,4 +113,7 @@
   <string name="pref_mms_notification_vibrate_long_vib">الإهتزاز طويل</string>
   <string name="pref_mms_notification_vibrate_mult_short">قصيرة متعددة</string>
   <string name="pref_mms_notification_vibrate_mult_long">طويلة متعددة</string>
+  <string name="menu_insert_smiley">إدخال وجه مبتسم</string>
+  <string name="pref_title_enable_emoticons">دعم الفيسات</string>
+  <string name="pref_summary_enable_emoticons">إستبدال انصه الفيسات بي المساويه لها جرافيكس</string>
 </resources>

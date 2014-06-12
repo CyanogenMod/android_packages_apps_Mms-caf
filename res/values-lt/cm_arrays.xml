@@ -30,4 +30,27 @@
     <item>11</item>
     <item>12 (tiksliausias)</item>
   </string-array>
+  <string-array name="default_smiley_names">
+    <item>Laimingas</item>
+    <item>Liūdnas</item>
+    <item>Mirksintis</item>
+    <item>Iškišęs liežuvį</item>
+    <item>Nustebęs</item>
+    <item>Bučiuojantis</item>
+    <item>Šaukiantis</item>
+    <item>Kietas</item>
+    <item>Pinigai vietoj burnos</item>
+    <item>Pėda burnoje</item>
+    <item>Susigėdęs</item>
+    <item>Angelas</item>
+    <item>Neapsisprendęs</item>
+    <item>Verkiantis</item>
+    <item>Niekam nepasakosiu</item>
+    <item>Juokiasi</item>
+    <item>Sumišęs</item>
+    <item>Širdelė</item>
+    <item>Įniršęs</item>
+    <item>Kvaila šypsena</item>
+    <item>Nieko nesakantis veidas</item>
+  </string-array>
 </resources>

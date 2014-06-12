@@ -30,4 +30,27 @@
     <item>11</item>
     <item>12 (estricta)</item>
   </string-array>
+  <string-array name="default_smiley_names">
+    <item>Lleu</item>
+    <item>Tristayu</item>
+    <item>Blizcu</item>
+    <item>Sacando la llingua</item>
+    <item>Sorpresa</item>
+    <item>Besu</item>
+    <item>Glayando</item>
+    <item>Xenial</item>
+    <item>Dineru na boca</item>
+    <item>Pie na boca</item>
+    <item>Avergoñáu</item>
+    <item>Ánxel</item>
+    <item>Indecisu</item>
+    <item>Lloramicando</item>
+    <item>Llabios pesllaos</item>
+    <item>Riendo</item>
+    <item>Confusu</item>
+    <item>Corazón</item>
+    <item>Llocu</item>
+    <item>Sonrisa</item>
+    <item>Cara de poker</item>
+  </string-array>
 </resources>

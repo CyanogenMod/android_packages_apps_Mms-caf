@@ -30,4 +30,27 @@
     <item>11</item>
     <item>12 (ketat)</item>
   </string-array>
+  <string-array name="default_smiley_names">
+    <item>Senang</item>
+    <item>Sedih</item>
+    <item>Mengedipkan mata</item>
+    <item>Lidah yang menjulur keluar</item>
+    <item>Terkejut</item>
+    <item>Mencium</item>
+    <item>Berteriak</item>
+    <item>Keren</item>
+    <item>Mulut uang</item>
+    <item>Kaki di mulut</item>
+    <item>Malu</item>
+    <item>Malaikat</item>
+    <item>Ragu-ragu</item>
+    <item>Menangis</item>
+    <item>Bibir disegel</item>
+    <item>Tertawa</item>
+    <item>Bingung</item>
+    <item>Hati</item>
+    <item>Marah</item>
+    <item>Menyeringai</item>
+    <item>Wajah poker</item>
+  </string-array>
 </resources>

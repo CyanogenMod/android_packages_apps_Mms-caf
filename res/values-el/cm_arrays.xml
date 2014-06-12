@@ -30,4 +30,27 @@
     <item>11</item>
     <item>12 (αυστηρότερη)</item>
   </string-array>
+  <string-array name="default_smiley_names">
+    <item>Είμαι χαρούμενος</item>
+    <item>Είμαι λυπημένος</item>
+    <item>Κλείνω το μάτι</item>
+    <item>Κοροϊδεύω</item>
+    <item>Είμαι έκπληκτος</item>
+    <item>Φιλάω</item>
+    <item>Φωνάζω</item>
+    <item>Cool</item>
+    <item>Κάνω τα λόγια μου πράξη</item>
+    <item>Είπα χαζομάρα</item>
+    <item>Ντρέπομαι</item>
+    <item>Αγγελούδι</item>
+    <item>Δεν έχω αποφασίσει</item>
+    <item>Κλαίω</item>
+    <item>Δεν αποκαλύπτω τίποτα</item>
+    <item>Γελάω</item>
+    <item>Είμαι μπερδεμένος</item>
+    <item>Καρδιά</item>
+    <item>Τρελός</item>
+    <item>Υπεροπτικό χαμόγελο</item>
+    <item>Είμαι ανέκφραστος</item>
+  </string-array>
 </resources>

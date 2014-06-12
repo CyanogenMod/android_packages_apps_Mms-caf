@@ -30,4 +30,27 @@
     <item>11</item>
     <item>12 (เข้มงวดที่สุด)</item>
   </string-array>
+  <string-array name="default_smiley_names">
+    <item>ดีใจ</item>
+    <item>เศร้า</item>
+    <item>ขยิบตา</item>
+    <item>แลบลิ้น</item>
+    <item>ประหลาดใจ</item>
+    <item>จุมพิต</item>
+    <item>ตะโกน</item>
+    <item>น่าสนใจ</item>
+    <item>เงินปิดปาก</item>
+    <item>เท้าปิดปาก</item>
+    <item>อาย</item>
+    <item>เทพ</item>
+    <item>ไม่แน่ใจ</item>
+    <item>ร้องไห้</item>
+    <item>รูดซิปปาก</item>
+    <item>หัวเราะ</item>
+    <item>สับสน</item>
+    <item>หัวใจ</item>
+    <item>โกรธ</item>
+    <item>แสยะยิ้ม</item>
+    <item>หน้าโป๊กเกอร์</item>
+  </string-array>
 </resources>

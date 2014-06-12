@@ -30,4 +30,27 @@
     <item>11</item>
     <item>12 (plus strict)</item>
   </string-array>
+  <string-array name="default_smiley_names">
+    <item>Joyeux</item>
+    <item>Triste</item>
+    <item>Clin d’œil</item>
+    <item>Tire la langue</item>
+    <item>Surpris</item>
+    <item>\"S\'embrasser\"</item>
+    <item>Cris</item>
+    <item>Cool</item>
+    <item>Perspectives d’argent</item>
+    <item>Déçu</item>
+    <item>Embarrassé</item>
+    <item>Ange</item>
+    <item>Indécis</item>
+    <item>Pleurs</item>
+    <item>Bouche cousue</item>
+    <item>Rires</item>
+    <item>Confus</item>
+    <item>Cœur</item>
+    <item>Triste</item>
+    <item>Sourire en coin</item>
+    <item>Impassible</item>
+  </string-array>
 </resources>

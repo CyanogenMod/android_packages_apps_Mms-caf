@@ -113,4 +113,7 @@
   <string name="pref_mms_notification_vibrate_long_vib">Εκτενής δόνηση</string>
   <string name="pref_mms_notification_vibrate_mult_short">Πολλαπλές μικρές</string>
   <string name="pref_mms_notification_vibrate_mult_long">Πολλαπλές εκτενείς</string>
+  <string name="menu_insert_smiley">Εισαγωγή smiley</string>
+  <string name="pref_title_enable_emoticons">Υποστήριξη emoticon</string>
+  <string name="pref_summary_enable_emoticons">Αντικατάσταση emoticon κειμένου με τα αντίστοιχα εικονίδια</string>
 </resources>

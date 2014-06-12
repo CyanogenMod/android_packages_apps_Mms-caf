@@ -113,4 +113,7 @@
   <string name="pref_mms_notification_vibrate_long_vib">Lang</string>
   <string name="pref_mms_notification_vibrate_mult_short">Meerdere keren kort</string>
   <string name="pref_mms_notification_vibrate_mult_long">Meerdere keren lang</string>
+  <string name="menu_insert_smiley">Smiley invoegen</string>
+  <string name="pref_title_enable_emoticons">Emoticons</string>
+  <string name="pref_summary_enable_emoticons">Tekst-emoticons omzetten naar plaatjes</string>
 </resources>

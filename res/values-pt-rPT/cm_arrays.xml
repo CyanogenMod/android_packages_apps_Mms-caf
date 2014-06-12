@@ -30,4 +30,27 @@
     <item>11</item>
     <item>12 (mais rigoroso)</item>
   </string-array>
+  <string-array name="default_smiley_names">
+    <item>Feliz</item>
+    <item>Triste</item>
+    <item>Piscar o olho</item>
+    <item>Língua de fora</item>
+    <item>Surpreso</item>
+    <item>Beijos</item>
+    <item>Gritar</item>
+    <item>Cool</item>
+    <item>Rico</item>
+    <item>Pé na boca</item>
+    <item>Envergonhado</item>
+    <item>Anjo</item>
+    <item>Indeciso</item>
+    <item>Chorar</item>
+    <item>Segredo</item>
+    <item>Rir</item>
+    <item>Confuso</item>
+    <item>Coração</item>
+    <item>Louco</item>
+    <item>Sorriso</item>
+    <item>Jogador</item>
+  </string-array>
 </resources>

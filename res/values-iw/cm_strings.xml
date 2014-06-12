@@ -113,4 +113,7 @@
   <string name="pref_mms_notification_vibrate_long_vib">רטט ארוך</string>
   <string name="pref_mms_notification_vibrate_mult_short">קצר מרובה</string>
   <string name="pref_mms_notification_vibrate_mult_long">ארוך מרובה</string>
+  <string name="menu_insert_smiley">הוסף סמיילי</string>
+  <string name="pref_title_enable_emoticons">תמיכה בסמלי רגשות</string>
+  <string name="pref_summary_enable_emoticons">החלפת סימונים טקסטואליים בציוריים</string>
 </resources>

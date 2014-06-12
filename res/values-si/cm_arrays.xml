@@ -30,4 +30,27 @@
     <item>11</item>
     <item>12 (තදබදවූ)</item>
   </string-array>
+  <string-array name="default_smiley_names">
+    <item>සතුටු</item>
+    <item>දුක්මුසු</item>
+    <item>ඉඟිමරන</item>
+    <item>දිව එලියට දැමූ</item>
+    <item>පුදුමවූ</item>
+    <item>හාදු දෙන</item>
+    <item>මොරදෙන</item>
+    <item>නිවුණු</item>
+    <item>මුදල් කට</item>
+    <item>කට වැරදුනු</item>
+    <item>ලැජ්ජාවට පත්වූ</item>
+    <item>දේවදූතයා</item>
+    <item>අවිනිශ්වත</item>
+    <item>හඬන</item>
+    <item>වැසුණු කට</item>
+    <item>සිනහවෙන</item>
+    <item>ව්‍යාකූලවූ</item>
+    <item>හදවත</item>
+    <item>කුපිතවූ</item>
+    <item>නියවීම</item>
+    <item>හැඟීම් විරහිත</item>
+  </string-array>
 </resources>

@@ -113,4 +113,7 @@
   <string name="pref_mms_notification_vibrate_long_vib">สั่นนาน</string>
   <string name="pref_mms_notification_vibrate_mult_short">สั้นๆหลายครั้ง</string>
   <string name="pref_mms_notification_vibrate_mult_long">ยาวๆหลายครั้ง</string>
+  <string name="menu_insert_smiley">ใส่รูปหน้ายิ้ม</string>
+  <string name="pref_title_enable_emoticons">สนับสนุนอิโมติคอน</string>
+  <string name="pref_summary_enable_emoticons">แสดงข้อความอีโมติคอนแทนด้วยรูปภาพ</string>
 </resources>

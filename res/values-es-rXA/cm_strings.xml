@@ -113,4 +113,7 @@
   <string name="pref_mms_notification_vibrate_long_vib">Vibración llarga</string>
   <string name="pref_mms_notification_vibrate_mult_short">Múltiples curties</string>
   <string name="pref_mms_notification_vibrate_mult_long">Múltiples llargues</string>
+  <string name="menu_insert_smiley">Inxertar fustaxe</string>
+  <string name="pref_title_enable_emoticons">Sofitu pa emoticonos</string>
+  <string name="pref_summary_enable_emoticons">Sustituyir los emoticonos de testu polos sos equivalentes gráficos</string>
 </resources>

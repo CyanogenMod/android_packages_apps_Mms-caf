@@ -22,9 +22,9 @@
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> šablonų bus ištrinta.</item>
   </plurals>
   <plurals name="remaining_delay_time">
-    <item quantity="one">Siųs po 1 sekundės, palieskite norėdami atšaukti.</item>
-    <item quantity="few">Siųs po %1$d sekundžių, palieskite norėdami atšaukti.</item>
-    <item quantity="other">Siųs po %1$d sekundžių, palieskite norėdami atšaukti.</item>
+    <item quantity="one">Siųs po %1$d sek. palieskite norėdami atšaukti.</item>
+    <item quantity="few">Siųs po %1$d sek. palieskite norėdami atšaukti.</item>
+    <item quantity="other">Siųs po %1$d sek. palieskite norėdami atšaukti.</item>
   </plurals>
   <plurals name="confirm_mark_unread_conversation">
     <item quantity="one"><xliff:g id="number">%1$s</xliff:g> pokalbis bus pažymėtas kaip neskaitytas.</item>

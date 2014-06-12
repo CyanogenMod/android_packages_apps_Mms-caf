@@ -36,6 +36,7 @@
   <string name="pref_dark_theme_title">Använd mörkt tema</string>
   <string name="pref_dark_theme_summary">Om avmarkerat kommer det vanliga ljusa temat att användas</string>
   <string name="pref_quickmessage_title">Visa pop-up</string>
+  <string name="pref_quickmessage_summary">Visa snabbmeddelandepop-up för inkommande SMS</string>
   <string name="pref_wake_unlock_title">Väck och lås upp</string>
   <string name="pref_wake_unlock_summary">Väck och lås upp enhet vid inkommande meddelande (endast osäkra låsskärmar)</string>
   <string name="pref_close_all_title">Stäng alla</string>
@@ -64,7 +65,10 @@
   <string name="pref_summary_templates_show_gesture">Visa gestspår</string>
   <string name="pref_title_template_gestures_sensitivity">Gestkänslighet</string>
   <string name="pref_extra_settings">Extra inställningar</string>
+  <string name="pref_title_unicode_stripping">Konvertera unicode</string>
   <string name="pref_unicode_stripping_leave_intact">Lämna tecken intakta</string>
+  <string name="pref_unicode_stripping_non_encodable">Konvertera ej kodbara tecken</string>
+  <string name="pref_unicode_stripping_all">Konvertera alla unicodetecken</string>
   <string name="pref_title_mms_full_timestamp">Fullständiga tidsstämplar</string>
   <string name="pref_summary_mms_full_timestamp">Visa både datum och tid i tidsstämplar</string>
   <string name="pref_title_mms_use_sent_timestamp">Ursprungliga tidsstämplar</string>
@@ -109,4 +113,7 @@
   <string name="pref_mms_notification_vibrate_long_vib">Lång</string>
   <string name="pref_mms_notification_vibrate_mult_short">Flera korta</string>
   <string name="pref_mms_notification_vibrate_mult_long">Flera långa</string>
+  <string name="menu_insert_smiley">Infoga känsloikon</string>
+  <string name="pref_title_enable_emoticons">Aktivera känsloikoner</string>
+  <string name="pref_summary_enable_emoticons">Ersätt textkänsloikoner med grafiska motsvarigheter</string>
 </resources>

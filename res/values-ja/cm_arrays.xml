@@ -30,4 +30,27 @@
     <item>11</item>
     <item>12（最も厳密）</item>
   </string-array>
+  <string-array name="default_smiley_names">
+    <item>ハッピー</item>
+    <item>悲しい</item>
+    <item>ウィンク</item>
+    <item>アッカンベー</item>
+    <item>びっくり</item>
+    <item>キス</item>
+    <item>激怒</item>
+    <item>クール</item>
+    <item>気持ち悪い</item>
+    <item>しまった</item>
+    <item>恥ずかしい</item>
+    <item>天使</item>
+    <item>迷う</item>
+    <item>泣く</item>
+    <item>お口にチャック</item>
+    <item>笑顔</item>
+    <item>混乱</item>
+    <item>ハート</item>
+    <item>怒</item>
+    <item>ニヤニヤ</item>
+    <item>ポーカーフェイス</item>
+  </string-array>
 </resources>

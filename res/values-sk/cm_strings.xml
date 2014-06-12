@@ -113,4 +113,7 @@
   <string name="pref_mms_notification_vibrate_long_vib">Dlhé vibrovanie</string>
   <string name="pref_mms_notification_vibrate_mult_short">Viacnásobné krátke vibrovanie</string>
   <string name="pref_mms_notification_vibrate_mult_long">Viacnásobné dlhé vibrovanie</string>
+  <string name="menu_insert_smiley">Vložiť smajlík</string>
+  <string name="pref_title_enable_emoticons">Podpora emotikonov</string>
+  <string name="pref_summary_enable_emoticons">Nahradiť textové emotikony s grafickými ekvivalentami</string>
 </resources>

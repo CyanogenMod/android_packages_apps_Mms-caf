@@ -30,4 +30,27 @@
     <item>11</item>
     <item>12 (Pontosabb)</item>
   </string-array>
+  <string-array name="default_smiley_names">
+    <item>Boldog</item>
+    <item>Szomorú</item>
+    <item>Kacsintó</item>
+    <item>Nyelvnyújtó</item>
+    <item>Meglepett</item>
+    <item>Csókolózás</item>
+    <item>Kiabál</item>
+    <item>Cool</item>
+    <item>Pénz száj</item>
+    <item>Láb a szájban</item>
+    <item>Zavarba jött</item>
+    <item>Angyal</item>
+    <item>Bizonytalan</item>
+    <item>Síró</item>
+    <item>Zárt ajkak</item>
+    <item>Nevetés</item>
+    <item>Zavaros</item>
+    <item>Szív</item>
+    <item>Őrült</item>
+    <item>Önelégült mosoly</item>
+    <item>Poker arc</item>
+  </string-array>
 </resources>

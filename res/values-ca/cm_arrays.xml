@@ -30,4 +30,27 @@
     <item>11</item>
     <item>12 (més estricte)</item>
   </string-array>
+  <string-array name="default_smiley_names">
+    <item>Feliç</item>
+    <item>Trist</item>
+    <item>Fent l\'ullet</item>
+    <item>Treient la llengua</item>
+    <item>Sorprès</item>
+    <item>Donant un petó</item>
+    <item>Cridant</item>
+    <item>Tranquil</item>
+    <item>Diners a la boca</item>
+    <item>Peu a la boca</item>
+    <item>Avergonyit</item>
+    <item>Àngel</item>
+    <item>Indecís</item>
+    <item>Plorant</item>
+    <item>Llavis segellats</item>
+    <item>Rient</item>
+    <item>Confós</item>
+    <item>Cor</item>
+    <item>Boig</item>
+    <item>Somrient satisfet</item>
+    <item>Cara de pòquer</item>
+  </string-array>
 </resources>

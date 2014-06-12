@@ -17,15 +17,15 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="cell_broadcast_sender">Инфо сервис канал</string>
-  <string name="disk_storage_full_error">Грешка: Складиштење је пуно.</string>
+  <string name="disk_storage_full_error">Грешка: Складиште је пуно.</string>
   <string name="system_audio_item">Систем аудио звука</string>
   <string name="external_audio_item">Спољни аудио звук</string>
   <string name="pending_mms_title">Чекање MMS-а на друге претплате</string>
   <string name="pending_mms">Поруке: Један или више MMS порука се чека</string>
-  <string name="pending_mms_text">Додирните да бисте се пребацили на претплату</string>
+  <string name="pending_mms_text">Додирни да пребациш претплату</string>
   <string name="abort_mms">Порука: Откажи ММS</string>
-  <string name="abort_mms_text">Додирните да прекинете и вратите</string>
+  <string name="abort_mms_text">Додирни да прекинеш и вратиш</string>
   <string name="progress_mms_title">MMS трансакција на другу претплату у току</string>
   <string name="progress_mms">Порука: ММS у току\u2026</string>
-  <string name="progress_mms_text">Додирните да бисте покушали поново</string>
+  <string name="progress_mms_text">Додирни да поновиш</string>
 </resources>

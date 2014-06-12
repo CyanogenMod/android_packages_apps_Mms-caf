@@ -113,4 +113,7 @@
   <string name="pref_mms_notification_vibrate_long_vib">Lang vibration</string>
   <string name="pref_mms_notification_vibrate_mult_short">Flere korte</string>
   <string name="pref_mms_notification_vibrate_mult_long">Flere lange</string>
+  <string name="menu_insert_smiley">Indsæt smiley</string>
+  <string name="pref_title_enable_emoticons">Understøttelse af smileys</string>
+  <string name="pref_summary_enable_emoticons">Erstat tekst-smileys med grafik</string>
 </resources>

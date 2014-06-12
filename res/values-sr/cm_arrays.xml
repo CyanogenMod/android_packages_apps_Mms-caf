@@ -30,4 +30,27 @@
     <item>11</item>
     <item>12 (најстрожије)</item>
   </string-array>
+  <string-array name="default_smiley_names">
+    <item>Срећан</item>
+    <item>Тужан</item>
+    <item>Намигује</item>
+    <item>Плези се</item>
+    <item>Изненађен</item>
+    <item>Пољубац</item>
+    <item>Виче</item>
+    <item>Опуштен</item>
+    <item>Испуни обећање</item>
+    <item>Упс</item>
+    <item>Стиди се</item>
+    <item>Анђео</item>
+    <item>Неодлучан</item>
+    <item>Плаче</item>
+    <item>Ником ни реч</item>
+    <item>Смеје се</item>
+    <item>Збуњен</item>
+    <item>Срце</item>
+    <item>Бесан</item>
+    <item>Усиљен осмех</item>
+    <item>Покерашко лице</item>
+  </string-array>
 </resources>

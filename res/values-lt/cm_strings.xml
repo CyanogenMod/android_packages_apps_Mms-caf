@@ -100,11 +100,11 @@
   <string name="fastscroll_index_groups">GR</string>
   <string name="pref_title_send_delay">Siuntimo delsimas</string>
   <string name="send_delay_immediate">Siųsti nedelsiant</string>
-  <string name="send_delay_3seconds">3 sekundės</string>
-  <string name="send_delay_5seconds">5 sekundės</string>
-  <string name="send_delay_10seconds">10 sekundžių</string>
-  <string name="send_delay_20seconds">20 sekundžių</string>
-  <string name="send_delay_30seconds">30 sekundžių</string>
+  <string name="send_delay_3seconds">3 sek.</string>
+  <string name="send_delay_5seconds">5 sek.</string>
+  <string name="send_delay_10seconds">10 sek.</string>
+  <string name="send_delay_20seconds">20 sek.</string>
+  <string name="send_delay_30seconds">30 sek.</string>
   <string name="sent_countdown">Pranešimo siuntimo laikmatis</string>
   <string name="pref_title_mms_notification_vibrate_pattern">Vibravimo stilius</string>
   <string name="pref_summary_mms_notification_vibrate_pattern">Pakeisti vibravimo stilių</string>
@@ -113,4 +113,7 @@
   <string name="pref_mms_notification_vibrate_long_vib">Ilgas vibravimas</string>
   <string name="pref_mms_notification_vibrate_mult_short">Kartotinis trumpas</string>
   <string name="pref_mms_notification_vibrate_mult_long">Kartotinis ilgas</string>
+  <string name="menu_insert_smiley">Įterpti šypsenėlę</string>
+  <string name="pref_title_enable_emoticons">Emocijų palaikymas</string>
+  <string name="pref_summary_enable_emoticons">Pakeisti tekstines emocijas į grafinius atitikmenis</string>
 </resources>

@@ -30,4 +30,27 @@
     <item>11</item>
     <item>12 (最严谨)</item>
   </string-array>
+  <string-array name="default_smiley_names">
+    <item>开心</item>
+    <item>伤心</item>
+    <item>眨眼</item>
+    <item>吐舌头</item>
+    <item>惊讶</item>
+    <item>红唇</item>
+    <item>大喊</item>
+    <item>酷</item>
+    <item>满嘴钱</item>
+    <item>说错话</item>
+    <item>害羞</item>
+    <item>天使</item>
+    <item>犹豫</item>
+    <item>大哭</item>
+    <item>不要告诉别人</item>
+    <item>大笑</item>
+    <item>疑惑</item>
+    <item>爱心</item>
+    <item>生气</item>
+    <item>傻笑</item>
+    <item>扑克脸</item>
+  </string-array>
 </resources>

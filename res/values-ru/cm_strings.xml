@@ -113,4 +113,7 @@
   <string name="pref_mms_notification_vibrate_long_vib">Длинная вибрация</string>
   <string name="pref_mms_notification_vibrate_mult_short">Несколько коротких</string>
   <string name="pref_mms_notification_vibrate_mult_long">Несколько длинных</string>
+  <string name="menu_insert_smiley">Вставить смайлик</string>
+  <string name="pref_title_enable_emoticons">Поддержка смайликов</string>
+  <string name="pref_summary_enable_emoticons">Заменять текстовые смайлики соответствующими изображениями</string>
 </resources>

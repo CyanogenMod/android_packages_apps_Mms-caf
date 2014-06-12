@@ -113,4 +113,7 @@
   <string name="pref_mms_notification_vibrate_long_vib">දිගු කම්පනය</string>
   <string name="pref_mms_notification_vibrate_mult_short">කෙටි බහුගුණිත</string>
   <string name="pref_mms_notification_vibrate_mult_long">දිගු බහුගුණිත</string>
+  <string name="menu_insert_smiley">ඉමෝට්කොනයක් එක් කරන්න</string>
+  <string name="pref_title_enable_emoticons">ඉමෝට්කොන සහාය</string>
+  <string name="pref_summary_enable_emoticons">පෙළ වෙනුවට චිත්‍රක ඉමෝට්කොන ආදේශ කරන්න</string>
 </resources>

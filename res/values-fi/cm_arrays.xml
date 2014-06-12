@@ -30,4 +30,27 @@
     <item>11</item>
     <item>12 (tarkin)</item>
   </string-array>
+  <string-array name="default_smiley_names">
+    <item>Iloinen</item>
+    <item>Surullinen</item>
+    <item>Iskee silmää</item>
+    <item>Näyttää kieltä</item>
+    <item>Yllättynyt</item>
+    <item>Suutelee</item>
+    <item>Huutaa</item>
+    <item>Siisti</item>
+    <item>Ahne</item>
+    <item>Möläyttää</item>
+    <item>Nolostunut</item>
+    <item>Enkeli</item>
+    <item>Epävarma</item>
+    <item>Itkee</item>
+    <item>Sinetöidyt huulet</item>
+    <item>Nauraa</item>
+    <item>Hämmentynyt</item>
+    <item>Sydän</item>
+    <item>Hullu</item>
+    <item>Virnistys</item>
+    <item>Ilmeetön</item>
+  </string-array>
 </resources>

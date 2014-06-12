@@ -30,4 +30,27 @@
     <item>11</item>
     <item>12 (mest strikt)</item>
   </string-array>
+  <string-array name="default_smiley_names">
+    <item>Glad</item>
+    <item>Ledsen</item>
+    <item>Blinkar</item>
+    <item>Lipar</item>
+    <item>Förvånad</item>
+    <item>Pussar</item>
+    <item>Skriker</item>
+    <item>Cool</item>
+    <item>Dollarmun</item>
+    <item>Bortgjord</item>
+    <item>Generad</item>
+    <item>Ängel</item>
+    <item>Tveksam</item>
+    <item>Gråter</item>
+    <item>Hemlis</item>
+    <item>Skrattar</item>
+    <item>Förvirrad</item>
+    <item>Hjärta</item>
+    <item>Arg</item>
+    <item>Flinar</item>
+    <item>Pokeransikte</item>
+  </string-array>
 </resources>

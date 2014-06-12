@@ -30,4 +30,27 @@
     <item>11</item>
     <item>12 (الضيق)</item>
   </string-array>
+  <string-array name="default_smiley_names">
+    <item>سعيد</item>
+    <item>حزين</item>
+    <item>يغمز</item>
+    <item>لسان متدلي</item>
+    <item>مندهش</item>
+    <item>يقبيل</item>
+    <item>يصرخ</item>
+    <item>رائع</item>
+    <item>فم به نقود</item>
+    <item>قدم في الفم</item>
+    <item>مُحرج</item>
+    <item>ملاك</item>
+    <item>متردد</item>
+    <item>يبكي</item>
+    <item>الشفاه مغلقة</item>
+    <item>يضحك</item>
+    <item>مرتبك</item>
+    <item>قلب</item>
+    <item>مجنون</item>
+    <item>مبتسم بتكلف</item>
+    <item>وجه البوكر</item>
+  </string-array>
 </resources>

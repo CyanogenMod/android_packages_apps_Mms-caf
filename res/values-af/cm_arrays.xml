@@ -30,4 +30,27 @@
     <item>11</item>
     <item>12 (strengste)</item>
   </string-array>
+  <string-array name="default_smiley_names">
+    <item>Gelukkig</item>
+    <item>Hartseer</item>
+    <item>Oogknip</item>
+    <item>Steek tong uit</item>
+    <item>Verras</item>
+    <item>Soen</item>
+    <item>Skree</item>
+    <item>Koel</item>
+    <item>Praat of doen</item>
+    <item>Voet-in-mond</item>
+    <item>Verleë</item>
+    <item>Engel</item>
+    <item>Weifelend</item>
+    <item>Huil</item>
+    <item>Sê niks</item>
+    <item>Lag</item>
+    <item>Verward</item>
+    <item>Hart</item>
+    <item>Mal</item>
+    <item>Grynslag</item>
+    <item>Niksseggende blik</item>
+  </string-array>
 </resources>
