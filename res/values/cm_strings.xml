@@ -187,4 +187,9 @@
     <!-- Used in MobilePaperShowActivity -->
     <string name="normal_show">View normal mode</string>
     <string name="cannot_play">Cannot present the slide show.</string>
+
+    <!-- Conversation options -->
+    <string name="menu_conversation_options">Conversation options</string>
+    <string name="pref_title_reset_convopt_to_default">Reset to default</string>
+    <string name="pref_summary_reset_convopt_to_default">Resets the conversation setting to the application level setting</string>
 </resources>

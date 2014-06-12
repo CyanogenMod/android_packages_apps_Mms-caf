@@ -73,6 +73,7 @@ import com.android.mms.R;
 import com.android.mms.data.Contact;
 import com.android.mms.data.Conversation;
 import com.android.mms.data.WorkingMessage;
+import com.android.mms.data.cm.CMConversationSettings;
 import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
 import com.android.mms.quickmessage.QmMarkRead;
@@ -267,6 +268,8 @@ public class MessagingNotification {
 
         Set<Long> threads = new HashSet<Long>(4);
 
+        Log.d(TAG, "new threadId: " + newMsgThreadId);
+
         addMmsNotificationInfos(context, threads, notificationSet);
         addSmsNotificationInfos(context, threads, notificationSet);
 
@@ -289,11 +292,11 @@ public class MessagingNotification {
                                 "sCurrentlyDisplayedThreadId so NOT showing notification," +
                                 " but playing soft sound. threadId: " + newMsgThreadId);
                     }
-                    playInConversationNotificationSound(context);
+                    playInConversationNotificationSound(context, newMsgThreadId);
                     return;
                 }
             }
-            updateNotification(context, newMsgThreadId != THREAD_NONE, threads.size(),
+            updateNotification(context, newMsgThreadId, threads.size(),
                     notificationSet);
         }
 
@@ -312,10 +315,10 @@ public class MessagingNotification {
      * Play the in-conversation notification sound (it's the regular notification sound, but
      * played at half-volume
      */
-    private static void playInConversationNotificationSound(Context context) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        String ringtoneStr = sp.getString(MessagingPreferenceActivity.NOTIFICATION_RINGTONE,
-                null);
+    private static void playInConversationNotificationSound(Context context, long newThreadId) {
+        CMConversationSettings conversationSettings = CMConversationSettings
+            .getOrNew(context, newThreadId);
+        String ringtoneStr = conversationSettings.getNotificationTone();
         if (TextUtils.isEmpty(ringtoneStr)) {
             // Nothing to play
             return;
@@ -870,17 +873,23 @@ public class MessagingNotification {
      * updateNotification is *the* main function for building the actual notification handed to
      * the NotificationManager
      * @param context
-     * @param isNew if we've got a new message, show the ticker
+     * @param newThreadId the new thread id
      * @param uniqueThreadCount
      * @param notificationSet the set of notifications to display
      */
     private static void updateNotification(
             Context context,
-            boolean isNew,
+            long newThreadId,
             int uniqueThreadCount,
             SortedSet<NotificationInfo> notificationSet) {
+
+        boolean isNew = newThreadId != THREAD_NONE;
+        CMConversationSettings conversationSettings = CMConversationSettings
+            .getOrNew(context, newThreadId);
+
         // If the user has turned off notifications in settings, don't do any notifying.
-        if (!MessagingPreferenceActivity.getNotificationEnabled(context)) {
+        if ((isNew && !conversationSettings.getNotificationEnabled()) ||
+            !MessagingPreferenceActivity.getNotificationEnabled(context)) {
             if (DEBUG) {
                 Log.d(TAG, "updateNotification: notifications turned off in prefs, bailing");
             }
@@ -989,25 +998,8 @@ public class MessagingNotification {
         int defaults = 0;
 
         if (isNew) {
-            boolean vibrate = false;
-            if (sp.contains(MessagingPreferenceActivity.NOTIFICATION_VIBRATE)) {
-                // The most recent change to the vibrate preference is to store a boolean
-                // value in NOTIFICATION_VIBRATE. If prefs contain that preference, use that
-                // first.
-                vibrate = sp.getBoolean(MessagingPreferenceActivity.NOTIFICATION_VIBRATE,
-                        false);
-            } else if (sp.contains(MessagingPreferenceActivity.NOTIFICATION_VIBRATE_WHEN)) {
-                // This is to support the pre-JellyBean MR1.1 version of vibrate preferences
-                // when vibrate was a tri-state setting. As soon as the user opens the Messaging
-                // app's settings, it will migrate this setting from NOTIFICATION_VIBRATE_WHEN
-                // to the boolean value stored in NOTIFICATION_VIBRATE.
-                String vibrateWhen =
-                        sp.getString(MessagingPreferenceActivity.NOTIFICATION_VIBRATE_WHEN, null);
-                vibrate = "always".equals(vibrateWhen);
-            }
-            if (vibrate) {
-                String pattern = sp.getString(
-                        MessagingPreferenceActivity.NOTIFICATION_VIBRATE_PATTERN, "0,1200");
+            if (conversationSettings.getVibrateEnabled()) {
+                String pattern = conversationSettings.getVibratePattern();
 
                 if (!TextUtils.isEmpty(pattern)) {
                     noti.setVibrate(parseVibratePattern(pattern));
@@ -1016,8 +1008,7 @@ public class MessagingNotification {
                 }
             }
 
-            String ringtoneStr = sp.getString(MessagingPreferenceActivity.NOTIFICATION_RINGTONE,
-                    null);
+            String ringtoneStr = conversationSettings.getNotificationTone();
             noti.setSound(TextUtils.isEmpty(ringtoneStr) ? null : Uri.parse(ringtoneStr));
             if (DEBUG) {
                 Log.d(TAG, "updateNotification: new message, adding sound to the notification");

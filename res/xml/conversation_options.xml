@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/pref_notification_settings_title" android:key="convopt_key_notifications_category">
+        <CheckBoxPreference
+                android:defaultValue="true"
+                android:key="convopt_key_notification_enabled"
+                android:title="@string/pref_notification_settings_title"
+                android:enabled="false"
+                android:persistent="false"
+                />
+
+        <RingtonePreference
+                android:key="convopt_key_notification_ringtone"
+                android:title="@string/pref_title_notification_ringtone"
+                android:ringtoneType="notification"
+                android:dependency="convopt_key_notification_enabled"
+                android:persistent="false"
+                android:enabled="false"
+                android:defaultValue="content://settings/system/notification_sound" />
+
+        <CheckBoxPreference
+                android:key="convopt_key_vibrate"
+                android:title="@string/pref_title_notification_vibrateWhen"
+                android:dependency="convopt_key_notification_enabled"
+                android:persistent="false"
+                android:enabled="false"
+                android:defaultValue="false" />
+
+        <ListPreference
+                android:key="convopt_key_vibrate_pattern"
+                android:dependency="convopt_key_vibrate"
+                android:defaultValue=""
+                android:title="@string/pref_title_mms_notification_vibrate_pattern"
+                android:entries="@array/pref_mms_notification_vibrate_pattern_entries"
+                android:entryValues="@array/pref_mms_notification_vibrate_pattern_values"
+                android:persistent="false"
+                android:enabled="false"
+                android:dialogTitle="@string/pref_title_mms_notification_vibrate_pattern" />
+
+        <Preference
+                android:key="convopt_key_reset_to_default"
+                android:title="@string/pref_title_reset_convopt_to_default"
+                android:summary="@string/pref_summary_reset_convopt_to_default"
+                android:persistent="false"
+                android:enabled="false" />
+    </PreferenceCategory>
+</PreferenceScreen>
