@@ -196,6 +196,13 @@ public class SlideView extends AbsoluteLayout implements
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         mScaleDetector.onTouchEvent(ev);
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_UP:
+                if (mMediaController != null) {
+                    mMediaController.show();
+                }
+                break;
+        }
         return true;
     }
 
