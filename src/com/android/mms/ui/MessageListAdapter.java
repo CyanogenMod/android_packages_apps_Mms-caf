@@ -311,7 +311,10 @@ public class MessageListAdapter extends CursorAdapter {
                     parent, false);
             if (boxType == INCOMING_ITEM_TYPE_MMS || boxType == OUTGOING_ITEM_TYPE_MMS) {
                 // We've got an mms item, pre-inflate the mms portion of the view
-                view.findViewById(R.id.mms_layout_view_stub).setVisibility(View.VISIBLE);
+                View mmsStub = view.findViewById(R.id.mms_layout_view_stub);
+                if (mmsStub != null) {
+                    mmsStub.setVisibility(View.VISIBLE);
+                }
             }
         }
         return view;
