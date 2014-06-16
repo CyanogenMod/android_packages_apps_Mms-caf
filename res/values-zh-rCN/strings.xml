@@ -531,6 +531,8 @@
     <string name="contact_info_text_as_email">电子邮件：</string>
     <!-- toast when subject is full  -->
     <string name="subject_full">主题已满</string>
+    <!-- Toast when the sms template is full -->
+    <string name="template_full">"已达到模板字数上限。"</string>
     <!-- batch delete message in ConversationList and MailBoxMessageList -->
     <string name="selected_all">全选</string>
     <string name="deselected_all">取消全选</string>

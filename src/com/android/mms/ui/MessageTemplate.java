@@ -68,6 +68,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.ContactsContract.PhoneLookup;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Gravity;
@@ -82,6 +84,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.util.Log;
 
 /**
@@ -99,6 +102,7 @@ public class MessageTemplate extends Activity {
     private AlertDialog mEditDlg = null;
     private AlertDialog mNewDlg = null;
     private int position = -1;
+    private final int TEMPLATE_MAX_LENGTH = 1000;
 
     private OnMenuItemClickListener menuItemClickListener = new OnMenuItemClickListener() {
 
@@ -338,10 +342,29 @@ public class MessageTemplate extends Activity {
         }
     }
 
+    private final TextWatcher mTemplateWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (s.toString().length() >= TEMPLATE_MAX_LENGTH) {
+                Toast.makeText(MessageTemplate.this, R.string.template_full, Toast.LENGTH_SHORT)
+                        .show();
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {}
+
+    };
+
     private void createNewMessageDialog(String message) {
         LayoutInflater factory = LayoutInflater.from(MessageTemplate.this);
         final View view = factory.inflate(R.layout.dialog_edit_template_message, null);
         EditText et = (EditText)view.findViewById(R.id.edit_tempsms_editor);
+        et.addTextChangedListener(mTemplateWatcher);
         if (message!=null) {
             et.setText(message);
 
@@ -365,6 +388,7 @@ public class MessageTemplate extends Activity {
         final View view = factory.inflate(R.layout.dialog_edit_template_message, null);
         EditText et = (EditText) view.findViewById(R.id.edit_tempsms_editor);
         et.setText(message);
+        et.addTextChangedListener(mTemplateWatcher);
         mEditDlg = new AlertDialog.Builder(MessageTemplate.this)
             .setTitle(getText(R.string.dialog_editSMSTemplate_title))
             .setView(view)
