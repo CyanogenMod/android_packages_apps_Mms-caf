@@ -303,6 +303,8 @@
     <string name="title_send_message">Send message</string>
     <!-- Toast when the subject is full -->
     <string name="subject_full">"subject is full"</string>
+    <!-- Toast when the sms template is full -->
+    <string name="template_full">"Template text number limit reached."</string>
 
     <!-- In duration selection dialog box, short version of "seconds" -->
     <string name="secs">secs</string>

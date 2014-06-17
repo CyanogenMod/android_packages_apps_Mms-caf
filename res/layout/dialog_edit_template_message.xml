@@ -36,6 +36,7 @@
         android:layout_height="wrap_content" android:layout_width="match_parent"
         android:layout_marginLeft="15dip" android:layout_marginRight="15dip"
         android:autoText="false" android:lines="5"
+        android:maxLength = "1000"
         android:capitalize="none" android:gravity="fill_horizontal"
         android:textAppearance="?android:attr/textAppearanceMedium"
         />
