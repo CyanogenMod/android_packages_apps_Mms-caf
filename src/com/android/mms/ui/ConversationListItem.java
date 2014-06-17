@@ -155,6 +155,9 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
                 // identify it is phone number or email address,handle it respectively
                 if (Telephony.Mms.isEmailAddress(contact.getNumber())) {
                     mAvatarView.assignContactFromEmail(contact.getNumber(), true);
+                } else if (MessageUtils.isWapPushNumber(contact.getNumber())) {
+                    mAvatarView.assignContactFromPhone(
+                            MessageUtils.getWapPushNumber(contact.getNumber()), true);
                 } else {
                     mAvatarView.assignContactFromPhone(contact.getNumber(), true);
                }
