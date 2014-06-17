@@ -1341,6 +1341,13 @@ public class MessageUtils {
         }
     }
 
+    public static String getWapPushNumber(String address) {
+        String[] number = address.split(":");
+        int index = MmsApp.getApplication().getResources()
+                .getInteger(R.integer.wap_push_address_index);
+        return number[index];
+    }
+
     /**
      * parse the input address to be a valid MMS address.
      * - if the address is an email address, leave it as is.

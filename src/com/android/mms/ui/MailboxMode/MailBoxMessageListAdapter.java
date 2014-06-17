@@ -162,6 +162,9 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
 
         if (contact.existsInDatabase()) {
             mAvatarView.assignContactUri(contact.getUri());
+        } else if (MessageUtils.isWapPushNumber(contact.getNumber())) {
+            mAvatarView.assignContactFromPhone(
+                    MessageUtils.getWapPushNumber(contact.getNumber()), true);
         } else {
             mAvatarView.assignContactFromPhone(contact.getNumber(), true);
         }
