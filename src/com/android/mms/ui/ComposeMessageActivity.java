@@ -4900,7 +4900,7 @@ public class ComposeMessageActivity extends Activity
             MessageItem item = getMessageItem(uri.getAuthority(), msgId, false);
             if (item != null) {
                 item.setCountDown(countDown);
-                int count = mMsgListView.getCount();
+                int count = mMsgListView.getChildCount();
                 for (int i = 0; i < count; i++) {
                     MessageListItem v = (MessageListItem) mMsgListView.getChildAt(i);
                     MessageItem listItem = v.getMessageItem();
