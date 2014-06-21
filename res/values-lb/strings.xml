@@ -19,12 +19,22 @@
  */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="menu_send_email">E-Mail u(n) <xliff:g id="name">%s</xliff:g> schécken</string>
+  <string name="has_draft">Entworf</string>
   <string name="messagelist_sender_self">Ech</string>
+  <string name="view_message_details">Detailer ukucken</string>
+  <string name="view_delivery_report">Bericht ukucken</string>
+  <string name="kilobyte">kB</string>
+  <string name="undelivered_sms_dialog_body">De Message konnt net geschéckt ginn.</string>
+  <string name="inline_subject">"&lt;Sujet: <xliff:g id="subject">%s</xliff:g>&gt;"</string>
+  <string name="message_options">Messagenoptiounen</string>
   <string name="done">Fäerdeg</string>
   <string name="add_music">Musek dobäisetzen</string>
   <string name="add_video">Video dobäisetzen</string>
+  <string name="remove_video">Video läschen</string>
   <string name="remove">Ewechhuelen</string>
   <string name="mms">MMS</string>
+  <string name="cannot_send_message">Message kann net geschéckt ginn</string>
   <string-array name="select_dialog_items">
     <item>1 second</item>
     <item>2 seconds</item>
@@ -36,7 +46,7 @@
     <item>8 Sekonnen</item>
     <item>9 Sekonnen</item>
     <item>10 seconds</item>
-    <item>Other</item>
+    <item>Aner</item>
   </string-array>
   <string name="menu_view_contact">Kontakt ukucken</string>
   <string name="yes">OK</string>
@@ -46,12 +56,14 @@
   <string name="preferences_title">"Astellungen"</string>
   <string name="restore_default">"Standardastellungen zrécksetzen"</string>
   <string name="pref_notification_settings_title">Notifikatiounen</string>
+  <string name="pref_sms_storage_title">Späicher</string>
   <string name="pref_title_sms_disabled">SMS Deaktivéiert</string>
   <string name="pref_title_sms_enabled">SMS Aktivéiert</string>
   <string name="pref_title_notification_enabled">Notifikatiounen</string>
   <string name="pref_title_notification_vibrateWhen">Vibréieren</string>
   <string name="delete">Läschen</string>
   <string name="subject_label">Sujet:\u0020</string>
+  <string name="priority_high">Héich</string>
   <string name="priority_normal">Normal</string>
   <string name="error_code_label">Feelercode:\u0020</string>
   <string name="menu_edit">Änneren</string>
@@ -59,13 +71,18 @@
   <string name="menu_lock">Spären</string>
   <string name="menu_unlock">Entspären</string>
   <string name="sim_delete">Läschen</string>
+  <string name="sim_view">Ukucken</string>
+  <string name="delivery_header_title">Bericht</string>
   <string name="type_audio">Audio</string>
   <string name="type_picture">Bild</string>
   <string name="type_video">Video</string>
+  <string name="confirm">Bestätegen</string>
   <string name="rate_limit_surpassed">Bestätegen</string>
   <string name="confirm_clear_search_title">Eidel maachen</string>
   <string name="save">Späicheren</string>
+  <string name="draft_separator">,\u0020</string>
   <string name="attachment_audio">Audio</string>
   <string name="attachment_video">Video</string>
   <string name="attachment_picture">Bild</string>
+  <string name="enumeration_comma">,\u0020</string>
 </resources>
