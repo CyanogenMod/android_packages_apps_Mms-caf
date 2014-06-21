@@ -112,4 +112,7 @@
   <string name="pref_mms_notification_vibrate_long_vib">長い振動</string>
   <string name="pref_mms_notification_vibrate_mult_short">複数の短い振動</string>
   <string name="pref_mms_notification_vibrate_mult_long">複数の長い振動</string>
+  <string name="menu_insert_smiley">絵文字を挿入</string>
+  <string name="pref_title_enable_emoticons">絵文字サポート</string>
+  <string name="pref_summary_enable_emoticons">テキストの顔文字をそれに対応する絵文字で置き換える</string>
 </resources>

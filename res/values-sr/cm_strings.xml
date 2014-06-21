@@ -70,10 +70,10 @@
   <string name="pref_unicode_stripping_non_encodable">Монтирај не-кодиране знакове</string>
   <string name="pref_unicode_stripping_all">Монтирај све уникод знакове</string>
   <string name="pref_title_mms_full_timestamp">Пуне временске ознаке</string>
-  <string name="pref_summary_mms_full_timestamp">Прикажи обе, датум и време временске ознаке</string>
+  <string name="pref_summary_mms_full_timestamp">Прикажи оба датума и време у временским ознакама</string>
   <string name="pref_title_mms_use_sent_timestamp">Оригинал временске ознаке</string>
   <string name="pref_summary_mms_use_sent_timestamp">Прикажи датум слања уместо датума пријема у временским ознакама</string>
-  <string name="pref_title_input_type">Меки тип тастатуре</string>
+  <string name="pref_title_input_type">Тип тастатуре</string>
   <string name="pref_keyboard_emoji">Прикажи тастер за Смајлије</string>
   <string name="pref_keyboard_new_line">Прикажи тастер Ентер</string>
   <string name="pref_keyboard_unknown">Непознато, изабери поново</string>
@@ -105,7 +105,7 @@
   <string name="send_delay_10seconds">10 секунди</string>
   <string name="send_delay_20seconds">20 секунди</string>
   <string name="send_delay_30seconds">30 секунди</string>
-  <string name="sent_countdown">Одбројавање доставе поруке</string>
+  <string name="sent_countdown">Одбројавање достава порука</string>
   <string name="pref_title_mms_notification_vibrate_pattern">Шаблон вибрације</string>
   <string name="pref_summary_mms_notification_vibrate_pattern">Промени шаблон вибрације</string>
   <string name="pref_mms_notification_vibrate_normal">Нормално</string>
