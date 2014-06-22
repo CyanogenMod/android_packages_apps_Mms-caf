@@ -18,7 +18,7 @@
 
     <item android:id="@+id/action_template_new"
         android:title="@string/template_new_title"
-        android:icon="@drawable/ic_menu_msg_compose_holo_dark"
+        android:icon="@drawable/ic_menu_msg_compose_holo_light"
         android:showAsAction="always|withText" />
 
 </menu>
