@@ -276,6 +276,9 @@ public class MessageListItem extends LinearLayout implements
 
         updateSimIndicatorView(mMessageItem.mSubscription);
 
+        if (mManageMode == MessageUtils.BATCH_DELETE_MODE) {
+            return;
+        }
         switch (mMessageItem.getMmsDownloadStatus()) {
             case DownloadManager.STATE_PRE_DOWNLOADING:
             case DownloadManager.STATE_DOWNLOADING:
