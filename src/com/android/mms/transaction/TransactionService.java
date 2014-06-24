@@ -313,10 +313,11 @@ public class TransactionService extends Service implements Observer {
             boolean isRecordExist = false;
             boolean isInitExist = false;
 
-            if (dest == -1 && origin == -1) {
+            if (txnId == null || (dest == -1 && origin == -1)) {
                 //TransactionService does not have any info of
-                //sub for this transaction. It could happen if MMS process
-                //or transactionService died.
+                //sub for this transaction.
+                //It could happen if MMS process or transactionService died
+                //or transaction id is null for the transaction.
                 //We will go ahead with MMS but we wont be able to revert back
                 Log.d(TAG, "NOT TRACKING, Txn=" + txnId
                         + ", dest=" + dest
