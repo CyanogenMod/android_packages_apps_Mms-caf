@@ -1009,6 +1009,7 @@
     <string name="search_as_name">Name</string>
     <string name="search_as_number">Number</string>
     <string name="search_as_content">Content</string>
+    <string name="search_as_subject">Subject</string>
     <string name="invalid_name_toast">Please input valid name!</string>
     <!-- add for showing slot type in MailBoxMessageContent -->
     <string name="slot_type">Slot : %s</string>

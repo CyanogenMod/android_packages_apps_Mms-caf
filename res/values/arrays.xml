@@ -86,6 +86,7 @@
         <item>@string/search_as_content</item>
         <item>@string/search_as_name</item>
         <item>@string/search_as_number</item>
+        <item>@string/search_as_subject</item>
     </string-array>
 
     <string-array name="entries_sms_validity_period">
