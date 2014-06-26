@@ -181,4 +181,8 @@
     <!-- Enable emoticons -->
     <string name="pref_title_enable_emoticons">Emoticons support</string>
     <string name="pref_summary_enable_emoticons">Substitute text emoticons with graphical equivalents</string>
+
+    <!-- Used in MobilePaperShowActivity -->
+    <string name="normal_show">View normal mode</string>
+    <string name="cannot_play">Cannot present the slide show.</string>
 </resources>
