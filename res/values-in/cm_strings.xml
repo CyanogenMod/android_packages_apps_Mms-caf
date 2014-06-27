@@ -24,7 +24,6 @@
   <string name="toast_sending_message">Mengirim pesan</string>
   <string name="qm_quick_reply">Balas</string>
   <string name="qm_mark_read">Baca</string>
-  <string name="message_counter_separator">dari</string>
   <string name="pref_title_notification_privacy_mode_enabled">Modus privasi</string>
   <string name="pref_summary_notification_privacy_mode_enabled">Sembunyikan pengirim dan pesan pada status bar dan nonaktifkan \'Balas cepat\'</string>
   <string name="notification_single_title_privacy_mode">Pesan baru</string>

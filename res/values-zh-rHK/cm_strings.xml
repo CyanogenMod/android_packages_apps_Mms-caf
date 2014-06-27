@@ -24,7 +24,6 @@
   <string name="toast_sending_message">正在傳送訊息</string>
   <string name="qm_quick_reply">回覆</string>
   <string name="qm_mark_read">已讀</string>
-  <string name="message_counter_separator">/</string>
   <string name="pref_title_notification_privacy_mode_enabled">私隱模式</string>
   <string name="pref_summary_notification_privacy_mode_enabled">隱藏狀態列中的寄件者和訊息並停用「快速回覆」</string>
   <string name="notification_single_title_privacy_mode">新訊息</string>

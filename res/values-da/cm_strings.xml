@@ -24,7 +24,6 @@
   <string name="toast_sending_message">Sender besked...</string>
   <string name="qm_quick_reply">Svar</string>
   <string name="qm_mark_read">Læst</string>
-  <string name="message_counter_separator">af</string>
   <string name="pref_title_notification_privacy_mode_enabled">Privatlivstilstand</string>
   <string name="pref_summary_notification_privacy_mode_enabled">Skjul afsender og besked i statuslinje og slå Svar fra</string>
   <string name="notification_single_title_privacy_mode">Ny besked</string>

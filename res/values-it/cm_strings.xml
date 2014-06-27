@@ -24,7 +24,6 @@
   <string name="toast_sending_message">Invio messaggio</string>
   <string name="qm_quick_reply">Rispondi</string>
   <string name="qm_mark_read">Letto</string>
-  <string name="message_counter_separator">di</string>
   <string name="pref_title_notification_privacy_mode_enabled">Modalità privacy</string>
   <string name="pref_summary_notification_privacy_mode_enabled">Nascondi mittente e messaggio nella barra di stato e disabilita \'Risposta rapida\'</string>
   <string name="notification_single_title_privacy_mode">Nuovo messaggio</string>

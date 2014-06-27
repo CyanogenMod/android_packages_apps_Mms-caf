@@ -24,7 +24,6 @@
   <string name="toast_sending_message">Zpráva je odesílána\u2026</string>
   <string name="qm_quick_reply">Odpovědět</string>
   <string name="qm_mark_read">Přečteno</string>
-  <string name="message_counter_separator">z</string>
   <string name="pref_title_notification_privacy_mode_enabled">Režim soukromý</string>
   <string name="pref_summary_notification_privacy_mode_enabled">Skrýt odesílatele a zprávu ve stavové liště a zakázat rychlou odpověď</string>
   <string name="notification_single_title_privacy_mode">Nová zpráva</string>

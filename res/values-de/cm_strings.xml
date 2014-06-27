@@ -24,7 +24,6 @@
   <string name="toast_sending_message">Nachricht senden\u2026</string>
   <string name="qm_quick_reply">Antworten</string>
   <string name="qm_mark_read">Gelesen</string>
-  <string name="message_counter_separator">von</string>
   <string name="pref_title_notification_privacy_mode_enabled">Privatsphäre-Modus</string>
   <string name="pref_summary_notification_privacy_mode_enabled">Absender und Nachrichteninhalt nicht in der Statusleiste anzeigen (deaktiviert \"Schnell antworten\")</string>
   <string name="notification_single_title_privacy_mode">Neue Nachricht</string>

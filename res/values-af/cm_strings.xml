@@ -24,7 +24,6 @@
   <string name="toast_sending_message">Die boodskap word gestuur</string>
   <string name="qm_quick_reply">Antwoord</string>
   <string name="qm_mark_read">Gelees</string>
-  <string name="message_counter_separator">van</string>
   <string name="pref_title_notification_privacy_mode_enabled">Privaatheid-modus</string>
   <string name="pref_summary_notification_privacy_mode_enabled">Verberg sender naam en boodskap in statusbalk en deaktiveer Kitsantwoord</string>
   <string name="notification_single_title_privacy_mode">Nuwe boodskap</string>

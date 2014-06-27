@@ -465,12 +465,14 @@ public class QuickMessagePopup extends Activity implements
      * Update the page indicator counter to show the currently selected visible page number
      */
     public void updateMessageCounter() {
-        String separator = mContext.getString(R.string.message_counter_separator);
-        mQmMessageCounter.setText((mCurrentPage + 1) + " " + separator + " " + mMessageList.size());
+        int current= mCurrentPage + 1;
+        int total = mMessageList.size();
+        mQmMessageCounter.setText(getString(R.string.message_counter, current, total));
 
-        if (DEBUG)
-            Log.d(LOG_TAG, "updateMessageCounter() called, counter text set to " + (mCurrentPage + 1)
-                    + " of " + mMessageList.size());
+        if (DEBUG) {
+            Log.d(LOG_TAG, "updateMessageCounter() called, counter text set to "
+                    + current + " of " + total);
+        }
     }
 
     /**

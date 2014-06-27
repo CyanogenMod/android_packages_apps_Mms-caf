@@ -24,7 +24,6 @@
   <string name="toast_sending_message">Odosielanie správy</string>
   <string name="qm_quick_reply">Odpovedať</string>
   <string name="qm_mark_read">Prečítané</string>
-  <string name="message_counter_separator">z</string>
   <string name="pref_title_notification_privacy_mode_enabled">Režim súkromia</string>
   <string name="pref_summary_notification_privacy_mode_enabled">Skryť odosielateľa a správu v stavovom riadku a zakázať možnosť \'Rýchla odpoveď\'</string>
   <string name="notification_single_title_privacy_mode">Nová správa</string>

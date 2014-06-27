@@ -24,7 +24,6 @@
   <string name="toast_sending_message">Sender melding</string>
   <string name="qm_quick_reply">Svar</string>
   <string name="qm_mark_read">Les</string>
-  <string name="message_counter_separator">av</string>
   <string name="pref_title_notification_privacy_mode_enabled">Personvernmodus</string>
   <string name="pref_summary_notification_privacy_mode_enabled">Skjul sender og melding i statuslinjen, og deaktiver \'Hurtigsvar\'</string>
   <string name="notification_single_title_privacy_mode">Ny melding</string>

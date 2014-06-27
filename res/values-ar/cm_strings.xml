@@ -24,7 +24,6 @@
   <string name="toast_sending_message">إرسال رسالة</string>
   <string name="qm_quick_reply">أجب</string>
   <string name="qm_mark_read">قراءة</string>
-  <string name="message_counter_separator">من</string>
   <string name="pref_title_notification_privacy_mode_enabled">وضع الخصوصية</string>
   <string name="pref_summary_notification_privacy_mode_enabled">إخفاء المرسل، والرسالة في شريط المعلومات وتعطيل \'الرد السريع\'</string>
   <string name="notification_single_title_privacy_mode">رسالة جديدة</string>

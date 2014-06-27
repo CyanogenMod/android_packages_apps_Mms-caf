@@ -24,7 +24,6 @@
   <string name="toast_sending_message">Expediere mesaj</string>
   <string name="qm_quick_reply">Răspuns rapid</string>
   <string name="qm_mark_read">Citește</string>
-  <string name="message_counter_separator">din</string>
   <string name="pref_title_notification_privacy_mode_enabled">Modul confidențial</string>
   <string name="pref_summary_notification_privacy_mode_enabled">Nu afișa în bara de stare mesajul și expeditorul, dezactivează \'Răspuns rapid\'</string>
   <string name="notification_single_title_privacy_mode">Mesaj nou</string>
