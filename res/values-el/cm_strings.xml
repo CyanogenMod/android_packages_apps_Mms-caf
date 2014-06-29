@@ -24,6 +24,7 @@
   <string name="toast_sending_message">Το μήνυμα αποστέλλεται</string>
   <string name="qm_quick_reply">Απάντηση</string>
   <string name="qm_mark_read">Διαβάστηκε</string>
+  <string name="message_counter">%1$d από %2$d</string>
   <string name="pref_title_notification_privacy_mode_enabled">Λειτουργία απορρήτου</string>
   <string name="pref_summary_notification_privacy_mode_enabled">Απόκρυψη αποστολέα και μηνύματος στη γραμμή κατάστασης και απενεργοποίηση \'Γρήγορης απάντησης\'</string>
   <string name="notification_single_title_privacy_mode">Νέο μήνυμα</string>
@@ -115,4 +116,6 @@
   <string name="menu_insert_smiley">Εισαγωγή smiley</string>
   <string name="pref_title_enable_emoticons">Υποστήριξη emoticon</string>
   <string name="pref_summary_enable_emoticons">Αντικατάσταση emoticon κειμένου με τα αντίστοιχα εικονίδια</string>
+  <string name="normal_show">Κανονική λειτουργία προβολής</string>
+  <string name="cannot_play">Δεν είναι δυνατή η προβολή της παρουσίασης.</string>
 </resources>

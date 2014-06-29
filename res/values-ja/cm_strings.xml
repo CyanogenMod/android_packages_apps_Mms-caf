@@ -24,6 +24,7 @@
   <string name="toast_sending_message">メッセージを送信中</string>
   <string name="qm_quick_reply">返信</string>
   <string name="qm_mark_read">読む</string>
+  <string name="message_counter">%1$d/%2$d</string>
   <string name="pref_title_notification_privacy_mode_enabled">プライバシーモード</string>
   <string name="pref_summary_notification_privacy_mode_enabled">ステータスバーの送信者とメッセージを非表示にしてクイック返信を無効にする</string>
   <string name="notification_single_title_privacy_mode">新しいメッセージ</string>
@@ -115,4 +116,6 @@
   <string name="menu_insert_smiley">絵文字を挿入</string>
   <string name="pref_title_enable_emoticons">絵文字サポート</string>
   <string name="pref_summary_enable_emoticons">テキストの顔文字をそれに対応する絵文字で置き換える</string>
+  <string name="normal_show">通常モードで表示する</string>
+  <string name="cannot_play">スライドショーを表示できません。</string>
 </resources>

@@ -24,6 +24,7 @@
   <string name="toast_sending_message">信息发送中</string>
   <string name="qm_quick_reply">回复</string>
   <string name="qm_mark_read">已读</string>
+  <string name="message_counter">%2$d 中的 %1$d</string>
   <string name="pref_title_notification_privacy_mode_enabled">隐私模式</string>
   <string name="pref_summary_notification_privacy_mode_enabled">在信息通知内隐藏发件人与信息, 并同时禁用 \'快速回复\'</string>
   <string name="notification_single_title_privacy_mode">新信息</string>
@@ -115,4 +116,6 @@
   <string name="menu_insert_smiley">插入表情符号</string>
   <string name="pref_title_enable_emoticons">表情符号支持</string>
   <string name="pref_summary_enable_emoticons">用等同的图形替代文字表情符号</string>
+  <string name="normal_show">查看正常模式</string>
+  <string name="cannot_play">无法展示幻灯片</string>
 </resources>

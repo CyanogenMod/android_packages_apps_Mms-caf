@@ -24,6 +24,7 @@
   <string name="toast_sending_message">පණිවිඩය යවමින්</string>
   <string name="qm_quick_reply">පිළිතුරු දෙන්න</string>
   <string name="qm_mark_read">කියවන්න</string>
+  <string name="message_counter">%2$d න් %1$d</string>
   <string name="pref_title_notification_privacy_mode_enabled">පෞද්ගලිකත්ව ප්‍රකාරය</string>
   <string name="pref_summary_notification_privacy_mode_enabled">එවන්නා හා පණිවිඩය තත්ව තීරුවේ නොපෙන්වන්න සහ \'ක්ෂණික පිළිතුර\' අබල කරන්න</string>
   <string name="notification_single_title_privacy_mode">අලුත් පනිවිඩයක්</string>
@@ -115,4 +116,6 @@
   <string name="menu_insert_smiley">ඉමෝට්කොනයක් එක් කරන්න</string>
   <string name="pref_title_enable_emoticons">ඉමෝට්කොන සහාය</string>
   <string name="pref_summary_enable_emoticons">පෙළ වෙනුවට චිත්‍රක ඉමෝට්කොන ආදේශ කරන්න</string>
+  <string name="normal_show">සාමාන්‍ය ප්‍රකාරය පෙන්වන්න</string>
+  <string name="cannot_play">කදා දර්ශනය පිළිගැන්විය නොහැක.</string>
 </resources>

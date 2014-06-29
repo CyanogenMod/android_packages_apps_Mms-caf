@@ -24,6 +24,7 @@
   <string name="toast_sending_message">שולח הודעה</string>
   <string name="qm_quick_reply">הגב</string>
   <string name="qm_mark_read">נקראה</string>
+  <string name="message_counter">%1$d מ-%2$d</string>
   <string name="pref_title_notification_privacy_mode_enabled">מצב פרטיות</string>
   <string name="pref_summary_notification_privacy_mode_enabled">הסתר שולח והודעה משורת המצב והשבת \"תשובה מהירה\"</string>
   <string name="notification_single_title_privacy_mode">הודעה חדשה</string>
@@ -115,4 +116,6 @@
   <string name="menu_insert_smiley">הוסף סמיילי</string>
   <string name="pref_title_enable_emoticons">תמיכה בסמלי רגשות</string>
   <string name="pref_summary_enable_emoticons">החלפת סימונים טקסטואליים בציוריים</string>
+  <string name="normal_show">תצוגה רגילה</string>
+  <string name="cannot_play">אין אפשרות להציג שקופיות.</string>
 </resources>

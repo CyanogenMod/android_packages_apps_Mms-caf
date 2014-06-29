@@ -24,6 +24,7 @@
   <string name="toast_sending_message">Mengirim pesan</string>
   <string name="qm_quick_reply">Balas</string>
   <string name="qm_mark_read">Baca</string>
+  <string name="message_counter">%1$d dari %2$d</string>
   <string name="pref_title_notification_privacy_mode_enabled">Modus privasi</string>
   <string name="pref_summary_notification_privacy_mode_enabled">Sembunyikan pengirim dan pesan pada status bar dan nonaktifkan \'Balas cepat\'</string>
   <string name="notification_single_title_privacy_mode">Pesan baru</string>
@@ -115,4 +116,6 @@
   <string name="menu_insert_smiley">Masukkan smiley</string>
   <string name="pref_title_enable_emoticons">Dukungan Emotikon</string>
   <string name="pref_summary_enable_emoticons">Gantikan teks emotikon dengan grafis setara</string>
+  <string name="normal_show">Lihat mode normal</string>
+  <string name="cannot_play">Tidak dapat menyajikan tampilan slide.</string>
 </resources>

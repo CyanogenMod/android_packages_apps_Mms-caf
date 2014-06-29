@@ -24,6 +24,7 @@
   <string name="toast_sending_message">Envoi du message</string>
   <string name="qm_quick_reply">Répondre</string>
   <string name="qm_mark_read">Lu</string>
+  <string name="message_counter">%1$d sur %2$d</string>
   <string name="pref_title_notification_privacy_mode_enabled">Confidentialité</string>
   <string name="pref_summary_notification_privacy_mode_enabled">Masquer l\'expéditeur et le contenu du message dans la barre d\'état et désactiver la \'Réponse rapide\'</string>
   <string name="notification_single_title_privacy_mode">Nouveau message</string>
@@ -115,4 +116,6 @@
   <string name="menu_insert_smiley">Insérer une émoticône</string>
   <string name="pref_title_enable_emoticons">Support des émoticônes</string>
   <string name="pref_summary_enable_emoticons">Substituer les émoticônes avec des équivalents graphiques</string>
+  <string name="normal_show">Mode d\'affichage normal</string>
+  <string name="cannot_play">Ne peut pas présenter le diaporama.</string>
 </resources>

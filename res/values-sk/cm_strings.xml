@@ -24,6 +24,7 @@
   <string name="toast_sending_message">Odosielanie správy</string>
   <string name="qm_quick_reply">Odpovedať</string>
   <string name="qm_mark_read">Prečítané</string>
+  <string name="message_counter">%1$d z %2$d</string>
   <string name="pref_title_notification_privacy_mode_enabled">Režim súkromia</string>
   <string name="pref_summary_notification_privacy_mode_enabled">Skryť odosielateľa a správu v stavovom riadku a zakázať možnosť \'Rýchla odpoveď\'</string>
   <string name="notification_single_title_privacy_mode">Nová správa</string>
@@ -115,4 +116,6 @@
   <string name="menu_insert_smiley">Vložiť smajlík</string>
   <string name="pref_title_enable_emoticons">Podpora emotikonov</string>
   <string name="pref_summary_enable_emoticons">Nahradiť textové emotikony s grafickými ekvivalentami</string>
+  <string name="normal_show">Normálny režim zobrazenia</string>
+  <string name="cannot_play">Nie je možné zobraziť prezentáciu.</string>
 </resources>

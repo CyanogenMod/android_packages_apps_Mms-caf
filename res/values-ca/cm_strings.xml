@@ -24,6 +24,7 @@
   <string name="toast_sending_message">Enviant missatge</string>
   <string name="qm_quick_reply">Respon</string>
   <string name="qm_mark_read">Llegeix</string>
+  <string name="message_counter">%1$d de %2$d</string>
   <string name="pref_title_notification_privacy_mode_enabled">Mode privat</string>
   <string name="pref_summary_notification_privacy_mode_enabled">Amaga el remitent i el missatge de la barra d\'estat i desactiva la \'Resposta ràpida\'</string>
   <string name="notification_single_title_privacy_mode">Nou missatge</string>
@@ -115,4 +116,6 @@
   <string name="menu_insert_smiley">Insereix una emoticona</string>
   <string name="pref_title_enable_emoticons">Suport d\'emoticones</string>
   <string name="pref_summary_enable_emoticons">Substitueix les emoticones de text amb els seus equivalents gràfics</string>
+  <string name="normal_show">Mostra el mode normal</string>
+  <string name="cannot_play">No es pot mostrar la projecció de diapositives.</string>
 </resources>

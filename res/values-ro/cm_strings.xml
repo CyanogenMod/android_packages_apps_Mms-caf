@@ -24,6 +24,7 @@
   <string name="toast_sending_message">Expediere mesaj</string>
   <string name="qm_quick_reply">Răspuns rapid</string>
   <string name="qm_mark_read">Citește</string>
+  <string name="message_counter">%1$d din %2$d</string>
   <string name="pref_title_notification_privacy_mode_enabled">Modul confidențial</string>
   <string name="pref_summary_notification_privacy_mode_enabled">Nu afișa în bara de stare mesajul și expeditorul, dezactivează \'Răspuns rapid\'</string>
   <string name="notification_single_title_privacy_mode">Mesaj nou</string>
@@ -115,4 +116,6 @@
   <string name="menu_insert_smiley">Inserați un emoticon</string>
   <string name="pref_title_enable_emoticons">Suport emoticoane</string>
   <string name="pref_summary_enable_emoticons">Substituie emoticoanele text cu echivalentele grafice</string>
+  <string name="normal_show">Vezi în modul normal</string>
+  <string name="cannot_play">Slide show-ul nu poate fi prezentat.</string>
 </resources>

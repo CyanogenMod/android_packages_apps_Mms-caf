@@ -24,6 +24,7 @@
   <string name="toast_sending_message">Invio messaggio</string>
   <string name="qm_quick_reply">Rispondi</string>
   <string name="qm_mark_read">Letto</string>
+  <string name="message_counter">%1$d di %2$d</string>
   <string name="pref_title_notification_privacy_mode_enabled">Modalità privacy</string>
   <string name="pref_summary_notification_privacy_mode_enabled">Nascondi mittente e messaggio nella barra di stato e disabilita \'Risposta rapida\'</string>
   <string name="notification_single_title_privacy_mode">Nuovo messaggio</string>
@@ -61,7 +62,7 @@
   <string name="gestures_already_present">Una gesture simile è già associata con un altro modello</string>
   <string name="select_template">Seleziona modelli</string>
   <string name="pref_title_templates_show_gesture">Gesture</string>
-  <string name="pref_summary_templates_show_gesture">Mostra traccia della gesture</string>
+  <string name="pref_summary_templates_show_gesture">Mostra la traccia della gesture</string>
   <string name="pref_title_template_gestures_sensitivity">Sensibilità gesture</string>
   <string name="pref_extra_settings">Impostazioni aggiuntive</string>
   <string name="pref_title_unicode_stripping">Rimuovi unicode</string>
@@ -115,4 +116,6 @@
   <string name="menu_insert_smiley">Inserisci emoticon</string>
   <string name="pref_title_enable_emoticons">Supporto emoticon</string>
   <string name="pref_summary_enable_emoticons">Sostituisci le emoticon testuali con grafica equivalente</string>
+  <string name="normal_show">Visualizzazione normale</string>
+  <string name="cannot_play">Impossibile eseguire slide show.</string>
 </resources>
