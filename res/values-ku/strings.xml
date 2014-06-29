@@ -19,10 +19,64 @@
  */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="app_label">نامه‌</string>
+  <string name="new_message">نامەی تازە</string>
+  <string name="menu_preferences">ڕێکخستنه‌کان</string>
+  <string name="menu_search">گەڕان</string>
+  <string name="messagelist_sender_self">من</string>
+  <string name="delete_message">سڕینه‌وه‌</string>
+  <string name="kilobyte">کیلۆبایت</string>
+  <string name="menu_forward">پۆ پێش</string>
+  <string name="download">داگرتن</string>
+  <string name="done">ئه‌نجامدرا</string>
+  <string name="discard">ڕەتکردنەوە</string>
   <string name="view">پیشاندان</string>
+  <string name="replace">جێگۆڕکردن</string>
+  <string name="remove">سڕینەوە</string>
+  <string name="send">ناردن</string>
+  <string name="mms">MMS</string>
+  <string name="preview">دەرخستن</string>
+  <string name="preview_slideshow">دەرخستن</string>
+  <string name="secs">چرکەکان</string>
+  <string-array name="select_dialog_items">
+    <item>1 second</item>
+    <item>2 چرکه‌</item>
+    <item>3 چرکە</item>
+    <item>٤ چرکه‌</item>
+    <item>5 چرکه‌</item>
+    <item>٦ چرکە</item>
+    <item>7 seconds</item>
+    <item>8 seconds</item>
+    <item>9 seconds</item>
+    <item>10 چرکه‌</item>
+    <item>دیکە</item>
+  </string-array>
+  <string name="menu_view_contact">هەڵبژاردنی ناوەکان</string>
+  <string name="yes">باشه‌</string>
+  <string name="no">هەڵوەشاندنەوە</string>
+  <string name="set">دانان</string>
+  <string name="edit">دەستکاری</string>
+  <string name="preferences_title">"ڕێکخستنه‌کان"</string>
+  <string name="restore_default">"ڕێکخستنەوە بۆ باری بنەڕەتی"</string>
   <string name="pref_notification_settings_title">تێبینی</string>
+  <string name="pref_sms_storage_title">بیرگه‌</string>
   <string name="pref_title_notification_enabled">تێبینی</string>
+  <string name="silent_ringtone">بێدەنگ</string>
+  <string name="delete">سڕینه‌وه‌</string>
+  <string name="priority_high">به‌رز</string>
+  <string name="priority_normal">ئاسای</string>
+  <string name="priority_low">نزم</string>
+  <string name="menu_edit">دەستکاری</string>
+  <string name="menu_unlock">کردنەوە</string>
+  <string name="sim_delete">سڕینه‌وه‌</string>
   <string name="sim_view">پیشاندان</string>
+  <string name="delivery_header_title">ڕاپۆرت</string>
+  <string name="attach_sound">ده‌نگ</string>
+  <string name="confirm">دلنیاکردنەوە</string>
+  <string name="rate_limit_surpassed">دلنیاکردنەوە</string>
+  <string name="search_label">نامه‌</string>
+  <string name="search">نامه‌</string>
   <string name="confirm_clear_search_title">پاکردنەوە</string>
   <string name="save">پاشەکەوتکردن</string>
+  <string name="attachment_audio">ده‌نگ</string>
 </resources>
