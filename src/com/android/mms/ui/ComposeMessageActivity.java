@@ -4597,14 +4597,33 @@ public class ComposeMessageActivity extends Activity
     }
 
     private final TextWatcher mTextEditorWatcher = new TextWatcher() {
+        private boolean mIsChanged = false;
+        private String mTextBefore = "";
+
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            if (!mIsChanged) {
+                mTextBefore = s.length() > 0 ? s.toString() : "";
+             }
         }
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (mWorkingMessage.requiresMms()) {
-                mAttachmentEditor.onTextChangeForMms(s);
+            if (mIsChanged) {
+                return;
+            }
+            if (mWorkingMessage.hasAttachment()) {
+                if (!mAttachmentEditor.canAddTextForMms(s)) {
+                    if (mTextEditor != null) {
+                        mIsChanged = true;
+                        mTextEditor.setText(mTextBefore);
+                        mIsChanged = false;
+                        Toast.makeText(ComposeMessageActivity.this,
+                                R.string.cannot_add_text_anymore, Toast.LENGTH_SHORT).show();
+                    }
+                    mAttachmentEditor.canAddTextForMms(mTextBefore);
+                    return;
+                }
             }
             // This is a workaround for bug 1609057.  Since onUserInteraction() is
             // not called when the user touches the soft keyboard, we pretend it was
