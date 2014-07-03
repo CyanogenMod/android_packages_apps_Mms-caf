@@ -5826,7 +5826,8 @@ public class ComposeMessageActivity extends Activity
             byte pdu[] = null;
             int status;
             if (Sms.isOutgoingFolder(boxId)) {
-                pdu = SmsMessage.getSubmitPdu(null, address, message, false).encodedMessage;
+                pdu = SmsMessage.getSubmitPdu(null, address, message, false,
+                                subscription).encodedMessage;
                 status = SmsManager.STATUS_ON_ICC_SENT;
             } else {
                 pdu = MessageUtils.getDeliveryPdu(null, address,
