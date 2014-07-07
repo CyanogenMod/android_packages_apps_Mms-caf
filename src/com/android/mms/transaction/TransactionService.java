@@ -33,6 +33,7 @@ import android.content.Context;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SqliteWrapper;
 import android.database.DatabaseUtils;
@@ -47,6 +48,8 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.SystemProperties;
+import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
@@ -67,6 +70,7 @@ import com.android.internal.telephony.PhoneConstants;
 import com.android.mms.LogTag;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
+import com.android.mms.ui.MessagingPreferenceActivity;
 import com.android.mms.util.DownloadManager;
 import com.android.mms.util.RateController;
 import com.google.android.mms.pdu.GenericPdu;
@@ -178,6 +182,9 @@ public class TransactionService extends Service implements Observer {
     private ConnectivityManager.NetworkCallback mMmsNetworkCallback = null;
     private NetworkRequest mMmsNetworkRequest = null;
 
+    // Indicates mobile data was enabled automatically by MMS
+    private boolean mDataEnabledByAuto = false;
+    private TelephonyManager mTelMgr;
 
     private ConnectivityManager.NetworkCallback  getNetworkCallback(String subId) {
         final String mSubId = subId;
@@ -387,14 +394,18 @@ public class TransactionService extends Service implements Observer {
 
     private boolean isCurrentRatIwlan() {
         boolean flag = false;
-        TelephonyManager telephonyManager = (TelephonyManager)getSystemService(TELEPHONY_SERVICE);
-        flag = (telephonyManager != null
-                && (telephonyManager.getNetworkType() == TelephonyManager.NETWORK_TYPE_IWLAN));
+        flag = (mTelMgr != null
+                && (mTelMgr.getNetworkType() == TelephonyManager.NETWORK_TYPE_IWLAN));
         return flag;
     }
 
     public void onNewIntent(Intent intent, int serviceId) {
-        mConnMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (mConnMgr == null) {
+            mConnMgr = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        }
+        if (mTelMgr == null) {
+            mTelMgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+        }
         if (mConnMgr == null || !MmsConfig.isSmsEnabled(getApplicationContext())) {
             endMmsConnectivity();
             stopSelf(serviceId);
@@ -627,6 +638,12 @@ public class TransactionService extends Service implements Observer {
 
     private static boolean isTransientFailure(int type) {
         return type >= MmsSms.NO_ERROR && type < MmsSms.ERR_TYPE_GENERIC_PERMANENT;
+    }
+
+    private boolean isAutoEnableData() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
+                getApplicationContext());
+        return prefs.getBoolean(MessagingPreferenceActivity.AUTO_ENABLE_DATA, false);
     }
 
     private int getTransactionType(int msgType) {
@@ -897,19 +914,30 @@ public class TransactionService extends Service implements Observer {
     /* MMS app initiates one transaction at a time. Next transaction is started only on the
        completion(success/failure) of previous one.
     */
-    protected int beginMmsConnectivity(String subId) throws IOException {
+    protected int beginMmsConnectivity(long subId) throws IOException {
+        String subIdString = String.valueOf(subId);
+
         if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
-            Log.v(TAG, "beginMmsConnectivity for subId = " + subId);
+            Log.v(TAG, "beginMmsConnectivity for subId = " + subIdString);
         }
         // Take a wake lock so we don't fall asleep before the message is downloaded.
         createWakeLock();
 
+        boolean autoEnableData = isAutoEnableData();
+        if (mTelMgr != null && !mTelMgr.getDataEnabled() && autoEnableData) {
+            Log.d(TAG, "autoEnableData: enabling mobile data");
+            mDataEnabledByAuto = true;
+            mTelMgr.setDataEnabledUsingSubId(subId, true);
+        } else if (!autoEnableData) {
+            mDataEnabledByAuto = false;
+        }
+
         int result = mConnMgr.startUsingNetworkFeatureForSubscription(
-                ConnectivityManager.TYPE_MOBILE, Phone.FEATURE_ENABLE_MMS, subId);
+                ConnectivityManager.TYPE_MOBILE, Phone.FEATURE_ENABLE_MMS, subIdString);
 
         if (mMmsNetworkRequest == null) {
-            mMmsNetworkRequest = buildNetworkRequest(subId);
-            mMmsNetworkCallback = getNetworkCallback(subId);
+            mMmsNetworkRequest = buildNetworkRequest(subIdString);
+            mMmsNetworkCallback = getNetworkCallback(subIdString);
 
             mConnMgr.registerNetworkCallback(mMmsNetworkRequest, mMmsNetworkCallback);
 
@@ -952,13 +980,14 @@ public class TransactionService extends Service implements Observer {
 
     protected void endMmsConnectivity() {
         long subId = SubscriptionManager.getOnDemandDataSubId();
-        endMmsConnectivity(Long.toString(subId));
+        endMmsConnectivity(subId);
     }
 
-    protected void endMmsConnectivity(String subId) {
+    protected void endMmsConnectivity(long subId) {
+        String subIdString = String.valueOf(subId);
         try {
             if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
-                Log.v(TAG, "endMmsConnectivity for subId = " + subId);
+                Log.v(TAG, "endMmsConnectivity for subId = " + subIdString);
             }
 
             // cancel timer for renewal of lease
@@ -968,7 +997,17 @@ public class TransactionService extends Service implements Observer {
 
                 mConnMgr.stopUsingNetworkFeatureForSubscription(
                         ConnectivityManager.TYPE_MOBILE,
-                        Phone.FEATURE_ENABLE_MMS, subId);
+                        Phone.FEATURE_ENABLE_MMS, subIdString);
+
+                boolean autoEnableData = isAutoEnableData();
+                if (mTelMgr != null && mTelMgr.getDataEnabled()
+                        && autoEnableData && mDataEnabledByAuto) {
+                    Log.d(TAG, "autoEnableData: disabling mobile data");
+                    mDataEnabledByAuto = false;
+                    mTelMgr.setDataEnabledUsingSubId(subId, false);
+                } else if (!autoEnableData) {
+                    mDataEnabledByAuto = false;
+                }
             }
         } finally {
             releaseWakeLock();
@@ -1048,7 +1087,7 @@ public class TransactionService extends Service implements Observer {
                         if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
                             Log.v(TAG, "renew PDP connection for subscription: " + subId);
                         }
-                        int result = beginMmsConnectivity(Long.toString(subId));
+                        int result = beginMmsConnectivity(subId);
                         if (result != PhoneConstants.APN_ALREADY_ACTIVE) {
                             Log.v(TAG, "Extending MMS connectivity returned " + result +
                                     " instead of APN_ALREADY_ACTIVE");
@@ -1195,7 +1234,7 @@ public class TransactionService extends Service implements Observer {
 
                     if (!mPending.isEmpty()) {
                         try {
-                            beginMmsConnectivity(Long.toString(SubscriptionManager.getDefaultDataSubId()));
+                            beginMmsConnectivity(SubscriptionManager.getDefaultDataSubId());
                         } catch (IOException e) {
                             Log.w(TAG, "Attempt to use of MMS connectivity failed");
                             return;
@@ -1341,7 +1380,7 @@ public class TransactionService extends Service implements Observer {
                 if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
                     Log.v(TAG, "processTransaction: call beginMmsConnectivity on subId = " + subId);
                 }
-                int connectivityResult = beginMmsConnectivity(Long.toString(subId));
+                int connectivityResult = beginMmsConnectivity(subId);
                 if (connectivityResult == PhoneConstants.APN_REQUEST_STARTED) {
                     mPending.add(transaction);
                     if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {

@@ -109,6 +109,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     public static final String NOTIFICATION_VIBRATE     = "pref_key_vibrate";
     public static final String NOTIFICATION_VIBRATE_WHEN= "pref_key_vibrateWhen";
     public static final String NOTIFICATION_RINGTONE    = "pref_key_ringtone";
+    public static final String AUTO_ENABLE_DATA         = "pref_key_mms_auto_enable_data";
     public static final String AUTO_RETRIEVAL           = "pref_key_mms_auto_retrieval";
     public static final String RETRIEVAL_DURING_ROAMING = "pref_key_mms_retrieval_during_roaming";
     public static final String AUTO_DELETE              = "pref_key_auto_delete";
@@ -173,6 +174,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private Preference mClearHistoryPref;
     private SwitchPreference mVibratePref;
     private SwitchPreference mEnableNotificationsPref;
+    private SwitchPreference mMmsAutoEnableDataPref;
     private SwitchPreference mMmsAutoRetrievialPref;
     private ListPreference mMmsExpiryPref;
     private ListPreference mMmsExpiryCard1Pref;
@@ -319,6 +321,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mMmsLimitPref = findPreference("pref_key_mms_delete_limit");
         mClearHistoryPref = findPreference("pref_key_mms_clear_history");
         mEnableNotificationsPref = (SwitchPreference) findPreference(NOTIFICATION_ENABLED);
+        mMmsAutoEnableDataPref = (SwitchPreference) findPreference(AUTO_ENABLE_DATA);
         mMmsAutoRetrievialPref = (SwitchPreference) findPreference(AUTO_RETRIEVAL);
         mMmsExpiryPref = (ListPreference) findPreference("pref_key_mms_expiry");
         mMmsExpiryCard1Pref = (ListPreference) findPreference("pref_key_mms_expiry_slot1");
@@ -901,6 +904,10 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         } else if (preference == mEnableQmDarkThemePref) {
             // Update the actual "enable dark theme" value that is stored in secure settings.
             enableQmDarkTheme(mEnableQmDarkThemePref.isChecked(), this);
+        } else if (preference == mMmsAutoEnableDataPref) {
+            if (mMmsAutoEnableDataPref.isChecked()) {
+                startMmsDownload();
+            }
         } else if (preference == mMmsAutoRetrievialPref) {
             if (mMmsAutoRetrievialPref.isChecked()) {
                 startMmsDownload();

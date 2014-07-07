@@ -371,4 +371,9 @@
     <!-- Original timestamps -->
     <string name="pref_title_mms_use_sent_timestamp">Original timestamps</string>
     <string name="pref_summary_mms_use_sent_timestamp">Display sent date instead of received date in timestamps</string>
+
+    <!-- Settings item for boolean option to auto -enable data for MMS messages -->
+    <string name="pref_title_mms_auto_enable_data">Auto-enable data</string>
+    <!-- Settings item description for boolean auto-enable data for MMS option -->
+    <string name="pref_summary_mms_auto_enable_data">Automatically enable mobile data for MMS messages</string>
 </resources>
