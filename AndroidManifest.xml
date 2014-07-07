@@ -58,6 +58,9 @@
     <!-- Needed for QuickMessage -->
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
 
+    <!-- Auto enable mobile data -->
+    <uses-permission android:name="android.permission.MODIFY_PHONE_STATE" />
+
     <application android:name="MmsApp"
             android:label="@string/app_label"
             android:icon="@mipmap/ic_launcher_smsmms"
@@ -288,6 +291,9 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="org.codeaurora.intent.action.ACTION_SUBSCRIPTION_SET_UICC_RESULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.AIRPLANE_MODE"/>
             </intent-filter>
         </receiver>
 
