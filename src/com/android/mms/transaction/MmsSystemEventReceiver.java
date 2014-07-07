@@ -20,9 +20,12 @@ package com.android.mms.transaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.provider.Telephony.Mms;
 import android.telephony.SubscriptionManager;
 import android.util.Log;
@@ -31,6 +34,7 @@ import com.android.internal.telephony.PhoneConstants;
 import com.android.internal.telephony.TelephonyIntents;
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
+import com.android.mms.ui.MessagingPreferenceActivity;
 
 /**
  * MmsSystemEventReceiver receives the
@@ -70,9 +74,9 @@ public class MmsSystemEventReceiver extends BroadcastReceiver {
                 mConnMgr = (ConnectivityManager) context
                         .getSystemService(Context.CONNECTIVITY_SERVICE);
             }
-            if (!mConnMgr.getMobileDataEnabled()) {
+            if (!isNetworkAvailable(context)) {
                 if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
-                    Log.v(TAG, "mobile data turned off, bailing");
+                    Log.v(TAG, "mobile data unavailable, bailing");
                 }
                 return;
             }
@@ -81,15 +85,13 @@ public class MmsSystemEventReceiver extends BroadcastReceiver {
             if (mmsNetworkInfo == null) {
                 return;
             }
-            boolean available = mmsNetworkInfo.isAvailable();
             boolean isConnected = mmsNetworkInfo.isConnected();
 
             if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
-                Log.v(TAG, "TYPE_MOBILE_MMS available = " + available +
-                           ", isConnected = " + isConnected);
+                Log.v(TAG, "TYPE_MOBILE_MMS isConnected = " + isConnected);
             }
 
-            if (available && !isConnected) {
+            if (!isConnected) {
                 wakeUpService(context);
             }
         } else if (action.equals(Intent.ACTION_BOOT_COMPLETED)) {
@@ -114,6 +116,38 @@ public class MmsSystemEventReceiver extends BroadcastReceiver {
             if (status == PhoneConstants.SUCCESS && state == SubscriptionManager.ACTIVE) {
                 wakeUpService(context);
             }
+        } else if (action.equals(Intent.ACTION_AIRPLANE_MODE_CHANGED)) {
+            // Wake up transact service upon leaving airplane mode if auto-enable data
+            if (isAutoEnableData(context) && !isAirplaneModeOn(context)) {
+                wakeUpService(context);
+            }
         }
+    }
+
+    private boolean isAutoEnableData(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(MessagingPreferenceActivity.AUTO_ENABLE_DATA, false);
+    }
+
+    private boolean isAirplaneModeOn(Context context) {
+        return Settings.Global.getInt(context.getContentResolver(),
+                Settings.Global.AIRPLANE_MODE_ON, 0) != 0;
+    }
+
+    private boolean isNetworkAvailable(Context context) {
+        boolean result = false;
+        if (mConnMgr == null) {
+            result = false;
+        } else {
+            if (mConnMgr.getMobileDataEnabled()) {
+                NetworkInfo ni = mConnMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE_MMS);
+                result = ni.isAvailable();
+            } else {
+                // we can auto-enable data, so report available
+                result = isAutoEnableData(context) && !isAirplaneModeOn(context);
+            }
+        }
+        Log.d(TAG, "isNetworkAvailable=" + result);
+        return result;
     }
 }
