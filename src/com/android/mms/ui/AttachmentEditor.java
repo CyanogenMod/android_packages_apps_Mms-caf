@@ -262,33 +262,42 @@ public class AttachmentEditor extends LinearLayout {
         return (SlideViewInterface) view;
     }
 
-    public void onTextChangeForMms(CharSequence s) {
+    public boolean canAddTextForMms(CharSequence s) {
         int totalSize = 0;
         int textSize = s.toString().getBytes().length;
+        int remainSize = MmsConfig.getMaxMessageSize();
         if (mMediaSize != 0) {
             // The AttachmentEditor only can edit text if there only one silde.
             // Here mSlideshow already includes text size, need to recalculate the totalsize.
             int totalTextSize = mSlideshow.getTotalTextMessageSize();
+            remainSize = mSlideshow.getRemainMessageSize();
             if (DEBUG) {
                 Log.v(TAG,"onTextChangeForMms totalTextSize = "+totalTextSize);
             }
             if (textSize != 0 && mSlideshow.size() == 1) {
                 totalSize = mMediaSize - totalTextSize + textSize;
+                remainSize = remainSize + totalTextSize - textSize;
             } else {
                 totalSize = mMediaSize + textSize;
-
+                remainSize = remainSize - textSize;
             }
+            remainSize = remainSize -  mSlideshow.getSubjectSize();
         }
 
         if (DEBUG) {
             Log.v(TAG,"onTextChangeForMms textSize = " + textSize
                     + ", mMediaSize = " + mMediaSize
                     + ", totalSize = " + totalSize
+                    + ", remainSize = "  + remainSize
                     );
         }
 
         if (mSizeIndicator != null) {
             int currentSize = getSizeWithOverHead(totalSize + mSlideshow.getSubjectSize());
+            if (remainSize < 0) {
+                currentSize = MmsConfig.getMaxMessageSize() / KILOBYTE;
+            }
+
             if (DEBUG) {
                 Log.v(TAG,"onTextChangeForMms currentSize = " + currentSize
                         + ", totalSize = " + totalSize
@@ -297,6 +306,7 @@ public class AttachmentEditor extends LinearLayout {
             mSizeIndicator.setText(mContext.getString(R.string.mms_size_indicator,
                             currentSize, MmsConfig.getMaxMessageSize() / KILOBYTE));
         }
+        return remainSize >= 0;
     }
 
     private int getSizeWithOverHead(int size) {
