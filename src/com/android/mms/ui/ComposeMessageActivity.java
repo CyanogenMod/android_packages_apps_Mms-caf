@@ -459,6 +459,9 @@ public class ComposeMessageActivity extends Activity
 
     private Object mAddAttachmentLock = new Object();
 
+    private boolean mShowAttIcon = false;
+    private final static int REPLACE_ATTACHMEN_MASK = 1 << 16;
+
     /**
      * Whether the audio attachment player activity is launched and running
      */
@@ -2322,6 +2325,7 @@ public class ComposeMessageActivity extends Activity
         setContentView(R.layout.compose_message_activity);
         setProgressBarVisibility(false);
 
+        mShowAttIcon = getResources().getBoolean(R.bool.config_show_attach_icon_always);
         boolean isBtnStyle = getResources().getBoolean(R.bool.config_btnstyle);
         mShowTwoButtons = isBtnStyle && MessageUtils.isMsimIccCardActive();
         // Initialize members for UI elements.
@@ -3332,7 +3336,7 @@ public class ComposeMessageActivity extends Activity
                 menu.add(0, MENU_ADD_SUBJECT, 0, R.string.add_subject).setIcon(
                         R.drawable.ic_menu_edit);
             }
-            if (!mWorkingMessage.hasAttachment()) {
+            if (showAddAttachementMenu()) {
                 menu.add(0, MENU_ADD_ATTACHMENT, 0, R.string.add_attachment)
                         .setIcon(R.drawable.ic_menu_attachment)
                     .setTitle(R.string.add_attachment)
@@ -3649,6 +3653,39 @@ public class ComposeMessageActivity extends Activity
 //        }
 //    }
 
+    private int getSlideNumber() {
+        int slideNum = 0;
+        SlideshowModel slideshow = mWorkingMessage.getSlideshow();
+        if (slideshow != null) {
+            slideNum = slideshow.size();
+        }
+        return slideNum;
+    }
+
+    private boolean showAddAttachementMenu() {
+        if (!mShowAttIcon) {
+            return !mWorkingMessage.hasAttachment();
+        } else {
+            return !mWorkingMessage.hasVcard()
+                    && getSlideNumber() < MmsConfig.getMaxSlideNumber();
+        }
+    }
+
+    private boolean isAppendRequest(int requestCode) {
+        return (requestCode & REPLACE_ATTACHMEN_MASK) == 0;
+    }
+
+    private int getRequestCode(int requestCode) {
+        return requestCode & ~REPLACE_ATTACHMEN_MASK;
+    }
+
+    private int getMakRequestCode(boolean replace, int requestCode) {
+        if (replace) {
+            return requestCode | REPLACE_ATTACHMEN_MASK;
+        }
+        return requestCode;
+    }
+
     private void addAttachment(int type, boolean replace) {
         // Calculate the size of the current slide if we're doing a replace so the
         // slide size can optionally be used in computing how much room is left for an attachment.
@@ -3661,22 +3698,26 @@ public class ComposeMessageActivity extends Activity
         }
         switch (type) {
             case AttachmentTypeSelectorAdapter.ADD_IMAGE:
-                MessageUtils.selectImage(this, REQUEST_CODE_ATTACH_IMAGE);
+                MessageUtils.selectImage(this,
+                        getMakRequestCode(replace, REQUEST_CODE_ATTACH_IMAGE));
                 break;
 
             case AttachmentTypeSelectorAdapter.TAKE_PICTURE: {
-                MessageUtils.capturePicture(this, REQUEST_CODE_TAKE_PICTURE);
+                MessageUtils.capturePicture(this,
+                        getMakRequestCode(replace, REQUEST_CODE_TAKE_PICTURE));
                 break;
             }
 
             case AttachmentTypeSelectorAdapter.ADD_VIDEO:
-                MessageUtils.selectVideo(this, REQUEST_CODE_ATTACH_VIDEO);
+                MessageUtils.selectVideo(this,
+                        getMakRequestCode(replace, REQUEST_CODE_ATTACH_VIDEO));
                 break;
 
             case AttachmentTypeSelectorAdapter.RECORD_VIDEO: {
                 long sizeLimit = computeAttachmentSizeLimit(slideShow, currentSlideSize);
                 if (sizeLimit > 0) {
-                    MessageUtils.recordVideo(this, REQUEST_CODE_TAKE_VIDEO, sizeLimit);
+                    MessageUtils.recordVideo(this,
+                        getMakRequestCode(replace, REQUEST_CODE_TAKE_VIDEO), sizeLimit);
                 } else {
                     Toast.makeText(this,
                             getString(R.string.message_too_big_for_video),
@@ -3686,12 +3727,14 @@ public class ComposeMessageActivity extends Activity
             break;
 
             case AttachmentTypeSelectorAdapter.ADD_SOUND:
-                MessageUtils.selectAudio(this, REQUEST_CODE_ATTACH_SOUND);
+                MessageUtils.selectAudio(this,
+                        getMakRequestCode(replace, REQUEST_CODE_ATTACH_SOUND));
                 break;
 
             case AttachmentTypeSelectorAdapter.RECORD_SOUND:
                 long sizeLimit = computeAttachmentSizeLimit(slideShow, currentSlideSize);
-                MessageUtils.recordSound(this, REQUEST_CODE_RECORD_SOUND, sizeLimit);
+                MessageUtils.recordSound(this,
+                        getMakRequestCode(replace, REQUEST_CODE_RECORD_SOUND), sizeLimit);
                 break;
 
             case AttachmentTypeSelectorAdapter.ADD_SLIDESHOW:
@@ -3739,6 +3782,11 @@ public class ComposeMessageActivity extends Activity
             mAttachmentTypeSelectorAdapter = new AttachmentTypeSelectorAdapter(
                     this, AttachmentTypeSelectorAdapter.MODE_WITH_SLIDESHOW);
         }
+
+        if (mShowAttIcon) {
+            mAttachmentTypeSelectorAdapter.setShowMedia(!replace && getSlideNumber() != 0);
+        }
+
         builder.setAdapter(mAttachmentTypeSelectorAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -3751,13 +3799,15 @@ public class ComposeMessageActivity extends Activity
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int maskResultCode, int resultCode, Intent data) {
         if (LogTag.VERBOSE) {
-            log("onActivityResult: requestCode=" + requestCode + ", resultCode=" + resultCode +
-                    ", data=" + data);
+            log("onActivityResult: requestCode=" + getRequestCode(maskResultCode) +
+                    ", resultCode=" + resultCode + ", data=" + data);
         }
         mWaitingForSubActivity = false;          // We're back!
         mShouldLoadDraft = false;
+        int requestCode = getRequestCode(maskResultCode);
+        boolean append = isAppendRequest(maskResultCode);
         if (mWorkingMessage.isFakeMmsForDraft()) {
             // We no longer have to fake the fact we're an Mms. At this point we are or we aren't,
             // based on attachments and other Mms attrs.
@@ -3831,13 +3881,13 @@ public class ComposeMessageActivity extends Activity
                 // Remove the old captured picture's thumbnail from the cache
                 MmsApp.getApplication().getThumbnailManager().removeThumbnail(uri);
 
-                addImageAsync(uri, false);
+                addImageAsync(uri, append);
                 break;
             }
 
             case REQUEST_CODE_ATTACH_IMAGE: {
                 if (data != null) {
-                    addImageAsync(data.getData(), false);
+                    addImageAsync(data.getData(), append);
                 }
                 break;
             }
@@ -3847,12 +3897,12 @@ public class ComposeMessageActivity extends Activity
                 // Remove the old captured video's thumbnail from the cache
                 MmsApp.getApplication().getThumbnailManager().removeThumbnail(videoUri);
 
-                addVideoAsync(videoUri, false);      // can handle null videoUri
+                addVideoAsync(videoUri, append);      // can handle null videoUri
                 break;
 
             case REQUEST_CODE_ATTACH_VIDEO:
                 if (data != null) {
-                    addVideoAsync(data.getData(), false);
+                    addVideoAsync(data.getData(), append);
                 }
                 break;
 
@@ -3864,13 +3914,13 @@ public class ComposeMessageActivity extends Activity
                 } else if (Settings.System.DEFAULT_RINGTONE_URI.equals(uri)) {
                     break;
                 }
-                addAudio(uri, false);
+                addAudio(uri, append);
                 break;
             }
 
             case REQUEST_CODE_RECORD_SOUND:
                 if (data != null) {
-                    addAudio(data.getData(), false);
+                    addAudio(data.getData(), append);
                 }
                 break;
 
@@ -4190,6 +4240,7 @@ public class ComposeMessageActivity extends Activity
     private void addVideo(Uri uri, boolean append) {
         if (uri != null) {
             int result = mWorkingMessage.setAttachment(WorkingMessage.VIDEO, uri, append);
+            updateMmsSizeIndicator();
             handleAddAttachmentError(result, R.string.type_video);
         }
     }
@@ -4197,6 +4248,7 @@ public class ComposeMessageActivity extends Activity
     private void addAudio(Uri uri, boolean append) {
         if (uri != null) {
             int result = mWorkingMessage.setAttachment(WorkingMessage.AUDIO, uri, append);
+            updateMmsSizeIndicator();
             handleAddAttachmentError(result, R.string.type_audio);
         }
     }

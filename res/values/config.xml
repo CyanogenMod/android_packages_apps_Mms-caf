@@ -86,4 +86,7 @@
     <bool name="config_sms_validity">true</bool>
 
     <integer name="wap_push_address_index">1</integer>
+
+    <!-- configuration for display add attachment icon always -->
+    <bool name="config_show_attach_icon_always">false</bool>
 </resources>
