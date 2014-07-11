@@ -24,6 +24,7 @@
   <string name="toast_sending_message">Die boodskap word gestuur</string>
   <string name="qm_quick_reply">Antwoord</string>
   <string name="qm_mark_read">Gelees</string>
+  <string name="message_counter">%1$d of %2$d</string>
   <string name="pref_title_notification_privacy_mode_enabled">Privaatheid-modus</string>
   <string name="pref_summary_notification_privacy_mode_enabled">Verberg sender naam en boodskap in statusbalk en deaktiveer Kitsantwoord</string>
   <string name="notification_single_title_privacy_mode">Nuwe boodskap</string>
@@ -115,4 +116,6 @@
   <string name="menu_insert_smiley">Voeg gesiggie by</string>
   <string name="pref_title_enable_emoticons">Emosikone ondersteuning</string>
   <string name="pref_summary_enable_emoticons">Vervang teks emosikone met grafiese ekwivalente</string>
+  <string name="normal_show">Kyk normaal modus</string>
+  <string name="cannot_play">Kan nie skyfievertoning wys nie.</string>
 </resources>

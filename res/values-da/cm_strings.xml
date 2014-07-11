@@ -24,6 +24,7 @@
   <string name="toast_sending_message">Sender besked...</string>
   <string name="qm_quick_reply">Svar</string>
   <string name="qm_mark_read">Læst</string>
+  <string name="message_counter">%1$d af %2$d</string>
   <string name="pref_title_notification_privacy_mode_enabled">Privatlivstilstand</string>
   <string name="pref_summary_notification_privacy_mode_enabled">Skjul afsender og besked i statuslinje og slå Svar fra</string>
   <string name="notification_single_title_privacy_mode">Ny besked</string>
@@ -115,4 +116,6 @@
   <string name="menu_insert_smiley">Indsæt smiley</string>
   <string name="pref_title_enable_emoticons">Understøttelse af smileys</string>
   <string name="pref_summary_enable_emoticons">Erstat tekst-smileys med grafik</string>
+  <string name="normal_show">Vis normaltilstand</string>
+  <string name="cannot_play">Kan ikke præsentere diasshowet.</string>
 </resources>

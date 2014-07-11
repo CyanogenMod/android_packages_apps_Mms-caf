@@ -24,6 +24,7 @@
   <string name="toast_sending_message">Skickar meddelande</string>
   <string name="qm_quick_reply">Svara</string>
   <string name="qm_mark_read">Läst</string>
+  <string name="message_counter">%1$d av %2$d</string>
   <string name="pref_title_notification_privacy_mode_enabled">Integritetsläge</string>
   <string name="pref_summary_notification_privacy_mode_enabled">Döljer sändare och meddelande i statusraden samt avaktiverar Snabbsvar</string>
   <string name="notification_single_title_privacy_mode">Nytt meddelande</string>
@@ -115,4 +116,6 @@
   <string name="menu_insert_smiley">Infoga känsloikon</string>
   <string name="pref_title_enable_emoticons">Aktivera känsloikoner</string>
   <string name="pref_summary_enable_emoticons">Ersätt textkänsloikoner med grafiska motsvarigheter</string>
+  <string name="normal_show">Visa normalläge</string>
+  <string name="cannot_play">Kan inte visa bildspelet.</string>
 </resources>

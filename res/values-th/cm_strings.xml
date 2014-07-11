@@ -24,6 +24,7 @@
   <string name="toast_sending_message">กำลังส่งข้อความ</string>
   <string name="qm_quick_reply">ตอบ</string>
   <string name="qm_mark_read">อ่าน</string>
+  <string name="message_counter">%1$d ของ %2$d</string>
   <string name="pref_title_notification_privacy_mode_enabled">รูปแบบความเป็นส่วนตัว</string>
   <string name="pref_summary_notification_privacy_mode_enabled">ซ่อนผู้ส่งและข้อความในแถบสถานะและปิด \'ตอบด่วน\'</string>
   <string name="notification_single_title_privacy_mode">ข้อความใหม่</string>
@@ -115,4 +116,6 @@
   <string name="menu_insert_smiley">ใส่รูปหน้ายิ้ม</string>
   <string name="pref_title_enable_emoticons">สนับสนุนอิโมติคอน</string>
   <string name="pref_summary_enable_emoticons">แสดงข้อความอีโมติคอนแทนด้วยรูปภาพ</string>
+  <string name="normal_show">ดูรูปแบบปกติ</string>
+  <string name="cannot_play">ไม่สามารถนำเสนอภาพนิ่งได้</string>
 </resources>

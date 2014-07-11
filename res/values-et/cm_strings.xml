@@ -16,13 +16,14 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <plurals name="template_confirm_delete_conversation">
-    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g>個のテンプレートを削除します。</item>
-  </plurals>
-  <plurals name="remaining_delay_time">
-    <item quantity="other">%1$d秒以内に送信します、タッチするとキャンセルします。</item>
-  </plurals>
-  <plurals name="confirm_mark_unread_conversation">
-    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g>件の会話が未読になります。</item>
-  </plurals>
+  <string name="menu_add_to_calendar">Lisa kalendrisse</string>
+  <string name="button_close">Sulge</string>
+  <string name="button_view">Vaade</string>
+  <string name="button_templates">Mallid</string>
+  <string name="type_to_reply_text_enter_to_send">Kirjuta et vastata</string>
+  <string name="toast_sending_message">Saadan sõnumit</string>
+  <string name="qm_quick_reply">Vasta</string>
+  <string name="qm_mark_read">Loe</string>
+  <string name="notification_single_text_privacy_mode">1 lugemata sõnum</string>
+  <string name="menu_insert_smiley">Sisesta emotikon</string>
 </resources>

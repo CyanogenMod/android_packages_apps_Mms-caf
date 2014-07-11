@@ -17,7 +17,7 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string-array name="pref_templates_gestures_sensitivity_entries">
-    <item>1 (найменш точно)</item>
+    <item>1 (laijim)</item>
     <item>2</item>
     <item>3</item>
     <item>4</item>
@@ -28,29 +28,29 @@
     <item>9</item>
     <item>10</item>
     <item>11</item>
-    <item>12 (точні жести)</item>
+    <item>12 (kitseim)</item>
   </string-array>
   <string-array name="default_smiley_names">
-    <item>Щасливий</item>
-    <item>Сумний</item>
-    <item>Підморгнути</item>
-    <item>Показує язик</item>
-    <item>Здивований</item>
-    <item>Поцілунок</item>
-    <item>Репетує</item>
-    <item>Круто</item>
-    <item>Грошолюб</item>
-    <item>Тіпун на язик</item>
-    <item>Збентежений</item>
-    <item>Ангел</item>
-    <item>Невпевнений</item>
-    <item>Плач</item>
-    <item>Рот на замку</item>
-    <item>Сміх</item>
-    <item>Збентежений</item>
-    <item>Серце</item>
-    <item>Злість</item>
-    <item>Самовдоволена посмішка</item>
-    <item>Байдужий вираз</item>
+    <item>Õnnelik</item>
+    <item>Kurb</item>
+    <item>Silmapilgutus</item>
+    <item>Keel väljas</item>
+    <item>Üllatunud</item>
+    <item>Suudlus</item>
+    <item>Karjumine</item>
+    <item>Lahe</item>
+    <item>Rahasuu</item>
+    <item>Loba-aps</item>
+    <item>Piinlik</item>
+    <item>Ingel</item>
+    <item>Otsustusvõimetu</item>
+    <item>Nutt</item>
+    <item>Suletud suu</item>
+    <item>Naer</item>
+    <item>Segaduses</item>
+    <item>Süda</item>
+    <item>Vihane</item>
+    <item>Muie</item>
+    <item>Ükskõikne nägu</item>
   </string-array>
 </resources>

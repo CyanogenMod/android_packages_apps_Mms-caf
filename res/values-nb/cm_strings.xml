@@ -24,6 +24,7 @@
   <string name="toast_sending_message">Sender melding</string>
   <string name="qm_quick_reply">Svar</string>
   <string name="qm_mark_read">Les</string>
+  <string name="message_counter">%1$d av %2$d</string>
   <string name="pref_title_notification_privacy_mode_enabled">Personvernmodus</string>
   <string name="pref_summary_notification_privacy_mode_enabled">Skjul sender og melding i statuslinjen, og deaktiver \'Hurtigsvar\'</string>
   <string name="notification_single_title_privacy_mode">Ny melding</string>
@@ -115,4 +116,6 @@
   <string name="menu_insert_smiley">Sett inn smilefjes</string>
   <string name="pref_title_enable_emoticons">Uttrykksikoner støtte</string>
   <string name="pref_summary_enable_emoticons">Erstatte tekst uttrykksikoner med grafiske ekvivalenter</string>
+  <string name="normal_show">Normal visningsmodus</string>
+  <string name="cannot_play">Kan ikke vise lysbildefremvisningen.</string>
 </resources>

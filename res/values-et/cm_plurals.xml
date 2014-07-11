@@ -17,12 +17,15 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <plurals name="template_confirm_delete_conversation">
-    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g>個のテンプレートを削除します。</item>
+    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> mall kustutatakse.</item>
+    <item quantity="other"><xliff:g id="number">%1$s</xliff:g> malli kustutatakse.</item>
   </plurals>
   <plurals name="remaining_delay_time">
-    <item quantity="other">%1$d秒以内に送信します、タッチするとキャンセルします。</item>
+    <item quantity="one">Saadan %1$d sekundi jooksul, puuduta et katkestada.</item>
+    <item quantity="other">Saadan %1$d sekundi jooksul, puuduta et katkestada.</item>
   </plurals>
   <plurals name="confirm_mark_unread_conversation">
-    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g>件の会話が未読になります。</item>
+    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> vestlus märgitakse mitteloetuna.</item>
+    <item quantity="other"><xliff:g id="number">%1$s</xliff:g> vestlust märgitakse mitteloetuna.</item>
   </plurals>
 </resources>

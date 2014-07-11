@@ -116,4 +116,6 @@
   <string name="menu_insert_smiley">Smiley einfügen</string>
   <string name="pref_title_enable_emoticons">Smiley-Unterstützung</string>
   <string name="pref_summary_enable_emoticons">Text-Smileys mit den zugehörigen Bild-Smileys ersetzen</string>
+  <string name="normal_show">Normal-Modus anzeigen</string>
+  <string name="cannot_play">Die Diashow kann nicht gestartet werden.</string>
 </resources>

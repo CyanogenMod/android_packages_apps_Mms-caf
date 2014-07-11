@@ -24,6 +24,7 @@
   <string name="toast_sending_message">Відправка повідомлення</string>
   <string name="qm_quick_reply">Відповісти</string>
   <string name="qm_mark_read">Читати</string>
+  <string name="message_counter">%1$d із %2$d</string>
   <string name="pref_title_notification_privacy_mode_enabled">Режим приватності</string>
   <string name="pref_summary_notification_privacy_mode_enabled">Приховувати відправника і повідомлення в рядку стану, а також відключити \'Швидку відповідь\'</string>
   <string name="notification_single_title_privacy_mode">Нове повідомлення</string>
@@ -112,4 +113,9 @@
   <string name="pref_mms_notification_vibrate_long_vib">Довга вібрація</string>
   <string name="pref_mms_notification_vibrate_mult_short">Кілька коротких</string>
   <string name="pref_mms_notification_vibrate_mult_long">Кілька довгих</string>
+  <string name="menu_insert_smiley">Вставити смайлик</string>
+  <string name="pref_title_enable_emoticons">Підтримка смайликів</string>
+  <string name="pref_summary_enable_emoticons">Замінювати текстові смайлики графічними</string>
+  <string name="normal_show">Нормальний режим</string>
+  <string name="cannot_play">Неможливо відтворити слайд-шоу.</string>
 </resources>
