@@ -125,11 +125,20 @@ public class SlideListItemView extends LinearLayout implements SlideViewInterfac
         private final Uri attachmentUri;
         private final String attachmentName;
         private final boolean importVcard;
+        private final Uri lookupUri;
 
         public ViewAttachmentListener(Uri uri, String name, boolean vcard) {
             attachmentUri = uri;
             attachmentName = name;
             importVcard = vcard;
+            lookupUri = null;
+        }
+
+        public ViewAttachmentListener(Uri uri, String name, boolean vcard, Uri lookup) {
+            attachmentUri = uri;
+            attachmentName = name;
+            importVcard = vcard;
+            lookupUri = lookup;
         }
 
         @Override
@@ -152,7 +161,11 @@ public class SlideListItemView extends LinearLayout implements SlideViewInterfac
                                             ContentType.TEXT_VCARD.toLowerCase());
                                     intent.putExtra(MessageUtils.VIEW_VCARD, true);
                                 } else {
-                                    intent.setData(attachmentUri);
+                                    if (lookupUri != null) {
+                                        intent.setData(lookupUri);
+                                    } else {
+                                        intent.setData(attachmentUri);
+                                    }
                                 }
                                 mContext.startActivity(intent);
                             } catch (Exception e) {
@@ -335,12 +348,14 @@ public class SlideListItemView extends LinearLayout implements SlideViewInterfac
             if (mContext instanceof MobilePaperShowActivity) {
                 mAttachmentIcon.setImageResource(R.drawable.ic_attach_vcard);
                 Uri attUri = uri;
+                Uri lookup = null;
                 // If vCard uri is not from contacts, we need improt this vCard
                 boolean needImport = !(lookupUri != null && lookupUri.contains(CONTACTS));
                 if (!needImport) {
-                    attUri = Uri.parse(lookupUri);
+                    lookup = Uri.parse(lookupUri);
                 }
-                ViewAttachmentListener l = new ViewAttachmentListener(attUri, name, needImport);
+                ViewAttachmentListener l =
+                        new ViewAttachmentListener(attUri, name, needImport, lookup);
                 setOnClickListener(l);
             }
         }
