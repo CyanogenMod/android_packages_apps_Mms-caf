@@ -233,6 +233,11 @@ public abstract class MediaModel extends Model implements EventListener {
         InputStream input = null;
         try {
             input = cr.openInputStream(mUri);
+
+            if (input == null) {
+                throw new MmsException("Unable to open input stream for uri.");
+            }
+
             if (input instanceof FileInputStream) {
                 // avoid reading the whole stream to get its length
                 FileInputStream f = (FileInputStream) input;
