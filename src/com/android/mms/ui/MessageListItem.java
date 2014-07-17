@@ -642,11 +642,13 @@ public class MessageListItem extends LinearLayout implements
     DialogInterface.OnClickListener mCancelLinstener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, final int whichButton) {
-            Intent intent = new Intent(mContext, TransactionService.class);
-            intent.putExtra(CANCEL_URI, mMessageItem.mMessageUri.toString());
-            mContext.startService(intent);
-            DownloadManager.getInstance().markState(mMessageItem.mMessageUri,
-                    DownloadManager.STATE_UNSTARTED);
+            if (mDownloading.getVisibility() == View.VISIBLE) {
+                Intent intent = new Intent(mContext, TransactionService.class);
+                intent.putExtra(CANCEL_URI, mMessageItem.mMessageUri.toString());
+                mContext.startService(intent);
+                DownloadManager.getInstance().markState(mMessageItem.mMessageUri,
+                        DownloadManager.STATE_UNSTARTED);
+            }
         }
     };
 
