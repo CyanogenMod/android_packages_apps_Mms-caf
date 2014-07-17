@@ -979,6 +979,10 @@ public class MessageListItem extends LinearLayout implements
 
     @Override
     public void setVideoThumbnail(String name, Bitmap bitmap) {
+        if (mMultiChoiceMode) {
+            showMmsView(false);
+            return;
+        }
         showMmsView(true);
 
         try {
@@ -1039,6 +1043,10 @@ public class MessageListItem extends LinearLayout implements
 
     @Override
     public void setVcard(Uri lookupUri, String name) {
+        if (mMultiChoiceMode) {
+            showMmsView(false);
+            return;
+        }
         showMmsView(true);
 
         try {
