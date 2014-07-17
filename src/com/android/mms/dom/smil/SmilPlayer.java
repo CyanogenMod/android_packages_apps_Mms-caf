@@ -713,7 +713,10 @@ public class SmilPlayer implements Runnable {
                     }
                 }
             }
-            mCurrentTime = offset;
+            // Reload action mCurrentTime is reset so don't change the time
+            if (!isReloadAction()) {
+                mCurrentTime = offset;
+            }
             actionEntry(entry);
         }
 
