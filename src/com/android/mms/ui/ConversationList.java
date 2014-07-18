@@ -654,6 +654,11 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             }
         }
 
+        item = menu.findItem(R.id.action_mark_all_as_unread);
+        if (item != null) {
+            item.setVisible((mListAdapter.getCount() > 0) && mIsSmsEnabled);
+        }
+
         if (!LogTag.DEBUG_DUMP) {
             item = menu.findItem(R.id.action_debug_dump);
             if (item != null) {
@@ -689,6 +694,11 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             case R.id.action_delete_all:
                 // The invalid threadId of -1 means all threads here.
                 confirmDeleteThread(-1L, mQueryHandler);
+                break;
+            case R.id.action_mark_all_as_unread:
+                final MarkAsUnreadThreadListener listener = new MarkAsUnreadThreadListener(
+                        null, mQueryHandler, this);
+                confirmMarkAsUnreadDialog(listener, null, this);
                 break;
             case R.id.action_settings:
                 Intent intent = new Intent(this, MessagingPreferenceActivity.class);
