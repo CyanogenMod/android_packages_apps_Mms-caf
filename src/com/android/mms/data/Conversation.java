@@ -312,9 +312,8 @@ public class Conversation {
 
     private void buildUnReadContentValues() {
         if (sUnReadContentValues == null) {
-            sUnReadContentValues = new ContentValues(2);
+            sUnReadContentValues = new ContentValues(1);
             sUnReadContentValues.put("read", 0);
-            sUnReadContentValues.put("seen", 0);
         }
     }
 
