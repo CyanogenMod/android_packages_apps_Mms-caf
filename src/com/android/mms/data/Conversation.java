@@ -65,7 +65,7 @@ public class Conversation {
     };
 
     private static final String UNREAD_SELECTION = "(read=0 OR seen=0)";
-    private static final String READ_SELECTION = "(read=1 OR seen=1)";
+    private static final String READ_SELECTION = "read=1";
 
     private static final String[] SEEN_PROJECTION = new String[] {
         "seen"
