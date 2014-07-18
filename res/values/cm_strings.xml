@@ -139,6 +139,8 @@
 
     <!-- Context menu item on a message for marking as unread -->
     <string name="menu_as_unread">Mark as unread</string>
+    <!-- Context menu item on a message for marking all threads as unread -->
+    <string name="menu_all_as_unread">Mark all as unread</string>
     <!-- Confirm Mark as unread -->
     <string name="confirm_mark_unread_dialog_title">Mark as unread?</string>
     <string name="confirm_mark_unread_conversation">The conversation will be marked as unread.</string>
