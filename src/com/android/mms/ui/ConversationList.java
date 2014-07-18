@@ -869,12 +869,11 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                     PduHeaders.READ_STATUS__DELETED_WITHOUT_BEING_READ, new Runnable() {
                 @Override
                 public void run() {
-                    int token = MARK_CONVERSATION_UNREAD_TOKEN;
                     if (mThreadIds == null) {
-                        Conversation.startMarkAsUnreadAll(mContext,mHandler, token);
+                        Conversation.startMarkAsUnreadAll(mContext, mHandler);
                         DraftCache.getInstance().refresh();
                     } else {
-                        Conversation.startMarkAsUnread(mContext,mHandler, token, mThreadIds);
+                        Conversation.startMarkAsUnread(mContext, mHandler, mThreadIds);
                     }
                 }
             });
@@ -1122,9 +1121,10 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
 
                 case R.id.markAsUnread:
                     if (mSelectedThreadIds.size() > 0) {
-                        confirmMarkAsUnreadDialog(new MarkAsUnreadThreadListener(mSelectedThreadIds, mQueryHandler,
-                        ConversationList.this), mSelectedThreadIds,
-                        ConversationList.this);
+                        final MarkAsUnreadThreadListener listener = new MarkAsUnreadThreadListener(
+                                mSelectedThreadIds, mQueryHandler,ConversationList.this);
+                        confirmMarkAsUnreadDialog(listener, mSelectedThreadIds,
+                                ConversationList.this);
                     }
                     mode.finish();
                     break;

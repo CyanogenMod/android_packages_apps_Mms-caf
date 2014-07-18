@@ -449,9 +449,8 @@ public class Conversation {
                             Log.e(TAG, "Database is full");
                             e.printStackTrace();
                             showStorageFullToast(mContext);
-                        } finally {
-                            return null;
                         }
+                        return null;
                     }
                     setHasUnreadMessages(false);
                 }
@@ -815,20 +814,19 @@ public class Conversation {
      *
      * @param handler An AsyncQueryHandler that will receive onMarkAsUnreadComplete
      *                upon completion of the conversation being marked as unread
-     * @param token   The token that will be passed to onMarkAsUnreadComplete
      * @param threadIds Collection of thread IDs of the conversations to be marked as unread
      */
-    public static void startMarkAsUnread(Context context, ConversationQueryHandler handler, int token,
+    public static void startMarkAsUnread(Context context, ConversationQueryHandler handler,
             Collection<Long> threadIds) {
         synchronized(sDeletingThreadsLock) {
             if (UNMARKDEBUG) {
-                Log.v(TAG,"Conversation startMarkAsUnread marking as unread:" +
-                    threadIds.size());
+                Log.v(TAG,"Conversation startMarkAsUnread marking as unread:" + threadIds.size());
             }
             for (long threadId : threadIds) {
-                Conversation c = Conversation.get(context,threadId,true);
-                if (c!=null)
+                Conversation c = Conversation.get(context, threadId, true);
+                if (c != null) {
                     c.markAsUnread();
+                }
             }
         }
     }
@@ -840,10 +838,9 @@ public class Conversation {
      *
      * @param handler An AsyncQueryHandler that will receive onMarkAsUnreadComplete
      *                upon completion of the conversation being marked as unread
-     * @param token   The token that will be passed to onMarkAsUnreadComplete
      * @param threadIds Collection of thread IDs of the conversations to be marked as unread
      */
-    public static void startMarkAsUnreadAll(Context context,  ConversationQueryHandler handler, int token) {
+    public static void startMarkAsUnreadAll(Context context,  ConversationQueryHandler handler) {
         synchronized(sDeletingThreadsLock) {
             if (UNMARKDEBUG) {
                 Log.v(TAG,"Conversation startMarkAsUnread marking all as unread");
@@ -853,12 +850,12 @@ public class Conversation {
                 ALL_THREADS_PROJECTION, null, null, null);
             try {
                 if (c != null) {
-                    ContentResolver resolver = context.getContentResolver();
                     while (c.moveToNext()) {
                         long threadId = c.getLong(ID);
                         Conversation con = Conversation.get(context,threadId,true);
-                        if (con!=null)
+                        if (con != null) {
                             con.markAsUnread();
+                        }
                    }
                 }
             } finally {
