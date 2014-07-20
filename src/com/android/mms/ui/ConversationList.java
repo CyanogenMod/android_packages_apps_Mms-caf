@@ -411,6 +411,11 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
     @Override
     protected void onNewIntent(Intent intent) {
         // Handle intents that occur after the activity has already been created.
+        if (isFinishing()) {
+            // Just for monkey test, "ConversationList" has been closed when
+            // run "onNewIntent".
+            return;
+        }
         startAsyncQuery();
     }
 
