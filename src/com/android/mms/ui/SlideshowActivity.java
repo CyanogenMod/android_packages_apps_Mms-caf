@@ -73,6 +73,8 @@ public class SlideshowActivity extends Activity implements EventListener {
     private MediaController mMediaController;
     private SmilPlayer mSmilPlayer;
 
+    private SmilPlayerController mSmilPlayerController;
+
     private Handler mHandler;
 
     private SMILDocument mSmilDoc;
@@ -238,16 +240,17 @@ public class SlideshowActivity extends Activity implements EventListener {
                 mSmilPlayer.init(mSmilDoc);
                 if (isRotating()) {
                     mSmilPlayer.reload();
-                } else {
-                    mSmilPlayer.play();
                 }
+                // Play or replay in the after of reloaded
+                mSmilPlayer.play();
             }
         });
     }
 
     private void initMediaController() {
         mMediaController = new MediaController(SlideshowActivity.this, false);
-        mMediaController.setMediaPlayer(new SmilPlayerController(mSmilPlayer));
+        mSmilPlayerController = new SmilPlayerController(mSmilPlayer);
+        mMediaController.setMediaPlayer(mSmilPlayerController);
         mMediaController.setAnchorView(findViewById(R.id.slide_view));
         mMediaController.setPrevNextListeners(
             new OnClickListener() {
@@ -294,8 +297,11 @@ public class SlideshowActivity extends Activity implements EventListener {
             ((EventTarget) mSmilDoc).removeEventListener(
                     SmilDocumentImpl.SMIL_DOCUMENT_END_EVENT, this, false);
         }
+        // mSmilPlayer will be paused by mSmilPlayerController
         if (mSmilPlayer != null) {
-            mSmilPlayer.pause();
+            // Make the SmilPlayer execute pause, and set the field named
+            // mCachedIsPlaying to false so that the UI can change to pause too.
+            mSmilPlayerController.pause();
         }
     }
 
