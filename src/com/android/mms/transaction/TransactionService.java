@@ -452,6 +452,9 @@ public class TransactionService extends Service implements Observer {
             return;
         }
         boolean noNetwork = !isNetworkAvailable(enableMmsData);
+        if (getResources().getBoolean(R.bool.config_retry_always) && !noNetwork) {
+            noNetwork |= !MessageUtils.isDataNetworkAvaiable(getApplicationContext());
+        }
 
         Log.d(TAG, "onNewIntent: serviceId: " + serviceId + ": " + intent.getExtras() +
                 " intent=" + intent);
