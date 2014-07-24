@@ -104,6 +104,8 @@ public class ManageSimMessages extends Activity
 
     public static final int BATCH_DELETE = 100;
 
+    private AlertDialog mDeleteDialog;
+
     private final ContentObserver simChangeObserver =
             new ContentObserver(new Handler()) {
         @Override
@@ -226,6 +228,9 @@ public class ManageSimMessages extends Activity
     }
 
     private void refreshMessageList() {
+        if (mDeleteDialog != null && mDeleteDialog.isShowing()) {
+            mDeleteDialog.dismiss();
+        }
         updateState(SHOW_BUSY);
         if (mCursor != null) {
             stopManagingCursor(mCursor);
@@ -545,7 +550,7 @@ public class ManageSimMessages extends Activity
         builder.setNegativeButton(R.string.no, null);
         builder.setMessage(messageId);
 
-        builder.show();
+        mDeleteDialog = builder.show();
     }
 
     private void showSimCapacityDialog() {
