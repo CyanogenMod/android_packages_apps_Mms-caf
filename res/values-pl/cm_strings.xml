@@ -116,4 +116,6 @@
   <string name="menu_insert_smiley">Wstaw emotikonę</string>
   <string name="pref_title_enable_emoticons">Wsparcie dla emotikon</string>
   <string name="pref_summary_enable_emoticons">Zastępuj tekstowe emotikony ich graficznymi odpowiednikami</string>
+  <string name="normal_show">Tryb normalnego widoku</string>
+  <string name="cannot_play">Nie można odtworzyć pokazu slajdów.</string>
 </resources>

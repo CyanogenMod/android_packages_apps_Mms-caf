@@ -87,6 +87,7 @@
   <string name="alert_dialog_yes">Ναι</string>
   <string name="alert_dialog_no">Όχι</string>
   <string name="menu_as_unread">Επισήμανση ως μη αναγνωσμένο</string>
+  <string name="menu_all_as_unread">Επισήμανση όλων ως μη αναγνωσμένα</string>
   <string name="confirm_mark_unread_dialog_title">Επισήμανση ως μη αναγνωσμένο;</string>
   <string name="confirm_mark_unread_conversation">Η συνομιλία θα επισημανθεί ως μη αναγνωσμένη.</string>
   <string name="confirm_mark_unread_all_conversations">Όλα τα θέματα θα επισημανθούν ως μη αναγνωσμένα.</string>

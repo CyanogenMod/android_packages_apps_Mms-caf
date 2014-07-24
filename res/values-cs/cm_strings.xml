@@ -87,6 +87,7 @@
   <string name="alert_dialog_yes">Ano</string>
   <string name="alert_dialog_no">Ne</string>
   <string name="menu_as_unread">Označit jako nepřečtené</string>
+  <string name="menu_all_as_unread">Označit vše jako nepřečtené</string>
   <string name="confirm_mark_unread_dialog_title">Označit jako nepřečtené?</string>
   <string name="confirm_mark_unread_conversation">Konverzace bude označena jako nepřečtená.</string>
   <string name="confirm_mark_unread_all_conversations">Všechny vlákna budou označena jako nepřečtená.</string>

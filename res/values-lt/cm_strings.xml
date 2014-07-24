@@ -86,10 +86,11 @@
   <string name="add_to_blacklist_message">Būsimi pranešimai iš %s bus blokuojami</string>
   <string name="alert_dialog_yes">Taip</string>
   <string name="alert_dialog_no">Ne</string>
-  <string name="menu_as_unread">Pažymėti kaip neskaitytą</string>
-  <string name="confirm_mark_unread_dialog_title">Pažymėti kaip neskaitytą?</string>
+  <string name="menu_as_unread">Pažymėti kaip neperskaitytą</string>
+  <string name="menu_all_as_unread">Pažymėti visus kaip neperskaitytus</string>
+  <string name="confirm_mark_unread_dialog_title">Pažymėti kaip neperskaitytą?</string>
   <string name="confirm_mark_unread_conversation">Pokalbis bus pažymėtas kaip neskaitytas.</string>
-  <string name="confirm_mark_unread_all_conversations">Visi pokalbiai bus pažymėti kaip neskaityti.</string>
+  <string name="confirm_mark_unread_all_conversations">Visi pokalbiai bus pažymėti kaip neperskaityti.</string>
   <string name="select_recipients">Pasirinkti gavėjus</string>
   <string name="groups_header">Grupės</string>
   <string name="no_recipients">Kontaktų nerasta</string>

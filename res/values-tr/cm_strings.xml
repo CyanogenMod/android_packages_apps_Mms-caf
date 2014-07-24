@@ -87,6 +87,7 @@
   <string name="alert_dialog_yes">Evet</string>
   <string name="alert_dialog_no">Hayır</string>
   <string name="menu_as_unread">Okunmadı olarak işaretle</string>
+  <string name="menu_all_as_unread">Tümünü okunmadı olarak işaretle</string>
   <string name="confirm_mark_unread_dialog_title">Okunmadı olarak işaretlensin mi?</string>
   <string name="confirm_mark_unread_conversation">Sohbet okunmadı olarak işaretlenecek.</string>
   <string name="confirm_mark_unread_all_conversations">Tüm sohbetler okunmadı olarak işaretlenecek.</string>

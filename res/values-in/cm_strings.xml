@@ -87,6 +87,7 @@
   <string name="alert_dialog_yes">Ya</string>
   <string name="alert_dialog_no">Tidak</string>
   <string name="menu_as_unread">Tandai Jika Belum Dibaca</string>
+  <string name="menu_all_as_unread">Tandai semua belum dibaca</string>
   <string name="confirm_mark_unread_dialog_title">Tandai Jika Belum Dibaca?</string>
   <string name="confirm_mark_unread_conversation">Percakapan akan ditandai sebagai belum dibaca.</string>
   <string name="confirm_mark_unread_all_conversations">Semua Thread akan ditandai sebagai belum dibaca.</string>

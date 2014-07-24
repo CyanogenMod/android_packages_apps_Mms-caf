@@ -19,13 +19,20 @@
  */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="new_message">Neie Message</string>
+  <string name="menu_call_back"><xliff:g id="name">%s</xliff:g> uruffen</string>
   <string name="menu_send_email">E-Mail u(n) <xliff:g id="name">%s</xliff:g> schécken</string>
-  <string name="has_draft">Entworf</string>
+  <string name="menu_compose_new">Schreiwen</string>
+  <string name="menu_preferences">Astellungen</string>
+  <string name="menu_delete">Diskussioun läschen</string>
+  <string name="has_draft">Brouillon</string>
   <string name="messagelist_sender_self">Ech</string>
   <string name="view_message_details">Detailer ukucken</string>
   <string name="view_delivery_report">Bericht ukucken</string>
   <string name="kilobyte">kB</string>
+  <string name="undelivered_msg_dialog_body">De Message konnt net geschéckt ginn.\nLeschte Versuch: <xliff:g id="message">%s</xliff:g>.</string>
   <string name="undelivered_sms_dialog_body">De Message konnt net geschéckt ginn.</string>
+  <string name="delete_thread">Diskussioun läschen</string>
   <string name="inline_subject">"&lt;Sujet: <xliff:g id="subject">%s</xliff:g>&gt;"</string>
   <string name="message_options">Messagenoptiounen</string>
   <string name="done">Fäerdeg</string>
@@ -35,17 +42,18 @@
   <string name="remove">Ewechhuelen</string>
   <string name="mms">MMS</string>
   <string name="cannot_send_message">Message kann net geschéckt ginn</string>
+  <string name="message_saved_as_draft">Message als Brouillon gespäichert.</string>
   <string-array name="select_dialog_items">
     <item>1 second</item>
-    <item>2 seconds</item>
-    <item>3 seconds</item>
-    <item>4 seconds</item>
+    <item>2 Sekonnen</item>
+    <item>3 Sekonnen</item>
+    <item>4 Sekonnen</item>
     <item>5 Sekonnen</item>
-    <item>6 seconds</item>
+    <item>6 Sekonnen</item>
     <item>7 Sekonnen</item>
     <item>8 Sekonnen</item>
     <item>9 Sekonnen</item>
-    <item>10 seconds</item>
+    <item>10 Sekonnen</item>
     <item>Aner</item>
   </string-array>
   <string name="menu_view_contact">Kontakt ukucken</string>
@@ -61,10 +69,12 @@
   <string name="pref_title_sms_enabled">SMS Aktivéiert</string>
   <string name="pref_title_notification_enabled">Notifikatiounen</string>
   <string name="pref_title_notification_vibrateWhen">Vibréieren</string>
+  <string name="silent_ringtone">Roueg</string>
   <string name="delete">Läschen</string>
   <string name="subject_label">Sujet:\u0020</string>
   <string name="priority_high">Héich</string>
   <string name="priority_normal">Normal</string>
+  <string name="priority_low">Niddreg</string>
   <string name="error_code_label">Feelercode:\u0020</string>
   <string name="menu_edit">Änneren</string>
   <string name="menu_delete_messages">Messagë läschen</string>

@@ -87,6 +87,7 @@
   <string name="alert_dialog_yes">はい</string>
   <string name="alert_dialog_no">いいえ</string>
   <string name="menu_as_unread">未読にする</string>
+  <string name="menu_all_as_unread">すべて未読にする</string>
   <string name="confirm_mark_unread_dialog_title">未読にしますか？</string>
   <string name="confirm_mark_unread_conversation">会話は未読になります。</string>
   <string name="confirm_mark_unread_all_conversations">すべてのスレッドが未読になります。</string>

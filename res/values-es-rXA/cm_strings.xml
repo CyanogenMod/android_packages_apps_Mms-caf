@@ -87,6 +87,7 @@
   <string name="alert_dialog_yes">Sí</string>
   <string name="alert_dialog_no">Non</string>
   <string name="menu_as_unread">Marcar como non lleío</string>
+  <string name="menu_all_as_unread">Marcar toos como ensin lleer</string>
   <string name="confirm_mark_unread_dialog_title">Marcar como non lleío?</string>
   <string name="confirm_mark_unread_conversation">La conversación va marcase como non lleída.</string>
   <string name="confirm_mark_unread_all_conversations">Van marcase tolos filos como non lleíos.</string>

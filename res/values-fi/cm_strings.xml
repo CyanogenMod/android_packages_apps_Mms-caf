@@ -87,6 +87,7 @@
   <string name="alert_dialog_yes">Kyllä</string>
   <string name="alert_dialog_no">Ei</string>
   <string name="menu_as_unread">Merkitse lukemattomaksi</string>
+  <string name="menu_all_as_unread">Merkitse kaikki lukemattomiksi</string>
   <string name="confirm_mark_unread_dialog_title">Merkitse lukemattomaksi?</string>
   <string name="confirm_mark_unread_conversation">Keskustelu merkitään lukemattomaksi.</string>
   <string name="confirm_mark_unread_all_conversations">Kaikki viestiketjut merkitään lukemattomiksi.</string>

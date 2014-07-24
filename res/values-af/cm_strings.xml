@@ -87,6 +87,7 @@
   <string name="alert_dialog_yes">Ja</string>
   <string name="alert_dialog_no">Nee</string>
   <string name="menu_as_unread">Merk as ongelees</string>
+  <string name="menu_all_as_unread">Merk alles as ongelees</string>
   <string name="confirm_mark_unread_dialog_title">Merk as ongelees?</string>
   <string name="confirm_mark_unread_conversation">Die gesprek sal gemerk word as ongelees.</string>
   <string name="confirm_mark_unread_all_conversations">Alle drade sal gemerk word as ongelees.</string>

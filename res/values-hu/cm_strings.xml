@@ -87,6 +87,7 @@
   <string name="alert_dialog_yes">Igen</string>
   <string name="alert_dialog_no">Nem</string>
   <string name="menu_as_unread">Megjelölés olvasatlanként</string>
+  <string name="menu_all_as_unread">Mindet olvasatlanként jelöl</string>
   <string name="confirm_mark_unread_dialog_title">Megjelölés olvasatlanként?</string>
   <string name="confirm_mark_unread_conversation">Ez a beszélgetés meg lesz jelölve olvasatlanként.</string>
   <string name="confirm_mark_unread_all_conversations">Minden téma meg lesz jelölve olvasatlanként.</string>

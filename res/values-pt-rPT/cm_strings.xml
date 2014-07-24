@@ -87,6 +87,7 @@
   <string name="alert_dialog_yes">Sim</string>
   <string name="alert_dialog_no">Não</string>
   <string name="menu_as_unread">Marcar como não lida</string>
+  <string name="menu_all_as_unread">Marcar todas como não lidas</string>
   <string name="confirm_mark_unread_dialog_title">Marcar como não lida?</string>
   <string name="confirm_mark_unread_conversation">A conversa será marcada como não lida.</string>
   <string name="confirm_mark_unread_all_conversations">Todos os tópicos serão marcados como não lidos.</string>

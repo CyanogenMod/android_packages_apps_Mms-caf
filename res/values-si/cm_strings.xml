@@ -87,6 +87,7 @@
   <string name="alert_dialog_yes">ඔව්</string>
   <string name="alert_dialog_no">නැහැ</string>
   <string name="menu_as_unread">නොකියවූ ලෙස සලකුණු කරන්න</string>
+  <string name="menu_all_as_unread">සියල්ල නොකියවූ ලෙස සලකුණු කරන්න</string>
   <string name="confirm_mark_unread_dialog_title">නොකියවූ ලෙස සලකුණු කරන්නද?</string>
   <string name="confirm_mark_unread_conversation">සංවාදය නොකියවූ ලෙස සලකුණු කෙරෙණු ඇත.</string>
   <string name="confirm_mark_unread_all_conversations">සියලු පොටවල් නොකියවූ ලෙස සලකුණු කෙරෙණු ඇත.</string>

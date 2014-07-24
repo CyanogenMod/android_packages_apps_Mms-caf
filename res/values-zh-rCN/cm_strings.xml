@@ -87,6 +87,7 @@
   <string name="alert_dialog_yes">是</string>
   <string name="alert_dialog_no">否</string>
   <string name="menu_as_unread">标记为未读</string>
+  <string name="menu_all_as_unread">全部标记为未读</string>
   <string name="confirm_mark_unread_dialog_title">标记为未读？</string>
   <string name="confirm_mark_unread_conversation">该会话将被标记为未读。</string>
   <string name="confirm_mark_unread_all_conversations">所有会话都将被都标记为未读。</string>

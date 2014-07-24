@@ -87,6 +87,7 @@
   <string name="alert_dialog_yes">ใช่</string>
   <string name="alert_dialog_no">ไม่</string>
   <string name="menu_as_unread">ทำเครื่องหมายว่ายังไม่ได้อ่าน</string>
+  <string name="menu_all_as_unread">ทำเครื่องหมายทั้งหมดเป็นยังไม่ได้อ่าน</string>
   <string name="confirm_mark_unread_dialog_title">ทำเครื่องหมายว่ายังไม่ได้อ่าน?</string>
   <string name="confirm_mark_unread_conversation">การสนทนาจะถูกทำเครื่องหมายเป็นยังไม่อ่าน</string>
   <string name="confirm_mark_unread_all_conversations">ทั้งหมดจะถูกทำเครื่องหมายเป็นยังไม่อ่าน</string>

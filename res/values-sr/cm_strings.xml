@@ -87,6 +87,7 @@
   <string name="alert_dialog_yes">Да</string>
   <string name="alert_dialog_no">Не</string>
   <string name="menu_as_unread">Означи као непрочитано</string>
+  <string name="menu_all_as_unread">Означи све као непрочитано</string>
   <string name="confirm_mark_unread_dialog_title">Означи као непрочитано?</string>
   <string name="confirm_mark_unread_conversation">Разговор ће бити означен као непрочитан.</string>
   <string name="confirm_mark_unread_all_conversations">Сви низови ће бити означени као непрочитани.</string>
