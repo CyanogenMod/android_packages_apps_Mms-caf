@@ -2462,4 +2462,15 @@ public class MessageUtils {
         Log.d(TAG, "isDataNetworkAvaiable type = " + type);
         return type != TelephonyManager.NETWORK_TYPE_UNKNOWN;
     }
+    public static long getSimThreadBySubscription(int subId) {
+        switch (subId) {
+            case MSimConstants.SUB1:
+                return MessagingNotification.THREAD_SIM1;
+            case MSimConstants.SUB2:
+                return MessagingNotification.THREAD_SIM2;
+            case MSimConstants.INVALID_SUBSCRIPTION:
+            default:
+                return MessagingNotification.THREAD_SIM;
+        }
+    }
 }
