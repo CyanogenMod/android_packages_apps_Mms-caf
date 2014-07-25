@@ -830,6 +830,18 @@ public class WorkingMessage {
         }
     }
 
+    private void checkConversationHasRecipients(String recipientsInUI) {
+        if (mConversation.getRecipients().size() == 0) {
+            LogTag.debug("mConversation do not has Recipients: " + recipientsInUI);
+            String[] dests = TextUtils.split(recipientsInUI, ";");
+            List<String> list = Arrays.asList(dests);
+            ContactList recipients = ContactList.getByNumbers(list, false);
+            // resets the threadId to zero
+            mConversation.setRecipients(recipients);
+            setHasMultipleRecipients(recipients.size() > 1, true);
+        }
+    }
+
     public String getWorkingRecipients() {
         // this function is used for DEBUG only
         if (mWorkingRecipients == null) {
@@ -1231,6 +1243,9 @@ public class WorkingMessage {
 
         // Get ready to write to disk.
         prepareForSave(true /* notify */);
+
+        // Make sure the mConversation has Recipients
+        checkConversationHasRecipients(recipientsInUI);
 
         // We need the recipient list for both SMS and MMS.
         final Conversation conv = mConversation;
