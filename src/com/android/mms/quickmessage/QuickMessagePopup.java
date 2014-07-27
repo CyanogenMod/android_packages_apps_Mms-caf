@@ -547,7 +547,7 @@ public class QuickMessagePopup extends Activity {
         if (qm != null) {
             Conversation con = Conversation.get(mContext, qm.getThreadId(), true);
             if (con != null) {
-                con.markAsRead(false);
+                con.markAsRead(true, qm.getTimestamp());
                 if (DEBUG)
                     Log.d(LOG_TAG, "markCurrentMessageRead(): Marked message " + qm.getThreadId()
                             + " as read");
@@ -563,7 +563,7 @@ public class QuickMessagePopup extends Activity {
         for (QuickMessage qm : mMessageList) {
             Conversation con = Conversation.get(mContext, qm.getThreadId(), true);
             if (con != null) {
-                con.markAsRead(false);
+                con.markAsRead(true, qm.getTimestamp());
                 if (DEBUG)
                     Log.d(LOG_TAG, "markAllMessagesRead(): Marked message " + qm.getThreadId()
                             + " as read");
