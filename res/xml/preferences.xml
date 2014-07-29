@@ -68,9 +68,22 @@
                       android:key="pref_key_sms_delivery_reports"
                       android:summary="@string/pref_summary_sms_delivery_reports"
                       android:title="@string/pref_title_sms_delivery_reports" />
+    <Preference android:key="pref_key_message_template"
+                      android:summary="@string/pref_summary_message_template"
+                      android:title="@string/pref_title_message_template" />
     <Preference android:key="pref_key_manage_sim_messages"
                       android:summary="@string/pref_summary_manage_sim_messages"
                       android:title="@string/pref_title_manage_sim_messages" />
+    </PreferenceCategory>
+  <PreferenceCategory android:title="@string/pref_sms_signature_title"
+                      android:key="pref_key_sms_signature" >
+    <CheckBoxPreference android:key="pref_key_enable_signature"
+                      android:summaryOn="@string/pref_summary_enable_signature"
+                      android:summaryOff="@string/pref_summary_disable_signature"
+                      android:title="@string/pref_title_enable_signature" />
+    <EditTextPreference android:key="pref_key_edit_signature"
+                      android:title="@string/pref_title_edit_signature"
+                      android:maxLength="64"/>
   </PreferenceCategory>
   <PreferenceCategory android:title="@string/pref_mms_settings_title"
                       android:key="pref_key_mms_settings">

@@ -43,6 +43,7 @@ import java.util.regex.Pattern;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -220,6 +221,7 @@ public class ComposeMessageActivity extends Activity
     private static final int MENU_SAVE_RINGTONE         = 30;
     private static final int MENU_PREFERENCES           = 31;
     private static final int MENU_GROUP_PARTICIPANTS    = 32;
+    private static final int MENU_IMPORT_TEMPLATE       = 33;
     private static final int MENU_RESEND                = 35;
 
     private static final int RECIPIENTS_MAX_LENGTH = 312;
@@ -258,6 +260,7 @@ public class ComposeMessageActivity extends Activity
     // messages+draft after the max delay.
     private static final int LOADING_MESSAGES_AND_DRAFT_MAX_DELAY_MS = 500;
 
+    private static final int DIALOG_IMPORT_TEMPLATE = 1;
     private ContentResolver mContentResolver;
 
     private BackgroundQueryHandler mBackgroundQueryHandler;
@@ -2859,6 +2862,11 @@ public class ComposeMessageActivity extends Activity
             menu.add(0, MENU_SEND, 0, R.string.send).setIcon(android.R.drawable.ic_menu_send);
         }
 
+        if ((isSubjectEditorVisible() && mSubjectTextEditor.isFocused())
+                || !mWorkingMessage.hasSlideshow()) {
+            menu.add(0, MENU_IMPORT_TEMPLATE, 0, R.string.import_message_template);
+        }
+
         if (getRecipients().size() > 1) {
             menu.add(0, MENU_GROUP_PARTICIPANTS, 0, R.string.menu_group_participants);
         }
@@ -2948,6 +2956,8 @@ public class ComposeMessageActivity extends Activity
                 break;
             case MENU_CALL_RECIPIENT:
                 dialRecipient();
+            case MENU_IMPORT_TEMPLATE:
+                showDialog(DIALOG_IMPORT_TEMPLATE);
                 break;
             case MENU_GROUP_PARTICIPANTS:
             {
@@ -2986,6 +2996,86 @@ public class ComposeMessageActivity extends Activity
         return true;
     }
 
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+        case DIALOG_IMPORT_TEMPLATE:
+            return showImportTemplateDialog();
+        }
+        return super.onCreateDialog(id);
+    }
+
+    @Override
+    protected void onPrepareDialog(int id, Dialog dialog) {
+        switch (id) {
+            case DIALOG_IMPORT_TEMPLATE:
+                removeDialog(id);
+                break;
+        }
+        super.onPrepareDialog(id, dialog);
+    }
+
+    private Dialog showImportTemplateDialog(){
+        String [] smsTempArray = null;
+        Uri uri = Uri.parse("content://com.android.mms.MessageTemplateProvider/messages");
+        Cursor cur = null;
+        try {
+            cur = getContentResolver().query(uri, null, null, null, null);
+            if (cur != null && cur.moveToFirst()) {
+                int index = 0;
+                smsTempArray = new String[cur.getCount()];
+                String title = null;
+                do {
+                    title = cur.getString(cur.getColumnIndex("message"));
+                    smsTempArray[index++] = title;
+                } while (cur.moveToNext());
+            }
+        } finally {
+            if (cur != null) {
+                cur.close();
+            }
+        }
+
+        TemplateSelectListener listener = new TemplateSelectListener(smsTempArray);
+        return new AlertDialog.Builder(ComposeMessageActivity.this)
+                .setTitle(R.string.message_template)
+                .setItems(smsTempArray, listener)
+                .create();
+    }
+
+    private class TemplateSelectListener implements DialogInterface.OnClickListener {
+
+        private String[] mTempArray;
+        TemplateSelectListener(String[] tempArray) {
+            mTempArray = tempArray;
+        }
+
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            // TODO Auto-generated method stub
+            if (mTempArray != null && mTempArray.length > which) {
+                // If the subject EditText is visible and has the focus,
+                // add the string from the template to the subject EditText
+                // or else add the string to the message EditText.
+                EditText etSubject = ComposeMessageActivity.this.mSubjectTextEditor;
+                if (isSubjectEditorVisible() && etSubject.hasFocus()) {
+                    int subjectIndex = etSubject.getSelectionStart();
+                    etSubject.getText().insert(subjectIndex, mTempArray[which]);
+                } else {
+                    EditText et = ComposeMessageActivity.this.mTextEditor;
+                    int index = et.getSelectionStart();
+                    et.getText().insert(index, mTempArray[which]);
+                    // Need require foucus,if do not do so,foucus still on mRecipientEditor,
+                    // so mRecipientsWatcher will  call afterTextChanged to do
+                    // setWorkingRecipients(...), and then mWorkingRecipients != null and will
+                    // call setRecipients() set mThreadId = 0. Because of mThreadId = 0,
+                    // asyncDeleteDraftSmsMessage will can not delete draft successful.
+                    et.requestFocus();
+                }
+            }
+        }
+
+    }
     private void confirmDeleteThread(long threadId) {
         Conversation.startQueryHaveLockedMessages(mBackgroundQueryHandler,
                 threadId, ConversationList.HAVE_LOCKED_MESSAGES_TOKEN);

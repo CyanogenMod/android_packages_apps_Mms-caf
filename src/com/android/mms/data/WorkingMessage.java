@@ -30,11 +30,13 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SqliteWrapper;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.MmsSms;
 import android.provider.Telephony.MmsSms.PendingMessages;
@@ -1242,7 +1244,21 @@ public class WorkingMessage {
             }, "WorkingMessage.send MMS").start();
         } else {
             // Same rules apply as above.
-            final String msgText = mText.toString();
+            // Add user's signature first if this feature is enabled.
+            String text = mText.toString();
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mActivity);
+            if (sp.getBoolean("pref_key_enable_signature", false)) {
+                String signature = (sp.getString("pref_key_edit_signature", "")).trim();
+                if (signature.length() > 0) {
+                    String sigBlock = "\n" + signature;
+                    if (!text.endsWith(sigBlock)) {
+                        // Signature should be written behind the text in a
+                        // newline while the signature has changed.
+                        text += sigBlock;
+                    }
+                }
+            }
+            final String msgText = text;
             new Thread(new Runnable() {
                 @Override
                 public void run() {

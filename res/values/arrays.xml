@@ -22,4 +22,11 @@
     <string-array name="empty_subject_strings">
         <item>no subject</item>
     </string-array>
+
+    <string-array name="pre_define_message_template">
+        <item>I\'ll call you back later.</item>
+        <item>I am in conference. I\'ll call you back later.</item>
+        <item>Please call me later.</item>
+        <item>Will you please call me back?</item>
+    </string-array>
 </resources>

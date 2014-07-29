@@ -800,6 +800,23 @@
     <!-- In message list items, this string builds the timestamp line when the message is in a group [CHAR LIMIT=NONE] -->
     <string name="message_timestamp_format"><xliff:g id="string" example="Fred Flinstone">%1$s</xliff:g>\u0020-\u0020<xliff:g id="string" example="9:39AM">%2$s</xliff:g></string>
 
+    <!-- Message Template -->
+    <string name="pref_summary_message_template">Edit message template</string>
+    <string name="pref_title_message_template">Message template</string>
+    <string name="title_new_message_template">New template</string>
+    <string name="summary_new_message_template">Compose new message template</string>
+    <string name="message_template_title">Message template</string>
+    <string name="dialog_editSMSTemplate_title">Edit</string>
+    <string name="message_template">Message Template</string>
+    <string name="import_message_template">Import Template</string>
+    <string name="delete_template_message">Delete</string>
+    <string name="template_full">"Template text number limit reached."</string>
+    <string name="pref_sms_signature_title">SMS signature</string>
+    <string name="pref_title_enable_signature">SMS signature</string>
+    <string name="pref_summary_enable_signature">SMS signature enabled</string>
+    <string name="pref_summary_disable_signature">SMS signature disabled</string>
+    <string name="pref_title_edit_signature">Edit SMS signature</string>
+    <string name="signature_full_toast">Signature has reached to maximum length.</string>
     <string name="storage_warning_title">"Your phone's storage is full"</string>
     <string name="storage_warning_content">"You won't receive new SMS/MMS messages"</string>
     <!--  Strings used forh MMS push of messages in outbox -->

@@ -361,4 +361,21 @@
     <string name="banner_sms_promo_title_initial" msgid="510014388581481569">"“短信”不是您的短信应用"</string>
     <string name="banner_sms_promo_title_application" msgid="8123569785369713254">"“<xliff:g id="APPNAME">%s</xliff:g>”是您的短信应用"</string>
     <string name="banner_sms_promo_message" msgid="3536714414252763826">"您可以在“设置”中更改此设置。"</string>
+    <!-- 短信模板相关的 -->
+    <string name="pref_summary_message_template">编辑短信模板</string>
+    <string name="pref_title_message_template">短信模板</string>
+    <string name="title_new_message_template">新建模板</string>
+    <string name="summary_new_message_template">编写新的短信模板</string>
+    <string name="message_template_title">短信模板</string>
+    <string name="dialog_editSMSTemplate_title">编辑</string>
+    <string name="message_template">短信模板</string>
+    <string name="import_message_template">导入模板</string>
+    <string name="delete_template_message">删除</string>
+    <string name="template_full">"已达到模板字数上限。"</string>
+    <string name="pref_sms_signature_title">短信签名</string>
+    <string name="pref_title_enable_signature">短信签名</string>
+    <string name="pref_summary_enable_signature">短信签名已启用</string>
+    <string name="pref_summary_disable_signature">短信签名已禁用</string>
+    <string name="pref_title_edit_signature">编辑短信签名</string>
+    <string name="signature_full_toast">"签名已达最大长度。"</string>
 </resources>
