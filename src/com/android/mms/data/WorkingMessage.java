@@ -174,6 +174,8 @@ public class WorkingMessage {
     // Flag indicate resend sms that the recipient of conversion is more than one.
     private boolean mResendMultiRecipients;
 
+    private static final int DEFAULT_SUBSCRIPTION = 0;
+
     /**
      * Callback interface for communicating important state changes back to
      * ComposeMessageActivity.
@@ -1418,6 +1420,8 @@ public class WorkingMessage {
         boolean newMessage = false;
         boolean forwardMessage = conv.getHasMmsForward();
         boolean sameRecipient = false;
+        int subscription = MSimTelephonyManager.getDefault().isMultiSimEnabled() ? mCurrentConvSub
+                : MSimTelephonyManager.getDefault().getPreferredDataSubscription();
         ContactList contactList = conv.getRecipients();
         if (contactList != null) {
             String[] numbers = contactList.getNumbers();
@@ -1484,6 +1488,7 @@ public class WorkingMessage {
                 if (textOnly) {
                     values.put(Mms.TEXT_ONLY, 1);
                 }
+                values.put(Mms.SUB_ID, subscription);
                 mmsUri = SqliteWrapper.insert(mActivity, mContentResolver, Mms.Outbox.CONTENT_URI,
                         values);
             }
@@ -1520,7 +1525,7 @@ public class WorkingMessage {
             if (newMessage) {
                 // Create a new MMS message if one hasn't been made yet.
                 mmsUri = createDraftMmsMessage(persister, sendReq, slideshow, mmsUri,
-                        mActivity, null);
+                        mActivity, null, subscription);
                 // Remove the sd card mmsUri will be null
                 if (mmsUri == null) {
                     Toast.makeText(mActivity, R.string.cannot_send_attach_reason,
@@ -1530,6 +1535,9 @@ public class WorkingMessage {
             } else {
                 // Otherwise, sync the MMS message in progress to disk.
                 updateDraftMmsMessage(mmsUri, persister, slideshow, sendReq, null);
+                ContentValues values = new ContentValues(1);
+                values.put(Mms.SUB_ID, subscription);
+                SqliteWrapper.update(mActivity, mContentResolver, mmsUri, values, null, null);
             }
 
             // Be paranoid and clean any draft SMS up.
@@ -1537,14 +1545,6 @@ public class WorkingMessage {
         } finally {
             DraftCache.getInstance().setSavingDraft(false);
         }
-
-        ContentValues values = new ContentValues(1);
-        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
-            values.put(Mms.SUB_ID, mCurrentConvSub);
-        } else {
-           values.put(Mms.SUB_ID, MSimTelephonyManager.getDefault().getPreferredDataSubscription());
-        }
-        SqliteWrapper.update(mActivity, mContentResolver, mmsUri, values, null, null);
 
         MessageSender sender = new MmsMessageSender(mActivity, mmsUri,
                 slideshow.getCurrentMessageSize(), mCurrentConvSub);
@@ -1662,6 +1662,13 @@ public class WorkingMessage {
     private static Uri createDraftMmsMessage(PduPersister persister, SendReq sendReq,
             SlideshowModel slideshow, Uri preUri, Context context,
             HashMap<Uri, InputStream> preOpenedFiles) {
+        return createDraftMmsMessage(persister, sendReq, slideshow, preUri, context,
+                preOpenedFiles, DEFAULT_SUBSCRIPTION);
+    }
+
+    private static Uri createDraftMmsMessage(PduPersister persister, SendReq sendReq,
+            SlideshowModel slideshow, Uri preUri, Context context,
+            HashMap<Uri, InputStream> preOpenedFiles, int subscription) {
         if (slideshow == null) {
             return null;
         }
@@ -1670,7 +1677,7 @@ public class WorkingMessage {
             sendReq.setBody(pb);
             Uri res = persister.persist(sendReq, preUri == null ? Mms.Draft.CONTENT_URI : preUri,
                     true, MessagingPreferenceActivity.getIsGroupMmsEnabled(context),
-                    preOpenedFiles);
+                    preOpenedFiles, subscription);
             slideshow.sync(pb);
             return res;
         } catch (MmsException e) {
