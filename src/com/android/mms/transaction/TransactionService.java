@@ -208,13 +208,11 @@ public class TransactionService extends Service implements Observer {
             stopSelf(serviceId);
             return;
         }
-        NetworkInfo ni = mConnMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE_MMS);
-        boolean noNetwork = ni == null || !ni.isAvailable();
+        boolean noNetwork = false;
 
         if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
             Log.v(TAG, "onNewIntent: serviceId: " + serviceId + ": " + intent.getExtras() +
                     " intent=" + intent);
-            Log.v(TAG, "    networkAvailable=" + !noNetwork);
         }
 
         String action = intent.getAction();
