@@ -49,6 +49,7 @@
     <string name="undelivered_sms_dialog_body" msgid="4203703285563450868">"无法发送此短信。"</string>
     <string name="delete_thread" msgid="757258847736632791">"删除会话"</string>
     <string name="menu_forward" msgid="9026858380050046756">"转发"</string>
+    <string name="menu_resend">"重新发送"</string>
     <string name="download" msgid="4488877642230207631">"下载"</string>
     <string name="downloading" msgid="1779557575565350637">"正在下载"</string>
     <string name="inline_subject" msgid="4057621785274119260">"&lt;主题：<xliff:g id="SUBJECT">%s</xliff:g>&gt;"</string>

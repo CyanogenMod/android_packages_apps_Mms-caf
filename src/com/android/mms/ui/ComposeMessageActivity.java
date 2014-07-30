@@ -220,6 +220,7 @@ public class ComposeMessageActivity extends Activity
     private static final int MENU_SAVE_RINGTONE         = 30;
     private static final int MENU_PREFERENCES           = 31;
     private static final int MENU_GROUP_PARTICIPANTS    = 32;
+    private static final int MENU_RESEND                = 35;
 
     private static final int RECIPIENTS_MAX_LENGTH = 312;
 
@@ -327,6 +328,9 @@ public class ComposeMessageActivity extends Activity
                                             // value is maxint, then we jump to the end.
     private long mLastMessageId;
     private AlertDialog mMsimDialog;     // Used for MSIM subscription choose
+
+    // Record the resend sms recipient when the sms send to more than one recipient
+    private String mResendSmsRecipient;
 
     /**
      * Whether this activity is currently running (i.e. not paused)
@@ -1194,6 +1198,12 @@ public class ComposeMessageActivity extends Activity
                         .setOnMenuItemClickListener(l);
             }
 
+            // Only failed send message have resend function
+            if (msgItem.isFailedMessage()) {
+                    menu.add(0, MENU_RESEND, 0, R.string.menu_resend)
+                            .setOnMenuItemClickListener(l);
+            }
+
             if (msgItem.isMms()) {
                 switch (msgItem.mBoxId) {
                     case Mms.MESSAGE_BOX_INBOX:
@@ -1398,6 +1408,35 @@ public class ComposeMessageActivity extends Activity
         }, R.string.building_slideshow_title);
     }
 
+    private void resendMessage(MessageItem msgItem) {
+        if (msgItem.isMms()) {
+            // If it is mms, we delete current mms and use current mms
+            // uri to create new working message object.
+            WorkingMessage newWorkingMessage = WorkingMessage.load(this, msgItem.mMessageUri);
+            if (newWorkingMessage == null)
+                return;
+
+            // Discard the current message in progress.
+            mWorkingMessage.discard();
+
+            mWorkingMessage = newWorkingMessage;
+            mWorkingMessage.setConversation(mConversation);
+            mWorkingMessage.setSubject(msgItem.mSubject, false);
+        } else {
+            if (getRecipients().size() > 1) {
+                // If the number is more than one when send sms, there will show serveral msg items
+                // the recipient of msg item is not equal with recipients of conversation
+                // so we should record the recipient of this msg item.
+                mWorkingMessage.setResendMultiRecipients(true);
+                mResendSmsRecipient = msgItem.mAddress;
+            }
+
+            editSmsMessageItem(msgItem);
+        }
+
+        sendMessage(true);
+    }
+
     /**
      * Context menu handlers for the message list view.
      */
@@ -1426,6 +1465,10 @@ public class ComposeMessageActivity extends Activity
 
                 case MENU_FORWARD_MESSAGE:
                     forwardMessage(mMsgItem);
+                    return true;
+
+                case MENU_RESEND:
+                    resendMessage(mMsgItem);
                     return true;
 
                 case MENU_VIEW_SLIDESHOW:
@@ -3919,7 +3962,13 @@ public class ComposeMessageActivity extends Activity
             // them back once the recipient list has settled.
             removeRecipientsListeners();
 
-            mWorkingMessage.send(mDebugRecipients);
+
+            if (mWorkingMessage.getResendMultiRecipients()) {
+                // If resend sms recipient is more than one, use mResendSmsRecipient
+                mWorkingMessage.send(mResendSmsRecipient);
+            } else {
+                mWorkingMessage.send(mDebugRecipients);
+            }
 
             mSentMessage = true;
             mSendingMessage = true;
