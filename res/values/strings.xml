@@ -72,8 +72,12 @@
     <string name="view_delivery_report">View report</string>
     <!-- Context menu item on an individual message for deleting only that message -->
     <string name="delete_message">Delete</string>
+    <!-- Time and date a message was sent -->
+    <string name="sent_on">"Sent: <xliff:g id="date">%s</xliff:g>"</string>
     <!-- Time and date a message is due to expire -->
     <string name="expire_on">"Expires: <xliff:g id="date">%s</xliff:g>"</string>
+    <!-- Time and date a message was received -->
+    <string name="received_on">"Received: <xliff:g id="date">%s</xliff:g>"</string>
     <!-- Abbreviation for "kilobyte" -->
     <string name="kilobyte">KB</string>
 
@@ -819,6 +823,20 @@
     <string name="signature_full_toast">Signature has reached to maximum length.</string>
     <string name="storage_warning_title">"Your phone's storage is full"</string>
     <string name="storage_warning_content">"You won't receive new SMS/MMS messages"</string>
+    <!-- Copy message to sim -->
+    <string name="copy_to_sim">Copy message to SIM card</string>
+    <string name="copy_to_sim_success">Message saved</string>
+    <string name="copy_to_sim_fail">Unable to save message</string>
+    <string name="copy_to_phone_success">Message saved</string>
+    <string name="copy_to_phone_fail">Unable to save message</string>
+    <!--  Strings used forh MMS push of messages in outbox -->
+    <string name="label_mms_send_outbox_msg">MMS Wakeup</string>
+    <string name="desc_mms_send_outbox_msg">Sends out all MMSs from the outbox to the network</string>
+
+    <!-- Banner in conversation list for making Messaging the default SMS app -->
+    <string name="banner_sms_promo_title_initial">Messaging is not your SMS app</string>
+    <string name="banner_sms_promo_title_application"><xliff:g id="appName">%s</xliff:g> is your SMS app</string>
+    <string name="banner_sms_promo_message">You can change this in Settings</string>
 
     <string name="sub">SUB</string>
 

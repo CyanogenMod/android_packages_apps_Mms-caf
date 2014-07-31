@@ -53,6 +53,17 @@
                 android:background="@drawable/hairline_right"
                 android:orientation="vertical" >
 
+                <TextView
+                    android:id="@+id/sim_message_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="@dimen/message_item_text_padding_left_right"
+                    android:paddingTop="@dimen/message_item_text_padding_top"
+                    android:gravity="right"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="#ff000000"
+                    android:textSize="16sp"
+                    android:visibility="gone"/>
                 <TextView android:id="@+id/text_view"
                     android:autoLink="all"
                     android:paddingLeft="@dimen/message_item_text_padding_left_right"

@@ -17,11 +17,16 @@
 
 package com.android.mms.ui;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 
 import android.app.Activity;
@@ -59,6 +64,15 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import com.android.internal.telephony.EncodeException;
+import com.android.internal.telephony.GsmAlphabet;
+import com.android.internal.telephony.uicc.IccUtils;
+import com.android.internal.telephony.SmsHeader;
+import com.android.internal.telephony.cdma.sms.BearerData;
+import com.android.internal.telephony.cdma.sms.CdmaSmsAddress;
+import com.android.internal.telephony.cdma.sms.SmsEnvelope;
+import com.android.internal.telephony.cdma.sms.UserData;
+
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
@@ -84,6 +98,14 @@ import com.google.android.mms.pdu.PduPersister;
 import com.google.android.mms.pdu.RetrieveConf;
 import com.google.android.mms.pdu.SendReq;
 
+import static android.telephony.SmsMessage.ENCODING_7BIT;
+import static android.telephony.SmsMessage.ENCODING_8BIT;
+import static android.telephony.SmsMessage.ENCODING_16BIT;
+import static android.telephony.SmsMessage.ENCODING_UNKNOWN;
+import static android.telephony.SmsMessage.MAX_USER_DATA_BYTES;
+import static android.telephony.SmsMessage.MAX_USER_DATA_BYTES_WITH_HEADER;
+import static android.telephony.SmsMessage.MAX_USER_DATA_SEPTETS;
+
 /**
  * An utility class for managing messages.
  */
@@ -101,6 +123,10 @@ public class MessageUtils {
     public static final String SUBSCRIPTION_KEY = "subscription";
     public static final int MESSAGE_READ = 1;
     public static final int MESSAGE_SEEN = 1;
+    public static final Uri ICC_URI = Uri.parse("content://sms/icc");
+    public static final Uri ICC1_URI = Uri.parse("content://sms/icc1");
+    public static final Uri ICC2_URI = Uri.parse("content://sms/icc2");
+    private static final int TIMESTAMP_LENGTH = 7;  // See TS 23.040 9.2.3.11
     private static final String TAG = LogTag.TAG;
     private static String sLocalNumber;
     private static String[] sNoSubjectStrings;
@@ -1242,23 +1268,24 @@ public class MessageUtils {
         boolean ViewMode = sp.getBoolean(VIEW_MODE_NAME, false);
         return ViewMode;
     }
+
     /**
      * Return the sim name of subscription.
      */
-    public static String getMultiSimName(Context context, int subscription) {
+    public static String getMultiSimName(Context context, long subscription) {
         if (subscription >= TelephonyManager.getDefault().getPhoneCount() || subscription < 0) {
             return null;
         }
-        String multiSimName = Settings.System.getString(context.getContentResolver(),
-                MULTI_SIM_NAME + subscription);
-        if (multiSimName == null) {
+        //String multiSimName = Settings.System.getString(context.getContentResolver(),
+        //        MULTI_SIM_NAME + (subscription + 1));
+        //if (multiSimName == null) {
             if (subscription == SUB1) {
                 return context.getString(R.string.slot1);
             } else if (subscription == SUB2) {
                 return context.getString(R.string.slot2);
             }
-        }
-        return multiSimName;
+        //}
+        return context.getString(R.string.slot1);
     }
 
     /**
@@ -1293,8 +1320,9 @@ public class MessageUtils {
      */
     public static boolean isIccCardActivated(int subscription) {
         TelephonyManager tm = TelephonyManager.getDefault();
-        if (DEBUG)
+        if (DEBUG) {
             Log.d(TAG, "isIccCardActivated subscription " + tm.getSimState(subscription));
+        }
         return (tm.getSimState(subscription) != TelephonyManager.SIM_STATE_ABSENT)
                     //&& (tm.getSimState(subscription) != TelephonyManager.SIM_STATE_DEACTIVATED)
                     && (tm.getSimState(subscription) != TelephonyManager.SIM_STATE_UNKNOWN);
@@ -1343,5 +1371,306 @@ public class MessageUtils {
             return mmsStatus & ~DownloadManager.DEFERRED_MASK;
         }
         return mmsStatus;
+    }
+
+    /**
+     * Return the icc uri according to subscription
+     */
+    public static Uri getIccUriBySubscription(long subscription) {
+        switch ((int)subscription) {
+            case (int)SUB1:
+                return ICC1_URI;
+            case (int)SUB2:
+                return ICC2_URI;
+            default:
+                return ICC_URI;
+        }
+    }
+
+    private static boolean isCDMAPhone(long subscription) {
+        boolean isCDMA = false;
+        int activePhone = isMultiSimEnabledMms()
+                ? TelephonyManager.getDefault().getCurrentPhoneType(subscription)
+                        : TelephonyManager.getDefault().getPhoneType();
+        if (TelephonyManager.PHONE_TYPE_CDMA == activePhone) {
+            isCDMA = true;
+        }
+        return isCDMA;
+    }
+
+    /**
+     * Generate a Delivery PDU byte array. see getSubmitPdu for reference.
+     */
+    public static byte[] getDeliveryPdu(String scAddress, String destinationAddress, String message,
+            long date, long subscription) {
+        if (isCDMAPhone(subscription)) {
+            return getCDMADeliveryPdu(scAddress, destinationAddress, message, date);
+        } else {
+            return getDeliveryPdu(scAddress, destinationAddress, message, date, null,
+                    ENCODING_UNKNOWN);
+        }
+    }
+
+    public static byte[] getCDMADeliveryPdu(String scAddress, String destinationAddress,
+            String message, long date) {
+        // Perform null parameter checks.
+        if (message == null || destinationAddress == null) {
+            Log.d(TAG, "getCDMADeliveryPdu,message =null");
+            return null;
+        }
+
+        // according to submit pdu encoding as written in privateGetSubmitPdu
+
+        // MTI = SMS-DELIVERY, UDHI = header != null
+        byte[] header = null;
+        byte mtiByte = (byte) (0x00 | (header != null ? 0x40 : 0x00));
+        ByteArrayOutputStream headerStream = getDeliveryPduHeader(destinationAddress, mtiByte);
+
+        ByteArrayOutputStream byteStream = new ByteArrayOutputStream(MAX_USER_DATA_BYTES + 40);
+
+        DataOutputStream dos = new DataOutputStream(byteStream);
+        // int status,Status of message. See TS 27.005 3.1, "<stat>"
+
+        /* 0 = "REC UNREAD" */
+        /* 1 = "REC READ" */
+        /* 2 = "STO UNSENT" */
+        /* 3 = "STO SENT" */
+
+        try {
+            // int uTeleserviceID;
+            int uTeleserviceID = 0; //.TELESERVICE_CT_WAP;// int
+            dos.writeInt(uTeleserviceID);
+
+            // unsigned char bIsServicePresent
+            byte bIsServicePresent = 0;// byte
+            dos.writeInt(bIsServicePresent);
+
+            // uServicecategory
+            int uServicecategory = 0;// int
+            dos.writeInt(uServicecategory);
+
+            // RIL_CDMA_SMS_Address
+            // digit_mode
+            // number_mode
+            // number_type
+            // number_plan
+            // number_of_digits
+            // digits[]
+            CdmaSmsAddress destAddr = CdmaSmsAddress.parse(PhoneNumberUtils
+                    .cdmaCheckAndProcessPlusCode(destinationAddress));
+            if (destAddr == null)
+                return null;
+            dos.writeByte(destAddr.digitMode);// int
+            dos.writeByte(destAddr.numberMode);// int
+            dos.writeByte(destAddr.ton);// int
+            Log.d(TAG, "message type=" + destAddr.ton + "destination add=" + destinationAddress
+                    + "message=" + message);
+            dos.writeByte(destAddr.numberPlan);// int
+            dos.writeByte(destAddr.numberOfDigits);// byte
+            dos.write(destAddr.origBytes, 0, destAddr.origBytes.length); // digits
+
+            // RIL_CDMA_SMS_Subaddress
+            // Subaddress is not supported.
+            dos.writeByte(0); // subaddressType int
+            dos.writeByte(0); // subaddr_odd byte
+            dos.writeByte(0); // subaddr_nbr_of_digits byte
+
+            SmsHeader smsHeader = new SmsHeader().fromByteArray(headerStream.toByteArray());
+            UserData uData = new UserData();
+            uData.payloadStr = message;
+            // uData.userDataHeader = smsHeader;
+            uData.msgEncodingSet = true;
+            uData.msgEncoding = UserData.ENCODING_UNICODE_16;
+
+            BearerData bearerData = new BearerData();
+            bearerData.messageType = BearerData.MESSAGE_TYPE_DELIVER;
+
+            bearerData.deliveryAckReq = false;
+            bearerData.userAckReq = false;
+            bearerData.readAckReq = false;
+            bearerData.reportReq = false;
+
+            bearerData.userData = uData;
+
+            byte[] encodedBearerData = BearerData.encode(bearerData);
+            if (null != encodedBearerData) {
+                // bearer data len
+                dos.writeByte(encodedBearerData.length);// int
+                Log.d(TAG, "encodedBearerData length=" + encodedBearerData.length);
+
+                // aBearerData
+                dos.write(encodedBearerData, 0, encodedBearerData.length);
+            } else {
+                dos.writeByte(0);
+            }
+
+        } catch (IOException e) {
+            Log.e(TAG, "Error writing dos", e);
+        } finally {
+            try {
+                if (null != byteStream) {
+                    byteStream.close();
+                }
+
+                if (null != dos) {
+                    dos.close();
+                }
+
+                if (null != headerStream) {
+                    headerStream.close();
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "Error close dos", e);
+            }
+        }
+
+        return byteStream.toByteArray();
+    }
+
+    /**
+     * Generate a Delivery PDU byte array. see getSubmitPdu for reference.
+     */
+    public static byte[] getDeliveryPdu(String scAddress, String destinationAddress, String message,
+            long date, byte[] header, int encoding) {
+        // Perform null parameter checks.
+        if (message == null || destinationAddress == null) {
+            return null;
+        }
+
+        // MTI = SMS-DELIVERY, UDHI = header != null
+        byte mtiByte = (byte)(0x00 | (header != null ? 0x40 : 0x00));
+        ByteArrayOutputStream bo = getDeliveryPduHeader(destinationAddress, mtiByte);
+        // User Data (and length)
+        byte[] userData;
+        if (encoding == ENCODING_UNKNOWN) {
+            // First, try encoding it with the GSM alphabet
+            encoding = ENCODING_7BIT;
+        }
+        try {
+            if (encoding == ENCODING_7BIT) {
+                userData = GsmAlphabet.stringToGsm7BitPackedWithHeader(message, header, 0, 0);
+            } else { //assume UCS-2
+                try {
+                    userData = encodeUCS2(message, header);
+                } catch (UnsupportedEncodingException uex) {
+                    Log.e("GSM", "Implausible UnsupportedEncodingException ",
+                            uex);
+                    return null;
+                }
+            }
+        } catch (EncodeException ex) {
+            // Encoding to the 7-bit alphabet failed. Let's see if we can
+            // encode it as a UCS-2 encoded message
+            try {
+                userData = encodeUCS2(message, header);
+                encoding = ENCODING_16BIT;
+            } catch (UnsupportedEncodingException uex) {
+                Log.e("GSM", "Implausible UnsupportedEncodingException ",
+                            uex);
+                return null;
+            }
+        }
+
+        if (encoding == ENCODING_7BIT) {
+            if ((0xff & userData[0]) > MAX_USER_DATA_SEPTETS) {
+                // Message too long
+                return null;
+            }
+            bo.write(0x00);
+        } else { //assume UCS-2
+            if ((0xff & userData[0]) > MAX_USER_DATA_BYTES) {
+                // Message too long
+                return null;
+            }
+            // TP-Data-Coding-Scheme
+            // Class 3, UCS-2 encoding, uncompressed
+            bo.write(0x0b);
+        }
+        byte[] timestamp = getTimestamp(date);
+        bo.write(timestamp, 0, timestamp.length);
+
+        bo.write(userData, 0, userData.length);
+        return bo.toByteArray();
+    }
+
+    private static ByteArrayOutputStream getDeliveryPduHeader(
+            String destinationAddress, byte mtiByte) {
+        ByteArrayOutputStream bo = new ByteArrayOutputStream(
+                MAX_USER_DATA_BYTES + 40);
+        bo.write(mtiByte);
+
+        byte[] daBytes;
+        daBytes = PhoneNumberUtils.networkPortionToCalledPartyBCD(destinationAddress);
+
+        // destination address length in BCD digits, ignoring TON byte and pad
+        // TODO Should be better.
+        bo.write((daBytes.length - 1) * 2
+                - ((daBytes[daBytes.length - 1] & 0xf0) == 0xf0 ? 1 : 0));
+
+        // destination address
+        bo.write(daBytes, 0, daBytes.length);
+
+        // TP-Protocol-Identifier
+        bo.write(0);
+        return bo;
+    }
+
+    private static byte[] encodeUCS2(String message, byte[] header)
+        throws UnsupportedEncodingException {
+        byte[] userData, textPart;
+        textPart = message.getBytes("utf-16be");
+
+        if (header != null) {
+            // Need 1 byte for UDHL
+            userData = new byte[header.length + textPart.length + 1];
+
+            userData[0] = (byte)header.length;
+            System.arraycopy(header, 0, userData, 1, header.length);
+            System.arraycopy(textPart, 0, userData, header.length + 1, textPart.length);
+        }
+        else {
+            userData = textPart;
+        }
+        byte[] ret = new byte[userData.length+1];
+        ret[0] = (byte) (userData.length & 0xff );
+        System.arraycopy(userData, 0, ret, 1, userData.length);
+        return ret;
+    }
+
+    private static byte[] getTimestamp(long time) {
+        // See TS 23.040 9.2.3.11
+        byte[] timestamp = new byte[TIMESTAMP_LENGTH];
+        SimpleDateFormat sdf = new SimpleDateFormat("yyMMddkkmmss:Z", Locale.US);
+        String[] date = sdf.format(time).split(":");
+        // generate timezone value
+        String timezone = date[date.length - 1];
+        String signMark = timezone.substring(0, 1);
+        int hour = Integer.parseInt(timezone.substring(1, 3));
+        int min = Integer.parseInt(timezone.substring(3));
+        int timezoneValue = hour * 4 + min / 15;
+        // append timezone value to date[0] (time string)
+        String timestampStr = date[0] + timezoneValue;
+
+        int digitCount = 0;
+        for (int i = 0; i < timestampStr.length(); i++) {
+            char c = timestampStr.charAt(i);
+            int shift = ((digitCount & 0x01) == 1) ? 4 : 0;
+            timestamp[(digitCount >> 1)] |= (byte)((charToBCD(c) & 0x0F) << shift);
+            digitCount++;
+        }
+
+        if (signMark.equals("-")) {
+            timestamp[timestamp.length - 1] = (byte) (timestamp[timestamp.length - 1] | 0x08);
+        }
+
+        return timestamp;
+    }
+
+    private static int charToBCD(char c) {
+        if (c >= '0' && c <= '9') {
+            return c - '0';
+        } else {
+            throw new RuntimeException ("invalid char for BCD " + c);
+        }
     }
 }

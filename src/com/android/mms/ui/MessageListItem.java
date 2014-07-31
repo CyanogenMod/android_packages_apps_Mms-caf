@@ -98,6 +98,7 @@ public class MessageListItem extends LinearLayout implements
     private ImageView mDeliveredIndicator;
     private ImageView mDetailsIndicator;
     private ImageButton mSlideShowButton;
+    private TextView mSimMessageAddress;
     private TextView mBodyTextView;
     private Button mDownloadButton;
     private TextView mDownloadingLabel;
@@ -145,6 +146,7 @@ public class MessageListItem extends LinearLayout implements
         mDetailsIndicator = (ImageView) findViewById(R.id.details_indicator);
         mAvatar = (QuickContactDivot) findViewById(R.id.avatar);
         mMessageBlock = findViewById(R.id.message_block);
+        mSimMessageAddress = (TextView) findViewById(R.id.sim_message_address);
     }
 
     public void bind(MessageItem msgItem, boolean convHasMultiRecipients, int position) {
@@ -330,6 +332,19 @@ public class MessageListItem extends LinearLayout implements
             boolean isSelf = Sms.isOutgoingFolder(mMessageItem.mBoxId);
             String addr = isSelf ? null : mMessageItem.mAddress;
             updateAvatarView(addr, isSelf);
+        }
+
+        // Add SIM sms address above body.
+        if (isSimCardMessage()) {
+            mSimMessageAddress.setVisibility(VISIBLE);
+            SpannableStringBuilder buf = new SpannableStringBuilder();
+            if (mMessageItem.mBoxId == Sms.MESSAGE_TYPE_INBOX) {
+                buf.append(mContext.getString(R.string.from_label));
+            } else {
+                buf.append(mContext.getString(R.string.to_address_label));
+            }
+            buf.append(Contact.get(mMessageItem.mAddress, true).getName());
+            mSimMessageAddress.setText(buf);
         }
 
         // Get and/or lazily set the formatted message from/on the
@@ -578,6 +593,10 @@ public class MessageListItem extends LinearLayout implements
             }
         }
         return buf;
+    }
+
+    private boolean isSimCardMessage() {
+        return mContext instanceof ManageSimMessages;
     }
 
     private void drawPlaybackButton(MessageItem msgItem) {

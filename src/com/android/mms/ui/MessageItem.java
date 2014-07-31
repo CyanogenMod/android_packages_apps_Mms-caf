@@ -108,6 +108,7 @@ public class MessageItem {
     ColumnsMap mColumnsMap;
     private PduLoadedCallback mPduLoadedCallback;
     private ItemLoadedFuture mItemLoadedFuture;
+    long mDate;
 
     MessageItem(Context context, String type, final Cursor cursor,
             final ColumnsMap columnsMap, Pattern highlight) throws MmsException {
@@ -154,9 +155,25 @@ public class MessageItem {
             mPhoneId = cursor.getInt(columnsMap.mColumnPhoneId);
             // Unless the message is currently in the progress of being sent, it gets a time stamp.
             if (!isOutgoingMessage()) {
-                // Set "received" or "sent" time stamp
-                long date = cursor.getLong(columnsMap.mColumnSmsDate);
-                mTimestamp = MessageUtils.formatTimeStampString(context, date);
+                if (mBoxId == Sms.MESSAGE_TYPE_SENT) {
+                    // Set "sent" time stamp
+                    mDate = cursor.getLong(columnsMap.mColumnSmsDate);
+                    //cdma sms stored in UIM card don not have timestamp
+                    if (0 == mDate) {
+                        mDate = System.currentTimeMillis();
+                    }
+                    mTimestamp = String.format(context.getString(R.string.sent_on),
+                            MessageUtils.formatTimeStampString(context, mDate));
+                } else {
+                    // Set "received" time stamp
+                    mDate = cursor.getLong(columnsMap.mColumnSmsDate);
+                    //cdma sms stored in UIM card don not have timestamp
+                    if (0 == mDate) {
+                        mDate = System.currentTimeMillis();
+                    }
+                    mTimestamp = String.format(context.getString(R.string.received_on),
+                            MessageUtils.formatTimeStampString(context, mDate));
+                }
             }
 
             mLocked = cursor.getInt(columnsMap.mColumnSmsLocked) != 0;
