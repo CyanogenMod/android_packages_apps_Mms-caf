@@ -42,6 +42,9 @@ public class AttachmentTypeSelectorAdapter extends IconListAdapter {
     public final static int ADD_CONTACT_AS_TEXT     = 7;
     public final static int ADD_CONTACT_AS_VCARD    = 8;
 
+    private boolean mShowMediaOnly = false;
+    private static int mMediaCount;
+
     public AttachmentTypeSelectorAdapter(Context context, int mode) {
         super(context, getData(mode, context));
     }
@@ -52,26 +55,33 @@ public class AttachmentTypeSelectorAdapter extends IconListAdapter {
     }
 
     protected static List<IconListItem> getData(int mode, Context context) {
+        mMediaCount = 0;
         List<IconListItem> data = new ArrayList<IconListItem>(7);
         addItem(data, context.getString(R.string.attach_image),
                 R.drawable.ic_attach_picture_holo_light, ADD_IMAGE);
+        mMediaCount ++;
 
         addItem(data, context.getString(R.string.attach_take_photo),
                 R.drawable.ic_attach_capture_picture_holo_light, TAKE_PICTURE);
+        mMediaCount ++;
 
         addItem(data, context.getString(R.string.attach_video),
                 R.drawable.ic_attach_video_holo_light, ADD_VIDEO);
+        mMediaCount ++;
 
         addItem(data, context.getString(R.string.attach_record_video),
                 R.drawable.ic_attach_capture_video_holo_light, RECORD_VIDEO);
+        mMediaCount ++;
 
         if (MmsConfig.getAllowAttachAudio()) {
             addItem(data, context.getString(R.string.attach_sound),
                     R.drawable.ic_attach_audio_holo_light, ADD_SOUND);
+            mMediaCount ++;
         }
 
         addItem(data, context.getString(R.string.attach_record_sound),
                 R.drawable.ic_attach_capture_audio_holo_light, RECORD_SOUND);
+        mMediaCount ++;
 
         if (mode == MODE_WITH_SLIDESHOW) {
             addItem(data, context.getString(R.string.attach_slideshow),
@@ -86,6 +96,15 @@ public class AttachmentTypeSelectorAdapter extends IconListAdapter {
                     R.drawable.ic_attach_capture_contact_vcard_holo_light, ADD_CONTACT_AS_VCARD);
         }
         return data;
+    }
+
+    public void setShowMedia(boolean isShowMediaOnly) {
+        mShowMediaOnly = isShowMediaOnly;
+    }
+
+    @Override
+    public int getCount() {
+        return mShowMediaOnly ? mMediaCount : super.getCount();
     }
 
     protected static void addItem(List<IconListItem> data, String title,

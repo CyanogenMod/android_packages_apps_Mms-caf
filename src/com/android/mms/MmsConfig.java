@@ -123,7 +123,9 @@ public class MmsConfig {
                 android.os.SystemProperties.get(TelephonyProperties.PROPERTY_ICC_OPERATOR_NUMERIC));
 
         loadMmsSettings(context);
+
         MAX_SLIDE_NUM = context.getResources().getInteger(R.integer.max_slide_num);
+
     }
 
     public static int getMaxSlideNumber() {

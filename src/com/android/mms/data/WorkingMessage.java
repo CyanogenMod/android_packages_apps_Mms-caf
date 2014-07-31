@@ -607,6 +607,29 @@ public class WorkingMessage {
         return result;
     }
 
+    private boolean needAddNewSlide(int type) {
+        // The first time this method is called, mSlideshow.size() is going to be
+        // one (a newly initialized slideshow has one empty slide). The first time we
+        // attach the picture/video to that first empty slide.
+        int slideNum = mSlideshow.size();
+        if (slideNum >= 1) {
+            // Check the last slide. One silde can have a picture and an audio at the same time.
+            SlideModel slide = mSlideshow.get(slideNum -1);
+            boolean hasImage = slide.hasImage();
+            boolean hasVideo = slide.hasVideo();
+            boolean hasAudio = slide.hasAudio();
+            if (hasVideo || (hasImage && hasAudio)
+                    || (hasImage && (type == IMAGE || type == VIDEO))
+                    || (hasAudio && (type == VIDEO))
+                    || (hasAudio && (type == AUDIO))) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * Add the message's attachment to the data in the specified Uri to a new slide.
      */
@@ -618,15 +641,7 @@ public class WorkingMessage {
             return result;
         }
 
-        // The first time this method is called, mSlideshow.size() is going to be
-        // one (a newly initialized slideshow has one empty slide). The first time we
-        // attach the picture/video to that first empty slide. From then on when this
-        // function is called, we've got to create a new slide and add the picture/video
-        // to that new slide.
-        boolean addNewSlide = true;
-        if (mSlideshow.size() == 1 && !mSlideshow.isSimple()) {
-            addNewSlide = false;
-        }
+        boolean addNewSlide = needAddNewSlide(type);
         if (addNewSlide) {
             if (!slideShowEditor.addNewSlide()) {
                 return result;
@@ -680,6 +695,10 @@ public class WorkingMessage {
      */
     public boolean hasAttachment() {
         return (mAttachmentType > TEXT);
+    }
+
+    public boolean hasVcard() {
+        return mAttachmentType == VCARD;
     }
 
     /**
