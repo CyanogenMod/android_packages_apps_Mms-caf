@@ -17,7 +17,7 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string-array name="pref_templates_gestures_sensitivity_entries">
-    <item>1 (Pontatlanabb)</item>
+    <item>1 (pontatlanabb)</item>
     <item>2</item>
     <item>3</item>
     <item>4</item>
@@ -28,7 +28,7 @@
     <item>9</item>
     <item>10</item>
     <item>11</item>
-    <item>12 (Pontosabb)</item>
+    <item>12 (pontosabb)</item>
   </string-array>
   <string-array name="default_smiley_names">
     <item>Boldog</item>

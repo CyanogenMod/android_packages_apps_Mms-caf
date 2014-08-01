@@ -87,6 +87,7 @@
   <string name="alert_dialog_yes">Tak</string>
   <string name="alert_dialog_no">Nie</string>
   <string name="menu_as_unread">Oznacz jako nieprzeczytane</string>
+  <string name="menu_all_as_unread">Oznacz wszystkie jako nieprzeczytane</string>
   <string name="confirm_mark_unread_dialog_title">Oznaczyć jako nieprzeczytane?</string>
   <string name="confirm_mark_unread_conversation">Rozmowa zostanie oznaczona jako nieprzeczytana.</string>
   <string name="confirm_mark_unread_all_conversations">Wszystkie rozmowy zostaną oznaczone jako nieprzeczytane.</string>

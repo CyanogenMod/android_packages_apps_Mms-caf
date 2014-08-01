@@ -87,6 +87,7 @@
   <string name="alert_dialog_yes">Да</string>
   <string name="alert_dialog_no">Нет</string>
   <string name="menu_as_unread">Отметить как непрочитанное</string>
+  <string name="menu_all_as_unread">Отм. все как непрочит.</string>
   <string name="confirm_mark_unread_dialog_title">Отметить как непрочитанное?</string>
   <string name="confirm_mark_unread_conversation">Цепочка будет помечена как содержащая новые сообщения.</string>
   <string name="confirm_mark_unread_all_conversations">Все цепочки будут помечены как содержащие новые сообщения.</string>

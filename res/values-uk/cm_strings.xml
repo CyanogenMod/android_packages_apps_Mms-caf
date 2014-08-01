@@ -87,6 +87,7 @@
   <string name="alert_dialog_yes">Так</string>
   <string name="alert_dialog_no">Ні</string>
   <string name="menu_as_unread">Позначити як непрочитано</string>
+  <string name="menu_all_as_unread">Помітити все як непрочитане</string>
   <string name="confirm_mark_unread_dialog_title">Позначити як непрочитано?</string>
   <string name="confirm_mark_unread_conversation">Розмови будуть позначені як непрочитані.</string>
   <string name="confirm_mark_unread_all_conversations">Усі лацюжки будуть позначені як непрочитані.</string>

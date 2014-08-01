@@ -87,6 +87,7 @@
   <string name="alert_dialog_yes">Ja</string>
   <string name="alert_dialog_no">Nej</string>
   <string name="menu_as_unread">Markér som ulæst</string>
+  <string name="menu_all_as_unread">Markér alle som ulæst</string>
   <string name="confirm_mark_unread_dialog_title">Markér som ulæst?</string>
   <string name="confirm_mark_unread_conversation">Samtalen vil blive markeret som ulæst.</string>
   <string name="confirm_mark_unread_all_conversations">Alle emner vil blive markeret som ulæst.</string>

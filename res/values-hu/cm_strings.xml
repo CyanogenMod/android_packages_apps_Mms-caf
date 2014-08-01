@@ -94,7 +94,7 @@
   <string name="select_recipients">Válasszon címzetteket</string>
   <string name="groups_header">Csoportok</string>
   <string name="no_recipients">Nincs találat</string>
-  <string name="no_recipients_mobile_only">Nincs találat. Próbálja meg a \'Csak mobil számok\' szűrőfeltétel nélkül</string>
+  <string name="no_recipients_mobile_only">Nincs találat. Próbálja meg a \"Csak mobil számok\" szűrőfeltétel nélkül</string>
   <string name="menu_done">Kész</string>
   <string name="menu_mobile">Csak mobilszámok</string>
   <string name="menu_groups">Csoportok megjelenítése</string>
