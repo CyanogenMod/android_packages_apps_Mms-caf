@@ -378,8 +378,6 @@ public class MessageUtils {
         EncodedStringValue subject = msg.getSubject();
         if (subject != null) {
             String subStr = subject.getString();
-            // Message size should include size of subject.
-            size += subStr.length();
             details.append(subStr);
         }
 
@@ -391,7 +389,8 @@ public class MessageUtils {
         // Message size: *** KB
         details.append('\n');
         details.append(res.getString(R.string.message_size_label));
-        details.append((size - 1)/1000 + 1);
+        details.append((size + SlideshowModel.SLIDESHOW_SLOP -1)
+                / SlideshowModel.SLIDESHOW_SLOP + 1);
         details.append(" KB");
 
         return details.toString();

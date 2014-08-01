@@ -274,6 +274,8 @@ public class ComposeMessageActivity extends Activity
     private static final int MSG_COPY_TO_SIM_FAILED = 1;
     private static final int MSG_COPY_TO_SIM_SUCCESS = 2;
 
+    private static final int KILOBYTE = 1024;
+
     private ContentResolver mContentResolver;
 
     private BackgroundQueryHandler mBackgroundQueryHandler;
@@ -357,6 +359,11 @@ public class ComposeMessageActivity extends Activity
     // sure we only load message+draft once.
     private boolean mMessagesAndDraftLoaded;
 
+    /**
+     * Whether the attachment error is in the case of sendMms.
+     */
+    private boolean mIsAttachmentErrorOnSend = false;
+
     // whether we should load the draft. For example, after attaching a photo and coming back
     // in onActivityResult(), we should not load the draft because that will mess up the draft
     // state of mWorkingMessage. Also, if we are handling a Send or Forward Message Intent,
@@ -380,6 +387,7 @@ public class ComposeMessageActivity extends Activity
     */
     private boolean mIsProcessPickedRecipients = false;
     private int mExistsRecipientsCount = 0;
+    private final static String MSG_SUBJECT_SIZE = "subject_size";
 
     @SuppressWarnings("unused")
     public static void log(String logMsg) {
@@ -397,6 +405,8 @@ public class ComposeMessageActivity extends Activity
     //==========================================================
 
     private void editSlideshow() {
+        final int subjectSize = mWorkingMessage.hasSubject()
+                    ? mWorkingMessage.getSubject().toString().getBytes().length : 0;
         // The user wants to edit the slideshow. That requires us to persist the slideshow to
         // disk as a PDU in saveAsMms. This code below does that persisting in a background
         // task. If the task takes longer than a half second, a progress dialog is displayed.
@@ -419,6 +429,7 @@ public class ComposeMessageActivity extends Activity
                 Intent intent = new Intent(ComposeMessageActivity.this,
                         SlideshowEditActivity.class);
                 intent.setData(mTempMmsUri);
+                intent.putExtra(MSG_SUBJECT_SIZE, subjectSize);
                 startActivityForResult(intent, REQUEST_CODE_CREATE_SLIDESHOW);
             }
         }, R.string.building_slideshow_title);
@@ -549,8 +560,14 @@ public class ComposeMessageActivity extends Activity
         if (cursor == null) {
             return false;
         }
+        int subjectSize = (msgItem.mSubject == null) ? 0 : msgItem.mSubject.getBytes().length;
+        int messageSize =  msgItem.mMessageSize + subjectSize;
+        if (DEBUG) {
+            Log.v(TAG,"showMessageDetails subjectSize = " + subjectSize);
+            Log.v(TAG,"showMessageDetails messageSize = " + messageSize);
+        }
         String messageDetails = MessageUtils.getMessageDetails(
-                ComposeMessageActivity.this, cursor, msgItem.mMessageSize);
+                ComposeMessageActivity.this, cursor, messageSize);
         new AlertDialog.Builder(ComposeMessageActivity.this)
                 .setTitle(R.string.message_details_title)
                 .setMessage(messageDetails)
@@ -1533,6 +1550,11 @@ public class ComposeMessageActivity extends Activity
                     return true;
 
                 case MENU_FORWARD_MESSAGE:
+                    if (mMsgItem.isMms() && !isAllowForwardMessage(mMsgItem)) {
+                        Toast.makeText(ComposeMessageActivity.this,
+                                R.string.forward_size_over, Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
                     forwardMessage(mMsgItem);
                     return true;
 
@@ -1605,6 +1627,20 @@ public class ComposeMessageActivity extends Activity
                     return false;
             }
         }
+    }
+
+    private boolean isAllowForwardMessage(MessageItem msgItem) {
+        int messageSize = msgItem.getSlideshow().getTotalMessageSize();
+        int smilSize = msgItem.getSlideshow().getSMILSize();
+        int forwardStrSize = getString(R.string.forward_prefix).getBytes().length;
+        int subjectSize =  (msgItem.mSubject == null) ? 0 : msgItem.mSubject.getBytes().length;
+        int totalSize = messageSize + forwardStrSize + subjectSize + smilSize;
+        if (DEBUG) {
+            Log.e(TAG,"isAllowForwardMessage messageSize = "+ messageSize
+                    + ", forwardStrSize = "+forwardStrSize+ ", subjectSize = "+subjectSize
+                    + ", totalSize = " + totalSize);
+        }
+        return totalSize <= (MmsConfig.getMaxMessageSize() - SlideshowModel.SLIDESHOW_SLOP);
     }
 
     private void lockMessage(MessageItem msgItem, boolean locked) {
@@ -2893,6 +2929,7 @@ public class ComposeMessageActivity extends Activity
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                mIsAttachmentErrorOnSend = true;
                 handleAddAttachmentError(error, R.string.type_picture);
                 onMessageSent();        // now requery the list of messages
             }
@@ -3250,7 +3287,8 @@ public class ComposeMessageActivity extends Activity
         // Computer attachment size limit. Subtract 1K for some text.
         long sizeLimit = MmsConfig.getMaxMessageSize() - SlideshowModel.SLIDESHOW_SLOP;
         if (slideShow != null) {
-            sizeLimit -= slideShow.getCurrentMessageSize();
+            sizeLimit = sizeLimit -slideShow.getCurrentMessageSize()-
+                    slideShow.getTotalTextMessageSize();
 
             // We're about to ask the camera to capture some video (or the sound recorder
             // to record some audio) which will eventually replace the content on the current
@@ -3339,6 +3377,7 @@ public class ComposeMessageActivity extends Activity
                         mWorkingMessage = newMessage;
                         mWorkingMessage.setConversation(mConversation);
                         updateThreadIdIfRunning();
+                        updateMmsSizeIndicator();
                         drawTopPanel(false);
                         drawBottomPanel();
                         updateSendButtonState();
@@ -3458,6 +3497,20 @@ public class ComposeMessageActivity extends Activity
             newWorkingMessage.setSubject(mWorkingMessage.getSubject(), true);
         }
     }
+
+    private void updateMmsSizeIndicator() {
+        mAttachmentEditorHandler.post(mUpdateMmsSizeIndRunnable);
+    }
+
+    private Runnable mUpdateMmsSizeIndRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mWorkingMessage.getSlideshow() != null) {
+                mWorkingMessage.getSlideshow().updateTotalMessageSize();
+            }
+            mAttachmentEditor.update(mWorkingMessage);
+        }
+    };
 
     private void processPickResult(final Intent data) {
         // The EXTRA_PHONE_URIS stores the phone's urls that were selected by user in the
@@ -3602,6 +3655,7 @@ public class ComposeMessageActivity extends Activity
                 }
             }
 
+            updateMmsSizeIndicator();
             handleAddAttachmentError(result, R.string.type_picture);
         }
     };
@@ -3629,8 +3683,16 @@ public class ComposeMessageActivity extends Activity
                     message = res.getString(R.string.select_different_media, mediaType);
                     break;
                 case WorkingMessage.MESSAGE_SIZE_EXCEEDED:
-                    title = res.getString(R.string.exceed_message_size_limitation, mediaType);
-                    message = res.getString(R.string.failed_to_add_media, mediaType);
+                    title = res.getString(R.string.exceed_message_size_limitation,
+                        mediaType);
+                    // We should better prompt the "message size limit reached,
+                    // cannot send out message" while we send out the Mms.
+                    if (mIsAttachmentErrorOnSend) {
+                        message = res.getString(R.string.media_size_limit);
+                        mIsAttachmentErrorOnSend = false;
+                    } else {
+                        message = res.getString(R.string.failed_to_add_media, mediaType);
+                    }
                     break;
                 case WorkingMessage.IMAGE_TOO_LARGE:
                     title = res.getString(R.string.failed_to_resize_image);
@@ -3670,6 +3732,8 @@ public class ComposeMessageActivity extends Activity
                     uri, mAttachmentEditorHandler, mResizeImageCallback, append);
             return;
         }
+
+        updateMmsSizeIndicator();
         handleAddAttachmentError(result, R.string.type_picture);
     }
 
@@ -3784,6 +3848,7 @@ public class ComposeMessageActivity extends Activity
                         Parcelable uri = uris.get(i);
                         addAttachment(mimeType, (Uri) uri, true);
                     }
+                    updateMmsSizeIndicator();
                 }
             }, null, R.string.adding_attachments_title);
             return true;
@@ -3865,6 +3930,11 @@ public class ComposeMessageActivity extends Activity
         boolean showingAttachment = mAttachmentEditor.update(mWorkingMessage);
         mAttachmentEditorScrollView.setVisibility(showingAttachment ? View.VISIBLE : View.GONE);
         showSubjectEditor(showSubjectEditor || mWorkingMessage.hasSubject());
+        int subjectSize = mWorkingMessage.hasSubject()
+                ? mWorkingMessage.getSubject().toString().getBytes().length : 0;
+        if (mWorkingMessage.getSlideshow()!= null) {
+            mWorkingMessage.getSlideshow().setSubjectSize(subjectSize);
+        }
 
         invalidateOptionsMenu();
         onKeyboardStateChanged();
@@ -3918,12 +3988,34 @@ public class ComposeMessageActivity extends Activity
     }
 
     private final TextWatcher mTextEditorWatcher = new TextWatcher() {
+        private boolean mIsChanged = false;
+        private String mTextBefore = "";
+
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            if (!mIsChanged) {
+                mTextBefore = s.length() > 0 ? s.toString() : "";
+             }
         }
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (mIsChanged) {
+                return;
+            }
+            if (mWorkingMessage.hasAttachment()) {
+                if (!mAttachmentEditor.canAddTextForMms(s)) {
+                    if (mTextEditor != null) {
+                        mIsChanged = true;
+                        mTextEditor.setText(mTextBefore);
+                        mIsChanged = false;
+                        Toast.makeText(ComposeMessageActivity.this,
+                                R.string.cannot_add_text_anymore, Toast.LENGTH_SHORT).show();
+                    }
+                    mAttachmentEditor.canAddTextForMms(mTextBefore);
+                    return;
+                }
+            }
             // This is a workaround for bug 1609057.  Since onUserInteraction() is
             // not called when the user touches the soft keyboard, we pretend it was
             // called when textfields changes.  This should be removed when the bug
@@ -4024,6 +4116,15 @@ public class ComposeMessageActivity extends Activity
         mSendButtonSms = (ImageButton) findViewById(R.id.send_button_sms);
         mSendButtonMms.setOnClickListener(this);
         mSendButtonSms.setOnClickListener(this);
+        mTextEditor.setOnEditorActionListener(this);
+        mTextEditor.addTextChangedListener(mTextEditorWatcher);
+        if (getResources().getInteger(R.integer.limit_count) == 0) {
+            mTextEditor.setFilters(new InputFilter[] {
+                    new LengthFilter(MmsConfig.getMaxTextLimit())});
+        } else if (getResources().getInteger(R.integer.slide_text_limit_size) != 0) {
+            mTextEditor.setFilters(new InputFilter[] {
+                    new LengthFilter(getResources().getInteger(R.integer.slide_text_limit_size))});
+        }
         mTopPanel = findViewById(R.id.recipients_subject_linear);
         mTopPanel.setFocusable(false);
         mAttachmentEditor = (AttachmentEditor) findViewById(R.id.attachment_editor);
@@ -4139,6 +4240,7 @@ public class ComposeMessageActivity extends Activity
                 new Runnable() {
                     @Override
                     public void run() {
+                        updateMmsSizeIndicator();
                         // It decides whether or not to display the subject editText view,
                         // according to the situation whether there's subject
                         // or the editText view is visible before leaving it.
@@ -4209,7 +4311,51 @@ public class ComposeMessageActivity extends Activity
         return recipientCount;
     }
 
+    private boolean checkMessageSizeExceeded(){
+        int messageSizeLimit = MmsConfig.getMaxMessageSize();
+        int mmsCurrentSize = 0;
+        boolean indicatorSizeOvered = false;
+        SlideshowModel slideShow = mWorkingMessage.getSlideshow();
+        if (slideShow != null) {
+            mmsCurrentSize = slideShow.getTotalMessageSize();
+            // The AttachmentEditor only can edit text if there only one silde.
+            // And the slide already includes text size, need to recalculate the total size.
+            if (mWorkingMessage.hasText() && slideShow.size() == 1) {
+                int totalTextSize = slideShow.getTotalTextMessageSize();
+                int currentTextSize = mWorkingMessage.getText().toString().getBytes().length;
+                int subjectSize = slideShow.getSubjectSize();
+                mmsCurrentSize = mmsCurrentSize - totalTextSize + currentTextSize;
+                indicatorSizeOvered = getSizeWithOverHead(mmsCurrentSize + subjectSize)
+                        > (MmsConfig.getMaxMessageSize() / KILOBYTE);
+            }
+        } else if (mWorkingMessage.hasText()) {
+            mmsCurrentSize = mWorkingMessage.getText().toString().getBytes().length;
+        }
+        Log.v(TAG, "compose mmsCurrentSize = " + mmsCurrentSize
+                + ", indicatorSizeOvered = " + indicatorSizeOvered);
+        // Mms max size is 300k, but we reserved 1k just in case there are other over size problem.
+        // In this way, here the first condition will always false.
+        // Therefore add indicatorSizeOvered in it.
+        // If indicator displays larger than 300k, it can not send this Mms.
+        if (mmsCurrentSize > messageSizeLimit || indicatorSizeOvered) {
+            mIsAttachmentErrorOnSend = true;
+            handleAddAttachmentError(WorkingMessage.MESSAGE_SIZE_EXCEEDED,
+                    R.string.type_picture);
+            return true;
+        }
+        return false;
+    }
+
+    private int getSizeWithOverHead(int size) {
+        return (size + KILOBYTE -1) / KILOBYTE + 1;
+    }
+
     private void sendMessage(boolean bCheckEcmMode) {
+        // Check message size, if >= max message size, do not send message.
+        if(checkMessageSizeExceeded()){
+            return;
+        }
+
         if (bCheckEcmMode) {
             // TODO: expose this in telephony layer for SDK build
             String inEcm = SystemProperties.get(TelephonyProperties.PROPERTY_INECM_MODE);

@@ -29,7 +29,7 @@
     <!-- This LinearLayout is used to push the send and edit button to the right of the
          screen.
     -->
-    <LinearLayout
+    <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -77,7 +77,16 @@
 
             </LinearLayout>
         </FrameLayout>
-    </LinearLayout>
+
+        <TextView
+            android:id="@+id/mms_size_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|right"
+            android:alpha="0.5"
+            android:background="@android:color/black"
+            android:textColor="@android:color/white" />
+    </FrameLayout>
 
     <LinearLayout
         android:orientation="vertical"

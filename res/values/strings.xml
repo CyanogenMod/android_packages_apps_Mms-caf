@@ -197,6 +197,7 @@
     <string name="message_too_big_for_video">The message is too big to attach a video.</string>
     <!-- Error message indicating that the item trying to be attached could not be added -->
     <string name="failed_to_add_media">You can\'t add this <xliff:g id="name">%1$s</xliff:g> to your message.</string>
+    <string name="media_size_limit">Message size limit reached, can\'t send out message.</string>
     <!-- Error message indicating that the picture being attached and resized could not be resized -->
     <string name="failed_to_resize_image">Picture not resized.</string>
     <!-- Error message indicating that an image being attached is still too large to send even after resize -->
@@ -231,6 +232,8 @@
 
     <!-- Brief message that appears when converting a message from SMS to MMS. -->
     <string name="converting_to_picture_message">Converting to multimedia message\u2026</string>
+    <!-- Brief message that appears when the maximum size of slides has been reached -->
+    <string name="cannot_add_text_anymore">Can\'t add more text.</string>
     <!-- Brief message that appears when the maximum number of slides has been reached -->
     <string name="cannot_add_slide_anymore">Can\'t add more slides.</string>
     <!-- Brief message that appears when user tries to add picture to a slide which already has a video. -->
@@ -275,6 +278,8 @@
     <string name="duration_not_a_number">Duration must be a number.</string>
     <!-- Toast when the user enters a zero value for the duration of a slide -->
     <string name="duration_zero">Duration must be greater than zero seconds.</string>
+    <!-- Dialog box title for display the current mms size  -->
+    <string name="title_send_message">Send message</string>
 
     <!-- In duration selection dialog box, short version of "seconds" -->
     <string name="secs">secs</string>
@@ -930,4 +935,6 @@
     <string name="pref_sms_store_phone">Phone</string>
     <string name="pref_sms_store_card">SIM card</string>
     <string name="pref_sms_store_card_unknown_fail">Failure to receive new messages, the SIM card can\'t be read correctly</string>
+    <string name="mms_size_indicator"><xliff:g id="mms_size">%1$s</xliff:g>K/<xliff:g id="all_size">%2$s</xliff:g>K</string>
+    <string name="forward_size_over">Forbid forwarding, new message size over 300K.</string>
 </resources>

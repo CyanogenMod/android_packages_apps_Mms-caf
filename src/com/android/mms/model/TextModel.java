@@ -51,6 +51,7 @@ public class TextModel extends RegionMediaModel {
         }
         mCharset = charset;
         mText = extractTextFromData(data);
+        mSize = mText.toString().getBytes().length;
     }
 
     private CharSequence extractTextFromData(byte[] data) {
@@ -87,6 +88,7 @@ public class TextModel extends RegionMediaModel {
 
     public void setText(CharSequence text) {
         mText = text;
+        mSize = text.toString().getBytes().length;
         notifyModelChanged(true);
     }
 

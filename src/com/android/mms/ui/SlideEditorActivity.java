@@ -41,6 +41,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.mms.ExceedMessageSizeException;
@@ -56,6 +57,7 @@ import com.android.mms.model.LayoutModel;
 import com.android.mms.model.Model;
 import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
+import com.android.mms.model.TextModel;
 import com.android.mms.ui.BasicSlideEditorView.OnTextChangedListener;
 import com.android.mms.ui.MessageUtils.ResizeImageResultCallback;
 import com.google.android.mms.ContentType;
@@ -71,6 +73,8 @@ public class SlideEditorActivity extends Activity {
     private static final String TAG = LogTag.TAG;
     private static final boolean DEBUG = false;
     private static final boolean LOCAL_LOGV = false;
+
+    private final static String MSG_SUBJECT_SIZE = "subject_size";
 
     // Key for extra data.
     public static final String SLIDE_INDEX = "slide_index";
@@ -106,6 +110,8 @@ public class SlideEditorActivity extends Activity {
     // item index to duration in seconds (duration = index + 1)
     private final static int NUM_DIRECT_DURATIONS = 10;
 
+    private static final int KILOBYTE = 1024;
+
     private ImageButton mNextSlide;
     private ImageButton mPreSlide;
     private Button mPreview;
@@ -119,6 +125,8 @@ public class SlideEditorActivity extends Activity {
     private SlideshowEditor mSlideshowEditor;
     private SlideshowPresenter mPresenter;
     private boolean mDirty;
+
+    private int mSubjectSize;
 
     private int mPosition;
     private Uri mUri;
@@ -153,10 +161,15 @@ public class SlideEditorActivity extends Activity {
         mTextEditor.setFilters(new InputFilter[] {
                 new LengthFilter(MmsConfig.getMaxTextLimit())});
 
+        if (getResources().getInteger(R.integer.slide_text_limit_size) != 0) {
+            mTextEditor.setFilters(new InputFilter[] {
+                    new LengthFilter(getResources().getInteger(R.integer.slide_text_limit_size))});
+        }
         mDone = (Button) findViewById(R.id.done_button);
         mDone.setOnClickListener(mDoneClickListener);
 
         initActivityState(savedInstanceState, getIntent());
+        mSubjectSize = getIntent().getIntExtra(MSG_SUBJECT_SIZE, 0);
 
         try {
             mSlideshowModel = SlideshowModel.createFromMessageUri(this, mUri);
@@ -180,6 +193,7 @@ public class SlideEditorActivity extends Activity {
             }
 
             showCurrentSlide();
+            updateMmsSizeIndicator();
         } catch (MmsException e) {
             Log.e(TAG, "Create SlideshowModel failed!", e);
             finish();
@@ -243,6 +257,8 @@ public class SlideEditorActivity extends Activity {
                 synchronized (SlideEditorActivity.this) {
                     mDirty = true;
                 }
+                // If mSlideshowModel is changed, update the mms size indicator.
+                updateMmsSizeIndicator();
                 setResult(RESULT_OK);
             }
         };
@@ -267,9 +283,49 @@ public class SlideEditorActivity extends Activity {
     };
 
     private final OnTextChangedListener mOnTextChangedListener = new OnTextChangedListener() {
+        // Add this flag to prevent "StackOverflowError" exception.
+        private boolean mIsChanged = false;
+
         public void onTextChanged(String s) {
+            if (mIsChanged) {
+                return;
+            }
             if (!isFinishing()) {
-                mSlideshowEditor.changeText(mPosition, s);
+                TextModel textMode = mSlideshowModel.get(mPosition).getText();
+
+                // beforeInputSize is size for inputting before.
+                int beforeInputSize = textMode == null ? 0 : textMode.getText().getBytes().length;
+                // currentInputSize include size for inputting current and before.
+                int currentInputSize = s.getBytes().length;
+                // so we need re-calculate the current input size.
+                int inputSize = currentInputSize - beforeInputSize;
+
+                // Add input size which inputting current to re-calculate the remain message size.
+                int remainSize = mSlideshowModel.getRemainMessageSize() - mSubjectSize - inputSize;
+                remainSize = remainSize < 0 ? 0 : remainSize;
+                if (DEBUG) {
+                    Log.v(TAG,"remainSize = "+remainSize);
+                }
+
+                if (remainSize == 0 || (mSlideshowModel.getRemainMessageSize() + beforeInputSize)
+                        < currentInputSize) {
+                    Toast.makeText(SlideEditorActivity.this, R.string.cannot_add_text_anymore,
+                            Toast.LENGTH_SHORT).show();
+
+                    // Set mIsChanged is true before mTextEditor.setText(...),
+                    // because "setText" will invoke "onTextChanged" again and again.
+                    // And finally throw "StackOverflowError". So add this flag.
+                    mIsChanged = true;
+                    if (textMode != null) {
+                        mTextEditor.setText(textMode.getText());
+                    } else {
+                        mTextEditor.setText("");
+                    }
+                    // Set mIsChanged is false, do not affect next nomal invoke "onTextChanged".
+                    mIsChanged = false;
+                } else {
+                    mSlideshowEditor.changeText(mPosition, s);
+                }
             }
         }
     };
@@ -802,6 +858,25 @@ public class SlideEditorActivity extends Activity {
             setReplaceButtonText(R.string.replace_image);
         } else {
             setReplaceButtonText(R.string.add_picture);
+        }
+    }
+
+    private int getSizeWithOverHead(int size) {
+        return (size + KILOBYTE -1) / KILOBYTE + 1;
+    }
+
+    private void updateMmsSizeIndicator() {
+        TextView sizeIndicator = (TextView) findViewById(R.id.mms_size_indicator);
+
+        mSlideshowModel.updateTotalMessageSize();
+        int mediaSize = mSlideshowModel.getTotalMessageSize();
+        if (mediaSize == 0){
+            sizeIndicator.setVisibility(View.GONE);
+        } else {
+            sizeIndicator.setVisibility(View.VISIBLE);
+            int currentSize = getSizeWithOverHead(mediaSize + mSlideshowModel.getSubjectSize());
+            sizeIndicator.setText(getString(R.string.mms_size_indicator,
+                    currentSize, MmsConfig.getMaxMessageSize() / KILOBYTE));
         }
     }
 }

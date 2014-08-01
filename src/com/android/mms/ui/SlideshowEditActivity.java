@@ -70,6 +70,7 @@ public class SlideshowEditActivity extends ListActivity {
     private final static String STATE = "state";
     private final static String SLIDE_INDEX = "slide_index";
     private final static String MESSAGE_URI = "message_uri";
+    private final static String MSG_SUBJECT_SIZE = "subject_size";
 
     private ListView mList;
     private SlideListAdapter mSlideListAdapter;
@@ -298,6 +299,7 @@ public class SlideshowEditActivity extends ListActivity {
         Intent intent = new Intent(this, SlideEditorActivity.class);
         intent.setData(mUri);
         intent.putExtra(SlideEditorActivity.SLIDE_INDEX, index);
+        intent.putExtra(MSG_SUBJECT_SIZE, getIntent().getIntExtra(MSG_SUBJECT_SIZE, 0));
         startActivityForResult(intent, REQUEST_CODE_EDIT_SLIDE);
     }
 

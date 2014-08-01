@@ -123,9 +123,7 @@ public class MmsConfig {
                 android.os.SystemProperties.get(TelephonyProperties.PROPERTY_ICC_OPERATOR_NUMERIC));
 
         loadMmsSettings(context);
-        //TODO:Jack
-        //MAX_SLIDE_NUM = context.getResources().getInteger(R.integer.max_slide_num);
-        MAX_SLIDE_NUM = 20;
+        MAX_SLIDE_NUM = context.getResources().getInteger(R.integer.max_slide_num);
     }
 
     public static int getMaxSlideNumber() {
@@ -411,7 +409,10 @@ public class MmsConfig {
                         } else if ("aliasMaxChars".equalsIgnoreCase(value)) {
                             mAliasRuleMaxChars = Integer.parseInt(text);
                         } else if ("smsToMmsTextThreshold".equalsIgnoreCase(value)) {
-                            mSmsToMmsTextThreshold = Integer.parseInt(text);
+                            int maxSmstomms = /*context.getResources().getInteger(R.integer
+                                    .config_max_smstomms)*/0;
+                            mSmsToMmsTextThreshold = (maxSmstomms == 0) ? Integer.parseInt(text)
+                                    : maxSmstomms;
                         } else if ("maxMessageTextSize".equalsIgnoreCase(value)) {
                             mMaxTextLength = Integer.parseInt(text);
                         } else if ("maxSubjectLength".equalsIgnoreCase(value)) {

@@ -708,6 +708,9 @@ public class WorkingMessage {
     public void setSubject(CharSequence s, boolean notify) {
         mSubject = s;
         updateState(HAS_SUBJECT, (s != null), notify);
+        if (mSlideshow != null) {
+            mSlideshow.setSubjectSize((s == null) ? 0 : s.toString().getBytes().length);
+        }
     }
 
     /**

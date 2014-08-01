@@ -96,6 +96,7 @@
     <string name="select_different_media" msgid="6241623357299382183">"选择其他<xliff:g id="NAME">%1$s</xliff:g>。"</string>
     <string name="exceed_message_size_limitation" msgid="6027753647094742437">"已达到信息大小上限。"</string>
     <string name="message_too_big_for_video" msgid="2639367545165352543">"该短信太大，无法附加视频。"</string>
+    <string name="media_size_limit" msgid="7207464170168708486">"已达到信息大小上限，无法发送。"</string>
     <string name="failed_to_add_media" msgid="7207464170168708485">"您无法将此<xliff:g id="NAME">%1$s</xliff:g>添加到短信中。"</string>
     <string name="failed_to_resize_image" msgid="5608354151631833669">"未调整图片大小。"</string>
     <string name="resize_image_error_information" msgid="3783200130776554475">"重新调整大小后，此照片仍然过大，因此无法发送。"</string>
@@ -114,6 +115,8 @@
     <string name="cannot_send_message_reason" msgid="8745080126044054343">"您的信息没有有效的接收者。"</string>
     <string name="cannot_forward_drm_obj" msgid="5047623751430559077">"无法转发该短信中包含的 DRM 对象。"</string>
     <string name="converting_to_picture_message" msgid="2980023239017588627">"正在转换为彩信…"</string>
+    <!-- Brief message that appears when the maximum size of slides has been reached -->
+    <string name="cannot_add_text_anymore">"无法再添加文字。"</string>
     <string name="cannot_add_slide_anymore" msgid="4631404749618820994">"无法再添加幻灯片。"</string>
     <string name="cannot_add_picture_and_video" msgid="4954353772391381447">"无法将视频和图片添加到同一张幻灯片。"</string>
     <string name="cannot_save_message" msgid="3375907366965264446">"无法保存短信。"</string>
@@ -136,6 +139,8 @@
     <string name="duration_not_a_number" msgid="2856636898040421237">"时长必须为数字。"</string>
     <string name="duration_zero" msgid="3549377790195185977">"时长必须大于 0 秒。"</string>
     <string name="secs" msgid="6886003523109967972">"秒"</string>
+    <!-- Dialog box title for display the current mms size  -->
+    <string name="title_send_message">发送信息</string>
   <string-array name="select_dialog_items">
     <item msgid="4840183714016984112">"1 秒"</item>
     <item msgid="3734955613666864447">"2 秒"</item>

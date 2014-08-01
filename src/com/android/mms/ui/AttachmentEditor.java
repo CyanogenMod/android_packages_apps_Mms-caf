@@ -22,14 +22,17 @@ import android.content.res.Configuration;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.android.mms.LogTag;
 import com.android.mms.R;
+import com.android.mms.MmsConfig;
 import com.android.mms.data.WorkingMessage;
 import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
@@ -40,7 +43,7 @@ import com.android.mms.model.SlideshowModel;
  */
 public class AttachmentEditor extends LinearLayout {
     private static final String TAG = LogTag.TAG;
-
+    private static final boolean DEBUG = false;
     static final int MSG_EDIT_SLIDESHOW   = 1;
     static final int MSG_SEND_SLIDESHOW   = 2;
     static final int MSG_PLAY_SLIDESHOW   = 3;
@@ -54,6 +57,8 @@ public class AttachmentEditor extends LinearLayout {
     static final int MSG_VIEW_VCARD        = 11;
     static final int MSG_REPLACE_VCARD     = 12;
 
+    private static final int KILOBYTE = 1024;
+
     private final Context mContext;
     private Handler mHandler;
 
@@ -62,6 +67,8 @@ public class AttachmentEditor extends LinearLayout {
     private Presenter mPresenter;
     private boolean mCanSend;
     private Button mSendButton;
+    private TextView mSizeIndicator;
+    private int mMediaSize = 0;
 
     public AttachmentEditor(Context context, AttributeSet attr) {
         super(context, attr);
@@ -194,6 +201,22 @@ public class AttachmentEditor extends LinearLayout {
             int view_message, int replace_message, int remove_message) {
         LinearLayout view = (LinearLayout)getStubView(stub_view_id, real_view_id);
         view.setVisibility(View.VISIBLE);
+        mSizeIndicator = (TextView) view.findViewById(R.id.mms_size_indicator);
+        if (mSizeIndicator != null) {
+            if (view_message == MSG_VIEW_IMAGE) {
+                mMediaSize = mSlideshow.getTotalMessageSize();
+            } else {
+                mMediaSize = mSlideshow.getCurrentMessageSize();
+            }
+            int currentSize = getSizeWithOverHead(mMediaSize + mSlideshow.getSubjectSize());
+            if (DEBUG) {
+                Log.v(TAG,"createMediaView currentSize = " + currentSize
+                        + ", mMediaSize = " + mMediaSize
+                        + ", subject size is "+mSlideshow.getSubjectSize());
+            }
+            mSizeIndicator.setText(mContext.getString(R.string.mms_size_indicator,
+                            currentSize, MmsConfig.getMaxMessageSize() / KILOBYTE));
+        }
 
         Button viewButton = (Button) view.findViewById(view_button_id);
         Button replaceButton = (Button) view.findViewById(replace_button_id);
@@ -211,6 +234,18 @@ public class AttachmentEditor extends LinearLayout {
                 R.id.slideshow_attachment_view_stub,
                 R.id.slideshow_attachment_view);
         view.setVisibility(View.VISIBLE);
+        mSizeIndicator = (TextView) view.findViewById(R.id.mms_size_indicator);
+        mMediaSize = mSlideshow.getTotalMessageSize();
+        if (mSizeIndicator != null) {
+            int currentSize = getSizeWithOverHead(mMediaSize + mSlideshow.getSubjectSize());
+            if (DEBUG) {
+                Log.v(TAG,"createSlideshowView currentSize = " + currentSize
+                        + ", mMediaSize = " + mMediaSize
+                        + ", subject size is "+mSlideshow.getSubjectSize());
+            }
+            mSizeIndicator.setText(mContext.getString(R.string.mms_size_indicator,
+                            currentSize, MmsConfig.getMaxMessageSize() / KILOBYTE));
+        }
 
         Button editBtn = (Button) view.findViewById(R.id.edit_slideshow_button);
         mSendButton = (Button) view.findViewById(R.id.send_slideshow_button);
@@ -226,5 +261,62 @@ public class AttachmentEditor extends LinearLayout {
         removeButton.setOnClickListener(new MessageOnClick(MSG_REMOVE_ATTACHMENT));
 
         return (SlideViewInterface) view;
+    }
+
+    public void hideSlideshowSendButton() {
+        if (mSendButton != null) {
+            mSendButton.setVisibility(View.GONE);
+        }
+    }
+
+    public boolean canAddTextForMms(CharSequence s) {
+        int totalSize = 0;
+        int textSize = s.toString().getBytes().length;
+        int remainSize = MmsConfig.getMaxMessageSize();
+        if (mMediaSize != 0) {
+            // The AttachmentEditor only can edit text if there only one silde.
+            // Here mSlideshow already includes text size, need to recalculate the totalsize.
+            int totalTextSize = mSlideshow.getTotalTextMessageSize();
+            remainSize = mSlideshow.getRemainMessageSize();
+            if (DEBUG) {
+                Log.v(TAG,"onTextChangeForMms totalTextSize = "+totalTextSize);
+            }
+            if (textSize != 0 && mSlideshow.size() == 1) {
+                totalSize = mMediaSize - totalTextSize + textSize;
+                remainSize = remainSize + totalTextSize - textSize;
+            } else {
+                totalSize = mMediaSize + textSize;
+                remainSize = remainSize - textSize;
+            }
+            remainSize = remainSize -  mSlideshow.getSubjectSize();
+        }
+
+        if (DEBUG) {
+            Log.v(TAG,"onTextChangeForMms textSize = " + textSize
+                    + ", mMediaSize = " + mMediaSize
+                    + ", totalSize = " + totalSize
+                    + ", remainSize = "  + remainSize
+                    );
+        }
+
+        if (mSizeIndicator != null) {
+            int currentSize = getSizeWithOverHead(totalSize + mSlideshow.getSubjectSize());
+            if (remainSize < 0) {
+                currentSize = MmsConfig.getMaxMessageSize() / KILOBYTE;
+            }
+
+            if (DEBUG) {
+                Log.v(TAG,"onTextChangeForMms currentSize = " + currentSize
+                        + ", totalSize = " + totalSize
+                        + ", subject size is "+mSlideshow.getSubjectSize());
+            }
+            mSizeIndicator.setText(mContext.getString(R.string.mms_size_indicator,
+                            currentSize, MmsConfig.getMaxMessageSize() / KILOBYTE));
+        }
+        return remainSize >= 0;
+    }
+
+    private int getSizeWithOverHead(int size) {
+        return (size + KILOBYTE -1) / KILOBYTE + 1;
     }
 }

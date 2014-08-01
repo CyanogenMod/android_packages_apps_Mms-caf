@@ -157,7 +157,7 @@ public class SlideModel extends Model implements List<MediaModel>, EventListener
         // If the media is resizable, at this point consider it to be zero length.
         // Just before we send the slideshow, we take the remaining space in the
         // slideshow and equally allocate it to all the resizeable media items and resize them.
-        int addSize = media.getMediaResizable() ? 0 : media.getMediaSize();
+        int addSize = media.getMediaSize();
         int removeSize;
         if (old == null) {
             if (null != mParent) {
@@ -167,7 +167,7 @@ public class SlideModel extends Model implements List<MediaModel>, EventListener
             increaseSlideSize(addSize);
             increaseMessageSize(addSize);
         } else {
-            removeSize = old.getMediaResizable() ? 0 : old.getMediaSize();
+            removeSize = old.getMediaSize();
             if (addSize > removeSize) {
                 if (null != mParent) {
                     mParent.checkMessageSize(addSize - removeSize);
@@ -209,12 +209,12 @@ public class SlideModel extends Model implements List<MediaModel>, EventListener
             // If the media is resizable, at this point consider it to be zero length.
             // Just before we send the slideshow, we take the remaining space in the
             // slideshow and equally allocate it to all the resizeable media items and resize them.
-            int decreaseSize = ((MediaModel) object).getMediaResizable() ? 0
-                                        : ((MediaModel) object).getMediaSize();
+            MediaModel mediaMode = ((MediaModel) object);
+            int decreaseSize = mediaMode.getMediaSize();
             decreaseSlideSize(decreaseSize);
             decreaseMessageSize(decreaseSize);
 
-            ((Model) object).unregisterAllModelChangedObservers();
+            mediaMode.unregisterAllModelChangedObservers();
 
             return true;
         }
