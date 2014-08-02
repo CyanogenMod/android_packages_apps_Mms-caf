@@ -3396,12 +3396,12 @@ public class ComposeMessageActivity extends Activity
             final ArrayList<Parcelable> uris = extras.getParcelableArrayList(Intent.EXTRA_STREAM);
             int currentSlideCount = slideShow != null ? slideShow.size() : 0;
             int importCount = uris.size();
-            if (importCount + currentSlideCount > SlideshowEditor.MAX_SLIDE_NUM) {
-                importCount = Math.min(SlideshowEditor.MAX_SLIDE_NUM - currentSlideCount,
+            if (importCount + currentSlideCount > MmsConfig.getMaxSlideNumber()) {
+                importCount = Math.min(MmsConfig.getMaxSlideNumber() - currentSlideCount,
                         importCount);
                 Toast.makeText(ComposeMessageActivity.this,
                         getString(R.string.too_many_attachments,
-                                SlideshowEditor.MAX_SLIDE_NUM, importCount),
+                                MmsConfig.getMaxSlideNumber(), importCount),
                                 Toast.LENGTH_LONG).show();
             }
 

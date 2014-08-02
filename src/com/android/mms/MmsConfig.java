@@ -112,6 +112,8 @@ public class MmsConfig {
     // activity.
     private static boolean mEnableGroupMms = true;
 
+    private static int MAX_SLIDE_NUM = 10;
+
     public static void init(Context context) {
         if (LOCAL_LOGV) {
             Log.v(TAG, "MmsConfig.init()");
@@ -121,6 +123,13 @@ public class MmsConfig {
                 android.os.SystemProperties.get(TelephonyProperties.PROPERTY_ICC_OPERATOR_NUMERIC));
 
         loadMmsSettings(context);
+        //TODO:Jack
+        //MAX_SLIDE_NUM = context.getResources().getInteger(R.integer.max_slide_num);
+        MAX_SLIDE_NUM = 20;
+    }
+
+    public static int getMaxSlideNumber() {
+        return MAX_SLIDE_NUM;
     }
 
     public static boolean isSmsEnabled(Context context) {

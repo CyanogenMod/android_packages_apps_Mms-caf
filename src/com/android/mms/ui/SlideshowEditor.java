@@ -22,6 +22,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.android.mms.LogTag;
+import com.android.mms.MmsConfig;
 import com.android.mms.model.AudioModel;
 import com.android.mms.model.ImageModel;
 import com.android.mms.model.RegionModel;
@@ -37,8 +38,6 @@ import com.google.android.mms.MmsException;
  */
 public class SlideshowEditor {
     private static final String TAG = LogTag.TAG;
-
-    public static final int MAX_SLIDE_NUM = 10;
 
     private final Context mContext;
     private SlideshowModel mModel;
@@ -71,7 +70,7 @@ public class SlideshowEditor {
      */
     public boolean addNewSlide(int position) {
         int size = mModel.size();
-        if (size < MAX_SLIDE_NUM) {
+        if (size < MmsConfig.getMaxSlideNumber()) {
             SlideModel slide = new SlideModel(mModel);
 
             TextModel text = new TextModel(
@@ -128,7 +127,7 @@ public class SlideshowEditor {
      */
     public boolean addSlide(int position, SlideModel slide) {
         int size = mModel.size();
-        if (size < MAX_SLIDE_NUM) {
+        if (size < MmsConfig.getMaxSlideNumber()) {
             mModel.add(position, slide);
             return true;
         } else {
