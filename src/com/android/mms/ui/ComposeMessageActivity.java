@@ -98,6 +98,7 @@ import android.provider.ContactsContract.Intents;
 import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Video;
 import android.provider.Settings;
+import android.provider.Settings.SettingNotFoundException;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Sms;
 import android.telephony.PhoneNumberUtils;
@@ -145,6 +146,7 @@ import android.widget.Toast;
 import android.widget.Button;
 
 import com.android.internal.telephony.PhoneConstants;
+import com.android.internal.telephony.RILConstants;
 import com.android.internal.telephony.TelephonyIntents;
 import com.android.internal.telephony.TelephonyProperties;
 import com.android.mms.LogTag;
@@ -384,6 +386,11 @@ public class ComposeMessageActivity extends Activity
 
     // Record the resend sms recipient when the sms send to more than one recipient
     private String mResendSmsRecipient;
+
+    private static final String INTENT_ACTION_LTE_DATA_ONLY_DIALOG =
+            "com.qualcomm.qti.phonefeature.DISABLE_TDD_LTE";
+    private static final String LTE_DATA_ONLY_KEY = "network_band";
+    private static final int LTE_DATA_ONLY_MODE = 2;
 
     /**
      * Whether this activity is currently running (i.e. not paused)
@@ -933,8 +940,43 @@ public class ComposeMessageActivity extends Activity
         }
     }
 
+    private boolean isLTEOnlyMode() {
+        try {
+            int tddOnly = Settings.Global.getInt(getContentResolver(), LTE_DATA_ONLY_KEY);
+            int network = Settings.Global.getInt(getContentResolver(),
+                    Settings.Global.PREFERRED_NETWORK_MODE);
+            return network == RILConstants.NETWORK_MODE_LTE_ONLY && tddOnly == LTE_DATA_ONLY_MODE;
+        } catch (SettingNotFoundException snfe) {
+            Log.w(TAG, "isLTEOnlyMode: Could not find PREFERRED_NETWORK_MODE!");
+        }
+        return false;
+    }
+
+    private boolean isLTEOnlyMode(int subscription) {
+        try {
+            int tddOnly = TelephonyManager.getIntAtIndex(getContentResolver(),
+                    LTE_DATA_ONLY_KEY, subscription);
+            int network = TelephonyManager.getIntAtIndex(getContentResolver(),
+                    Settings.Global.PREFERRED_NETWORK_MODE, subscription);
+            return network == RILConstants.NETWORK_MODE_LTE_ONLY && tddOnly == LTE_DATA_ONLY_MODE;
+        } catch (SettingNotFoundException snfe) {
+            Log.w(TAG, "isLTEOnlyMode: Could not find PREFERRED_NETWORK_MODE!");
+        }
+        return false;
+    }
+
+    private void showDisableLTEOnlyDialog(int subscription) {
+        Intent intent = new Intent();
+        intent.setAction(INTENT_ACTION_LTE_DATA_ONLY_DIALOG);
+        intent.putExtra(PhoneConstants.SLOT_KEY, subscription);
+        startActivity(intent);
+    }
 
     private void confirmSendMessageIfNeeded(int subscription) {
+        if (isLTEOnlyMode(subscription)) {
+            showDisableLTEOnlyDialog(subscription);
+            return;
+        }
         boolean isMms = mWorkingMessage.requiresMms();
         if (!isRecipientsEditorVisible()) {
             sendMsimMessage(true, subscription);
@@ -953,6 +995,14 @@ public class ComposeMessageActivity extends Activity
     }
 
     private void confirmSendMessageIfNeeded() {
+        int slot = SubscriptionManager.getSlotId(SmsManager.getDefault().getDefaultSmsSubId());
+        if ((TelephonyManager.getDefault().isMultiSimEnabled() &&
+                isLTEOnlyMode(slot))
+                || (!TelephonyManager.getDefault().isMultiSimEnabled()
+                        && isLTEOnlyMode())) {
+            showDisableLTEOnlyDialog(slot);
+            return;
+        }
         if (!isRecipientsEditorVisible()) {
             if ((TelephonyManager.getDefault().getPhoneCount()) > 1) {
                 sendMsimMessage(true);
@@ -3802,6 +3852,7 @@ public class ComposeMessageActivity extends Activity
     //==========================================================
     // Interface methods
     //==========================================================
+
 
     @Override
     public void onClick(View v) {
