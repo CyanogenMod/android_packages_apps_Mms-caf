@@ -97,6 +97,9 @@
     <string name="failed_to_resize_image" msgid="5608354151631833669">"未调整图片大小。"</string>
     <string name="resize_image_error_information" msgid="3783200130776554475">"重新调整大小后，此照片仍然过大，因此无法发送。"</string>
     <string name="forward_prefix" msgid="276280492803486464">"转发： "</string>
+    <string name="discard_message">"舍弃"</string>
+    <string name="discard_message_reason_all_invalid">"所有的接收者均无效，您的信息将被舍弃。"</string>
+    <string name="discard_message_reason_some_invalid">"您的信息有部分无效的接收者，将被舍弃。"</string>
     <string name="discard_message_reason" msgid="2667664943003796133">"您的信息没有有效的接收者，将被舍弃。"</string>
     <string name="has_invalid_recipient" msgid="1485388396900997383">"无效接收者：&lt;<xliff:g id="NAME">%1$s</xliff:g>&gt;"</string>
     <string name="invalid_destination" msgid="4573835601024786416">"目标地址无效。"</string>

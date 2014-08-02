@@ -115,6 +115,11 @@ public class MessageUtils {
 
     private static HashMap numericSugarMap = new HashMap (NUMERIC_CHARS_SUGAR.length);
 
+    public static final int ALL_RECIPIENTS_VALID   = 0;
+    public static final int ALL_RECIPIENTS_INVALID = -1;
+    // Indentify RECIPIENT editText is empty
+    public static final int ALL_RECIPIENTS_EMPTY   = -2;
+
     static {
         for (int i = 0; i < NUMERIC_CHARS_SUGAR.length; i++) {
             numericSugarMap.put(NUMERIC_CHARS_SUGAR[i], NUMERIC_CHARS_SUGAR[i]);
@@ -720,12 +725,31 @@ public class MessageUtils {
     }
 
     public static void showDiscardDraftConfirmDialog(Context context,
-            OnClickListener listener) {
+            OnClickListener listener, int validNum) {
+        // the alert icon shoud has black triangle and white exclamation mark in white background.
         new AlertDialog.Builder(context)
-                .setMessage(R.string.discard_message_reason)
+                .setIconAttribute(android.R.attr.alertDialogIcon)
+                .setTitle(R.string.discard_message)
+                .setMessage(getDiscardMessageId(validNum))
                 .setPositiveButton(R.string.yes, listener)
                 .setNegativeButton(R.string.no, null)
                 .show();
+    }
+
+    /**
+    * Return discard message id.
+    */
+    private static int getDiscardMessageId(int validNum) {
+        int msgId = R.string.discard_message_reason;
+        // If validNum != ALL_RECIPIENTS_EMPTY, means recipient is not empty.
+        // If validNum ==  ALL_RECIPIENTS_VALID, means all of the recipients are valid.
+        // If validNum > ALL_RECIPIENTS_VALID, means there some recipients are invalid.
+        // If validNum == ALL_RECIPIENTS_INVALID, means all of the recipients are invalid.
+        if (ALL_RECIPIENTS_EMPTY != validNum) {
+            msgId = validNum > ALL_RECIPIENTS_VALID ? R.string.discard_message_reason_some_invalid
+                : R.string.discard_message_reason_all_invalid;
+        }
+        return msgId;
     }
 
     public static String getLocalNumber() {
