@@ -82,6 +82,14 @@
                     android:paddingLeft="@dimen/message_item_text_padding_left_right"
                     android:orientation="horizontal" >
 
+                    <ImageView
+                        android:id="@+id/sim_indicator_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="3dip"
+                        android:visibility="gone"
+                        android:layout_gravity="center_vertical"/>
+
                     <TextView android:id="@+id/date_view"
                         android:background="@drawable/listitem_background"
                         android:layout_width="wrap_content"

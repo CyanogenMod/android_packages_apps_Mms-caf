@@ -41,6 +41,7 @@ import android.content.ContentResolver;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.SharedPreferences;
+import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.database.sqlite.SqliteWrapper;
 import android.graphics.drawable.Drawable;
@@ -134,6 +135,7 @@ public class MessageUtils {
     public static final Uri ICC2_URI = Uri.parse("content://sms/icc2");
     private static final int TIMESTAMP_LENGTH = 7;  // See TS 23.040 9.2.3.11
     private static final String TAG = LogTag.TAG;
+    private static final String PREFERRED_SIM_ICON_INDEX = "preferred_sim_icon_index";
     private static String sLocalNumber;
     private static String[] sNoSubjectStrings;
     public static String MULTI_SIM_NAME = "perferred_name_sub";
@@ -1403,7 +1405,6 @@ public class MessageUtils {
         }*/
         return null;
     }
-
 
     public static boolean isMsimIccCardActive() {
         if (isMultiSimEnabledMms()) {

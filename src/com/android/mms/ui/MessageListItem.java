@@ -97,6 +97,7 @@ public class MessageListItem extends LinearLayout implements
     private ImageView mLockedIndicator;
     private ImageView mDeliveredIndicator;
     private ImageView mDetailsIndicator;
+    private ImageView mSimIndicatorView;
     private ImageButton mSlideShowButton;
     private TextView mSimMessageAddress;
     private TextView mBodyTextView;
@@ -145,6 +146,7 @@ public class MessageListItem extends LinearLayout implements
         mDeliveredIndicator = (ImageView) findViewById(R.id.delivered_indicator);
         mDetailsIndicator = (ImageView) findViewById(R.id.details_indicator);
         mAvatar = (QuickContactDivot) findViewById(R.id.avatar);
+        mSimIndicatorView = (ImageView) findViewById(R.id.sim_indicator_icon);
         mMessageBlock = findViewById(R.id.message_block);
         mSimMessageAddress = (TextView) findViewById(R.id.sim_message_address);
     }
@@ -218,6 +220,8 @@ public class MessageListItem extends LinearLayout implements
 
         mDateView.setText(buildTimestampLine(msgSizeText + " " + mMessageItem.mTimestamp));
 
+        updateSimIndicatorView(mMessageItem.mPhoneId);
+
         switch (mMessageItem.getMmsDownloadStatus()) {
             case DownloadManager.STATE_PRE_DOWNLOADING:
             case DownloadManager.STATE_DOWNLOADING:
@@ -270,6 +274,15 @@ public class MessageListItem extends LinearLayout implements
         mDeliveredIndicator.setVisibility(View.GONE);
         mDetailsIndicator.setVisibility(View.GONE);
         updateAvatarView(mMessageItem.mAddress, false);
+    }
+
+    private void updateSimIndicatorView(int subscription) {
+        if (MessageUtils.isMultiSimEnabledMms() && subscription >= 0) {
+            Drawable mSimIndicatorIcon = MessageUtils.getMultiSimIcon(mContext,
+                    subscription);
+            mSimIndicatorView.setImageDrawable(mSimIndicatorIcon);
+            mSimIndicatorView.setVisibility(View.VISIBLE);
+        }
     }
 
     private String buildTimestampLine(String timestamp) {
@@ -364,7 +377,7 @@ public class MessageListItem extends LinearLayout implements
         if (!sameItem || haveLoadedPdu) {
             mBodyTextView.setText(formattedMessage);
         }
-
+        updateSimIndicatorView(mMessageItem.mPhoneId);
         // Debugging code to put the URI of the image attachment in the body of the list item.
         if (DEBUG) {
             String debugText = null;

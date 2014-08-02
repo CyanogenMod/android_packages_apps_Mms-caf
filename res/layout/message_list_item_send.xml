@@ -109,6 +109,14 @@
                         android:src="@drawable/ic_sms_mms_details"
                         android:visibility="gone" />
 
+                    <ImageView
+                        android:id="@+id/sim_indicator_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="3dip"
+                        android:visibility="gone"
+                        android:layout_gravity="center_vertical" />
+
                     <TextView android:id="@+id/date_view"
                         android:background="@drawable/listitem_background"
                         android:layout_width="wrap_content"
