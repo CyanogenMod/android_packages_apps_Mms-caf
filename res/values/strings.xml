@@ -578,6 +578,9 @@
     <!-- Disk Storage Full Error Notification dialog text. -->
     <string name="disk_storage_full_error">Error: Storage is full.</string>
 
+    <!-- Mms size is too large dialog text. -->
+    <string name="mms_too_large">The message is too large to download.</string>
+
     <!-- Sms's Being Rejected Notification dialog title. -->
     <string name="sms_rejected_title">Text message rejected</string>
     <!-- Sms's Being Rejected Notification dialog text. -->

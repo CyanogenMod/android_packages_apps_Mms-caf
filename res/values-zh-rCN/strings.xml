@@ -278,6 +278,7 @@
     <string name="sim_full_body" msgid="6241664980790322925">"删除部分信息以腾出更多空间。"</string>
     <string name="sms_full_title" msgid="6041287140125011854">"短信内存已满"</string>
     <string name="sms_full_body" msgid="4885861852397651868">"存储空间已满，无法接收短信，请删除部分旧短信。"</string>
+    <string name="mms_too_large">"彩信过大，无法下载。"</string>
     <string name="sms_rejected_title" msgid="8548394922491529811">"短信遭拒"</string>
     <string name="sms_rejected_body" msgid="7813671133968158562">"由于未知原因导致收不到短信。"</string>
     <string name="type_audio" msgid="3842064092332309756">"音频"</string>

@@ -41,6 +41,7 @@ import android.util.Log;
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
+import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.MessagingPreferenceActivity;
 import com.android.mms.util.DownloadManager;
 import com.android.mms.util.Recycler;
@@ -141,9 +142,17 @@ public class NotificationTransaction extends Transaction implements Runnable {
         return autoDownload && !dataSuspended;
     }
 
+    public static boolean isMmsSizeTooLarge(NotificationInd nInd) {
+        int currentMmsSize = (int) nInd.getMessageSize();
+        int maxSize = MmsConfig.getMaxMessageSize();
+        return currentMmsSize > maxSize;
+    }
+
     public void run() {
         DownloadManager downloadManager = DownloadManager.getInstance();
         boolean autoDownload = allowAutoDownload();
+        boolean isMemoryFull = MessageUtils.isMmsMemoryFull();
+        boolean isTooLarge = isMmsSizeTooLarge(mNotificationInd);
         try {
             if (LOCAL_LOGV) {
                 Log.v(TAG, "Notification transaction launched: " + this);
@@ -156,6 +165,12 @@ public class NotificationTransaction extends Transaction implements Runnable {
             // Don't try to download when data is suspended, as it will fail, so defer download
             if (!autoDownload) {
                 downloadManager.markState(mUri, DownloadManager.STATE_UNSTARTED);
+                sendNotifyRespInd(status);
+                return;
+            }
+
+            if (isMemoryFull || isTooLarge) {
+                downloadManager.markState(mUri, DownloadManager.STATE_TRANSIENT_FAILURE);
                 sendNotifyRespInd(status);
                 return;
             }
@@ -251,7 +266,7 @@ public class NotificationTransaction extends Transaction implements Runnable {
             Log.e(TAG, Log.getStackTraceString(t));
         } finally {
             mTransactionState.setContentUri(mUri);
-            if (!autoDownload) {
+            if (!autoDownload || isMemoryFull || isTooLarge) {
                 // Always mark the transaction successful for deferred
                 // download since any error here doesn't make sense.
                 mTransactionState.setState(SUCCESS);

@@ -1578,4 +1578,36 @@ public class MessagingNotification {
             cancelNotification(context, NEW_ICC_NOTIFICATION_ID[subscription]);
         }
     }
+
+    /**
+     * Checks to see if the message memory is full.
+     *
+     * @param context the context to use
+     * @param isFull if notify a full icon, it should be true, otherwise, false.
+     */
+    public static void updateSmsMessageFullIndicator(Context context, boolean isFull) {
+        if (isFull) {
+            sendFullNotification(context);
+        } else {
+            cancelNotification(context, FULL_NOTIFICATION_ID);
+        }
+    }
+
+    /**
+     * This method sends a notification to NotificationManager to display
+     * an dialog indicating the message memory is full.
+     */
+    private static void sendFullNotification(Context context) {
+        NotificationManager nm = (NotificationManager)context.getSystemService(
+                Context.NOTIFICATION_SERVICE);
+
+        String title = context.getString(R.string.sms_full_title);
+        String description = context.getString(R.string.sms_full_body);
+        PendingIntent intent = PendingIntent.getActivity(context, 0,  new Intent(), 0);
+        Notification notification = new Notification();
+        notification.icon = R.drawable.stat_notify_sms_failed;
+        notification.tickerText = title;
+        notification.setLatestEventInfo(context, title, description, intent);
+        nm.notify(FULL_NOTIFICATION_ID, notification);
+    }
 }
