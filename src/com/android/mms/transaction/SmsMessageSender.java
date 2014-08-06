@@ -32,6 +32,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.android.mms.LogTag;
+import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.MessagingPreferenceActivity;
 import com.google.android.mms.MmsException;
 
@@ -113,6 +114,10 @@ public class SmsMessageSender implements MessageSender {
             try {
                 if (LogTag.DEBUG_SEND) {
                     Log.v(TAG, "queueMessage mDests[i]: " + mDests[i] + " mThreadId: " + mThreadId);
+                }
+                // Check to see whether short message count is up to 2000 for cmcc
+                if (MessageUtils.checkIsPhoneMessageFull(mContext)) {
+                    break;
                 }
                 log("updating Database with phoneId = " + mPhoneId);
                 long [] subId = SubscriptionManager.getSubId(mPhoneId);

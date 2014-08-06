@@ -427,6 +427,13 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         mListAdapter.changeCursor(null);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        MessageUtils.removeDialogs();
+    }
+
     private void unbindListeners(final Collection<Long> threadIds) {
         for (int i = 0; i < getListView().getChildCount(); i++) {
             View view = getListView().getChildAt(i);
@@ -548,8 +555,12 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             item.getIcon().setAlpha(mIsSmsEnabled ? 255 : 127);
         }
 
-        if (true/*!getResources().getBoolean(R.bool.config_mailbox_enable)*/) {
+        if (!getResources().getBoolean(R.bool.config_mailbox_enable)) {
             item = menu.findItem(R.id.action_change_to_folder_mode);
+            if (item != null) {
+                item.setVisible(false);
+            }
+            item = menu.findItem(R.id.action_memory_status);
             if (item != null) {
                 item.setVisible(false);
             }
@@ -602,6 +613,9 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                 break;
             case R.id.action_debug_dump:
                 LogTag.dumpInternalTables(this);
+                break;
+            case R.id.action_memory_status:
+                MessageUtils.showMemoryStatusDialog(this);
                 break;
             case R.id.action_cell_broadcasts:
                 Intent cellBroadcastIntent = new Intent(Intent.ACTION_MAIN);

@@ -144,6 +144,8 @@
     <string name="secs" msgid="6886003523109967972">"秒"</string>
     <!-- Dialog box title for display the current mms size  -->
     <string name="title_send_message">发送信息</string>
+
+    <!-- Dialog box title for display the current mms size  -->
   <string-array name="select_dialog_items">
     <item msgid="4840183714016984112">"1 秒"</item>
     <item msgid="3734955613666864447">"2 秒"</item>
@@ -277,7 +279,7 @@
     <string name="sim_full_title" msgid="1809829051697702810">"SIM卡已满"</string>
     <string name="sim_full_body" msgid="6241664980790322925">"删除部分信息以腾出更多空间。"</string>
     <string name="sms_full_title" msgid="6041287140125011854">"短信内存已满"</string>
-    <string name="sms_full_body" msgid="4885861852397651868">"存储空间已满，无法接收短信，请删除部分旧短信。"</string>
+    <string name="sms_full_body" msgid="4885861852397651868">"存储空间已满，无法发送和接收短信，请删除部分旧短信。"</string>
     <string name="mms_too_large">"彩信过大，无法下载。"</string>
     <string name="sms_rejected_title" msgid="8548394922491529811">"短信遭拒"</string>
     <string name="sms_rejected_body" msgid="7813671133968158562">"由于未知原因导致收不到短信。"</string>
@@ -420,6 +422,7 @@
     <!-- toast for send result -->
     <string name="send_failure">发送失败！</string>
     <string name="send_success">发送成功！</string>
+
     <!-- title of mailboxmessagecontent -->
     <string name="message_detail">信息详情</string>
     <string name="select_messages">选择信息</string>
@@ -483,4 +486,13 @@
     <string name="pref_wap_push_title">"自动推送服务开关"</string>
     <string name="pref_title_wap_push_enabled">"数据服务开关"</string>
     <string name="pref_summary_wap_push_enabled">"允许接收服务信息"</string>
+
+    <string name="sim_card">SIM卡</string>
+
+    <!-- String used in MemoryStatusActivity.java -->
+    <string name="memory_status_title">"存储状态"</string>
+    <string name="sms_phone_used">"已用短信:"</string>
+    <string name="sms_phone_capacity">"短信容量:"</string>
+    <string name="mms_phone_used">"已用彩信:"</string>
+    <string name="mms_phone_capacity">"彩信容量:"</string>
 </resources>

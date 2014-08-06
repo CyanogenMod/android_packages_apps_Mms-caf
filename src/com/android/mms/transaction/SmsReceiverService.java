@@ -597,6 +597,11 @@ public class SmsReceiverService extends Service {
 //    private static int count = 0;
 
     private Uri storeMessage(Context context, SmsMessage[] msgs, int error) {
+        // Check to see whether short message count is up to 2000 for cmcc
+        if (MessageUtils.checkIsPhoneMessageFull(this)) {
+            return null;
+        }
+
         SmsMessage sms = msgs[0];
 
         // Store the message in the content provider.

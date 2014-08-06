@@ -574,7 +574,7 @@
     <!-- Device Full Notification dialog title. -->
     <string name="sms_full_title">Text message memory full</string>
     <!-- Device Full Notification dialog text. -->
-    <string name="sms_full_body">An incoming message was rejected due to full memory. Delete some old messages.</string>
+    <string name="sms_full_body">Phone memory is full, can\'t send and receive new messages, please delete some old messages.</string>
     <!-- Disk Storage Full Error Notification dialog text. -->
     <string name="disk_storage_full_error">Error: Storage is full.</string>
 
@@ -880,6 +880,16 @@
     <string name="banner_sms_promo_title_initial">Messaging is not your SMS app</string>
     <string name="banner_sms_promo_title_application"><xliff:g id="appName">%s</xliff:g> is your SMS app</string>
     <string name="banner_sms_promo_message">You can change this in Settings</string>
+
+    <!-- title of mailboxmessagecontent -->
+    <string name="sim_card">SIM card</string>
+
+    <!-- String used in MemoryStatusActivity.java -->
+    <string name="memory_status_title">Memory status</string>
+    <string name="sms_phone_used">Sms Used:</string>
+    <string name="sms_phone_capacity">Sms Capacity:</string>
+    <string name="mms_phone_used">Mms Used:</string>
+    <string name="mms_phone_capacity">Mms Capacity:</string>
 
     <string name="sub">SUB</string>
 

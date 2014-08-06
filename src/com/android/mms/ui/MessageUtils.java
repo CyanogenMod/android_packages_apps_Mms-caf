@@ -22,6 +22,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -65,6 +66,7 @@ import android.telephony.PhoneNumberUtils;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.os.AsyncTask;
 import android.text.format.DateUtils;
 import android.text.format.Time;
 import android.text.style.URLSpan;
@@ -134,10 +136,14 @@ public class MessageUtils {
     public static final String SUBSCRIPTION_KEY = "subscription";
     public static final int MESSAGE_READ = 1;
     public static final int MESSAGE_SEEN = 1;
+
     public static final Uri ICC_URI = Uri.parse("content://sms/icc");
     public static final Uri ICC1_URI = Uri.parse("content://sms/icc1");
     public static final Uri ICC2_URI = Uri.parse("content://sms/icc2");
     private static final int TIMESTAMP_LENGTH = 7;  // See TS 23.040 9.2.3.11
+
+    private static boolean mCanShowDialog;
+
     private static final String TAG = LogTag.TAG;
     private static final String PREFERRED_SIM_ICON_INDEX = "preferred_sim_icon_index";
     private static String sLocalNumber;
@@ -152,8 +158,15 @@ public class MessageUtils {
     public static final String VIEW_VCARD = "VIEW_VCARD_FROM_MMS";
     // add for obtain mms data path
     private static final String MMS_DATA_DATA_DIR = "/data/data";
+    private static final String MMS_DATA_DIR = "/data/phonedata";
+    private static final String MMS_DATABASE_DIR =
+            "/com.android.providers.telephony/databases/mmssms.db";
     // the remaining space , format as MB
     public static final long MIN_AVAILABLE_SPACE_MMS = 2 * 1024 * 1024;
+    private static final long KILOBYTE_SIZE = 1024;
+
+    // add for query message count from iccsms table
+    public static final Uri ICC_SMS_URI = Uri.parse("content://sms/iccsms");
 
     // Cache of both groups of space-separated ids to their full
     // comma-separated display names, as well as individual ids to
@@ -177,8 +190,14 @@ public class MessageUtils {
         '-', '.', ',', '(', ')', ' ', '/', '\\', '*', '#', '+'
     };
 
+    // Dialog item options for number
+    private static final int DIALOG_ITEM_CALL         = 0;
+    private static final int DIALOG_ITEM_SMS          = 1;
+    private static final int DIALOG_ITEM_ADD_CONTACTS = 2;
     private static HashMap numericSugarMap = new HashMap (NUMERIC_CHARS_SUGAR.length);
     public static final String EXTRA_KEY_NEW_MESSAGE_NEED_RELOAD = "reload";
+    //for showing memory status dialog.
+    private static AlertDialog memoryStatusDialog = null;
 
     public static final int ALL_RECIPIENTS_VALID   = 0;
     public static final int ALL_RECIPIENTS_INVALID = -1;
@@ -193,6 +212,10 @@ public class MessageUtils {
     public static final String EXTRA_SMSC = "smsc";
     // add for obtaining all short message count
     public static final Uri MESSAGES_COUNT_URI = Uri.parse("content://mms-sms/messagescount");
+
+    private static final int DEFAULT_MMS_SIZE = 50;
+    private static final int MIN_MMS_SIZE = 3;
+    private static final int DECIMAL_FORMATTOR_GROUPING_SIZE = 3;
 
     static {
         for (int i = 0; i < NUMERIC_CHARS_SUGAR.length; i++) {
@@ -303,7 +326,7 @@ public class MessageUtils {
         // Message size: *** KB
         details.append('\n');
         details.append(res.getString(R.string.message_size_label));
-        details.append(String.valueOf((nInd.getMessageSize() + 1023) / 1024));
+        details.append(String.valueOf((nInd.getMessageSize() + 1023) / KILOBYTE_SIZE));
         details.append(context.getString(R.string.kilobyte));
 
         return details.toString();
@@ -1820,21 +1843,114 @@ public class MessageUtils {
         return false;
     }
 
-    /* check to see whether short message count is up to 2000 */
-    public static void checkIsPhoneMessageFull(Context context) {
-        boolean isPhoneMemoryFull = isPhoneMemoryFull();
-        boolean isPhoneSmsCountFull = false;
+    public static boolean isPhoneSmsCountFull(Context context) {
         int maxSmsMessageCount = context.getResources().getInteger(R.integer.max_sms_message_count);
         if (maxSmsMessageCount != -1) {
             int msgCount = getSmsMessageCount(context);
-            isPhoneSmsCountFull = msgCount >= maxSmsMessageCount;
+            return msgCount >= maxSmsMessageCount;
+        }
+        return false;
+    }
+
+    public static boolean checkIsPhoneMessageFull(Context context) {
+        boolean isFull = isPhoneMemoryFull() || isPhoneSmsCountFull(context);
+        MessagingNotification.updateSmsMessageFullIndicator(context, isFull);
+        return isFull;
+    }
+
+    private static String getMmsDataDir() {
+        File data_file = new File(MMS_DATA_DIR);
+        if (data_file.exists()) {
+            return MMS_DATA_DIR;
+        }
+        return MMS_DATA_DATA_DIR;
+    }
+
+    public static long getMmsUsed(Context mContext) {
+        int mmsCount = 0;
+        int smsCount = 0;
+        long mmsfileSize = 0;
+        Uri MMS_URI = Uri.parse("content://mms");
+        Uri SMS_URI = Uri.parse("content://sms");
+        Cursor cursor = SqliteWrapper.query(mContext, mContext.getContentResolver(), MMS_URI,
+                new String[] {
+                    "m_size"
+                }, null, null, null);
+
+        if (cursor != null) {
+            try {
+                mmsCount = cursor.getCount();
+                if (mmsCount > 0) {
+                    cursor.moveToPosition(-1);
+                    while (cursor.moveToNext()) {
+                        mmsfileSize += (cursor.getInt(0) == 0 ? DEFAULT_MMS_SIZE
+                                * KILOBYTE_SIZE : cursor.getInt(0));
+                    }
+                } else {
+                    return 0;
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        cursor = SqliteWrapper.query(mContext, mContext.getContentResolver(), SMS_URI,
+                new String[] {
+                    "_id"
+                }, null, null, null);
+        if (cursor != null) {
+            try {
+                smsCount = cursor.getCount();
+            } finally {
+                cursor.close();
+            }
         }
 
-        Log.d(TAG, "checkIsPhoneMessageFull : isPhoneMemoryFull = " + isPhoneMemoryFull
-                + "isPhoneSmsCountFull = " + isPhoneSmsCountFull);
+        Log.v(TAG, "mmsUsed =" + mmsfileSize);
+        long mmsMinSize = mmsCount * MIN_MMS_SIZE * KILOBYTE_SIZE;
+        return (mmsfileSize < mmsMinSize ? mmsMinSize : mmsfileSize);
+    }
 
-        MessagingNotification.updateSmsMessageFullIndicator(context,
-                (isPhoneMemoryFull || isPhoneSmsCountFull));
+    public static long getStoreAll() {
+        File path = new File(getMmsDataDir());
+        StatFs stat = new StatFs(path.getPath());
+        long blockSize = stat.getBlockSize();
+        long allBlocks = stat.getBlockCount();
+        return allBlocks * blockSize;
+    }
+
+    public static long getStoreUsed() {
+        return getStoreAll() - getStoreUnused();
+    }
+
+    public static String formatMemorySize(long size) {
+        String suffix = null;
+        String kbStr = null;
+        boolean hasMb = false;
+        DecimalFormat formatter = new DecimalFormat();
+
+        // add KB or MB suffix if size is greater than 1K or 1M
+        if (size >= KILOBYTE_SIZE) {
+            suffix = " KB";
+            size /= KILOBYTE_SIZE;
+            kbStr = formatter.format(size);
+            if (size >= KILOBYTE_SIZE) {
+                suffix = " MB";
+                size /= KILOBYTE_SIZE;
+                hasMb = true;
+            }
+        }
+
+        formatter.setGroupingSize(DECIMAL_FORMATTOR_GROUPING_SIZE);
+        String result = formatter.format(size);
+
+        if (suffix != null) {
+            if (hasMb && kbStr != null) {
+                result = result + suffix + " (" + kbStr + " KB)";
+            } else {
+                result = result + suffix;
+            }
+        }
+        return result;
     }
 
     public static int getSmsMessageCount(Context context) {
@@ -1858,4 +1974,53 @@ public class MessageUtils {
         Log.d(TAG, "getSmsMessageCount : msgCount = " + msgCount);
         return msgCount;
     }
+
+    public static void removeDialogs() {
+        mCanShowDialog = false;
+        if(memoryStatusDialog != null && memoryStatusDialog.isShowing()) {
+            memoryStatusDialog.dismiss();
+            memoryStatusDialog = null;
+        }
+    }
+
+    public static void showMemoryStatusDialog(Context context) {
+       mCanShowDialog = true;
+       new ShowDialog(context).execute();
+    }
+
+    private static class ShowDialog extends AsyncTask<String, Void, StringBuilder> {
+        private Context mContext;
+        public ShowDialog(Context context) {
+            mContext = context;
+        }
+
+        @Override
+        protected StringBuilder doInBackground(String... params) {
+            StringBuilder memoryStatus = new StringBuilder();
+            memoryStatus.append(mContext.getString(R.string.sms_phone_used));
+            memoryStatus.append(" " + getSmsMessageCount(mContext) + "\n");
+            memoryStatus.append(mContext.getString(R.string.sms_phone_capacity));
+            memoryStatus.append(" " + mContext.getResources()
+                    .getInteger(R.integer.max_sms_message_count) + "\n\n");
+            memoryStatus.append(mContext.getString(R.string.mms_phone_used));
+            memoryStatus.append(" " + formatMemorySize(getMmsUsed(mContext)) + "\n");
+            memoryStatus.append(mContext.getString(R.string.mms_phone_capacity));
+            memoryStatus.append(" " + formatMemorySize(getStoreAll()) + "\n");
+            return memoryStatus;
+        }
+
+        @Override
+        protected void onPostExecute(StringBuilder memoryStatus) {
+            if(memoryStatus != null && !memoryStatus.toString().isEmpty() && mCanShowDialog) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle(R.string.memory_status_title);
+                builder.setCancelable(true);
+                builder.setPositiveButton(R.string.yes, null);
+                builder.setMessage(memoryStatus);
+                memoryStatusDialog = builder.create();
+                memoryStatusDialog.show();
+            }
+        }
+    }
+
 }
