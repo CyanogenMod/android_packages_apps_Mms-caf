@@ -429,4 +429,7 @@
     <string name="set_smsc_error">设置短消息中心号码失败</string>
     <string name="set_smsc_success">设置短消息中心号码成功</string>
     <string name="set_smsc_confirm_message">修改短消息中心号码可能导致短信发送失败，确认修改吗？</string>
+    <string name="contact_app_not_found">"找不到联系人应用"</string>
+    <string name="search_bar_hint">"搜索联系人"</string>
+    <string name="select_all">"全选"</string>
 </resources>
