@@ -37,6 +37,10 @@ public class TransactionState {
      * Result code indicates the Transaction failed.
      */
     public static final int FAILED  = 2;
+    /**
+     * Result code indicates the Transaction canceled.
+     */
+    public static final int CANCELED = 3;
 
     private Uri mContentUri;
     private int mState;
@@ -63,7 +67,7 @@ public class TransactionState {
      * @param state The current state of transaction.
      */
     synchronized void setState(int state) {
-        if ((state < INITIALIZED) && (state > FAILED)) {
+        if ((state < INITIALIZED) && (state > CANCELED)) {
             throw new IllegalArgumentException("Bad state: " + state);
         }
         mState = state;

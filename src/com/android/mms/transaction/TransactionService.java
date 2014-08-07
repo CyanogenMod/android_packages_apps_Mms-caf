@@ -139,6 +139,8 @@ public class TransactionService extends Service implements Observer {
      */
     public static final String STATE_URI = "uri";
 
+    public static final String CANCEL_URI = "canceluri";
+
     private static final int EVENT_TRANSACTION_REQUEST = 1;
     private static final int EVENT_CONTINUE_MMS_CONNECTIVITY = 3;
     private static final int EVENT_HANDLE_NEXT_PENDING_TRANSACTION = 4;
@@ -366,7 +368,8 @@ public class TransactionService extends Service implements Observer {
         Bundle extras = intent.getExtras();
         String action = intent.getAction();
         if ((ACTION_ONALARM.equals(action) || ACTION_ENABLE_AUTO_RETRIEVE.equals(action) ||
-                    (extras == null)) || ((extras != null) && !extras.containsKey("uri"))) {
+                (extras == null)) || ((extras != null) && !extras.containsKey("uri")
+                && !extras.containsKey(CANCEL_URI))) {
 
             //We hit here when either the Retrymanager triggered us or there is
             //send operation in which case uri is not set. For rest of the
@@ -509,6 +512,15 @@ public class TransactionService extends Service implements Observer {
                 }
                 RetryScheduler.setRetryAlarm(this);
                 stopSelfIfIdle(serviceId);
+            }
+        } else if ((extras != null) && extras.containsKey(CANCEL_URI)) {
+            String uriStr = intent.getStringExtra(CANCEL_URI);
+            Uri mCancelUri = Uri.parse(uriStr);
+            for (Transaction transaction : mProcessing) {
+                transaction.cancelTransaction(mCancelUri);
+            }
+            for (Transaction transaction : mPending) {
+                transaction.cancelTransaction(mCancelUri);
             }
         } else {
             if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
@@ -752,6 +764,7 @@ public class TransactionService extends Service implements Observer {
                             }
                         }
                     }
+                case TransactionState.CANCELED:
                     if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
                         Log.v(TAG, "Transaction failed: " + serviceId);
                     }

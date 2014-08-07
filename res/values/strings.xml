@@ -99,6 +99,8 @@
     <!-- Message displayed in place of the "download message" button once it has been pressed,
          indicating that the download is in progress -->
     <string name="downloading">Downloading</string>
+    <string name="cancel_downloading">Cancel</string>
+    <string name="confirm_cancel_downloading">Do you want to cancel downloading mms?</string>
     <!-- Formatting for subject displayed inline, prepended to MMS message text -->
     <string name="inline_subject">"&lt;Subject: <xliff:g id="subject">%s</xliff:g>&gt;"</string>
     <!-- Text to display when the actual text is inaccessible due to DRM protection -->
