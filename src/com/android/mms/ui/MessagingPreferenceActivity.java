@@ -21,6 +21,7 @@ import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -31,28 +32,42 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.os.Message;
+import android.os.Handler;
+import android.os.Bundle;
+import android.os.Looper;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
+import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.RingtonePreference;
 import android.provider.SearchRecentSuggestions;
+import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.Toast;
+import android.util.Log;
 
 import com.android.internal.telephony.IccCardConstants;
 import com.android.internal.telephony.TelephonyIntents;
+import com.android.internal.telephony.PhoneConstants;
 
 import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.transaction.TransactionService;
 import com.android.mms.util.Recycler;
+import java.util.ArrayList;
+
 
 /**
  * With this activity, users can set preferences for MMS and SMS and
@@ -60,6 +75,7 @@ import com.android.mms.util.Recycler;
  */
 public class MessagingPreferenceActivity extends PreferenceActivity
             implements OnPreferenceChangeListener {
+    private static final String TAG = "MessagingPreferenceActivity";
     // Symbolic names for the keys used for preference lookup
     public static final String MMS_DELIVERY_REPORT_MODE = "pref_key_mms_delivery_reports";
     public static final String EXPIRY_TIME              = "pref_key_mms_expiry";
@@ -86,6 +102,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private PreferenceCategory mSmsPrefCategory;
     private PreferenceCategory mMmsPrefCategory;
     private PreferenceCategory mNotificationPrefCategory;
+    private PreferenceCategory mSmscPrefCate;
 
     private Preference mSmsLimitPref;
     private Preference mSmsDeliveryReportPref;
@@ -104,11 +121,19 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private Preference mSmsTemplate;
     private CheckBoxPreference mSmsSignaturePref;
     private EditTextPreference mSmsSignatureEditPref;
+    private ArrayList<Preference> mSmscPrefList = new ArrayList<Preference>();
     private static final int CONFIRM_CLEAR_SEARCH_HISTORY_DIALOG = 3;
 
     // Whether or not we are currently enabled for SMS. This field is updated in onResume to make
     // sure we notice if the user has changed the default SMS app.
     private boolean mIsSmsEnabled;
+    private static final String SMSC_DIALOG_TITLE = "title";
+    private static final String SMSC_DIALOG_NUMBER = "smsc";
+    private static final String SMSC_DIALOG_SUB = "sub";
+    private static final int EVENT_SET_SMSC_DONE = 0;
+    private static final int EVENT_GET_SMSC_DONE = 1;
+    private static final String EXTRA_EXCEPTION = "exception";
+    private static SmscHandler mHandler = null;
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -123,6 +148,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                         smsCategory.removePreference(mManageSimPref);
                     }
                 }
+            } else if (Intent.ACTION_AIRPLANE_MODE_CHANGED.equals(action)) {
+                    updateSMSCPref();
             }
         }
     };
@@ -131,6 +158,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
+        mHandler = new SmscHandler(this);
         loadPrefs();
 
         ActionBar actionBar = getActionBar();
@@ -153,6 +181,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         updateSignatureStatus();
         registerListeners();
         updateSmsEnabledState();
+        updateSMSCPref();
     }
 
     private void updateSmsEnabledState() {
@@ -218,6 +247,9 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private void restoreDefaultPreferences() {
         PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
         setPreferenceScreen(null);
+        // Reset the SMSC preference.
+        mSmscPrefList.clear();
+        mSmscPrefCate.removeAll();
         loadPrefs();
         updateSmsEnabledState();
 
@@ -232,6 +264,10 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
     private void setMessagePreferences() {
         updateSignatureStatus();
+
+        mSmscPrefCate = (PreferenceCategory) findPreference("pref_key_smsc");
+        showSmscPref();
+
         if (!MmsApp.getApplication().getTelephonyManager().hasIccCard()) {
             // No SIM card, remove the SIM-related prefs
             mSmsPrefCategory.removePreference(mManageSimPref);
@@ -295,6 +331,44 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         Ringtone tone = soundUri != null ? RingtoneManager.getRingtone(this, soundUri) : null;
         mRingtonePref.setSummary(tone != null ? tone.getTitle(this)
                 : getResources().getString(R.string.silent_ringtone));
+    }
+
+    private void showSmscPref() {
+        int count = TelephonyManager.getDefault().getPhoneCount();
+        for (int i = 0; i < count; i++) {
+            final Preference pref = new Preference(this);
+            pref.setKey(String.valueOf(i));
+            pref.setTitle(getSMSCDialogTitle(count, i));
+
+            pref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    MyEditDialogFragment dialog = MyEditDialogFragment.newInstance(
+                            MessagingPreferenceActivity.this,
+                            preference.getTitle(),
+                            preference.getSummary(),
+                            Integer.valueOf(preference.getKey()));
+                    dialog.show(getFragmentManager(), "dialog");
+                    return true;
+                }
+            });
+
+            mSmscPrefCate.addPreference(pref);
+            mSmscPrefList.add(pref);
+        }
+        updateSMSCPref();
+    }
+
+    private boolean isAirPlaneModeOn() {
+        return Settings.System.getInt(getContentResolver(),
+                Settings.System.AIRPLANE_MODE_ON, 0) != 0;
+    }
+
+    private String getSMSCDialogTitle(int count, int index) {
+        String title = TelephonyManager.getDefault().isMultiSimEnabled()
+                ? getString(R.string.pref_more_smcs, index + 1)
+                : getString(R.string.pref_one_smcs);
+        return title;
     }
 
     private void setEnabledNotificationsPref() {
@@ -454,6 +528,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mRingtonePref.setOnPreferenceChangeListener(this);
         final IntentFilter intentFilter =
                 new IntentFilter(TelephonyIntents.ACTION_SIM_STATE_CHANGED);
+        intentFilter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
         registerReceiver(mReceiver, intentFilter);
     }
 
@@ -464,6 +539,200 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             result = true;
         }
         return result;
+    }
+
+
+    private void showToast(int id) {
+        Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Set the SMSC preference enable or disable.
+     *
+     * @param id  the subscription of the slot, if the value is ALL_SUB, update all the SMSC
+     *            preference
+     * @param airplaneModeIsOn  the state of the airplane mode
+     */
+    private void setSMSCPrefState(int id, boolean prefEnabled) {
+        // We need update the preference summary.
+        if (prefEnabled) {
+            Log.d(TAG, "get SMSC from sub= " + id);
+            final Message callback = mHandler.obtainMessage(EVENT_GET_SMSC_DONE);
+            Bundle userParams = new Bundle();
+            userParams.putInt(PhoneConstants.SUBSCRIPTION_KEY, id);
+            callback.obj = userParams;
+            MessageUtils.getSmscFromSub(this, id, callback);
+        } else {
+            mSmscPrefList.get(id).setSummary(null);
+        }
+        mSmscPrefList.get(id).setEnabled(prefEnabled);
+    }
+
+    private void updateSMSCPref() {
+        if (mSmscPrefList == null || mSmscPrefList.size() == 0) {
+            return;
+        }
+        int count = TelephonyManager.getDefault().getPhoneCount();
+        for (int i = 0; i < count; i++) {
+            setSMSCPrefState(i, !isAirPlaneModeOn() &&
+                    (TelephonyManager.getDefault().isMultiSimEnabled()
+                    ? TelephonyManager.getDefault().hasIccCard(i)
+                    : TelephonyManager.getDefault().hasIccCard()));
+        }
+    }
+
+    private void updateSmscFromBundle(Bundle bundle) {
+        if (bundle != null) {
+            int sub = bundle.getInt(PhoneConstants.SUBSCRIPTION_KEY, -1);
+            if (sub != -1) {
+                String summary = bundle.getString(MessageUtils.EXTRA_SMSC, null);
+                Log.d(TAG, "Update SMSC: sub= " + sub + " SMSC= " + summary);
+                mSmscPrefList.get(sub).setSummary(summary);
+            }
+        }
+    }
+
+    private static final class SmscHandler extends Handler {
+        MessagingPreferenceActivity mOwner;
+        public SmscHandler(MessagingPreferenceActivity owner) {
+            super(Looper.getMainLooper());
+            mOwner = owner;
+        }
+        @Override
+        public void handleMessage(Message msg) {
+            Bundle bundle = (Bundle) msg.obj;
+            if (bundle == null) {
+                return;
+            }
+            Throwable exception = (Throwable)bundle.getSerializable(EXTRA_EXCEPTION);
+            if (exception != null) {
+                Log.d(TAG, "Error: " + exception);
+                mOwner.showToast(R.string.set_smsc_error);
+                return;
+            }
+
+            Bundle userParams = (Bundle)bundle.getParcelable("userobj");
+            if (userParams == null) {
+                Log.d(TAG, "userParams = null");
+                return;
+            }
+            switch (msg.what) {
+                case EVENT_SET_SMSC_DONE:
+                    Log.d(TAG, "Set SMSC successfully");
+                    mOwner.showToast(R.string.set_smsc_success);
+                    mOwner.updateSmscFromBundle(userParams);
+                    break;
+                case EVENT_GET_SMSC_DONE:
+                    Log.d(TAG, "Get SMSC successfully");
+                    int sub = userParams.getInt(PhoneConstants.SUBSCRIPTION_KEY, -1);
+                    if (sub != -1) {
+                        bundle.putInt(PhoneConstants.SUBSCRIPTION_KEY, sub);
+                        mOwner.updateSmscFromBundle(bundle);
+                    }
+                    break;
+            }
+        }
+    }
+
+    public static class MyEditDialogFragment extends DialogFragment {
+        private MessagingPreferenceActivity mActivity;
+
+        public static MyEditDialogFragment newInstance(MessagingPreferenceActivity activity,
+                CharSequence title, CharSequence smsc, int sub) {
+            MyEditDialogFragment dialog = new MyEditDialogFragment();
+            dialog.mActivity = activity;
+
+            Bundle args = new Bundle();
+            args.putCharSequence(SMSC_DIALOG_TITLE, title);
+            args.putCharSequence(SMSC_DIALOG_NUMBER, smsc);
+            args.putInt(SMSC_DIALOG_SUB, sub);
+            dialog.setArguments(args);
+            return dialog;
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final int sub = getArguments().getInt(SMSC_DIALOG_SUB);
+            if (null == mActivity) {
+                mActivity = (MessagingPreferenceActivity) getActivity();
+                dismiss();
+            }
+            final EditText edit = new EditText(mActivity);
+            edit.setPadding(15, 15, 15, 15);
+            edit.setText(getArguments().getCharSequence(SMSC_DIALOG_NUMBER));
+
+            Dialog alert = new AlertDialog.Builder(mActivity)
+                    .setTitle(getArguments().getCharSequence(SMSC_DIALOG_TITLE))
+                    .setView(edit)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            MyAlertDialogFragment newFragment = MyAlertDialogFragment.newInstance(
+                                    mActivity, sub, edit.getText().toString());
+                            newFragment.show(getFragmentManager(), "dialog");
+                            dismiss();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .setCancelable(true)
+                    .create();
+            alert.getWindow().setSoftInputMode(
+                    WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+            return alert;
+        }
+    }
+
+    /**
+     * All subclasses of Fragment must include a public empty constructor. The
+     * framework will often re-instantiate a fragment class when needed, in
+     * particular during state restore, and needs to be able to find this
+     * constructor to instantiate it. If the empty constructor is not available,
+     * a runtime exception will occur in some cases during state restore.
+     */
+    public static class MyAlertDialogFragment extends DialogFragment {
+        private MessagingPreferenceActivity mActivity;
+
+        public static MyAlertDialogFragment newInstance(MessagingPreferenceActivity activity,
+                                                        int sub, String smsc) {
+            MyAlertDialogFragment dialog = new MyAlertDialogFragment();
+            dialog.mActivity = activity;
+
+            Bundle args = new Bundle();
+            args.putInt(SMSC_DIALOG_SUB, sub);
+            args.putString(SMSC_DIALOG_NUMBER, smsc);
+            dialog.setArguments(args);
+            return dialog;
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final int sub = getArguments().getInt(SMSC_DIALOG_SUB);
+            final String displayedSMSC = getArguments().getString(SMSC_DIALOG_NUMBER);
+
+            // When framework re-instantiate this fragment by public empty
+            // constructor and call onCreateDialog(Bundle savedInstanceState) ,
+            // we should make sure mActivity not null.
+            if (null == mActivity) {
+                mActivity = (MessagingPreferenceActivity) getActivity();
+            }
+
+            return new AlertDialog.Builder(mActivity)
+                    .setIcon(android.R.drawable.ic_dialog_alert).setMessage(
+                            R.string.set_smsc_confirm_message)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                           Log.d(TAG, "set SMSC from sub= " +sub + " SMSC= " + displayedSMSC);
+                           final Message callback = mHandler.obtainMessage(EVENT_SET_SMSC_DONE);
+                           Bundle userParams = new Bundle();
+                           userParams.putInt(PhoneConstants.SUBSCRIPTION_KEY, sub);
+                           userParams.putString(MessageUtils.EXTRA_SMSC, displayedSMSC);
+                           callback.obj = userParams;
+                           MessageUtils.setSmscForSub(mActivity, sub, displayedSMSC, callback);
+                        }
+                    })
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .setCancelable(true)
+                    .create();
+        }
     }
 
     // For the group mms feature to be enabled, the following must be true:

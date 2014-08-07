@@ -422,4 +422,11 @@
     <string name="copy_to_sim_fail">"信息保存失败"</string>
     <string name="copy_to_phone_success">"信息已保存"</string>
     <string name="copy_to_phone_fail">"信息保存失败"</string>
+    <!-- SMSC -->
+    <string name="pref_smsc_title">短消息中心设置</string>
+    <string name="pref_one_smcs">"设置短消息中心号码"</string>
+    <string name="pref_more_smcs">"设置SIM卡"<xliff:g id="slot_number">%d</xliff:g>"的短消息中心号码"</string>
+    <string name="set_smsc_error">设置短消息中心号码失败</string>
+    <string name="set_smsc_success">设置短消息中心号码成功</string>
+    <string name="set_smsc_confirm_message">修改短消息中心号码可能导致短信发送失败，确认修改吗？</string>
 </resources>

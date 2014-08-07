@@ -125,4 +125,7 @@
                         android:dependency="pref_key_enable_notifications"
                         android:defaultValue="false" />
   </PreferenceCategory>
+  <PreferenceCategory android:title="@string/pref_smsc_title"
+                      android:key="pref_key_smsc" >
+  </PreferenceCategory>
 </PreferenceScreen>

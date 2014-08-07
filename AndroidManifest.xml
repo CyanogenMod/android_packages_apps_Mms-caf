@@ -48,6 +48,7 @@
                 android:label="@string/label_mms_send_outbox_msg"
                 android:description="@string/desc_mms_send_outbox_msg"/>
     <uses-permission android:name="android.permission.MMS_SEND_OUTBOX_MSG"/>
+    <uses-permission android:name="com.qualcomm.permission.USE_PHONE_SERVICE"/>
     <application android:name="MmsApp"
             android:label="@string/app_label"
             android:icon="@mipmap/ic_launcher_smsmms"

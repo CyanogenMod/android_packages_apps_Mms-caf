@@ -821,6 +821,14 @@
     <string name="pref_summary_disable_signature">SMS signature disabled</string>
     <string name="pref_title_edit_signature">Edit SMS signature</string>
     <string name="signature_full_toast">Signature has reached to maximum length.</string>
+    <!-- SMSC -->
+    <string name="pref_smsc_title">SMSC Setings</string>
+    <string name="pref_one_smcs">"Set the smsc number"</string>
+    <string name="pref_more_smcs">"Set the SIM"<xliff:g id="slot_number">%d</xliff:g>"'s smsc number"</string>
+    <string name="set_smsc_error">Set the smsc number error</string>
+    <string name="set_smsc_success">Set the smsc number success</string>
+    <string name="set_smsc_confirm_message">Change the smsc may lead to the SMS sending failure, to confirm the change?</string>
+
     <string name="storage_warning_title">"Your phone's storage is full"</string>
     <string name="storage_warning_content">"You won't receive new SMS/MMS messages"</string>
     <!-- Copy message to sim -->

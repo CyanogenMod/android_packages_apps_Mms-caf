@@ -37,6 +37,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.ContentResolver;
 import android.content.res.Resources;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -47,6 +48,9 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Bundle;
+import android.os.Message;
+import android.os.Messenger;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -66,12 +70,13 @@ import android.widget.Toast;
 
 import com.android.internal.telephony.EncodeException;
 import com.android.internal.telephony.GsmAlphabet;
-import com.android.internal.telephony.uicc.IccUtils;
+import com.android.internal.telephony.PhoneConstants;
 import com.android.internal.telephony.SmsHeader;
 import com.android.internal.telephony.cdma.sms.BearerData;
 import com.android.internal.telephony.cdma.sms.CdmaSmsAddress;
 import com.android.internal.telephony.cdma.sms.SmsEnvelope;
 import com.android.internal.telephony.cdma.sms.UserData;
+import com.android.internal.telephony.uicc.IccUtils;
 
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
@@ -162,6 +167,13 @@ public class MessageUtils {
     public static final int ALL_RECIPIENTS_INVALID = -1;
     // Indentify RECIPIENT editText is empty
     public static final int ALL_RECIPIENTS_EMPTY   = -2;
+    // Add phone feature uri
+    private static final Uri URI_PHONE_FEATURE = Uri
+            .parse("content://com.qualcomm.qti.phonefeature.FEATURE_PROVIDER");
+    // Add keys for supporting SMSC
+    private static final String METHOD_GET_SMSC = "get_smsc";
+    private static final String METHOD_SET_SMSC = "set_smsc";
+    public static final String EXTRA_SMSC = "smsc";
 
     static {
         for (int i = 0; i < NUMERIC_CHARS_SUGAR.length; i++) {
@@ -1256,6 +1268,41 @@ public class MessageUtils {
      */
     public static boolean hasIccCard() {
         return TelephonyManager.getDefault().hasIccCard();
+    }
+
+    public static boolean isPhoneFeatureEnabled(Context context) {
+        return context.getContentResolver().acquireProvider(URI_PHONE_FEATURE) != null;
+    }
+
+    private static Bundle callBinder(Context context, String method, Bundle extras) {
+        if (!isPhoneFeatureEnabled(context)) {
+            return null;
+        }
+        return context.getContentResolver().call(URI_PHONE_FEATURE, method, null, extras);
+    }
+
+    public static void setSmscForSub(Context context, int sub, String smsc, Message callback) {
+        if (callback != null) {
+            callback.replyTo = new Messenger(callback.getTarget());
+        }
+        log("Set: sub = " + sub + " smsc= " + smsc);
+        Bundle params = new Bundle();
+        params.putInt(PhoneConstants.SUBSCRIPTION_KEY, sub);
+        params.putString(EXTRA_SMSC, smsc);
+        params.putParcelable("callback", callback);
+        callBinder(context, METHOD_SET_SMSC, params);
+    }
+
+    public static void getSmscFromSub(Context context, int sub, Message callback) {
+        if (callback == null) {
+            return;
+        }
+        log("Get: sub = " + sub);
+        callback.replyTo = new Messenger(callback.getTarget());
+        Bundle params = new Bundle();
+        params.putInt(PhoneConstants.SUBSCRIPTION_KEY, sub);
+        params.putParcelable("callback", callback);
+        callBinder(context, METHOD_GET_SMSC, params);
     }
 
     private static void log(String msg) {
