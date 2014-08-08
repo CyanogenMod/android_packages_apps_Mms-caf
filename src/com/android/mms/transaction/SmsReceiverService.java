@@ -1,4 +1,6 @@
 /*
+ * Copyright (C) 2010-2014, The Linux Foundation. All rights reserved.
+ * Not a Contribution.
  * Copyright (C) 2007-2008 Esmertec AG.
  * Copyright (C) 2007-2008 The Android Open Source Project
  *
@@ -47,10 +49,12 @@ import android.provider.Telephony.Sms.Outbox;
 import android.telephony.ServiceState;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
+import android.telephony.SubscriptionManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.internal.telephony.PhoneConstants;
 import com.android.internal.telephony.TelephonyIntents;
 import com.android.mms.LogTag;
 import com.android.mms.MmsConfig;
@@ -93,6 +97,7 @@ public class SmsReceiverService extends Service {
         Sms.ADDRESS,    //2
         Sms.BODY,       //3
         Sms.STATUS,     //4
+        Sms.PHONE_ID,   //5
 
     };
 
@@ -104,6 +109,7 @@ public class SmsReceiverService extends Service {
     private static final int SEND_COLUMN_ADDRESS    = 2;
     private static final int SEND_COLUMN_BODY       = 3;
     private static final int SEND_COLUMN_STATUS     = 4;
+    private static final int SEND_COLUMN_PHONE_ID   = 5;
 
 
     @Override
@@ -224,7 +230,13 @@ public class SmsReceiverService extends Service {
     private void handleServiceStateChanged(Intent intent) {
         // If service just returned, start sending out the queued messages
         ServiceState serviceState = ServiceState.newFromBundle(intent.getExtras());
-        if (serviceState.getState() == ServiceState.STATE_IN_SERVICE) {
+        long subId = intent.getIntExtra(PhoneConstants.SUBSCRIPTION_KEY, 0);
+        long prefSubId = SubscriptionManager.getDefaultSmsSubId();
+        // if service state is IN_SERVICE & current subscription is same as
+        // preferred SMS subscription.i.e.as set under SIM Settings, then
+        // sendFirstQueuedMessage.
+        if (serviceState.getState() == ServiceState.STATE_IN_SERVICE &&
+            subId == prefSubId) {
             sendFirstQueuedMessage();
         }
     }
@@ -259,11 +271,12 @@ public class SmsReceiverService extends Service {
                     int status = c.getInt(SEND_COLUMN_STATUS);
 
                     int msgId = c.getInt(SEND_COLUMN_ID);
+                    int phoneId = c.getInt(SEND_COLUMN_PHONE_ID);
                     Uri msgUri = ContentUris.withAppendedId(Sms.CONTENT_URI, msgId);
 
                     SmsMessageSender sender = new SmsSingleRecipientSender(this,
                             address, msgText, threadId, status == Sms.STATUS_PENDING,
-                            msgUri);
+                            msgUri, phoneId);
 
                     if (LogTag.DEBUG_SEND ||
                             LogTag.VERBOSE ||
@@ -509,12 +522,19 @@ public class SmsReceiverService extends Service {
         ContentResolver resolver = context.getContentResolver();
         String originatingAddress = sms.getOriginatingAddress();
         int protocolIdentifier = sms.getProtocolIdentifier();
-        String selection =
-                Sms.ADDRESS + " = ? AND " +
-                Sms.PROTOCOL + " = ?";
-        String[] selectionArgs = new String[] {
-            originatingAddress, Integer.toString(protocolIdentifier)
-        };
+        String selection;
+        String[] selectionArgs;
+
+        if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
+            Log.v(TAG, " SmsReceiverService: replaceMessage:");
+        }
+        selection = Sms.ADDRESS + " = ? AND " +
+                    Sms.PROTOCOL + " = ? AND " +
+                    Sms.PHONE_ID +  " = ? ";
+        selectionArgs = new String[] {
+                originatingAddress, Integer.toString(protocolIdentifier),
+                Integer.toString(SubscriptionManager.getPhoneId(sms.getSubId()))
+            };
 
         Cursor cursor = SqliteWrapper.query(context, resolver, Inbox.CONTENT_URI,
                             REPLACE_PROJECTION, selection, selectionArgs, null);
@@ -550,6 +570,8 @@ public class SmsReceiverService extends Service {
         // Store the message in the content provider.
         ContentValues values = extractContentValues(sms);
         values.put(Sms.ERROR_CODE, error);
+        values.put(Sms.PHONE_ID, SubscriptionManager.getPhoneId(sms.getSubId()));
+
         int pduCount = msgs.length;
 
         if (pduCount == 1) {

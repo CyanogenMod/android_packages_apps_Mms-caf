@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2012-2014 The Linux Foundation. All rights reserved.
+ * Not a Contribution.
  * Copyright (C) 2007-2008 Esmertec AG.
  * Copyright (C) 2007-2008 The Android Open Source Project
  *
@@ -36,6 +38,7 @@ import android.provider.Telephony.Mms;
 import android.provider.Telephony.Mms.Inbox;
 import android.util.Log;
 
+import com.android.internal.telephony.PhoneConstants;
 import com.android.mms.LogTag;
 import com.android.mms.MmsConfig;
 import com.android.mms.ui.MessagingPreferenceActivity;
@@ -64,12 +67,53 @@ public class PushReceiver extends BroadcastReceiver {
             mContext = context;
         }
 
+
+    int hexCharToInt(char c) {
+        if (c >= '0' && c <= '9') return (c - '0');
+        if (c >= 'A' && c <= 'F') return (c - 'A' + 10);
+        if (c >= 'a' && c <= 'f') return (c - 'a' + 10);
+
+        throw new RuntimeException ("invalid hex char '" + c + "'");
+    }
+
+
+    /**
+     * Converts a byte array into a String of hexadecimal characters.
+     *
+     * @param bytes an array of bytes
+     *
+     * @return hex string representation of bytes array
+     */
+    public String bytesToHexString(byte[] bytes) {
+        if (bytes == null) return null;
+
+        StringBuilder ret = new StringBuilder(2*bytes.length);
+
+        for (int i = 0 ; i < bytes.length ; i++) {
+            int b;
+
+            b = 0x0f & (bytes[i] >> 4);
+
+            ret.append("0123456789abcdef".charAt(b));
+
+            b = 0x0f & bytes[i];
+
+            ret.append("0123456789abcdef".charAt(b));
+        }
+
+        return ret.toString();
+    }
+
+
         @Override
         protected Void doInBackground(Intent... intents) {
             Intent intent = intents[0];
 
             // Get raw PDU push-data from the message and parse it
             byte[] pushData = intent.getByteArrayExtra("data");
+            if (DEBUG) {
+                Log.d(TAG, "PushReceive: pushData= " + bytesToHexString(pushData));
+            }
             PduParser parser = new PduParser(pushData);
             GenericPdu pdu = parser.parse();
 
@@ -120,16 +164,24 @@ public class PushReceiver extends BroadcastReceiver {
                         }
 
                         if (!isDuplicateNotification(mContext, nInd)) {
+                            int phoneId = intent.getIntExtra(PhoneConstants.SLOT_KEY, 0);
+                            long subId = intent.getLongExtra(PhoneConstants.SUBSCRIPTION_KEY, 0);
+                            //Phone ID will be updated in data base
+                            Log.d(TAG, "phoneId : " + phoneId + " subId : " + subId);
+                            ContentValues values = new ContentValues(1);
+                            values.put(Mms.PHONE_ID, phoneId);
                             Uri uri = p.persist(pdu, Inbox.CONTENT_URI,
                                     true,
                                     MessagingPreferenceActivity.getIsGroupMmsEnabled(mContext),
                                     null);
 
+                            SqliteWrapper.update(mContext, cr, uri, values, null, null);
                             // Start service to finish the notification transaction.
                             Intent svc = new Intent(mContext, TransactionService.class);
                             svc.putExtra(TransactionBundle.URI, uri.toString());
                             svc.putExtra(TransactionBundle.TRANSACTION_TYPE,
                                     Transaction.NOTIFICATION_TRANSACTION);
+                            svc.putExtra(Mms.PHONE_ID, phoneId); //destination phone id
                             mContext.startService(svc);
                         } else if (LOCAL_LOGV) {
                             Log.v(TAG, "Skip downloading duplicate message: "

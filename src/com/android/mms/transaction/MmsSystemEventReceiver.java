@@ -86,10 +86,8 @@ public class MmsSystemEventReceiver extends BroadcastReceiver {
                            ", isConnected = " + isConnected);
             }
 
-            // Wake up transact service when MMS data is available and isn't connected.
-            if (available && !isConnected) {
-                wakeUpService(context);
-            }
+            // No need to start transaction service now as Connectivity Manager will report
+            // Data connectivity using call back mechanism this file is deprecated.
         } else if (action.equals(Intent.ACTION_BOOT_COMPLETED)) {
             // We should check whether there are unread incoming
             // messages in the Inbox and then update the notification icon.

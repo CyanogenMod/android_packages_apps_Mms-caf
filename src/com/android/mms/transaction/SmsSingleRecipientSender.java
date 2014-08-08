@@ -10,6 +10,7 @@ import android.provider.Telephony.Mms;
 import android.provider.Telephony.Sms;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.SmsManager;
+import android.telephony.SubscriptionManager;
 import android.util.Log;
 
 import com.android.mms.LogTag;
@@ -26,8 +27,8 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
     private static final String TAG = LogTag.TAG;
 
     public SmsSingleRecipientSender(Context context, String dest, String msgText, long threadId,
-            boolean requestDeliveryReport, Uri uri) {
-        super(context, null, msgText, threadId);
+            boolean requestDeliveryReport, Uri uri, int phoneId) {
+        super(context, null, msgText, threadId, phoneId);
         mRequestDeliveryReport = requestDeliveryReport;
         mDest = dest;
         mUri = uri;
@@ -113,11 +114,14 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
             sentIntents.add(PendingIntent.getBroadcast(mContext, requestCode, intent, 0));
         }
         try {
-            smsManager.sendMultipartTextMessage(mDest, mServiceCenter, messages, sentIntents, deliveryIntents);
+            long [] subId = SubscriptionManager.getSubId(mPhoneId);
+            Log.e(TAG, "send SMS phone Id = " + mPhoneId + " subId : = " + subId[0]);
+            smsManager.sendMultipartTextMessage(subId[0], mDest, mServiceCenter, messages,
+                    sentIntents, deliveryIntents);
         } catch (Exception ex) {
             Log.e(TAG, "SmsMessageSender.sendMessage: caught", ex);
             throw new MmsException("SmsMessageSender.sendMessage: caught " + ex +
-                    " from SmsManager.sendTextMessage()");
+                    " from SmsManager.sendMultipartTextMessage()");
         }
         if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE) || LogTag.DEBUG_SEND) {
             log("sendMessage: address=" + mDest + ", threadId=" + mThreadId +

@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2012-2014 The Linux Foundation. All rights reserved.
+ * Not a Contribution.
  * Copyright (C) 2007-2008 Esmertec AG.
  * Copyright (C) 2007-2008 The Android Open Source Project
  *
@@ -18,8 +20,11 @@
 package com.android.mms.transaction;
 
 import java.io.IOException;
+import java.lang.Long;
 import java.util.ArrayList;
 
+import android.app.NotificationManager;
+import android.app.Notification;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ContentUris;
@@ -29,19 +34,28 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SqliteWrapper;
+import android.database.DatabaseUtils;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
+import android.os.SystemProperties;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
+import android.net.LinkProperties;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.MmsSms;
 import android.provider.Telephony.Mms.Sent;
 import android.provider.Telephony.MmsSms.PendingMessages;
+import android.telephony.SubscriptionManager;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -200,6 +214,28 @@ public class TransactionService extends Service implements Observer {
         return Service.START_NOT_STICKY;
     }
 
+    private int getSubIdFromDb(Uri uri) {
+        int phoneId = 0;
+        Cursor c = getApplicationContext().getContentResolver().query(uri,
+                null, null, null, null);
+        Log.d(TAG, "Cursor= " + DatabaseUtils.dumpCursorToString(c));
+        if (c != null) {
+            try {
+                if (c.moveToFirst()) {
+                    phoneId = c.getInt(c.getColumnIndex(Mms.PHONE_ID));
+                    Log.d(TAG, "phoneId in db = " + phoneId );
+                    c.close();
+                    c = null;
+                }
+            } finally {
+                if (c != null) {
+                    c.close();
+                }
+            }
+        }
+        return phoneId;
+    }
+
     public void onNewIntent(Intent intent, int serviceId) {
         mConnMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (mConnMgr == null || !mConnMgr.getMobileDataEnabled()
@@ -215,12 +251,19 @@ public class TransactionService extends Service implements Observer {
                     " intent=" + intent);
         }
 
+        Bundle extras = intent.getExtras();
         String action = intent.getAction();
-        if (ACTION_ONALARM.equals(action) || ACTION_ENABLE_AUTO_RETRIEVE.equals(action) ||
-                (intent.getExtras() == null)) {
+        if ((ACTION_ONALARM.equals(action) || ACTION_ENABLE_AUTO_RETRIEVE.equals(action) ||
+                    (extras == null)) || ((extras != null) && !extras.containsKey("uri"))) {
+
+            //We hit here when either the Retrymanager triggered us or there is
+            //send operation in which case uri is not set. For rest of the
+            //cases(MT MMS) we hit "else" case.
+
             // Scan database to find all pending operations.
             Cursor cursor = PduPersister.getPduPersister(this).getPendingMessages(
                     System.currentTimeMillis());
+            Log.d(TAG, "Cursor= " + DatabaseUtils.dumpCursorToString(cursor));
             if (cursor != null) {
                 try {
                     int count = cursor.getCount();
@@ -303,12 +346,19 @@ public class TransactionService extends Service implements Observer {
                                 Uri uri = ContentUris.withAppendedId(
                                         Mms.CONTENT_URI,
                                         cursor.getLong(columnIndexOfMsgId));
-                                TransactionBundle args = new TransactionBundle(
-                                        transactionType, uri.toString());
+
+                                int destPhoneId = getSubIdFromDb(uri);
+                                long [] subId = SubscriptionManager.getSubId(destPhoneId);
+                                Log.d(TAG, "Destination Phone Id = " + destPhoneId +
+                                        "destination Sub Id = " + subId[0]);
+
+                                TransactionBundle args = new TransactionBundle(transactionType,
+                                        uri.toString(), subId[0]);
                                 // FIXME: We use the same startId for all MMs.
                                 if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
                                     Log.v(TAG, "onNewIntent: launchTransaction uri=" + uri);
                                 }
+                                // FIXME: We use the same serviceId for all MMs.
                                 launchTransaction(serviceId, args, false);
                                 break;
                         }
@@ -327,8 +377,19 @@ public class TransactionService extends Service implements Observer {
             if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
                 Log.v(TAG, "onNewIntent: launch transaction...");
             }
+
+            String uriStr = intent.getStringExtra("uri");
+            Uri uri = Uri.parse(uriStr);
+
+            int destPhoneId = getSubIdFromDb(uri);
+            long [] subId = SubscriptionManager.getSubId(destPhoneId);
+            Log.d(TAG, "Destination Phone Id = " + destPhoneId +
+                    "destination Sub Id = " + subId[0]);
+
+            Bundle bundle = intent.getExtras();
+            bundle.putLong(PhoneConstants.SUBSCRIPTION_KEY, subId[0]);
             // For launching NotificationTransaction and test purpose.
-            TransactionBundle args = new TransactionBundle(intent.getExtras());
+            TransactionBundle args = new TransactionBundle(bundle);
             launchTransaction(serviceId, args, noNetwork);
         }
     }
@@ -346,7 +407,7 @@ public class TransactionService extends Service implements Observer {
     }
 
     private static boolean isTransientFailure(int type) {
-        return type > MmsSms.NO_ERROR && type < MmsSms.ERR_TYPE_GENERIC_PERMANENT;
+        return type >= MmsSms.NO_ERROR && type < MmsSms.ERR_TYPE_GENERIC_PERMANENT;
     }
 
     private int getTransactionType(int msgType) {
@@ -531,9 +592,9 @@ public class TransactionService extends Service implements Observer {
         }
     }
 
-    protected int beginMmsConnectivity() throws IOException {
+    protected int beginMmsConnectivity(String subId) throws IOException {
         if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
-            Log.v(TAG, "beginMmsConnectivity");
+            Log.v(TAG, "beginMmsConnectivity for subId = " + subId);
         }
         // Take a wake lock so we don't fall asleep before the message is downloaded.
         createWakeLock();
@@ -556,9 +617,14 @@ public class TransactionService extends Service implements Observer {
     }
 
     protected void endMmsConnectivity() {
+        long subId = SubscriptionManager.getDefaultDataSubId();
+        endMmsConnectivity(Long.toString(subId));
+    }
+
+    protected void endMmsConnectivity(String subId) {
         try {
             if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
-                Log.v(TAG, "endMmsConnectivity");
+                Log.v(TAG, "endMmsConnectivity for subId = " + subId);
             }
 
             // cancel timer for renewal of lease
@@ -640,7 +706,11 @@ public class TransactionService extends Service implements Observer {
                     }
 
                     try {
-                        int result = beginMmsConnectivity();
+                        long subId = SubscriptionManager.getDefaultDataSubId();
+                        if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
+                            Log.v(TAG, "renew PDP connection for subscription: " + subId);
+                        }
+                        int result = beginMmsConnectivity(Long.toString(subId));
                         if (result != PhoneConstants.APN_ALREADY_ACTIVE) {
                             Log.v(TAG, "Extending MMS connectivity returned " + result +
                                     " instead of APN_ALREADY_ACTIVE");
@@ -732,6 +802,8 @@ public class TransactionService extends Service implements Observer {
                                 transaction = null;
                                 return;
                         }
+                        //copy the subId from TransactionBundle to transaction obj.
+                        transaction.setSubId(args.getSubId());
 
                         if (!processTransaction(transaction)) {
                             transaction = null;
@@ -881,6 +953,7 @@ public class TransactionService extends Service implements Observer {
                     }
                 }
 
+                long subId = transaction.getSubId();
                 /*
                 * Make sure that the network connectivity necessary
                 * for MMS traffic is enabled. If it is not, we need
@@ -888,9 +961,9 @@ public class TransactionService extends Service implements Observer {
                 * connectivity is established.
                 */
                 if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
-                    Log.v(TAG, "processTransaction: call beginMmsConnectivity...");
+                    Log.v(TAG, "processTransaction: call beginMmsConnectivity on subId = " + subId);
                 }
-                int connectivityResult = beginMmsConnectivity();
+                int connectivityResult = beginMmsConnectivity(Long.toString(subId));
                 if (connectivityResult == PhoneConstants.APN_REQUEST_STARTED) {
                     mPending.add(transaction);
                     if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
@@ -915,7 +988,7 @@ public class TransactionService extends Service implements Observer {
                         Log.v(TAG, "Adding transaction to 'mProcessing' list: " + transaction);
                     }
                     mProcessing.add(transaction);
-               }
+                }
             }
 
             // Set a timer to keep renewing our "lease" on the MMS connection

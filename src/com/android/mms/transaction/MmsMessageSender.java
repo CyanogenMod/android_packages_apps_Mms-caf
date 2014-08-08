@@ -27,6 +27,7 @@ import android.preference.PreferenceManager;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.MmsSms;
 import android.provider.Telephony.MmsSms.PendingMessages;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.android.mms.LogTag;
@@ -49,6 +50,7 @@ public class MmsMessageSender implements MessageSender {
     private final Context mContext;
     private final Uri mMessageUri;
     private final long mMessageSize;
+    private int mPhoneId;
 
     // Default preference values
     private static final boolean DEFAULT_DELIVERY_REPORT_MODE  = false;
@@ -57,11 +59,11 @@ public class MmsMessageSender implements MessageSender {
     private static final int     DEFAULT_PRIORITY        = PduHeaders.PRIORITY_NORMAL;
     private static final String  DEFAULT_MESSAGE_CLASS   = PduHeaders.MESSAGE_CLASS_PERSONAL_STR;
 
-    public MmsMessageSender(Context context, Uri location, long messageSize) {
+    public MmsMessageSender(Context context, Uri location, long messageSize, int phoneId) {
         mContext = context;
         mMessageUri = location;
         mMessageSize = messageSize;
-
+        mPhoneId = phoneId;
         if (mMessageUri == null) {
             throw new IllegalArgumentException("Null message URI.");
         }
@@ -121,7 +123,9 @@ public class MmsMessageSender implements MessageSender {
 
         // Start MMS transaction service
         SendingProgressTokenManager.put(messageId, token);
-        mContext.startService(new Intent(mContext, TransactionService.class));
+        Intent intent = new Intent(mContext, TransactionService.class);
+        intent.putExtra(Mms.PHONE_ID, mPhoneId); //destination phone id
+        mContext.startService(intent);
 
         return true;
     }

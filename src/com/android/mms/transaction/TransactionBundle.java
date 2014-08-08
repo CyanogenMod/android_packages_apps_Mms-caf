@@ -19,6 +19,7 @@ package com.android.mms.transaction;
 
 import android.os.Bundle;
 
+import com.android.internal.telephony.PhoneConstants;
 import com.android.internal.telephony.uicc.IccUtils;
 
 /**
@@ -94,6 +95,11 @@ public class TransactionBundle {
         mBundle.putString(URI, uri);
     }
 
+    public TransactionBundle(int transactionType, String uri, long subId) {
+        this(transactionType);
+        mBundle.putString(URI, uri);
+        mBundle.putLong(PhoneConstants.SUBSCRIPTION_KEY, subId);
+    }
     /**
      * Constructor of a transaction bundle used for incoming bundle instances.
      *
@@ -130,6 +136,10 @@ public class TransactionBundle {
         return mBundle.getString(URI);
     }
 
+    public long getSubId() {
+        return mBundle.getLong(PhoneConstants.SUBSCRIPTION_KEY);
+    }
+
     public byte[] getPushData() {
         return mBundle.getByteArray(PUSH_DATA);
     }
@@ -153,6 +163,7 @@ public class TransactionBundle {
             " pushData: " + IccUtils.bytesToHexString(getPushData()) +
             " mmscUrl: " + getMmscUrl() +
             " proxyAddress: " + getProxyAddress() +
-            " proxyPort: " + getProxyPort();
+            " proxyPort: " + getProxyPort() +
+            " subId: " + getSubId();
     }
 }

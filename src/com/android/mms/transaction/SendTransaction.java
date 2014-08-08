@@ -27,6 +27,7 @@ import android.net.Uri;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Mms.Sent;
 import android.text.TextUtils;
+import android.telephony.SubscriptionManager;
 import android.util.Log;
 
 import com.android.mms.LogTag;
@@ -103,7 +104,9 @@ public class SendTransaction extends Transaction implements Runnable {
                                  mSendReqURI, values, null, null);
 
             // fix bug 2100169: insert the 'from' address per spec
-            String lineNumber = MessageUtils.getLocalNumber();
+            String lineNumber = MessageUtils.getLocalNumber(
+                    SubscriptionManager.getDefaultDataSubId());
+            Log.d(TAG, "lineNumber " + lineNumber);
             if (!TextUtils.isEmpty(lineNumber)) {
                 sendReq.setFrom(new EncodedStringValue(lineNumber));
             }

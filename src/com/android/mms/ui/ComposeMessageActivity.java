@@ -85,7 +85,10 @@ import android.provider.Settings;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Sms;
 import android.telephony.PhoneNumberUtils;
+import android.telephony.SubInfoRecord;
+import android.telephony.SubscriptionManager;
 import android.telephony.SmsMessage;
+import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputFilter.LengthFilter;
@@ -100,8 +103,10 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.view.View;
 import android.view.View.OnCreateContextMenuListener;
 import android.view.View.OnKeyListener;
@@ -117,6 +122,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Button;
 
 import com.android.internal.telephony.TelephonyIntents;
 import com.android.internal.telephony.TelephonyProperties;
@@ -318,6 +324,7 @@ public class ComposeMessageActivity extends Activity
                                             // If the value >= 0, then we jump to that line. If the
                                             // value is maxint, then we jump to the end.
     private long mLastMessageId;
+    private AlertDialog mMsimDialog;     // Used for MSIM subscription choose
 
     /**
      * Whether this activity is currently running (i.e. not paused)
@@ -684,7 +691,11 @@ public class ComposeMessageActivity extends Activity
     private class SendIgnoreInvalidRecipientListener implements OnClickListener {
         @Override
         public void onClick(DialogInterface dialog, int whichButton) {
-            sendMessage(true);
+            if ((TelephonyManager.getDefault().getPhoneCount()) > 1) {
+                sendMsimMessage(true);
+            } else {
+                sendMessage(true);
+            }
             dialog.dismiss();
         }
     }
@@ -699,9 +710,99 @@ public class ComposeMessageActivity extends Activity
         }
     }
 
+    private void dismissMsimDialog() {
+        if (mMsimDialog != null) {
+            mMsimDialog.dismiss();
+        }
+    }
+
+   private void processMsimSendMessage(int phoneId, final boolean bCheckEcmMode) {
+        if (mMsimDialog != null) {
+            mMsimDialog.dismiss();
+        }
+        mWorkingMessage.setWorkingMessageSub(phoneId);
+        sendMessage(bCheckEcmMode);
+    }
+
+    private void LaunchMsimDialog(final boolean bCheckEcmMode) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ComposeMessageActivity.this);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.multi_sim_sms_sender,
+                              (ViewGroup)findViewById(R.id.layout_root));
+        builder.setView(layout);
+        builder.setOnKeyListener(new DialogInterface.OnKeyListener() {
+                public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                    switch (keyCode) {
+                        case KeyEvent.KEYCODE_BACK: {
+                            dismissMsimDialog();
+                            return true;
+                        }
+                        case KeyEvent.KEYCODE_SEARCH: {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            }
+        );
+
+        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dismissMsimDialog();
+            }
+        });
+
+        ContactList recipients = isRecipientsEditorVisible() ?
+            mRecipientsEditor.constructContactsFromInput(false) : getRecipients();
+        builder.setTitle(getResources().getString(R.string.to_address_label)
+                + recipients.formatNamesAndNumbers(","));
+
+        mMsimDialog = builder.create();
+        mMsimDialog.setCanceledOnTouchOutside(true);
+
+        int[] smsBtnIds = {R.id.BtnSimOne, R.id.BtnSimTwo, R.id.BtnSimThree};
+        int phoneCount = TelephonyManager.getDefault().getPhoneCount();
+        Button[] smsBtns = new Button[phoneCount];
+
+        for (int i = 0; i < phoneCount; i++) {
+            final int phoneId = i;
+            smsBtns[i] = (Button) layout.findViewById(smsBtnIds[i]);
+            smsBtns[i].setVisibility(View.VISIBLE);
+            List<SubInfoRecord> subInfoList = SubscriptionManager.getSubInfoUsingSlotId(
+                    getApplicationContext(), phoneId);
+            String displayName = subInfoList == null ? "SIM " + (i + 1) :
+                    subInfoList.get(0).mDisplayName;
+            Log.e(TAG, "PhoneID : " + phoneId + " displayName " + displayName);
+            smsBtns[i].setText(displayName);
+            smsBtns[i].setOnClickListener(
+                new View.OnClickListener() {
+                    public void onClick(View v) {
+                        Log.d(TAG, "Phone Id slected " + phoneId);
+                        processMsimSendMessage(phoneId, bCheckEcmMode);
+                }
+            });
+        }
+        mMsimDialog.show();
+    }
+
+    private void sendMsimMessage(boolean bCheckEcmMode) {
+        if (SubscriptionManager.isSMSPromptEnabled()) {
+            LaunchMsimDialog(bCheckEcmMode);
+        } else {
+            long subId = SubscriptionManager.getDefaultSmsSubId();
+            int phoneId = SubscriptionManager.getPhoneId(subId);
+            mWorkingMessage.setWorkingMessageSub(phoneId);
+            sendMessage(bCheckEcmMode);
+        }
+    }
+
     private void confirmSendMessageIfNeeded() {
         if (!isRecipientsEditorVisible()) {
-            sendMessage(true);
+            if ((TelephonyManager.getDefault().getPhoneCount()) > 1) {
+                sendMsimMessage(true);
+            } else {
+                sendMessage(true);
+            }
             return;
         }
 
@@ -729,7 +830,11 @@ public class ComposeMessageActivity extends Activity
             // as the destination.
             ContactList contacts = mRecipientsEditor.constructContactsFromInput(false);
             mDebugRecipients = contacts.serialize();
-            sendMessage(true);
+            if ((TelephonyManager.getDefault().getPhoneCount()) > 1) {
+                sendMsimMessage(true);
+            } else {
+                sendMessage(true);
+            }
         }
     }
 

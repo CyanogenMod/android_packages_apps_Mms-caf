@@ -17,6 +17,7 @@
 
 package com.android.mms.ui;
 
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,7 +35,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.ContactsContract.Profile;
 import android.provider.Telephony.Sms;
+import android.provider.Telephony.Mms;
 import android.telephony.PhoneNumberUtils;
+import android.telephony.SubscriptionManager;
+import android.telephony.SubInfoRecord;
 import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
@@ -205,6 +209,7 @@ public class MessageListItem extends LinearLayout implements
                                 + mContext.getString(R.string.kilobyte);
 
         mBodyTextView.setText(formatMessage(mMessageItem, null,
+                                            mMessageItem.mPhoneId,
                                             mMessageItem.mSubject,
                                             mMessageItem.mHighlight,
                                             mMessageItem.mTextContentType));
@@ -247,10 +252,12 @@ public class MessageListItem extends LinearLayout implements
                         intent.putExtra(TransactionBundle.URI, mMessageItem.mMessageUri.toString());
                         intent.putExtra(TransactionBundle.TRANSACTION_TYPE,
                                 Transaction.RETRIEVE_TRANSACTION);
+                        intent.putExtra(Mms.PHONE_ID, mMessageItem.mPhoneId); //destination Phone Id
+
                         mContext.startService(intent);
 
                         DownloadManager.getInstance().markState(
-                                    mMessageItem.mMessageUri, DownloadManager.STATE_PRE_DOWNLOADING);
+                                 mMessageItem.mMessageUri, DownloadManager.STATE_PRE_DOWNLOADING);
                     }
                 });
                 break;
@@ -333,6 +340,7 @@ public class MessageListItem extends LinearLayout implements
         if (formattedMessage == null) {
             formattedMessage = formatMessage(mMessageItem,
                                              mMessageItem.mBody,
+                                             mMessageItem.mPhoneId,
                                              mMessageItem.mSubject,
                                              mMessageItem.mHighlight,
                                              mMessageItem.mTextContentType);
@@ -529,9 +537,20 @@ public class MessageListItem extends LinearLayout implements
     ForegroundColorSpan mColorSpan = null;  // set in ctor
 
     private CharSequence formatMessage(MessageItem msgItem, String body,
-                                       String subject, Pattern highlight,
+                                       int phoneId, String subject, Pattern highlight,
                                        String contentType) {
         SpannableStringBuilder buf = new SpannableStringBuilder();
+
+        if (TelephonyManager.getDefault().isMultiSimEnabled()) {
+            //SMS/MMS is operating on PhoneId which is 0, 1..
+            //Sub ID will be 1, 2, ...
+            List<SubInfoRecord> subInfoList = SubscriptionManager.getSubInfoUsingSlotId(mContext,
+                    phoneId);
+            String displayName = subInfoList == null ? "" : subInfoList.get(0).mDisplayName;
+            Log.d(TAG, "PhoneID: " + phoneId + " displayName " + displayName);
+            buf.append(displayName);
+            buf.append("\n");
+        }
 
         boolean hasSubject = !TextUtils.isEmpty(subject);
         if (hasSubject) {

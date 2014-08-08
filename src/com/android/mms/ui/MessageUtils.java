@@ -44,6 +44,7 @@ import android.provider.MediaStore;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Sms;
 import android.telephony.PhoneNumberUtils;
+import android.telephony.SubscriptionManager;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.text.format.Time;
@@ -695,8 +696,12 @@ public class MessageUtils {
     }
 
     public static String getLocalNumber() {
+        return getLocalNumber(SubscriptionManager.getDefaultDataSubId());
+    }
+
+    public static String getLocalNumber(long subId) {
         if (null == sLocalNumber) {
-            sLocalNumber = MmsApp.getApplication().getTelephonyManager().getLine1Number();
+            sLocalNumber = MmsApp.getApplication().getTelephonyManager().getLine1Number(subId);
         }
         return sLocalNumber;
     }

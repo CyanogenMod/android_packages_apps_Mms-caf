@@ -20,6 +20,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -81,8 +82,8 @@ public class NoConfirmationSendService extends IntentService {
             // Using invalid threadId 0 here. When the message is inserted into the db, the
             // provider looks up the threadId based on the recipient(s).
             long threadId = 0;
-            SmsMessageSender smsMessageSender = new SmsMessageSender(this, dests,
-                    message, threadId);
+            SmsMessageSender smsMessageSender = new SmsMessageSender(this, dests, message, threadId,
+                    SubscriptionManager.getPhoneId(SubscriptionManager.getDefaultSmsSubId()));
             try {
                 // This call simply puts the message on a queue and sends a broadcast to start
                 // a service to send the message. In queing up the message, however, it does

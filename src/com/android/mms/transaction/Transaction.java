@@ -40,6 +40,7 @@ public abstract class Transaction extends Observable {
     protected String mId;
     protected TransactionState mTransactionState;
     protected TransactionSettings mTransactionSettings;
+    protected long mSubId;
 
     /**
      * Identifies push requests.
@@ -98,6 +99,14 @@ public abstract class Transaction extends Observable {
      */
     public int getServiceId() {
         return mServiceId;
+    }
+
+    public long getSubId() {
+        return mSubId;
+    }
+
+    public void setSubId(long subId) {
+        mSubId = subId;
     }
 
     public TransactionSettings getConnectionSettings() {
@@ -237,7 +246,7 @@ public abstract class Transaction extends Observable {
 
     @Override
     public String toString() {
-        return getClass().getName() + ": serviceId=" + mServiceId;
+        return getClass().getName() + ": serviceId=" + mServiceId + " subId= " + mSubId;
     }
 
     /**

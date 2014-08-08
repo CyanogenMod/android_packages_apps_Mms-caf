@@ -65,7 +65,7 @@ public class TransactionSettings {
         String selection = Telephony.Carriers.CURRENT + " IS NOT NULL";
         String[] selectionArgs = null;
         if (!TextUtils.isEmpty(apnName)) {
-            selection += " AND " + Telephony.Carriers.APN + "=?";
+            selection = Telephony.Carriers.APN + "=?";
             selectionArgs = new String[]{ apnName.trim() };
         }
 
