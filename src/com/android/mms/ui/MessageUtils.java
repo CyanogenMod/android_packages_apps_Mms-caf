@@ -1,4 +1,7 @@
 /*
+ * Copyright (c) 2013-2014, The Linux Foundation. All rights reserved.
+ * Not a Contribution.
+ *
  * Copyright (C) 2008 Esmertec AG.
  * Copyright (C) 2008 The Android Open Source Project
  *
@@ -57,6 +60,11 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.StatFs;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
+import android.provider.ContactsContract.Contacts;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.provider.ContactsContract.CommonDataKinds.StructuredName;
+import android.provider.ContactsContract.Data;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.provider.Telephony.Mms;
@@ -150,6 +158,13 @@ public class MessageUtils {
     private static String[] sNoSubjectStrings;
     public static String MULTI_SIM_NAME = "perferred_name_sub";
     private static final String VIEW_MODE_NAME = "current_view";
+    // add for different search mode in SearchActivityExtend
+    public static final int SEARCH_MODE_CONTENT = 0;
+    public static final int SEARCH_MODE_NAME    = 1;
+    public static final int SEARCH_MODE_NUMBER  = 2;
+    // add for different match mode in classify search
+    public static final int MATCH_BY_ADDRESS = 0;
+    public static final int MATCH_BY_THREAD_ID = 1;
 
     public static final int PREFER_SMS_STORE_PHONE = 0;
     public static final int PREFER_SMS_STORE_CARD = 1;
@@ -195,6 +210,17 @@ public class MessageUtils {
     private static final int DIALOG_ITEM_SMS          = 1;
     private static final int DIALOG_ITEM_ADD_CONTACTS = 2;
     private static HashMap numericSugarMap = new HashMap (NUMERIC_CHARS_SUGAR.length);
+    // add for search
+    public static final String SEARCH_KEY_MAIL_BOX_ID    = "mailboxId";
+    public static final String SEARCH_KEY_TITLE          = "title";
+    public static final String SEARCH_KEY_MODE_POSITION  = "mode_position";
+    public static final String SEARCH_KEY_KEY_STRING     = "key_str";
+    public static final String SEARCH_KEY_DISPLAY_STRING = "display_str";
+    public static final String SEARCH_KEY_MATCH_WHOLE    = "match_whole";
+
+    private static final String REPLACE_QUOTES_1 = "'";
+    private static final String REPLACE_QUOTES_2 = "''";
+
     public static final String EXTRA_KEY_NEW_MESSAGE_NEED_RELOAD = "reload";
     //for showing memory status dialog.
     private static AlertDialog memoryStatusDialog = null;
@@ -1395,6 +1421,78 @@ public class MessageUtils {
             }
         //}
         return context.getString(R.string.slot1);
+    }
+
+    public static String getAddressByName(Context context, String name) {
+        String resultAddr = "";
+        if (TextUtils.isEmpty(name)) {
+            return resultAddr;
+        }
+        Cursor c = null;
+        Uri nameUri = null;
+        // Replace the ' to avoid SQL injection.
+        name = name.replace(REPLACE_QUOTES_1, REPLACE_QUOTES_2);
+
+        try {
+            c = context.getContentResolver().query(ContactsContract.Data.CONTENT_URI,
+                    new String[] {ContactsContract.Data.RAW_CONTACT_ID},
+                    ContactsContract.Data.MIMETYPE + " =? AND " + StructuredName.DISPLAY_NAME
+                    + " like '%" + name + "%' ", new String[] {StructuredName.CONTENT_ITEM_TYPE},
+                    null);
+
+            if (c == null) {
+                return resultAddr;
+            }
+
+            StringBuilder sb = new StringBuilder();
+            while (c.moveToNext()) {
+                long raw_contact_id = c.getLong(c.getColumnIndex(ContactsContract.Data.
+                        RAW_CONTACT_ID));
+                if (sb.length() > 0) {
+                    sb.append(",");
+                }
+                sb.append(queryPhoneNumbersWithRaw(context, raw_contact_id));
+            }
+
+            resultAddr = sb.toString();
+        } finally {
+            if (c != null) {
+                c.close();
+            }
+        }
+
+        return resultAddr;
+    }
+
+    private static String queryPhoneNumbersWithRaw(Context context, long rawContactId) {
+        Cursor c = null;
+        String addrs = "";
+        try {
+            c = context.getContentResolver().query(
+                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                    new String[] {Phone.NUMBER}, Phone.RAW_CONTACT_ID + " = " + rawContactId,
+                    null, null);
+
+            if (c != null) {
+                int i = 0;
+                while (c.moveToNext()) {
+                    String addrValue = c.getString(c.getColumnIndex(Phone.NUMBER));
+                    if (!TextUtils.isEmpty(addrValue)) {
+                        if (i == 0) {
+                            addrs = addrValue;
+                        } else {
+                            addrs = addrs + "," + addrValue;
+                        }
+                        i++;
+                    }
+                }
+            }
+        } finally {
+            if (c != null) {
+                c.close();
+            }
+        }
+        return addrs;
     }
 
     /**

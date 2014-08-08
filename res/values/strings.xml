@@ -935,6 +935,14 @@
     <string name="type_all">All</string>
     <string name="type_slot1">Card1</string>
     <string name="type_slot2">Card2</string>
+    <!-- String used in SearchActivityExtend.java -->
+    <string name="search_title">"Message search"</string>
+    <string name="search_key">Search keyword</string>
+    <string name="search_mode">Search mode</string>
+    <string name="search_as_name">Name</string>
+    <string name="search_as_number">Number</string>
+    <string name="search_as_content">Content</string>
+    <string name="invalid_name_toast">Please input valid name!</string>
     <!-- add for showing slot type in MailBoxMessageContent -->
     <string name="slot_type">Slot : %s</string>
     <!-- priority of cdma message -->

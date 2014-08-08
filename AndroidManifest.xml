@@ -325,6 +325,12 @@
                   android:configChanges="orientation|screenSize" >
         </activity>
 
+        <activity android:name=".ui.SearchActivityExtend"
+            android:theme="@style/MmsHoloTheme"
+            android:label="@string/search_title"
+            android:configChanges="orientation|screenSize|keyboardHidden">
+        </activity>
+
         <activity android:name=".ui.SearchActivity"
             android:theme="@style/MmsHoloTheme"
             android:label="@string/search"

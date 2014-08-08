@@ -440,6 +440,14 @@
     <string name="type_all">全部</string>
     <string name="type_slot1">卡1</string>
     <string name="type_slot2">卡2</string>
+    <!-- String used in SearchActivityExtend.java -->
+    <string name="search_title">"信息查找"</string>
+    <string name="search_key">"查找关键字"</string>
+    <string name="search_mode">"查找方式"</string>
+    <string name="search_as_name">姓名</string>
+    <string name="search_as_number">号码</string>
+    <string name="search_as_content">内容</string>
+    <string name="invalid_name_toast">请输入有效的姓名！</string>
     <!-- add for showing slot type in MailBoxMessageContent -->
     <string name="slot_type">卡槽 : %s</string>
     <!-- priority of cdma message -->
