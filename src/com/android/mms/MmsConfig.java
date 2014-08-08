@@ -159,7 +159,11 @@ public class MmsConfig {
         return intent;
     }
 
-    public static int getSmsToMmsTextThreshold() {
+    public static int getSmsToMmsTextThreshold(Context context) {
+        int limitCount = 20;//context.getResources().getInteger(R.integer.limit_count);
+        if (limitCount != 0) {
+            return limitCount;
+        }
         return mSmsToMmsTextThreshold;
     }
 

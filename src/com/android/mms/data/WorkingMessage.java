@@ -503,7 +503,7 @@ public class WorkingMessage {
                 // an sms longer than one segment, we have to turn the message into an mms.
                 setLengthRequiresMms(smsSegmentCount > 1, false);
             } else {
-                int threshold = MmsConfig.getSmsToMmsTextThreshold();
+                int threshold = MmsConfig.getSmsToMmsTextThreshold(mActivity);
                 setLengthRequiresMms(threshold > 0 && smsSegmentCount > threshold, false);
             }
         }
