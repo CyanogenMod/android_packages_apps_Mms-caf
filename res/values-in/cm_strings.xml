@@ -119,4 +119,7 @@
   <string name="pref_summary_enable_emoticons">Gantikan teks emotikon dengan grafis setara</string>
   <string name="normal_show">Lihat mode normal</string>
   <string name="cannot_play">Tidak dapat menyajikan tampilan slide.</string>
+  <string name="menu_conversation_options">Pilihan percakapan</string>
+  <string name="pref_title_reset_convopt_to_default">Setel ulang ke Standar</string>
+  <string name="pref_summary_reset_convopt_to_default">Setel ulang pengaturan percakapan ke pengaturan tingkat aplikasi</string>
 </resources>

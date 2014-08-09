@@ -119,4 +119,7 @@
   <string name="pref_summary_enable_emoticons">텍스트 이모티콘을 그림으로 대체합니다</string>
   <string name="normal_show">일반 모드로 보기</string>
   <string name="cannot_play">슬라이드 쇼를 표시할 수 없습니다</string>
+  <string name="menu_conversation_options">대화 옵션</string>
+  <string name="pref_title_reset_convopt_to_default">기본값으로 재설정</string>
+  <string name="pref_summary_reset_convopt_to_default">대화 설정을 앱 수준 설정으로 재설정</string>
 </resources>

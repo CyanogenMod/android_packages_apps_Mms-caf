@@ -119,4 +119,7 @@
   <string name="pref_summary_enable_emoticons">Nahradiť textové emotikony s grafickými ekvivalentami</string>
   <string name="normal_show">Normálny režim zobrazenia</string>
   <string name="cannot_play">Nie je možné zobraziť prezentáciu.</string>
+  <string name="menu_conversation_options">Možnosti konverzácie</string>
+  <string name="pref_title_reset_convopt_to_default">Obnoviť na predvolené</string>
+  <string name="pref_summary_reset_convopt_to_default">Obnoviť nastavenie konverzácie na úroveň nastavenia aplikácie</string>
 </resources>

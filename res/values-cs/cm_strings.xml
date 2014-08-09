@@ -119,4 +119,7 @@
   <string name="pref_summary_enable_emoticons">Nahradit textovou formu smajlíků jejich obrázkovým ekvivalentem</string>
   <string name="normal_show">Normální režim zobrazení</string>
   <string name="cannot_play">Prezentaci nelze spustit.</string>
+  <string name="menu_conversation_options">Možnosti konverzace</string>
+  <string name="pref_title_reset_convopt_to_default">Obnovit výchozí</string>
+  <string name="pref_summary_reset_convopt_to_default">Obnovit nastavení konverzace na úroveň nastavení aplikace</string>
 </resources>

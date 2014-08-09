@@ -74,7 +74,7 @@
   <string name="pref_title_mms_use_sent_timestamp">کاتپوله‌ بنه‌ڕه‌تییه‌کان</string>
   <string name="pref_summary_mms_use_sent_timestamp">نیشاندانی ڕۆژی ڕۆشتوو له‌ جیاتی ڕۆژی هاتوو له‌ کاتپوله‌کان</string>
   <string name="pref_title_input_type">جۆری کیبۆردی لوس</string>
-  <string name="pref_keyboard_emoji">نیشاندانی کلیله‌کانی وێنۆچکه‌ه‌کانی گفت وگۆ</string>
+  <string name="pref_keyboard_emoji">نیشاندانی کلیله‌کانی وێنۆچکه‌کانی گفت وگۆ</string>
   <string name="pref_keyboard_new_line">نیشاندانی کلیلی ئینته‌ر</string>
   <string name="pref_keyboard_unknown">نه‌زانراو، تکایه‌ هه‌ڵیبژێره‌وه‌</string>
   <string name="pref_title_sms_split_counter">له‌تبوونی ژمێره‌ر</string>
@@ -116,7 +116,10 @@
   <string name="pref_mms_notification_vibrate_mult_long">درێژی زۆری</string>
   <string name="menu_insert_smiley">زیادکردنی خەندە</string>
   <string name="pref_title_enable_emoticons">پاڵپشتی وێنۆچکه‌ی ئاماژە دەکات</string>
-  <string name="pref_summary_enable_emoticons">جێگاگره‌وه‌ی نوسینی وێنۆچکه‌ه‌کانی چات له‌گه‌ڵ هاوتا گرافیکییه‌کان</string>
+  <string name="pref_summary_enable_emoticons">جێگاگره‌وه‌ی نوسینی وێنۆچکه‌کانی چات له‌گه‌ڵ هاوتا گرافیکییه‌کان</string>
   <string name="normal_show">پیشاندان بەشێوازی ئاسایی</string>
   <string name="cannot_play">نه‌توانرا نیشاندانی جوڵه‌ په‌خش بکرێت.</string>
+  <string name="menu_conversation_options">ڕێکخستنی گفتوگۆ</string>
+  <string name="pref_title_reset_convopt_to_default">ڕێکخستنه‌وه‌ بۆ بنه‌ڕه‌ت</string>
+  <string name="pref_summary_reset_convopt_to_default">ڕێکخستنه‌وه‌ی هه‌ڵبژاردنه‌کانی گفتوگۆ بۆ ئاستی به‌رنامه‌یی</string>
 </resources>

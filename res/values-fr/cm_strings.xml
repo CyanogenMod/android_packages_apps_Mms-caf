@@ -119,4 +119,6 @@
   <string name="pref_summary_enable_emoticons">Substituer les émoticônes avec des équivalents graphiques</string>
   <string name="normal_show">Mode d\'affichage normal</string>
   <string name="cannot_play">Ne peut pas présenter le diaporama.</string>
+  <string name="menu_conversation_options">Options de conversation</string>
+  <string name="pref_title_reset_convopt_to_default">Restaurer les valeurs par défaut</string>
 </resources>

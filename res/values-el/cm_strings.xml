@@ -119,4 +119,7 @@
   <string name="pref_summary_enable_emoticons">Αντικατάσταση emoticon κειμένου με τα αντίστοιχα εικονίδια</string>
   <string name="normal_show">Κανονική λειτουργία προβολής</string>
   <string name="cannot_play">Δεν είναι δυνατή η προβολή της παρουσίασης.</string>
+  <string name="menu_conversation_options">Επιλογές συνομιλίας</string>
+  <string name="pref_title_reset_convopt_to_default">Επαναφορά στις προεπιλογές</string>
+  <string name="pref_summary_reset_convopt_to_default">Επαναφορά της ρύθμισης συνομιλίας στην προεπιλεγμένη ρύθμιση της εφαρμογής</string>
 </resources>

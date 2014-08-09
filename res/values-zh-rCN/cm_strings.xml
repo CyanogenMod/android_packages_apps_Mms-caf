@@ -119,4 +119,7 @@
   <string name="pref_summary_enable_emoticons">用等同的图形替代文字表情符号</string>
   <string name="normal_show">查看正常模式</string>
   <string name="cannot_play">无法展示幻灯片</string>
+  <string name="menu_conversation_options">对话选项</string>
+  <string name="pref_title_reset_convopt_to_default">重置默认设置</string>
+  <string name="pref_summary_reset_convopt_to_default">将对话设置重置为应用级别设置</string>
 </resources>

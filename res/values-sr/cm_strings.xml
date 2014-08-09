@@ -89,7 +89,7 @@
   <string name="menu_as_unread">Означи као непрочитано</string>
   <string name="menu_all_as_unread">Означи све као непрочитано</string>
   <string name="confirm_mark_unread_dialog_title">Означи као непрочитано?</string>
-  <string name="confirm_mark_unread_conversation">Разговор ће бити означен као непрочитан.</string>
+  <string name="confirm_mark_unread_conversation">Преписка ће бити означена као непрочитана.</string>
   <string name="confirm_mark_unread_all_conversations">Сви низови ће бити означени као непрочитани.</string>
   <string name="select_recipients">Изабери примаоце</string>
   <string name="groups_header">Групе</string>
@@ -119,4 +119,7 @@
   <string name="pref_summary_enable_emoticons">Замени текстуалне смајлије са графичким еквивалентима</string>
   <string name="normal_show">Погледај нормалан режим</string>
   <string name="cannot_play">Не могу се приказати слајдови.</string>
+  <string name="menu_conversation_options">Опције преписке</string>
+  <string name="pref_title_reset_convopt_to_default">Ресетуј на подразумевано</string>
+  <string name="pref_summary_reset_convopt_to_default">Ресетуј подешавање преписке на ниво подешавања апликације</string>
 </resources>

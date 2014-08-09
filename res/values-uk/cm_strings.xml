@@ -119,4 +119,7 @@
   <string name="pref_summary_enable_emoticons">Замінювати текстові смайлики графічними</string>
   <string name="normal_show">Нормальний режим</string>
   <string name="cannot_play">Неможливо відтворити слайд-шоу.</string>
+  <string name="menu_conversation_options">Параметри розмови</string>
+  <string name="pref_title_reset_convopt_to_default">Скинути до типових</string>
+  <string name="pref_summary_reset_convopt_to_default">Скидає параметри розмови до налаштуваннь програми</string>
 </resources>

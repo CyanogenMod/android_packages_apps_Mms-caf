@@ -53,7 +53,7 @@
   <string name="template_delete">Удалить</string>
   <string name="template_list_title">Шаблоны</string>
   <string name="template_new_title">Новый шаблон</string>
-  <string name="template_insert">Ввести шаблон</string>
+  <string name="template_insert">Вставить шаблон</string>
   <string name="template_gesture_draw">Нарисуйте жест в области ниже</string>
   <string name="template_not_present_error">Нет шаблонов</string>
   <string name="template_not_present_error_title">Ошибка</string>
@@ -119,4 +119,7 @@
   <string name="pref_summary_enable_emoticons">Заменять текстовые смайлики соответствующими изображениями</string>
   <string name="normal_show">Обычный режим</string>
   <string name="cannot_play">Невозможно воспроизвести слайд-шоу.</string>
+  <string name="menu_conversation_options">Свойства диалога</string>
+  <string name="pref_title_reset_convopt_to_default">Сбросить настройки</string>
+  <string name="pref_summary_reset_convopt_to_default">Восстановить настройки диалога на используемые для всех контактов</string>
 </resources>

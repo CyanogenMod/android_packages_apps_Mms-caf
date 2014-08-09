@@ -119,4 +119,7 @@
   <string name="pref_summary_enable_emoticons">Zastępuj tekstowe emotikony ich graficznymi odpowiednikami</string>
   <string name="normal_show">Tryb normalnego widoku</string>
   <string name="cannot_play">Nie można odtworzyć pokazu slajdów.</string>
+  <string name="menu_conversation_options">Opcje rozmowy</string>
+  <string name="pref_title_reset_convopt_to_default">Przywróć domyślne</string>
+  <string name="pref_summary_reset_convopt_to_default">Resetuje ustawienia konwersacji do ustawień poziomu aplikacji</string>
 </resources>

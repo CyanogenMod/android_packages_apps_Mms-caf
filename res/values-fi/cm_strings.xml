@@ -119,4 +119,7 @@
   <string name="pref_summary_enable_emoticons">Korvaa tekstihymiöt graafisilla vastineilla</string>
   <string name="normal_show">Katso normaalissa tilassa</string>
   <string name="cannot_play">Ei voida näyttää diaesitystä.</string>
+  <string name="menu_conversation_options">Keskustelun asetukset</string>
+  <string name="pref_title_reset_convopt_to_default">Palauta oletukset</string>
+  <string name="pref_summary_reset_convopt_to_default">Palauttaa keskustelun asetukset sovelluksen oletuksiin</string>
 </resources>

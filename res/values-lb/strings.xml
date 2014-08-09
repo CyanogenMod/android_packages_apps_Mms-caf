@@ -19,16 +19,24 @@
  */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="app_label">Messagen</string>
   <string name="new_message">Neie Message</string>
   <string name="menu_call_back"><xliff:g id="name">%s</xliff:g> uruffen</string>
   <string name="menu_send_email">E-Mail u(n) <xliff:g id="name">%s</xliff:g> schécken</string>
   <string name="menu_compose_new">Schreiwen</string>
   <string name="menu_preferences">Astellungen</string>
+  <string name="menu_add_address_to_contacts"><xliff:g id="contactEmailOrNumber">%s</xliff:g> bei d\'Kontakter dobäisetzen</string>
+  <string name="menu_call">Uruffen</string>
+  <string name="menu_search">Sichen</string>
   <string name="menu_delete">Diskussioun läschen</string>
+  <string name="refreshing">Nei lueden\u2026</string>
+  <string name="menu_cell_broadcasts">Zelliwwerdroungen</string>
   <string name="has_draft">Brouillon</string>
+  <string name="no_subject_view">(Kee Sujet)</string>
   <string name="messagelist_sender_self">Ech</string>
   <string name="view_message_details">Detailer ukucken</string>
   <string name="view_delivery_report">Bericht ukucken</string>
+  <string name="delete_message">Läschen</string>
   <string name="kilobyte">kB</string>
   <string name="undelivered_msg_dialog_body">De Message konnt net geschéckt ginn.\nLeschte Versuch: <xliff:g id="message">%s</xliff:g>.</string>
   <string name="undelivered_sms_dialog_body">De Message konnt net geschéckt ginn.</string>
@@ -87,7 +95,10 @@
   <string name="type_picture">Bild</string>
   <string name="type_video">Video</string>
   <string name="confirm">Bestätegen</string>
+  <string name="no_subject">(Kee Sujet)</string>
   <string name="rate_limit_surpassed">Bestätegen</string>
+  <string name="search_label">Messagen</string>
+  <string name="search">Messagen</string>
   <string name="confirm_clear_search_title">Eidel maachen</string>
   <string name="save">Späicheren</string>
   <string name="draft_separator">,\u0020</string>

@@ -119,4 +119,7 @@
   <string name="pref_summary_enable_emoticons">テキストの顔文字をそれに対応する絵文字で置き換える</string>
   <string name="normal_show">通常モードで表示する</string>
   <string name="cannot_play">スライドショーを表示できません。</string>
+  <string name="menu_conversation_options">会話のオプション</string>
+  <string name="pref_title_reset_convopt_to_default">デフォルトに戻す</string>
+  <string name="pref_summary_reset_convopt_to_default">会話の設定をアプリケーションレベルの設定にリセットする</string>
 </resources>

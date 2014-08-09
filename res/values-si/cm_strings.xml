@@ -119,4 +119,7 @@
   <string name="pref_summary_enable_emoticons">පෙළ වෙනුවට චිත්‍රක ඉමෝට්කොන ආදේශ කරන්න</string>
   <string name="normal_show">සාමාන්‍ය ප්‍රකාරය පෙන්වන්න</string>
   <string name="cannot_play">කදා දර්ශනය පිළිගැන්විය නොහැක.</string>
+  <string name="menu_conversation_options">සංවාද විකල්ප</string>
+  <string name="pref_title_reset_convopt_to_default">පෙරනිමියට යලි පිහිටුවන්න</string>
+  <string name="pref_summary_reset_convopt_to_default">සංවාද සැකසීම යෙදුම මට්ටමේ සැකසීම වෙත යළි පිහිටුවන්න</string>
 </resources>

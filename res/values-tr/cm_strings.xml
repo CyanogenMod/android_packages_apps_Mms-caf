@@ -119,4 +119,7 @@
   <string name="pref_summary_enable_emoticons">Metin ifadelerini grafiksel eşdeğerleri ile değiştir</string>
   <string name="normal_show">Normal modda görüntüle</string>
   <string name="cannot_play">Slayt gösterisi başlatılamıyor.</string>
+  <string name="menu_conversation_options">Sohbet seçenekleri</string>
+  <string name="pref_title_reset_convopt_to_default">Varsayılana sıfırla</string>
+  <string name="pref_summary_reset_convopt_to_default">Sohbet ayarlarını uygulama seviyesi ayarlarına sıfırlar</string>
 </resources>

@@ -119,4 +119,7 @@
   <string name="pref_summary_enable_emoticons">Sustituir los emoticonos de texto por sus gráficos equivalentes</string>
   <string name="normal_show">Ver en modo normal</string>
   <string name="cannot_play">No puede mostrarse la presentación.</string>
+  <string name="menu_conversation_options">Opciones de conversación</string>
+  <string name="pref_title_reset_convopt_to_default">Restablecer</string>
+  <string name="pref_summary_reset_convopt_to_default">Restablecer los ajustes de la conversación al nivel de ajuste de la aplicación</string>
 </resources>

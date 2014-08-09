@@ -119,4 +119,7 @@
   <string name="pref_summary_enable_emoticons">Substituir emticons de texto pela imagem equivalente</string>
   <string name="normal_show">Modo de visualização normal</string>
   <string name="cannot_play">Não é possível exibir a apresentação de slides.</string>
+  <string name="menu_conversation_options">Opções de conversa</string>
+  <string name="pref_title_reset_convopt_to_default">Redefinir para o padrão</string>
+  <string name="pref_summary_reset_convopt_to_default">Redefine a configuração de conversa para a configuração padrão do aplicativo</string>
 </resources>

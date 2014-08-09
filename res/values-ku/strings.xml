@@ -86,7 +86,7 @@
   <string name="type_to_compose_text_enter_to_send">نامه‌ بنووسه‌</string>
   <string name="open_keyboard_to_compose_message">یه‌ک ته‌خته‌کلیل بۆ نوسینی نامه‌</string>
   <string name="sending_disabled_not_default_app">ناردن ڕاگیراوه‌</string>
-  <string name="compose_disabled_toast">ناتوانرێ بنێردرێ. هیچ به‌رنامه‌یه‌کی بنه‌ڕه‌تی نییه‌ بۆ SMS.</string>
+  <string name="compose_disabled_toast">ناتوانرێ بنێردرێ. هیچ به‌رنامه‌یه‌کی بنێڕه‌تی نییه‌ بۆ SMS.</string>
   <string name="compressing">وێنه‌که‌ ۆر گه‌وره‌یه‌. بچوککردنه‌وه‌\u2026</string>
   <string name="unsupported_media_format">جۆری په‌ڕگه‌که‌ <xliff:g id="name">%1$s</xliff:g> نه‌گونجاوه‌.</string>
   <string name="select_different_media">دیاریکردنی <xliff:g id="name">%1$s</xliff:g> ـێکی جیاواز.</string>
@@ -218,7 +218,7 @@
   <string name="message_size_label">قەبارەی نامە :\u0020</string>
   <string name="priority_label">پێشەنگی:\u0020</string>
   <string name="priority_high">به‌رز</string>
-  <string name="priority_normal">ئاسای</string>
+  <string name="priority_normal">ئاسایی</string>
   <string name="priority_low">نزم</string>
   <string name="message_class_label">سیفەتی نامە :\u0020</string>
   <string name="error_code_label">کۆدی هەڵەی :\u0020</string>
@@ -315,7 +315,7 @@
   <string name="confirm_clear_search_title">پاچالاکردن</string>
   <string name="confirm_clear_search_text">مێژووی گەڕان خاڵی دەکرێتەوە</string>
   <string name="pref_mms_clear_search_history_title">پاککردنەوەی مێژووی گەڕان</string>
-  <string name="pref_mms_clear_search_history_summary">گەڕآنەکانی پێشوتر بسڕەوە ،کە لە سندوقی گەڕان دەردەکەون</string>
+  <string name="pref_mms_clear_search_history_summary">گەڕانەکانی پێشوتر بسڕەوە ،کە لە سندوقی گەڕان دەردەکەون</string>
   <string name="save">پاشەکەوتکردن</string>
   <string name="storage_limits_title">سنوری نامەکان</string>
   <string name="storage_limits_message">ژمارەی ئەو نامانەی کەپاشکەوت دەکرێن  بۆ هەر گفتوگۆیەک سنوردار بکە</string>

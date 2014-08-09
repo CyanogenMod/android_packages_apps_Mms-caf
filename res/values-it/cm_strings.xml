@@ -119,4 +119,7 @@
   <string name="pref_summary_enable_emoticons">Sostituisci le emoticon testuali con grafica equivalente</string>
   <string name="normal_show">Visualizzazione normale</string>
   <string name="cannot_play">Impossibile eseguire slide show.</string>
+  <string name="menu_conversation_options">Opzioni conversazione</string>
+  <string name="pref_title_reset_convopt_to_default">Ripristina predefinito</string>
+  <string name="pref_summary_reset_convopt_to_default">Ripristina le impostazioni della conversazione a quelle dell\'applicazione</string>
 </resources>

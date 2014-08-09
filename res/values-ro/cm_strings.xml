@@ -87,6 +87,7 @@
   <string name="alert_dialog_yes">Da</string>
   <string name="alert_dialog_no">Nu</string>
   <string name="menu_as_unread">Marcare ca necitit</string>
+  <string name="menu_all_as_unread">Marchează toate ca necitite</string>
   <string name="confirm_mark_unread_dialog_title">Marcați ca necitit?</string>
   <string name="confirm_mark_unread_conversation">Conversația va fi marcată ca necitită.</string>
   <string name="confirm_mark_unread_all_conversations">Toate subiectele vor fi marcate ca necitite.</string>

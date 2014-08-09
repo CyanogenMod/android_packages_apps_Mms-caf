@@ -119,4 +119,7 @@
   <string name="pref_summary_enable_emoticons">Pakeisti tekstines emocijas į grafinius atitikmenis</string>
   <string name="normal_show">Rodyti įprastu režimu</string>
   <string name="cannot_play">Skaidrių peržiūra negalima.</string>
+  <string name="menu_conversation_options">Pokalbio parinktys</string>
+  <string name="pref_title_reset_convopt_to_default">Atkurti į numatytuosius</string>
+  <string name="pref_summary_reset_convopt_to_default">Atkuria pokalbio nustatymą į programos lygio parametrą</string>
 </resources>

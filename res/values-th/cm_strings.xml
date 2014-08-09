@@ -119,4 +119,7 @@
   <string name="pref_summary_enable_emoticons">แสดงข้อความอีโมติคอนแทนด้วยรูปภาพ</string>
   <string name="normal_show">ดูรูปแบบปกติ</string>
   <string name="cannot_play">ไม่สามารถนำเสนอภาพนิ่งได้</string>
+  <string name="menu_conversation_options">ตัวเลือกการสนทนา</string>
+  <string name="pref_title_reset_convopt_to_default">คืนค่าเริ่มต้น</string>
+  <string name="pref_summary_reset_convopt_to_default">ล้างการตั้งค่าการสนทนาเป็นการตั้งค่าของแอป</string>
 </resources>
