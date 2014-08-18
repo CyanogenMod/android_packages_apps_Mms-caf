@@ -43,8 +43,6 @@ public class DefaultRetryScheme extends AbstractRetryScheme {
         mRetriedTimes = mRetriedTimes < 0 ? 0 : mRetriedTimes;
         mRetriedTimes = mRetriedTimes >= sDefaultRetryScheme.length
                 ? sDefaultRetryScheme.length - 1 : mRetriedTimes;
-
-        // TODO Get retry scheme from preference.
     }
 
     @Override

@@ -620,6 +620,8 @@
     <string name="message_failed_body">Touch to review the message and try again.</string>
     <!-- Dialog box message when there's a problem retrieving messages. -->
     <string name="download_later">Can\'t download right now. Try again later.</string>
+    <string name="send_failed_retry">Sending failed, auto retry.</string>
+    <string name="download_failed_retry">Downloading failed, auto retry.</string>
     <!-- Dialog box message when there's no APN specified on the device. -->
     <string name="no_apn">No APN specified on the device.</string>
 
