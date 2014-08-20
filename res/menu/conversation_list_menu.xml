@@ -31,6 +31,12 @@
         android:title="@string/menu_preferences"
         android:icon="@android:drawable/ic_menu_preferences" />
 
+    <item android:id="@+id/action_change_to_folder_mode"
+        android:title="@string/change_to_folder_mode"/>
+
+    <item android:id="@+id/action_change_to_conversation_mode"
+        android:title="@string/change_to_conversation_mode"/>
+
     <item android:id="@+id/action_delete_all"
         android:title="@string/menu_delete_all"
         android:icon="@drawable/ic_menu_trash_holo_dark" />

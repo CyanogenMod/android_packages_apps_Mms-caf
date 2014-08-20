@@ -507,6 +507,11 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             mSearchView.setSearchableInfo(info);
         }
 
+        MenuItem item = menu.findItem(R.id.action_change_to_conversation_mode);
+        if (item != null) {
+            item.setVisible(false);
+        }
+
         MenuItem cellBroadcastItem = menu.findItem(R.id.action_cell_broadcasts);
         if (cellBroadcastItem != null) {
             // Enable link to Cell broadcast activity depending on the value in config.xml.
@@ -542,6 +547,14 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             // Dim compose if SMS is disabled because it will not work (will show a toast)
             item.getIcon().setAlpha(mIsSmsEnabled ? 255 : 127);
         }
+
+        if (true/*!getResources().getBoolean(R.bool.config_mailbox_enable)*/) {
+            item = menu.findItem(R.id.action_change_to_folder_mode);
+            if (item != null) {
+                item.setVisible(false);
+            }
+        }
+
         if (!LogTag.DEBUG_DUMP) {
             item = menu.findItem(R.id.action_debug_dump);
             if (item != null) {
@@ -581,6 +594,11 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             case R.id.action_settings:
                 Intent intent = new Intent(this, MessagingPreferenceActivity.class);
                 startActivityIfNeeded(intent, -1);
+                break;
+            case R.id.action_change_to_folder_mode:
+                Intent modeIntent = new Intent(this, MailBoxMessageList.class);
+                startActivityIfNeeded(modeIntent, -1);
+                finish();
                 break;
             case R.id.action_debug_dump:
                 LogTag.dumpInternalTables(this);

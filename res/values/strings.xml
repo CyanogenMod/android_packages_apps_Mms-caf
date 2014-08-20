@@ -819,13 +819,41 @@
     <string name="signature_full_toast">Signature has reached to maximum length.</string>
     <string name="storage_warning_title">"Your phone's storage is full"</string>
     <string name="storage_warning_content">"You won't receive new SMS/MMS messages"</string>
-    <!--  Strings used forh MMS push of messages in outbox -->
-    <string name="label_mms_send_outbox_msg">MMS Wakeup</string>
-    <string name="desc_mms_send_outbox_msg">Sends out all MMSs from the outbox to the network</string>
 
-    <!-- Banner in conversation list for making Messaging the default SMS app -->
-    <string name="banner_sms_promo_title_initial">Messaging is not your SMS app</string>
-    <string name="banner_sms_promo_title_application"><xliff:g id="appName">%s</xliff:g> is your SMS app</string>
-    <string name="banner_sms_promo_message">You can change this in Settings</string>
+    <string name="sub">SUB</string>
 
+    <string name="operate_success">Operate successfully!</string>
+    <string name="operate_failure">Operate unsuccessfully!</string>
+    <string name="menu_reply">Reply</string>
+
+    <string name="slot1">Slot1</string>
+    <string name="slot2">Slot2</string>
+
+    <string name="confirm_delete_selected_messages">The selected messages will be deleted.</string>
+    <!-- menu item of mailboxmessagecontent -->
+    <string name="menu_load_push">Load</string>
+    <string name="menu_delete_msg">Delete</string>
+    <!-- toast for send result -->
+    <string name="send_failure">Sending failed!</string>
+    <string name="send_success">Send successfully!</string>
+    <!-- title of mailboxmessagecontent -->
+    <string name="message_detail">Message detail</string>
+    <string name="select_messages">Select messages</string>
+    <string name="no_message">No messages</string>
+    <string name="change_to_folder_mode">Change to folder mode</string>
+    <string name="change_to_conversation_mode">Change to conversation mode</string>
+    <!-- Spinner item of box type in mailbox-mode -->
+    <string name="box_type_select">Select box type</string>
+    <string name="type_inbox">Inbox</string>
+    <string name="type_sent">Sent</string>
+    <string name="type_outbox">Outbox</string>
+    <string name="type_draft">Drafts</string>
+    <!-- Spinner item of slot type in mailbox-mode -->
+    <string name="slot_type_select">Select slot</string>
+    <string name="type_all">All</string>
+    <string name="type_slot1">Card1</string>
+    <string name="type_slot2">Card2</string>
+    <!-- add for showing slot type in MailBoxMessageContent -->
+    <string name="slot_type">Slot : %s</string>
+    <string name="download_dialog_title">Comfirm download this MMS?</string>
 </resources>

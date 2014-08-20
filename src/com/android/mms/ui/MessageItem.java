@@ -288,7 +288,7 @@ public class MessageItem {
     }
 
     public int getMmsDownloadStatus() {
-        return mMmsStatus & ~DownloadManager.DEFERRED_MASK;
+        return MessageUtils.getMmsDownloadStatus(mMmsStatus);
     }
 
     @Override

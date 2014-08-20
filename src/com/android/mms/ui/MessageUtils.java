@@ -33,18 +33,24 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SqliteWrapper;
+import android.graphics.drawable.Drawable;
 import android.media.CamcorderProfile;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Sms;
+import android.provider.Telephony.Threads;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.SubscriptionManager;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.text.format.Time;
@@ -64,6 +70,7 @@ import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
 import com.android.mms.transaction.MmsMessageSender;
 import com.android.mms.util.AddressUtils;
+import com.android.mms.util.DownloadManager;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
 import com.google.android.mms.pdu.CharacterSets;
@@ -87,9 +94,18 @@ public class MessageUtils {
 
     private static final int SELECT_SYSTEM = 0;
     private static final int SELECT_EXTERNAL = 1;
+    private static final boolean DEBUG = false;
+    public static final int SUB_INVALID = -1;  //  for single card product
+    public static final int SUB1 = 0;  // for DSDS product of slot one
+    public static final int SUB2 = 1;  // for DSDS product of slot two
+    public static final String SUBSCRIPTION_KEY = "subscription";
+    public static final int MESSAGE_READ = 1;
+    public static final int MESSAGE_SEEN = 1;
     private static final String TAG = LogTag.TAG;
     private static String sLocalNumber;
     private static String[] sNoSubjectStrings;
+    public static String MULTI_SIM_NAME = "perferred_name_sub";
+    private static final String VIEW_MODE_NAME = "current_view";
 
     // Cache of both groups of space-separated ids to their full
     // comma-separated display names, as well as individual ids to
@@ -114,6 +130,7 @@ public class MessageUtils {
     };
 
     private static HashMap numericSugarMap = new HashMap (NUMERIC_CHARS_SUGAR.length);
+    public static final String EXTRA_KEY_NEW_MESSAGE_NEED_RELOAD = "reload";
 
     public static final int ALL_RECIPIENTS_VALID   = 0;
     public static final int ALL_RECIPIENTS_INVALID = -1;
@@ -916,6 +933,98 @@ public class MessageUtils {
         return accumulator;
     }
 
+    public static String getRecipientsByIds(Context context,
+            String recipientIds, boolean allowQuery) {
+        String value = sRecipientAddress.get(recipientIds);
+        if (value != null) {
+            return value;
+        }
+        if (!TextUtils.isEmpty(recipientIds)) {
+            StringBuilder addressBuf = extractIdsToAddresses(context, recipientIds, allowQuery);
+            if (addressBuf == null) {
+                // temporary error? Don't memoize.
+                return "";
+            }
+            value = addressBuf.toString();
+        } else {
+            value = "";
+        }
+        sRecipientAddress.put(recipientIds, value);
+        return value;
+    }
+
+    private static StringBuilder extractIdsToAddresses(Context context, String recipients,
+            boolean allowQuery) {
+        StringBuilder addressBuf = new StringBuilder();
+        String[] recipientIds = recipients.split(" ");
+        boolean firstItem = true;
+        for (String recipientId : recipientIds) {
+            String value = sRecipientAddress.get(recipientId);
+
+            if (value == null) {
+                if (!allowQuery) {
+                    // when allowQuery is false, if any value from
+                    // sRecipientAddress.get() is null,
+                    // return null for the whole thing. We don't want to stick
+                    // partial result
+                    // into sRecipientAddress for multiple recipient ids.
+                    return null;
+                }
+
+                Uri uri = Uri.parse("content://mms-sms/canonical-address/" + recipientId);
+                Cursor c = SqliteWrapper.query(context, context.getContentResolver(), uri, null,
+                        null, null, null);
+                if (c != null) {
+                    try {
+                        if (c.moveToFirst()) {
+                            value = c.getString(0);
+                            sRecipientAddress.put(recipientId, value);
+                        }
+                    } finally {
+                        c.close();
+                    }
+                }
+            }
+            if (value == null) {
+                continue;
+            }
+            if (firstItem) {
+                firstItem = false;
+            } else {
+                addressBuf.append(";");
+            }
+            addressBuf.append(value);
+        }
+
+        return (addressBuf.length() == 0) ? null : addressBuf;
+    }
+
+    public static String getAddressByThreadId(Context context, long threadId) {
+        String[] projection = new String[] {
+                Threads.RECIPIENT_IDS
+        };
+
+        Uri.Builder builder = Threads.CONTENT_URI.buildUpon();
+        builder.appendQueryParameter("simple", "true");
+        Cursor cursor = SqliteWrapper.query(context, context.getContentResolver(), builder.build(),
+                projection, Threads._ID + "=" + threadId, null, null);
+
+        if (cursor != null) {
+            try {
+                if ((cursor.getCount() == 1) && cursor.moveToFirst()) {
+                    String address = getRecipientsByIds(context, cursor.getString(0),
+                            true /* allow query */);
+                    if (!TextUtils.isEmpty(address)) {
+                        return address;
+                    }
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        return null;
+    }
+
     /**
      * Play/view the message attachments.
      * TOOD: We need to save the draft before launching another activity to view the attachments.
@@ -1089,7 +1198,150 @@ public class MessageUtils {
         return null;
     }
 
+    public static void dialRecipient(Context context, String address, int subscription) {
+        if (!Mms.isEmailAddress(address)) {
+            Intent dialIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + address));
+            if (isMultiSimEnabledMms()) {
+                dialIntent.putExtra(SUBSCRIPTION_KEY, subscription);
+            }
+            context.startActivity(dialIntent);
+        }
+    }
+
+    /**
+     * Return whether it has card in according slot -the input subscription is 0
+     * or 1 -It is only used in DSDS
+     */
+    public static boolean hasIccCard(int subscription) {
+        boolean hasCard = false;
+        TelephonyManager telephonyManager = TelephonyManager.getDefault();
+        if (isMultiSimEnabledMms()) {
+            hasCard = telephonyManager.hasIccCard(subscription);
+        } else {
+            if (subscription == SubscriptionManager.getDefaultSubId()) {
+                hasCard = telephonyManager.hasIccCard();
+            }
+        }
+        return hasCard;
+    }
+
+    /**
+     * Return whether it has card no matter in DSDS or not
+     */
+    public static boolean hasIccCard() {
+        return TelephonyManager.getDefault().hasIccCard();
+    }
+
     private static void log(String msg) {
         Log.d(TAG, "[MsgUtils] " + msg);
+    }
+
+    public static boolean isMailboxMode() {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(MmsApp
+                .getApplication());
+        boolean ViewMode = sp.getBoolean(VIEW_MODE_NAME, false);
+        return ViewMode;
+    }
+    /**
+     * Return the sim name of subscription.
+     */
+    public static String getMultiSimName(Context context, int subscription) {
+        if (subscription >= TelephonyManager.getDefault().getPhoneCount() || subscription < 0) {
+            return null;
+        }
+        String multiSimName = Settings.System.getString(context.getContentResolver(),
+                MULTI_SIM_NAME + subscription);
+        if (multiSimName == null) {
+            if (subscription == SUB1) {
+                return context.getString(R.string.slot1);
+            } else if (subscription == SUB2) {
+                return context.getString(R.string.slot2);
+            }
+        }
+        return multiSimName;
+    }
+
+    /**
+     * Return the activated card number
+     */
+    public static int getActivatedIccCardCount() {
+        TelephonyManager tm = TelephonyManager.getDefault();
+        int phoneCount = tm.getPhoneCount();
+        if(DEBUG) Log.d(TAG, "isIccCardActivated phoneCount " + phoneCount);
+        int count = 0;
+        for (int i = 0; i < phoneCount; i++) {
+            if(DEBUG) Log.d(TAG, "isIccCardActivated subscription " + tm.getSimState(i));
+            // Because the status of slot1/2 will return SIM_STATE_UNKNOWN under airplane mode.
+            // So we add check about SIM_STATE_UNKNOWN.
+            if (isIccCardActivated(i)) {
+                count++;
+            }
+        }
+        return count;
+   }
+
+    /**
+     * Decide whether the current product  is DSDS in MMS
+     */
+    public static boolean isMultiSimEnabledMms() {
+        return TelephonyManager.getDefault().isMultiSimEnabled();
+    }
+
+    /**
+     * Return whether the card is activated according to Subscription
+     * used for DSDS
+     */
+    public static boolean isIccCardActivated(int subscription) {
+        TelephonyManager tm = TelephonyManager.getDefault();
+        if (DEBUG)
+            Log.d(TAG, "isIccCardActivated subscription " + tm.getSimState(subscription));
+        return (tm.getSimState(subscription) != TelephonyManager.SIM_STATE_ABSENT)
+                    //&& (tm.getSimState(subscription) != TelephonyManager.SIM_STATE_DEACTIVATED)
+                    && (tm.getSimState(subscription) != TelephonyManager.SIM_STATE_UNKNOWN);
+    }
+
+    /*
+     * @return the SIM icon for the special subscription.
+     */
+    public static Drawable getMultiSimIcon(Context context, int subscription) {
+        if (context == null) {
+            // If the context is null, return 0 as no resource found.
+            return null;
+        }
+
+        /*TypedArray icons = context.getResources().obtainTypedArray(
+            com.android.internal.R.array.sim_icons);
+        String simIconIndex = Settings.System.getString(
+                context.getContentResolver(), PREFERRED_SIM_ICON_INDEX);
+        if (TextUtils.isEmpty(simIconIndex)) {
+            return icons.getDrawable(subscription);
+        } else {
+            String[] indexs = simIconIndex.split(",");
+            if (subscription >= indexs.length) {
+                return null;
+            }
+            return icons.getDrawable(Integer.parseInt(indexs[subscription]));
+        }*/
+        return null;
+    }
+
+
+    public static boolean isMsimIccCardActive() {
+        if (isMultiSimEnabledMms()) {
+            if (isIccCardActivated(MessageUtils.SUB1) && isIccCardActivated(MessageUtils.SUB2)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static int getMmsDownloadStatus(int mmsStatus) {
+        if(DownloadManager.STATE_PERMANENT_FAILURE == mmsStatus) {
+            return mmsStatus;
+        } else if (!DownloadManager.getInstance().isAuto()
+                && DownloadManager.STATE_PRE_DOWNLOADING != mmsStatus) {
+            return mmsStatus & ~DownloadManager.DEFERRED_MASK;
+        }
+        return mmsStatus;
     }
 }

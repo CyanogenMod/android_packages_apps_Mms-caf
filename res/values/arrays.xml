@@ -29,4 +29,17 @@
         <item>Please call me later.</item>
         <item>Will you please call me back?</item>
     </string-array>
+
+    <string-array name="box_type">
+        <item>@string/type_inbox</item>
+        <item>@string/type_sent</item>
+        <item>@string/type_draft</item>
+        <item>@string/type_outbox</item>
+    </string-array>
+    <string-array name="slot_type">
+        <item>@string/type_all</item>
+        <item>@string/type_slot1</item>
+        <item>@string/type_slot2</item>
+    </string-array>
+
 </resources>
