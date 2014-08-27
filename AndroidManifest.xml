@@ -151,6 +151,15 @@
            </intent-filter>
         </activity>
 
+        <activity-alias android:name=".ui.ShareVCardActivity"
+            android:targetActivity=".ui.ComposeMessageActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/x-vcard" />
+            </intent-filter>
+        </activity-alias>
+
         <activity-alias android:name=".ui.ForwardMessageActivity"
                   android:targetActivity=".ui.ComposeMessageActivity"
                   android:configChanges="orientation|screenSize|keyboardHidden"
@@ -382,6 +391,11 @@
         <service android:name=".widget.MmsWidgetService"
                  android:permission="android.permission.BIND_REMOTEVIEWS"
                  android:exported="false" />
+
+        <activity android:name=".ui.MultiPickContactsActivity"
+                  android:windowSoftInputMode="stateHidden|adjustResize"
+                  android:configChanges="orientation|keyboardHidden|screenSize" >
+        </activity>
 
         <!-- Message Template Content Provider -->
         <provider android:name="MessageTemplateProvider"

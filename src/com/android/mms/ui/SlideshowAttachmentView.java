@@ -149,4 +149,8 @@ public class SlideshowAttachmentView extends LinearLayout implements
 
     public void setVideoThumbnail(String name, Bitmap bitmap) {
     }
+
+    @Override
+    public void setVcard(Uri lookupUri, String name) {
+    }
 }

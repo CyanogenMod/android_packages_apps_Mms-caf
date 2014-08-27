@@ -161,4 +161,8 @@ public class VideoAttachmentView extends LinearLayout implements
         // TODO Auto-generated method stub
 
     }
+
+    @Override
+    public void setVcard(Uri lookupUri, String name) {
+    }
 }

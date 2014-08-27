@@ -33,9 +33,12 @@ import com.android.mms.model.RegionModel;
 import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
 import com.android.mms.model.TextModel;
+import com.android.mms.model.VcardModel;
 import com.android.mms.model.VideoModel;
 import com.android.mms.ui.AdaptableSlideViewInterface.OnSizeChangedListener;
 import com.android.mms.util.ItemLoadedCallback;
+import android.net.Uri;
+import android.text.TextUtils;
 
 /**
  * A basic presenter of slides.
@@ -129,6 +132,9 @@ public class SlideshowPresenter extends Presenter {
                 presentRegionMedia(view, (RegionMediaModel) media, true);
             } else if (media.isAudio()) {
                 presentAudio(view, (AudioModel) media, true);
+            } else if (media.isText()) {
+                // the media is vcard.
+                presentVcard(view, (VcardModel) media, true);
             }
         }
     }
@@ -164,6 +170,14 @@ public class SlideshowPresenter extends Presenter {
             view.stopAudio();
         } else if (action == MediaAction.SEEK) {
             view.seekAudio(audio.getSeekTo());
+        }
+    }
+
+    protected void presentVcard(SlideViewInterface view, VcardModel vcard, boolean dataChanged) {
+        if (dataChanged) {
+            view.setVcard(
+                    TextUtils.isEmpty(vcard.getLookupUri()) ? null
+                            : Uri.parse(vcard.getLookupUri()), vcard.getSrc());
         }
     }
 

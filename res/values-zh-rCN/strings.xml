@@ -451,6 +451,7 @@
     <string name="set_smsc_error">设置短消息中心号码失败</string>
     <string name="set_smsc_success">设置短消息中心号码成功</string>
     <string name="set_smsc_confirm_message">修改短消息中心号码可能导致短信发送失败，确认修改吗？</string>
+
     <string name="contact_app_not_found">"找不到联系人应用"</string>
     <string name="search_bar_hint">"搜索联系人"</string>
     <string name="select_all">"全选"</string>
@@ -462,4 +463,12 @@
     <string name="pref_sms_store_phone">话机</string>
     <string name="pref_sms_store_card">SIM卡</string>
     <string name="pref_sms_store_card_unknown_fail">新短信接收失败，无法正确读取SIM卡</string>
+    <!-- Add for share contact feature -->
+    <string name="type_vcard">电子名片</string>
+    <string name="import_vcard">导入</string>
+    <string name="attach_add_contact_as_text">联系人信息</string>
+    <string name="attach_add_contact_as_vcard">电子名片</string>
+    <string name="contact_info_text_as_name">姓名：</string>
+    <string name="contact_info_text_as_phone">电话：</string>
+    <string name="contact_info_text_as_email">电子邮件：</string>
 </resources>

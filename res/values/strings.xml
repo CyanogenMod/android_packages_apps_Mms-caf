@@ -841,10 +841,22 @@
     <string name="copy_to_sim_fail">Unable to save message</string>
     <string name="copy_to_phone_success">Message saved</string>
     <string name="copy_to_phone_fail">Unable to save message</string>
+
     <string name="contact_app_not_found">Can not find Contact application</string>
     <!-- Gray hint displayed in the search field in Contacts when empty -->
     <string name="search_bar_hint">Search contacts</string>
     <string name="select_all">All</string>
+
+    <!-- Add for share contact feature -->
+    <string name="type_vcard">vCard</string>
+    <string name="import_vcard">Import</string>
+    <string name="attach_add_contact_as_text">Insert contact info</string>
+    <string name="attach_add_contact_as_vcard">Contact vCard</string>
+
+    <string name="contact_info_text_as_name">Name:</string>
+    <string name="contact_info_text_as_phone">Tel:</string>
+    <string name="contact_info_text_as_email">Email:</string>
+
     <!--  Strings used forh MMS push of messages in outbox -->
     <string name="label_mms_send_outbox_msg">MMS Wakeup</string>
     <string name="desc_mms_send_outbox_msg">Sends out all MMSs from the outbox to the network</string>

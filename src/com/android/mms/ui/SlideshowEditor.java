@@ -29,6 +29,7 @@ import com.android.mms.model.RegionModel;
 import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
 import com.android.mms.model.TextModel;
+import com.android.mms.model.VcardModel;
 import com.android.mms.model.VideoModel;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
@@ -176,6 +177,10 @@ public class SlideshowEditor {
         return mModel.get(position).removeAudio();
     }
 
+    public boolean removeVcard(int position) {
+        return mModel.get(position).removeVcard();
+    }
+
     public void changeText(int position, String newText) {
         if (newText != null) {
             SlideModel slide = mModel.get(position);
@@ -210,6 +215,13 @@ public class SlideshowEditor {
         SlideModel slide = mModel.get(position);
         slide.add(video);
         slide.updateDuration(video.getDuration());
+    }
+
+    public void changeVcard(int position, Uri newVcard) throws MmsException {
+        VcardModel vCard = new VcardModel(mContext, newVcard);
+        SlideModel slide = mModel.get(position);
+        slide.add(vCard);
+        slide.updateDuration(vCard.getDuration());
     }
 
     public void moveSlideUp(int position) {
