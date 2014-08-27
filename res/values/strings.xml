@@ -869,6 +869,10 @@
     <string name="label_mms_send_outbox_msg">MMS Wakeup</string>
     <string name="desc_mms_send_outbox_msg">Sends out all MMSs from the outbox to the network</string>
 
+    <string name="pref_wap_push_title">"Auto Push Service Message Setting"</string>
+    <string name="pref_title_wap_push_enabled">"Enable WAP PUSH Service"</string>
+    <string name="pref_summary_wap_push_enabled">"Enable to receive service message"</string>
+
     <!-- Banner in conversation list for making Messaging the default SMS app -->
     <string name="banner_sms_promo_title_initial">Messaging is not your SMS app</string>
     <string name="banner_sms_promo_title_application"><xliff:g id="appName">%s</xliff:g> is your SMS app</string>

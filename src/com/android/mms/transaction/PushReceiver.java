@@ -28,12 +28,14 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SqliteWrapper;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.PowerManager;
+import android.preference.PreferenceManager;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Mms.Inbox;
 import android.util.Log;
@@ -42,6 +44,8 @@ import com.android.internal.telephony.PhoneConstants;
 import com.android.mms.LogTag;
 import com.android.mms.MmsConfig;
 import com.android.mms.ui.MessagingPreferenceActivity;
+import com.android.mms.util.Recycler;
+import com.android.mms.R;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
 import com.google.android.mms.pdu.DeliveryInd;
@@ -52,6 +56,12 @@ import com.google.android.mms.pdu.PduParser;
 import com.google.android.mms.pdu.PduPersister;
 import com.google.android.mms.pdu.ReadOrigInd;
 
+
+import java.lang.Class;
+import java.lang.reflect.Method;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
 /**
  * Receives Intent.WAP_PUSH_RECEIVED_ACTION intents and starts the
  * TransactionService by passing the push-data to it.
@@ -60,6 +70,10 @@ public class PushReceiver extends BroadcastReceiver {
     private static final String TAG = LogTag.TAG;
     private static final boolean DEBUG = false;
     private static final boolean LOCAL_LOGV = false;
+    private Context mContext;
+    private static final String WAP_PUSH_MESSAGE = "pref_key_enable_wap_push";
+    private static final String WAP_PUSH_TYPE_SIC = "application/vnd.wap.sic";
+    private static final String WAP_PUSH_TYPE_SLC = "application/vnd.wap.slc";
 
     private class ReceivePushTask extends AsyncTask<Intent,Void,Void> {
         private Context mContext;
@@ -113,6 +127,35 @@ public class PushReceiver extends BroadcastReceiver {
             byte[] pushData = intent.getByteArrayExtra("data");
             if (DEBUG) {
                 Log.d(TAG, "PushReceive: pushData= " + bytesToHexString(pushData));
+            }
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+            boolean wapPushEnabled = prefs.getBoolean(WAP_PUSH_MESSAGE, true);
+
+            if (wapPushEnabled && (WAP_PUSH_TYPE_SIC.equals(intent.getType())
+                    || WAP_PUSH_TYPE_SLC.equals(intent.getType()))) {
+                ByteArrayInputStream bais = new ByteArrayInputStream(pushData);
+                try {
+                    Class mWapPushHandler = Class.forName("com.qrd.wappush.WapPushHandler");
+                    Object WapPushHandlerObj = mWapPushHandler.newInstance();
+                    Method mHandleWapPush = mWapPushHandler.getDeclaredMethod("handleWapPush",
+                            InputStream.class, String.class, Context.class, int.class);
+                    Method mGetThreadID = mWapPushHandler.getDeclaredMethod("getThreadID");
+                    Uri pushMsgUri = (Uri)mHandleWapPush.invoke(WapPushHandlerObj, bais,
+                            intent.getType(), mContext, intent.getIntExtra("subscription", 0));
+
+                    if (pushMsgUri != null) {
+                        // Called off of the UI thread so ok to block.
+                        Recycler.getSmsRecycler().deleteOldMessagesByThreadId(
+                            mContext.getApplicationContext(),
+                            (Long)mGetThreadID.invoke(WapPushHandlerObj));
+                        MessagingNotification.blockingUpdateNewMessageIndicator(
+                            mContext, (Long)mGetThreadID.invoke(WapPushHandlerObj), false);
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Wap Push Hander Error :" + e);
+                }
+
+                return null;
             }
             PduParser parser = new PduParser(pushData);
             GenericPdu pdu = parser.parse();
@@ -209,7 +252,9 @@ public class PushReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(WAP_PUSH_DELIVER_ACTION)
-                && ContentType.MMS_MESSAGE.equals(intent.getType())) {
+                && (ContentType.MMS_MESSAGE.equals(intent.getType())
+                || WAP_PUSH_TYPE_SIC.equals(intent.getType())
+                || WAP_PUSH_TYPE_SLC.equals(intent.getType())))  {
             if (LOCAL_LOGV) {
                 Log.v(TAG, "Received PUSH Intent: " + intent);
             }

@@ -50,6 +50,7 @@
     <uses-permission android:name="android.permission.MMS_SEND_OUTBOX_MSG"/>
     <uses-permission android:name="com.qualcomm.permission.USE_PHONE_SERVICE"/>
     <uses-permission android:name="android.permission.GET_TASKS"/>
+    <uses-permission android:name="android.permission.RECEIVE_WAP_PUSH" />
 
     <application android:name="MmsApp"
             android:label="@string/app_label"
@@ -57,6 +58,7 @@
             android:taskAffinity="android.task.mms"
             android:backupAgent="QTIBackupAgent"
             android:allowTaskReparenting="true">
+        <uses-library android:name="com.qrd.wappush" android:required="false" />
 
         <service android:name=".transaction.TransactionService"
                  android:exported="false" />
@@ -229,6 +231,8 @@
             <intent-filter>
                 <action android:name="android.provider.Telephony.WAP_PUSH_DELIVER" />
                 <data android:mimeType="application/vnd.wap.mms-message" />
+                <data android:mimeType="application/vnd.wap.sic" />
+                <data android:mimeType="application/vnd.wap.slc" />
             </intent-filter>
         </receiver>
      <receiver android:name=".transaction.MmsPushOutboxMessages"

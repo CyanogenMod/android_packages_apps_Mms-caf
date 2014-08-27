@@ -187,4 +187,10 @@
   <PreferenceCategory android:title="@string/pref_smsc_title"
                       android:key="pref_key_smsc" >
   </PreferenceCategory>
+  <PreferenceCategory android:title="@string/pref_wap_push_title">
+    <CheckBoxPreference android:key="pref_key_enable_wap_push"
+                        android:title="@string/pref_title_wap_push_enabled"
+                        android:summary="@string/pref_summary_wap_push_enabled"
+                        android:defaultValue="true" />
+  </PreferenceCategory>
 </PreferenceScreen>
