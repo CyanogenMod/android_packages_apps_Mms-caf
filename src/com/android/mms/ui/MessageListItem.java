@@ -63,6 +63,7 @@ import android.widget.TextView;
 
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
+import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.data.Contact;
 import com.android.mms.data.WorkingMessage;
@@ -75,7 +76,10 @@ import com.android.mms.util.DownloadManager;
 import com.android.mms.util.ItemLoadedCallback;
 import com.android.mms.util.ThumbnailManager.ImageLoaded;
 import com.google.android.mms.ContentType;
+import com.google.android.mms.MmsException;
+import com.google.android.mms.pdu.NotificationInd;
 import com.google.android.mms.pdu.PduHeaders;
+import com.google.android.mms.pdu.PduPersister;
 
 /**
  * This class provides view of a message in the messages list.
@@ -254,6 +258,28 @@ public class MessageListItem extends LinearLayout implements
                     @Override
                     public void onClick(View v) {
                         mDownloading.setVisibility(View.VISIBLE);
+                        try {
+                            NotificationInd nInd = (NotificationInd) PduPersister.getPduPersister(
+                                    mContext).load(mMessageItem.mMessageUri);
+                            Log.d(TAG, "Download notify Uri = " + mMessageItem.mMessageUri);
+                            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                            builder.setTitle(R.string.download);
+                            builder.setCancelable(true);
+                            if (MessageUtils.isMmsMemoryFull()) {
+                                builder.setMessage(mContext.getString(R.string.sms_full_body));
+                                builder.show();
+                                return;
+                            }
+                            if ((int) nInd.getMessageSize() >
+                                      MmsConfig.getMaxMessageSize()) {
+                                builder.setMessage(mContext.getString(R.string.mms_too_large));
+                                builder.show();
+                                return;
+                            }
+                        } catch (MmsException e) {
+                            Log.e(TAG, e.getMessage(), e);
+                            return;
+                        }
                         mDownloadButton.setVisibility(View.GONE);
                         Intent intent = new Intent(mContext, TransactionService.class);
                         intent.putExtra(TransactionBundle.URI, mMessageItem.mMessageUri.toString());
