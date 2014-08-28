@@ -130,7 +130,7 @@ public class SlideshowEditActivity extends ListActivity {
         TextView text = (TextView) v.findViewById(R.id.slide_number_text);
         text.setText(R.string.add_slide);
 
-        text = (TextView) v.findViewById(R.id.text_preview);
+        text = (TextView) v.findViewById(R.id.text_preview_bottom);
         text.setText(R.string.add_slide_hint);
         text.setVisibility(View.VISIBLE);
 
@@ -376,6 +376,7 @@ public class SlideshowEditActivity extends ListActivity {
             SlideListItemView slideListItemView;
             slideListItemView = (SlideListItemView) mInflater.inflate(
                     resource, null);
+            slideListItemView.setLayoutModel(mSlideshow.getLayout().getLayoutType());
 
             // Show slide number.
             TextView text;
