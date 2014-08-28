@@ -1406,6 +1406,27 @@ public class MessageUtils {
         return null;
     }
 
+    private static boolean isCDMAPhone(int subscription) {
+        boolean isCDMA = false;
+        int activePhone = isMultiSimEnabledMms()
+                ? TelephonyManager.getDefault().getCurrentPhoneType(subscription)
+                        : TelephonyManager.getDefault().getPhoneType();
+        if (TelephonyManager.PHONE_TYPE_CDMA == activePhone) {
+            isCDMA = true;
+        }
+        return isCDMA;
+    }
+
+    private static boolean isNetworkRoaming(int subscription) {
+        return isMultiSimEnabledMms()
+                ? TelephonyManager.getDefault().isNetworkRoaming(subscription)
+                : TelephonyManager.getDefault().isNetworkRoaming();
+    }
+
+    public static boolean isCDMAInternationalRoaming(int subscription) {
+        return isCDMAPhone(subscription) && isNetworkRoaming(subscription);
+    }
+
     public static boolean isMsimIccCardActive() {
         if (isMultiSimEnabledMms()) {
             if (isIccCardActivated(MessageUtils.SUB1) && isIccCardActivated(MessageUtils.SUB2)) {

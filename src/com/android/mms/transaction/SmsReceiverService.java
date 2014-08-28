@@ -77,6 +77,7 @@ import com.google.android.mms.MmsException;
  */
 public class SmsReceiverService extends Service {
     private static final String TAG = LogTag.TAG;
+    private final static String SMS_PRIORITY = "priority";
 
     private ServiceHandler mServiceHandler;
     private Looper mServiceLooper;
@@ -101,7 +102,7 @@ public class SmsReceiverService extends Service {
         Sms.BODY,       //3
         Sms.STATUS,     //4
         Sms.PHONE_ID,   //5
-
+        SMS_PRIORITY,   //6
     };
 
     public Handler mToastHandler = new Handler();
@@ -113,6 +114,7 @@ public class SmsReceiverService extends Service {
     private static final int SEND_COLUMN_BODY       = 3;
     private static final int SEND_COLUMN_STATUS     = 4;
     private static final int SEND_COLUMN_PHONE_ID   = 5;
+    private static final int SEND_COLUMN_PRIORITY   = 6;
 
 
     @Override
@@ -275,11 +277,16 @@ public class SmsReceiverService extends Service {
 
                     int msgId = c.getInt(SEND_COLUMN_ID);
                     int phoneId = c.getInt(SEND_COLUMN_PHONE_ID);
+                    int priority = c.getInt(SEND_COLUMN_PRIORITY);
                     Uri msgUri = ContentUris.withAppendedId(Sms.CONTENT_URI, msgId);
 
                     SmsMessageSender sender = new SmsSingleRecipientSender(this,
                             address, msgText, threadId, status == Sms.STATUS_PENDING,
                             msgUri, phoneId);
+
+                    if(priority != -1){
+                        ((SmsSingleRecipientSender)sender).setPriority(priority);
+                    }
 
                     if (LogTag.DEBUG_SEND ||
                             LogTag.VERBOSE ||

@@ -28,6 +28,7 @@ import android.preference.PreferenceManager;
 import android.provider.Telephony.Sms;
 import android.provider.Telephony.Sms.Inbox;
 import android.telephony.SubscriptionManager;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.android.mms.LogTag;
@@ -87,9 +88,26 @@ public class SmsMessageSender implements MessageSender {
         }
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-        boolean requestDeliveryReport = prefs.getBoolean(
-                MessagingPreferenceActivity.SMS_DELIVERY_REPORT_MODE,
-                DEFAULT_DELIVERY_REPORT_MODE);
+        boolean requestDeliveryReport = false;
+        if (TelephonyManager.getDefault().isMultiSimEnabled()) {
+            requestDeliveryReport = prefs.getBoolean((mPhoneId == 0) ?
+                    MessagingPreferenceActivity.SMS_DELIVERY_REPORT_SUB1 :
+                    MessagingPreferenceActivity.SMS_DELIVERY_REPORT_SUB2,
+                    DEFAULT_DELIVERY_REPORT_MODE);
+        } else {
+            requestDeliveryReport = prefs.getBoolean(
+                    MessagingPreferenceActivity.SMS_DELIVERY_REPORT_MODE,
+                    DEFAULT_DELIVERY_REPORT_MODE);
+        }
+
+        int priority = -1;
+        try {
+            String priorityStr = PreferenceManager.getDefaultSharedPreferences(mContext).getString(
+                    "pref_key_sms_cdma_priority", "");
+            priority = Integer.parseInt(priorityStr);
+        } catch (Exception e) {
+            Log.w(TAG, "get priority error:" + e);
+        }
 
         for (int i = 0; i < mNumberOfDests; i++) {
             try {
@@ -103,7 +121,7 @@ public class SmsMessageSender implements MessageSender {
                         mMessageText, null, mTimestamp,
                         true /* read */,
                         requestDeliveryReport,
-                        mThreadId);
+                        mThreadId, priority);
             } catch (SQLiteException e) {
                 if (LogTag.DEBUG_SEND) {
                     Log.e(TAG, "queueMessage SQLiteException", e);

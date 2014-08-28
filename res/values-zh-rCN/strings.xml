@@ -180,6 +180,8 @@
     <string name="pref_title_mms_group_mms" msgid="1251698526583908432">"群发信息"</string>
     <string name="pref_title_mms_read_reports" msgid="4882179829495828541">"已读报告"</string>
     <string name="pref_title_sms_delivery_reports" msgid="876064208254451038">"发送报告"</string>
+    <string name="pref_title_sms_delivery_reports_slot1">"卡1发送报告"</string>
+    <string name="pref_title_sms_delivery_reports_slot2">"卡2发送报告"</string>
     <string name="pref_title_auto_delete" msgid="7227835692631701134">"删除旧短信"</string>
     <string name="pref_title_sms_delete" msgid="6890538316799296878">"短信限制"</string>
     <string name="pref_title_mms_delete" msgid="7265878070847351664">"彩信限制"</string>
@@ -392,6 +394,16 @@
     <string name="slot1">"卡1"</string>
     <string name="slot2">"卡2"</string>
 
+    <string name="pref_title_sms_validity_period">"短信有效期"</string>
+    <string name="pref_title_sms_validity_period_slot1">"卡1短信有效期"</string>
+    <string name="pref_title_sms_validity_period_slot2">"卡2短信有效期"</string>
+    <string name="sms_validity_period_not_set">"不设置"</string>
+    <string name="sms_validity_period_one_hour">"1小时"</string>
+    <string name="sms_validity_period_six_hours">"6小时"</string>
+    <string name="sms_validity_period_twelve_hours">"12小时"</string>
+    <string name="sms_validity_period_one_day">"1天"</string>
+    <string name="sms_validity_period_maximum">"最长"</string>
+
     <string name="confirm_delete_selected_messages">选中的信息将被删除</string>
     <!-- menu item of mailboxmessagecontent -->
     <string name="menu_load_push">载入</string>
@@ -418,6 +430,14 @@
     <string name="type_slot2">卡2</string>
     <!-- add for showing slot type in MailBoxMessageContent -->
     <string name="slot_type">卡槽 : %s</string>
+    <!-- priority of cdma message -->
+    <string name="cdma_priority_normal">一般</string>
+    <string name="cdma_priority_interactive">交互</string>
+    <string name="cdma_priority_urgent">急</string>
+    <string name="cdma_priority_emergency">紧急</string>
+    <string name="pref_title_cdma_priority">短信优先级</string>
+    <string name="pref_summary_cdma_priority">CDMA短信优先级设置</string>
+    <string name="prefDialogTitle_cdma_priority">优先级</string>
     <string name="download_dialog_title">确认下载信息？</string>
     <string name="copy_to_sim">"复制到SIM卡"</string>
     <string name="copy_to_sim_success">"信息已保存"</string>
