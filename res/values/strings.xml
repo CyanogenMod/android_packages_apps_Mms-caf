@@ -821,6 +821,12 @@
     <!-- In message list items, this string builds the timestamp line when the message is in a group [CHAR LIMIT=NONE] -->
     <string name="message_timestamp_format"><xliff:g id="string" example="Fred Flinstone">%1$s</xliff:g>\u0020-\u0020<xliff:g id="string" example="9:39AM">%2$s</xliff:g></string>
 
+    <string name="mail_to">mailto:</string>
+    <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
+    <string name="menu_connect_url">Connect</string>
+    <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
+    <string name="menu_add_to_label">Save to bookmark</string>
+    <string name="loadurlinfo_str">Load the URL?</string>
     <!-- Message Template -->
     <string name="pref_summary_message_template">Edit message template</string>
     <string name="pref_title_message_template">Message template</string>
@@ -914,6 +920,9 @@
 
     <string name="slot1">Slot1</string>
     <string name="slot2">Slot2</string>
+
+    <string name="open_wap_push_title">Browser Information</string>
+    <string name="open_wap_push_body">Do you want to open the web site?</string>
 
     <string name="confirm_delete_selected_messages">The selected messages will be deleted.</string>
     <!-- menu item of mailboxmessagecontent -->

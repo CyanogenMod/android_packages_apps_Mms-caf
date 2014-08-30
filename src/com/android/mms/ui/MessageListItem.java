@@ -22,8 +22,12 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SqliteWrapper;
@@ -34,6 +38,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Browser;
 import android.provider.ContactsContract.Profile;
 import android.provider.Telephony.Sms;
 import android.provider.Telephony.Mms;
@@ -55,6 +60,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -73,6 +79,7 @@ import com.android.mms.model.SlideshowModel;
 import com.android.mms.transaction.Transaction;
 import com.android.mms.transaction.TransactionBundle;
 import com.android.mms.transaction.TransactionService;
+import com.android.mms.ui.WwwContextMenuActivity;
 import com.android.mms.util.DownloadManager;
 import com.android.mms.util.ItemLoadedCallback;
 import com.android.mms.util.ThumbnailManager.ImageLoaded;
@@ -729,72 +736,29 @@ public class MessageListItem extends LinearLayout implements
 
         // Check for links. If none, do nothing; if 1, open it; if >1, ask user to pick one
         final URLSpan[] spans = mBodyTextView.getUrls();
-
         if (spans.length == 0) {
-            sendMessage(mMessageItem, MSG_LIST_DETAILS);    // show the message details dialog
-        } else if (spans.length == 1) {
-            spans[0].onClick(mBodyTextView);
+            sendMessage(mMessageItem, MSG_LIST_DETAILS);
         } else {
-            ArrayAdapter<URLSpan> adapter =
-                new ArrayAdapter<URLSpan>(mContext, android.R.layout.select_dialog_item, spans) {
-                @Override
-                public View getView(int position, View convertView, ViewGroup parent) {
-                    View v = super.getView(position, convertView, parent);
-                    try {
-                        URLSpan span = getItem(position);
-                        String url = span.getURL();
-                        Uri uri = Uri.parse(url);
-                        TextView tv = (TextView) v;
-                        Drawable d = mContext.getPackageManager().getActivityIcon(
-                                new Intent(Intent.ACTION_VIEW, uri));
-                        if (d != null) {
-                            d.setBounds(0, 0, d.getIntrinsicHeight(), d.getIntrinsicHeight());
-                            tv.setCompoundDrawablePadding(10);
-                            tv.setCompoundDrawables(d, null, null, null);
-                        }
-                        final String telPrefix = "tel:";
-                        if (url.startsWith(telPrefix)) {
-                            if ((mDefaultCountryIso == null) || mDefaultCountryIso.isEmpty()) {
-                                url = url.substring(telPrefix.length());
-                            }
-                            else {
-                                url = PhoneNumberUtils.formatNumber(
-                                        url.substring(telPrefix.length()), mDefaultCountryIso);
-                            }
-                        }
-                        tv.setText(url);
-                    } catch (android.content.pm.PackageManager.NameNotFoundException ex) {
-                        // it's ok if we're unable to set the drawable for this view - the user
-                        // can still use it
+            boolean wap_push = mContext.getResources().getBoolean(R.bool.config_wap_push);
+            if (spans.length == 1 && mMessageItem != null
+                    && MessageUtils.isWapPushNumber(mMessageItem.mAddress)
+                    && wap_push) {
+                DialogInterface.OnClickListener click = new DialogInterface.OnClickListener() {
+                    @Override
+                    public final void onClick(DialogInterface dialog, int which) {
+                        spans[0].onClick(mBodyTextView);
                     }
-                    return v;
-                }
-            };
-
-            AlertDialog.Builder b = new AlertDialog.Builder(mContext);
-
-            DialogInterface.OnClickListener click = new DialogInterface.OnClickListener() {
-                @Override
-                public final void onClick(DialogInterface dialog, int which) {
-                    if (which >= 0) {
-                        spans[which].onClick(mBodyTextView);
-                    }
-                    dialog.dismiss();
-                }
-            };
-
-            b.setTitle(R.string.select_link_title);
-            b.setCancelable(true);
-            b.setAdapter(adapter, click);
-
-            b.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                @Override
-                public final void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-
-            b.show();
+                };
+                new AlertDialog.Builder(mContext)
+                        .setTitle(mContext.getString(R.string.open_wap_push_title))
+                        .setMessage(mContext.getString(R.string.open_wap_push_body))
+                        .setPositiveButton(android.R.string.ok, click)
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .setCancelable(true)
+                        .show();
+            } else {
+                MessageUtils.onMessageContentClick(mContext, mBodyTextView);
+            }
         }
     }
 

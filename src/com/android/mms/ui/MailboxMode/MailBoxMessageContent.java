@@ -405,6 +405,12 @@ public class MailBoxMessageContent extends Activity {
         mBodyTextView.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
         mBodyTextView.setTextIsSelectable(true);
         mBodyTextView.setText(mMsgText);
+        mBodyTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MessageUtils.onMessageContentClick(MailBoxMessageContent.this, mBodyTextView);
+            }
+        });
         TextView mFromTextView = (TextView) findViewById(R.id.textViewFrom);
         mFromTextView.setText(mFromtoLabel);
         TextView mNumberView = (TextView) findViewById(R.id.textViewNumber);

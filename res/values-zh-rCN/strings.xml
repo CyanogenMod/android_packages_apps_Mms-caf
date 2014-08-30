@@ -400,6 +400,12 @@
 
     <string name="sub">卡</string>
 
+    <string name="mail_to">发送邮件至:</string>
+    <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
+    <string name="menu_connect_url">连接</string>
+    <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
+    <string name="menu_add_to_label">保存到书签</string>
+    <string name="loadurlinfo_str">加载此URL?</string>
     <string name="operate_success">"操作成功！"</string>
     <string name="operate_failure">"操作失败！"</string>
     <string name="menu_reply">"回复"</string>
@@ -417,6 +423,8 @@
     <string name="sms_validity_period_one_day">"1天"</string>
     <string name="sms_validity_period_maximum">"最长"</string>
 
+    <string name="open_wap_push_title">"浏览器信息"</string>
+    <string name="open_wap_push_body">"是否要访问网站？"</string>
     <string name="confirm_delete_selected_messages">选中的信息将被删除</string>
     <!-- menu item of mailboxmessagecontent -->
     <string name="menu_load_push">载入</string>
