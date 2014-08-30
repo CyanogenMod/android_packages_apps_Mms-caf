@@ -244,6 +244,8 @@ public class DeliveryReportActivity extends ListActivity {
                 return getString(R.string.status_received);
             case PduHeaders.STATUS_REJECTED:
                 return getString(R.string.status_rejected);
+            case PduHeaders.STATUS_EXPIRED:
+                return getString(R.string.status_expired);
             default:
                 return getString(R.string.status_failed);
         }

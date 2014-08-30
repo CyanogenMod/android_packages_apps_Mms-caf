@@ -42,6 +42,16 @@
         <item>@string/type_slot2</item>
     </string-array>
 
+    <string-array name="save_time">
+        <item>@string/mms_max</item>
+        <item>@string/mms_two_days</item>
+    </string-array>
+
+    <string-array name="save_time_values">
+        <item>0</item>  <!-- maxmum -->
+        <item>172800</item>   <!--2*24*60*60 -->
+    </string-array>
+
     <string-array name="entries_sms_store_value">
         <item>0</item>
         <item>1</item>

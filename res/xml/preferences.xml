@@ -168,6 +168,13 @@
                         android:key="pref_key_mms_retrieval_during_roaming"
                         android:title="@string/pref_title_mms_retrieval_during_roaming"
                         android:summary="@string/pref_summary_mms_retrieval_during_roaming" />
+    <ListPreference android:key="pref_key_mms_expiry"
+                    android:title="@string/pref_title_mms_save_time"
+                    android:dialogTitle="@string/pref_title_mms_save_time"
+                    android:entries="@array/save_time"
+                    android:entryValues="@array/save_time_values"
+                    android:defaultValue="0"
+                    android:summary="@string/save_description" />
   </PreferenceCategory>
   <PreferenceCategory android:title="@string/pref_notification_settings_title"
                       android:key="pref_key_notification_settings">

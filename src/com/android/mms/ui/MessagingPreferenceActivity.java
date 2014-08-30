@@ -95,6 +95,10 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     public static final String GROUP_MMS_MODE           = "pref_key_mms_group_mms";
     public static final String SMS_CDMA_PRIORITY        = "pref_key_sms_cdma_priority";
 
+    // Expiry of MMS
+    private final static String EXPIRY_ONE_WEEK = "604800"; // 7 * 24 * 60 * 60
+    private final static String EXPIRY_TWO_DAYS = "172800"; // 2 * 24 * 60 * 60
+
     // Menu entries
     private static final int MENU_RESTORE_DEFAULTS    = 1;
 
@@ -121,6 +125,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private CheckBoxPreference mVibratePref;
     private CheckBoxPreference mEnableNotificationsPref;
     private CheckBoxPreference mMmsAutoRetrievialPref;
+    private ListPreference mMmsExpiryPref;
     private RingtonePreference mRingtonePref;
     private ListPreference mSmsStorePref;
     private ListPreference mSmsStoreCard1Pref;
@@ -244,6 +249,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mClearHistoryPref = findPreference("pref_key_mms_clear_history");
         mEnableNotificationsPref = (CheckBoxPreference) findPreference(NOTIFICATION_ENABLED);
         mMmsAutoRetrievialPref = (CheckBoxPreference) findPreference(AUTO_RETRIEVAL);
+        mMmsExpiryPref = (ListPreference) findPreference("pref_key_mms_expiry");
         mSmsSignaturePref = (CheckBoxPreference) findPreference("pref_key_enable_signature");
         mSmsSignatureEditPref = (EditTextPreference) findPreference("pref_key_edit_signature");
         mVibratePref = (CheckBoxPreference) findPreference(NOTIFICATION_VIBRATE);
@@ -373,6 +379,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         // Fix up the recycler's summary with the correct values
         setSmsDisplayLimit();
         setMmsDisplayLimit();
+        setMmsExpirySummary();
 
         String soundValue = sharedPreferences.getString(NOTIFICATION_RINGTONE, null);
         setRingtoneSummary(soundValue);
@@ -576,6 +583,35 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mMmsLimitPref.setSummary(
                 getString(R.string.pref_summary_delete_limit,
                         mMmsRecycler.getMessageLimit(this)));
+    }
+
+    private void setMmsExpirySummary() {
+        mMmsExpiryPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                final String value = newValue.toString();
+                mMmsExpiryPref.setValue(value);
+
+                if (value.equals(EXPIRY_ONE_WEEK)) {
+                    mMmsExpiryPref.setSummary(getString(R.string.mms_one_week));
+                } else if (value.equals(EXPIRY_TWO_DAYS)) {
+                    mMmsExpiryPref.setSummary(getString(R.string.mms_two_days));
+                } else {
+                    mMmsExpiryPref.setSummary(getString(R.string.mms_max));
+                }
+                return false;
+            }
+        });
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String expiry = prefs.getString("pref_key_mms_expiry", "");
+
+        if (expiry.equals(EXPIRY_ONE_WEEK)) {
+            mMmsExpiryPref.setSummary(getString(R.string.mms_one_week));
+        } else if (expiry.equals(EXPIRY_TWO_DAYS)) {
+            mMmsExpiryPref.setSummary(getString(R.string.mms_two_days));
+        } else {
+            mMmsExpiryPref.setSummary(getString(R.string.mms_max));
+        }
     }
 
     private void updateSignatureStatus() {

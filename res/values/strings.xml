@@ -947,6 +947,15 @@
     <string name="invalid_name_toast">Please input valid name!</string>
     <!-- add for showing slot type in MailBoxMessageContent -->
     <string name="slot_type">Slot : %s</string>
+
+    <!-- Settings item description for Mms Validity period -->
+    <string name="pref_title_mms_save_time">MMS Validity period</string>
+    <string name="mms_one_week">One week</string>
+    <string name="mms_two_days">Two days</string>
+    <string name="mms_max">Maximum</string>
+    <string name="save_description">The time of message storing in server</string>
+    <string name="status_expired">Mms expired</string>
+
     <!-- priority of cdma message -->
     <string translatable="false" name="default_cdma_priority">0</string>
     <string name="cdma_priority_normal">Normal</string>

@@ -450,6 +450,15 @@
     <string name="invalid_name_toast">请输入有效的姓名！</string>
     <!-- add for showing slot type in MailBoxMessageContent -->
     <string name="slot_type">卡槽 : %s</string>
+
+    <!-- Settings item description for Mms Validity period -->
+    <string name="pref_title_mms_save_time">彩信有效期</string>
+    <string name="mms_one_week">一周</string>
+    <string name="mms_two_days">两天</string>
+    <string name="mms_max">最长</string>
+    <string name="save_description">在服务器保存时间</string>
+    <string name="status_expired">已过期</string>
+
     <!-- priority of cdma message -->
     <string name="cdma_priority_normal">一般</string>
     <string name="cdma_priority_interactive">交互</string>
