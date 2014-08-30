@@ -406,6 +406,8 @@
     <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
     <string name="menu_add_to_label">保存到书签</string>
     <string name="loadurlinfo_str">加载此URL?</string>
+    <string name="normal_show">普通模式查看</string>
+    <string name="cannot_play">无法播放该幻灯片</string>
     <string name="operate_success">"操作成功！"</string>
     <string name="operate_failure">"操作失败！"</string>
     <string name="menu_reply">"回复"</string>

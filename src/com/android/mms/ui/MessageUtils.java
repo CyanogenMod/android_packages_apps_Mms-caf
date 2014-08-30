@@ -79,6 +79,7 @@ import android.text.format.DateUtils;
 import android.text.format.Time;
 import android.text.style.URLSpan;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -230,6 +231,14 @@ public class MessageUtils {
     private static final String REPLACE_QUOTES_2 = "''";
 
     public static final String EXTRA_KEY_NEW_MESSAGE_NEED_RELOAD = "reload";
+
+    public static final String KEY_SMS_FONTSIZE = "smsfontsize";
+    public static final int DELAY_TIME = 200;
+    public static final float FONT_SIZE_DEFAULT = 30f;
+    public static final float MAX_FONT_SIZE = 80f;
+    public static final float MIN_FONT_SIZE = 20f;
+    public static final float FONT_SIZE_STEP = 5f;
+
     //for showing memory status dialog.
     private static AlertDialog memoryStatusDialog = null;
 
@@ -1623,6 +1632,53 @@ public class MessageUtils {
             }
         }
         return false;
+    }
+
+    public static float onFontSizeScale(ArrayList<TextView> list, float scale,
+            float mFontSizeForSave) {
+        float mCurrentSize = 0;
+        if (list.size() > 0) {
+            mCurrentSize = list.get(0).getTextSize();
+        }
+        if (scale < 0.999999 || scale > 1.00001) {
+            float zoomInSize = mCurrentSize + FONT_SIZE_STEP;
+            float zoomOutSize = mCurrentSize - FONT_SIZE_STEP;
+            if (scale > 1.0 && zoomInSize <= MAX_FONT_SIZE) {
+                for (TextView view : list) {
+                    view.setTextSize(TypedValue.COMPLEX_UNIT_PX, zoomInSize);
+                    if (mFontSizeForSave != zoomInSize) {
+                        mFontSizeForSave = zoomInSize;
+                    }
+                }
+            } else if (scale < 1.0 && zoomOutSize >= MIN_FONT_SIZE) {
+                for (TextView view : list) {
+                    view.setTextSize(TypedValue.COMPLEX_UNIT_PX, zoomOutSize);
+                    if (mFontSizeForSave != zoomOutSize) {
+                        mFontSizeForSave = zoomOutSize;
+                    }
+                }
+            }
+        }
+        return mFontSizeForSave;
+    }
+
+    public static void saveTextFontSize(Context context, float value) {
+        SharedPreferences prefsms = PreferenceManager.getDefaultSharedPreferences(context);
+        prefsms.edit().putString(KEY_SMS_FONTSIZE, String.valueOf(value)).commit();
+    }
+
+    public static float getTextFontSize(Context context) {
+        SharedPreferences prefsms = PreferenceManager.
+                getDefaultSharedPreferences(context);
+        String textSize = prefsms.getString(KEY_SMS_FONTSIZE, String.valueOf(FONT_SIZE_DEFAULT));
+        float size = Float.parseFloat(textSize);
+        /* this function is a common function add this to make sure if did not save the size */
+        if (size < MIN_FONT_SIZE) {
+            return MIN_FONT_SIZE;
+        } else if (size > MAX_FONT_SIZE) {
+            return MAX_FONT_SIZE;
+        }
+        return size;
     }
 
     public static int getMmsDownloadStatus(int mmsStatus) {

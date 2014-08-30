@@ -17,6 +17,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/message_detail"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fadingEdge="vertical" >
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/outlayout"
@@ -26,36 +31,6 @@
     android:gravity="center_horizontal"
     android:isScrollContainer="true"
     android:orientation="vertical" >
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="50dip"
-                android:orientation="vertical" >
-
-                <TextView
-                    android:id="@+id/textViewBody"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:autoLink="all"
-                    android:linksClickable="false"
-                    android:paddingLeft="20dip"
-                    android:paddingRight="20dip"
-                    android:textColor="#000000"
-                    android:textSize="18dip" />
-            </LinearLayout>
-
-            <ImageView
-                android:id="@+id/titleDivider"
-                android:layout_width="match_parent"
-                android:layout_height="1dip"
-                android:layout_marginBottom="10dip"
-                android:layout_marginTop="10dip"
-                android:background="#cccccc"
-                android:gravity="fill_horizontal"
-                android:paddingLeft="15dip"
-                android:paddingRight="15dip"
-                android:scaleType="fitXY" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -135,4 +110,36 @@
                     </LinearLayout>
             </LinearLayout>
 
+            <ImageView
+                android:id="@+id/titleDivider"
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:layout_marginBottom="10dip"
+                android:layout_marginTop="10dip"
+                android:background="#cccccc"
+                android:gravity="fill_horizontal"
+                android:paddingLeft="15dip"
+                android:paddingRight="15dip"
+                android:scaleType="fitXY" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="50dip"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/textViewBody"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autoLink="all"
+                    android:linksClickable="false"
+                    android:paddingLeft="20dip"
+                    android:paddingRight="20dip"
+                    android:textColor="#000000"
+                    android:textSize="18dip" />
+            </LinearLayout>
+
 </LinearLayout>
+
+</ScrollView>
