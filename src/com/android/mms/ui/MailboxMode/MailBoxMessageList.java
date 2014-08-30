@@ -99,7 +99,6 @@ import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_READ;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_TYPE;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_STATUS;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_DATE_SENT;
-import static com.android.mms.ui.MessageListAdapter.COLUMN_THREAD_ID;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_READ;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_MESSAGE_BOX;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_DELIVERY_REPORT;
@@ -138,6 +137,7 @@ public class MailBoxMessageList extends ListActivity implements
     private final static String MESSAGE_BODY = "message_body";
     private final static String MESSAGE_SUBJECT = "message_subject";
     private final static String MESSAGE_SUBJECT_CHARSET = "message_subject_charset";
+    private final static String NEED_RESEND = "needResend";
     private final static int DELAY_TIME = 500;
     private final static int MAIL_BOX_ID_INVALID = -1;
     private final static String COUNT_TEXT_DECOLLATOR_1 = "";
@@ -264,6 +264,7 @@ public class MailBoxMessageList extends ListActivity implements
                     intent.putExtra(MESSAGE_ID, msgId);
                     intent.putExtra(MESSAGE_TYPE, type);
                     intent.putExtra(MESSAGE_BODY, c.getString(COLUMN_SMS_BODY));
+                    intent.putExtra(NEED_RESEND, true);
                     startActivity(intent);
                     return;
                 }
@@ -280,6 +281,7 @@ public class MailBoxMessageList extends ListActivity implements
                     intent.putExtra(MESSAGE_TYPE, type);
                     intent.putExtra(MESSAGE_SUBJECT, c.getString(COLUMN_MMS_SUBJECT));
                     intent.putExtra(MESSAGE_SUBJECT_CHARSET, c.getInt(COLUMN_MMS_SUBJECT_CHARSET));
+                    intent.putExtra(NEED_RESEND, true);
                     startActivity(intent);
                     return;
                 }

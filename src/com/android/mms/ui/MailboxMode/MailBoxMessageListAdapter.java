@@ -33,6 +33,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.provider.Telephony.Sms;
 import android.provider.Telephony.Mms;
+import android.provider.Telephony.MmsSms;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -61,6 +62,7 @@ import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_DATE;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_READ;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_MESSAGE_TYPE;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_MESSAGE_BOX;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_ERROR_TYPE;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_SUBJECT_CHARSET;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_SUB_ID;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_RECIPIENT_IDS;
@@ -80,6 +82,7 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
     TextView mNameView;
     TextView mBodyView;
     TextView mDateView;
+    ImageView mErrorIndicator;
     ImageView mImageViewLock;
     Drawable mBgSelectedDrawable;
     Drawable mBgUnReadDrawable;
@@ -204,6 +207,7 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
         // Set time stamp
         long date = 0;
         Drawable sendTypeIcon = null;
+        boolean isError = false;
         boolean isLocked = false;
         int msgBox = Sms.MESSAGE_TYPE_INBOX;
         boolean isUnread = false;
@@ -216,6 +220,7 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
             isUnread = (smsRead == 0 ? true : false);
             mSubscription = item.mSubID;
             addr = item.mAddress;
+            isError = item.mSmsType == Sms.MESSAGE_TYPE_FAILED;
             isLocked = item.mLocked;
             bodyStr = item.mBody;
             dateStr = item.mDateStr;
@@ -225,6 +230,8 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
             mSubscription = cursor.getInt(COLUMN_MMS_SUB_ID);
             int messageType = cursor.getInt(COLUMN_MMS_MESSAGE_TYPE);
             msgBox = cursor.getInt(COLUMN_MMS_MESSAGE_BOX);
+            isError = cursor.getInt(COLUMN_MMS_ERROR_TYPE)
+                    >= MmsSms.ERR_TYPE_GENERIC_PERMANENT;
             isLocked = cursor.getInt(COLUMN_MMS_LOCKED) != 0;
             recipientIds = cursor.getString(COLUMN_RECIPIENT_IDS);
 
@@ -265,6 +272,7 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
 
         mBodyView = (TextView) view.findViewById(R.id.msgBody);
         mDateView = (TextView) view.findViewById(R.id.textViewDate);
+        mErrorIndicator = (ImageView)view.findViewById(R.id.error);
         mImageViewLock = (ImageView) view.findViewById(R.id.imageViewLock);
         mNameView = (TextView) view.findViewById(R.id.textName);
         mAvatarView = (QuickContactBadge) view.findViewById(R.id.avatar);
@@ -273,11 +281,10 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
         formatNameView(mAddress, mName);
         updateAvatarView();
 
-        if (isLocked) {
-            mImageViewLock.setVisibility(View.VISIBLE);
-        } else {
-            mImageViewLock.setVisibility(View.GONE);
-        }
+        mImageViewLock.setVisibility(isLocked ? View.VISIBLE : View.GONE);
+
+        // Transmission error indicator.
+        mErrorIndicator.setVisibility(isError ? View.VISIBLE : View.GONE);
 
         mDateView.setText(dateStr);
         mBodyView.setText(bodyStr);

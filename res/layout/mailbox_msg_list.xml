@@ -72,12 +72,12 @@
                 android:paddingLeft="5dip"
                 android:singleLine="true" />
 
-            <TextView
-                android:id="@+id/textViewDate"
-                android:layout_width="wrap_content"
+            <ImageView android:id="@+id/error"
+                android:layout_marginLeft="3dip"
+                android:visibility="gone"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="8dip"
-                android:paddingLeft="5dip" />
+                android:layout_width="wrap_content"
+                android:src="@drawable/ic_list_alert_sms_failed" />
 
             <ImageView
                 android:id="@+id/imageViewLock"
@@ -86,6 +86,13 @@
                 android:layout_marginRight="2dip"
                 android:src="@drawable/ic_lock_message_sms"
                 android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/textViewDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="8dip"
+                android:paddingLeft="5dip" />
         </LinearLayout>
     </LinearLayout>
 
