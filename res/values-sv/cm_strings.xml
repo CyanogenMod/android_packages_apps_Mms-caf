@@ -119,4 +119,7 @@
   <string name="pref_summary_enable_emoticons">Ersätt textkänsloikoner med grafiska motsvarigheter</string>
   <string name="normal_show">Visa normalläge</string>
   <string name="cannot_play">Kan inte visa bildspelet.</string>
+  <string name="menu_conversation_options">Konversationsalternativ</string>
+  <string name="pref_title_reset_convopt_to_default">Återställ till standard</string>
+  <string name="pref_summary_reset_convopt_to_default">Återställer konversationsinställningarna till standard på applikationsnivå</string>
 </resources>

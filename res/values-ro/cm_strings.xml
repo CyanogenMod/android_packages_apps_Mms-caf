@@ -119,4 +119,7 @@
   <string name="pref_summary_enable_emoticons">Substituie emoticoanele text cu echivalentele grafice</string>
   <string name="normal_show">Vezi în modul normal</string>
   <string name="cannot_play">Slide show-ul nu poate fi prezentat.</string>
+  <string name="menu_conversation_options">Opțiuni conversație</string>
+  <string name="pref_title_reset_convopt_to_default">Resetare la valori implicite</string>
+  <string name="pref_summary_reset_convopt_to_default">Resetează setările conversațiilor la setările de nivel de aplicație</string>
 </resources>

@@ -56,7 +56,7 @@
   <string name="copy_message_text">له‌به‌رگرتنه‌وه‌ی ده‌ق</string>
   <string name="message_options">بەربژاردەکانی نامە</string>
   <string name="slideshow_options">ڕێکخستنی نیشاندانی سلاید</string>
-  <string name="done">ئه‌نجامدرا</string>
+  <string name="done">ئه‌نجام درا</string>
   <string name="move_up">جوڵانی سه‌ره‌وه‌</string>
   <string name="move_down">جوڵانی خواره‌وه‌</string>
   <string name="remove_slide">سڕینه‌وه‌ی جوڵان</string>
@@ -316,7 +316,7 @@
   <string name="confirm_clear_search_text">مێژووی گەڕان خاڵی دەکرێتەوە</string>
   <string name="pref_mms_clear_search_history_title">پاککردنەوەی مێژووی گەڕان</string>
   <string name="pref_mms_clear_search_history_summary">گەڕانەکانی پێشوتر بسڕەوە ،کە لە سندوقی گەڕان دەردەکەون</string>
-  <string name="save">پاشەکەوتکردن</string>
+  <string name="save">پاشەکەوت</string>
   <string name="storage_limits_title">سنوری نامەکان</string>
   <string name="storage_limits_message">ژمارەی ئەو نامانەی کەپاشکەوت دەکرێن  بۆ هەر گفتوگۆیەک سنوردار بکە</string>
   <string name="storage_limits_setting">سنور دیاری بکە</string>

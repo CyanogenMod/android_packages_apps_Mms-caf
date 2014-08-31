@@ -121,5 +121,5 @@
   <string name="cannot_play">Impossibile eseguire slide show.</string>
   <string name="menu_conversation_options">Opzioni conversazione</string>
   <string name="pref_title_reset_convopt_to_default">Ripristina predefinito</string>
-  <string name="pref_summary_reset_convopt_to_default">Ripristina le impostazioni della conversazione a quelle dell\'applicazione</string>
+  <string name="pref_summary_reset_convopt_to_default">Ripristina le impostazioni della conversazione a quelle dell\'app</string>
 </resources>

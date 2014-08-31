@@ -89,7 +89,7 @@
   <string name="menu_as_unread">Pažymėti kaip neperskaitytą</string>
   <string name="menu_all_as_unread">Pažymėti visus kaip neperskaitytus</string>
   <string name="confirm_mark_unread_dialog_title">Pažymėti kaip neperskaitytą?</string>
-  <string name="confirm_mark_unread_conversation">Pokalbis bus pažymėtas kaip neskaitytas.</string>
+  <string name="confirm_mark_unread_conversation">Pokalbis bus pažymėtas kaip neperskaitytas.</string>
   <string name="confirm_mark_unread_all_conversations">Visi pokalbiai bus pažymėti kaip neperskaityti.</string>
   <string name="select_recipients">Pasirinkti gavėjus</string>
   <string name="groups_header">Grupės</string>

@@ -46,6 +46,7 @@
   <string name="undelivered_msg_dialog_body">De Message konnt net geschéckt ginn.\nLeschte Versuch: <xliff:g id="message">%s</xliff:g>.</string>
   <string name="undelivered_sms_dialog_body">De Message konnt net geschéckt ginn.</string>
   <string name="delete_thread">Diskussioun läschen</string>
+  <string name="menu_forward">Weiderleeden</string>
   <string name="inline_subject">"&lt;Sujet: <xliff:g id="subject">%s</xliff:g>&gt;"</string>
   <string name="message_options">Messagenoptiounen</string>
   <string name="done">Fäerdeg</string>
