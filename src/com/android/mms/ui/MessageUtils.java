@@ -475,7 +475,7 @@ public class MessageUtils {
         return details.toString();
     }
 
-    private static String getTextMessageDetails(Context context, Cursor cursor) {
+    public static String getTextMessageDetails(Context context, Cursor cursor) {
         Log.d(TAG, "getTextMessageDetails");
 
         StringBuilder details = new StringBuilder();
@@ -487,17 +487,17 @@ public class MessageUtils {
 
         // Address: ***
         details.append('\n');
-        int smsType = cursor.getInt(MessageListAdapter.COLUMN_SMS_TYPE);
+        int smsType = cursor.getInt(cursor.getColumnIndexOrThrow(Sms.TYPE));
         if (Sms.isOutgoingFolder(smsType)) {
             details.append(res.getString(R.string.to_address_label));
         } else {
             details.append(res.getString(R.string.from_label));
         }
-        details.append(cursor.getString(MessageListAdapter.COLUMN_SMS_ADDRESS));
+        details.append(cursor.getString(cursor.getColumnIndexOrThrow(Sms.ADDRESS)));
 
         // Sent: ***
-        if (smsType == Sms.MESSAGE_TYPE_INBOX) {
-            long date_sent = cursor.getLong(MessageListAdapter.COLUMN_SMS_DATE_SENT);
+        if (smsType == Sms.MESSAGE_TYPE_SENT) {
+            long date_sent = cursor.getLong(cursor.getColumnIndexOrThrow(Sms.DATE_SENT));
             if (date_sent > 0) {
                 details.append('\n');
                 details.append(res.getString(R.string.sent_label));
@@ -515,14 +515,14 @@ public class MessageUtils {
             details.append(res.getString(R.string.sent_label));
         }
 
-        long date = cursor.getLong(MessageListAdapter.COLUMN_SMS_DATE);
+        long date = cursor.getLong(cursor.getColumnIndexOrThrow(Sms.DATE));
         details.append(MessageUtils.formatTimeStampString(context, date, true));
 
         // Delivered: ***
         if (smsType == Sms.MESSAGE_TYPE_SENT) {
             // For sent messages with delivery reports, we stick the delivery time in the
             // date_sent column (see MessageStatusReceiver).
-            long dateDelivered = cursor.getLong(MessageListAdapter.COLUMN_SMS_DATE_SENT);
+            long dateDelivered = cursor.getLong(cursor.getColumnIndexOrThrow(Sms.DATE_SENT));
             if (dateDelivered > 0) {
                 details.append('\n');
                 details.append(res.getString(R.string.delivered_label));
@@ -531,7 +531,7 @@ public class MessageUtils {
         }
 
         // Error code: ***
-        int errorCode = cursor.getInt(MessageListAdapter.COLUMN_SMS_ERROR_CODE);
+        int errorCode = cursor.getInt(cursor.getColumnIndexOrThrow(Sms.ERROR_CODE));
         if (errorCode != 0) {
             details.append('\n')
                 .append(res.getString(R.string.error_code_label))
@@ -1330,6 +1330,13 @@ public class MessageUtils {
     }
 
     /**
+     * Returns true if the address is callable.
+     */
+    public static boolean isRecipientCallable(String address) {
+        return (!Mms.isEmailAddress(address) && !isWapPushNumber(address));
+    }
+
+    /**
      * parse the input address to be a valid MMS address.
      * - if the address is an email address, leave it as is.
      * - if the address can be parsed into a valid MMS phone number, return the parsed number.
@@ -1364,6 +1371,18 @@ public class MessageUtils {
             }
             context.startActivity(dialIntent);
         }
+    }
+
+    public static void dialNumber(Context context, String number) {
+        Intent dialIntent;
+        if (isMsimIccCardActive()) {
+            dialIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("tel:"
+                    + number));
+        } else {
+            dialIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:"
+                    + number));
+        }
+        context.startActivity(dialIntent);
     }
 
     /**

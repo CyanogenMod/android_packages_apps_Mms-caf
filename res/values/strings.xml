@@ -964,8 +964,6 @@
     <string name="search_as_number">Number</string>
     <string name="search_as_content">Content</string>
     <string name="invalid_name_toast">Please input valid name!</string>
-    <!-- add for showing slot type in MailBoxMessageContent -->
-    <string name="slot_type">Slot : %s</string>
 
     <!-- Settings item description for Mms Validity period -->
     <string name="pref_title_mms_save_time">MMS Validity period</string>

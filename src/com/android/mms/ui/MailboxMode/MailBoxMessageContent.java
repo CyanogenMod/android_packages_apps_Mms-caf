@@ -47,6 +47,8 @@ import android.provider.ContactsContract;
 import android.provider.ContactsContract.Contacts;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Sms;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -68,29 +70,28 @@ import com.android.mms.R;
 import com.android.mms.transaction.MessageSender;
 import com.android.mms.transaction.MessagingNotification;
 import com.android.mms.transaction.SmsMessageSender;
+import com.android.mms.ui.ComposeMessageActivity;
+import com.android.mms.ui.MessageUtils;
 import com.google.android.mms.MmsException;
 
 public class MailBoxMessageContent extends Activity {
-    private static final String TAG = "MailBoxMessageContent";
+    private static final String TAG = "MessageDetailActivity";
     private Uri mMessageUri;
     private int mMsgId;
     private long mMsgThreadId;// threadid of message
     private String mMsgText;// Text of message
     private String mMsgFrom;
-    private String mFromtoLabel;
-    private String mSendLabel;
-    private String mDisplayName;
-    private String mMsgTime;// Date of message
-    private Long mDateLongFormat;
     private int mMsgstatus;
     private int mRead;
     private int mMailboxId;
     private int mMsgType = Sms.MESSAGE_TYPE_INBOX;
     private boolean mLock = false;
+    private boolean mIsConvMode;
 
-    private int mSubID = MessageUtils.SUB_INVALID;
     private Cursor mCursor = null;
 
+    private ViewPager mContentPager;
+    private MessageDetailAdapter mPagerAdapter;
     private TextView mBodyTextView;
     /*Operations for gesture to scale the current text fontsize of content*/
     private float mScaleFactor = 1;
@@ -104,8 +105,9 @@ public class MailBoxMessageContent extends Activity {
     private static final int MENU_SAVE_TO_CONTACT = Menu.FIRST + 5;
     private static final int MENU_LOCK = Menu.FIRST + 6;
 
-    private BackgroundDeleteHandler mBackgroundDeleteHandler;
+    private BackgroundHandler mBackgroundHandler;
     private static final int DELETE_MESSAGE_TOKEN = 6701;
+    private static final int QUERY_MESSAGE_TOKEN = 6702;
 
     private static final int OPERATE_DEL_SINGLE_OVER = 1;
     private static final int UPDATE_TITLE = 2;
@@ -124,7 +126,10 @@ public class MailBoxMessageContent extends Activity {
         Sms.BODY,
         Sms.PHONE_ID,
         Sms.LOCKED,
-        Sms.DATE_SENT
+        Sms.DATE_SENT,
+        Sms.TYPE,
+        Sms.ERROR_CODE,
+        Sms._ID
     };
 
     private static final int COLUMN_THREAD_ID = 0;
@@ -134,6 +139,9 @@ public class MailBoxMessageContent extends Activity {
     private static final int COLUMN_SMS_SUBID = 4;
     private static final int COLUMN_SMS_LOCKED = 5;
     private static final int COLUMN_DATE_SENT = 6;
+    private static final int COLUMN_SMS_TYPE = 7;
+    private static final int COLUMN_SMS_ERROR_CODE = 8;
+    private static final int COLUMN_ID = 9;
 
     private static final int SMS_ADDRESS_INDEX = 0;
     private static final int SMS_BODY_INDEX = 1;
@@ -149,6 +157,8 @@ public class MailBoxMessageContent extends Activity {
         public boolean onScale(ScaleGestureDetector detector) {
             mFontSizeForSave = MessageUtils.onFontSizeScale(mSlidePaperItemTextViews,
                     detector.getScaleFactor(), mFontSizeForSave);
+            mPagerAdapter.setBodyFontSize(mFontSizeForSave);
+            mPagerAdapter.notifyDataSetChanged();
             return true;
         }
 
@@ -168,13 +178,13 @@ public class MailBoxMessageContent extends Activity {
 
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setProgressBarIndeterminateVisibility(true);
-        setContentView(R.layout.mailbox_msg_detail);
+        setContentView(R.layout.message_detail_viewpaper);
         mContentResolver = getContentResolver();
-        mBackgroundDeleteHandler = new BackgroundDeleteHandler(mContentResolver);
+        mBackgroundHandler = new BackgroundHandler(mContentResolver);
         mSlidePaperItemTextViews = new ArrayList<TextView>();
 
         getIntentData();
-        initUi();
+        startQuerySmsContent();;
     }
 
     @Override
@@ -247,19 +257,7 @@ public class MailBoxMessageContent extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case MENU_CALL_RECIPIENT:
-                if (MessageUtils.isMultiSimEnabledMms()) {
-                    if (MessageUtils.getActivatedIccCardCount() > 1) {
-                        showCallSelectDialog();
-                    } else {
-                        if (MessageUtils.isIccCardActivated(MessageUtils.SUB1)) {
-                            MessageUtils.dialRecipient(this, mMsgFrom, MessageUtils.SUB1);
-                        } else if (MessageUtils.isIccCardActivated(MessageUtils.SUB2)) {
-                            MessageUtils.dialRecipient(this, mMsgFrom, MessageUtils.SUB2);
-                        }
-                    }
-                } else {
-                    MessageUtils.dialRecipient(this, mMsgFrom, MessageUtils.SUB_INVALID);
-                }
+                MessageUtils.dialNumber(this,mMsgFrom);
                 break;
             case MENU_DELETE:
                 mLock = isLockMessage();
@@ -303,24 +301,6 @@ public class MailBoxMessageContent extends Activity {
                 : R.string.confirm_delete_message);
         builder.setPositiveButton(R.string.delete, listener);
         builder.setNegativeButton(R.string.no, null);
-        builder.show();
-    }
-
-    private void showCallSelectDialog() {
-        String[] items = new String[MessageUtils.getActivatedIccCardCount()];
-        for (int i = 0; i < items.length; i++) {
-            items[i] = MessageUtils.getMultiSimName(this, i);
-        }
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.menu_call));
-        builder.setCancelable(true);
-        builder.setItems(items, new DialogInterface.OnClickListener() {
-            public final void onClick(DialogInterface dialog, int which) {
-                MessageUtils.dialRecipient(MailBoxMessageContent.this, mMsgFrom, which);
-                dialog.dismiss();
-            }
-        });
         builder.show();
     }
 
@@ -422,17 +402,30 @@ public class MailBoxMessageContent extends Activity {
         mMsgThreadId = intent.getLongExtra("sms_threadid", -1);
         mMsgText = intent.getStringExtra("sms_body");
         mMsgFrom = intent.getStringExtra("sms_fromto");
-        mFromtoLabel = intent.getStringExtra("sms_fromtolabel");
-        mSendLabel = intent.getStringExtra("sms_sendlabel");
-        mDisplayName = intent.getStringExtra("sms_displayname");
-        mDateLongFormat = intent.getLongExtra("sms_datelongformat", -1);
         mMsgstatus = intent.getIntExtra("sms_status", -1);
         mRead = intent.getIntExtra("sms_read", 0);
         mMailboxId = intent.getIntExtra("mailboxId", Sms.MESSAGE_TYPE_INBOX);
         mLock = intent.getIntExtra("sms_locked", 0) != 0;
-        mSubID = intent.getIntExtra("sms_subid", MessageUtils.SUB_INVALID);
-        mMsgTime = MessageUtils.formatTimeStampString(this, mDateLongFormat);
         mMsgType = intent.getIntExtra("sms_type", Sms.MESSAGE_TYPE_INBOX);
+    }
+
+    private void startQuerySmsContent() {
+        mMsgId = Integer.parseInt(mMessageUri.getLastPathSegment());
+        mBackgroundHandler.startQuery(QUERY_MESSAGE_TOKEN, 0,
+                Sms.CONTENT_URI,
+                SMS_DETAIL_PROJECTION,
+                getSwapSmsSetection(),
+                null, "_id ASC");
+    }
+
+    private String getSwapSmsSetection() {
+        String selection;
+        if (mIsConvMode) {
+            selection = Sms.THREAD_ID + "=" + mMsgThreadId;
+        } else {
+            selection = Sms.TYPE + "=" + mMailboxId;
+        }
+        return selection;
     }
 
     private void initUi() {
@@ -440,40 +433,14 @@ public class MailBoxMessageContent extends Activity {
 
         mScaleDetector = new ScaleGestureDetector(this, new MyScaleListener());
 
-        mBodyTextView = (TextView) findViewById(R.id.textViewBody);
-        mBodyTextView
-                .setTextSize(TypedValue.COMPLEX_UNIT_PX, MessageUtils.getTextFontSize(this));
-        mBodyTextView.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-        mBodyTextView.setTextIsSelectable(true);
-        mBodyTextView.setText(mMsgText);
-        mBodyTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MessageUtils.onMessageContentClick(MailBoxMessageContent.this, mBodyTextView);
-            }
-        });
-        mSlidePaperItemTextViews.add(mBodyTextView);
-        TextView mFromTextView = (TextView) findViewById(R.id.textViewFrom);
-        mFromTextView.setText(mFromtoLabel);
-        TextView mNumberView = (TextView) findViewById(R.id.textViewNumber);
-        mNumberView.setText(mMsgFrom);
-        TextView mTimeTextView = (TextView) findViewById(R.id.textViewTime);
-        mTimeTextView.setText(mSendLabel);
-        TextView mTimeDetailTextView = (TextView) findViewById(R.id.textViewTimeDetail);
-        mTimeDetailTextView.setText(mMsgTime);
-        TextView mSlotTypeView = (TextView) findViewById(R.id.textViewSlotType);
-
-        if (MessageUtils.isMultiSimEnabledMms()) {
-            mSlotTypeView.setVisibility(View.VISIBLE);
-            mSlotTypeView.setText(getString(R.string.slot_type,
-                    MessageUtils.getMultiSimName(this, mSubID)));
+        Cursor cursor = moveCursorToCurrentMsg(mCursor, mMsgId);
+        if (cursor != null) {
+            mPagerAdapter = new MessageDetailAdapter(this, cursor);
+            mPagerAdapter.setScaleTextList(mSlidePaperItemTextViews);
+            mContentPager = (ViewPager) findViewById(R.id.details_view_pager);
+            mContentPager.setAdapter(mPagerAdapter);
+            mContentPager.setCurrentItem(cursor.getPosition());
         }
-
-        if (!TextUtils.isEmpty(mDisplayName) && !mDisplayName.equals(mMsgFrom)) {
-            String numberStr = mDisplayName + " <" + mMsgFrom + ">";
-            mNumberView.setText(numberStr);
-        }
-
         if (mRead == 0) {
             if (mSetReadThread == null) {
                 mSetReadThread = new SetReadThread();
@@ -487,6 +454,17 @@ public class MailBoxMessageContent extends Activity {
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
+    private Cursor moveCursorToCurrentMsg(Cursor cursor, int id) {
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                if (id == cursor.getInt(COLUMN_ID)) {
+                    return cursor;
+                }
+            } while (cursor.moveToNext());
+        }
+        return null;
+    }
+
     private class DeleteMessageListener implements OnClickListener {
         @Override
         public void onClick(DialogInterface dialog, int whichButton) {
@@ -494,7 +472,7 @@ public class MailBoxMessageContent extends Activity {
 
             new AsyncTask<Void, Void, Void>() {
                 protected Void doInBackground(Void... none) {
-                    mBackgroundDeleteHandler.startDelete(DELETE_MESSAGE_TOKEN, null, mMessageUri,
+                    mBackgroundHandler.startDelete(DELETE_MESSAGE_TOKEN, null, mMessageUri,
                             mLock ? null : "locked=0", null);
                     return null;
                 }
@@ -502,9 +480,27 @@ public class MailBoxMessageContent extends Activity {
         }
     }
 
-    private final class BackgroundDeleteHandler extends AsyncQueryHandler {
-        public BackgroundDeleteHandler(ContentResolver contentResolver) {
+    private final class BackgroundHandler extends AsyncQueryHandler {
+        public BackgroundHandler(ContentResolver contentResolver) {
             super(contentResolver);
+        }
+
+        @Override
+        protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
+            switch (token) {
+                case QUERY_MESSAGE_TOKEN:
+                    if (cursor == null) {
+                        Log.e(TAG, "onQueryComplete: cursor is null!");
+                        return;
+                    }
+                    if (mCursor != null) {
+                        mCursor.close();
+                    }
+                    mCursor = cursor;
+                    mCursor.moveToFirst();
+                    initUi();
+                    break;
+            }
         }
 
         @Override

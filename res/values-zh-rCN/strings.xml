@@ -464,8 +464,6 @@
     <string name="search_as_number">号码</string>
     <string name="search_as_content">内容</string>
     <string name="invalid_name_toast">请输入有效的姓名！</string>
-    <!-- add for showing slot type in MailBoxMessageContent -->
-    <string name="slot_type">卡槽 : %s</string>
 
     <!-- Settings item description for Mms Validity period -->
     <string name="pref_title_mms_save_time">彩信有效期</string>

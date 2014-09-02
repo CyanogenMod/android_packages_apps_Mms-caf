@@ -388,18 +388,9 @@ public class MailBoxMessageList extends ListActivity implements
                 + "/" + c.getString(COLUMN_ID);
         int smsType = c.getInt(COLUMN_SMS_TYPE);
 
-        if (smsType == Sms.MESSAGE_TYPE_INBOX) {
-            i.putExtra("sms_fromtolabel", getString(R.string.from_label));
-            i.putExtra("sms_sendlabel", getString(R.string.received_label));
-        } else {
-            i.putExtra("sms_fromtolabel", getString(R.string.to_address_label));
-            i.putExtra("sms_sendlabel", getString(R.string.sent_label));
-        }
-        i.putExtra("sms_datelongformat", date);
         i.putExtra("sms_datesentlongformat", c.getLong(COLUMN_SMS_DATE_SENT));
         i.putExtra("sms_body", c.getString(COLUMN_SMS_BODY));
         i.putExtra("sms_fromto", addr);
-        i.putExtra("sms_displayname", Contact.get(addr, true).getName());
         i.putExtra("sms_date", dateStr);
         i.putExtra("msg_uri", Uri.parse(msgUriStr));
         i.putExtra("sms_threadid", c.getLong(COLUMN_THREAD_ID));
@@ -411,8 +402,8 @@ public class MailBoxMessageList extends ListActivity implements
         i.putExtra("sms_on_uim", false);
         i.putExtra("sms_type", smsType);
         i.putExtra("sms_locked", c.getInt(COLUMN_SMS_LOCKED));
-        i.putExtra("sms_subid", c.getInt(COLUMN_PHONE_ID));
         i.putExtra("sms_select_text", true);
+        i.putExtra("is_conv_mode", false);
         startActivity(i);
     }
 

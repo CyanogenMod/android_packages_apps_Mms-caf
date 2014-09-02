@@ -104,7 +104,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.MailBoxMessageContent"
+        <activity android:name=".ui.MailboxMode.MailBoxMessageContent"
             android:label="@string/message_detail"
             android:theme="@style/MmsHoloTheme"
             android:configChanges="orientation|screenSize|keyboardHidden"

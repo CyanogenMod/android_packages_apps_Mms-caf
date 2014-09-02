@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.AsyncQueryHandler;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -88,16 +90,22 @@ public class MobilePaperShowActivity extends Activity {
     private SlideshowModel mSlideModel;
     private SlideshowPresenter mPresenter;
     private LinearLayout mRootView;
+    private TextView mDetailsText;
+    private String mNumber;
     private Intent mIntent;
     private Uri mUri;
     private ScaleGestureDetector mScaleDetector;
     private ScrollView mScrollViewPort;
+    private Cursor mCursor;
 
     private float mFontSizeForSave = MessageUtils.FONT_SIZE_DEFAULT;
     private Handler mHandler;
     private ArrayList<TextView> mSlidePaperItemTextViews;
     private boolean mOnScale;
 
+    private static final int QUERY_MESSAGE_TOKEN = 6702;
+    private BackgroundQueryHandler mAsyncQueryHandler;
+    private static final String MAILBOX_URI = "content://mms-sms/mailbox/";
     private Runnable mStopScaleRunnable = new Runnable() {
         @Override
         public void run() {
@@ -137,14 +145,16 @@ public class MobilePaperShowActivity extends Activity {
         mUri = mIntent.getData();
         mMailboxId = getMmsMessageBoxID(this, mUri);
         mRootView = (LinearLayout) findViewById(R.id.view_root);
+        mDetailsText = (TextView)findViewById(R.id.message_details);
+        mNumber = AddressUtils.getFrom(this, mUri);
         mSlideView = (FrameLayout) findViewById(R.id.view_scroll);
         mScaleDetector = new ScaleGestureDetector(this, new MyScaleListener());
         initSlideModel();
-        drawRootView();
         markAsReadIfNeed();
 
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle(getString(R.string.message_details_title));
     }
 
     private void initSlideModel() {
@@ -168,6 +178,15 @@ public class MobilePaperShowActivity extends Activity {
             } else {
                 setTitle("");
             }
+
+            String mailboxUri = MAILBOX_URI + mMailboxId;
+            mAsyncQueryHandler = new BackgroundQueryHandler(
+                    getContentResolver());
+            mAsyncQueryHandler.startQuery(QUERY_MESSAGE_TOKEN, 0,
+                    Uri.parse(mailboxUri),
+                    MessageListAdapter.MAILBOX_PROJECTION, "pdu._id= "
+                            + mUri.getLastPathSegment(), null,
+                    "normalized_date DESC");
 
         } catch (MmsException e) {
             Log.e(TAG, "Cannot present the slide show.", e);
@@ -204,6 +223,14 @@ public class MobilePaperShowActivity extends Activity {
         return super.dispatchTouchEvent(ev);
     }
 
+    private void setDetailsView() {
+        // Add message details.
+        String messageDetails = MessageUtils.getMessageDetails(
+                MobilePaperShowActivity.this, mCursor,
+                mSlideModel.getTotalMessageSize());
+        mDetailsText.setText(messageDetails);
+    }
+
     private void drawRootView() {
         if (mSlidePaperItemTextViews == null) {
             mSlidePaperItemTextViews = new ArrayList<TextView>();
@@ -233,6 +260,9 @@ public class MobilePaperShowActivity extends Activity {
             mRootView.addView(view);
             mSlidePaperItemTextViews.add(contentText);
         }
+
+        // Add message details.
+        setDetailsView();
 
         if (mScrollViewPort == null) {
             mScrollViewPort = new ScrollView(this) {
@@ -307,7 +337,12 @@ public class MobilePaperShowActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         if (Mms.MESSAGE_BOX_INBOX == mMailboxId) {
             menu.add(0, MENU_REPLY, 0, R.string.menu_reply);
-            menu.add(0, MENU_CALL, 0, R.string.menu_call);
+            if (MessageUtils.isRecipientCallable(mNumber)) {
+                menu.add(0, MENU_CALL, 0, R.string.menu_call)
+                        .setIcon(R.drawable.ic_menu_call)
+                        .setTitle(R.string.menu_call)
+                        .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            }
         }
         menu.add(0, MENU_SLIDESHOW, 0, R.string.view_slideshow);
         return true;
@@ -322,12 +357,12 @@ public class MobilePaperShowActivity extends Activity {
                         mIntent.getBooleanExtra("mms_report", false));
                 break;
             case MENU_REPLY: {
-                replyMessage(this, AddressUtils.getFrom(this, mUri));
+                replyMessage(this, mNumber);
                 finish();
                 break;
             }
             case MENU_CALL:
-                call();
+                MessageUtils.dialNumber(this,mNumber);
                 break;
             case android.R.id.home:
                 finish();
@@ -338,66 +373,30 @@ public class MobilePaperShowActivity extends Activity {
         return true;
     }
 
+    private final class BackgroundQueryHandler extends AsyncQueryHandler {
+        public BackgroundQueryHandler(ContentResolver contentResolver) {
+            super(contentResolver);
+        }
+
+        @Override
+        protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
+            if (cursor != null) {
+                if (mCursor != null) {
+                    mCursor.close();
+                }
+                mCursor = cursor;
+                mCursor.moveToFirst();
+            }
+            drawRootView();
+            invalidateOptionsMenu();
+        }
+    }
+
     private void replyMessage(Context context, String number) {
         Intent intent = new Intent(context, ComposeMessageActivity.class);
         intent.putExtra("address", number);
         intent.putExtra("msg_reply", true);
         context.startActivity(intent);
-    }
-
-    private void call() {
-        String msgFromTo = null;
-        if (mMailboxId == Mms.MESSAGE_BOX_INBOX) {
-            msgFromTo = AddressUtils.getFrom(this, mUri);
-        }
-        if (msgFromTo == null) {
-            return;
-        }
-
-        if (MessageUtils.isMultiSimEnabledMms()) {
-            if (MessageUtils.getActivatedIccCardCount() > 1) {
-                showCallSelectDialog(msgFromTo);
-            } else {
-                if (MessageUtils.isIccCardActivated(MessageUtils.SUB1)) {
-                    MessageUtils.dialRecipient(this, msgFromTo, MessageUtils.SUB1);
-                } else if (MessageUtils.isIccCardActivated(MessageUtils.SUB2)) {
-                    MessageUtils.dialRecipient(this, msgFromTo, MessageUtils.SUB2);
-                }
-            }
-        } else {
-            MessageUtils.dialRecipient(this, msgFromTo, MessageUtils.SUB_INVALID);
-        }
-    }
-
-    private void showCallSelectDialog(final String msgFromTo) {
-        String[] items = new String[MessageUtils.getActivatedIccCardCount()];
-        for (int i = 0; i < items.length; i++) {
-            items[i] = MessageUtils.getMultiSimName(this, i);
-        }
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.menu_call));
-        builder.setCancelable(true);
-        builder.setItems(items, new DialogInterface.OnClickListener() {
-            public final void onClick(DialogInterface dialog, int which) {
-                if (which == 0) {
-                    new Thread(new Runnable() {
-                        public void run() {
-                            MessageUtils.dialRecipient(MobilePaperShowActivity.this, msgFromTo,
-                                    MessageUtils.SUB1);
-                        }
-                    }).start();
-                } else {
-                    new Thread(new Runnable() {
-                        public void run() {
-                            MessageUtils.dialRecipient(MobilePaperShowActivity.this, msgFromTo,
-                                    MessageUtils.SUB2);
-                        }
-                    }).start();
-                }
-                dialog.dismiss();
-            }
-        });
-        builder.show();
     }
 
     private int getMmsMessageBoxID(Context context, Uri uri) {
