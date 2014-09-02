@@ -63,6 +63,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -74,6 +75,7 @@ import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.data.Contact;
 import com.android.mms.data.WorkingMessage;
+import com.android.mms.model.LayoutModel;
 import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
 import com.android.mms.transaction.Transaction;
@@ -99,7 +101,11 @@ public class MessageListItem extends LinearLayout implements
     private static final String TAG = LogTag.TAG;
     private static final boolean DEBUG = false;
     private static final boolean DEBUG_DONT_LOAD_IMAGES = false;
+    // The message is from Browser
+    private static final String BROWSER_ADDRESS = "Browser Information";
     private static final String CANCEL_URI = "canceluri";
+    // transparent background
+    private static final int ALPHA_TRANSPARENT = 0;
 
     static final int MSG_LIST_EDIT    = 1;
     static final int MSG_LIST_PLAY    = 2;
@@ -114,8 +120,12 @@ public class MessageListItem extends LinearLayout implements
     private ImageButton mSlideShowButton;
     private TextView mSimMessageAddress;
     private TextView mBodyTextView;
+    private TextView mBodyButtomTextView;
+    private TextView mBodyTopTextView;
     private Button mDownloadButton;
     private View mDownloading;
+    private LinearLayout mMmsLayout;
+    private CheckBox mChecked;
     private Handler mHandler;
     private MessageItem mMessageItem;
     private String mDefaultCountryIso;
@@ -127,6 +137,7 @@ public class MessageListItem extends LinearLayout implements
     private int mPosition;      // for debugging
     private ImageLoadedCallback mImageLoadedCallback;
     private boolean mMultiRecipients;
+    private int mManageMode;
 
     public MessageListItem(Context context) {
         super(context);
@@ -153,7 +164,10 @@ public class MessageListItem extends LinearLayout implements
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mBodyTextView = (TextView) findViewById(R.id.text_view);
+        mBodyTopTextView = (TextView) findViewById(R.id.text_view_top);
+        mBodyTopTextView.setVisibility(View.GONE);
+        mBodyButtomTextView = (TextView) findViewById(R.id.text_view_buttom);
+        mBodyButtomTextView.setVisibility(View.GONE);
         mDateView = (TextView) findViewById(R.id.date_view);
         mLockedIndicator = (ImageView) findViewById(R.id.locked_indicator);
         mDeliveredIndicator = (ImageView) findViewById(R.id.delivered_indicator);
@@ -162,6 +176,25 @@ public class MessageListItem extends LinearLayout implements
         mSimIndicatorView = (ImageView) findViewById(R.id.sim_indicator_icon);
         mMessageBlock = findViewById(R.id.message_block);
         mSimMessageAddress = (TextView) findViewById(R.id.sim_message_address);
+        mMmsLayout = (LinearLayout) findViewById(R.id.mms_layout_view_parent);
+        mChecked = (CheckBox) findViewById(R.id.selected_check);
+    }
+
+    // add for setting the background according to whether the item is selected
+    public void markAsSelected(boolean selected) {
+        if (selected) {
+            if (mChecked != null) {
+                mChecked.setChecked(selected);
+            }
+            mMessageBlock.getBackground().setAlpha(ALPHA_TRANSPARENT);
+            mMmsLayout.setBackgroundResource(R.drawable.list_selected_holo_light);
+        } else {
+            if (mChecked != null) {
+                mChecked.setChecked(selected);
+            }
+            mMessageBlock.setBackgroundResource(R.drawable.listitem_background);
+            mMmsLayout.setBackgroundResource(R.drawable.listitem_background);
+        }
     }
 
     public void bind(MessageItem msgItem, boolean convHasMultiRecipients, int position) {
@@ -172,7 +205,12 @@ public class MessageListItem extends LinearLayout implements
         }
         boolean sameItem = mMessageItem != null && mMessageItem.mMsgId == msgItem.mMsgId;
         mMessageItem = msgItem;
-
+        if (mMessageItem.isMms() && mMessageItem.mLayoutType == LayoutModel.LAYOUT_TOP_TEXT) {
+            mBodyTextView = mBodyTopTextView;
+        } else {
+            mBodyTextView = mBodyButtomTextView;
+        }
+        mBodyTextView.setVisibility(View.VISIBLE);
         mPosition = position;
         mMultiRecipients = convHasMultiRecipients;
 
@@ -355,6 +393,10 @@ public class MessageListItem extends LinearLayout implements
             avatarDrawable = sDefaultContactImage;
         }
         mAvatar.setImageDrawable(avatarDrawable);
+    }
+
+    public TextView getBodyTextView() {
+        return mBodyTextView;
     }
 
     private void bindCommonMessage(final boolean sameItem) {
@@ -674,7 +716,13 @@ public class MessageListItem extends LinearLayout implements
     }
 
     private boolean isSimCardMessage() {
-        return mContext instanceof ManageSimMessages;
+        return mContext instanceof ManageSimMessages
+                || (mContext instanceof ManageMultiSelectAction &&
+                mManageMode == MessageUtils.SIM_MESSAGE_MODE);
+    }
+
+    public void setManageSelectMode(int manageMode) {
+        mManageMode = manageMode;
     }
 
     private void drawPlaybackButton(MessageItem msgItem) {

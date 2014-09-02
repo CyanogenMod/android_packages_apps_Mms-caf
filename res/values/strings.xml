@@ -92,6 +92,7 @@
     <string name="delete_thread">Delete thread</string>
     <!-- Context menu item on an individual message for forwarding it to another recipient -->
     <string name="menu_forward">Forward</string>
+    <string name="menu_forward_conversation">Forward conversation</string>
     <!-- Context menu item on an failed message for resending -->
     <string name="menu_resend">Resend</string>
     <!-- Text of a button appearing for MMS messages that have not yet been downloaded, causing the message
@@ -969,6 +970,16 @@
     <string name="save_description">The time of message storing in server</string>
     <string name="status_expired">Mms expired</string>
 
+    <!-- batch delete message in ConversationList and MailBoxMessageList -->
+    <string name="selected_all">Select all</string>
+    <string name="deselected_all">Deselect all</string>
+    <string name="selected_count"><xliff:g id="COUNT">%d</xliff:g> selected</string>
+    <!--add for toast when deleting -->
+    <string name="deleting_title">Deleting</string>
+    <string name="please_wait">Please waiting...</string>
+    <string name="done_delete">DONE</string>
+    <!--add for toast when merging sms -->
+    <string name="merging_sms_title">Merging sms</string>
     <!-- priority of cdma message -->
     <string translatable="false" name="default_cdma_priority">0</string>
     <string name="cdma_priority_normal">Normal</string>

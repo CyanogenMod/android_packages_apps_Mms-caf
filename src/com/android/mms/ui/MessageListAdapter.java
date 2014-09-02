@@ -117,6 +117,23 @@ public class MessageListAdapter extends CursorAdapter {
         Mms.PHONE_ID,   // add for DSDS
         Threads.RECIPIENT_IDS  // add for obtaining address of MMS
     };
+
+    static final String[] FORWARD_PROJECTION = new String[] {
+        "'sms' AS " + MmsSms.TYPE_DISCRIMINATOR_COLUMN,
+        BaseColumns._ID,
+        Conversations.THREAD_ID,
+        Sms.ADDRESS,
+        Sms.BODY,
+        Sms.PHONE_ID,
+        Sms.DATE,
+        Sms.DATE_SENT,
+        Sms.READ,
+        Sms.TYPE,
+        Sms.STATUS,
+        Sms.LOCKED,
+        Sms.ERROR_CODE
+    };
+
     // The indexes of the default columns which must be consistent
     // with above PROJECTION.
     static final int COLUMN_MSG_TYPE            = 0;
@@ -156,6 +173,7 @@ public class MessageListAdapter extends CursorAdapter {
     public static final int OUTGOING_ITEM_TYPE_MMS = 3;
 
     protected LayoutInflater mInflater;
+    private final ListView mListView;
     private final MessageItemCache mMessageItemCache;
     private final ColumnsMap mColumnsMap;
     private OnDataSetChangedListener mOnDataSetChangedListener;
@@ -163,6 +181,9 @@ public class MessageListAdapter extends CursorAdapter {
     private Pattern mHighlight;
     private Context mContext;
     private boolean mIsGroupConversation;
+    private boolean mMultiChoiceMode = false;
+    // for multi delete sim messages or forward merged message
+    private int mMultiManageMode = MessageUtils.INVALID_MODE;
 
     public MessageListAdapter(
             Context context, Cursor c, ListView listView,
@@ -174,6 +195,7 @@ public class MessageListAdapter extends CursorAdapter {
         mInflater = (LayoutInflater) context.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
         mMessageItemCache = new MessageItemCache(CACHE_SIZE);
+        mListView = listView;
 
         if (useDefaultColumnsMap) {
             mColumnsMap = new ColumnsMap();
@@ -196,6 +218,13 @@ public class MessageListAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         if (view instanceof MessageListItem) {
+            if (mListView.isItemChecked(cursor.getPosition())) {
+                if (view != null) {
+                    ((MessageListItem) view).markAsSelected(true);
+                }
+            } else {
+                ((MessageListItem) view).markAsSelected(false);
+            }
             String type = cursor.getString(mColumnsMap.mColumnMsgType);
             long msgId = cursor.getLong(mColumnsMap.mColumnMsgId);
 
@@ -203,6 +232,9 @@ public class MessageListAdapter extends CursorAdapter {
             if (msgItem != null) {
                 MessageListItem mli = (MessageListItem) view;
                 int position = cursor.getPosition();
+                if (mMultiManageMode != MessageUtils.INVALID_MODE) {
+                    mli.setManageSelectMode(mMultiManageMode);
+                }
                 mli.bind(msgItem, mIsGroupConversation, position);
                 mli.setMsgListItemHandler(mMsgListItemHandler);
             }
@@ -232,6 +264,14 @@ public class MessageListAdapter extends CursorAdapter {
                                         // background pdu's and images.
     }
 
+    public void setMultiChoiceMode(boolean isMultiChoiceMode) {
+        mMultiChoiceMode = isMultiChoiceMode;
+    }
+
+    public void setMultiManageMode(int manageMode) {
+        mMultiManageMode = manageMode;
+    }
+
     @Override
     public void notifyDataSetChanged() {
         super.notifyDataSetChanged();
@@ -258,10 +298,18 @@ public class MessageListAdapter extends CursorAdapter {
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         int boxType = getItemViewType(cursor);
-        View view = mInflater.inflate((boxType == INCOMING_ITEM_TYPE_SMS ||
-                boxType == INCOMING_ITEM_TYPE_MMS) ?
-                        R.layout.message_list_item_recv : R.layout.message_list_item_send,
-                        parent, false);
+        View view;
+        if (mMultiChoiceMode) {
+            view = mInflater.inflate((boxType == INCOMING_ITEM_TYPE_SMS ||
+                    boxType == INCOMING_ITEM_TYPE_MMS) ?
+                            R.layout.message_list_multi_recv : R.layout.message_list_multi_send,
+                    parent, false);
+        } else {
+            view = mInflater.inflate((boxType == INCOMING_ITEM_TYPE_SMS ||
+                    boxType == INCOMING_ITEM_TYPE_MMS) ?
+                            R.layout.message_list_item_recv : R.layout.message_list_item_send,
+                    parent, false);
+        }
         if (boxType == INCOMING_ITEM_TYPE_MMS || boxType == OUTGOING_ITEM_TYPE_MMS) {
             // We've got an mms item, pre-inflate the mms portion of the view
             view.findViewById(R.id.mms_layout_view_stub).setVisibility(View.VISIBLE);
@@ -338,6 +386,24 @@ public class MessageListAdapter extends CursorAdapter {
             return (boxId == Mms.MESSAGE_BOX_INBOX || boxId == Mms.MESSAGE_BOX_ALL) ?
                     INCOMING_ITEM_TYPE_MMS : OUTGOING_ITEM_TYPE_MMS;
         }
+    }
+
+    public boolean hasSmsInConversation(Cursor cursor) {
+        boolean hasSms = false;
+        if (isCursorValid(cursor)) {
+            if (cursor.moveToFirst()) {
+                do {
+                    String type = cursor.getString(mColumnsMap.mColumnMsgType);
+                    if ("sms".equals(type)) {
+                        hasSms = true;
+                        break;
+                    }
+                } while (cursor.moveToNext());
+                // Reset the position to 0
+                cursor.moveToFirst();
+            }
+        }
+        return hasSms;
     }
 
     public Cursor getCursorForItem(MessageItem item) {

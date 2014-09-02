@@ -54,8 +54,10 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -78,7 +80,9 @@ import com.android.mms.transaction.MessagingNotification;
 import com.android.mms.transaction.Transaction;
 import com.android.mms.transaction.TransactionBundle;
 import com.android.mms.transaction.TransactionService;
+import com.android.mms.ui.PopupList;
 import com.android.mms.ui.SearchActivityExtend;
+import com.android.mms.ui.SelectionMenu;
 import com.android.mms.util.DownloadManager;
 
 import com.google.android.mms.pdu.PduHeaders;
@@ -959,6 +963,10 @@ public class MailBoxMessageList extends ListActivity implements
     private class ModeCallback implements ListView.MultiChoiceModeListener {
         private View mMultiSelectActionBarView;
         private TextView mSelectedConvCount;
+        private ImageView mSelectedAll;
+        //used in MultiChoiceMode
+        private boolean mHasSelectAll = false;
+        private SelectionMenu mSelectionMenu;
 
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             // comes into MultiChoiceMode
@@ -969,29 +977,34 @@ public class MailBoxMessageList extends ListActivity implements
 
             if (mMultiSelectActionBarView == null) {
                 mMultiSelectActionBarView = (ViewGroup) LayoutInflater
-                        .from(MailBoxMessageList.this).inflate(
-                                R.layout.conversation_list_multi_select_actionbar, null);
-
-                mSelectedConvCount = (TextView) mMultiSelectActionBarView
-                        .findViewById(R.id.selected_conv_count);
+                        .from(MailBoxMessageList.this).inflate(R.layout.action_mode, null);
             }
-
-            if (mSelectedConvCount != null) {
-                mSelectedConvCount.setText(NONE_SELECTED);
-            }
-
             mode.setCustomView(mMultiSelectActionBarView);
-            ((TextView) mMultiSelectActionBarView.findViewById(R.id.title))
-                    .setText(R.string.select_messages);
+            mSelectionMenu = new SelectionMenu(getApplicationContext(),
+                    (Button) mMultiSelectActionBarView.findViewById(R.id.selection_menu),
+                    new PopupList.OnPopupItemClickListener() {
+                        @Override
+                        public boolean onPopupItemClick(int itemId) {
+                            if (itemId == SelectionMenu.SELECT_OR_DESELECT) {
+                                if (mHasSelectAll) {
+                                    unCheckAll();
+                                    mHasSelectAll = false;
+                                } else {
+                                    checkAll();
+                                    mHasSelectAll = true;
+                                }
+                                mSelectionMenu.updateSelectAllMode(mHasSelectAll);
+                            }
+                            return true;
+                        }
+                    });
             return true;
         }
 
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            if (mMultiSelectActionBarView == null) {
-                ViewGroup v = (ViewGroup) LayoutInflater.from(MailBoxMessageList.this).inflate(
-                        R.layout.conversation_list_multi_select_actionbar, null);
-                mode.setCustomView(v);
-                mSelectedConvCount = (TextView) v.findViewById(R.id.selected_conv_count);
+            if (mSelectionMenu != null) {
+                mSelectionMenu.setTitle(getApplicationContext().getString(R.string.selected_count,
+                        getListView().getCheckedItemCount()));
             }
             return true;
         }
@@ -1016,14 +1029,23 @@ public class MailBoxMessageList extends ListActivity implements
             getListView().clearChoices();
             mListAdapter.notifyDataSetChanged();
             mSpinners.setVisibility(View.VISIBLE);
+            mSelectionMenu.dismiss();
+
         }
 
         public void onItemCheckedStateChanged(ActionMode mode, int position, long id,
                 boolean checked) {
             ListView listView = getListView();
-            listView.invalidateViews();
             int checkedCount = listView.getCheckedItemCount();
-            mSelectedConvCount.setText(Integer.toString(checkedCount));
+            mSelectionMenu.setTitle(getApplicationContext().getString(R.string.selected_count,
+                    checkedCount));
+            if (checkedCount == getListAdapter().getCount()) {
+                mHasSelectAll = true;
+            } else {
+                mHasSelectAll = false;
+            }
+            mSelectionMenu.updateSelectAllMode(mHasSelectAll);
+            mListAdapter.updateItemBackgroud(position);
         }
     }
 }

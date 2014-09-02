@@ -66,6 +66,7 @@ import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_ERROR_TYPE;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_SUBJECT_CHARSET;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_SUB_ID;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_RECIPIENT_IDS;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_READ;
 
 public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.UpdateListener {
     private LayoutInflater mInflater;
@@ -186,6 +187,26 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
     @Override
     public long getItemId(int position) {
         return position;
+    }
+
+    public void updateItemBackgroud(int position) {
+        Cursor cursor = (Cursor)getItem(position);
+        View view = mListView.getChildAt(position);
+        if (cursor == null || view == null) {
+            return;
+        }
+
+        String type = cursor.getString(COLUMN_MSG_TYPE);
+        int read = type.equals("mms") ? cursor.getInt(COLUMN_MMS_READ) :
+                cursor.getInt(COLUMN_SMS_READ);
+        boolean isUnread = read == 0 ? true : false;
+        if (mListView.isItemChecked(position)) {
+            view.setBackgroundDrawable(mBgSelectedDrawable);
+        } else if (isUnread) {
+            view.setBackgroundDrawable(mBgUnReadDrawable);
+        } else {
+            view.setBackgroundDrawable(mBgReadDrawable);
+        }
     }
 
     public void bindView(View view, Context context, Cursor cursor) {

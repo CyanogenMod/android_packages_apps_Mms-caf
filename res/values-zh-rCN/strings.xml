@@ -52,6 +52,7 @@
     <string name="undelivered_sms_dialog_body" msgid="4203703285563450868">"无法发送此短信。"</string>
     <string name="delete_thread" msgid="757258847736632791">"删除会话"</string>
     <string name="menu_forward" msgid="9026858380050046756">"转发"</string>
+    <string name="menu_forward_conversation">"转发短信会话"</string>
     <string name="menu_resend">"重新发送"</string>
     <string name="download" msgid="4488877642230207631">"下载"</string>
     <string name="downloading" msgid="1779557575565350637">"正在下载"</string>
@@ -411,7 +412,6 @@
     <string name="operate_success">"操作成功！"</string>
     <string name="operate_failure">"操作失败！"</string>
     <string name="menu_reply">"回复"</string>
-
     <string name="slot1">"卡1"</string>
     <string name="slot2">"卡2"</string>
 
@@ -512,6 +512,14 @@
     <string name="contact_info_text_as_name">姓名：</string>
     <string name="contact_info_text_as_phone">电话：</string>
     <string name="contact_info_text_as_email">电子邮件：</string>
+    <!-- batch delete message in ConversationList and MailBoxMessageList -->
+    <string name="selected_all">全选</string>
+    <string name="deselected_all">取消全选</string>
+    <string name="selected_count"><xliff:g id="COUNT">%d</xliff:g> 项选中了</string>
+    <string name="deleting_title">删除</string>
+    <string name="please_wait">请稍等...</string>
+    <string name="done_delete">完成</string>
+    <string name="merging_sms_title">合并短信</string>
     <string name="pref_wap_push_title">"自动推送服务开关"</string>
     <string name="pref_title_wap_push_enabled">"数据服务开关"</string>
     <string name="pref_summary_wap_push_enabled">"允许接收服务信息"</string>

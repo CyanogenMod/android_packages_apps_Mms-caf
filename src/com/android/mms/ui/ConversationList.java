@@ -62,6 +62,7 @@ import android.view.View.OnCreateContextMenuListener;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -78,6 +79,8 @@ import com.android.mms.data.Conversation;
 import com.android.mms.data.Conversation.ConversationQueryHandler;
 import com.android.mms.transaction.MessagingNotification;
 import com.android.mms.transaction.SmsRejectedReceiver;
+import com.android.mms.ui.PopupList;
+import com.android.mms.ui.SelectionMenu;
 import com.android.mms.util.DraftCache;
 import com.android.mms.util.Recycler;
 import com.android.mms.widget.MmsWidgetProvider;
@@ -1065,10 +1068,32 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         }
     }
 
+    public void checkAll() {
+        int count = getListView().getCount();
+
+        for (int i = 0; i < count; i++) {
+            getListView().setItemChecked(i, true);
+        }
+        mListAdapter.notifyDataSetChanged();
+    }
+
+    public void unCheckAll() {
+        int count = getListView().getCount();
+
+        for (int i = 0; i < count; i++) {
+            getListView().setItemChecked(i, false);
+        }
+        mListAdapter.notifyDataSetChanged();
+    }
+
     private class ModeCallback implements ListView.MultiChoiceModeListener {
         private View mMultiSelectActionBarView;
         private TextView mSelectedConvCount;
+        private ImageView mSelectedAll;
+        private boolean mHasSelectAll = false;
         private HashSet<Long> mSelectedThreadIds;
+        // build action bar with a spinner
+        private SelectionMenu mSelectionMenu;
 
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
@@ -1077,15 +1102,28 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             inflater.inflate(R.menu.conversation_multi_select_menu, menu);
 
             if (mMultiSelectActionBarView == null) {
-                mMultiSelectActionBarView = LayoutInflater.from(ConversationList.this)
-                    .inflate(R.layout.conversation_list_multi_select_actionbar, null);
-
-                mSelectedConvCount =
-                    (TextView)mMultiSelectActionBarView.findViewById(R.id.selected_conv_count);
+                mMultiSelectActionBarView = LayoutInflater.from(ConversationList.this).inflate(
+                        R.layout.action_mode, null);
             }
             mode.setCustomView(mMultiSelectActionBarView);
-            ((TextView)mMultiSelectActionBarView.findViewById(R.id.title))
-                .setText(R.string.select_conversations);
+            mSelectionMenu = new SelectionMenu(ConversationList.this,
+                    (Button) mMultiSelectActionBarView.findViewById(R.id.selection_menu),
+                    new PopupList.OnPopupItemClickListener() {
+                        @Override
+                        public boolean onPopupItemClick(int itemId) {
+                            if (itemId == SelectionMenu.SELECT_OR_DESELECT) {
+                                if (mHasSelectAll) {
+                                    unCheckAll();
+                                    mHasSelectAll = false;
+                                } else {
+                                    checkAll();
+                                    mHasSelectAll = true;
+                                }
+                                mSelectionMenu.updateSelectAllMode(mHasSelectAll);
+                            }
+                            return true;
+                        }
+                    });
             return true;
         }
 
@@ -1122,6 +1160,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             ConversationListAdapter adapter = (ConversationListAdapter)getListView().getAdapter();
             adapter.uncheckAll();
             mSelectedThreadIds = null;
+            mSelectionMenu.dismiss();
         }
 
         @Override
@@ -1129,7 +1168,15 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                 int position, long id, boolean checked) {
             ListView listView = getListView();
             final int checkedCount = listView.getCheckedItemCount();
-            mSelectedConvCount.setText(Integer.toString(checkedCount));
+
+            mSelectionMenu.setTitle(getApplicationContext().getString(R.string.selected_count,
+                    checkedCount));
+            if (getListView().getCount() == checkedCount) {
+                mHasSelectAll = true;
+            } else {
+                mHasSelectAll = false;
+            }
+            mSelectionMenu.updateSelectAllMode(mHasSelectAll);
 
             Cursor cursor  = (Cursor)listView.getItemAtPosition(position);
             Conversation conv = Conversation.from(ConversationList.this, cursor);

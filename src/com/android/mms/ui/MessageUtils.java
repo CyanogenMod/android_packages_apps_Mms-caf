@@ -52,6 +52,7 @@ import android.database.sqlite.SqliteWrapper;
 import android.graphics.drawable.Drawable;
 import android.media.CamcorderProfile;
 import android.media.RingtoneManager;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
@@ -148,7 +149,10 @@ public class MessageUtils {
     public static final String SUBSCRIPTION_KEY = "subscription";
     public static final int MESSAGE_READ = 1;
     public static final int MESSAGE_SEEN = 1;
-
+    // add manage mode of multi select action
+    public static final int INVALID_MODE= -1;
+    public static final int FORWARD_MODE = 0;
+    public static final int SIM_MESSAGE_MODE = 1;
     public static final Uri ICC_URI = Uri.parse("content://sms/icc");
     public static final Uri ICC1_URI = Uri.parse("content://sms/icc1");
     public static final Uri ICC2_URI = Uri.parse("content://sms/icc2");

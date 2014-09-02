@@ -99,6 +99,8 @@ public class ManageSimMessages extends Activity
 
     public static final int SIM_FULL_NOTIFICATION_ID = 234;
 
+    public static final int BATCH_DELETE = 100;
+
     private final ContentObserver simChangeObserver =
             new ContentObserver(new Handler()) {
         @Override
@@ -120,6 +122,7 @@ public class ManageSimMessages extends Activity
     @Override
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
         mContentResolver = getContentResolver();
@@ -506,13 +509,10 @@ public class ManageSimMessages extends Activity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case OPTION_MENU_DELETE_ALL:
-                confirmDeleteDialog(new OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        updateState(SHOW_BUSY);
-                        deleteAllFromSim();
-                        dialog.dismiss();
-                    }
-                }, R.string.confirm_delete_all_SIM_messages);
+                Intent intent = new Intent(this, ManageMultiSelectAction.class);
+                intent.putExtra(MessageUtils.SUBSCRIPTION_KEY, mSubscription);
+                intent.putExtra(ComposeMessageActivity.MANAGE_MODE, MessageUtils.SIM_MESSAGE_MODE);
+                startActivityForResult(intent, BATCH_DELETE);
                 break;
 
             case android.R.id.home:

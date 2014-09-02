@@ -34,6 +34,7 @@ import com.android.mms.MmsApp;
 import com.android.mms.R;
 import com.android.mms.data.Contact;
 import com.android.mms.data.WorkingMessage;
+import com.android.mms.model.LayoutModel;
 import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
 import com.android.mms.model.TextModel;
@@ -108,6 +109,7 @@ public class MessageItem {
     ColumnsMap mColumnsMap;
     private PduLoadedCallback mPduLoadedCallback;
     private ItemLoadedFuture mItemLoadedFuture;
+    int mLayoutType = LayoutModel.DEFAULT_LAYOUT_TYPE;
     long mDate;
 
     MessageItem(Context context, String type, final Cursor cursor,
@@ -349,6 +351,9 @@ public class MessageItem {
                 MultimediaMessagePdu msg = (MultimediaMessagePdu)pduLoaded.mPdu;
                 mSlideshow = pduLoaded.mSlideshow;
                 mAttachmentType = MessageUtils.getAttachmentType(mSlideshow, msg);
+                if (mSlideshow != null && mSlideshow.getLayout() != null) {
+                    mLayoutType = mSlideshow.getLayout().getLayoutType();
+                }
 
                 if (mMessageType == PduHeaders.MESSAGE_TYPE_RETRIEVE_CONF) {
                     if (msg == null) {
