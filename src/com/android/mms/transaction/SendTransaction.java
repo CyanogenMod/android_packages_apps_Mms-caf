@@ -105,7 +105,7 @@ public class SendTransaction extends Transaction implements Runnable {
 
             // fix bug 2100169: insert the 'from' address per spec
             String lineNumber = MessageUtils.getLocalNumber(
-                    SubscriptionManager.getDefaultDataSubId());
+                    SubscriptionManager.getOnDemandDataSubId());
             Log.d(TAG, "lineNumber " + lineNumber);
             if (!TextUtils.isEmpty(lineNumber)) {
                 sendReq.setFrom(new EncodedStringValue(lineNumber));
