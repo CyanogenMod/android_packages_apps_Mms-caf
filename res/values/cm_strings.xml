@@ -192,4 +192,7 @@
     <string name="menu_conversation_options">Conversation options</string>
     <string name="pref_title_reset_convopt_to_default">Reset to default</string>
     <string name="pref_summary_reset_convopt_to_default">Resets the conversation setting to the application level setting</string>
+
+    <!-- Failed to open associated activity -->
+    <string name="failed_open_associated_activity_msg">Failed to open associated activity</string>
 </resources>
