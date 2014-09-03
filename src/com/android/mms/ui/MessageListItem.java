@@ -63,6 +63,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Checkable;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -95,7 +96,7 @@ import com.google.android.mms.pdu.PduPersister;
  * This class provides view of a message in the messages list.
  */
 public class MessageListItem extends LinearLayout implements
-        SlideViewInterface, OnClickListener {
+        SlideViewInterface, OnClickListener, Checkable {
     public static final String EXTRA_URLS = "com.android.mms.ExtraUrls";
 
     private static final String TAG = LogTag.TAG;
@@ -110,6 +111,8 @@ public class MessageListItem extends LinearLayout implements
     static final int MSG_LIST_EDIT    = 1;
     static final int MSG_LIST_PLAY    = 2;
     static final int MSG_LIST_DETAILS = 3;
+
+    private boolean mIsCheck = false;
 
     private View mMmsView;
     private ImageView mImageView;
@@ -970,5 +973,28 @@ public class MessageListItem extends LinearLayout implements
             // shouldn't be here.
             Log.e(TAG, "setVcard: out of memory: ", e);
         }
+    }
+
+    @Override
+    public boolean isChecked() {
+        return mIsCheck;
+    }
+
+    @Override
+    public void setChecked(boolean arg0) {
+        mIsCheck = arg0;
+        if (mIsCheck) {
+            mMessageBlock.getBackground().setAlpha(ALPHA_TRANSPARENT);
+            mMmsLayout
+                    .setBackgroundResource(R.drawable.list_selected_holo_light);
+        } else {
+            mMessageBlock.setBackgroundResource(R.drawable.listitem_background);
+            mMmsLayout.setBackgroundResource(R.drawable.listitem_background);
+        }
+    }
+
+    @Override
+    public void toggle() {
+        // TODO Auto-generated method stub
     }
 }
