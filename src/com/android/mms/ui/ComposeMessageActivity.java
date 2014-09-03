@@ -1839,30 +1839,6 @@ public class ComposeMessageActivity extends Activity
         mTopPanel.setVisibility(View.VISIBLE);
     }
 
-    //==========================================================
-    // Activity methods
-    //==========================================================
-
-    public static boolean cancelFailedToDeliverNotification(Intent intent, Context context) {
-        if (MessagingNotification.isFailedToDeliver(intent)) {
-            // Cancel any failed message notifications
-            MessagingNotification.cancelNotification(context,
-                        MessagingNotification.MESSAGE_FAILED_NOTIFICATION_ID);
-            return true;
-        }
-        return false;
-    }
-
-    public static boolean cancelFailedDownloadNotification(Intent intent, Context context) {
-        if (MessagingNotification.isFailedToDownload(intent)) {
-            // Cancel any failed download notifications
-            MessagingNotification.cancelNotification(context,
-                        MessagingNotification.DOWNLOAD_FAILED_NOTIFICATION_ID);
-            return true;
-        }
-        return false;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mIsSmsEnabled = MmsConfig.isSmsEnabled(this);
@@ -1942,12 +1918,12 @@ public class ComposeMessageActivity extends Activity
             " intent = " + getIntent() +
             " mConversation = " + mConversation);
 
-        if (cancelFailedToDeliverNotification(getIntent(), this)) {
+        if (MessageUtils.cancelFailedToDeliverNotification(getIntent(), this)) {
             // Show a pop-up dialog to inform user the message was
             // failed to deliver.
             undeliveredMessageDialog(getMessageDate(null));
         }
-        cancelFailedDownloadNotification(getIntent(), this);
+        MessageUtils.cancelFailedDownloadNotification(getIntent(), this);
 
         // Set up the message history ListAdapter
         initMessageList();

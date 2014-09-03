@@ -146,9 +146,8 @@ public class SearchActivityExtend extends Activity {
         }
 
         Intent i = new Intent(this, MailBoxMessageList.class);
-        int mailboxId = MailBoxMessageList.MESSAGE_TYPE_SEARCH;
+        i.putExtra(MessageUtils.SEARCH_KEY, true);
         i.putExtra(MessageUtils.SEARCH_KEY_TITLE, getString(R.string.search_title));
-        i.putExtra(MessageUtils.SEARCH_KEY_MAIL_BOX_ID, mailboxId);
         i.putExtra(MessageUtils.SEARCH_KEY_MODE_POSITION, modePosition);
         i.putExtra(MessageUtils.SEARCH_KEY_KEY_STRING, keyStr);
         i.putExtra(MessageUtils.SEARCH_KEY_DISPLAY_STRING, displayStr);
