@@ -594,7 +594,7 @@ public class MessageListItem extends LinearLayout implements
             //inflate the download controls
             findViewById(R.id.mms_downloading_view_stub).setVisibility(VISIBLE);
             mDownloadButton = (Button) findViewById(R.id.btn_download_msg);
-            if (false) {
+            if (getResources().getBoolean(R.bool.config_mms_cancelable)) {
                 mDownloading = (Button) findViewById(R.id.btn_cancel_download);
                 mDownloading.setOnClickListener(new OnClickListener() {
                     @Override

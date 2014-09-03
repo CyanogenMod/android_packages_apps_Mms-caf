@@ -395,7 +395,7 @@ public class SmsReceiverService extends Service {
         String format = intent.getStringExtra("format");
 
         int saveLoc = MessageUtils.getSmsPreferStoreLocation(this, msgs[0].getSubId());
-        if (false/*getResources().getBoolean(R.bool.config_savelocation)*/
+        if (getResources().getBoolean(R.bool.config_savelocation)
                 && saveLoc == MessageUtils.PREFER_SMS_STORE_CARD) {
             for (int i = 0; i < msgs.length; i++) {
                 SmsMessage sms = msgs[i];

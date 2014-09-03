@@ -273,7 +273,7 @@ public class MessageItem {
         boolean isFailedMms = isMms()
                             && (mErrorType >= MmsSms.ERR_TYPE_GENERIC_PERMANENT
                             || (mErrorType == MmsSms.ERR_TYPE_MMS_PROTO_TRANSIENT
-                && /*mContext.getResources().getBoolean(R.bool.config_manual_resend)*/true));
+                && mContext.getResources().getBoolean(R.bool.config_manual_resend)));
         boolean isFailedSms = isSms()
                             && (mBoxId == Sms.MESSAGE_TYPE_FAILED);
         return isFailedMms || isFailedSms;

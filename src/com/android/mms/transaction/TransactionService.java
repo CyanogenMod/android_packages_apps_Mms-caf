@@ -490,7 +490,7 @@ public class TransactionService extends Service implements Observer {
                                 // If the network is restored, then
                                 // show the MMS status as sending.
                                 if (failureType == MmsSms.ERR_TYPE_MMS_PROTO_TRANSIENT
-                                        && /*getResources().getBoolean(R.bool.config_manual_resend)*/true) {
+                                        && getResources().getBoolean(R.bool.config_manual_resend)) {
                                     updateMsgErrorType(uri, MmsSms.NO_ERROR);
                                 }
 
@@ -598,18 +598,18 @@ public class TransactionService extends Service implements Observer {
 
         int toastType = TOAST_NONE;
         if (transactionType == Transaction.RETRIEVE_TRANSACTION) {
-            if (/*getResources().getBoolean(R.bool.config_retry_always)*/false && inRetry) {
+            if (getResources().getBoolean(R.bool.config_retry_always) && inRetry) {
                 toastType = isLastRetry(uri.getLastPathSegment()) ?
                         TOAST_NONE : TOAST_DOWNLOAD_FAILED_RETRY;
             } else {
                 toastType = TOAST_DOWNLOAD_LATER;
             }
         } else if (transactionType == Transaction.SEND_TRANSACTION) {
-            if (/*getResources().getBoolean(R.bool.config_retry_always)*/false && inRetry) {
+            if (getResources().getBoolean(R.bool.config_retry_always) && inRetry) {
                 toastType = isLastRetry(uri.getLastPathSegment()) ?
                         TOAST_NONE : TOAST_SEND_FAILED_RETRY;
             } else {
-                if (/*getResources().getBoolean(R.bool.config_manual_resend)*/true) {
+                if (getResources().getBoolean(R.bool.config_manual_resend)) {
                     updateMsgErrorType(uri, MmsSms.ERR_TYPE_MMS_PROTO_TRANSIENT);
                 }
                 toastType = TOAST_MSG_QUEUED;
@@ -619,7 +619,7 @@ public class TransactionService extends Service implements Observer {
             mToastHandler.sendEmptyMessage(toastType);
         }
 
-        if (/*getResources().getBoolean(R.bool.config_retry_always)*/false
+        if (getResources().getBoolean(R.bool.config_retry_always)
                 && !isLastRetry(uri.getLastPathSegment())) {
             RetryScheduler.scheduleRetry(getApplicationContext(), uri);
             RetryScheduler.setRetryAlarm(getApplicationContext());
@@ -842,8 +842,8 @@ public class TransactionService extends Service implements Observer {
                 return result;
             case PhoneConstants.APN_REQUEST_STARTED:
                 acquireWakeLock();
-                // boolean reconnect = getResources().getBoolean(R.bool.config_reconnect);
-                if (true) {
+                boolean reconnect = getResources().getBoolean(R.bool.config_reconnect);
+                if (reconnect) {
                     mServiceHandler.sendEmptyMessageDelayed(EVENT_MMS_CONNECTIVITY_TIMEOUT,
                             MMS_CONNECTIVITY_DELAY);
                 }

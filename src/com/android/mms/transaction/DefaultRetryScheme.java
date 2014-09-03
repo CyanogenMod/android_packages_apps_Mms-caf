@@ -18,6 +18,7 @@
 package com.android.mms.transaction;
 
 import com.android.mms.LogTag;
+import com.android.mms.R;
 
 import android.content.Context;
 import android.util.Config;
@@ -36,10 +37,7 @@ public class DefaultRetryScheme extends AbstractRetryScheme {
     public DefaultRetryScheme(Context context, int retriedTimes) {
         super(retriedTimes);
 
-        // sDefaultRetryScheme = context.getResources().getIntArray(R.array.retry_scheme);
-        sDefaultRetryScheme = new int[] {
-                0, 1 * 60 * 1000, 5 * 60 * 1000, 10 * 60 * 1000, 30 * 60 * 1000
-        };
+        sDefaultRetryScheme = context.getResources().getIntArray(R.array.retry_scheme);
         mRetriedTimes = mRetriedTimes < 0 ? 0 : mRetriedTimes;
         mRetriedTimes = mRetriedTimes >= sDefaultRetryScheme.length
                 ? sDefaultRetryScheme.length - 1 : mRetriedTimes;

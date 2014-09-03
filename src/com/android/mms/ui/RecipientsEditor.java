@@ -216,8 +216,7 @@ public class RecipientsEditor extends RecipientEditTextView {
     private boolean hasInvalidCharacter(String number) {
         char[] charNumber = number.trim().toCharArray();
         int count = charNumber.length;
-        ///if (mContext.getResources().getBoolean(R.bool.config_filter_char_address)) {
-        if (true) {
+        if (mContext.getResources().getBoolean(R.bool.config_filter_char_address)) {
             for (int i = 0; i < count; i++) {
                 // Allow first character is + character
                 if (i == 0 && charNumber[i] == '+') {

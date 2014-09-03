@@ -407,8 +407,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     }
 
     private void setMessagePriorityPref() {
-        // !getResources().getBoolean(R.bool.support_sms_priority)
-        if (false) {
+        if (!getResources().getBoolean(R.bool.support_sms_priority)) {
             Preference priorotySettings = findPreference(SMS_CDMA_PRIORITY);
             PreferenceScreen prefSet = getPreferenceScreen();
             prefSet.removePreference(priorotySettings);

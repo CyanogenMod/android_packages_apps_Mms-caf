@@ -89,4 +89,13 @@
 
     <!-- configuration for display add attachment icon always -->
     <bool name="config_show_attach_icon_always">false</bool>
+
+    <!-- configuration for retry scheme of sent failed message -->
+    <integer-array name="retry_scheme">
+        <item>0</item>
+        <item>60000</item>
+        <item>300000</item>
+        <item>600000</item>
+        <item>1800000</item>
+    </integer-array>
 </resources>

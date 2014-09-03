@@ -160,7 +160,7 @@ public class MmsConfig {
     }
 
     public static int getSmsToMmsTextThreshold(Context context) {
-        int limitCount = 20;//context.getResources().getInteger(R.integer.limit_count);
+        int limitCount = context.getResources().getInteger(R.integer.limit_count);
         if (limitCount != 0) {
             return limitCount;
         }
@@ -411,8 +411,8 @@ public class MmsConfig {
                         } else if ("aliasMaxChars".equalsIgnoreCase(value)) {
                             mAliasRuleMaxChars = Integer.parseInt(text);
                         } else if ("smsToMmsTextThreshold".equalsIgnoreCase(value)) {
-                            int maxSmstomms = /*context.getResources().getInteger(R.integer
-                                    .config_max_smstomms)*/0;
+                            int maxSmstomms = context.getResources().getInteger(R.integer
+                                    .config_max_smstomms);
                             mSmsToMmsTextThreshold = (maxSmstomms == 0) ? Integer.parseInt(text)
                                     : maxSmstomms;
                         } else if ("maxMessageTextSize".equalsIgnoreCase(value)) {
