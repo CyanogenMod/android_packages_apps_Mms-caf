@@ -22,6 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -59,6 +60,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.mms.MmsApp;
 import com.android.mms.R;
@@ -676,7 +678,12 @@ public class MessageListItem extends LinearLayout implements
         if (spans.length == 0) {
             sendMessage(mMessageItem, MSG_LIST_DETAILS);    // show the message details dialog
         } else if (spans.length == 1) {
-            spans[0].onClick(mBodyTextView);
+            try {
+                spans[0].onClick(mBodyTextView);
+            } catch (ActivityNotFoundException ex) {
+                Toast.makeText(mContext, R.string.failed_open_associated_activity_msg,
+                        Toast.LENGTH_SHORT).show();
+            }
         } else {
             ArrayAdapter<URLSpan> adapter =
                 new ArrayAdapter<URLSpan>(mContext, android.R.layout.select_dialog_item, spans) {
@@ -720,7 +727,12 @@ public class MessageListItem extends LinearLayout implements
                 @Override
                 public final void onClick(DialogInterface dialog, int which) {
                     if (which >= 0) {
-                        spans[which].onClick(mBodyTextView);
+                        try {
+                            spans[which].onClick(mBodyTextView);
+                        } catch (ActivityNotFoundException ex) {
+                            Toast.makeText(mContext, R.string.failed_open_associated_activity_msg,
+                                    Toast.LENGTH_SHORT).show();
+                        }
                     }
                     dialog.dismiss();
                 }
