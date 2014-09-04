@@ -1573,7 +1573,7 @@ public class MessageUtils {
         }
 
         TypedArray icons = context.getResources().obtainTypedArray(
-            com.android.internal.R.array.sim_icons);
+                R.array.sim_icons);
         String simIconIndex = Settings.System.getString(
                 context.getContentResolver(), PREFERRED_SIM_ICON_INDEX);
         if (TextUtils.isEmpty(simIconIndex)) {

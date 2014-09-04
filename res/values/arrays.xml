@@ -120,4 +120,10 @@
         <item>1440</item>
         <item>635040</item>
     </string-array>
+
+    <array name="sim_icons">
+        <item>@drawable/ic_sim_icon_1</item>
+        <item>@drawable/ic_sim_icon_2</item>
+        <item>@null</item>
+    </array>
 </resources>
