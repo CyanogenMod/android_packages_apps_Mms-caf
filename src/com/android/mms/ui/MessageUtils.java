@@ -286,6 +286,10 @@ public class MessageUtils {
     private static final int MIN_MMS_SIZE = 3;
     private static final int DECIMAL_FORMATTOR_GROUPING_SIZE = 3;
 
+    private static final String IDP_PLUS = "+";
+    private static final String IDP_PREFIX = "01033";
+
+
     static {
         for (int i = 0; i < NUMERIC_CHARS_SUGAR.length; i++) {
             numericSugarMap.put(NUMERIC_CHARS_SUGAR[i], NUMERIC_CHARS_SUGAR[i]);
@@ -2506,6 +2510,7 @@ public class MessageUtils {
             memoryStatus.append(" " + formatMemorySize(getStoreAll()) + "\n");
             return memoryStatus;
         }
+
         @Override
         protected void onPostExecute(StringBuilder memoryStatus) {
             if(memoryStatus != null && !memoryStatus.toString().isEmpty()) {
@@ -2576,5 +2581,24 @@ public class MessageUtils {
             }
         });
         builder.show();
+    }
+
+    public static String convertIdp(Context context, String number) {
+        if (context.getResources().getBoolean(R.bool.customize_env_phone_checkidp)) {
+            if (number.indexOf(IDP_PREFIX) == 0) {
+                return IDP_PLUS + number.substring(IDP_PREFIX.length());
+            }
+        }
+        return number;
+    }
+
+    public static String checkIdp(Context context, String number, int subscription) {
+        if (context.getResources().getBoolean(R.bool.customize_env_phone_checkidp)
+                && isCDMAPhone(subscription)) {
+            if (number.indexOf(IDP_PLUS) == 0) {
+                return IDP_PREFIX + number.substring(IDP_PLUS.length());
+            }
+        }
+        return number;
     }
 }

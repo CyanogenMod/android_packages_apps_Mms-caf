@@ -67,6 +67,7 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
             // (e.g. "+8211-123-4567" -> "+82111234567")
             mDest = PhoneNumberUtils.stripSeparators(mDest);
             mDest = Conversation.verifySingleRecipient(mContext, mThreadId, mDest);
+            mDest = MessageUtils.checkIdp(mContext, mDest, mPhoneId);
         }
         int messageCount = messages.size();
 

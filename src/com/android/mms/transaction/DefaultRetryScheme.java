@@ -24,6 +24,8 @@ import android.content.Context;
 import android.util.Config;
 import android.util.Log;
 
+import com.android.mms.R;
+
 /**
  * Default retry scheme, based on specs.
  */
@@ -31,6 +33,8 @@ public class DefaultRetryScheme extends AbstractRetryScheme {
     private static final String TAG = LogTag.TAG;
     private static final boolean DEBUG = false;
     private static final boolean LOCAL_LOGV = DEBUG ? Config.LOGD : Config.LOGV;
+
+    private int mCustomeRetryTimes = -1;
 
     private static int[] sDefaultRetryScheme;
 
@@ -41,11 +45,17 @@ public class DefaultRetryScheme extends AbstractRetryScheme {
         mRetriedTimes = mRetriedTimes < 0 ? 0 : mRetriedTimes;
         mRetriedTimes = mRetriedTimes >= sDefaultRetryScheme.length
                 ? sDefaultRetryScheme.length - 1 : mRetriedTimes;
+
+        mCustomeRetryTimes = context.getResources().getInteger(R.integer.def_retry_times);
     }
 
     @Override
     public int getRetryLimit() {
-        return sDefaultRetryScheme.length;
+        if (mCustomeRetryTimes == -1) {
+            return sDefaultRetryScheme.length;
+        } else {
+            return mCustomeRetryTimes;
+        }
     }
 
     @Override

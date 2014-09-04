@@ -63,34 +63,34 @@
                       android:title="@string/pref_title_mms_delete" />
     <ListPreference android:key="pref_key_sms_store"
                       android:title="@string/pref_title_sms_store"
-                      android:defaultValue="0"
+                      android:defaultValue="@string/def_sms_store_value"
                       android:dialogTitle="@string/pref_title_sms_store"
                       android:entries="@array/entries_sms_store"
                       android:entryValues="@array/entries_sms_store_value" />
     <ListPreference android:key="pref_key_sms_store_card1"
                       android:title="@string/pref_title_sms_store_card1"
-                      android:defaultValue="0"
+                      android:defaultValue="@string/def_sms_store_card1_value"
                       android:dialogTitle="@string/pref_title_sms_store"
                       android:entries="@array/entries_sms_store"
                       android:entryValues="@array/entries_sms_store_value" />
     <ListPreference android:key="pref_key_sms_store_card2"
                       android:title="@string/pref_title_sms_store_card2"
-                      android:defaultValue="0"
+                      android:defaultValue="@string/def_sms_store_card2_value"
                       android:dialogTitle="@string/pref_title_sms_store"
                       android:entries="@array/entries_sms_store"
                       android:entryValues="@array/entries_sms_store_value" />
   </PreferenceCategory>
   <PreferenceCategory android:title="@string/pref_sms_settings_title"
                       android:key="pref_key_sms_settings" >
-    <CheckBoxPreference android:defaultValue="false"
+    <CheckBoxPreference android:defaultValue="@bool/def_sms_delivery_reports"
                       android:key="pref_key_sms_delivery_reports"
                       android:summary="@string/pref_summary_sms_delivery_reports"
                       android:title="@string/pref_title_sms_delivery_reports" />
-    <CheckBoxPreference android:defaultValue="false"
+    <CheckBoxPreference android:defaultValue="@bool/def_sms_delivery_reports_slot1"
                       android:key="pref_key_sms_delivery_reports_slot1"
                       android:summary="@string/pref_summary_sms_delivery_reports"
                       android:title="@string/pref_title_sms_delivery_reports_slot1" />
-    <CheckBoxPreference android:defaultValue="false"
+    <CheckBoxPreference android:defaultValue="@bool/def_sms_delivery_reports_slot2"
                       android:key="pref_key_sms_delivery_reports_slot2"
                       android:summary="@string/pref_summary_sms_delivery_reports"
                       android:title="@string/pref_title_sms_delivery_reports_slot2" />
@@ -152,7 +152,7 @@
                       android:key="pref_key_mms_group_mms"
                       android:summary="@string/pref_summary_mms_group_mms"
                       android:title="@string/pref_title_mms_group_mms" />
-    <CheckBoxPreference android:defaultValue="false"
+    <CheckBoxPreference android:defaultValue="@bool/def_mms_delivery_reports"
                       android:key="pref_key_mms_delivery_reports"
                       android:summary="@string/pref_summary_mms_delivery_reports"
                       android:title="@string/pref_title_mms_delivery_reports" />
@@ -160,7 +160,7 @@
                       android:key="pref_key_mms_read_reports"
                       android:summary="@string/pref_summary_mms_read_reports"
                       android:title="@string/pref_title_mms_read_reports" />
-    <CheckBoxPreference android:defaultValue="true"
+    <CheckBoxPreference android:defaultValue="@bool/def_sms_auto_retrieval"
                       android:key="pref_key_mms_auto_retrieval"
                       android:title="@string/pref_title_mms_auto_retrieval"
                       android:summary="@string/pref_summary_mms_auto_retrieval" />
@@ -214,6 +214,6 @@
     <CheckBoxPreference android:key="pref_key_enable_wap_push"
                         android:title="@string/pref_title_wap_push_enabled"
                         android:summary="@string/pref_summary_wap_push_enabled"
-                        android:defaultValue="true" />
+                        android:defaultValue="@bool/def_wap_push_enabled" />
   </PreferenceCategory>
 </PreferenceScreen>
