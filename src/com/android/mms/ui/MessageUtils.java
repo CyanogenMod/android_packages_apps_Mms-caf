@@ -36,6 +36,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -176,6 +179,7 @@ public class MessageUtils {
 
     public static final int PREFER_SMS_STORE_PHONE = 0;
     public static final int PREFER_SMS_STORE_CARD = 1;
+    private static final Uri BOOKMARKS_URI = Uri.parse("content://browser/bookmarks");
 
     // distinguish view vcard from mms but not from contacts.
     public static final String VIEW_VCARD = "VIEW_VCARD_FROM_MMS";
@@ -217,6 +221,13 @@ public class MessageUtils {
     private static final int DIALOG_ITEM_CALL         = 0;
     private static final int DIALOG_ITEM_SMS          = 1;
     private static final int DIALOG_ITEM_ADD_CONTACTS = 2;
+
+    // Dialog item options for email
+    private static final int DIALOG_ITEM_EMAIL_TO = 0;
+    private static final int DIALOG_ITEM_EMAIL_ADD_CONTACTS = 1;
+
+    private static final String MAIL_TO_PREFIX = "mailto:";
+
     private static HashMap numericSugarMap = new HashMap (NUMERIC_CHARS_SUGAR.length);
 
     public static String WAPPUSH = "Browser Information"; // Wap push key
@@ -242,6 +253,10 @@ public class MessageUtils {
     public static final float MAX_FONT_SIZE = 80f;
     public static final float MIN_FONT_SIZE = 20f;
     public static final float FONT_SIZE_STEP = 5f;
+
+    protected static final int URL_OPTION_MENU_CONNECT = 0;
+    protected static final int URL_OPTION_MENU_ADD_TO_LABEL = 1;
+    protected static final int URL_OPTION_MENU_COPY_URL = 2;
 
     //for showing memory status dialog.
     private static AlertDialog memoryStatusDialog = null;
@@ -2021,9 +2036,20 @@ public class MessageUtils {
         if (spans.length == 1) {
             String url = spans[0].getURL();
             if (isWebUrl(url)) {
-                Intent intent = new Intent(context, WwwContextMenuActivity.class);
-                intent.setData(Uri.parse(url));
-                context.startActivity(intent);
+                showUrlOptions(context, url);
+            } else {
+                final String telPrefix = "tel:";
+                if (url.startsWith(telPrefix)) {
+                    url = url.substring(telPrefix.length());
+                    if (PhoneNumberUtils.isWellFormedSmsAddress(url)) {
+                        showNumberOptions(context, url);
+                    }
+                } else if (url.startsWith(MAIL_TO_PREFIX)) {
+                    url = url.substring(MAIL_TO_PREFIX.length());
+                    showEmailOptions(context, url);
+                } else {
+                    spans[0].onClick(contentText);
+                }
             }
         } else if (spans.length > 1) {
             ArrayAdapter<URLSpan> adapter = new ArrayAdapter<URLSpan>(context,
@@ -2035,16 +2061,24 @@ public class MessageUtils {
                     try {
                         URLSpan span = getItem(position);
                         String url = span.getURL();
+                        Uri uri = Uri.parse(url);
                         TextView tv = (TextView) v;
                         Drawable d = context.getPackageManager().getActivityIcon(
-                                new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                                new Intent(Intent.ACTION_VIEW, uri));
                         if (d != null) {
                             d.setBounds(0, 0, d.getIntrinsicHeight(),
                                     d.getIntrinsicHeight());
                             tv.setCompoundDrawablePadding(10);
                             tv.setCompoundDrawables(d, null, null, null);
                         }
-                        tv.setText(getUrlWithMailPrefix(context, url).replaceAll("tel:", ""));
+                        String tmpUrl = null;
+                        if (url != null) {
+                            if (url.startsWith(MAIL_TO_PREFIX)) {
+                                url = url.substring(MAIL_TO_PREFIX.length());
+                            }
+                            tmpUrl = url.replaceAll("tel:", "");
+                        }
+                        tv.setText(tmpUrl);
                     } catch (android.content.pm.PackageManager.NameNotFoundException ex) {
                         // it's ok if we're unable to set the drawable for this view - the user
                         // can still use it.
@@ -2060,10 +2094,20 @@ public class MessageUtils {
                     if (which >= 0) {
                         String url = spans[which].getURL();
                         if (isWebUrl(url)) {
-                            Intent intent = new Intent(context,
-                                    WwwContextMenuActivity.class);
-                            intent.setData(Uri.parse(url));
-                            context.startActivity(intent);
+                            showUrlOptions(context, url);
+                        } else {
+                            final String telPrefix = "tel:";
+                            if (url.startsWith(telPrefix)) {
+                                url = url.substring(telPrefix.length());
+                                if (PhoneNumberUtils.isWellFormedSmsAddress(url)) {
+                                    showNumberOptions(context, url);
+                                }
+                            } else if (url.startsWith(MAIL_TO_PREFIX)) {
+                                url = url.substring(MAIL_TO_PREFIX.length());
+                                showEmailOptions(context, url);
+                            } else {
+                                spans[0].onClick(contentText);
+                            }
                         }
                     }
                     dialog.dismiss();
@@ -2268,6 +2312,107 @@ public class MessageUtils {
        new ShowDialog(context).execute();
     }
 
+    public static void copyToClipboard(Context context, String str) {
+        ClipboardManager clipboard = (ClipboardManager) context
+                .getSystemService(Context.CLIPBOARD_SERVICE);
+        clipboard.setPrimaryClip(ClipData.newPlainText(null, str));
+    }
+
+    private static void showUrlOptions(final Context slideContext, final String messageUrl) {
+        final String[] texts = new String[] {
+                slideContext.getString(R.string.menu_connect_url),
+                slideContext.getString(R.string.menu_add_to_label),
+                slideContext.getString(R.string.menu_copy_url, messageUrl)
+        };
+        AlertDialog.Builder builder = new AlertDialog.Builder(slideContext);
+        builder.setTitle(slideContext.getString(R.string.message_options));
+        builder.setCancelable(true);
+        builder.setItems(texts, new DialogInterface.OnClickListener() {
+            @Override
+            public final void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case URL_OPTION_MENU_CONNECT:
+                        loadUrlDialog(slideContext, messageUrl);
+                        break;
+                    case URL_OPTION_MENU_ADD_TO_LABEL:
+                        addToLabel(slideContext, messageUrl);
+                        break;
+                    case URL_OPTION_MENU_COPY_URL:
+                        copyToClipboard(slideContext, messageUrl);
+                        break;
+                }
+            }
+        });
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+    }
+
+    private static void loadUrlDialog(final Context context, final String urlString) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.menu_connect_url);
+        builder.setMessage(context.getString(R.string.loadurlinfo_str));
+        builder.setCancelable(true);
+        builder.setPositiveButton(R.string.yes, new OnClickListener() {
+            @Override
+            final public void onClick(DialogInterface dialog, int which) {
+                loadUrl(context, urlString);
+            }
+        });
+        builder.setNegativeButton(R.string.no, new OnClickListener() {
+            @Override
+            final public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+
+    }
+
+    private static void loadUrl(Context context, String url) {
+        if (!url.regionMatches(true, 0, "http://", 0, 7)
+                && !url.regionMatches(true, 0, "https://", 0, 8)
+                && !url.regionMatches(true, 0, "rtsp://", 0, 7)) {
+            url = "http://" + url;
+        }
+        url = url.replace("Http://", "http://");
+        url = url.replace("Https://", "https://");
+        url = url.replace("HTTP://", "http://");
+        url = url.replace("HTTPS://", "https://");
+        url = url.replace("Rtsp://", "rtsp://");
+        url = url.replace("RTSP://", "rtsp://");
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        intent.addCategory(Intent.CATEGORY_BROWSABLE);
+
+        if ((url.substring(url.length() - 4).compareToIgnoreCase(".mp4") == 0)
+                || (url.substring(url.length() - 4).compareToIgnoreCase(".3gp") == 0)) {
+            intent.setDataAndType(Uri.parse(url), "video/*");
+        }
+        try {
+            context.startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            return;
+        }
+    }
+
+    private static void addToLabel(Context context, String urlString) {
+        Intent i = new Intent(Intent.ACTION_INSERT, BOOKMARKS_URI);
+        i.putExtra("title", "");
+        i.putExtra("url", urlString);
+        i.putExtra("extend", "outside");
+        context.startActivity(i);
+    }
+
     private static class ShowDialog extends AsyncTask<String, Void, StringBuilder> {
         private Context mContext;
         public ShowDialog(Context context) {
@@ -2288,10 +2433,9 @@ public class MessageUtils {
             memoryStatus.append(" " + formatMemorySize(getStoreAll()) + "\n");
             return memoryStatus;
         }
-
         @Override
         protected void onPostExecute(StringBuilder memoryStatus) {
-            if(memoryStatus != null && !memoryStatus.toString().isEmpty() && mCanShowDialog) {
+            if(memoryStatus != null && !memoryStatus.toString().isEmpty()) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                 builder.setTitle(R.string.memory_status_title);
                 builder.setCancelable(true);
@@ -2303,4 +2447,61 @@ public class MessageUtils {
         }
     }
 
+    public static void showEmailOptions(final Context context, final String address) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context).setTitle(address)
+                .setCancelable(true);
+        builder.setItems(R.array.email_options, new OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DIALOG_ITEM_EMAIL_TO:
+                        context.startActivity(new Intent(Intent.ACTION_VIEW, Uri
+                                .parse(MAIL_TO_PREFIX + address))
+                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET));
+                        break;
+                    case DIALOG_ITEM_EMAIL_ADD_CONTACTS:
+                        context.startActivity(ConversationList.createAddContactIntent(address));
+                        break;
+                    default:
+                        break;
+                }
+                dialog.dismiss();
+            }
+        }).show();
+    }
+
+    public static void showNumberOptions(Context context, String number) {
+        final Context localContext = context;
+        final String extractNumber = number;
+        AlertDialog.Builder builder = new AlertDialog.Builder(localContext);
+        builder.setTitle(number);
+        builder.setCancelable(true);
+        builder.setItems(R.array.number_options,
+                new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DIALOG_ITEM_CALL:
+                        Intent dialIntent = new Intent(Intent.ACTION_CALL,
+                                Uri.parse("tel:" + extractNumber));
+                        localContext.startActivity(dialIntent);
+                        break;
+                    case DIALOG_ITEM_SMS:
+                        Intent smsIntent = new Intent(Intent.ACTION_SENDTO,
+                                Uri.parse("smsto:" + extractNumber));
+                        localContext.startActivity(smsIntent);
+                        break;
+                    case DIALOG_ITEM_ADD_CONTACTS:
+                        Intent intent = ConversationList
+                                .createAddContactIntent(extractNumber);
+                        localContext.startActivity(intent);
+                        break;
+                    default:
+                        break;
+                }
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+    }
 }

@@ -30,6 +30,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.text.method.HideReturnsTransformationMethod;
+import android.text.util.Linkify;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
@@ -359,6 +360,8 @@ public class SlideView extends AbsoluteLayout implements
             }
             mScrollText.requestFocus();
         }
+        mTextView.setAutoLinkMask(Linkify.ALL);
+        mTextView.setLinksClickable(false);
         mTextView.setVisibility(View.VISIBLE);
         mTextView.setText(text);
         mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getCurrentTextSize(mContext));

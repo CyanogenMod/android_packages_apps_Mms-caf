@@ -482,6 +482,7 @@
     <string name="pref_summary_cdma_priority">CDMA短信优先级设置</string>
     <string name="prefDialogTitle_cdma_priority">优先级</string>
     <string name="download_dialog_title">确认下载信息？</string>
+    <string name="menu_email">发送邮件</string>
     <string name="copy_to_sim">"复制到SIM卡"</string>
     <string name="copy_to_sim_success">"复制短信到 SIM 卡，总数:%1$d, 成功:%2$d"</string>
     <string name="copy_to_sim_fail">"信息保存失败"</string>

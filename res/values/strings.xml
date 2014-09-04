@@ -993,6 +993,7 @@
     <string name="pref_summary_cdma_priority">Priority of CDMA message</string>
     <string name="prefDialogTitle_cdma_priority">Priority</string>
     <string name="download_dialog_title">Comfirm download this MMS?</string>
+    <string name="menu_email">Send Email</string>
 
     <!-- Settings item description for Preferred storage -->
     <string name="pref_title_sms_store">Preferred storage</string>
