@@ -1518,8 +1518,10 @@ public class ComposeMessageActivity extends Activity
 
             if (msgItem.isSms()) {
                 if (MessageUtils.getActivatedIccCardCount() > 0) {
-                    menu.add(0, MENU_COPY_TO_SIM, 0, R.string.copy_to_sim)
-                            .setOnMenuItemClickListener(l);
+                    // TODO: need to resolve framework dependencies for ICC sms capacity
+                    // before enabling this feature
+                    //menu.add(0, MENU_COPY_TO_SIM, 0, R.string.copy_to_sim)
+                    //        .setOnMenuItemClickListener(l);
                 }
             }
 
@@ -5826,8 +5828,10 @@ public class ComposeMessageActivity extends Activity
             byte pdu[] = null;
             int status;
             if (Sms.isOutgoingFolder(boxId)) {
-                pdu = SmsMessage.getSubmitPdu(null, address, message, false,
-                                subscription).encodedMessage;
+                // TODO: need framework support for this method in opt/telephony and
+                // opt/telephony-msim
+                //pdu = SmsMessage.getSubmitPdu(null, address, message, false,
+                //                subscription).encodedMessage;
                 status = SmsManager.STATUS_ON_ICC_SENT;
             } else {
                 pdu = MessageUtils.getDeliveryPdu(null, address,

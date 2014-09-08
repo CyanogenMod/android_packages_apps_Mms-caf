@@ -570,10 +570,13 @@ public class ManageSimMessages extends Activity
         capacityMessage.append(" " + mCursor.getCount() + "\n");
         capacityMessage.append(getString(R.string.sim_capacity));
         int iccCapacityAll = -1;
+        // TODO: need framework support for this method in opt/telephony and opt/telephony-msim
         if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
-            iccCapacityAll = MSimSmsManager.getDefault().getSmsCapacityOnIcc(mSubscription);
+            //iccCapacityAll = MSimSmsManager.getDefault().getSmsCapacityOnIcc(mSubscription);
+            iccCapacityAll = 0;
         } else {
-            iccCapacityAll = SmsManager.getDefault().getSmsCapacityOnIcc();
+            //iccCapacityAll = SmsManager.getDefault().getSmsCapacityOnIcc();
+            iccCapacityAll = 0;
         }
 
         capacityMessage.append(" " + iccCapacityAll);
