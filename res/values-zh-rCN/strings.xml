@@ -537,4 +537,8 @@
     <string name="mms_phone_capacity">"彩信容量:"</string>
     <!-- select contact group -->
     <string name="no_contact_group">没有任何群组</string>
+
+    <string name="sim_capacity_title">"Sim卡容量"</string>
+    <string name="sim_capacity_used">"已使用:"</string>
+    <string name="sim_capacity">"总容量:"</string>
 </resources>

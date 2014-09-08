@@ -965,6 +965,10 @@
     <string name="search_as_content">Content</string>
     <string name="invalid_name_toast">Please input valid name!</string>
 
+    <string name="sim_capacity_title">SIM Capacity</string>
+    <string name="sim_capacity_used">Used:  </string>
+    <string name="sim_capacity">Capacity:  </string>
+
     <!-- Settings item description for Mms Validity period -->
     <string name="pref_title_mms_save_time">MMS Validity period</string>
     <string name="mms_one_week">One week</string>

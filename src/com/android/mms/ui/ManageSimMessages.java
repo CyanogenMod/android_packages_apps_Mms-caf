@@ -17,12 +17,17 @@
 
 package com.android.mms.ui;
 
+import static com.android.mms.ui.MessageListAdapter.COLUMN_ID;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_MSG_TYPE;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_BODY;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.AsyncQueryHandler;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -37,6 +42,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.CommonDataKinds.Email;
+import android.provider.Telephony.Mms;
 import android.provider.Telephony.Sms;
 import android.telephony.SmsManager;
 import android.text.TextUtils;
@@ -44,14 +50,22 @@ import android.text.SpannableString;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
 import android.util.Log;
+import android.util.SparseBooleanArray;
+import android.view.ActionMode;
 import android.view.ContextMenu;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.internal.telephony.IccCardConstants;
 import com.android.internal.telephony.TelephonyIntents;
@@ -80,6 +94,7 @@ public class ManageSimMessages extends Activity
     private static final int MENU_ADD_ADDRESS_TO_CONTACTS = 6;
     private static final int MENU_SEND_EMAIL = 7;
     private static final int OPTION_MENU_DELETE_ALL = 0;
+    private static final int OPTION_MENU_SIM_CAPACITY = 1;
 
     private static final int SHOW_LIST = 0;
     private static final int SHOW_EMPTY = 1;
@@ -100,6 +115,9 @@ public class ManageSimMessages extends Activity
     public static final int SIM_FULL_NOTIFICATION_ID = 234;
 
     public static final int BATCH_DELETE = 100;
+    public static final int TYPE_INBOX = 1;
+    public static final String FORWARD_MESSAGE_ACTIVITY_NAME =
+            "com.android.mms.ui.ForwardMessageActivity";
 
     private final ContentObserver simChangeObserver =
             new ContentObserver(new Handler()) {
@@ -154,7 +172,6 @@ public class ManageSimMessages extends Activity
         mSubscription = getIntent().getIntExtra(MessageUtils.SUBSCRIPTION_KEY,
                 MessageUtils.SUB_INVALID);
         mIccUri = MessageUtils.getIccUriBySubscription(mSubscription);
-
         updateState(SHOW_BUSY);
         startQuery();
     }
@@ -206,6 +223,8 @@ public class ManageSimMessages extends Activity
             }
             // Show option menu when query complete.
             invalidateOptionsMenu();
+            mSimList.setMultiChoiceModeListener(new ModeCallback());
+            mSimList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
             mIsQuery = false;
         }
     }
@@ -229,27 +248,6 @@ public class ManageSimMessages extends Activity
             mCursor.close();
         }
         startQuery();
-    }
-
-    @Override
-    public void onCreateContextMenu(
-            ContextMenu menu, View v,
-            ContextMenu.ContextMenuInfo menuInfo) {
-        menu.add(0, MENU_COPY_TO_PHONE_MEMORY, 0,
-                 R.string.sim_copy_to_phone_memory);
-        menu.add(0, MENU_DELETE_FROM_SIM, 0, R.string.sim_delete);
-
-        Cursor cursor = mListAdapter.getCursor();
-        if (isIncomingMessage(cursor)) {
-            String address = cursor.getString(cursor.getColumnIndexOrThrow("address"));
-            Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("smsto", address, null));
-            menu.add(0, MENU_REPLY, 0, R.string.menu_reply).setIntent(intent);
-        }
-        menu.add(0, MENU_FORWARD, 0, R.string.menu_forward);
-        addCallAndContactMenuItems(menu, cursor);
-
-        // TODO: Enable this once viewMessage is written.
-        // menu.add(0, MENU_VIEW, 0, R.string.sim_view);
     }
 
     // Refs to ComposeMessageActivity.java
@@ -345,59 +343,6 @@ public class ManageSimMessages extends Activity
     }
 
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info;
-        try {
-             info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        } catch (ClassCastException exception) {
-            Log.e(TAG, "Bad menuInfo.", exception);
-            return false;
-        }
-
-        final Cursor cursor = (Cursor) mListAdapter.getItem(info.position);
-
-        switch (item.getItemId()) {
-            case MENU_COPY_TO_PHONE_MEMORY:
-                copyToPhoneMemory(cursor);
-                return true;
-            case MENU_DELETE_FROM_SIM:
-                confirmDeleteDialog(new OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        updateState(SHOW_BUSY);
-                        deleteFromSim(cursor);
-                        dialog.dismiss();
-                        invalidateOptionsMenu();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                refreshMessageList();
-                            }
-                        });
-                    }
-                }, R.string.confirm_delete_SIM_message);
-                return true;
-            case MENU_FORWARD: {
-                String smsBody = cursor.getString(cursor.getColumnIndexOrThrow("body"));
-                forwardMessage(smsBody);
-                return true;
-            }
-            case MENU_VIEW:
-                viewMessage(cursor);
-                return true;
-        }
-        return super.onContextItemSelected(item);
-    }
-
-    private void forwardMessage(String smsBody) {
-        Intent intent = new Intent(this, ComposeMessageActivity.class);
-        intent.putExtra("exit_on_sent", true);
-        intent.putExtra("forwarded_message", true);
-        intent.putExtra("sms_body", smsBody);
-        intent.setClassName(this, "com.android.mms.ui.ForwardMessageActivity");
-        startActivity(intent);
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         registerSimChangeObserver();
@@ -437,6 +382,7 @@ public class ManageSimMessages extends Activity
         String body = cursor.getString(cursor.getColumnIndexOrThrow("body"));
         Long date = cursor.getLong(cursor.getColumnIndexOrThrow("date"));
         int subscription = cursor.getInt(cursor.getColumnIndexOrThrow("sub_id"));
+        boolean success = true;
         try {
             if (isIncomingMessage(cursor)) {
                 Sms.Inbox.addMessage(subscription, mContentResolver, address, body, null,
@@ -446,7 +392,15 @@ public class ManageSimMessages extends Activity
             }
         } catch (SQLiteException e) {
             SqliteWrapper.checkSQLiteException(this, e);
+            success = false;
         }
+        String toast;
+        if (success){
+            toast = getString(R.string.copy_to_phone_success);
+        } else {
+            toast = getString(R.string.copy_to_phone_fail);
+        }
+        Toast.makeText(getContext(), toast, Toast.LENGTH_SHORT).show();
     }
 
     private boolean isIncomingMessage(Cursor cursor) {
@@ -497,24 +451,17 @@ public class ManageSimMessages extends Activity
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.clear();
 
-        if (mState == SHOW_LIST && (null != mCursor) && (mCursor.getCount() > 0)) {
-            menu.add(0, OPTION_MENU_DELETE_ALL, 0, R.string.menu_delete_messages).setIcon(
-                    android.R.drawable.ic_menu_delete);
+        if (null != mCursor) {
+            if(mState != SHOW_BUSY) {
+                menu.add(0, OPTION_MENU_SIM_CAPACITY, 0, R.string.sim_capacity_title);
+            }
         }
-
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case OPTION_MENU_DELETE_ALL:
-                Intent intent = new Intent(this, ManageMultiSelectAction.class);
-                intent.putExtra(MessageUtils.SUBSCRIPTION_KEY, mSubscription);
-                intent.putExtra(ComposeMessageActivity.MANAGE_MODE, MessageUtils.SIM_MESSAGE_MODE);
-                startActivityForResult(intent, BATCH_DELETE);
-                break;
-
             case android.R.id.home:
                 // The user clicked on the Messaging icon in the action bar. Take them back from
                 // wherever they came from
@@ -570,6 +517,222 @@ public class ManageSimMessages extends Activity
 
     private void viewMessage(Cursor cursor) {
         // TODO: Add this.
+    }
+
+    private Uri getUriStrByCursor(Cursor cursor) {
+        String messageIndexString = cursor.getString(cursor.getColumnIndexOrThrow("index_on_icc"));
+        return mIccUri.buildUpon().appendPath(messageIndexString).build();
+    }
+
+    public Context getContext() {
+        return ManageSimMessages.this;
+    }
+
+    public ListView getListView() {
+        return mSimList;
+    }
+
+    private class ModeCallback implements ListView.MultiChoiceModeListener {
+        private View mMultiSelectActionBarView;
+        private TextView mSelectedConvCount;
+        private ImageView mSelectedAll;
+        private boolean mHasSelectAll = false;
+        // build action bar with a spinner
+        private SelectionMenu mSelectionMenu;
+        ArrayList<Integer> mSelectedPos = new ArrayList<Integer>();
+        ArrayList<Uri> mSelectedMsg = new ArrayList<Uri>();
+
+        public void checkAll(boolean isCheck) {
+            Log.d(TAG, "check all:" + isCheck);
+            for (int i = 0; i < getListView().getCount(); i++) {
+                getListView().setItemChecked(i, isCheck);
+            }
+        }
+
+        private void confirmDeleteDialog(OnClickListener listener) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle(R.string.confirm_dialog_title);
+            builder.setIconAttribute(android.R.attr.alertDialogIcon);
+            builder.setCancelable(true);
+            builder.setPositiveButton(R.string.yes, listener);
+            builder.setNegativeButton(R.string.no, null);
+            builder.setMessage(R.string.confirm_delete_selected_messages);
+            builder.show();
+        }
+
+        private class MultiMessagesListener implements OnClickListener {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                deleteMessages();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        refreshMessageList();
+                    }
+                });
+            }
+        }
+
+        private void deleteMessages() {
+            for (Uri uri : mSelectedMsg) {
+                Log.d(TAG, "uri:" +uri.toString());
+                SqliteWrapper.delete(getContext(), mContentResolver, uri, null, null);
+            }
+        }
+
+        private void forwardMessage() {
+            int pos = mSelectedPos.get(0);
+            Cursor cursor = (Cursor) getListView().getAdapter().getItem(pos);
+            String smsBody = cursor.getString(cursor.getColumnIndexOrThrow("body"));
+            Intent intent = new Intent();
+            intent.putExtra("exit_on_sent", true);
+            intent.putExtra("forwarded_message", true);
+            intent.putExtra("sms_body", smsBody);
+            intent.setClassName(getContext(), FORWARD_MESSAGE_ACTIVITY_NAME);
+            startActivity(intent);
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            recordAllSelectedItems();
+            switch (item.getItemId()) {
+                case R.id.forward:
+                    forwardMessage();
+                    break;
+                case R.id.delete:
+                    confirmDeleteDialog(new MultiMessagesListener());
+                    break;
+                case R.id.copy_to_phone:
+                    int pos = mSelectedPos.get(0);
+                    Cursor cursor = (Cursor) getListView().getAdapter().getItem(pos);
+                    copyToPhoneMemory(cursor);
+                    break;
+                case R.id.reply:
+                    replyMessage();
+                    break;
+                default:
+                    break;
+            }
+            mode.finish();
+            return true;
+        }
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.sim_msg_multi_select_menu, menu);
+
+            if (mMultiSelectActionBarView == null) {
+                mMultiSelectActionBarView = LayoutInflater.from(getContext()).inflate(
+                        R.layout.action_mode, null);
+            }
+            mode.setCustomView(mMultiSelectActionBarView);
+            mSelectionMenu = new SelectionMenu(getContext(),
+                    (Button) mMultiSelectActionBarView.findViewById(R.id.selection_menu),
+                    new PopupList.OnPopupItemClickListener() {
+                        @Override
+                        public boolean onPopupItemClick(int itemId) {
+                            if (itemId == SelectionMenu.SELECT_OR_DESELECT) {
+                                checkAll(!mHasSelectAll);
+                            }
+                            return true;
+                        }
+                    });
+            return true;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode arg0) {
+            mSelectionMenu.dismiss();
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu arg1) {
+            if (mMultiSelectActionBarView == null) {
+                ViewGroup v = (ViewGroup) LayoutInflater.from(getContext()).inflate(
+                        R.layout.conversation_list_multi_select_actionbar, null);
+                mode.setCustomView(v);
+                mSelectedConvCount = (TextView) v.findViewById(R.id.selected_conv_count);
+            }
+            return true;
+        }
+
+        @Override
+        public void onItemCheckedStateChanged(ActionMode mode, int arg1, long arg2, boolean arg3) {
+            final int checkedCount = getListView().getCheckedItemCount();
+
+            mSelectionMenu.setTitle(getApplicationContext().getString(R.string.selected_count,
+                    checkedCount));
+            if (checkedCount == 1) {
+                recoredCheckedItemPositions();
+            }
+            customMenuVisibility(mode, checkedCount);
+            if (getListView().getCount() == checkedCount) {
+                mHasSelectAll = true;
+                Log.d(TAG, "onItemCheck select all true");
+            } else {
+                mHasSelectAll = false;
+                Log.d(TAG, "onItemCheck select all false");
+            }
+            mSelectionMenu.updateSelectAllMode(mHasSelectAll);
+        }
+
+        private void customMenuVisibility(ActionMode mode, int checkedCount) {
+            if (checkedCount > 1) {
+                mode.getMenu().findItem(R.id.forward).setVisible(false);
+                mode.getMenu().findItem(R.id.reply).setVisible(false);
+                mode.getMenu().findItem(R.id.copy_to_phone).setVisible(false);
+            } else if(checkedCount == 1) {
+                mode.getMenu().findItem(R.id.forward).setVisible(true);
+                mode.getMenu().findItem(R.id.copy_to_phone).setVisible(true);
+                mode.getMenu().findItem(R.id.reply).setVisible(isInboxSms());
+            }
+        }
+
+        private void recoredCheckedItemPositions(){
+            SparseBooleanArray booleanArray = getListView().getCheckedItemPositions();
+            mSelectedPos.clear();
+            Log.d(TAG, "booleanArray = " + booleanArray);
+            for (int i = 0; i < booleanArray.size(); i++) {
+                int pos = booleanArray.keyAt(i);
+                boolean checked = booleanArray.get(pos);
+                if (checked) {
+                    mSelectedPos.add(pos);
+                }
+            }
+        }
+
+        private void recordAllSelectedItems() {
+            // must calculate all checked msg before multi selection done.
+            recoredCheckedItemPositions();
+            calculateSelectedMsgUri();
+        }
+
+        private void calculateSelectedMsgUri() {
+            mSelectedMsg.clear();
+            for (Integer pos : mSelectedPos) {
+                Cursor c = (Cursor) getListView().getAdapter().getItem(pos);
+                mSelectedMsg.add(getUriStrByCursor(c));
+            }
+        }
+
+        private boolean isInboxSms() {
+            int pos = mSelectedPos.get(0);
+            Cursor cursor = (Cursor) getListView().getAdapter().getItem(pos);
+            long type = cursor.getLong(cursor.getColumnIndexOrThrow("type"));
+            Log.d(TAG, "sms type is: " + type);
+            return type == TYPE_INBOX;
+        }
+
+        private void replyMessage() {
+            int pos = mSelectedPos.get(0);
+            Cursor cursor = (Cursor) getListView().getAdapter().getItem(pos);
+            String address = cursor.getString(cursor.getColumnIndexOrThrow("address"));
+            Intent replyIntent = new Intent(getContext(), ComposeMessageActivity.class);
+            replyIntent.putExtra("reply_message", true);
+            replyIntent.putExtra("address", address);
+            replyIntent.putExtra("exit_on_sent", true);
+            getContext().startActivity(replyIntent);
+        }
     }
 }
 

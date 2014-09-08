@@ -995,6 +995,5 @@ public class MessageListItem extends LinearLayout implements
 
     @Override
     public void toggle() {
-        // TODO Auto-generated method stub
     }
 }
