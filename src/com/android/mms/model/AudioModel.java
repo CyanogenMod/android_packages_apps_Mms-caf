@@ -35,8 +35,10 @@ import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import com.android.mms.ContentRestrictionException;
+import com.android.mms.MmsApp;
 import com.android.mms.dom.events.EventImpl;
 import com.android.mms.dom.smil.SmilMediaElementImpl;
+import com.android.mms.drm.DrmUtils;
 import com.google.android.mms.MmsException;
 
 public class AudioModel extends MediaModel {

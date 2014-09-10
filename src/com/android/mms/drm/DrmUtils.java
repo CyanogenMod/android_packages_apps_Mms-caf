@@ -19,11 +19,13 @@ package com.android.mms.drm;
 
 import android.drm.DrmManagerClient;
 import android.drm.DrmStore;
+import android.media.MediaFile;
 import android.net.Uri;
 import android.util.Log;
 
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
+import com.google.android.mms.ContentType;
 
 public class DrmUtils {
     private static final String TAG = LogTag.TAG;
@@ -54,6 +56,68 @@ public class DrmUtils {
         }
         return result;
     }
+
+    // DRM CHANGE START
+    /**
+     * Check whether a {@link Uri} is Drm file uri and contains image mime-type.
+     *
+     * @param uri
+     * @return boolean
+     */
+    public static boolean isDrmImageFile(Uri uri) {
+        String path = uri.getPath();
+        String contentType = MediaFile.getMimeTypeForFile(path);
+        int fileType = MediaFile.getFileTypeForMimeType(contentType);
+        if (MediaFile.isDrmFileType(fileType)) {
+            String mimeType = MmsApp.getApplication().getDrmManagerClient()
+                    .getOriginalMimeType(uri);
+            if (ContentType.isImageType(mimeType)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check whether a {@link Uri} is Drm file uri and contains Audio mime-type.
+     *
+     * @param uri
+     * @return boolean
+     */
+    public static boolean isDrmAudioFile(Uri uri) {
+        String path = uri.getPath();
+        String contentType = MediaFile.getMimeTypeForFile(path);
+        int fileType = MediaFile.getFileTypeForMimeType(contentType);
+        if (MediaFile.isDrmFileType(fileType)) {
+            String mimeType = MmsApp.getApplication().getDrmManagerClient()
+                    .getOriginalMimeType(uri);
+            if (ContentType.isAudioType(mimeType)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check whether a {@link Uri} is Drm file uri and contains Audio mime-type.
+     *
+     * @param uri
+     * @return boolean
+     */
+    public static boolean isDrmVideoFile(Uri uri) {
+        String path = uri.getPath();
+        String contentType = MediaFile.getMimeTypeForFile(path);
+        int fileType = MediaFile.getFileTypeForMimeType(contentType);
+        if (MediaFile.isDrmFileType(fileType)) {
+            String mimeType = MmsApp.getApplication().getDrmManagerClient()
+                    .getOriginalMimeType(uri);
+            if (ContentType.isVideoType(mimeType)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    // DRM CHANGE END
 
     /**
      * Check if content may be forwarded according to DRM
