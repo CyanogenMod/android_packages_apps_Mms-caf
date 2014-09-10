@@ -369,8 +369,8 @@ public class Contact {
         return mContactMethodId;
     }
 
-    public synchronized Uri getPhoneUri() {
-        if (existsInDatabase()) {
+    public synchronized Uri getPhoneUri(boolean forceTelUri) {
+        if (existsInDatabase() && !forceTelUri) {
             return ContentUris.withAppendedId(Phone.CONTENT_URI, mContactMethodId);
         } else {
             Uri.Builder ub = new Uri.Builder();
@@ -391,6 +391,9 @@ public class Contact {
     }
 
     public static void init(final Context context) {
+        if (sContactCache != null) { // Stop previous Runnable
+            sContactCache.mTaskQueue.mWorkerThread.interrupt();
+        }
         sContactCache = new ContactsCache(context);
 
         RecipientIdCache.init(context);
@@ -537,7 +540,7 @@ public class Contact {
                                     try {
                                         mThingsToLoad.wait();
                                     } catch (InterruptedException ex) {
-                                        // nothing to do
+                                        break;  // Exception sent by Contact.init() to stop Runnable
                                     }
                                 }
                                 if (mThingsToLoad.size() > 0) {

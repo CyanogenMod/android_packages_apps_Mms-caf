@@ -58,7 +58,7 @@
             style="?android:attr/buttonStyleSmall"
             android:layout_width="100dip"
             android:layout_height="45dip"
-            android:textColor="@android:color/black"
+            android:textColor="@color/button_text"
             android:text="@string/view" />
 
         <Button
@@ -66,7 +66,7 @@
             style="?android:attr/buttonStyleSmall"
             android:layout_width="100dip"
             android:layout_height="45dip"
-            android:textColor="@android:color/black"
+            android:textColor="@color/button_text"
             android:text="@string/replace" />
 
         <Button
@@ -74,7 +74,7 @@
             style="?android:attr/buttonStyleSmall"
             android:layout_width="100dip"
             android:layout_height="45dip"
-            android:textColor="@android:color/black"
+            android:textColor="@color/button_text"
             android:text="@string/remove" />
 
     </LinearLayout>

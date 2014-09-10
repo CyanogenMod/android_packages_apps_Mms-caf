@@ -121,14 +121,30 @@ public class MessageItem {
     boolean mHaveSomethingToCopyToSDCard;
     boolean mIsDrmRingtoneWithRights;
 
+    boolean mFullTimestamp;
+    boolean mSentTimestamp;
+
+    int mCountDown = 0;
+
+    public int getCountDown() {
+        return mCountDown;
+    }
+
+    public void setCountDown(int countDown) {
+        this.mCountDown = countDown;
+    }
+
     MessageItem(Context context, String type, final Cursor cursor,
-            final ColumnsMap columnsMap, Pattern highlight) throws MmsException {
+            final ColumnsMap columnsMap, Pattern highlight, boolean fullTimestamp, boolean sentTimestamp)
+                    throws MmsException {
         mContext = context;
         mMsgId = cursor.getLong(columnsMap.mColumnMsgId);
         mHighlight = highlight;
         mType = type;
         mCursor = cursor;
         mColumnsMap = columnsMap;
+        mFullTimestamp = fullTimestamp;
+        mSentTimestamp = sentTimestamp;
 
         if ("sms".equals(type)) {
             mReadReport = false; // No read reports in sms
@@ -178,7 +194,7 @@ public class MessageItem {
                         mDate = System.currentTimeMillis();
                     }
                     mTimestamp = String.format(context.getString(R.string.sent_on),
-                            MessageUtils.formatTimeStampString(context, mDate));
+                            MessageUtils.formatTimeStampString(context, mDate, mFullTimestamp));
                 } else {
                     // Set "received" time stamp
                     mDate = cursor.getLong(columnsMap.mColumnSmsDate);
@@ -187,7 +203,7 @@ public class MessageItem {
                         mDate = System.currentTimeMillis();
                     }
                     mTimestamp = String.format(context.getString(R.string.received_on),
-                            MessageUtils.formatTimeStampString(context, mDate));
+                            MessageUtils.formatTimeStampString(context, mDate, mFullTimestamp));
                 }
             }
 
@@ -470,15 +486,15 @@ public class MessageItem {
             if (!isOutgoingMessage()) {
                 if (PduHeaders.MESSAGE_TYPE_NOTIFICATION_IND == mMessageType) {
                     mTimestamp = mContext.getString(R.string.expire_on,
-                            MessageUtils.formatTimeStampString(mContext, timestamp));
+                            MessageUtils.formatTimeStampString(mContext, timestamp, mFullTimestamp));
                 } else {
                     // add judgement the Mms is sent or received and format mTimestamp
                     if (mBoxId == Sms.MESSAGE_TYPE_SENT) {
                         mTimestamp = String.format(mContext.getString(R.string.sent_on),
-                                MessageUtils.formatTimeStampString(mContext, timestamp));
+                                MessageUtils.formatTimeStampString(mContext, timestamp, mFullTimestamp));
                     } else {
                         mTimestamp = String.format(mContext.getString(R.string.received_on),
-                                MessageUtils.formatTimeStampString(mContext, timestamp));
+                                MessageUtils.formatTimeStampString(mContext, timestamp, mFullTimestamp));
                     }
                 }
             }

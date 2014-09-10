@@ -22,8 +22,10 @@ package com.android.mms.ui;
 import java.util.regex.Pattern;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.MmsSms;
@@ -183,6 +185,8 @@ public class MessageListAdapter extends CursorAdapter {
     private boolean mMultiChoiceMode = false;
     // for multi delete sim messages or forward merged message
     private int mMultiManageMode = MessageUtils.INVALID_MODE;
+    private boolean mFullTimestamp;
+    private boolean mSentTimestamp;
 
     public MessageListAdapter(
             Context context, Cursor c, ListView listView,
@@ -201,6 +205,10 @@ public class MessageListAdapter extends CursorAdapter {
         } else {
             mColumnsMap = new ColumnsMap(c);
         }
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        mFullTimestamp = prefs.getBoolean(MessagingPreferenceActivity.FULL_TIMESTAMP, false);
+        mSentTimestamp = prefs.getBoolean(MessagingPreferenceActivity.SENT_TIMESTAMP, false);
 
         listView.setRecyclerListener(new AbsListView.RecyclerListener() {
             @Override
@@ -333,7 +341,7 @@ public class MessageListAdapter extends CursorAdapter {
         MessageItem item = mMessageItemCache.get(getKey(type, msgId));
         if (item == null && c != null && isCursorValid(c)) {
             try {
-                item = new MessageItem(mContext, type, c, mColumnsMap, mHighlight);
+                item = new MessageItem(mContext, type, c, mColumnsMap, mHighlight, mFullTimestamp, mSentTimestamp);
                 mMessageItemCache.put(getKey(item.mType, item.mMsgId), item);
             } catch (MmsException e) {
                 Log.e(TAG, "getCachedMessageItem: ", e);

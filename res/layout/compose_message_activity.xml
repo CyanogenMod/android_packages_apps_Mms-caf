@@ -42,7 +42,7 @@
 
         <EditText android:id="@+id/subject"
             android:textAppearance="?android:attr/textAppearanceMediumInverse"
-            android:textColor="@android:color/black"
+            android:textColor="@color/compose_message_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:capitalize="sentences"
@@ -70,7 +70,7 @@
             android:visibility="gone"
             android:fadingEdge="none"
             android:layout_marginBottom="1dip"
-            android:cacheColorHint="@android:color/white"
+            android:cacheColorHint="@color/background"
             android:scrollbarAlwaysDrawVerticalTrack="false"
             android:scrollbarStyle="insideOverlay"
             android:paddingBottom="@dimen/input_text_height_adjusted"
@@ -121,7 +121,7 @@
             </ScrollView>
 
             <!-- Divider -->
-            <View android:background="#eeeeee"
+            <View android:background="@color/dividers"
                 android:layout_width="match_parent"
                 android:layout_height="1dp" />
 
@@ -134,7 +134,7 @@
                 android:background="#fff" >
 
                 <EditText
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/compose_message_edit_text"
                     android:id="@+id/embedded_text_editor"
                     android:layout_width="0dip"
                     android:layout_gravity="bottom"
@@ -147,7 +147,7 @@
                     android:nextFocusRight="@+id/send_button"
                     android:hint="@string/type_to_compose_text_enter_to_send"
                     android:minHeight="@dimen/input_text_height"
-                    android:maxLines="5"
+                    android:maxLines="6"
                     android:inputType="textShortMessage|textAutoCorrect|textCapSentences|textMultiLine"
                     android:imeOptions="actionSend|flagNoEnterAction"
                 />
@@ -164,7 +164,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal|bottom"
-                        android:textColor="#cc333333"
+                        android:textColor="@color/compose_message_text_counter"
                         android:textSize="12sp"
                         android:textStyle="bold"
                         android:paddingLeft="3dip"

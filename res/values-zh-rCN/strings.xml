@@ -319,8 +319,6 @@
     <string name="download_canceled">"已取消下载。"</string>
     <string name="no_apn" msgid="505932916503312015">"设备上未指定任何 APN。"</string>
     <string name="select_audio" msgid="3528161449756771832">"选择音频"</string>
-    <string name="system_audio_item">"系统音频"</string>
-    <string name="external_audio_item">"外部存储的音频"</string>
     <string name="copy_to_sdcard" msgid="757028609638184856">"保存附件"</string>
     <string name="copy_to_sdcard_success" msgid="7948625615155992014">"已保存附件。"</string>
     <string name="copy_to_sdcard_fail" msgid="4944606369631916737">"无法保存附件。"</string>
@@ -396,20 +394,11 @@
     <string name="banner_sms_promo_message" msgid="3536714414252763826">"您可以在“设置”中更改此设置。"</string>
     <!-- Subscription selection strings -->
     <string name="select_subscription_title">"选择SIM卡"</string>
-    <string name="pending_mms_title">"彩信等待由另一个卡槽处理"</string>
-    <string name="pending_mms">"信息：一条或多条彩信正在等待中"</string>
-    <string name="pending_mms_text">"点击切换卡槽"</string>
 
     <string name="switch_data_subscription">数据通道切换</string>
     <string name="switch_data_subscription_success">成功。</string>
     <string name="switch_data_subscription_failed">失败。</string>
 
-    <string name="abort_mms">"信息: 终止彩信发送"</string>
-    <string name="abort_mms_text ">"点击可终止发送并返回"</string>
-
-    <string name="progress_mms_title">"彩信正在另一个卡槽处理中"</string>
-    <string name="progress_mms">"信息: 彩信正在处理中..."</string>
-    <string name="progress_mms_text ">"点击重试"</string>
     <string name="mail_to">发送邮件至:</string>
     <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
     <string name="menu_connect_url">连接</string>
@@ -434,8 +423,6 @@
     <string name="pref_summary_disable_signature">短信签名已禁用</string>
     <string name="pref_title_edit_signature">编辑短信签名</string>
     <string name="signature_full_toast">"签名已达最大长度。"</string>
-    <string name="normal_show">普通模式查看</string>
-    <string name="cannot_play">无法播放该幻灯片</string>
     <string name="operate_success">"操作成功！"</string>
     <string name="operate_failure">"操作失败！"</string>
     <string name="menu_reply">"回复"</string>

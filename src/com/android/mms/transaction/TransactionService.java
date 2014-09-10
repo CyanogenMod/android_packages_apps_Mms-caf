@@ -733,7 +733,6 @@ public class TransactionService extends Service implements Observer {
                 cleanupMap(currentDds);
 
                 return;
-
             }
         }
 
@@ -1443,17 +1442,17 @@ public class TransactionService extends Service implements Observer {
                         if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE) || DEBUG) {
                             Log.v(TAG, "Transaction already pending: " +
                                     transaction.getServiceId());
+                            decRefCount();
+                            return true;
                         }
-                        return true;
                     }
-                }
-                for (Transaction t : mProcessing) {
-                    if (t.isEquivalent(transaction)) {
-                        Log.d(TAG, "Duplicated transaction: " + transaction.getServiceId());
-                        decRefCount();
-                        return true;
+                    for (Transaction t1 : mProcessing) {
+                        if (t1.isEquivalent(transaction)) {
+                            Log.d(TAG, "Duplicated transaction: " + transaction.getServiceId());
+                            decRefCount();
+                            return true;
+                        }
                     }
-                }
 
                 /*
                 * Make sure that the network connectivity necessary
@@ -1462,34 +1461,35 @@ public class TransactionService extends Service implements Observer {
                 * connectivity is established.
                 */
 
-                Log.d(TAG, "processTransaction: call beginMmsConnectivity...");
+                    Log.d(TAG, "processTransaction: call beginMmsConnectivity...");
 
-                int connectivityResult = beginMmsConnectivity();
-                if (connectivityResult == PhoneConstants.APN_REQUEST_STARTED) {
-                    mPending.add(transaction);
-                    if (Log.isLoggable(LogTag.TRANSACTION, Log.DEBUG) || DEBUG) {
-                        Log.v(TAG, "processTransaction: connResult=APN_REQUEST_STARTED, " +
-                                "defer transaction pending MMS connectivity");
+                    int connectivityResult = beginMmsConnectivity();
+                    if (connectivityResult == PhoneConstants.APN_REQUEST_STARTED) {
+                        mPending.add(transaction);
+                        if (Log.isLoggable(LogTag.TRANSACTION, Log.DEBUG) || DEBUG) {
+                            Log.v(TAG, "processTransaction: connResult=APN_REQUEST_STARTED, " +
+                                    "defer transaction pending MMS connectivity");
+                        }
+                        return true;
                     }
-                    return true;
+
+                    Log.d(TAG, "Adding transaction to 'mProcessing' list: " + transaction);
+                    mProcessing.add(transaction);
                 }
 
-                Log.d(TAG, "Adding transaction to 'mProcessing' list: " + transaction);
-                mProcessing.add(transaction);
+                // Set a timer to keep renewing our "lease" on the MMS connection
+                sendMessageDelayed(obtainMessage(EVENT_CONTINUE_MMS_CONNECTIVITY),
+                        APN_EXTENSION_WAIT);
+
+                if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE) || DEBUG) {
+                    Log.v(TAG, "processTransaction: starting transaction " + transaction);
+                }
+
+                // Attach to transaction and process it
+                transaction.attach(TransactionService.this);
+                transaction.process();
+                return true;
             }
-
-            // Set a timer to keep renewing our "lease" on the MMS connection
-            sendMessageDelayed(obtainMessage(EVENT_CONTINUE_MMS_CONNECTIVITY),
-                               APN_EXTENSION_WAIT);
-
-            if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE) || DEBUG) {
-                Log.v(TAG, "processTransaction: starting transaction " + transaction);
-            }
-
-            // Attach to transaction and process it
-            transaction.attach(TransactionService.this);
-            transaction.process();
-            return true;
         }
 
         public void removePendingTransactionsOnNoConnectivity(boolean retry) {

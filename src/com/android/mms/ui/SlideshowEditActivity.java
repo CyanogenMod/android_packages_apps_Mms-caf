@@ -402,6 +402,7 @@ public class SlideshowEditActivity extends ListActivity {
             SlideListItemView slideListItemView;
             slideListItemView = (SlideListItemView) mInflater.inflate(
                     resource, null);
+            slideListItemView.setLayoutModel(mSlideshow.getLayout().getLayoutType());
 
             // Show slide number.
             TextView text;

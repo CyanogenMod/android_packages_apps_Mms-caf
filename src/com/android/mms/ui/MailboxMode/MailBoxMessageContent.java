@@ -214,7 +214,7 @@ public class MailBoxMessageContent extends Activity {
 
         if (MessageUtils.hasIccCard()) {
             menu.add(0, MENU_CALL_RECIPIENT, 0, R.string.menu_call)
-                    .setIcon(R.drawable.ic_menu_call)
+                    .setIcon(R.drawable.ic_menu_call_holo_light)
                     .setTitle(R.string.menu_call)
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         }

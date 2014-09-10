@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -46,6 +47,7 @@ import android.telephony.MSimTelephonyManager;
 import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.style.ForegroundColorSpan;
@@ -66,6 +68,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
@@ -75,6 +78,7 @@ import com.android.mms.data.WorkingMessage;
 import com.android.mms.model.LayoutModel;
 import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
+import com.android.mms.transaction.SmsReceiverService;
 import com.android.mms.transaction.Transaction;
 import com.android.mms.transaction.TransactionBundle;
 import com.android.mms.transaction.TransactionService;
@@ -83,6 +87,7 @@ import com.android.mms.ui.WwwContextMenuActivity;
 import com.android.mms.util.DownloadManager;
 import com.android.mms.util.ItemLoadedCallback;
 import com.android.mms.util.MultiSimUtility;
+import com.android.mms.util.SmileyParser;
 import com.android.mms.util.ThumbnailManager.ImageLoaded;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
@@ -530,7 +535,7 @@ public class MessageListItem extends LinearLayout implements
             if (mMessageItem.mSlideshow == null) {
                 debugText = "NULL slideshow";
             } else {
-                SlideModel slide = mMessageItem.mSlideshow.get(0);
+                SlideModel slide = ((SlideshowModel) mMessageItem.mSlideshow).get(0);
                 if (slide == null) {
                     debugText = "NULL first slide";
                 } else if (!slide.hasImage()) {
@@ -545,9 +550,14 @@ public class MessageListItem extends LinearLayout implements
         // If we're in the process of sending a message (i.e. pending), then we show a "SENDING..."
         // string in place of the timestamp.
         if (!sameItem || haveLoadedPdu) {
+            boolean isCountingDown = mMessageItem.getCountDown() > 0 &&
+                    MessagingPreferenceActivity.getMessageSendDelayDuration(mContext) > 0;
+            int sendingTextResId = isCountingDown
+                    ? R.string.sent_countdown : R.string.sending_message;
+
             mDateView.setText(buildTimestampLine(mMessageItem.isSending() ?
-                    mContext.getResources().getString(R.string.sending_message) :
-                        mMessageItem.mTimestamp));
+                    mContext.getResources().getString(sendingTextResId) :
+                    mMessageItem.mTimestamp));
         }
         if (mMessageItem.isSms()) {
             showMmsView(false);
@@ -753,9 +763,26 @@ public class MessageListItem extends LinearLayout implements
                                        String contentType) {
         SpannableStringBuilder buf = new SpannableStringBuilder();
 
+        // Do we still want this?
+        /*
+        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()
+                && !isSimCardMessage()) {
+            int subscription = subId + 1;
+            buf.append(MSimTelephonyManager.getDefault().getNetworkOperatorName(subId)
+                    + "-" + subscription + ":");
+            buf.append("\n");
+        }
+        */
+
         boolean hasSubject = !TextUtils.isEmpty(subject);
+        SmileyParser parser = SmileyParser.getInstance();
         if (hasSubject) {
-            buf.append(mContext.getResources().getString(R.string.inline_subject, subject));
+            CharSequence smilizedSubject = parser.addSmileySpans(subject);
+            // Can't use the normal getString() with extra arguments for string replacement
+            // because it doesn't preserve the SpannableText returned by addSmileySpans.
+            // We have to manually replace the %s with our text.
+            buf.append(TextUtils.replace(mContext.getResources().getString(R.string.inline_subject),
+                    new String[] { "%s" }, new CharSequence[] { smilizedSubject }));
         }
 
         if (!TextUtils.isEmpty(body)) {
@@ -767,7 +794,7 @@ public class MessageListItem extends LinearLayout implements
                 if (hasSubject) {
                     buf.append(" - ");
                 }
-                buf.append(body);
+                buf.append(parser.addSmileySpans(body));
             }
         }
 
@@ -839,6 +866,11 @@ public class MessageListItem extends LinearLayout implements
     }
 
     public void onMessageListItemClick() {
+        if (mMessageItem != null && mMessageItem.isSending() && mMessageItem.isSms()) {
+            SmsReceiverService.cancelSendingMessage(mMessageItem.mMessageUri);
+            return;
+        }
+
         // If the message is a failed one, clicking it should reload it in the compose view,
         // regardless of whether it has links in it
         if (mMessageItem != null &&
@@ -851,31 +883,100 @@ public class MessageListItem extends LinearLayout implements
             return;
         }
 
+        boolean wap_push = mContext.getResources().getBoolean(R.bool.config_wap_push);
+
         // Check for links. If none, do nothing; if 1, open it; if >1, ask user to pick one
         final URLSpan[] spans = mBodyTextView.getUrls();
         if (spans.length == 0) {
-            sendMessage(mMessageItem, MSG_LIST_DETAILS);
-        } else {
-            boolean wap_push = mContext.getResources().getBoolean(R.bool.config_wap_push);
-            if (spans.length == 1 && mMessageItem != null
-                    && MessageUtils.isWapPushNumber(mMessageItem.mAddress)
-                    && wap_push) {
-                DialogInterface.OnClickListener click = new DialogInterface.OnClickListener() {
-                    @Override
-                    public final void onClick(DialogInterface dialog, int which) {
-                        spans[0].onClick(mBodyTextView);
-                    }
-                };
-                new AlertDialog.Builder(mContext)
-                        .setTitle(mContext.getString(R.string.open_wap_push_title))
-                        .setMessage(mContext.getString(R.string.open_wap_push_body))
-                        .setPositiveButton(android.R.string.ok, click)
-                        .setNegativeButton(android.R.string.cancel, null)
-                        .setCancelable(true)
-                        .show();
-            } else {
-                MessageUtils.onMessageContentClick(mContext, mBodyTextView);
+            sendMessage(mMessageItem, MSG_LIST_DETAILS);    // show the message details dialog
+        } else if (spans.length == 1 && mMessageItem != null
+                && MessageUtils.isWapPushNumber(mMessageItem.mAddress)
+                && wap_push) {
+            DialogInterface.OnClickListener click = new DialogInterface.OnClickListener() {
+                @Override
+                public final void onClick(DialogInterface dialog, int which) {
+                    spans[0].onClick(mBodyTextView);
+                }
+            };
+            new AlertDialog.Builder(mContext)
+                    .setTitle(mContext.getString(R.string.open_wap_push_title))
+                    .setMessage(mContext.getString(R.string.open_wap_push_body))
+                    .setPositiveButton(android.R.string.ok, click)
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .setCancelable(true)
+                    .show();
+        } else if (spans.length == 1) {
+            try {
+                spans[0].onClick(mBodyTextView);
+            } catch (ActivityNotFoundException ex) {
+                Toast.makeText(mContext, R.string.failed_open_associated_activity_msg,
+                        Toast.LENGTH_SHORT).show();
             }
+        } else {
+            ArrayAdapter<URLSpan> adapter =
+                new ArrayAdapter<URLSpan>(mContext, android.R.layout.select_dialog_item, spans) {
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    View v = super.getView(position, convertView, parent);
+                    try {
+                        URLSpan span = getItem(position);
+                        String url = span.getURL();
+                        Uri uri = Uri.parse(url);
+                        TextView tv = (TextView) v;
+                        Drawable d = mContext.getPackageManager().getActivityIcon(
+                                new Intent(Intent.ACTION_VIEW, uri));
+                        if (d != null) {
+                            d.setBounds(0, 0, d.getIntrinsicHeight(), d.getIntrinsicHeight());
+                            tv.setCompoundDrawablePadding(10);
+                            tv.setCompoundDrawables(d, null, null, null);
+                        }
+                        final String telPrefix = "tel:";
+                        if (url.startsWith(telPrefix)) {
+                            if ((mDefaultCountryIso == null) || mDefaultCountryIso.isEmpty()) {
+                                url = url.substring(telPrefix.length());
+                            }
+                            else {
+                                url = PhoneNumberUtils.formatNumber(
+                                        url.substring(telPrefix.length()), mDefaultCountryIso);
+                            }
+                        }
+                        tv.setText(url);
+                    } catch (android.content.pm.PackageManager.NameNotFoundException ex) {
+                        // it's ok if we're unable to set the drawable for this view - the user
+                        // can still use it
+                    }
+                    return v;
+                }
+            };
+
+            AlertDialog.Builder b = new AlertDialog.Builder(mContext);
+
+            DialogInterface.OnClickListener click = new DialogInterface.OnClickListener() {
+                @Override
+                public final void onClick(DialogInterface dialog, int which) {
+                    if (which >= 0) {
+                        try {
+                            spans[which].onClick(mBodyTextView);
+                        } catch (ActivityNotFoundException ex) {
+                            Toast.makeText(mContext, R.string.failed_open_associated_activity_msg,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            };
+
+            b.setTitle(R.string.select_link_title);
+            b.setCancelable(true);
+            b.setAdapter(adapter, click);
+
+            b.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public final void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+
+            b.show();
         }
     }
 
@@ -1073,5 +1174,19 @@ public class MessageListItem extends LinearLayout implements
 
     public void setMultiChoiceMode(boolean isMultiChoiceMode) {
         mMultiChoiceMode = isMultiChoiceMode;
+    }
+
+    public void updateDelayCountDown() {
+        if (mMessageItem.isSms() && mMessageItem.getCountDown() > 0 && mMessageItem.isSending()) {
+            String content = mContext.getResources().getQuantityString(
+                    R.plurals.remaining_delay_time,
+                    mMessageItem.getCountDown(), mMessageItem.getCountDown());
+            Spanned spanned = Html.fromHtml(buildTimestampLine(content));
+            mDateView.setText(spanned);
+        } else {
+            mDateView.setText(buildTimestampLine(mMessageItem.isSending()
+                    ? mContext.getResources().getString(R.string.sending_message)
+                    : mMessageItem.mTimestamp));
+        }
     }
 }

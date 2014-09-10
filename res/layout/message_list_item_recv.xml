@@ -72,7 +72,7 @@
                     android:layout_height="wrap_content"
                     android:linksClickable="false"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="#ff000000"
+                    android:textColor="@color/message_received"
                     android:textSize="16sp"
                     android:visibility="gone"/>
 
@@ -92,7 +92,6 @@
                         android:layout_gravity="center_vertical"/>
 
                     <TextView android:id="@+id/date_view"
-                        android:background="@drawable/listitem_background"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingRight="3dip"
