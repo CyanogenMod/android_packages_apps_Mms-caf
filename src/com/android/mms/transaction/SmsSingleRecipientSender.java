@@ -23,6 +23,7 @@ import com.android.mms.LogTag;
 import com.android.mms.MmsConfig;
 import com.android.mms.data.Conversation;
 import com.android.mms.ui.MessageUtils;
+import com.android.mms.util.MultiSimUtility;
 import com.google.android.mms.MmsException;
 
 public class SmsSingleRecipientSender extends SmsMessageSender {
@@ -161,21 +162,9 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
 
     private int getValidityPeriod(int subscription) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-        String valitidyPeriod = null;
-        switch (subscription) {
-            case MSimConstants.INVALID_SUBSCRIPTION:
-                valitidyPeriod = prefs.getString("pref_key_sms_validity_period", null);
-                break;
-            case MSimConstants.SUB1:
-                valitidyPeriod = prefs.getString("pref_key_sms_validity_period_slot1", null);
-                break;
-            case MSimConstants.SUB2:
-                valitidyPeriod = prefs.getString("pref_key_sms_validity_period_slot2", null);
-                break;
-            default:
-                break;
-        }
-        return (valitidyPeriod == null) ? -1 : Integer.parseInt(valitidyPeriod);
+        return Integer.valueOf(prefs.getString(
+                MultiSimUtility.getPreferenceKey("pref_key_sms_validity_period", mSubscription),
+                "-1"));
     }
 
     private void log(String msg) {
