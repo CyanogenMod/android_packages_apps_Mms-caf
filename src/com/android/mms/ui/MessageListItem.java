@@ -869,9 +869,13 @@ public class MessageListItem extends LinearLayout implements
         // message was sent. Showing the icon tells the user there's more information
         // by selecting the "View report" menu.
         if (msgItem.mDeliveryStatus == MessageItem.DeliveryStatus.INFO || msgItem.mReadReport
-                || (msgItem.isMms() &&
-                        msgItem.mDeliveryStatus == MessageItem.DeliveryStatus.RECEIVED)) {
+                || (msgItem.isMms() && !msgItem.isSending() &&
+                        msgItem.mDeliveryStatus == MessageItem.DeliveryStatus.PENDING)) {
             mDetailsIndicator.setImageResource(R.drawable.ic_sms_mms_details);
+            mDetailsIndicator.setVisibility(View.VISIBLE);
+        } else if (msgItem.isMms() && !msgItem.isSending() &&
+                msgItem.mDeliveryStatus == MessageItem.DeliveryStatus.RECEIVED) {
+            mDetailsIndicator.setImageResource(R.drawable.ic_sms_mms_delivered);
             mDetailsIndicator.setVisibility(View.VISIBLE);
         } else {
             mDetailsIndicator.setVisibility(View.GONE);
