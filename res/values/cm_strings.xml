@@ -201,4 +201,11 @@
     <string name="subscription1_title">Subscription 1</string>
     <string name="subscription2_title">Subscription 2</string>
     <string name="subscription3_title">Subscription 3</string>
+    <string name="subscription_settings_title">Subscription Settings</string>
+    <string name="multi_sim_entry_format" translatable="false"><xliff:g id="operator">%1$s</xliff:g>-<xliff:g id="index">%2$d</xliff:g></string>
+    <string name="sub_no_sim">No SIM</string>
+    <string name="pref_manage_subs_title">Manage Subscriptions</string>
+
+    <!-- SMSC Preference -->
+    <string name="pref_smsc_number">SMSC Number</string>
 </resources>

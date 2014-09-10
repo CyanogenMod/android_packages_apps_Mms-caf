@@ -325,6 +325,14 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ui.SubscriptionSettingsActivity"
+            android:theme="@android:style/Theme.Holo.Light"
+            android:label="@string/subscription_settings_title">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
+
         <service android:name=".ui.SelectMmsSubscription"
             android:exported="true">
         </service>
