@@ -769,7 +769,7 @@ public class ComposeMessageActivity extends Activity
             smsBtns[i] = (Button) layout.findViewById(smsBtnIds[i]);
             smsBtns[i].setVisibility(View.VISIBLE);
             List<SubInfoRecord> subInfoList = SubscriptionManager.getSubInfoUsingSlotId(
-                    getApplicationContext(), phoneId);
+                    phoneId);
             String displayName = subInfoList == null ? "SIM " + (i + 1) :
                     subInfoList.get(0).mDisplayName;
             Log.e(TAG, "PhoneID : " + phoneId + " displayName " + displayName);

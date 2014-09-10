@@ -544,7 +544,7 @@ public class MessageListItem extends LinearLayout implements
         if (TelephonyManager.getDefault().isMultiSimEnabled()) {
             //SMS/MMS is operating on PhoneId which is 0, 1..
             //Sub ID will be 1, 2, ...
-            List<SubInfoRecord> subInfoList = SubscriptionManager.getSubInfoUsingSlotId(mContext,
+            List<SubInfoRecord> subInfoList = SubscriptionManager.getSubInfoUsingSlotId(
                     phoneId);
             String displayName = subInfoList == null ? "" : subInfoList.get(0).mDisplayName;
             Log.d(TAG, "PhoneID: " + phoneId + " displayName " + displayName);
