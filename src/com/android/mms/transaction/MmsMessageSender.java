@@ -160,7 +160,9 @@ public class MmsMessageSender implements MessageSender {
         sendReq.setPriority(prefs.getInt(MessagingPreferenceActivity.PRIORITY, DEFAULT_PRIORITY));
 
         // Delivery report.
-        boolean dr = prefs.getBoolean(MessagingPreferenceActivity.MMS_DELIVERY_REPORT_MODE,
+        boolean dr = prefs.getBoolean(
+                MultiSimUtility.getPreferenceKey(
+                        MessagingPreferenceActivity.MMS_DELIVERY_REPORT_MODE, mSubscription),
                 DEFAULT_DELIVERY_REPORT_MODE);
         sendReq.setDeliveryReport(dr?PduHeaders.VALUE_YES:PduHeaders.VALUE_NO);
 
@@ -171,17 +173,10 @@ public class MmsMessageSender implements MessageSender {
     }
 
     private long getExpiryTime(SharedPreferences prefs) {
-        long expiryTime = 0;
-        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
-            expiryTime = Long.parseLong(
-                    prefs.getString((mSubscription == 0) ?
-                            MessagingPreferenceActivity.EXPIRY_TIME_SLOT1:
-                            MessagingPreferenceActivity.EXPIRY_TIME_SLOT2, "0"));
-        } else {
-            expiryTime = Long.parseLong(
-                    prefs.getString(MessagingPreferenceActivity.EXPIRY_TIME, "0"));
-        }
-        return expiryTime;
+        return Long.parseLong(prefs.getString(
+                MultiSimUtility.getPreferenceKey(
+                        MessagingPreferenceActivity.EXPIRY_TIME, mSubscription),
+                "0"));
     }
 
     public static void sendReadRec(Context context, String to, String messageId, int status) {

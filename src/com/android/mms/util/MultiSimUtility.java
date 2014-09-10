@@ -18,53 +18,68 @@
 
 package com.android.mms.util;
 
-import android.app.Service;
-import android.telephony.MSimTelephonyManager;
 import android.content.Context;
 import android.content.Intent;
+import android.telephony.MSimTelephonyManager;
 import android.util.Log;
+import com.android.internal.telephony.MSimConstants;
 
 /**
  * The MultiSimActivity is responsible for getting current data subscription.
  */
+public class MultiSimUtility {
+    private static final String TAG = "MultiSimUtility";
+    public static final String ORIGIN_SUB_ID = "origin_sub_id";
 
-    public class MultiSimUtility {
-        private static final String TAG = "MultiSimUtility";
-        public static final String ORIGIN_SUB_ID = "origin_sub_id";
+    public static int getCurrentDataSubscription(Context mContext) {
 
-        public static int getCurrentDataSubscription(Context mContext) {
-
-            if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
-                MSimTelephonyManager mtmgr = (MSimTelephonyManager)
+        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+            MSimTelephonyManager mtmgr = (MSimTelephonyManager)
                     mContext.getSystemService (Context.MSIM_TELEPHONY_SERVICE);
-                return mtmgr.getPreferredDataSubscription();
-            } else {
-                return 0;
-            }
-        }
-
-        public static int getDefaultDataSubscription(Context mContext) {
-
-            if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
-                MSimTelephonyManager mtmgr = (MSimTelephonyManager)
-                    mContext.getSystemService (Context.MSIM_TELEPHONY_SERVICE);
-                return mtmgr.getDefaultDataSubscription();
-            } else {
-                return 0;
-            }
-        }
-
-        public static void startSelectMmsSubsciptionServ(Context mContext, Intent svc) {
-            if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
-                Log.d(TAG, "MMS silent transaction");
-                Intent silentIntent = new Intent(mContext,
-                        com.android.mms.ui.SelectMmsSubscription.class);
-                silentIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                silentIntent.putExtras(svc); //copy all extras
-                mContext.startService(silentIntent);
-
-            } else {
-                mContext.startService(svc);
-            }
+            return mtmgr.getPreferredDataSubscription();
+        } else {
+            return 0;
         }
     }
+
+    public static int getDefaultDataSubscription(Context mContext) {
+
+        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+            MSimTelephonyManager mtmgr = (MSimTelephonyManager)
+                    mContext.getSystemService (Context.MSIM_TELEPHONY_SERVICE);
+            return mtmgr.getDefaultDataSubscription();
+        } else {
+            return 0;
+        }
+    }
+
+    public static void startSelectMmsSubsciptionServ(Context mContext, Intent svc) {
+        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+            Log.d(TAG, "MMS silent transaction");
+            Intent silentIntent = new Intent(mContext,
+                    com.android.mms.ui.SelectMmsSubscription.class);
+            silentIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            silentIntent.putExtras(svc); //copy all extras
+            mContext.startService(silentIntent);
+
+        } else {
+            mContext.startService(svc);
+        }
+    }
+
+    /**
+     * Returns the preference name for the given subscription
+     *
+     * @param baseKey Name of the base preference key
+     * @param subscription subId or -1 for no sub
+     * @return preference key string
+     */
+    public static String getPreferenceKey(String baseKey, int subscription) {
+        if (!MSimTelephonyManager.getDefault().isMultiSimEnabled() ||
+                subscription == MSimConstants.INVALID_SUBSCRIPTION) {
+            return baseKey;
+        } else {
+            return baseKey + "_slot" + (subscription+1);
+        }
+    }
+}

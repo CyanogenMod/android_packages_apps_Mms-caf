@@ -36,6 +36,7 @@ import com.android.mms.LogTag;
 import com.android.mms.ui.MessageUtils;
 import com.android.mms.MmsConfig;
 import com.android.mms.ui.MessagingPreferenceActivity;
+import com.android.mms.util.MultiSimUtility;
 import com.google.android.mms.MmsException;
 
 import java.util.ArrayList;
@@ -94,17 +95,11 @@ public class SmsMessageSender implements MessageSender {
         }
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-        boolean requestDeliveryReport = false;
-        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
-            requestDeliveryReport = prefs.getBoolean((mSubscription == 0) ?
-                    MessagingPreferenceActivity.SMS_DELIVERY_REPORT_SUB1 :
-                    MessagingPreferenceActivity.SMS_DELIVERY_REPORT_SUB2,
-                    DEFAULT_DELIVERY_REPORT_MODE);
-        } else {
-            requestDeliveryReport = prefs.getBoolean(
-                    MessagingPreferenceActivity.SMS_DELIVERY_REPORT_MODE,
-                    DEFAULT_DELIVERY_REPORT_MODE);
-        }
+        boolean requestDeliveryReport =
+                prefs.getBoolean(
+                        MultiSimUtility.getPreferenceKey(
+                            MessagingPreferenceActivity.SMS_DELIVERY_REPORT_MODE, mSubscription),
+                        DEFAULT_DELIVERY_REPORT_MODE);
 
         int priority = -1;
         try {

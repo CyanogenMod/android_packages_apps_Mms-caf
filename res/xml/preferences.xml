@@ -40,6 +40,17 @@
                 android:targetPackage="com.android.settings">
         </intent>
     </Preference>
+    <PreferenceCategory android:title="@string/pref_manage_subs_title"
+            android:key="pref_key_manage_subs">
+        <Preference
+                android:key="pref_key_subscription_settings"
+                android:title="@string/subscription_settings_title"
+                android:persistent="false">
+            <intent android:action="android.intent.action.MAIN"
+                    android:targetPackage="com.android.mms"
+                    android:targetClass="com.android.mms.ui.SubscriptionSettingsActivity" />
+        </Preference>
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_sms_storage_title"
                         android:key="pref_key_storage_settings">
         <!--
@@ -91,21 +102,6 @@
     <PreferenceCategory android:title="@string/pref_sms_settings_title"
                         android:key="pref_key_sms_settings" >
 
-        <CheckBoxPreference android:defaultValue="false"
-                android:key="pref_key_sms_delivery_reports"
-                android:summary="@string/pref_summary_sms_delivery_reports"
-                android:title="@string/pref_title_sms_delivery_reports" />
-
-        <CheckBoxPreference android:defaultValue="false"
-                android:key="pref_key_sms_delivery_reports_slot1"
-                android:summary="@string/pref_summary_sms_delivery_reports"
-                android:title="@string/pref_title_sms_delivery_reports_slot1" />
-
-        <CheckBoxPreference android:defaultValue="false"
-                android:key="pref_key_sms_delivery_reports_slot2"
-                android:summary="@string/pref_summary_sms_delivery_reports"
-                android:title="@string/pref_title_sms_delivery_reports_slot2" />
-
         <ListPreference
                 android:key="pref_key_send_delay"
                 android:persistent="true"
@@ -139,22 +135,6 @@
                 android:entryValues="@array/entries_sms_validity_period_value"
                 android:key="pref_key_sms_validity_period"
                 android:title="@string/pref_title_sms_validity_period" />
-
-        <ListPreference
-                android:defaultValue="-1"
-                android:dialogTitle="@string/pref_title_sms_validity_period"
-                android:entries="@array/entries_sms_validity_period"
-                android:entryValues="@array/entries_sms_validity_period_value"
-                android:key="pref_key_sms_validity_period_slot1"
-                android:title="@string/pref_title_sms_validity_period_slot1" />
-
-        <ListPreference
-                android:defaultValue="-1"
-                android:dialogTitle="@string/pref_title_sms_validity_period"
-                android:entries="@array/entries_sms_validity_period"
-                android:entryValues="@array/entries_sms_validity_period_value"
-                android:key="pref_key_sms_validity_period_slot2"
-                android:title="@string/pref_title_sms_validity_period_slot2" />
     </PreferenceCategory>
 
     <ListPreference
@@ -210,20 +190,6 @@
                 android:entryValues="@array/save_time_values"
                 android:defaultValue="0"
                 android:summary="@string/save_description" />
-        <ListPreference android:key="pref_key_mms_expiry_slot1"
-                android:title="@string/pref_title_mms_save_time_slot1"
-                android:dialogTitle="@string/pref_title_mms_save_time_slot1"
-                android:entries="@array/save_time"
-                android:entryValues="@array/save_time_values"
-                android:defaultValue="0"
-                android:summary="@string/save_description" />
-        <ListPreference android:key="pref_key_mms_expiry_slot2"
-                android:title="@string/pref_title_mms_save_time_slot2"
-                android:dialogTitle="@string/pref_title_mms_save_time_slot2"
-                android:entries="@array/save_time"
-                android:entryValues="@array/save_time_values"
-                android:defaultValue="0"
-                android:summary="@string/save_description" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_wap_push_title">
@@ -234,7 +200,9 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_smsc_title"
-            android:key="pref_key_smsc" >
+            android:key="pref_key_smsc_category">
+        <Preference android:key="pref_key_smsc_number"
+                android:title="@string/pref_smsc_number"/>
     </PreferenceCategory>
 
     <!-- Notification Settings -->
