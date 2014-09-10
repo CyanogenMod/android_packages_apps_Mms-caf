@@ -4028,15 +4028,6 @@ public class ComposeMessageActivity extends Activity
         }
         mTextEditor.setOnEditorActionListener(this);
         mTextEditor.addTextChangedListener(mTextEditorWatcher);
-        mTextEditor.setFilters(new InputFilter[] {
-                new LengthFilter(MmsConfig.getMaxTextLimit())});
-        mTextCounter = (TextView) findViewById(R.id.text_counter);
-        mSendButtonMms = (TextView) findViewById(R.id.send_button_mms);
-        mSendButtonSms = (ImageButton) findViewById(R.id.send_button_sms);
-        mSendButtonMms.setOnClickListener(this);
-        mSendButtonSms.setOnClickListener(this);
-        mTextEditor.setOnEditorActionListener(this);
-        mTextEditor.addTextChangedListener(mTextEditorWatcher);
         if (getResources().getInteger(R.integer.limit_count) == 0) {
             mTextEditor.setFilters(new InputFilter[] {
                     new LengthFilter(MmsConfig.getMaxTextLimit())});
