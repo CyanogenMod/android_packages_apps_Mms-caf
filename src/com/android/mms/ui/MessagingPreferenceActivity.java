@@ -121,6 +121,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private Preference mMmsGroupMmsPref;
     private Preference mMmsReadReportPref;
     private Preference mManageSimPref;
+    private Preference mManageSim1Pref;
+    private Preference mManageSim2Pref;
     private Preference mClearHistoryPref;
     private CheckBoxPreference mVibratePref;
     private CheckBoxPreference mEnableNotificationsPref;
@@ -156,15 +158,11 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
             if (TelephonyIntents.ACTION_SIM_STATE_CHANGED.equals(action)) {
-                String stateExtra = intent.getStringExtra(IccCardConstants.INTENT_KEY_ICC_STATE);
-                if (stateExtra != null
-                        && IccCardConstants.INTENT_VALUE_ICC_ABSENT.equals(stateExtra)) {
                     PreferenceCategory smsCategory =
                             (PreferenceCategory)findPreference("pref_key_sms_settings");
                     if (smsCategory != null) {
-                        smsCategory.removePreference(mManageSimPref);
+                        updateSIMSMSPref();
                     }
-                }
             } else if (Intent.ACTION_AIRPLANE_MODE_CHANGED.equals(action)) {
                     updateSMSCPref();
             }
@@ -238,6 +236,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                 (PreferenceCategory)findPreference("pref_key_notification_settings");
 
         mManageSimPref = findPreference("pref_key_manage_sim_messages");
+        mManageSim1Pref = findPreference("pref_key_manage_sim_messages_slot1");
+        mManageSim2Pref = findPreference("pref_key_manage_sim_messages_slot2");
         mSmsLimitPref = findPreference("pref_key_sms_delete_limit");
         mSmsDeliveryReportPref = findPreference("pref_key_sms_delivery_reports");
         mSmsDeliveryReportPrefSub1 = findPreference("pref_key_sms_delivery_reports_slot1");
@@ -297,10 +297,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         showSmscPref();
         setMessagePriorityPref();
 
-        if (!MmsApp.getApplication().getTelephonyManager().hasIccCard()) {
-            // No SIM card, remove the SIM-related prefs
-            mSmsPrefCategory.removePreference(mManageSimPref);
-        }
+        // Set SIM card SMS management preference
+        updateSIMSMSPref();
 
         if (!MmsConfig.getSMSDeliveryReportsEnabled()) {
             mSmsPrefCategory.removePreference(mSmsDeliveryReportPref);
@@ -465,6 +463,24 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             mSmscPrefList.add(pref);
         }
         updateSMSCPref();
+    }
+
+    private void updateSIMSMSPref() {
+        if (MessageUtils.isMultiSimEnabledMms()) {
+            if (!MessageUtils.hasIccCard(MessageUtils.SUB1)) {
+                mSmsPrefCategory.removePreference(mManageSim1Pref);
+            }
+            if (!MessageUtils.hasIccCard(MessageUtils.SUB2)) {
+                mSmsPrefCategory.removePreference(mManageSim2Pref);
+            }
+            mSmsPrefCategory.removePreference(mManageSimPref);
+        } else {
+            if (!MessageUtils.hasIccCard()) {
+                mSmsPrefCategory.removePreference(mManageSimPref);
+            }
+            mSmsPrefCategory.removePreference(mManageSim1Pref);
+            mSmsPrefCategory.removePreference(mManageSim2Pref);
+        }
     }
 
     private boolean isAirPlaneModeOn() {
@@ -666,6 +682,14 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             startActivity(new Intent(this, MessageTemplate.class));
         } else if (preference == mManageSimPref) {
             startActivity(new Intent(this, ManageSimMessages.class));
+        } else if (preference == mManageSim1Pref) {
+            Intent intent = new Intent(this, ManageSimMessages.class);
+            intent.putExtra(MessageUtils.SUBSCRIPTION_KEY, MessageUtils.SUB1);
+            startActivity(intent);
+        } else if (preference == mManageSim2Pref) {
+            Intent intent = new Intent(this, ManageSimMessages.class);
+            intent.putExtra(MessageUtils.SUBSCRIPTION_KEY, MessageUtils.SUB2);
+            startActivity(intent);
         } else if (preference == mClearHistoryPref) {
             showDialog(CONFIRM_CLEAR_SEARCH_HISTORY_DIALOG);
             return true;

@@ -189,6 +189,8 @@
     <string name="pref_summary_delete_limit" msgid="597128041393045216">"每个会话限存储 <xliff:g id="COUNT">%1$s</xliff:g> 条信息"</string>
     <string name="pref_summary_mms_group_mms" msgid="2266928687440696745">"使用彩信将单条信息发送给多个收件人"</string>
     <string name="pref_title_manage_sim_messages" msgid="7820895261757881177">"管理SIM卡中的信息"</string>
+    <string name="pref_title_manage_sim_messages_slot1" msgid="7820895261757881177">"管理SIM1卡中的信息"</string>
+    <string name="pref_title_manage_sim_messages_slot2" msgid="7820895261757881177">"管理SIM2卡中的信息"</string>
     <string name="pref_title_mms_delivery_reports" msgid="6666857926679451910">"发送报告"</string>
     <string name="pref_title_mms_group_mms" msgid="1251698526583908432">"群发信息"</string>
     <string name="pref_title_mms_read_reports" msgid="4882179829495828541">"已读报告"</string>

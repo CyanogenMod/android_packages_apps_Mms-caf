@@ -98,9 +98,11 @@
                       android:summary="@string/pref_summary_message_template"
                       android:title="@string/pref_title_message_template" />
     <Preference android:key="pref_key_manage_sim_messages"
-                      android:summary="@string/pref_summary_manage_sim_messages"
                       android:title="@string/pref_title_manage_sim_messages" />
-
+    <Preference android:key="pref_key_manage_sim_messages_slot1"
+                      android:title="@string/pref_title_manage_sim_messages_slot1" />
+    <Preference android:key="pref_key_manage_sim_messages_slot2"
+                      android:title="@string/pref_title_manage_sim_messages_slot2" />
     <ListPreference
         android:defaultValue="-1"
         android:dialogTitle="@string/pref_title_sms_validity_period"

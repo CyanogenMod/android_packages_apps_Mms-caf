@@ -367,6 +367,8 @@
     <string name="pref_summary_mms_group_mms">Use MMS to send a single message when there are multiple recipients</string>
     <!-- Settings item for entering SIM card message screen -->
     <string name="pref_title_manage_sim_messages">Manage SIM card messages</string>
+    <string name="pref_title_manage_sim_messages_slot1">Manage SIM1 card messages</string>
+    <string name="pref_title_manage_sim_messages_slot2">Manage SIM2 card messages</string>
     <!-- Settings item for boolean option to enable/disable MMS delivery reports -->
     <string name="pref_title_mms_delivery_reports">Delivery reports</string>
     <!-- Settings item for boolean option to enable/disable MMS group messages -->
