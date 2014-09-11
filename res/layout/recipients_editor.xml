@@ -43,28 +43,17 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:inputType="textFilter"
-            android:nextFocusRight="@+id/recipients_selector"
-        />
+            android:nextFocusRight="@+id/recipients_selector" />
 
-        <ImageView android:id="@+id/recipients_picker"
+        <ImageView
+            android:id="@+id/recipients_selector"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|center_vertical"
-            android:layout_marginEnd="4dip"
             android:padding="4dp"
             android:src="@drawable/ic_person_add_tinted_24dp"
             android:background="?android:attr/selectableItemBackgroundBorderless"
-        />
-
-        <ImageView android:id="@+id/recipients_selector"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|center_vertical"
-            android:padding="4dp"
-            android:src="@drawable/ic_group_white_24dp"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:nextFocusLeft="@id/recipients_editor"
-        />
+            android:nextFocusLeft="@id/recipients_editor" />
 
     </LinearLayout>
 
