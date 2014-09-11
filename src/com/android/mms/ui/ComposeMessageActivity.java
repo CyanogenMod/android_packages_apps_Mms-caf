@@ -177,7 +177,6 @@ import com.android.mms.transaction.MessagingNotification;
 import com.android.mms.transaction.SmsReceiverService;
 import com.android.mms.ui.MessageListView.OnSizeChangedListener;
 import com.android.mms.ui.MessageUtils.ResizeImageResultCallback;
-import com.android.mms.ui.MultiPickContactGroups;
 import com.android.mms.ui.RecipientsEditor.RecipientContextMenuInfo;
 import com.android.mms.ui.zoom.ZoomGestureOverlayView;
 import com.android.mms.ui.zoom.ZoomGestureOverlayView.IZoomListener;
@@ -364,7 +363,6 @@ public class ComposeMessageActivity extends Activity
     public MessageListAdapter mMsgListAdapter;  // and its corresponding ListAdapter
 
     private RecipientsEditor mRecipientsEditor;  // UI control for editing recipients
-    private View mRecipientsPicker;              // UI control for recipients picker
     private View mRecipientsSelector;            // UI control for recipients selector
 
     // For HW keyboard, 'mIsKeyboardOpen' indicates if the HW keyboard is open.
@@ -527,8 +525,10 @@ public class ComposeMessageActivity extends Activity
     }
 
     private void pickContacts(int mode, int requestCode) {
-        Intent intent = new Intent(this, MultiPickContactsActivity.class);
-        intent.putExtra(MultiPickContactsActivity.MODE, mode);
+        Intent intent = new Intent(ComposeMessageActivity.this, SelectRecipientsList.class);
+        ContactList contacts = mRecipientsEditor.constructContactsFromInput(false);
+        intent.putExtra(SelectRecipientsList.EXTRA_RECIPIENTS, contacts.getNumbers());
+        intent.putExtra(SelectRecipientsList.MODE, mode);
         startActivityForResult(intent, requestCode);
     }
 
@@ -1976,18 +1976,13 @@ public class ComposeMessageActivity extends Activity
         if (stub != null) {
             View stubView = stub.inflate();
             mRecipientsEditor = (RecipientsEditor) stubView.findViewById(R.id.recipients_editor);
-            mRecipientsPicker = stubView.findViewById(R.id.recipients_picker);
-            mRecipientsSelector = stubView.findViewById(R.id.recipients_selector);
-            mRecipientsSelector.setVisibility(View.VISIBLE);
         } else {
             mRecipientsEditor = (RecipientsEditor)findViewById(R.id.recipients_editor);
             mRecipientsEditor.setVisibility(View.VISIBLE);
-            mRecipientsPicker = findViewById(R.id.recipients_picker);
-            mRecipientsPicker.setVisibility(View.VISIBLE);
-            mRecipientsSelector = findViewById(R.id.recipients_selector);
-            mRecipientsSelector.setVisibility(View.VISIBLE);
         }
-        mRecipientsPicker.setOnClickListener(this);
+        mRecipientsSelector = findViewById(R.id.recipients_selector);
+        mRecipientsSelector.setVisibility(View.VISIBLE);
+
         mRecipientsSelector.setOnClickListener(this);
 
         mRecipientsEditor.setAdapter(new ChipsRecipientAdapter(this));
@@ -2784,9 +2779,6 @@ public class ComposeMessageActivity extends Activity
         if (mRecipientsEditor != null) {
             mRecipientsEditor.removeTextChangedListener(mRecipientsWatcher);
             mRecipientsEditor.setVisibility(View.GONE);
-            if (mRecipientsPicker != null) {
-                mRecipientsPicker.setVisibility(View.GONE);
-            }
             if (mRecipientsSelector != null) {
                 mRecipientsSelector.setVisibility(View.GONE);
             }
@@ -3395,13 +3387,12 @@ public class ComposeMessageActivity extends Activity
                 break;
 
             case AttachmentTypeSelectorAdapter.ADD_CONTACT_AS_TEXT:
-                pickContacts(MultiPickContactsActivity.MODE_INFO,
-                        replace ? REQUEST_CODE_ATTACH_REPLACE_CONTACT_INFO
-                                : REQUEST_CODE_ATTACH_ADD_CONTACT_INFO);
+                pickContacts(SelectRecipientsList.MODE_INFO,
+                        REQUEST_CODE_ATTACH_ADD_CONTACT_INFO);
                 break;
 
             case AttachmentTypeSelectorAdapter.ADD_CONTACT_AS_VCARD:
-                pickContacts(MultiPickContactsActivity.MODE_VCARD,
+                pickContacts(SelectRecipientsList.MODE_VCARD,
                         REQUEST_CODE_ATTACH_ADD_CONTACT_VCARD);
                 break;
 
@@ -3594,7 +3585,7 @@ public class ComposeMessageActivity extends Activity
             case REQUEST_CODE_ATTACH_ADD_CONTACT_INFO:
                 if (data != null) {
                     String newText = mWorkingMessage.getText() +
-                        data.getStringExtra(MultiPickContactsActivity.EXTRA_INFO);
+                            data.getStringExtra(SelectRecipientsList.EXTRA_INFO);
                     mWorkingMessage.setText(newText);
                 }
                 break;
@@ -3607,7 +3598,7 @@ public class ComposeMessageActivity extends Activity
                     if (mWorkingMessage != null) {
                         mWorkingMessage.removeAttachment(false);
                     }
-                    String extraVCard = data.getStringExtra(MultiPickContactsActivity.EXTRA_VCARD);
+                    String extraVCard = data.getStringExtra(SelectRecipientsList.EXTRA_VCARD);
                     if (extraVCard != null) {
                         Uri vcard = Uri.parse(extraVCard);
                         addVcard(vcard);
@@ -4126,29 +4117,10 @@ public class ComposeMessageActivity extends Activity
                 confirmSendMessageIfNeeded();
             }
         } else if ((v == mSendButtonSmsViewSec || v == mSendButtonMmsViewSec) &&
-                mShowTwoButtons && isPreparedForSending()) {
+            mShowTwoButtons && isPreparedForSending()) {
             confirmSendMessageIfNeeded(PhoneConstants.SUB2);
-        } else if (v == mRecipientsPicker) {
-            launchMultiplePhonePicker();
         } else if (v == mRecipientsSelector) {
-            Intent intent = new Intent(ComposeMessageActivity.this, SelectRecipientsList.class);
-            ContactList contacts = mRecipientsEditor.constructContactsFromInput(false);
-            intent.putExtra(SelectRecipientsList.EXTRA_RECIPIENTS, contacts.getNumbers());
-            startActivityForResult(intent, REQUEST_CODE_ADD_RECIPIENTS);
-        }
-    }
-
-    private void launchMultiplePhonePicker() {
-        Intent intent = new Intent(INTENT_MULTI_PICK, Contacts.CONTENT_URI);
-        String exsitNumbers = mRecipientsEditor.getExsitNumbers();
-        if (!TextUtils.isEmpty(exsitNumbers)) {
-            intent.putExtra(Intents.EXTRA_PHONE_URIS, exsitNumbers);
-        }
-        try {
-            mIsPickingContact = true;
-            startActivityForResult(intent, REQUEST_CODE_PICK);
-        } catch (ActivityNotFoundException ex) {
-            Toast.makeText(this, R.string.contact_app_not_found, Toast.LENGTH_SHORT).show();
+            pickContacts(SelectRecipientsList.MODE_DEFAULT, REQUEST_CODE_ADD_RECIPIENTS);
         }
     }
 
