@@ -81,7 +81,9 @@ public class RecipientsListLoader extends AsyncTaskLoader<ArrayList<RecipientsLi
                             continue;
                         }
                         for (Group group : groups) {
-                            if (group.getId() == entry.getKey()) {
+                            if (group.getId() == entry.getKey() && !group.isLocal()) {
+                                System.out.println("Adding " + phoneNumber.getName()
+                                        + " to " + group.getTitle());
                                 group.addPhoneNumber(phoneNumber);
                                 phoneNumber.addGroup(group);
                             }
@@ -98,6 +100,18 @@ public class RecipientsListLoader extends AsyncTaskLoader<ArrayList<RecipientsLi
                         result.group = group;
                         results.add(result);
                     }
+                }
+            }
+
+            // Local group
+            // We need to manually figure out what contact, that has no valid
+            // account name attached to it, is connected to which group,
+            // which may have a duplicate id to another remote group.
+            // TODO: The backing data structure is stupid, ideally we'd be matching
+            for (Group group : groups) {
+                if (group.isLocal()) {
+                    long groupId = group.getId();
+
                 }
             }
         }
