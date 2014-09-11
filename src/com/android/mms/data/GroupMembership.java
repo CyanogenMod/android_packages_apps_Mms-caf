@@ -50,10 +50,10 @@ public class GroupMembership {
         mContactId = c.getLong(COLUMN_GM_CONTACT_ID);
         mGroupId = c.getLong(COLUMN_GM_GROUP_ID);
 
-        if (Log.isLoggable(LogTag.THREAD_CACHE, Log.VERBOSE)) {
+        //if (Log.isLoggable(LogTag.THREAD_CACHE, Log.VERBOSE)) {
             Log.d(TAG, "Create groupMembership: groupId=" + mGroupId
                     + ", contactId=" + mContactId);
-        }
+        //}
     }
 
     public long getContactId() {
