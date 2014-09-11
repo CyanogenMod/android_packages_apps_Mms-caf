@@ -22,8 +22,13 @@ import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,15 +51,28 @@ public class SelectRecipientsList extends ListActivity implements
     private static final int MENU_MOBILE = 1;
     private static final int MENU_GROUPS = 2;
 
+    public static final String MODE = "mode";
+    public static final int MODE_DEFAULT = 0;
+    public static final int MODE_INFO = 1;
+    public static final int MODE_VCARD = 2;
+
+    public static final String EXTRA_INFO = "info";
+    public static final String EXTRA_VCARD = "vcard";
     public static final String EXTRA_RECIPIENTS = "recipients";
     public static final String PREF_MOBILE_NUMBERS_ONLY = "pref_key_mobile_numbers_only";
     public static final String PREF_SHOW_GROUPS = "pref_key_show_groups";
+
+    private static final String KEY_SEP = ",";
+    private static final String ITEM_SEP = ", ";
+    private static final String CONTACT_SEP_LEFT = "[";
+    private static final String CONTACT_SEP_RIGHT = "]";
 
     private SelectRecipientsListAdapter mListAdapter;
     private HashSet<PhoneNumber> mCheckedPhoneNumbers;
     private boolean mMobileOnly = true;
     private boolean mShowGroups = true;
     private View mProgressSpinner;
+    private int mMode = MODE_DEFAULT;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,11 +80,40 @@ public class SelectRecipientsList extends ListActivity implements
 
         setContentView(R.layout.select_recipients_list_screen);
 
+        if (savedInstanceState != null) {
+            mMode = savedInstanceState.getInt(MODE);
+        } else {
+            mMode = getIntent().getIntExtra(MODE, MODE_INFO);
+        }
+
+        if (mMode == MODE_INFO || mMode == MODE_VCARD) {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            prefs.edit().putBoolean(PREF_SHOW_GROUPS, false).commit();
+        } else {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            prefs.edit().putBoolean(PREF_SHOW_GROUPS, true).commit();
+        }
+
+        switch (mMode) {
+            case MODE_INFO:
+                setTitle(R.string.attach_add_contact_as_text);
+                break;
+            case MODE_VCARD:
+                setTitle(R.string.attach_add_contact_as_vcard);
+                break;
+            default:
+                // leave it be
+        }
+
         mProgressSpinner = findViewById(R.id.progress_spinner);
 
         // List view
         ListView listView = getListView();
-        listView.setChoiceMode(ListView.CHOICE_MODE_NONE);
+        if (mMode == MODE_VCARD) {
+            listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        } else {
+            listView.setChoiceMode(ListView.CHOICE_MODE_NONE);
+        }
         listView.setFastScrollEnabled(true);
         listView.setFastScrollAlwaysVisible(true);
         listView.setDivider(null);
@@ -101,18 +148,23 @@ public class SelectRecipientsList extends ListActivity implements
 
         menu.add(0, MENU_DONE, 0, R.string.menu_done)
              .setIcon(R.drawable.ic_menu_done_holo_light)
-             .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT)
+             .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS
+                     | MenuItem.SHOW_AS_ACTION_WITH_TEXT)
              .setVisible(false);
 
         menu.add(0, MENU_MOBILE, 0, R.string.menu_mobile)
              .setCheckable(true)
              .setChecked(mMobileOnly)
-             .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_NEVER | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+             .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_NEVER
+                     | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 
-        menu.add(0, MENU_GROUPS, 0, R.string.menu_groups)
-             .setCheckable(true)
-             .setChecked(mShowGroups)
-             .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_NEVER | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+        if (mMode == MODE_DEFAULT) {
+            menu.add(0, MENU_GROUPS, 0, R.string.menu_groups)
+                    .setCheckable(true)
+                    .setChecked(mShowGroups)
+                    .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_NEVER
+                            | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+        }
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -128,16 +180,8 @@ public class SelectRecipientsList extends ListActivity implements
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         switch (item.getItemId()) {
             case MENU_DONE:
-                ArrayList<String> numbers = new ArrayList<String>();
-                for (PhoneNumber phoneNumber : mCheckedPhoneNumbers) {
-                    if (phoneNumber.isChecked()) {
-                        numbers.add(phoneNumber.getNumber());
-                    }
-                }
-
-                // Pass the resulting set of numbers back
                 Intent intent = new Intent();
-                intent.putExtra(EXTRA_RECIPIENTS, numbers);
+                putExtraWithContact(intent);
                 setResult(RESULT_OK, intent);
                 finish();
                 return true;
@@ -293,5 +337,107 @@ public class SelectRecipientsList extends ListActivity implements
     @Override
     public void onLoaderReset(Loader<ArrayList<RecipientsListLoader.Result>> data) {
         mListAdapter.notifyDataSetInvalidated();
+    }
+
+//    private boolean getSelectedResult() {
+//        return ((mMode == MODE_INFO && !TextUtils.isEmpty(getCheckedNumberAsText()))
+//                || (mMode == MODE_VCARD && null != mCheckedPhoneNumbers.getSelectedAsVcard()));
+//    }
+
+    private void putExtraWithContact(Intent intent) {
+        if (mMode == MODE_DEFAULT) {
+            ArrayList<String> numbers = new ArrayList<String>();
+            for (PhoneNumber phoneNumber : mCheckedPhoneNumbers) {
+                if (phoneNumber.isChecked()) {
+                    numbers.add(phoneNumber.getNumber());
+                }
+            }
+            intent.putExtra(EXTRA_RECIPIENTS, numbers);
+        } else if (mMode == MODE_INFO) {
+            intent.putExtra(EXTRA_INFO, getCheckedNumbersAsText());
+        } else if (mMode == MODE_VCARD) {
+            intent.putExtra(EXTRA_VCARD, getCheckedNumbersAsVcard());
+        }
+    }
+
+
+    private String getCheckedNumbersAsText() {
+        StringBuilder result = new StringBuilder();
+
+        for (PhoneNumber number : mCheckedPhoneNumbers) {
+            result.append(CONTACT_SEP_LEFT);
+            result.append(getString(R.string.contact_info_text_as_name));
+            result.append(number.getName());
+            Cursor cursor = getContactsDetailCursor(number.getContactId());
+            try {
+                if (cursor != null) {
+                    int mimeIndex = cursor
+                            .getColumnIndexOrThrow(ContactsContract.Data.MIMETYPE);
+                    int phoneIndex = cursor
+                            .getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER);
+                    int emailIndex = cursor
+                            .getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Email.ADDRESS);
+                    while (cursor.moveToNext()) {
+                        result.append(ITEM_SEP);
+                        String mimeType = cursor.getString(mimeIndex);
+                        if (mimeType.equals(
+                                ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)) {
+                            result.append(getString(R.string.contact_info_text_as_phone));
+                            result.append(cursor.getString(phoneIndex));
+                        } else if (mimeType.equals(
+                                ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE)) {
+                            result.append(getString(R.string.contact_info_text_as_email));
+                            result.append(cursor.getString(emailIndex));
+                        }
+                    }
+                }
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                    cursor = null;
+                }
+            }
+
+            result.append(CONTACT_SEP_RIGHT);
+        }
+
+        return result.toString();
+    }
+
+    private String getCheckedNumbersAsVcard() {
+        StringBuilder result = new StringBuilder();
+        for (PhoneNumber number : mCheckedPhoneNumbers) {
+            result.append(getSelectedAsVcard(number));
+        }
+        return result.toString();
+    }
+
+    private Cursor getContactsDetailCursor(long contactId) {
+        StringBuilder selection = new StringBuilder();
+        selection.append(ContactsContract.Data.CONTACT_ID + "=" + contactId)
+                .append(" AND (")
+                .append(ContactsContract.Data.MIMETYPE + "='"
+                        + ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE + "'")
+                .append(" OR ")
+                .append(ContactsContract.Data.MIMETYPE + "='"
+                        + ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE + "')");
+
+        Cursor cursor = getContentResolver().query(
+                ContactsContract.Data.CONTENT_URI, null, selection.toString(), null, null);
+
+        return cursor;
+    }
+
+    /**
+     * Get the uri as lookup uri which point to the selected contact.
+     * @param number The number to get the lookup uri for
+     * @return The lookup uri.
+     */
+    public Uri getSelectedAsVcard(PhoneNumber number) {
+        if (mMode == MODE_VCARD && !TextUtils.isEmpty(number.getLookupKey())) {
+            return Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_VCARD_URI,
+                    number.getLookupKey());
+        }
+        return null;
     }
 }
