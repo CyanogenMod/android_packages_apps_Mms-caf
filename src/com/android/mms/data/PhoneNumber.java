@@ -42,14 +42,15 @@ import java.util.TreeSet;
 public class PhoneNumber implements Comparable<PhoneNumber> {
     private static final String TAG = "Mms/PhoneNumber";
 
-    private static final String[] PROJECTION = new String[] {
+    public static final String[] PROJECTION = new String[] {
         Phone._ID,
         Phone.NUMBER,
         Phone.TYPE,
         Phone.LABEL,
         Phone.DISPLAY_NAME_PRIMARY,
         Phone.IS_SUPER_PRIMARY,
-        Phone.CONTACT_ID
+        Phone.CONTACT_ID,
+        Phone.LOOKUP_KEY
     };
 
     private static final String[] PROJECTION_ALT = new String[] {
@@ -59,7 +60,8 @@ public class PhoneNumber implements Comparable<PhoneNumber> {
         Phone.LABEL,
         Phone.DISPLAY_NAME_ALTERNATIVE,
         Phone.IS_SUPER_PRIMARY,
-        Phone.CONTACT_ID
+        Phone.CONTACT_ID,
+        Phone.LOOKUP_KEY
     };
 
     private static final String SELECTION = Phone.NUMBER + " NOT NULL";
@@ -73,6 +75,7 @@ public class PhoneNumber implements Comparable<PhoneNumber> {
     private static final int COLUMN_DISPLAY_NAME     = 4;
     private static final int COLUMN_IS_SUPER_PRIMARY = 5;
     private static final int COLUMN_CONTACT_ID       = 6;
+    private static final int COLUMN_LOOKUP_KEY       = 7;
 
     private long mId;
     private String mNumber;
@@ -84,6 +87,18 @@ public class PhoneNumber implements Comparable<PhoneNumber> {
     private ArrayList<Group> mGroups;
     private boolean mIsChecked;
     private String mSectionIndex;
+    private String mLookupKey;
+
+    public PhoneNumber(Cursor c) {
+        mId = c.getLong(COLUMN_ID);
+        mNumber = c.getString(COLUMN_NUMBER);
+        mType = c.getInt(COLUMN_TYPE);
+        mLabel = c.getString(COLUMN_LABEL);
+        mName = c.getString(COLUMN_DISPLAY_NAME);
+        mContactId = c.getLong(COLUMN_CONTACT_ID);
+        mIsDefault = c.getInt(COLUMN_IS_SUPER_PRIMARY) != 0;
+        mLookupKey = c.getString(COLUMN_LOOKUP_KEY);
+    }
 
     private PhoneNumber(Context context, Cursor c, String sectionIndex) {
         mId = c.getLong(COLUMN_ID);
@@ -93,6 +108,7 @@ public class PhoneNumber implements Comparable<PhoneNumber> {
         mName = c.getString(COLUMN_DISPLAY_NAME);
         mContactId = c.getLong(COLUMN_CONTACT_ID);
         mIsDefault = c.getInt(COLUMN_IS_SUPER_PRIMARY) != 0;
+        mLookupKey = c.getString(COLUMN_LOOKUP_KEY);
         mGroups = new ArrayList<Group>();
         mSectionIndex = sectionIndex;
 
@@ -132,6 +148,10 @@ public class PhoneNumber implements Comparable<PhoneNumber> {
 
     public long getContactId() {
         return mContactId;
+    }
+
+    public String getLookupKey() {
+        return mLookupKey;
     }
 
     public ArrayList<Group> getGroups() {
