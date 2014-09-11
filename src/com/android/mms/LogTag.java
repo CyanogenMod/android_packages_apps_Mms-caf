@@ -43,7 +43,7 @@ public class LogTag {
      * To enable: adb shell setprop log.tag.Mms:strictmode DEBUG
      */
     public static final String STRICT_MODE_TAG = "Mms:strictmode";
-    public static final boolean VERBOSE = false;
+    public static final boolean VERBOSE = true;
     public static final boolean SEVERE_WARNING = true;                  // Leave this true
     private static final boolean SHOW_SEVERE_WARNING_DIALOG = false;    // Set to false before ship
     public static final boolean DEBUG_SEND = false;    // Set to false before ship
