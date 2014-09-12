@@ -5002,7 +5002,7 @@ public class ComposeMessageActivity extends Activity
 
     private class CopyToSimSelectListener implements DialogInterface.OnClickListener {
         private ArrayList<MessageItem> msgItems;
-        private long subscription;
+        private int slot;
 
         public CopyToSimSelectListener(ArrayList<MessageItem> msgItems) {
             super();
@@ -5011,9 +5011,10 @@ public class ComposeMessageActivity extends Activity
 
         public void onClick(DialogInterface dialog, int which) {
             if (which >= 0) {
-                subscription = (long) which;
+                slot = which;
             } else if (which == DialogInterface.BUTTON_POSITIVE) {
-                new Thread(new CopyToSimThread(msgItems, subscription)).start();
+                long [] subId = SubscriptionManager.getSubId(slot);
+                new Thread(new CopyToSimThread(msgItems, subId[0])).start();
             }
         }
     }
