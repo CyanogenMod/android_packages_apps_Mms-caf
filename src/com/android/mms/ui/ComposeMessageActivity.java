@@ -504,7 +504,6 @@ public class ComposeMessageActivity extends Activity
     private boolean enableMmsData = false;
 
     private boolean mIsMessageChanged = false;
-    private boolean mShowTwoButtons = false;
 
     private Object mAddAttachmentLock = new Object();
 
@@ -795,12 +794,7 @@ public class ComposeMessageActivity extends Activity
             // then won't have to calculate the length unnecessarily.
             final boolean textRemoved = (before > count);
             if (!textRemoved) {
-                if (mShowTwoButtons) {
-                    showTwoSmsOrMmsSendButton(workingMessage.requiresMms());
-                } else {
-                    showSmsOrMmsSendButton(workingMessage.requiresMms());
-                }
-
+                showSmsOrMmsSendButton(workingMessage.requiresMms());
                 return;
             }
         }
@@ -834,11 +828,7 @@ public class ComposeMessageActivity extends Activity
             showCounter = true;
         }
 
-        if (mShowTwoButtons) {
-            showTwoSmsOrMmsSendButton(workingMessage.requiresMms());
-        } else {
-            showSmsOrMmsSendButton(workingMessage.requiresMms());
-        }
+        showSmsOrMmsSendButton(workingMessage.requiresMms());
 
         if (showCounter) {
             // Update the remaining characters and number of messages required.
@@ -2431,7 +2421,6 @@ public class ComposeMessageActivity extends Activity
 
         mShowAttIcon = getResources().getBoolean(R.bool.config_show_attach_icon_always);
         boolean isBtnStyle = getResources().getBoolean(R.bool.config_btnstyle);
-        mShowTwoButtons = isBtnStyle && MessageUtils.isMsimIccCardActive();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE |
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
@@ -3227,11 +3216,7 @@ public class ComposeMessageActivity extends Activity
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (mShowTwoButtons) {
-                    showTwoSmsOrMmsSendButton(convertToMms);
-                } else {
-                    showSmsOrMmsSendButton(convertToMms);
-                }
+                showSmsOrMmsSendButton(convertToMms);
 
                 if (convertToMms) {
                     // In the case we went from a long sms with a counter to an mms because
@@ -3481,14 +3466,7 @@ public class ComposeMessageActivity extends Activity
             .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
         if (isPreparedForSending() && mIsSmsEnabled) {
-           if (mShowTwoButtons) {
-                menu.add(0, MENU_SEND_BY_SLOT1, 0, R.string.send_by_slot1)
-                        .setIcon(android.R.drawable.ic_menu_send);
-                menu.add(0, MENU_SEND_BY_SLOT2, 0, R.string.send_by_slot2)
-                        .setIcon(android.R.drawable.ic_menu_send);
-            } else {
-                menu.add(0, MENU_SEND, 0, R.string.send).setIcon(android.R.drawable.ic_menu_send);
-            }
+            menu.add(0, MENU_SEND, 0, R.string.send).setIcon(android.R.drawable.ic_menu_send);
         }
 
         if ((isSubjectEditorVisible() && mSubjectTextEditor.isFocused())
@@ -4736,25 +4714,16 @@ public class ComposeMessageActivity extends Activity
         resetCounter();
 
         if (mWorkingMessage.hasSlideshow()) {
-            if (mShowTwoButtons) {
-                mTextEditor.setVisibility(View.GONE);
-                mAttachmentEditor.requestFocus();
-                return;
-            } else {
-                mBottomPanel.setVisibility(View.GONE);
-                mAttachmentEditor.requestFocus();
-                return;
-            }
+            mBottomPanel.setVisibility(View.GONE);
+            mAttachmentEditor.requestFocus();
+            return;
         }
 
         if (LOCAL_LOGV) {
             Log.v(TAG, "CMA.drawBottomPanel");
         }
-        if (mShowTwoButtons && mTextEditor.getVisibility() == View.GONE) {
-            mTextEditor.setVisibility(View.VISIBLE);
-        } else {
-            mBottomPanel.setVisibility(View.VISIBLE);
-        }
+
+        mBottomPanel.setVisibility(View.VISIBLE);
 
         CharSequence text = mWorkingMessage.getText();
 
@@ -4781,9 +4750,7 @@ public class ComposeMessageActivity extends Activity
         boolean showingAttachment = mAttachmentEditor.update(mWorkingMessage);
         mAttachmentEditorScrollView.setVisibility(showingAttachment ? View.VISIBLE : View.GONE);
         showSubjectEditor(showSubjectEditor || mWorkingMessage.hasSubject());
-        if (mShowTwoButtons) {
-            mAttachmentEditor.hideSlideshowSendButton();
-        }
+
         int subjectSize = mWorkingMessage.hasSubject()
                 ? mWorkingMessage.getSubject().toString().getBytes().length : 0;
         if (mWorkingMessage.getSlideshow()!= null) {
@@ -4801,14 +4768,7 @@ public class ComposeMessageActivity extends Activity
     @Override
     public void onClick(View v) {
         if ((v == mSendButtonSms || v == mSendButtonMms) && isPreparedForSending()) {
-            if (mShowTwoButtons) {
-                confirmSendMessageIfNeeded(MSimConstants.SUB1);
-            } else {
-                confirmSendMessageIfNeeded();
-            }
-        } else if ((v == mSendButtonSmsViewSec || v == mSendButtonMmsViewSec) &&
-                mShowTwoButtons && isPreparedForSending()) {
-            confirmSendMessageIfNeeded(MSimConstants.SUB2);
+            confirmSendMessageIfNeeded();
         } else if (v == mRecipientsSelector) {
             pickContacts(SelectRecipientsList.MODE_DEFAULT, REQUEST_CODE_ADD_RECIPIENTS);
         }
@@ -4972,18 +4932,15 @@ public class ComposeMessageActivity extends Activity
             }
         });
 
-        if (mShowTwoButtons) {
-            initTwoSendButton();
-        } else {
-            mBottomPanel = findViewById(R.id.bottom_panel);
-            mBottomPanel.setVisibility(View.VISIBLE);
-            mTextEditor = (EditText) findViewById(R.id.embedded_text_editor);
-            mTextCounter = (TextView) findViewById(R.id.text_counter);
-            mSendButtonMms = (TextView) findViewById(R.id.send_button_mms);
-            mSendButtonSms = (ImageButton) findViewById(R.id.send_button_sms);
-            mSendButtonMms.setOnClickListener(this);
-            mSendButtonSms.setOnClickListener(this);
-        }
+        mBottomPanel = findViewById(R.id.bottom_panel);
+        mBottomPanel.setVisibility(View.VISIBLE);
+        mTextEditor = (EditText) findViewById(R.id.embedded_text_editor);
+        mTextCounter = (TextView) findViewById(R.id.text_counter);
+        mSendButtonMms = (TextView) findViewById(R.id.send_button_mms);
+        mSendButtonSms = (ImageButton) findViewById(R.id.send_button_sms);
+        mSendButtonMms.setOnClickListener(this);
+        mSendButtonSms.setOnClickListener(this);
+
         mTextEditor.setOnEditorActionListener(this);
         mTextEditor.addTextChangedListener(mTextEditorWatcher);
         if (getResources().getInteger(R.integer.limit_count) == 0) {
@@ -5002,39 +4959,6 @@ public class ComposeMessageActivity extends Activity
         if (getResources().getBoolean(R.bool.config_two_call_button)) {
             initTwoCallButtonOnActionBar();
         }
-    }
-
-    private void initTwoSendButton() {
-        mBottomPanel = findViewById(R.id.bottom_panel_btnstyle);
-        mBottomPanel.setVisibility(View.VISIBLE);
-        mTextEditor = (EditText) findViewById(R.id.embedded_text_editor_btnstyle);
-
-        mTextCounter = (TextView) findViewById(R.id.text_counter_two_buttons);
-        mSendButtonMms = (TextView) findViewById(R.id.first_send_button_mms_view);
-        mSendButtonSms = (ImageButton) findViewById(R.id.first_send_button_sms_view);
-        mSendLayoutMmsFir = findViewById(R.id.first_send_button_mms);
-        mSendLayoutSmsFir = findViewById(R.id.first_send_button_sms);
-        mIndicatorForSimMmsFir = (ImageView) findViewById(R.id.first_sim_card_indicator_mms);
-        mIndicatorForSimSmsFir = (ImageView) findViewById(R.id.first_sim_card_indicator_sms);
-        mIndicatorForSimMmsFir.setImageDrawable(MessageUtils
-               .getMultiSimIcon(this, MSimConstants.SUB1));
-        mIndicatorForSimSmsFir.setImageDrawable(MessageUtils
-                .getMultiSimIcon(this, MSimConstants.SUB1));
-        mSendButtonMms.setOnClickListener(this);
-        mSendButtonSms.setOnClickListener(this);
-
-        mSendButtonMmsViewSec = (TextView) findViewById(R.id.second_send_button_mms_view);
-        mSendButtonSmsViewSec = (ImageButton) findViewById(R.id.second_send_button_sms_view);
-        mSendLayoutMmsSec = findViewById(R.id.second_send_button_mms);
-        mSendLayoutSmsSec = findViewById(R.id.second_send_button_sms);
-        mIndicatorForSimMmsSec = (ImageView) findViewById(R.id.second_sim_card_indicator_mms);
-        mIndicatorForSimSmsSec = (ImageView) findViewById(R.id.second_sim_card_indicator_sms);
-        mIndicatorForSimMmsSec.setImageDrawable(MessageUtils
-               .getMultiSimIcon(this, MSimConstants.SUB2));
-        mIndicatorForSimSmsSec.setImageDrawable(MessageUtils
-                .getMultiSimIcon(this, MSimConstants.SUB2));
-        mSendButtonMmsViewSec.setOnClickListener(this);
-        mSendButtonSmsViewSec.setOnClickListener(this);
     }
 
     private void confirmDeleteDialog(OnClickListener listener, boolean locked) {
@@ -5382,9 +5306,7 @@ public class ComposeMessageActivity extends Activity
 
     private void updateSendButtonState() {
         boolean enable = false;
-        if (mShowTwoButtons && isPreparedForSending()) {
-            enable = true;
-        } else if (isPreparedForSending()) {
+        if (isPreparedForSending()) {
             // When the type of attachment is slideshow, we should
             // also hide the 'Send' button since the slideshow view
             // already has a 'Send' button embedded.
@@ -5400,26 +5322,9 @@ public class ComposeMessageActivity extends Activity
         // invalidate the menu whether the message can be send or can't.
         invalidateOptionsMenu();
         boolean requiresMms = mWorkingMessage.requiresMms();
-        if (mShowTwoButtons) {
-            View[] sendButtons = showTwoSmsOrMmsSendButton(requiresMms);
-            if (sendButtons[MSimConstants.SUB1] == mSendLayoutMmsFir
-                    && sendButtons[MSimConstants.SUB2] == mSendLayoutMmsSec) {
-                mSendButtonMms.setEnabled(enable);
-                mSendButtonMmsViewSec.setEnabled(enable);
-                mSendButtonMms.setFocusable(enable);
-                mSendButtonMmsViewSec.setFocusable(enable);
-            } else if (sendButtons[MSimConstants.SUB1] == mSendLayoutSmsFir
-                    && sendButtons[MSimConstants.SUB2] == mSendLayoutSmsSec) {
-                mSendButtonSms.setEnabled(enable);
-                mSendButtonSmsViewSec.setEnabled(enable);
-                mSendButtonSms.setFocusable(enable);
-                mSendButtonSmsViewSec.setFocusable(enable);
-            }
-        } else {
-            View sendButton = showSmsOrMmsSendButton(requiresMms);
-            sendButton.setEnabled(enable);
-            sendButton.setFocusable(enable);
-        }
+        View sendButton = showSmsOrMmsSendButton(requiresMms);
+        sendButton.setEnabled(enable);
+        sendButton.setFocusable(enable);
     }
 
     private long getMessageDate(Uri uri) {
