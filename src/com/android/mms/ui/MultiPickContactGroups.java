@@ -40,11 +40,9 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract.CommonDataKinds.GroupMembership;
-//import android.provider.ContactsContract.CommonDataKinds.LocalGroup;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Data;
-//import android.provider.LocalGroups;
-//import android.provider.LocalGroups.GroupColumns;
+import android.provider.ContactsContract.Groups;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -72,10 +70,10 @@ public class MultiPickContactGroups extends ListActivity implements
     private static final int PHONE_CONTACT_QUERY_TOKEN = 56;
 
     private static final String[] CONTACTS_GROUP_PROJECTION = new String[] {
-        /*GroupColumns._ID, // 0
-        GroupColumns.TITLE, // 1
-        GroupColumns.COUNT // 2
-*/    };
+        Groups._ID,
+        Groups.TITLE,
+        Groups.SUMMARY_COUNT,
+    };
 
     private static final int CONTACTS_GROUP_ID_INDEX = 0;
     private static final int CONTACTS_GROUP_TITLE_INDEX = 1;
@@ -90,7 +88,7 @@ public class MultiPickContactGroups extends ListActivity implements
 
     private static final String DATA_JOIN_MIMETYPES = "data "
             + "JOIN mimetypes ON (data.mimetype_id = mimetypes._id)";
-    private static final String QUERY_PHONE_ID_IN_LOCAL_GROUP = null;/*Data.MIMETYPE
+    private static final String QUERY_PHONE_ID_IN_LOCAL_GROUP = Data.MIMETYPE
             + "='" + Phone.CONTENT_ITEM_TYPE + "'"
             + " AND "
             + " raw_contact_id"
@@ -102,9 +100,9 @@ public class MultiPickContactGroups extends ListActivity implements
             + " WHERE "
             + Data.MIMETYPE
             + "='"
-            + LocalGroup.CONTENT_ITEM_TYPE
+            + GroupMembership.CONTENT_ITEM_TYPE
             + "'";// need add group id
-*/
+
     public static final int PHONE_CONTACTS_COLUMN_ID = 0;
     public static final int PHONE_CONTACTS_COLUMN_NUMBER = 1;
 
@@ -236,7 +234,7 @@ public class MultiPickContactGroups extends ListActivity implements
     private Uri getUriToQuery(int type) {
         switch (type) {
             case LOCAL_GROUP_QUERY_TOKEN:
-                return /*LocalGroups.CONTENT_URI*/null;
+                return Groups.CONTENT_SUMMARY_URI;
             case PHONE_CONTACT_QUERY_TOKEN:
                 return Phone.CONTENT_URI;
         }
