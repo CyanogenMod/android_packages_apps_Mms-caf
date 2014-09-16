@@ -771,7 +771,7 @@ public class ComposeMessageActivity extends Activity
             List<SubInfoRecord> subInfoList = SubscriptionManager.getSubInfoUsingSlotId(
                     phoneId);
             String displayName = subInfoList == null ? "SIM " + (i + 1) :
-                    subInfoList.get(0).mDisplayName;
+                    subInfoList.get(0).displayName;
             Log.e(TAG, "PhoneID : " + phoneId + " displayName " + displayName);
             smsBtns[i].setText(displayName);
             smsBtns[i].setOnClickListener(

@@ -1088,7 +1088,7 @@ public class MessagingNotification {
             //SMS/MMS is operating based of PhoneId which is 0, 1..
             List<SubInfoRecord> subInfoList = SubscriptionManager.getSubInfoUsingSlotId(
                     phoneId);
-            String displayName = subInfoList == null ? "" : subInfoList.get(0).mDisplayName;
+            String displayName = subInfoList == null ? "" : subInfoList.get(0).displayName;
             Log.e(TAG, "PhoneID : " + phoneId + " displayName " + displayName);
             buf.append(displayName);
             buf.append("-");

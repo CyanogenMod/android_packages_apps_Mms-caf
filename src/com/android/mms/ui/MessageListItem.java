@@ -546,7 +546,7 @@ public class MessageListItem extends LinearLayout implements
             //Sub ID will be 1, 2, ...
             List<SubInfoRecord> subInfoList = SubscriptionManager.getSubInfoUsingSlotId(
                     phoneId);
-            String displayName = subInfoList == null ? "" : subInfoList.get(0).mDisplayName;
+            String displayName = subInfoList == null ? "" : subInfoList.get(0).displayName;
             Log.d(TAG, "PhoneID: " + phoneId + " displayName " + displayName);
             buf.append(displayName);
             buf.append("\n");
