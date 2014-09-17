@@ -231,6 +231,8 @@ public class MessageListItem extends LinearLayout implements
                 bindCommonMessage(sameItem);
                 break;
         }
+
+        customSIMSmsView();
     }
 
     public void unbind() {
@@ -999,5 +1001,16 @@ public class MessageListItem extends LinearLayout implements
 
     @Override
     public void toggle() {
+    }
+
+    protected void customSIMSmsView() {
+        if (isSimCardMessage()) {
+            // Hide delivery indicator for SIM message
+            mDeliveredIndicator.setVisibility(GONE);
+            // Hide date view because SIM message does not contain sent date.
+            if (mMessageItem.isOutgoingMessage() || mMessageItem.mBoxId == Sms.MESSAGE_TYPE_SENT) {
+                mDateView.setVisibility(View.GONE);
+            }
+        }
     }
 }
