@@ -1862,7 +1862,6 @@ public class ComposeMessageActivity extends Activity
         mRecipientsEditor.setAdapter(new ChipsRecipientAdapter(this));
         mRecipientsEditor.populate(recipients);
         mRecipientsEditor.setOnCreateContextMenuListener(mRecipientsMenuCreateListener);
-        mRecipientsEditor.addTextChangedListener(mRecipientsWatcher);
         // TODO : Remove the max length limitation due to the multiple phone picker is added and the
         // user is able to select a large number of recipients from the Contacts. The coming
         // potential issue is that it is hard for user to edit a recipient from hundred of
@@ -2198,6 +2197,9 @@ public class ComposeMessageActivity extends Activity
         }
 
         initFocus();
+        if (isRecipientsEditorVisible()) {
+            mRecipientsEditor.addTextChangedListener(mRecipientsWatcher);
+        }
 
         // Register a BroadcastReceiver to listen on HTTP I/O process.
         registerReceiver(mHttpProgressReceiver, mHttpProgressFilter);
@@ -2372,6 +2374,9 @@ public class ComposeMessageActivity extends Activity
         //Contact.stopPresenceObserver();
 
         removeRecipientsListeners();
+        if (isRecipientsEditorVisible()) {
+            mRecipientsEditor.removeTextChangedListener(mRecipientsWatcher);
+        }
 
         // remove any callback to display a progress spinner
         if (mAsyncDialog != null) {
