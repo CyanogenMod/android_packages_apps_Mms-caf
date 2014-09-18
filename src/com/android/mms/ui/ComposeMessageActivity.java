@@ -2368,6 +2368,9 @@ public class ComposeMessageActivity extends Activity
         }
 
         initFocus();
+        if (isRecipientsEditorVisible()) {
+            mRecipientsEditor.addTextChangedListener(mRecipientsWatcher);
+        }
 
         // Register a BroadcastReceiver to listen on HTTP I/O process.
         registerReceiver(mHttpProgressReceiver, mHttpProgressFilter);
@@ -2552,6 +2555,9 @@ public class ComposeMessageActivity extends Activity
         //Contact.stopPresenceObserver();
 
         removeRecipientsListeners();
+        if (isRecipientsEditorVisible()) {
+            mRecipientsEditor.removeTextChangedListener(mRecipientsWatcher);
+        }
 
         // remove any callback to display a progress spinner
         if (mAsyncDialog != null) {
