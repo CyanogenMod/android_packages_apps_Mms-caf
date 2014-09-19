@@ -1086,9 +1086,10 @@ public class MessagingNotification {
 
         if ((TelephonyManager.getDefault().getPhoneCount()) > 1) {
             //SMS/MMS is operating based of PhoneId which is 0, 1..
-            List<SubInfoRecord> subInfoList = SubscriptionManager.getSubInfoUsingSlotId(
-                    phoneId);
-            String displayName = subInfoList == null ? "" : subInfoList.get(0).displayName;
+            List<SubInfoRecord> sir = SubscriptionManager.getSubInfoUsingSlotId(phoneId);
+
+            String displayName = ((sir != null) && (sir.size() > 0)) ? sir.get(0).displayName : "";
+
             Log.e(TAG, "PhoneID : " + phoneId + " displayName " + displayName);
             buf.append(displayName);
             buf.append("-");

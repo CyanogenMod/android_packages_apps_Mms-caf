@@ -541,12 +541,13 @@ public class MessageListItem extends LinearLayout implements
                                        String contentType) {
         SpannableStringBuilder buf = new SpannableStringBuilder();
 
-        if (TelephonyManager.getDefault().isMultiSimEnabled()) {
+        if (TelephonyManager.getDefault().getPhoneCount() > 1) {
             //SMS/MMS is operating on PhoneId which is 0, 1..
             //Sub ID will be 1, 2, ...
-            List<SubInfoRecord> subInfoList = SubscriptionManager.getSubInfoUsingSlotId(
-                    phoneId);
-            String displayName = subInfoList == null ? "" : subInfoList.get(0).displayName;
+            List<SubInfoRecord> sir = SubscriptionManager.getSubInfoUsingSlotId(phoneId);
+            String displayName =
+                    ((sir != null) && (sir.size() > 0)) ? sir.get(0).displayName : "";
+
             Log.d(TAG, "PhoneID: " + phoneId + " displayName " + displayName);
             buf.append(displayName);
             buf.append("\n");
