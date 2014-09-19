@@ -328,13 +328,13 @@ public class SmsReceiverService extends Service {
         }
 
         if (resultCode == Activity.RESULT_OK) {
-            if (LogTag.DEBUG_SEND || Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
-                Log.v(TAG, "handleSmsSent move message to sent folder uri: " + uri);
-            }
-            if (!Sms.moveMessageToFolder(this, uri, Sms.MESSAGE_TYPE_SENT, error)) {
-                Log.e(TAG, "handleSmsSent: failed to move message " + uri + " to sent folder");
-            }
             if (sendNextMsg) {
+                if (LogTag.DEBUG_SEND || Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
+                    Log.v(TAG, "handleSmsSent: move message to sent folder uri: " + uri);
+                }
+                if (!Sms.moveMessageToFolder(this, uri, Sms.MESSAGE_TYPE_SENT, error)) {
+                    Log.e(TAG, "handleSmsSent: failed to move message " + uri + " to sent folder");
+                }
                 sendFirstQueuedMessage();
             }
 
