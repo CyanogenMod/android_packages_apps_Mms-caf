@@ -629,7 +629,9 @@ public class ManageSimMessages extends Activity
                 case R.id.copy_to_phone:
                     int pos = mSelectedPos.get(0);
                     Cursor cursor = (Cursor) getListView().getAdapter().getItem(pos);
-                    copyToPhoneMemory(cursor);
+                    if (!MessageUtils.checkIsPhoneMessageFull(getContext())) {
+                        copyToPhoneMemory(cursor);
+                    }
                     break;
                 case R.id.reply:
                     replyMessage();
