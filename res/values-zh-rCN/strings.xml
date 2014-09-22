@@ -182,6 +182,7 @@
     <string name="pref_title_sms_enabled" msgid="1857849790200375277">"短信功能已开启"</string>
     <string name="pref_summary_sms_enabled" msgid="2106125420361911250">"触摸即可更改您的默认短信应用"</string>
     <string name="pref_summary_manage_sim_messages" msgid="4141349892597640864">"管理SIM卡中存储的信息"</string>
+    <string name="pref_summary_manage_sim_messages_slot">"管理SIM<xliff:g id="NUMBER">%s</xliff:g>卡中存储的信息"</string>
     <string name="pref_summary_mms_delivery_reports" msgid="4874657984217756112">"要求每次发送信息后都返回发送报告"</string>
     <string name="pref_summary_mms_read_reports" msgid="2748323864008907440">"要求每次发送信息后都返回已读回执"</string>
     <string name="pref_summary_sms_delivery_reports" msgid="5852207702358546129">"要求每次发送信息后都返回发送报告"</string>
@@ -469,6 +470,8 @@
 
     <!-- Settings item description for Mms Validity period -->
     <string name="pref_title_mms_save_time">彩信有效期</string>
+    <string name="pref_title_mms_save_time_slot1">卡1彩信有效期</string>
+    <string name="pref_title_mms_save_time_slot2">卡2彩信有效期</string>
     <string name="mms_one_week">一周</string>
     <string name="mms_two_days">两天</string>
     <string name="mms_max">最长</string>

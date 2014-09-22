@@ -49,6 +49,8 @@ import android.preference.PreferenceScreen;
 import android.preference.RingtonePreference;
 import android.provider.SearchRecentSuggestions;
 import android.provider.Settings;
+import android.telephony.SmsManager;
+import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -80,6 +82,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     // Symbolic names for the keys used for preference lookup
     public static final String MMS_DELIVERY_REPORT_MODE = "pref_key_mms_delivery_reports";
     public static final String EXPIRY_TIME              = "pref_key_mms_expiry";
+    public static final String EXPIRY_TIME_SLOT1        = "pref_key_mms_expiry_slot1";
+    public static final String EXPIRY_TIME_SLOT2        = "pref_key_mms_expiry_slot2";
     public static final String PRIORITY                 = "pref_key_mms_priority";
     public static final String READ_REPORT_MODE         = "pref_key_mms_read_reports";
     public static final String SMS_DELIVERY_REPORT_MODE = "pref_key_sms_delivery_reports";
@@ -128,6 +132,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private CheckBoxPreference mEnableNotificationsPref;
     private CheckBoxPreference mMmsAutoRetrievialPref;
     private ListPreference mMmsExpiryPref;
+    private ListPreference mMmsExpiryCard1Pref;
+    private ListPreference mMmsExpiryCard2Pref;
     private RingtonePreference mRingtonePref;
     private ListPreference mSmsStorePref;
     private ListPreference mSmsStoreCard1Pref;
@@ -250,6 +256,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mEnableNotificationsPref = (CheckBoxPreference) findPreference(NOTIFICATION_ENABLED);
         mMmsAutoRetrievialPref = (CheckBoxPreference) findPreference(AUTO_RETRIEVAL);
         mMmsExpiryPref = (ListPreference) findPreference("pref_key_mms_expiry");
+        mMmsExpiryCard1Pref = (ListPreference) findPreference("pref_key_mms_expiry_slot1");
+        mMmsExpiryCard2Pref = (ListPreference) findPreference("pref_key_mms_expiry_slot2");
         mSmsSignaturePref = (CheckBoxPreference) findPreference("pref_key_enable_signature");
         mSmsSignatureEditPref = (EditTextPreference) findPreference("pref_key_edit_signature");
         mVibratePref = (CheckBoxPreference) findPreference(NOTIFICATION_VIBRATE);
@@ -377,7 +385,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         // Fix up the recycler's summary with the correct values
         setSmsDisplayLimit();
         setMmsDisplayLimit();
-        setMmsExpirySummary();
+        setMmsExpiryPref();
 
         String soundValue = sharedPreferences.getString(NOTIFICATION_RINGTONE, null);
         setRingtoneSummary(soundValue);
@@ -401,6 +409,23 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                     TextUtils.isEmpty(MessageUtils.getLocalNumber())) {
                 mMmsPrefCategory.removePreference(mMmsGroupMmsPref);
             }
+        }
+
+        if (TelephonyManager.getDefault().isMultiSimEnabled()) {
+            if(MessageUtils.getActivatedIccCardCount() < PhoneConstants.MAX_PHONE_COUNT_DUAL_SIM) {
+                long subId = SmsManager.getDefault().getDefaultSmsSubId();
+                int phoneId = SubscriptionManager.getPhoneId(subId);
+                mManageSimPref.setSummary(
+                        getString(R.string.pref_summary_manage_sim_messages_slot,
+                                phoneId + 1));
+            } else {
+                mManageSimPref.setSummary(
+                        getString(R.string.pref_summary_manage_sim_messages));
+            }
+            mMmsPrefCategory.removePreference(mMmsExpiryPref);
+        } else {
+            mMmsPrefCategory.removePreference(mMmsExpiryCard1Pref);
+            mMmsPrefCategory.removePreference(mMmsExpiryCard2Pref);
         }
     }
 
@@ -600,32 +625,63 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                         mMmsRecycler.getMessageLimit(this)));
     }
 
-    private void setMmsExpirySummary() {
-        mMmsExpiryPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                final String value = newValue.toString();
-                mMmsExpiryPref.setValue(value);
-
-                if (value.equals(EXPIRY_ONE_WEEK)) {
-                    mMmsExpiryPref.setSummary(getString(R.string.mms_one_week));
-                } else if (value.equals(EXPIRY_TWO_DAYS)) {
-                    mMmsExpiryPref.setSummary(getString(R.string.mms_two_days));
-                } else {
-                    mMmsExpiryPref.setSummary(getString(R.string.mms_max));
-                }
-                return false;
-            }
-        });
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String expiry = prefs.getString("pref_key_mms_expiry", "");
-
-        if (expiry.equals(EXPIRY_ONE_WEEK)) {
-            mMmsExpiryPref.setSummary(getString(R.string.mms_one_week));
-        } else if (expiry.equals(EXPIRY_TWO_DAYS)) {
-            mMmsExpiryPref.setSummary(getString(R.string.mms_two_days));
+    private void setMmsExpiryPref() {
+        PreferenceCategory mmsSettings =
+                (PreferenceCategory)findPreference("pref_key_mms_settings");
+        if (MessageUtils.isMultiSimEnabledMms()) {
+            mmsSettings.removePreference(mMmsExpiryPref);
+            setMmsExpirySummary(PhoneConstants.SUB1);
+            setMmsExpirySummary(PhoneConstants.SUB2);
         } else {
-            mMmsExpiryPref.setSummary(getString(R.string.mms_max));
+            mmsSettings.removePreference(mMmsExpiryCard1Pref);
+            mmsSettings.removePreference(mMmsExpiryCard2Pref);
+            setMmsExpirySummary(MessageUtils.SUB_INVALID);
+        }
+    }
+
+    private void setMmsExpirySummary(int subscription) {
+        switch (subscription) {
+            case MessageUtils.SUB_INVALID:
+                mMmsExpiryPref.setOnPreferenceChangeListener(
+                        new Preference.OnPreferenceChangeListener() {
+                    public boolean onPreferenceChange(Preference preference, Object newValue) {
+                        final String value = newValue.toString();
+                        int index = mMmsExpiryPref.findIndexOfValue(value);
+                        mMmsExpiryPref.setValue(value);
+                        mMmsExpiryPref.setSummary(mMmsExpiryPref.getEntries()[index]);
+                        return false;
+                    }
+                });
+                mMmsExpiryPref.setSummary(mMmsExpiryPref.getEntry());
+                break;
+            case PhoneConstants.SUB1:
+                mMmsExpiryCard1Pref.setOnPreferenceChangeListener(
+                        new Preference.OnPreferenceChangeListener() {
+                    public boolean onPreferenceChange(Preference preference, Object newValue) {
+                        final String value = newValue.toString();
+                        int index = mMmsExpiryCard1Pref.findIndexOfValue(value);
+                        mMmsExpiryCard1Pref.setValue(value);
+                        mMmsExpiryCard1Pref.setSummary(mMmsExpiryCard1Pref.getEntries()[index]);
+                        return false;
+                    }
+                });
+                mMmsExpiryCard1Pref.setSummary(mMmsExpiryCard1Pref.getEntry());
+                break;
+            case PhoneConstants.SUB2:
+                mMmsExpiryCard2Pref.setOnPreferenceChangeListener(
+                        new Preference.OnPreferenceChangeListener() {
+                    public boolean onPreferenceChange(Preference preference, Object newValue) {
+                        final String value = newValue.toString();
+                        int index = mMmsExpiryCard2Pref.findIndexOfValue(value);
+                        mMmsExpiryCard2Pref.setValue(value);
+                        mMmsExpiryCard2Pref.setSummary(mMmsExpiryCard2Pref.getEntries()[index]);
+                        return false;
+                    }
+                });
+                mMmsExpiryCard2Pref.setSummary(mMmsExpiryCard2Pref.getEntry());
+                break;
+            default:
+                break;
         }
     }
 
