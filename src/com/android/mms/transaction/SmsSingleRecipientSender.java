@@ -43,7 +43,9 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
             // one.
             throw new MmsException("Null message body or have multiple destinations.");
         }
-        SmsManager smsManager = SmsManager.getDefault();
+        long [] subId = SubscriptionManager.getSubId(mPhoneId);
+        Log.e(TAG, "send SMS phone Id = " + mPhoneId + " subId : = " + subId[0]);
+        SmsManager smsManager = SmsManager.getSmsManagerForSubscriber(subId[0]);
         ArrayList<String> messages = null;
         if ((MmsConfig.getEmailGateway() != null) &&
                 (Mms.isEmailAddress(mDest) || MessageUtils.isAlias(mDest))) {
@@ -114,9 +116,7 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
             sentIntents.add(PendingIntent.getBroadcast(mContext, requestCode, intent, 0));
         }
         try {
-            long [] subId = SubscriptionManager.getSubId(mPhoneId);
-            Log.e(TAG, "send SMS phone Id = " + mPhoneId + " subId : = " + subId[0]);
-            smsManager.sendMultipartTextMessage(subId[0], mDest, mServiceCenter, messages,
+            smsManager.sendMultipartTextMessage(mDest, mServiceCenter, messages,
                     sentIntents, deliveryIntents);
         } catch (Exception ex) {
             Log.e(TAG, "SmsMessageSender.sendMessage: caught", ex);
