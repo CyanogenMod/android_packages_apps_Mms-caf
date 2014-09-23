@@ -5105,7 +5105,7 @@ public class ComposeMessageActivity extends Activity
                 status = SmsManager.STATUS_ON_ICC_READ;
             }
             ret &= TelephonyManager.getDefault().isMultiSimEnabled()
-                    ? SmsManager.getSmsManagerUsingSubId(subscription).copyMessageToIcc(null, pdu, status)
+                    ? SmsManager.getSmsManagerForSubscriber(subscription).copyMessageToIcc(null, pdu, status)
                     : sm.copyMessageToIcc(null, pdu, status);
             if (!ret) {
                 break;

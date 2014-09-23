@@ -762,7 +762,7 @@ public class SmsReceiverService extends Service {
         byte pdu[] = MessageUtils.getDeliveryPdu(null, sms.getOriginatingAddress(),
                 sms.getMessageBody(), sms.getTimestampMillis(), subscription);
         result &= TelephonyManager.getDefault().isMultiSimEnabled()
-                ? SmsManager.getSmsManagerUsingSubId(subscription).copyMessageToIcc(null, pdu, SmsManager.STATUS_ON_ICC_READ)
+                ? SmsManager.getSmsManagerForSubscriber(subscription).copyMessageToIcc(null, pdu, SmsManager.STATUS_ON_ICC_READ)
                 : sm.copyMessageToIcc(null, pdu, SmsManager.STATUS_ON_ICC_READ);
         return result;
     }
