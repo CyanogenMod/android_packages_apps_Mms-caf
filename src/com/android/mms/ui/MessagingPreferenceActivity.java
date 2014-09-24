@@ -807,7 +807,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             Log.d(TAG, "get SMSC from sub= " + id);
             final Message callback = mHandler.obtainMessage(EVENT_GET_SMSC_DONE);
             Bundle userParams = new Bundle();
-            userParams.putInt(PhoneConstants.SUBSCRIPTION_KEY, id);
+            userParams.putInt(PhoneConstants.SLOT_KEY, id);
             callback.obj = userParams;
             MessageUtils.getSmscFromSub(this, id, callback);
         } else {
@@ -831,11 +831,15 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
     private void updateSmscFromBundle(Bundle bundle) {
         if (bundle != null) {
-            int sub = bundle.getInt(PhoneConstants.SUBSCRIPTION_KEY, -1);
+            int sub = bundle.getInt(PhoneConstants.SLOT_KEY, -1);
             if (sub != -1) {
                 String summary = bundle.getString(MessageUtils.EXTRA_SMSC, null);
+                if (summary == null) {
+                    return;
+                }
                 Log.d(TAG, "Update SMSC: sub= " + sub + " SMSC= " + summary);
-                mSmscPrefList.get(sub).setSummary(summary);
+                int end = summary.lastIndexOf("\"");
+                mSmscPrefList.get(sub).setSummary(summary.substring(1, end));
             }
         }
     }
@@ -872,9 +876,9 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                     break;
                 case EVENT_GET_SMSC_DONE:
                     Log.d(TAG, "Get SMSC successfully");
-                    int sub = userParams.getInt(PhoneConstants.SUBSCRIPTION_KEY, -1);
+                    int sub = userParams.getInt(PhoneConstants.SLOT_KEY, -1);
                     if (sub != -1) {
-                        bundle.putInt(PhoneConstants.SUBSCRIPTION_KEY, sub);
+                        bundle.putInt(PhoneConstants.SLOT_KEY, sub);
                         mOwner.updateSmscFromBundle(bundle);
                     }
                     break;
@@ -963,6 +967,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                 mActivity = (MessagingPreferenceActivity) getActivity();
             }
 
+            final String actualSMSC = mActivity.adjustSMSC(displayedSMSC);
+
             return new AlertDialog.Builder(mActivity)
                     .setIcon(android.R.drawable.ic_dialog_alert).setMessage(
                             R.string.set_smsc_confirm_message)
@@ -971,16 +977,21 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                            Log.d(TAG, "set SMSC from sub= " +sub + " SMSC= " + displayedSMSC);
                            final Message callback = mHandler.obtainMessage(EVENT_SET_SMSC_DONE);
                            Bundle userParams = new Bundle();
-                           userParams.putInt(PhoneConstants.SUBSCRIPTION_KEY, sub);
-                           userParams.putString(MessageUtils.EXTRA_SMSC, displayedSMSC);
+                           userParams.putInt(PhoneConstants.SLOT_KEY, sub);
+                           userParams.putString(MessageUtils.EXTRA_SMSC,actualSMSC);
                            callback.obj = userParams;
-                           MessageUtils.setSmscForSub(mActivity, sub, displayedSMSC, callback);
+                           MessageUtils.setSmscForSub(mActivity, sub, actualSMSC, callback);
                         }
                     })
                     .setNegativeButton(android.R.string.cancel, null)
                     .setCancelable(true)
                     .create();
         }
+    }
+
+    private String adjustSMSC(String smsc) {
+        String actualSMSC = "\"" + smsc + "\"";
+        return actualSMSC;
     }
 
     // For the group mms feature to be enabled, the following must be true:
