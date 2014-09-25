@@ -31,7 +31,7 @@
 
 <resources>
     <!-- configuration for filtering illegal character in address -->
-    <bool name="config_filter_char_address">false</bool>
+    <bool name="config_filter_char_address">true</bool>
 
     <!-- configuration for retry immediately when send MMS failed -->
     <bool name="config_retry_immediately">false</bool>
