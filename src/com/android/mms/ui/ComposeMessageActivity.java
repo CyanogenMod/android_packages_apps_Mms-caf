@@ -3615,6 +3615,10 @@ public class ComposeMessageActivity extends Activity
                     title = res.getString(R.string.failed_to_resize_image);
                     message = res.getString(R.string.resize_image_error_information);
                     break;
+                case WorkingMessage.NEGATIVE_MESSAGE_OR_INCREASE_SIZE:
+                    title = res.getString(R.string.illegal_message_or_increase_size);
+                    message = res.getString(R.string.failed_to_add_media, mediaType);
+                    break;
                 default:
                     throw new IllegalArgumentException("unknown error " + error);
                 }

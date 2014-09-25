@@ -118,6 +118,7 @@ public class WorkingMessage {
     public static final int MESSAGE_SIZE_EXCEEDED = -2;
     public static final int UNSUPPORTED_TYPE = -3;
     public static final int IMAGE_TOO_LARGE = -4;
+    public static final int NEGATIVE_MESSAGE_OR_INCREASE_SIZE = -5;
 
     // Attachment types
     public static final int TEXT = 0;
@@ -686,6 +687,9 @@ public class WorkingMessage {
         } catch (ResolutionException e) {
             Log.e(TAG, "internalChangeMedia:", e);
             result = IMAGE_TOO_LARGE;
+        } catch (ContentRestrictionException e) {
+            Log.e(TAG, "internalChangeMedia:", e);
+            result = NEGATIVE_MESSAGE_OR_INCREASE_SIZE;
         }
         return result;
     }

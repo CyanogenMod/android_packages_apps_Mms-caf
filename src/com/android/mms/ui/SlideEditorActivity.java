@@ -44,6 +44,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.mms.ContentRestrictionException;
 import com.android.mms.ExceedMessageSizeException;
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
@@ -772,6 +773,10 @@ public class SlideEditorActivity extends Activity {
                 } catch (ExceedMessageSizeException e) {
                     MessageUtils.showErrorDialog(SlideEditorActivity.this,
                             getResourcesString(R.string.exceed_message_size_limitation),
+                            getResourcesString(R.string.failed_to_add_media, getVideoString()));
+                } catch (ContentRestrictionException e) {
+                    MessageUtils.showErrorDialog(SlideEditorActivity.this,
+                            getResourcesString(R.string.illegal_message_or_increase_size),
                             getResourcesString(R.string.failed_to_add_media, getVideoString()));
                 }
                 break;

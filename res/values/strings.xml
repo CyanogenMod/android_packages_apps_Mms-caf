@@ -206,6 +206,8 @@
     <string name="media_size_limit">Message size limit reached, can\'t send out message.</string>
     <!-- Error message indicating that the picture being attached and resized could not be resized -->
     <string name="failed_to_resize_image">Picture not resized.</string>
+    <!-- Error message indicating that the message size or the increase size is negative -->
+    <string name="illegal_message_or_increase_size">Negative message or increase size.</string>
     <!-- Error message indicating that an image being attached is still too large to send even after resize -->
     <string name="resize_image_error_information">This picture is too large to send, even when resized.</string>
     <!-- String prepended to forwarded messages to indicate they were forwarded -->
