@@ -5339,48 +5339,7 @@ public class ComposeMessageActivity extends Activity
             String type = c.getString(COLUMN_MSG_TYPE);
             if (type.equals("sms")) {
                 // this only for sms
-                // TODO: here need refactor
-                Intent intent = new Intent(getContext(),
-                        MailBoxMessageContent.class);
-                String addr = c.getString(COLUMN_SMS_ADDRESS);
-                Long date = c.getLong(COLUMN_SMS_DATE);
-                String dateStr = MessageUtils.formatTimeStampString(
-                        getContext(), date, true);
-                String msgUriStr = "content://" + c.getString(COLUMN_MSG_TYPE)
-                        + "/" + c.getString(COLUMN_ID);
-                int smsType = c.getInt(COLUMN_SMS_TYPE);
-                if (smsType == Sms.MESSAGE_TYPE_INBOX) {
-                    intent.putExtra("sms_fromtolabel",
-                            getString(R.string.from_label));
-                    intent.putExtra("sms_sendlabel",
-                            getString(R.string.received_label));
-                } else {
-                    intent.putExtra("sms_fromtolabel",
-                            getString(R.string.to_address_label));
-                    intent.putExtra("sms_sendlabel",
-                            getString(R.string.sent_label));
-                }
-                intent.putExtra("sms_datelongformat", date);
-                intent.putExtra("sms_datesentlongformat",
-                        c.getLong(COLUMN_SMS_DATE_SENT));
-                intent.putExtra("sms_body", c.getString(COLUMN_SMS_BODY));
-                intent.putExtra("sms_fromto", addr);
-                intent.putExtra("sms_displayname", Contact.get(addr, true)
-                        .getName());
-                intent.putExtra("sms_date", dateStr);
-                intent.putExtra("msg_uri", Uri.parse(msgUriStr));
-                intent.putExtra("sms_threadid", c.getLong(COLUMN_THREAD_ID));
-                intent.putExtra("sms_status", c.getInt(COLUMN_SMS_STATUS));
-                intent.putExtra("sms_read", c.getInt(COLUMN_SMS_READ));
-                intent.putExtra("mailboxId", smsType);
-                intent.putExtra("sms_id", c.getInt(COLUMN_ID));
-                intent.putExtra("sms_uri_str", msgUriStr);
-                intent.putExtra("sms_on_uim", false);
-                intent.putExtra("sms_type", smsType);
-                intent.putExtra("sms_locked", c.getInt(COLUMN_SMS_LOCKED));
-                intent.putExtra("sms_subid", c.getInt(COLUMN_PHONE_ID));
-                intent.putExtra("sms_select_text", true);
-                startActivity(intent);
+                MessageUtils.showSmsMessageContent(getContext(), c.getLong(COLUMN_ID));
             } else if (type.equals("mms")) {
                 MessageUtils.viewMmsMessageAttachment(
                         ComposeMessageActivity.this, mSelectedMsg.get(0), null,

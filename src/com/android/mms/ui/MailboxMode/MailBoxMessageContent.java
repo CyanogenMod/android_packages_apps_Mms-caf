@@ -94,7 +94,6 @@ public class MailBoxMessageContent extends Activity {
 
     private ViewPager mContentPager;
     private MessageDetailAdapter mPagerAdapter;
-    private TextView mBodyTextView;
     /*Operations for gesture to scale the current text fontsize of content*/
     private float mScaleFactor = 1;
     private  ScaleGestureDetector mScaleDetector;
@@ -187,9 +186,8 @@ public class MailBoxMessageContent extends Activity {
         mContentResolver = getContentResolver();
         mBackgroundHandler = new BackgroundHandler(mContentResolver);
         mSlidePaperItemTextViews = new ArrayList<TextView>();
-
-        startQuerySmsContent();
         handleIntent();
+        startQuerySmsContent();
     }
 
     @Override
@@ -291,6 +289,9 @@ public class MailBoxMessageContent extends Activity {
                 break;
             case MENU_SAVE_TO_CONTACT:
                 saveToContact();
+                break;
+            case android.R.id.home:
+                finish();
                 break;
             default:
                 return true;
@@ -456,7 +457,6 @@ public class MailBoxMessageContent extends Activity {
 
     private void updateUi() {
         setProgressBarIndeterminateVisibility(false);
-        mBodyTextView.setText(mMsgText);
         invalidateOptionsMenu();
     }
 
@@ -499,9 +499,7 @@ public class MailBoxMessageContent extends Activity {
                         Log.e(TAG, "onQueryComplete: cursor is null!");
                         return;
                     }
-                    if (mCursor != null) {
-                        mCursor.close();
-                    }
+
                     mCursor = cursor;
                     mCursor.moveToFirst();
                     initUi();
