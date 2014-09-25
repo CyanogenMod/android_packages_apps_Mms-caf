@@ -307,7 +307,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="48dp"
                                 android:layout_marginTop="23dip"
-                                android:contentDescription="@string/send" />
+                                android:contentDescription="@string/send"
+                                android:tint="#737373"/>
                         </RelativeLayout>
                     </LinearLayout>
 
@@ -387,7 +388,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="48dp"
                                 android:layout_marginTop="23dip"
-                                android:contentDescription="@string/send" />
+                                android:contentDescription="@string/send"
+                                android:tint="#737373"/>
                         </RelativeLayout>
                     </LinearLayout>
                 </LinearLayout>

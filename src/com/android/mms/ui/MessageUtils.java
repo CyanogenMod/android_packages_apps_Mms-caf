@@ -30,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
@@ -75,6 +76,9 @@ import android.provider.Settings;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Sms;
 import android.provider.Telephony.Threads;
+import android.telecom.PhoneAccount;
+import android.telecom.PhoneAccountHandle;
+import android.telecom.TelecomManager;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
@@ -1500,20 +1504,24 @@ public class MessageUtils {
             return null;
         }
 
-        /*TypedArray icons = context.getResources().obtainTypedArray(
-            com.android.internal.R.array.sim_icons);
-        String simIconIndex = Settings.System.getString(
-                context.getContentResolver(), PREFERRED_SIM_ICON_INDEX);
-        if (TextUtils.isEmpty(simIconIndex)) {
-            return icons.getDrawable(subscription);
-        } else {
-            String[] indexs = simIconIndex.split(",");
-            if (subscription >= indexs.length) {
-                return null;
+        long subId[] = SubscriptionManager.getSubId(subscription);
+        final TelecomManager telecomManager = (TelecomManager) context
+                .getSystemService(Context.TELECOM_SERVICE);
+        List<PhoneAccountHandle> pHandles = telecomManager.getCallCapablePhoneAccounts();
+        PhoneAccountHandle phoneAccountHandle = null;
+        for (PhoneAccountHandle itorator : pHandles) {
+            if (String.valueOf(subId[0]).equals(itorator.getId())) {
+                phoneAccountHandle = itorator;
             }
-            return icons.getDrawable(Integer.parseInt(indexs[subscription]));
-        }*/
-        return null;
+        }
+
+        if (phoneAccountHandle == null) {
+            Log.d(TAG, "phoneAccountHandle is null");
+            return null;
+        }
+        final PhoneAccount account = telecomManager
+                .getPhoneAccount(phoneAccountHandle);
+        return account.getIcon(context);
     }
 
     private static void log(String msg) {
