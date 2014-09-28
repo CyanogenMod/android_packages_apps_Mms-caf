@@ -503,9 +503,9 @@ public class MailBoxMessageList extends ListActivity implements
                 mQueryDone = false;
                 String selStr = null;
                 if (mQuerySlotType == TYPE_SLOT_ONE) {
-                    selStr = "sub_id = " + MessageUtils.SUB1;
+                    selStr = "phone_id = " + MessageUtils.SUB1;
                 } else if (mQuerySlotType == TYPE_SLOT_TWO) {
-                    selStr = "sub_id = " + MessageUtils.SUB2;
+                    selStr = "phone_id = " + MessageUtils.SUB2;
                 }
                 if (mIsInSearchMode) {
                     Uri queryUri = SEARCH_URI.buildUpon().appendQueryParameter(
