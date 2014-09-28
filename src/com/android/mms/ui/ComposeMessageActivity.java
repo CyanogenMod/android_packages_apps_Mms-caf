@@ -1852,6 +1852,7 @@ public class ComposeMessageActivity extends Activity
             mRecipientsEditor = (RecipientsEditor)findViewById(R.id.recipients_editor);
             mRecipientsEditor.setVisibility(View.VISIBLE);
             mRecipientsPicker = (ImageButton)findViewById(R.id.recipients_picker);
+            mRecipientsPicker.setVisibility(View.VISIBLE);
             mRecipientsPickerGroups= (ImageButton)findViewById(R.id.recipients_picker_group);
             mRecipientsPickerGroups.setVisibility(View.VISIBLE);
         }
@@ -2607,6 +2608,9 @@ public class ComposeMessageActivity extends Activity
         if (mRecipientsEditor != null) {
             mRecipientsEditor.removeTextChangedListener(mRecipientsWatcher);
             mRecipientsEditor.setVisibility(View.GONE);
+            if (mRecipientsPicker != null) {
+                mRecipientsPicker.setVisibility(View.GONE);
+            }
             if (mRecipientsPickerGroups != null) {
                 mRecipientsPickerGroups.setVisibility(View.GONE);
             }
