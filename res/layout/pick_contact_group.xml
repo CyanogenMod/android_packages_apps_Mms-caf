@@ -44,14 +44,14 @@
             android:layout_height="wrap_content"
             android:layout_width="0dip"
             android:layout_weight="1.0"
-            android:layout_marginLeft="5dip"
-            android:layout_marginRight="5dip"
+            android:layout_marginStart="5dip"
+            android:layout_marginEnd="5dip"
             android:singleLine="true"
             android:ellipsize="end"
             android:inputType="textNoSuggestions"
             android:imeOptions="actionDone"
             android:hint="@string/search_bar_hint"
-            android:drawableLeft="@drawable/magnifying_glass"
+            android:drawableStart="@drawable/magnifying_glass"
             android:freezesText="true"
             android:visibility="gone"
         />
@@ -59,7 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginRight="5dip"
+            android:layout_marginEnd="5dip"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:singleLine="true"
             android:text="@string/select_all"
@@ -68,7 +68,7 @@
             android:id="@+id/select_all_check"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:layout_marginRight="5dip"
+            android:layout_marginEnd="5dip"
         />
     </LinearLayout>
 

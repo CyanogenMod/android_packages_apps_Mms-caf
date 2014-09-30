@@ -50,8 +50,8 @@
             android:layout_weight="1"
             android:soundEffectsEnabled="true"
             android:visibility="gone"
-            android:drawableLeft="@drawable/ic_send_holo_light"
-            android:paddingLeft="24dp"/>
+            android:drawableStart="@drawable/ic_send_holo_light"
+            android:paddingStart="24dp"/>
 
         <View
             android:layout_width="1dp"
@@ -66,8 +66,8 @@
             android:layout_weight="1"
             android:soundEffectsEnabled="true"
             android:visibility="gone"
-            android:drawableLeft="@drawable/ic_send_holo_light"
-            android:paddingLeft="24dp"/>
+            android:drawableStart="@drawable/ic_send_holo_light"
+            android:paddingStart="24dp"/>
 
         <View
             android:layout_width="1dp"
@@ -82,8 +82,8 @@
             android:layout_weight="1"
             android:soundEffectsEnabled="true"
             android:visibility="gone"
-            android:drawableLeft="@drawable/ic_send_holo_light"
-            android:paddingLeft="24dp"/>
+            android:drawableStart="@drawable/ic_send_holo_light"
+            android:paddingStart="24dp"/>
 
     </LinearLayout>
 

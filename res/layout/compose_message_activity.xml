@@ -29,8 +29,8 @@
         android:layout_height="wrap_content"
         android:paddingTop="5dip"
         android:paddingBottom="5dip"
-        android:paddingLeft="5dip"
-        android:paddingRight="5dip"
+        android:paddingStart="5dip"
+        android:paddingEnd="5dip"
         android:orientation="vertical"
         android:visibility="gone">
 
@@ -140,7 +140,7 @@
                     android:layout_gravity="bottom"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.0"
-                    android:layout_marginLeft="8dip"
+                    android:layout_marginStart="8dip"
                     android:autoText="true"
                     android:textSize="16sp"
                     android:capitalize="sentences"
@@ -167,8 +167,8 @@
                         android:textColor="#cc333333"
                         android:textSize="12sp"
                         android:textStyle="bold"
-                        android:paddingLeft="3dip"
-                        android:paddingRight="3dip"
+                        android:paddingStart="3dip"
+                        android:paddingEnd="3dip"
                         android:paddingBottom="5dip"
                         android:visibility="gone"
                     />
@@ -183,7 +183,7 @@
                         android:layout_height="0dip"
                         android:layout_weight="1.0"
                         android:layout_marginTop="0dip"
-                        android:layout_marginLeft="4dip"
+                        android:layout_marginStart="4dip"
                         android:editable="false"
                         android:text="@string/mms"
                         android:contentDescription="@string/send_mms"
@@ -197,7 +197,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="0dip"
                         android:layout_weight="1.0"
-                        android:layout_marginLeft="4dip"
+                        android:layout_marginStart="4dip"
                         android:contentDescription="@string/send"
                         android:nextFocusLeft="@+id/embedded_text_editor" />
 
@@ -218,8 +218,8 @@
                     android:layout_width="match_parent"
                     android:layout_gravity="bottom"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dip"
-                    android:layout_marginRight="8dip"
+                    android:layout_marginStart="8dip"
+                    android:layout_marginEnd="8dip"
                     android:autoText="true"
                     android:textSize="16sp"
                     android:capitalize="sentences"
@@ -246,7 +246,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:gravity="center_horizontal"
-                        android:layout_marginLeft="10dp" >
+                        android:layout_marginStart="10dp" >
 
                         <TextView
                             android:id="@+id/first_text_counter"
@@ -257,8 +257,8 @@
                             android:textColor="#cc333333"
                             android:textSize="12sp"
                             android:textStyle="bold"
-                            android:paddingLeft="3dip"
-                            android:paddingRight="3dip"
+                            android:paddingStart="3dip"
+                            android:paddingEnd="3dip"
                             android:visibility="gone" />
 
                         <RelativeLayout
@@ -275,7 +275,7 @@
                                 android:textSize="11sp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="0dip"
-                                android:layout_marginLeft="4dip"
+                                android:layout_marginStart="4dip"
                                 android:editable="false"
                                 android:text="@string/mms"
                                 android:contentDescription="@string/send_mms" />
@@ -283,7 +283,7 @@
                             <ImageView android:id="@+id/first_sim_card_indicator_mms"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="48dp"
+                                android:layout_marginStart="48dp"
                                 android:layout_marginTop="33dip"
                                 android:contentDescription="@string/send" />
                         </RelativeLayout>
@@ -299,13 +299,13 @@
                                 android:src="@drawable/btnstyle_send_button_selector"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="4dip"
+                                android:layout_marginStart="4dip"
                                 android:contentDescription="@string/send" />
 
                             <ImageView android:id="@+id/first_sim_card_indicator_sms"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="48dp"
+                                android:layout_marginStart="48dp"
                                 android:layout_marginTop="23dip"
                                 android:contentDescription="@string/send"
                                 android:tint="#737373"/>
@@ -322,7 +322,7 @@
                         android:id="@+id/second_button_with_counter"
                         android:orientation="vertical"
                         android:layout_gravity="center_vertical"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -337,8 +337,8 @@
                             android:textColor="#cc333333"
                             android:textSize="12sp"
                             android:textStyle="bold"
-                            android:paddingLeft="3dip"
-                            android:paddingRight="3dip"
+                            android:paddingStart="3dip"
+                            android:paddingEnd="3dip"
                             android:visibility="gone"
                         />
 
@@ -356,7 +356,7 @@
                                 android:textSize="11sp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="0dip"
-                                android:layout_marginLeft="4dip"
+                                android:layout_marginStart="4dip"
                                 android:editable="false"
                                 android:text="@string/mms"
                                 android:contentDescription="@string/send_mms" />
@@ -364,7 +364,7 @@
                             <ImageView android:id="@+id/second_sim_card_indicator_mms"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="48dp"
+                                android:layout_marginStart="48dp"
                                 android:layout_marginTop="33dip"
                                 android:contentDescription="@string/send" />
                         </RelativeLayout>
@@ -380,13 +380,13 @@
                                 android:src="@drawable/btnstyle_send_button_selector"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="4dip"
+                                android:layout_marginStart="4dip"
                                 android:contentDescription="@string/send" />
 
                             <ImageView android:id="@+id/second_sim_card_indicator_sms"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="48dp"
+                                android:layout_marginStart="48dp"
                                 android:layout_marginTop="23dip"
                                 android:contentDescription="@string/send"
                                 android:tint="#737373"/>

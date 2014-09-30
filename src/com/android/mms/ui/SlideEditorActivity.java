@@ -67,6 +67,8 @@ import com.google.android.mms.pdu.PduBody;
 import com.google.android.mms.pdu.PduPart;
 import com.google.android.mms.pdu.PduPersister;
 
+import java.util.Locale;
+
 /**
  * This activity allows user to edit the contents of a slide.
  */
@@ -148,6 +150,13 @@ public class SlideEditorActivity extends Activity {
 
         mNextSlide = (ImageButton) findViewById(R.id.next_slide_button);
         mNextSlide.setOnClickListener(mOnNavigateForward);
+
+        // Change the pictures of Pre/Next for RTL.
+        if (TextUtils.getLayoutDirectionFromLocale(Locale.getDefault())
+                == View.LAYOUT_DIRECTION_RTL) {
+            mPreSlide.setImageDrawable(getResources().getDrawable(R.drawable.ic_maps_next));
+            mNextSlide.setImageDrawable(getResources().getDrawable(R.drawable.ic_maps_back));
+        }
 
         mPreview = (Button) findViewById(R.id.preview_button);
         mPreview.setOnClickListener(mOnPreview);

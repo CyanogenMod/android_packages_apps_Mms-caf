@@ -38,15 +38,15 @@
             android:layout_weight="1"
             android:layout_marginTop="10dip"
             android:layout_marginBottom="10dip"
-            android:layout_marginLeft="20dip"
-            android:layout_marginRight="20dip"
+            android:layout_marginStart="20dip"
+            android:layout_marginEnd="20dip"
             android:orientation="vertical" >
 
             <TextView
                 android:id="@+id/mms_size_indicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="top|right"
+                android:layout_gravity="top|end"
                 android:alpha="0.5"
                 android:background="@android:color/black"
                 android:textColor="@android:color/white" />
@@ -139,9 +139,9 @@
             android:textSize="15sp"
             android:capitalize="sentences"
             android:autoText="true"
-            android:paddingLeft="5dip"
+            android:paddingStart="5dip"
             android:paddingTop="5dip"
-            android:paddingRight="5dip"
+            android:paddingEnd="5dip"
             android:paddingBottom="5dip"
             android:hint="@string/type_to_compose_text_or_leave_blank"
             android:maxLines="1" >

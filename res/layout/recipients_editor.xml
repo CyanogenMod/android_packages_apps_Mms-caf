@@ -36,19 +36,19 @@
     <ImageButton android:id="@+id/recipients_picker"
         style="?android:attr/borderlessButtonStyle"
         android:src="@drawable/ic_launcher_contacts"
-        android:layout_marginRight="5dip"
+        android:layout_marginEnd="5dip"
         android:layout_width="30dip"
         android:layout_height="wrap_content"
-        android:layout_gravity="right|center_vertical"
+        android:layout_gravity="end|center_vertical"
     />
 
     <ImageButton android:id="@+id/recipients_picker_group"
         style="?android:attr/borderlessButtonStyle"
         android:src="@drawable/ic_launcher_groups"
-        android:layout_marginRight="2dip"
+        android:layout_marginEnd="2dip"
         android:layout_width="30dip"
         android:layout_height="wrap_content"
-        android:layout_gravity="right|center_vertical"
+        android:layout_gravity="end|center_vertical"
     />
 
 </LinearLayout>

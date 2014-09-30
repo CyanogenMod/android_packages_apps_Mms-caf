@@ -199,6 +199,10 @@ public class MessageUtils {
 
     // add for query message count from iccsms table
     public static final Uri ICC_SMS_URI = Uri.parse("content://sms/iccsms");
+    /**
+     * Whether the LayoutDirection is RTL.
+     */
+    private static boolean isLayoutRtl = false;
 
     // Cache of both groups of space-separated ids to their full
     // comma-separated display names, as well as individual ids to
@@ -330,6 +334,8 @@ public class MessageUtils {
         if (cursor == null) {
             return null;
         }
+        isLayoutRtl = (TextUtils.getLayoutDirectionFromLocale(Locale.getDefault())
+                == View.LAYOUT_DIRECTION_RTL);
 
         if ("mms".equals(cursor.getString(MessageListAdapter.COLUMN_MSG_TYPE))) {
             int type = cursor.getInt(MessageListAdapter.COLUMN_MMS_MESSAGE_TYPE);
@@ -370,6 +376,11 @@ public class MessageUtils {
 
         // From: ***
         String from = extractEncStr(context, nInd.getFrom());
+
+        // Make sure the "from" display normally for RTL.
+        if (isLayoutRtl) {
+            from = '\u202D'+from+'\u202C';
+        }
         details.append('\n');
         details.append(res.getString(R.string.from_label));
         details.append(!TextUtils.isEmpty(from)? from:
@@ -434,6 +445,11 @@ public class MessageUtils {
         if (msg instanceof RetrieveConf) {
             // From: ***
             String from = extractEncStr(context, ((RetrieveConf) msg).getFrom());
+
+            // Make sure the "from" display normally for RTL.
+            if (isLayoutRtl) {
+                from = '\u202D'+from+'\u202C';
+            }
             details.append('\n');
             details.append(res.getString(R.string.from_label));
             details.append(!TextUtils.isEmpty(from)? from:
@@ -520,13 +536,20 @@ public class MessageUtils {
             details.append(res.getString(R.string.from_label));
         }
 
+        String address = "";
         if (cursor.getString(MessageListAdapter.COLUMN_SMS_ADDRESS).contains(WAPPUSH)) {
             String[] mAddresses = cursor.getString(
                     MessageListAdapter.COLUMN_SMS_ADDRESS).split(":");
-            details.append(mAddresses[context.getResources().getInteger(
-                    R.integer.wap_push_address_index)]);
+            address = mAddresses[context.getResources().getInteger(
+                    R.integer.wap_push_address_index)];
         } else {
-            details.append(cursor.getString(cursor.getColumnIndexOrThrow(Sms.ADDRESS)));
+            address = cursor.getString(cursor.getColumnIndexOrThrow(Sms.ADDRESS));
+        }
+        // Make sure the address display normally for RTL
+        if (isLayoutRtl) {
+            details.append('\u202D' + address + '\u202C');
+        } else {
+            details.append(address);
         }
 
         // Sent: ***

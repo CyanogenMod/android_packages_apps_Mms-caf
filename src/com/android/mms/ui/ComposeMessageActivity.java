@@ -1810,9 +1810,28 @@ public class ComposeMessageActivity extends Activity
                     String[] mTitle = title.split(":");
                     title = mTitle[getResources().getInteger(R.integer.wap_push_address_index)];
                 }
-                if (!title.equals(number)) {
-                    subTitle = PhoneNumberUtils.formatNumber(number, number,
-                            MmsApp.getApplication().getCurrentCountryIso());
+
+                if (mTextCounter.isLayoutRtl()) {
+
+                    // Change the phonenumber display normally for RTL.
+                    if (title.equals(number)) {
+                        title = PhoneNumberUtils.formatNumber(number, number,
+                             MmsApp.getApplication().getCurrentCountryIso());
+                             if (title.charAt(0) != '\u202D') {
+                                 title = '\u202D' + title + '\u202C';
+                             }
+                    } else {
+                        subTitle = PhoneNumberUtils.formatNumber(number, number,
+                                MmsApp.getApplication().getCurrentCountryIso());
+                            if (subTitle.charAt(0) != '\u202D') {
+                                subTitle = '\u202D' + subTitle + '\u202C';
+                            }
+                    }
+                } else {
+                     if (!title.equals(number)) {
+                         subTitle = PhoneNumberUtils.formatNumber(number, number,
+                              MmsApp.getApplication().getCurrentCountryIso());
+                     }
                 }
                 break;
             }

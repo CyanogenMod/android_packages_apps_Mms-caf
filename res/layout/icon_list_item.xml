@@ -24,11 +24,11 @@
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:paddingTop="1dip"
     android:paddingBottom="1dip"
-    android:paddingLeft="9dip"
-    android:paddingRight="9dip">
+    android:paddingStart="9dip"
+    android:paddingEnd="9dip">
 
     <ImageView android:id="@+id/icon"
-        android:paddingRight="9dip"
+        android:paddingEnd="9dip"
         android:layout_gravity="center_vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>

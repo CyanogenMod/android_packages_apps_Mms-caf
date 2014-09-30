@@ -20,17 +20,26 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.QuickContactBadge;
 
 import com.android.mms.R;
+
+import java.util.Locale;
 
 public class QuickContactDivot extends QuickContactBadge implements Divot{
     private Drawable mDrawable;
     private int mDrawableIntrinsicWidth;
     private int mDrawableIntrinsicHeight;
     private int mPosition;
+
+    /**
+     * Whether the LayoutDirection is RTL.
+     */
+    private static boolean isLayoutRtl = false;
 
     // The screen density.  Multiple this by dips to get pixels.
     private float mDensity;
@@ -64,17 +73,31 @@ public class QuickContactDivot extends QuickContactBadge implements Divot{
     private void setDrawable() {
         Resources r = getContext().getResources();
 
+        isLayoutRtl = (TextUtils.getLayoutDirectionFromLocale(Locale.getDefault())
+                == View.LAYOUT_DIRECTION_RTL);
         switch (mPosition) {
             case LEFT_UPPER:
             case LEFT_MIDDLE:
             case LEFT_LOWER:
-                mDrawable = r.getDrawable(R.drawable.msg_bubble_right);
+
+                // Change drawable for RTL.
+                if (isLayoutRtl) {
+                    mDrawable = r.getDrawable(R.drawable.msg_bubble_left);
+                } else {
+                    mDrawable = r.getDrawable(R.drawable.msg_bubble_right);
+                }
                 break;
 
             case RIGHT_UPPER:
             case RIGHT_MIDDLE:
             case RIGHT_LOWER:
-                mDrawable = r.getDrawable(R.drawable.msg_bubble_left);
+
+                // Change drawable for RTL.
+                if (isLayoutRtl) {
+                    mDrawable = r.getDrawable(R.drawable.msg_bubble_right);
+                } else {
+                    mDrawable = r.getDrawable(R.drawable.msg_bubble_left);
+                }
                 break;
 
 //            case TOP_LEFT:
@@ -139,19 +162,39 @@ public class QuickContactDivot extends QuickContactBadge implements Divot{
 
         switch (mPosition) {
             case RIGHT_UPPER:
-                mDrawable.setBounds(
-                        right - mDrawableIntrinsicWidth,
-                        top + cornerOffset,
-                        right,
-                        top + cornerOffset + mDrawableIntrinsicHeight);
+
+                // Change drawable for RTL.
+                if (isLayoutRtl) {
+                    mDrawable.setBounds(
+                            left,
+                            top + cornerOffset,
+                            left + mDrawableIntrinsicWidth,
+                            top + cornerOffset + mDrawableIntrinsicHeight);
+                } else {
+                    mDrawable.setBounds(
+                            right - mDrawableIntrinsicWidth,
+                            top + cornerOffset,
+                            right,
+                            top + cornerOffset + mDrawableIntrinsicHeight);
+                }
                 break;
 
             case LEFT_UPPER:
-                mDrawable.setBounds(
-                        left,
-                        top + cornerOffset,
-                        left + mDrawableIntrinsicWidth,
-                        top + cornerOffset + mDrawableIntrinsicHeight);
+
+                // Change drawable for RTL.
+                if (isLayoutRtl) {
+                    mDrawable.setBounds(
+                            right - mDrawableIntrinsicWidth,
+                            top + cornerOffset,
+                            right,
+                            top + cornerOffset + mDrawableIntrinsicHeight);
+                } else {
+                    mDrawable.setBounds(
+                            left,
+                            top + cornerOffset,
+                            left + mDrawableIntrinsicWidth,
+                            top + cornerOffset + mDrawableIntrinsicHeight);
+                }
                 break;
 
             case BOTTOM_MIDDLE:

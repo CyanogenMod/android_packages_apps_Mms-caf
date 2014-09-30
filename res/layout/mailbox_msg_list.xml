@@ -23,7 +23,7 @@
     android:layout_height="?android:attr/listPreferredItemHeight"
     android:background="?android:attr/activatedBackgroundIndicator"
     android:orientation="horizontal"
-    android:paddingRight="10dip" >
+    android:paddingEnd="10dip" >
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -50,7 +50,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:paddingLeft="5dip"
+            android:paddingStart="5dip"
             android:singleLine="true"
             android:ellipsize="middle"
             android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -69,11 +69,11 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ellipsize="end"
-                android:paddingLeft="5dip"
+                android:paddingStart="5dip"
                 android:singleLine="true" />
 
             <ImageView android:id="@+id/error"
-                android:layout_marginLeft="3dip"
+                android:layout_marginStart="3dip"
                 android:visibility="gone"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
@@ -83,7 +83,7 @@
                 android:id="@+id/imageViewLock"
                 android:layout_width="16dip"
                 android:layout_height="16dip"
-                android:layout_marginRight="2dip"
+                android:layout_marginEnd="2dip"
                 android:src="@drawable/ic_lock_message_sms"
                 android:visibility="gone" />
 
@@ -91,8 +91,8 @@
                 android:id="@+id/textViewDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="8dip"
-                android:paddingLeft="5dip" />
+                android:layout_marginEnd="8dip"
+                android:paddingStart="5dip" />
         </LinearLayout>
     </LinearLayout>
 

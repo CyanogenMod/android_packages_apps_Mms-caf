@@ -57,7 +57,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 android:id="@+id/avatar"
                 android:layout_width="@dimen/avatar_width_height"
                 android:layout_height="@dimen/avatar_width_height"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 class="com.android.mms.ui.QuickContactDivot"
                 position="left_upper" />
 
@@ -65,8 +65,8 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 android:id="@+id/message_block"
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_toLeftOf="@id/avatar"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@id/avatar"
                 android:background="@drawable/hairline_right"
                 android:minHeight="@dimen/avatar_width_height"
                 android:orientation="vertical" >
@@ -75,8 +75,8 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     android:id="@+id/sim_message_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
-                    android:paddingRight="@dimen/message_item_text_padding_left_right"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/message_item_text_padding_left_right"
                     android:paddingTop="@dimen/message_item_text_padding_top"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="#ff000000"
@@ -88,10 +88,10 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:autoLink="all"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:linksClickable="false"
-                    android:paddingLeft="@dimen/message_item_text_padding_left_right"
-                    android:paddingRight="@dimen/message_item_text_padding_left_right"
+                    android:paddingStart="@dimen/message_item_text_padding_left_right"
+                    android:paddingEnd="@dimen/message_item_text_padding_left_right"
                     android:paddingTop="@dimen/message_item_text_padding_top"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="#ff000000"
@@ -102,15 +102,15 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dip"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:orientation="horizontal"
-                    android:paddingRight="@dimen/message_item_text_padding_left_right" >
+                    android:paddingEnd="@dimen/message_item_text_padding_left_right" >
 
                     <ImageView
                         android:id="@+id/locked_indicator"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingRight="3dip"
+                        android:paddingEnd="3dip"
                         android:src="@drawable/ic_lock_message_sms"
                         android:visibility="gone" />
 
@@ -118,7 +118,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         android:id="@+id/delivered_indicator"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingRight="3dip"
+                        android:paddingEnd="3dip"
                         android:src="@drawable/ic_sms_mms_delivered"
                         android:visibility="gone" />
 
@@ -126,7 +126,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         android:id="@+id/details_indicator"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingRight="3dip"
+                        android:paddingEnd="3dip"
                         android:src="@drawable/ic_sms_mms_details"
                         android:visibility="gone" />
 
@@ -134,7 +134,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         android:id="@+id/sim_indicator_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingRight="3dip"
+                        android:paddingEnd="3dip"
                         android:visibility="gone" />
 
                     <TextView
@@ -146,13 +146,13 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 </LinearLayout>
                 <TextView android:id="@+id/text_view_buttom"
                     android:autoLink="all"
-                    android:paddingLeft="@dimen/message_item_text_padding_left_right"
-                    android:paddingRight="@dimen/message_item_text_padding_left_right"
+                    android:paddingStart="@dimen/message_item_text_padding_left_right"
+                    android:paddingEnd="@dimen/message_item_text_padding_left_right"
                     android:paddingTop="@dimen/message_item_text_padding_top"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:linksClickable="false"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="#ff000000"
                     android:textSize="16sp"

@@ -20,7 +20,7 @@
     android:id="@+id/custom_title_root"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:gravity="right"
+    android:gravity="end"
     android:orientation="horizontal">
 
     <TextView
@@ -30,7 +30,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#ccffffff"
         android:layout_gravity="center_vertical"
-        android:paddingRight="10dip"
+        android:paddingEnd="10dip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

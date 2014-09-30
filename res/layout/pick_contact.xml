@@ -44,14 +44,14 @@
             android:id="@+id/search_field"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_marginLeft="5dip"
-            android:layout_marginRight="5dip"
+            android:layout_marginStart="5dip"
+            android:layout_marginEnd="5dip"
             android:singleLine="true"
             android:ellipsize="end"
             android:inputType="textNoSuggestions"
             android:imeOptions="actionDone"
             android:hint="@string/search_bar_hint"
-            android:drawableLeft="@drawable/magnifying_glass"
+            android:drawableStart="@drawable/magnifying_glass"
             android:freezesText="true" />
 
     </LinearLayout>

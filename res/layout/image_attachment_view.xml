@@ -24,7 +24,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:paddingRight="5dip"
+    android:paddingEnd="5dip"
     android:background="@drawable/attachment_editor_bg">
 
     <FrameLayout
@@ -41,7 +41,7 @@
             android:id="@+id/mms_size_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="top|right"
+            android:layout_gravity="top|end"
             android:alpha="0.5"
             android:background="@android:color/black"
             android:textColor="@android:color/white" />
@@ -49,7 +49,7 @@
 
     <LinearLayout
         android:orientation="vertical"
-        android:paddingRight="8dp"
+        android:paddingEnd="8dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 

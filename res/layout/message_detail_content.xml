@@ -50,8 +50,8 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             android:linksClickable="false"
             android:paddingTop="12dip"
             android:paddingBottom="20dip"
-            android:paddingLeft="16dip"
-            android:paddingRight="16dip"
+            android:paddingStart="16dip"
+            android:paddingEnd="16dip"
             android:textColor="#000000"
             android:textSize="18dip" />
 
@@ -61,8 +61,8 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             android:layout_height="1dip"
             android:background="#cccccc"
             android:gravity="fill_horizontal"
-            android:layout_marginLeft="16dip"
-            android:layout_marginRight="16dip"
+            android:layout_marginStart="16dip"
+            android:layout_marginEnd="16dip"
             android:scaleType="fitXY" />
 
         <TextView
@@ -71,8 +71,8 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             android:layout_height="wrap_content"
             android:paddingTop="12dip"
             android:paddingBottom="20dip"
-            android:paddingLeft="16dip"
-            android:paddingRight="16dip"
+            android:paddingStart="16dip"
+            android:paddingEnd="16dip"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#777777"
             android:textSize="14sp" />

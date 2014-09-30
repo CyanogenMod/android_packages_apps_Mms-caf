@@ -35,12 +35,12 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true" >
+        android:layout_alignParentStart="true" >
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
             android:src="@drawable/dropdown_ic_arrow_normal_holo_dark" />
 
         <Button
@@ -51,7 +51,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             android:divider="?android:attr/listDividerAlertDialog"
             android:gravity="left|center_vertical"
             android:minWidth="130dp"
-            android:paddingRight="25dip"
+            android:paddingEnd="25dip"
             android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceLargePopupMenu"
             android:textColor="?android:attr/actionMenuTextColor" />
@@ -61,15 +61,15 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         android:id="@+id/multi_action_done"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
-        android:layout_alignParentRight="true"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
         android:background="@android:color/transparent" />
 
     <ImageView
         android:layout_width="5dp"
         android:layout_height="match_parent"
-        android:layout_toLeftOf="@id/multi_action_done"
+        android:layout_toStartOf="@id/multi_action_done"
         android:src="@drawable/cab_divider_vertical_dark" />
 
 </RelativeLayout>

@@ -23,7 +23,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingRight="5dip"
+    android:paddingEnd="5dip"
     android:background="@drawable/attachment_editor_bg">
 
     <!-- This LinearLayout is used to push the send and edit button to the right of the
@@ -82,7 +82,7 @@
             android:id="@+id/mms_size_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="top|right"
+            android:layout_gravity="top|end"
             android:alpha="0.5"
             android:background="@android:color/black"
             android:textColor="@android:color/white" />
@@ -92,7 +92,7 @@
         android:orientation="vertical"
         android:gravity="center_vertical"
         android:layout_width="wrap_content"
-        android:paddingRight="8dp"
+        android:paddingEnd="8dp"
         android:layout_height="match_parent">
 
         <Button

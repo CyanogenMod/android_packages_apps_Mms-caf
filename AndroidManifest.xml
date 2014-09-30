@@ -59,7 +59,8 @@
             android:icon="@mipmap/ic_launcher_smsmms"
             android:taskAffinity="android.task.mms"
             android:backupAgent="QTIBackupAgent"
-            android:allowTaskReparenting="true">
+            android:allowTaskReparenting="true"
+            android:supportsRtl="true">
         <uses-library android:name="com.qrd.wappush" android:required="false" />
 
         <service android:name=".transaction.TransactionService"
