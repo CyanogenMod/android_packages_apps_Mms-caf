@@ -700,9 +700,8 @@ public class MessageUtils {
     }
 
     public static String getLocalNumber(long subId) {
-        if (null == sLocalNumber) {
-            sLocalNumber = MmsApp.getApplication().getTelephonyManager().getLine1NumberForSubscriber(subId);
-        }
+        sLocalNumber = MmsApp.getApplication().getTelephonyManager()
+            .getLine1NumberForSubscriber(subId);
         return sLocalNumber;
     }
 
