@@ -378,8 +378,8 @@
     <string name="pref_title_mms_read_reports">Read reports</string>
     <!-- Settings item for boolean option to enable/disable SMS delivery reports -->
     <string name="pref_title_sms_delivery_reports">Delivery reports</string>
-    <string name="pref_title_sms_delivery_reports_slot1">Sub1\'s delivery reports</string>
-    <string name="pref_title_sms_delivery_reports_slot2">Sub2\'s delivery reports</string>
+    <string name="pref_title_sms_delivery_reports_slot1">Delivery reports for SIM1</string>
+    <string name="pref_title_sms_delivery_reports_slot2">Delivery reports for SIM2</string>
     <!-- Settings item for boolean option to enable/disable auto-deletion of messages -->
     <string name="pref_title_auto_delete">Delete old messages</string>
     <!-- Settings item for integer option to set SMS delete limit -->
@@ -914,8 +914,8 @@
 
     <!-- Settings item description for SMS Validity period -->
     <string name="pref_title_sms_validity_period">SMS Validity Period</string>
-    <string name="pref_title_sms_validity_period_slot1">SMS Validity Period for Card1</string>
-    <string name="pref_title_sms_validity_period_slot2">SMS Validity Period for Card2</string>
+    <string name="pref_title_sms_validity_period_slot1">SMS validity period for SIM1</string>
+    <string name="pref_title_sms_validity_period_slot2">SMS validity period for SIM2</string>
     <string name="sms_validity_period_not_set">Not set</string>
     <string name="sms_validity_period_one_hour">1 hour</string>
     <string name="sms_validity_period_six_hours">6 hours</string>
@@ -974,8 +974,8 @@
 
     <!-- Settings item description for Mms Validity period -->
     <string name="pref_title_mms_save_time">MMS Validity period</string>
-    <string name="pref_title_mms_save_time_slot1">Sub1\'s MMS validity period</string>
-    <string name="pref_title_mms_save_time_slot2">Sub2\'s MMS validity period</string>
+    <string name="pref_title_mms_save_time_slot1">MMS validity period for SIM1</string>
+    <string name="pref_title_mms_save_time_slot2">MMS validity period for SIM2</string>
     <string name="mms_one_week">One week</string>
     <string name="mms_two_days">Two days</string>
     <string name="mms_max">Maximum</string>
@@ -1006,8 +1006,8 @@
 
     <!-- Settings item description for Preferred storage -->
     <string name="pref_title_sms_store">Preferred storage</string>
-    <string name="pref_title_sms_store_card1">Card1 preferred storage</string>
-    <string name="pref_title_sms_store_card2">Card2 preferred storage</string>
+    <string name="pref_title_sms_store_card1">Preferred storage for SIM1</string>
+    <string name="pref_title_sms_store_card2">Preferred storage for SIM2</string>
     <string name="pref_sms_store_phone">Phone</string>
     <string name="pref_sms_store_card">SIM card</string>
     <string name="pref_sms_store_card_unknown_fail">Failure to receive new messages, the SIM card can\'t be read correctly</string>
