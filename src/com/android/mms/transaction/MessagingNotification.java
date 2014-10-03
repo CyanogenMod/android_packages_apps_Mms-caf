@@ -891,6 +891,7 @@ public class MessagingNotification {
                     continue;
                 }
 
+                String message = cursor.getString(COLUMN_SMS_BODY);
                 long threadId = cursor.getLong(COLUMN_SMS_THREAD_ID);
                 long timeMillis = cursor.getLong(COLUMN_SMS_DATE);
                 int phoneId = cursor.getInt(COLUMN_SMS_SUB_ID);
@@ -904,7 +905,7 @@ public class MessagingNotification {
 
 
                 NotificationInfo info = getNewMessageNotificationInfo(context, true /* isSms */,
-                        address, msgId, null /* subject */,
+                        address, message, null /* subject */,
                         threadId, phoneId, timeMillis, null /* attachmentBitmap */,
                         contact, WorkingMessage.TEXT);
                 if (MessageUtils.isMailboxMode()) {
