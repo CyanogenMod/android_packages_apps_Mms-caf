@@ -219,21 +219,21 @@ public class QTIBackupMMS {
         switch (Box){
             case SENT:
                 uri = Telephony.Mms.Sent.CONTENT_URI;
-                cr = mContext.getContentResolver().query(uri, MAILBOX_PROJECTION, null, null, null);
+                cr = mContext.getContentResolver().query(uri, null, null, null, null);
                 numOfEntries = BackupMsg(cr, mmsBackupSent);
                 cr.close();
                 break;
 
             case INBOX:
                 uri = Telephony.Mms.Inbox.CONTENT_URI;
-                cr = mContext.getContentResolver().query(uri, MAILBOX_PROJECTION, null, null, null);
+                cr = mContext.getContentResolver().query(uri, null, null, null, null);
                 numOfEntries = BackupMsg(cr, mmsBackupInbox);
                 cr.close();
                 break;
 
             case DRAFT:
                 uri = Telephony.Mms.Draft.CONTENT_URI;
-                cr = mContext.getContentResolver().query(uri, MAILBOX_PROJECTION, null, null, null);
+                cr = mContext.getContentResolver().query(uri, null, null, null, null);
                 numOfEntries = BackupMsg(cr, mmsBackupDraft);
                 cr.close();
                 break;
