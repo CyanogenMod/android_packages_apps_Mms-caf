@@ -934,8 +934,6 @@
 
     <string name="normal_show">View normal mode</string>
     <string name="cannot_play">Cannot present the slide show.</string>
-    <string name="open_wap_push_title">Browser Information</string>
-    <string name="open_wap_push_body">Do you want to open the web site?</string>
 
     <string name="confirm_delete_selected_messages">The selected messages will be deleted.</string>
     <!-- menu item of mailboxmessagecontent -->

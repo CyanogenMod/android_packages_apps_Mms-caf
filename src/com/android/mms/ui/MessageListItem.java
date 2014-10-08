@@ -807,26 +807,7 @@ public class MessageListItem extends LinearLayout implements
         if (spans.length == 0) {
             sendMessage(mMessageItem, MSG_LIST_DETAILS);
         } else {
-            boolean wap_push = mContext.getResources().getBoolean(R.bool.config_wap_push);
-            if (spans.length == 1 && mMessageItem != null
-                    && MessageUtils.isWapPushNumber(mMessageItem.mAddress)
-                    && wap_push) {
-                DialogInterface.OnClickListener click = new DialogInterface.OnClickListener() {
-                    @Override
-                    public final void onClick(DialogInterface dialog, int which) {
-                        spans[0].onClick(mBodyTextView);
-                    }
-                };
-                new AlertDialog.Builder(mContext)
-                        .setTitle(mContext.getString(R.string.open_wap_push_title))
-                        .setMessage(mContext.getString(R.string.open_wap_push_body))
-                        .setPositiveButton(android.R.string.ok, click)
-                        .setNegativeButton(android.R.string.cancel, null)
-                        .setCancelable(true)
-                        .show();
-            } else {
-                MessageUtils.onMessageContentClick(mContext, mBodyTextView);
-            }
+            MessageUtils.onMessageContentClick(mContext, mBodyTextView);
         }
     }
 

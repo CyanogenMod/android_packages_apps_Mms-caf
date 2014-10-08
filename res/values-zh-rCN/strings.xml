@@ -433,8 +433,6 @@
     <string name="menu_copy_to">复制</string>
     <string name="operation_to_card_memory">复制到SIM卡</string>
 
-    <string name="open_wap_push_title">"浏览器信息"</string>
-    <string name="open_wap_push_body">"是否要访问网站？"</string>
     <string name="confirm_delete_selected_messages">选中的信息将被删除</string>
     <!-- menu item of mailboxmessagecontent -->
     <string name="menu_load_push">载入</string>
