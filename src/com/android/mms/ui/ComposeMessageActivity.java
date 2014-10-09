@@ -5114,6 +5114,10 @@ public class ComposeMessageActivity extends Activity
     private boolean copyToSim(MessageItem msgItem, long subscription) {
         int boxId = msgItem.mBoxId;
         String address = msgItem.mAddress;
+        if (MessageUtils.isWapPushNumber(address)) {
+            String[] number = address.split(":");
+            address = number[0];
+        }
         String text = msgItem.mBody;
         long timestamp = msgItem.mDate != 0 ? msgItem.mDate : System.currentTimeMillis();
 
@@ -5134,7 +5138,8 @@ public class ComposeMessageActivity extends Activity
                 status = SmsManager.STATUS_ON_ICC_READ;
             }
             ret &= TelephonyManager.getDefault().isMultiSimEnabled()
-                    ? SmsManager.getSmsManagerForSubscriber(subscription).copyMessageToIcc(null, pdu, status)
+                    ? SmsManager.getSmsManagerForSubscriber(subscription)
+                            .copyMessageToIcc(null, pdu, status)
                     : sm.copyMessageToIcc(null, pdu, status);
             if (!ret) {
                 break;
