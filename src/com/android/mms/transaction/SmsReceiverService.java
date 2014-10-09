@@ -394,7 +394,10 @@ public class SmsReceiverService extends Service {
         SmsMessage[] msgs = Intents.getMessagesFromIntent(intent);
         String format = intent.getStringExtra("format");
 
-        int saveLoc = MessageUtils.getSmsPreferStoreLocation(this, msgs[0].getSubId());
+        // Because all sub id have been changed to phone id in Mms,
+        // so also change it here.
+        int saveLoc = MessageUtils.getSmsPreferStoreLocation(this,
+                SubscriptionManager.getPhoneId(msgs[0].getSubId()));
         if (getResources().getBoolean(R.bool.config_savelocation)
                 && saveLoc == MessageUtils.PREFER_SMS_STORE_CARD) {
             for (int i = 0; i < msgs.length; i++) {

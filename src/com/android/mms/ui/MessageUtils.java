@@ -2204,12 +2204,12 @@ public class MessageUtils {
         }
     }
 
-    public static int getSmsPreferStoreLocation(Context context, long subscription) {
+    public static int getSmsPreferStoreLocation(Context context, int phoneId) {
         SharedPreferences prefsms = PreferenceManager.getDefaultSharedPreferences(context);
         int preferStore = PREFER_SMS_STORE_PHONE;
 
         if (isMultiSimEnabledMms()) {
-            if (subscription == SUB1) {
+            if (phoneId == SUB1) {
                 preferStore = Integer.parseInt(prefsms.getString("pref_key_sms_store_card1", "0"));
             } else {
                 preferStore = Integer.parseInt(prefsms.getString("pref_key_sms_store_card2", "0"));
