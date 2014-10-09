@@ -2096,6 +2096,17 @@ public class ComposeMessageActivity extends Activity
         }
     }
 
+    private void resetEditorText() {
+        // We have to remove the text change listener while the text editor gets cleared and
+        // we subsequently turn the message back into SMS. When the listener is listening while
+        // doing the clearing, it's fighting to update its counts and itself try and turn
+        // the message one way or the other.
+        mTextEditor.removeTextChangedListener(mTextEditorWatcher);
+        // Clear the text box.
+        TextKeyListener.clear(mTextEditor.getText());
+        mTextEditor.addTextChangedListener(mTextEditorWatcher);
+    }
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -2165,7 +2176,7 @@ public class ComposeMessageActivity extends Activity
                 log("onNewIntent: different conversation");
             }
             saveDraft(false);    // if we've got a draft, save it first
-
+            resetEditorText();
             initialize(null, originalThreadId);
         }
         loadMessagesAndDraft(0);
