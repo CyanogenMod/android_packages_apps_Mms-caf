@@ -2186,6 +2186,7 @@ public class ComposeMessageActivity extends Activity
 
         mRecipientsEditor.addTextChangedListener(mRecipientsWatcher);
         mRecipientsEditor.setAdapter(new ChipsRecipientAdapter(this));
+        mRecipientsEditor.setText(null);
         mRecipientsEditor.populate(recipients);
         mRecipientsEditor.setOnCreateContextMenuListener(mRecipientsMenuCreateListener);
         // TODO : Remove the max length limitation due to the multiple phone picker is added and the
