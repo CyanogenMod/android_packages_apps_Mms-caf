@@ -285,6 +285,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="48dp"
                                 android:layout_marginTop="33dip"
+                                android:tint="@color/slot_indicator_background"
                                 android:contentDescription="@string/send" />
                         </RelativeLayout>
 
@@ -308,7 +309,7 @@
                                 android:layout_marginStart="48dp"
                                 android:layout_marginTop="23dip"
                                 android:contentDescription="@string/send"
-                                android:tint="#737373"/>
+                                android:tint="@color/slot_indicator_background"/>
                         </RelativeLayout>
                     </LinearLayout>
 
@@ -366,6 +367,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="48dp"
                                 android:layout_marginTop="33dip"
+                                android:tint="@color/slot_indicator_background"
                                 android:contentDescription="@string/send" />
                         </RelativeLayout>
 
@@ -389,7 +391,7 @@
                                 android:layout_marginStart="48dp"
                                 android:layout_marginTop="23dip"
                                 android:contentDescription="@string/send"
-                                android:tint="#737373"/>
+                                android:tint="@color/slot_indicator_background"/>
                         </RelativeLayout>
                     </LinearLayout>
                 </LinearLayout>

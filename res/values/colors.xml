@@ -48,4 +48,6 @@
 
     <color name="text_shadow_color_light">#33000000</color>
     <color name="solid_white">#ffffffff</color>
+
+    <color name="slot_indicator_background">#737373</color>
 </resources>
