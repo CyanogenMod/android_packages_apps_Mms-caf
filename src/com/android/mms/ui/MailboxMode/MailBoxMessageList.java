@@ -201,7 +201,6 @@ public class MailBoxMessageList extends ListActivity implements
 
         mHandler = new Handler();
         handleIntent(getIntent());
-        startAsyncQuery();
     }
 
     @Override
@@ -410,6 +409,7 @@ public class MailBoxMessageList extends ListActivity implements
     public void onResume() {
         super.onResume();
         mIsPause = false;
+        startAsyncQuery();
         if (!mIsInSearchMode) {
             mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         }
