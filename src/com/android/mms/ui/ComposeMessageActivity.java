@@ -5139,7 +5139,7 @@ public class ComposeMessageActivity extends Activity
         return copyToSim(msgItem, SmsManager.getDefault().getDefaultSmsSubId());
     }
 
-    private boolean copyToSim(MessageItem msgItem, long subscription) {
+    private boolean copyToSim(MessageItem msgItem, long subId) {
         int boxId = msgItem.mBoxId;
         String address = msgItem.mAddress;
         if (MessageUtils.isWapPushNumber(address)) {
@@ -5157,16 +5157,16 @@ public class ComposeMessageActivity extends Activity
             byte pdu[] = null;
             int status;
             if (Sms.isOutgoingFolder(boxId)) {
-                pdu = SmsMessage.getSubmitPdu(/*subscription,*/ null, address, message,
-                        false).encodedMessage;
+                pdu = SmsMessage.getSubmitPdu(null, address, message,
+                        false, subId).encodedMessage;
                 status = SmsManager.STATUS_ON_ICC_SENT;
             } else {
                 pdu = MessageUtils.getDeliveryPdu(null, address,
-                        message, timestamp, subscription);
+                        message, timestamp, subId);
                 status = SmsManager.STATUS_ON_ICC_READ;
             }
             ret &= TelephonyManager.getDefault().isMultiSimEnabled()
-                    ? SmsManager.getSmsManagerForSubscriber(subscription)
+                    ? SmsManager.getSmsManagerForSubscriber(subId)
                             .copyMessageToIcc(null, pdu, status)
                     : sm.copyMessageToIcc(null, pdu, status);
             if (!ret) {
