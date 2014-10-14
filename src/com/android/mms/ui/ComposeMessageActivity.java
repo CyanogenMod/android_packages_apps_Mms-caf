@@ -5261,10 +5261,8 @@ public class ComposeMessageActivity extends Activity
         }
 
         private WorkThread getWorkThread() {
-            if (mWorkThread == null) {
-                mWorkThread = new WorkThread();
-                mWorkThread.setPriority(Thread.MAX_PRIORITY);
-            }
+            mWorkThread = new WorkThread();
+            mWorkThread.setPriority(Thread.MAX_PRIORITY);
             return mWorkThread;
         }
 
