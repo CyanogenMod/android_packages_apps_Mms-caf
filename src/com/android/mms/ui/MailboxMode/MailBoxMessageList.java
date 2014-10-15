@@ -725,6 +725,7 @@ public class MailBoxMessageList extends ListActivity implements
             case R.id.action_change_to_conversation_mode:
                 Intent modeIntent = new Intent(this, ConversationList.class);
                 startActivityIfNeeded(modeIntent, -1);
+                MessageUtils.setMailboxMode(false);
                 finish();
                 break;
             case R.id.action_memory_status:
