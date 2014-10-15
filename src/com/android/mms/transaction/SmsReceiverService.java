@@ -762,14 +762,15 @@ public class SmsReceiverService extends Service {
 
     private boolean saveMessageToIcc(SmsMessage sms) {
         boolean result = true;
-        SmsManager sm = SmsManager.getDefault();
-        long subscription = sm.getDefaultSmsSubId();
+        long subscription = sms.getSubId();
         String address = MessageUtils.convertIdp(this, sms.getOriginatingAddress());
         byte pdu[] = MessageUtils.getDeliveryPdu(null, address,
                 sms.getMessageBody(), sms.getTimestampMillis(), subscription);
         result &= TelephonyManager.getDefault().isMultiSimEnabled()
-                ? SmsManager.getSmsManagerForSubscriber(subscription).copyMessageToIcc(null, pdu, SmsManager.STATUS_ON_ICC_READ)
-                : sm.copyMessageToIcc(null, pdu, SmsManager.STATUS_ON_ICC_READ);
+                ? SmsManager.getSmsManagerForSubscriber(subscription)
+                    .copyMessageToIcc(null, pdu, SmsManager.STATUS_ON_ICC_READ)
+                : SmsManager.getDefault()
+                    .copyMessageToIcc(null, pdu, SmsManager.STATUS_ON_ICC_READ);
         return result;
     }
 }
