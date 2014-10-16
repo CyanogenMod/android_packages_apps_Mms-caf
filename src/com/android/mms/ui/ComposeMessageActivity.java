@@ -3903,6 +3903,20 @@ public class ComposeMessageActivity extends Activity
         return MediaFile.isAudioFileType(fileType);
     }
 
+    private boolean isImageFile(Uri uri) {
+        String path = uri.getPath();
+        String mimeType = MediaFile.getMimeTypeForFile(path);
+        int fileType = MediaFile.getFileTypeForMimeType(mimeType);
+        return MediaFile.isImageFileType(fileType);
+    }
+
+    private boolean isVideoFile(Uri uri) {
+        String path = uri.getPath();
+        String mimeType = MediaFile.getMimeTypeForFile(path);
+        int fileType = MediaFile.getFileTypeForMimeType(mimeType);
+        return MediaFile.isVideoFileType(fileType);
+    }
+
     // mVideoUri will look like this: content://media/external/video/media
     private static final String mVideoUri = Video.Media.getContentUri("external").toString();
     // mImageUri will look like this: content://media/external/images/media
@@ -3918,10 +3932,12 @@ public class ComposeMessageActivity extends Activity
             // there are multiple types, the type passed in is "*/*". In that case, we've got
             // to look at the uri to figure out if it is an image or video.
             boolean wildcard = "*/*".equals(type);
-            if (type.startsWith("image/") || (wildcard && uri.toString().startsWith(mImageUri))) {
+            if (type.startsWith("image/") || (wildcard && uri.toString().startsWith(mImageUri))
+                    || (wildcard && isImageFile(uri))) {
                 addImage(uri, append);
             } else if (type.startsWith("video/") ||
-                    (wildcard && uri.toString().startsWith(mVideoUri))) {
+                    (wildcard && uri.toString().startsWith(mVideoUri))
+                    || (wildcard && isVideoFile(uri))) {
                 addVideo(uri, append);
             } else if (type.startsWith("audio/")
                     || (wildcard && uri.toString().startsWith(mAudioUri))
