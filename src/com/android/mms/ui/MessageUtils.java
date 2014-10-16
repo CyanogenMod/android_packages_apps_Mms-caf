@@ -204,6 +204,8 @@ public class MessageUtils {
      */
     private static boolean isLayoutRtl = false;
 
+    private static final String EXIT_AFTER_RECORD = "exit_after_record";
+
     // Cache of both groups of space-separated ids to their full
     // comma-separated display names, as well as individual ids to
     // display names.
@@ -738,6 +740,7 @@ public class MessageUtils {
         intent.setClassName("com.android.soundrecorder",
                 "com.android.soundrecorder.SoundRecorder");
         intent.putExtra(android.provider.MediaStore.Audio.Media.EXTRA_MAX_BYTES, sizeLimit);
+        intent.putExtra(EXIT_AFTER_RECORD, true);
         activity.startActivityForResult(intent, requestCode);
     }
 
