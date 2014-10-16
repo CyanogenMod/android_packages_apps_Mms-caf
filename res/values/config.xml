@@ -65,7 +65,7 @@
     <!-- configuration for showing messages by mailbox -->
     <bool name="config_mailbox_enable">false</bool>
     <!-- configuration for display two send buttons -->
-    <bool name="config_btnstyle">true</bool>
+    <bool name="config_btnstyle">false</bool>
     <!-- configuration for enter key as send -->
     <bool name="config_enter_key_as_send">true</bool>
 
