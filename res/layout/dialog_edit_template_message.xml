@@ -41,7 +41,7 @@
         android:lines="5"
         android:maxLength="1000"
         android:capitalize="none"
-        android:gravity="fill_horizontal"
+        android:gravity="top"
         android:textAppearance="?android:attr/textAppearanceMedium"
         />
 
