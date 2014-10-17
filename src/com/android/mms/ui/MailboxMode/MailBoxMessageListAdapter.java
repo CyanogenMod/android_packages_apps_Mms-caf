@@ -151,7 +151,7 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
             isDraft = true;
         }
 
-        if (!isDraft && MessageUtils.isMultiSimEnabledMms()) {
+        if (!isDraft && MessageUtils.isMsimIccCardActive()) {
             sDefaultContactImage = (mSubscription == MessageUtils.SUB1) ? mContext.getResources()
                     .getDrawable(R.drawable.ic_contact_picture_card1) : mContext.getResources()
                     .getDrawable(R.drawable.ic_contact_picture_card2);

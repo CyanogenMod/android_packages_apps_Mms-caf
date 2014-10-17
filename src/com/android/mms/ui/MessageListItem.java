@@ -367,7 +367,7 @@ public class MessageListItem extends LinearLayout implements
     }
 
     private void updateSimIndicatorView(int subscription) {
-        if (MessageUtils.isMultiSimEnabledMms() && subscription >= 0) {
+        if (MessageUtils.isMsimIccCardActive() && subscription >= 0) {
             Drawable mSimIndicatorIcon = MessageUtils.getMultiSimIcon(mContext,
                     subscription);
             mSimIndicatorView.setImageDrawable(mSimIndicatorIcon);

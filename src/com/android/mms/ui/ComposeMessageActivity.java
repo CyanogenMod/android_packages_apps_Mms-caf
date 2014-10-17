@@ -1936,7 +1936,7 @@ public class ComposeMessageActivity extends Activity
         mShowAttachIcon = getResources().getBoolean(R.bool.config_show_attach_icon_always);
 
         boolean isBtnStyle = getResources().getBoolean(R.bool.config_btnstyle);
-        mShowTwoButtons = isBtnStyle && isMsimIccCardActive();
+        mShowTwoButtons = isBtnStyle && MessageUtils.isMsimIccCardActive();
         // Initialize members for UI elements.
         initResourceRefs();
 
@@ -4134,16 +4134,6 @@ public class ComposeMessageActivity extends Activity
         mAttachmentEditor = (AttachmentEditor) findViewById(R.id.attachment_editor);
         mAttachmentEditor.setHandler(mAttachmentEditorHandler);
         mAttachmentEditorScrollView = findViewById(R.id.attachment_editor_scroll_view);
-    }
-
-    private boolean isMsimIccCardActive() {
-        if (TelephonyManager.getDefault().isMultiSimEnabled()) {
-            if (MessageUtils.isIccCardActivated(PhoneConstants.SUB1)
-                    && MessageUtils.isIccCardActivated(PhoneConstants.SUB2)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void initTwoSendButton() {

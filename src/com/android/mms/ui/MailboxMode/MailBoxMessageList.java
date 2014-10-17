@@ -470,7 +470,7 @@ public class MailBoxMessageList extends ListActivity implements
             }
         });
 
-        if (MessageUtils.isMultiSimEnabledMms()) {
+        if (MessageUtils.isMsimIccCardActive()) {
             mSlotSpinner.setPrompt(getResources().getString(R.string.slot_type_select));
             ArrayAdapter<CharSequence> slotAdapter = ArrayAdapter.createFromResource(this,
                     R.array.slot_type, android.R.layout.simple_spinner_item);
