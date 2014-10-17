@@ -318,6 +318,12 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         } else {
             if (TelephonyManager.getDefault().isMultiSimEnabled()) {
                 mSmsPrefCategory.removePreference(mSmsDeliveryReportPref);
+                if (!MessageUtils.isIccCardActivated(MessageUtils.SUB1)) {
+                    mSmsDeliveryReportPrefSub1.setEnabled(false);
+                }
+                if (!MessageUtils.isIccCardActivated(MessageUtils.SUB2)) {
+                    mSmsDeliveryReportPrefSub2.setEnabled(false);
+                }
             } else {
                 mSmsPrefCategory.removePreference(mSmsDeliveryReportPrefSub1);
                 mSmsPrefCategory.removePreference(mSmsDeliveryReportPrefSub2);
@@ -334,13 +340,13 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                     (PreferenceCategory)findPreference("pref_key_storage_settings");
                 storageOptions.removePreference(mSmsStorePref);
 
-                if (!MessageUtils.hasIccCard(MessageUtils.SUB1)) {
-                    storageOptions.removePreference(mSmsStoreCard1Pref);
+                if (!MessageUtils.isIccCardActivated(MessageUtils.SUB1)) {
+                    mSmsStoreCard1Pref.setEnabled(false);
                 } else {
                     setSmsPreferStoreSummary(MessageUtils.SUB1);
                 }
-                if (!MessageUtils.hasIccCard(MessageUtils.SUB2)) {
-                    storageOptions.removePreference(mSmsStoreCard2Pref);
+                if (!MessageUtils.isIccCardActivated(MessageUtils.SUB2)) {
+                    mSmsStoreCard2Pref.setEnabled(false);
                 } else {
                     setSmsPreferStoreSummary(MessageUtils.SUB2);
                 }
@@ -351,7 +357,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                 storageOptions.removePreference(mSmsStoreCard2Pref);
 
                 if (!MessageUtils.hasIccCard()) {
-                    storageOptions.removePreference(mSmsStorePref);
+                    mSmsStorePref.setEnabled(false);
                 } else {
                     setSmsPreferStoreSummary();
                 }
@@ -443,8 +449,16 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         if (getResources().getBoolean(R.bool.config_sms_validity)) {
             if (MessageUtils.isMultiSimEnabledMms()) {
                 storageOptions.removePreference(mSmsValidityPref);
-                setSmsPreferValiditySummary(MessageUtils.SUB1);
-                setSmsPreferValiditySummary(MessageUtils.SUB2);
+                if (!MessageUtils.isIccCardActivated(MessageUtils.SUB1)) {
+                    mSmsValidityCard1Pref.setEnabled(false);
+                } else {
+                    setSmsPreferValiditySummary(MessageUtils.SUB1);
+                }
+                if (!MessageUtils.isIccCardActivated(MessageUtils.SUB2)) {
+                    mSmsValidityCard2Pref.setEnabled(false);
+                } else {
+                    setSmsPreferValiditySummary(MessageUtils.SUB2);
+                }
             } else {
                 storageOptions.removePreference(mSmsValidityCard1Pref);
                 storageOptions.removePreference(mSmsValidityCard2Pref);
@@ -492,16 +506,16 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
     private void updateSIMSMSPref() {
         if (MessageUtils.isMultiSimEnabledMms()) {
-            if (!MessageUtils.hasIccCard(MessageUtils.SUB1)) {
-                mSmsPrefCategory.removePreference(mManageSim1Pref);
+            if (!MessageUtils.isIccCardActivated(MessageUtils.SUB1)) {
+                mManageSim1Pref.setEnabled(false);
             }
-            if (!MessageUtils.hasIccCard(MessageUtils.SUB2)) {
-                mSmsPrefCategory.removePreference(mManageSim2Pref);
+            if (!MessageUtils.isIccCardActivated(MessageUtils.SUB2)) {
+                mManageSim2Pref.setEnabled(false);
             }
             mSmsPrefCategory.removePreference(mManageSimPref);
         } else {
             if (!MessageUtils.hasIccCard()) {
-                mSmsPrefCategory.removePreference(mManageSimPref);
+                mManageSimPref.setEnabled(false);
             }
             mSmsPrefCategory.removePreference(mManageSim1Pref);
             mSmsPrefCategory.removePreference(mManageSim2Pref);
@@ -630,8 +644,16 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                 (PreferenceCategory)findPreference("pref_key_mms_settings");
         if (MessageUtils.isMultiSimEnabledMms()) {
             mmsSettings.removePreference(mMmsExpiryPref);
-            setMmsExpirySummary(PhoneConstants.SUB1);
-            setMmsExpirySummary(PhoneConstants.SUB2);
+            if (!MessageUtils.isIccCardActivated(MessageUtils.SUB1)) {
+                mMmsExpiryCard1Pref.setEnabled(false);
+            } else {
+                setMmsExpirySummary(PhoneConstants.SUB1);
+            }
+            if (!MessageUtils.isIccCardActivated(MessageUtils.SUB2)) {
+                mMmsExpiryCard2Pref.setEnabled(false);
+            } else {
+                setMmsExpirySummary(PhoneConstants.SUB2);
+            }
         } else {
             mmsSettings.removePreference(mMmsExpiryCard1Pref);
             mmsSettings.removePreference(mMmsExpiryCard2Pref);
@@ -880,7 +902,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         for (int i = 0; i < count; i++) {
             setSMSCPrefState(i, !isAirPlaneModeOn() &&
                     (TelephonyManager.getDefault().isMultiSimEnabled()
-                    ? TelephonyManager.getDefault().hasIccCard(i)
+                    ? MessageUtils.isIccCardActivated(i)
                     : TelephonyManager.getDefault().hasIccCard()));
         }
     }
