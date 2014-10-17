@@ -397,6 +397,10 @@ public class MailBoxMessageList extends ListActivity implements
             mMessageTitle.setText(mSearchTitle);
             mSpinners.setVisibility(View.GONE);
         } else {
+            if (mQueryBoxType == TYPE_DRAFTBOX) {
+                mSlotSpinner.setSelection(TYPE_ALL_SLOT);
+                mSlotSpinner.setEnabled(false);
+            }
             mListView.setMultiChoiceModeListener(mModeCallback);
         }
 
@@ -443,9 +447,17 @@ public class MailBoxMessageList extends ListActivity implements
                 int oldQueryType = mQueryBoxType;
                 // position 0-3 means box: inbox, sent, draft, outbox
                 mQueryBoxType = position + 1;
-                if(mQueryBoxType>TYPE_OUTBOX)
+                if (mQueryBoxType > TYPE_OUTBOX) {
                     mQueryBoxType = TYPE_OUTBOX;
+                }
                 if (oldQueryType != mQueryBoxType) {
+                    if (mQueryBoxType == TYPE_DRAFTBOX) {
+                        mQuerySlotType = TYPE_ALL_SLOT;
+                        mSlotSpinner.setSelection(TYPE_ALL_SLOT);
+                        mSlotSpinner.setEnabled(false);
+                    } else {
+                        mSlotSpinner.setEnabled(true);
+                    }
                     startAsyncQuery();
                     getListView().invalidateViews();
                 }
