@@ -418,7 +418,14 @@ public class MessageItem {
                     mTimestamp = mContext.getString(R.string.expire_on,
                             MessageUtils.formatTimeStampString(mContext, timestamp));
                 } else {
-                    mTimestamp =  MessageUtils.formatTimeStampString(mContext, timestamp);
+                    // add judgement the Mms is sent or received and format mTimestamp
+                    if (mBoxId == Sms.MESSAGE_TYPE_SENT) {
+                        mTimestamp = String.format(mContext.getString(R.string.sent_on),
+                                MessageUtils.formatTimeStampString(mContext, timestamp));
+                    } else {
+                        mTimestamp = String.format(mContext.getString(R.string.received_on),
+                                MessageUtils.formatTimeStampString(mContext, timestamp));
+                    }
                 }
             }
             if (mPduLoadedCallback != null) {
