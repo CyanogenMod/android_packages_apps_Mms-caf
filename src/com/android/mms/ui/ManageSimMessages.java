@@ -381,7 +381,7 @@ public class ManageSimMessages extends Activity
                 cursor.getColumnIndexOrThrow("address"));
         String body = cursor.getString(cursor.getColumnIndexOrThrow("body"));
         Long date = cursor.getLong(cursor.getColumnIndexOrThrow("date"));
-        int subscription = cursor.getInt(cursor.getColumnIndexOrThrow("sub_id"));
+        int subscription = cursor.getInt(cursor.getColumnIndexOrThrow("phone_id"));
         boolean success = true;
         try {
             if (isIncomingMessage(cursor)) {
