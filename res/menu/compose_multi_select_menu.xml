@@ -58,5 +58,9 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         android:id="@+id/detail"
         android:showAsAction="never|withText"
         android:title="@string/message_detail"/>
+    <item
+        android:id="@+id/save_attachment"
+        android:showAsAction="never|withText"
+        android:title="@string/copy_to_sdcard"/>
 
 </menu>

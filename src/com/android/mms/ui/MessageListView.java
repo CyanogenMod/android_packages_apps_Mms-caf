@@ -74,5 +74,12 @@ public final class MessageListView extends ListView {
     public interface OnSizeChangedListener {
         void onSizeChanged(int width, int height, int oldWidth, int oldHeight);
     }
+
+    public int getCheckedPosition(){
+        if ( getCheckedItemPositions() != null ) {
+            return getCheckedItemPositions().indexOfValue(true);
+        }
+        return INVALID_POSITION;
+    }
 }
 

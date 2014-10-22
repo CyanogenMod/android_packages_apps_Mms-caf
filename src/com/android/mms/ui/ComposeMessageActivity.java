@@ -5392,6 +5392,14 @@ public class ComposeMessageActivity extends Activity
             }
         }
 
+        private void saveAttachment() {
+            Cursor c = (Cursor) getListView().getAdapter().getItem(
+                    mSelectedPos.get(0));
+            int resId = copyMedia(c.getLong(COLUMN_ID)) ? R.string.copy_to_sdcard_success :
+                R.string.copy_to_sdcard_fail;
+            Toast.makeText(ComposeMessageActivity.this, resId, Toast.LENGTH_SHORT).show();
+        }
+
         private void copyMessageText() {
             StringBuilder sBuilder = new StringBuilder();
             for (Integer pos : mSelectedPos) {
@@ -5455,6 +5463,9 @@ public class ComposeMessageActivity extends Activity
                 break;
             case R.id.detail:
                 showMessageDetail();
+                break;
+            case R.id.save_attachment:
+                saveAttachment();
                 break;
             default:
                 break;
@@ -5598,10 +5609,19 @@ public class ComposeMessageActivity extends Activity
             }
         }
 
-        private void customMenuVisibility(ActionMode mode, int checkedCount) {
+        private boolean isAttachmentSaveable(int pos) {
+            MessageListItem msglistItem = (MessageListItem) mMsgListView.getChildAt(pos);
+            return msglistItem != null && msglistItem.getMessageItem() != null
+                    && msglistItem.getMessageItem().hasAttachemntToSave();
+        }
+
+        private void customMenuVisibility(ActionMode mode, int checkedCount,
+                int position, boolean checked) {
             if (checkedCount > 1) {
                 // no detail
                 mode.getMenu().findItem(R.id.detail).setVisible(false);
+                // no save attachment
+                mode.getMenu().findItem(R.id.save_attachment).setVisible(false);
                 // all locked show unlock, other wise show lock.
                 if (mUnlockedCount == 0) {
                     mode.getMenu()
@@ -5626,6 +5646,7 @@ public class ComposeMessageActivity extends Activity
                 }
             } else {
                 mode.getMenu().findItem(R.id.detail).setVisible(true);
+                mode.getMenu().findItem(R.id.save_attachment).setVisible(false);
                 if (mUnlockedCount == 0) {
                     mode.getMenu()
                             .findItem(R.id.lock)
@@ -5643,6 +5664,9 @@ public class ComposeMessageActivity extends Activity
                 if (mMmsSelected > 0) {
                     mode.getMenu().findItem(R.id.copy_to_sim).setVisible(false);
                     mode.getMenu().findItem(R.id.copy).setVisible(false);
+                    int pos = checked ? position : mMsgListView.getCheckedPosition();
+                    mode.getMenu().findItem(R.id.save_attachment)
+                            .setVisible(isAttachmentSaveable(pos));
                 } else {
                     mode.getMenu().findItem(R.id.copy_to_sim).setVisible(true);
                     mode.getMenu().findItem(R.id.copy).setVisible(true);
@@ -5658,7 +5682,7 @@ public class ComposeMessageActivity extends Activity
 
             final int checkedCount = getListView().getCheckedItemCount();
             updateStatics(position, checked);
-            customMenuVisibility(mode, checkedCount);
+            customMenuVisibility(mode, checkedCount, position, checked);
             mSelectionMenu.setTitle(getApplicationContext().getString(
                     R.string.selected_count, checkedCount));
             if (getListView().getCount() == checkedCount) {

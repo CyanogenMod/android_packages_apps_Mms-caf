@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
+import android.drm.DrmStore;
 import android.net.Uri;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.MmsSms;
@@ -34,6 +35,7 @@ import com.android.mms.MmsApp;
 import com.android.mms.R;
 import com.android.mms.data.Contact;
 import com.android.mms.data.WorkingMessage;
+import com.android.mms.drm.DrmUtils;
 import com.android.mms.model.LayoutModel;
 import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
@@ -44,11 +46,14 @@ import com.android.mms.util.DownloadManager;
 import com.android.mms.util.ItemLoadedCallback;
 import com.android.mms.util.ItemLoadedFuture;
 import com.android.mms.util.PduLoaderManager;
+import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
 import com.google.android.mms.pdu.EncodedStringValue;
 import com.google.android.mms.pdu.MultimediaMessagePdu;
 import com.google.android.mms.pdu.NotificationInd;
+import com.google.android.mms.pdu.PduBody;
 import com.google.android.mms.pdu.PduHeaders;
+import com.google.android.mms.pdu.PduPart;
 import com.google.android.mms.pdu.PduPersister;
 import com.google.android.mms.pdu.RetrieveConf;
 import com.google.android.mms.pdu.SendReq;
@@ -111,6 +116,9 @@ public class MessageItem {
     private ItemLoadedFuture mItemLoadedFuture;
     int mLayoutType = LayoutModel.DEFAULT_LAYOUT_TYPE;
     long mDate;
+    boolean mIsForwardable = true;
+    boolean mHasAttachmentToSave = false;
+    boolean mIsDrmRingtoneWithRights = false;
 
     MessageItem(Context context, String type, final Cursor cursor,
             final ColumnsMap columnsMap, Pattern highlight) throws MmsException {
@@ -308,6 +316,10 @@ public class MessageItem {
         return mMsgId;
     }
 
+    public boolean hasAttachemntToSave(){
+        return mHasAttachmentToSave;
+    }
+
     public int getMmsDownloadStatus() {
         return MessageUtils.getMmsDownloadStatus(mMmsStatus);
     }
@@ -321,6 +333,51 @@ public class MessageItem {
             " contact: " + mContact +
             " read: " + mReadReport +
             " delivery status: " + mDeliveryStatus;
+    }
+
+    private boolean isContentTypeWorthToSave(String type) {
+        return ContentType.isImageType(type) || ContentType.isVideoType(type)
+                || ContentType.isAudioType(type) || DrmUtils.isDrmType(type)
+                || type.equals(ContentType.AUDIO_OGG.toLowerCase())
+                || type.equals(ContentType.TEXT_VCARD.toLowerCase());
+    }
+
+    private void isAttachmentSaveable(PduBody body) {
+        for (int i = 0; i < body.getPartsNum(); i++) {
+            PduPart part = body.getPart(i);
+            String type = (new String(part.getContentType())).toLowerCase();
+            if (isContentTypeWorthToSave(type)) {
+                mHasAttachmentToSave = true;
+            }
+        }
+    }
+
+    private void isDrmRingtoneWithRights(PduBody body) {
+        for (int i = 0; i < body.getPartsNum(); i++) {
+            PduPart part = body.getPart(i);
+            String type = (new String(part.getContentType())).toLowerCase();
+            if (DrmUtils.isDrmType(type)) {
+                String mimeType = MmsApp.getApplication().getDrmManagerClient()
+                        .getOriginalMimeType(part.getDataUri());
+                if (ContentType.isAudioType(mimeType)
+                        && DrmUtils.haveRightsForAction(part.getDataUri(),
+                                DrmStore.Action.RINGTONE)) {
+                    mIsDrmRingtoneWithRights = true;
+                }
+            }
+        }
+    }
+
+    private void isForwardable(PduBody body) {
+        for (int i = 0; i < body.getPartsNum(); i++) {
+            PduPart part = body.getPart(i);
+            String type = (new String(part.getContentType())).toLowerCase();
+            if (DrmUtils.isDrmType(type)
+                    && (!DrmUtils.haveRightsForAction(part.getDataUri(),
+                            DrmStore.Action.TRANSFER))) {
+                mIsForwardable = false;
+            }
+        }
     }
 
     public class PduLoadedMessageItemCallback implements ItemLoadedCallback {
@@ -411,6 +468,12 @@ public class MessageItem {
                         Log.e(TAG, "Value for read report was invalid.");
                         mReadReport = false;
                     }
+                }
+                PduBody body = msg.getBody();
+                if (body != null) {
+                    isAttachmentSaveable(body);
+                    isDrmRingtoneWithRights(body);
+                    isForwardable(body);
                 }
             }
             if (!isOutgoingMessage()) {
