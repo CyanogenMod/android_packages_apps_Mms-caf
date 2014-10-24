@@ -5068,6 +5068,7 @@ public class ComposeMessageActivity extends Activity
                     if (cursor != null && cursor.getCount() == 0
                             && !isRecipientsEditorVisible() && !mSentMessage) {
                         initRecipientsEditor();
+                        mRecipientsEditor.addTextChangedListener(mRecipientsWatcher);
                     }
 
                     // FIXME: freshing layout changes the focused view to an unexpected
