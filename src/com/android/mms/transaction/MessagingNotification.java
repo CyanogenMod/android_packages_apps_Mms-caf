@@ -388,7 +388,16 @@ public class MessagingNotification {
 
 //        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         // Update the notification.
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,  info.mClickIntent, 0);
+        PendingIntent pendingIntent;
+        if (phoneId == MessageUtils.SUB_INVALID) {
+            pendingIntent = PendingIntent.getActivity(context, 0, info.mClickIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+        } else {
+            // Use requestCode to avoid updating all intents of previous notifications
+            pendingIntent = PendingIntent.getActivity(context,
+                    NEW_ICC_NOTIFICATION_ID[phoneId], info.mClickIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+        }
         String title = info.mTitle;
         noti.setContentTitle(title)
             .setContentIntent(pendingIntent)
