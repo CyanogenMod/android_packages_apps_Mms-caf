@@ -45,6 +45,7 @@ import android.widget.Toast;
 
 import com.android.mms.LogTag;
 import com.android.mms.R;
+import com.google.android.mms.ContentType;
 
 /**
  * A simplified view of slide in the slides list.
@@ -57,13 +58,14 @@ public class SlideListItemView extends LinearLayout implements SlideViewInterfac
     private static final int SAVE_OPTION = 1;
     private static final int BUFFER_SIZE = 8 * 1024;
     private static final int INCREMENT_NUMBER = 2;
-
+    private static final String CONTACTS = "contacts";
 
     private TextView mTextPreview;
     private ImageView mImagePreview;
     private TextView mAttachmentName;
     private ImageView mAttachmentIcon;
     private Uri mImageUri;
+    private Uri mLookupUri;
 
     public SlideListItemView(Context context) {
         super(context);
@@ -93,8 +95,12 @@ public class SlideListItemView extends LinearLayout implements SlideViewInterfac
     public void setAudio(Uri audio, String name, Map<String, ?> extras) {
         if (name != null) {
             mAttachmentName.setText(name);
-            mAttachmentIcon.setImageResource(R.drawable.ic_attach_capture_audio_holo_light);
-            setOnClickListener(new ViewAttachmentListener(audio, name));
+            if (mContext instanceof MobilePaperShowActivity) {
+                mAttachmentIcon.setImageResource(R.drawable.ic_attach_capture_audio_holo_light);
+                setOnClickListener(new ViewAttachmentListener(audio, name, false));
+            } else {
+                mAttachmentIcon.setImageResource(R.drawable.ic_mms_music);
+            }
         } else {
             mAttachmentName.setText("");
             mAttachmentIcon.setImageDrawable(null);
@@ -107,10 +113,12 @@ public class SlideListItemView extends LinearLayout implements SlideViewInterfac
                 bitmap = BitmapFactory.decodeResource(getResources(),
                         R.drawable.ic_missing_thumbnail_picture);
             }
-            mImagePreview.setVisibility(View.VISIBLE);
+
             mImagePreview.setImageBitmap(bitmap);
-            if (mImageUri != null) {
-                mImagePreview.setOnClickListener(new ViewAttachmentListener(mImageUri, name));
+            if (mContext instanceof MobilePaperShowActivity && mImageUri != null) {
+                mImagePreview.setVisibility(View.VISIBLE);
+                mImagePreview.setOnClickListener(
+                        new ViewAttachmentListener(mImageUri, name, false));
             }
         } catch (java.lang.OutOfMemoryError e) {
             Log.e(TAG, "setImage: out of memory: ", e);
@@ -120,17 +128,19 @@ public class SlideListItemView extends LinearLayout implements SlideViewInterfac
     private class ViewAttachmentListener implements OnClickListener {
         private final Uri mAttachmentUri;
         private final String mAttachmentName;
+        private final boolean mImportVcard;
 
-        public ViewAttachmentListener(Uri uri, String name) {
+        public ViewAttachmentListener(Uri uri, String name, boolean vcard) {
             mAttachmentUri = uri;
             mAttachmentName = name;
+            mImportVcard = vcard;
         }
 
         @Override
         public void onClick(View v) {
             if (mAttachmentUri != null && !TextUtils.isEmpty(mAttachmentName)) {
                 String[] options = new String[] {
-                        mContext.getString(R.string.view),
+                        mContext.getString(mImportVcard ? R.string.import_vcard : R.string.view),
                         mContext.getString(R.string.save)
                 };
                 DialogInterface.OnClickListener clickListener = new DialogInterface
@@ -141,7 +151,13 @@ public class SlideListItemView extends LinearLayout implements SlideViewInterfac
                             try {
                                 Intent intent = new Intent(Intent.ACTION_VIEW);
                                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                                intent.setData(mAttachmentUri);
+                                if (mImportVcard) {
+                                    intent.setDataAndType(mAttachmentUri,
+                                            ContentType.TEXT_VCARD.toLowerCase());
+                                    intent.putExtra(MessageUtils.VIEW_VCARD, true);
+                                } else {
+                                    intent.setData(mLookupUri);
+                                }
                                 mContext.startActivity(intent);
                             } catch (Exception e) {
                                 Log.e(TAG, "Can't open " + mAttachmentUri);
@@ -256,10 +272,14 @@ public class SlideListItemView extends LinearLayout implements SlideViewInterfac
     }
 
     public void setVideo(String name, Uri video) {
+        mAttachmentName.setText(name);
         if (name != null) {
-            setOnClickListener(new ViewAttachmentListener(video, name));
-            mAttachmentName.setText(name);
-            mAttachmentIcon.setImageResource(R.drawable.ic_menu_movie);
+            if (mContext instanceof MobilePaperShowActivity) {
+                setOnClickListener(new ViewAttachmentListener(video, name, false));
+                mAttachmentIcon.setImageResource(R.drawable.ic_menu_movie);
+            } else {
+                mAttachmentIcon.setImageResource(R.drawable.movie);
+            }
         } else {
             mAttachmentName.setText("");
             mAttachmentIcon.setImageDrawable(null);
@@ -314,5 +334,21 @@ public class SlideListItemView extends LinearLayout implements SlideViewInterfac
 
     @Override
     public void setVcard(Uri lookupUri, String name) {
+    }
+
+    public void setVcard(Uri uri, String lookupUri, String name) {
+        if (name != null) {
+            mAttachmentName.setText(name);
+            if (mContext instanceof MobilePaperShowActivity) {
+                mAttachmentIcon.setImageResource(R.drawable.ic_attach_vcard);
+                // If vCard uri is not from contacts, we need import this vCard
+                boolean needImport = !(lookupUri != null && lookupUri.contains(CONTACTS));
+                if (!needImport) {
+                    mLookupUri = Uri.parse(lookupUri);
+                }
+                ViewAttachmentListener l = new ViewAttachmentListener(uri, name, needImport);
+                setOnClickListener(l);
+            }
+        }
     }
 }

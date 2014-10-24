@@ -134,7 +134,7 @@ public class SlideshowPresenter extends Presenter {
                 presentRegionMedia(view, (RegionMediaModel) media, true);
             } else if (media.isAudio()) {
                 presentAudio(view, (AudioModel) media, true);
-            } else if (media.isText()) {
+            } else if (media.isVcard()) {
                 // the media is vcard.
                 presentVcard(view, (VcardModel) media, true);
             }
@@ -180,6 +180,10 @@ public class SlideshowPresenter extends Presenter {
             view.setVcard(
                     TextUtils.isEmpty(vcard.getLookupUri()) ? null
                             : Uri.parse(vcard.getLookupUri()), vcard.getSrc());
+        }
+        if (view instanceof SlideListItemView) {
+            SlideListItemView item = (SlideListItemView) view;
+            item.setVcard(vcard.getUri(), vcard.getLookupUri(), vcard.getSrc());
         }
     }
 
