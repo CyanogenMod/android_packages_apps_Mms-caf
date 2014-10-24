@@ -276,6 +276,7 @@ public class MailBoxMessageContent extends Activity {
                 break;
             case MENU_REPLY:
                 Intent intentReplay = new Intent(this, ComposeMessageActivity.class);
+                intentReplay.putExtra("reply_message", true);
                 intentReplay.putExtra("address", mMsgFrom);
                 intentReplay.putExtra("exit_on_sent", true);
                 this.startActivity(intentReplay);

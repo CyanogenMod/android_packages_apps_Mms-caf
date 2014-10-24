@@ -269,6 +269,8 @@ public class ComposeMessageActivity extends Activity
 
     protected static final String KEY_EXIT_ON_SENT = "exit_on_sent";
     protected static final String KEY_FORWARDED_MESSAGE = "forwarded_message";
+    protected static final String KEY_REPLY_MESSAGE = "reply_message";
+
 
     private static final String EXIT_ECM_RESULT = "exit_ecm_result";
 
@@ -312,6 +314,7 @@ public class ComposeMessageActivity extends Activity
     // a single sms, send the message, and then exits. The message history and menus are hidden.
     private boolean mSendDiscreetMode;
     private boolean mForwardMessageMode;
+    private boolean mReplyMessageMode;
 
     private View mTopPanel;                 // View containing the recipient and subject editors
     private View mBottomPanel;              // View containing the text editor, send button, ec.
@@ -2833,7 +2836,7 @@ public class ComposeMessageActivity extends Activity
 
         menu.clear();
 
-        if (mSendDiscreetMode && !mForwardMessageMode) {
+        if (mSendDiscreetMode && !mForwardMessageMode && !mReplyMessageMode) {
             // When we're in send-a-single-message mode from the lock screen, don't show
             // any menus.
             return true;
@@ -4619,6 +4622,7 @@ public class ComposeMessageActivity extends Activity
 
         mSendDiscreetMode = intent.getBooleanExtra(KEY_EXIT_ON_SENT, false);
         mForwardMessageMode = intent.getBooleanExtra(KEY_FORWARDED_MESSAGE, false);
+        mReplyMessageMode = intent.getBooleanExtra(KEY_REPLY_MESSAGE, false);
         if (mSendDiscreetMode) {
             mMsgListView.setVisibility(View.INVISIBLE);
         }

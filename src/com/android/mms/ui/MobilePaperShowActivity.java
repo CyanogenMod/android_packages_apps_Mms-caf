@@ -396,6 +396,8 @@ public class MobilePaperShowActivity extends Activity {
         Intent intent = new Intent(context, ComposeMessageActivity.class);
         intent.putExtra("address", number);
         intent.putExtra("msg_reply", true);
+        intent.putExtra("reply_message", true);
+        intent.putExtra("exit_on_sent", true);
         context.startActivity(intent);
     }
 
