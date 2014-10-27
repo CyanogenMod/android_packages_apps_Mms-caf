@@ -4887,7 +4887,7 @@ public class ComposeMessageActivity extends Activity
                     ArrayList<Long> threadIds = (ArrayList<Long>)cookie;
                     ConversationList.confirmDeleteThreadDialog(
                             new ConversationList.DeleteThreadListener(threadIds,
-                                mBackgroundQueryHandler, ComposeMessageActivity.this),
+                                mBackgroundQueryHandler, null, ComposeMessageActivity.this),
                             threadIds,
                             cursor != null && cursor.getCount() > 0,
                             ComposeMessageActivity.this);

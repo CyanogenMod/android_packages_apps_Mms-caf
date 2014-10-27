@@ -53,6 +53,7 @@
     <string name="menu_debug_dump">DEBUG DUMP</string>
     <!-- Message that appears on screen while SIM card messages are retrieved -->
     <string name="refreshing">Refreshing\u2026</string>
+    <string name="deleting_threads">Deleting threads\u2026</string>
 
     <!-- Menu item to show received cell broadcasts. [CHAR LIMIT=30] -->
     <string name="menu_cell_broadcasts">Cell broadcasts</string>

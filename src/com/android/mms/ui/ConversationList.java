@@ -20,6 +20,7 @@ package com.android.mms.ui;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
 import android.content.ActivityNotFoundException;
@@ -121,17 +122,20 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
     private View mSmsPromoBannerView;
     private int mSavedFirstVisiblePosition = AdapterView.INVALID_POSITION;
     private int mSavedFirstItemOffset;
+    private ProgressDialog mProgressDialog;
 
     // keys for extras and icicles
     private final static String LAST_LIST_POS = "last_list_pos";
     private final static String LAST_LIST_OFFSET = "last_list_offset";
 
     static private final String CHECKED_MESSAGE_LIMITS = "checked_message_limits";
+    private final static int DELAY_TIME = 500;
 
     // Whether or not we are currently enabled for SMS. This field is updated in onResume to make
     // sure we notice if the user has changed the default SMS app.
     private boolean mIsSmsEnabled;
     private Toast mComposeDisabledToast;
+    private static long mLastDeletedThread = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,6 +165,8 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         initListAdapter();
 
         setupActionBar();
+
+        mProgressDialog = createProgressDialog();
 
         setTitle(R.string.app_label);
 
@@ -892,12 +898,14 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         private final ConversationQueryHandler mHandler;
         private final Context mContext;
         private boolean mDeleteLockedMessages;
+        private final Runnable mCallBack;
 
         public DeleteThreadListener(Collection<Long> threadIds, ConversationQueryHandler handler,
-                Context context) {
+                Runnable callBack, Context context) {
             mThreadIds = threadIds;
             mHandler = handler;
             mContext = context;
+            mCallBack = callBack;
         }
 
         public void setDeleteLockedMessage(boolean deleteLockedMessages) {
@@ -911,6 +919,9 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                 @Override
                 public void run() {
                     int token = DELETE_CONVERSATION_TOKEN;
+                    if (mCallBack != null) {
+                        mCallBack.run();
+                    }
                     if (mContext instanceof ConversationList) {
                         ((ConversationList)mContext).unbindListeners(mThreadIds);
                     }
@@ -918,6 +929,12 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                         Conversation.startDeleteAll(mHandler, token, mDeleteLockedMessages);
                         DraftCache.getInstance().refresh();
                     } else {
+                        int size = mThreadIds.size();
+                        if (size > 0 && mCallBack != null) {
+                            // Save the last thread id.
+                            // And cancel deleting dialog after this thread been deleted.
+                            mLastDeletedThread = (mThreadIds.toArray(new Long[size]))[size - 1];
+                        }
                         Conversation.startDelete(mHandler, token, mDeleteLockedMessages,
                                 mThreadIds);
                     }
@@ -1022,7 +1039,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                 @SuppressWarnings("unchecked")
                 Collection<Long> threadIds = (Collection<Long>)cookie;
                 confirmDeleteThreadDialog(new DeleteThreadListener(threadIds, mQueryHandler,
-                        ConversationList.this), threadIds,
+                        mDeletingRunnable, ConversationList.this), threadIds,
                         cursor != null && cursor.getCount() > 0,
                         ConversationList.this);
                 if (cursor != null) {
@@ -1041,7 +1058,13 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             switch (token) {
             case DELETE_CONVERSATION_TOKEN:
                 long threadId = cookie != null ? (Long)cookie : -1;     // default to all threads
-
+                if (threadId < 0 || threadId == mLastDeletedThread) {
+                    mHandler.removeCallbacks(mShowProgressDialogRunnable);
+                    if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                        mProgressDialog.dismiss();
+                    }
+                    mLastDeletedThread = -1;
+                }
                 if (threadId == -1) {
                     // Rebuild the contacts cache now that all threads and their associated unique
                     // recipients have been deleted.
@@ -1084,6 +1107,32 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             }
         }
     }
+
+    private ProgressDialog createProgressDialog() {
+        ProgressDialog dialog = new ProgressDialog(this);
+        dialog.setIndeterminate(true);
+        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
+        dialog.setMessage(getText(R.string.deleting_threads));
+        return dialog;
+    }
+
+    private Runnable mDeletingRunnable = new Runnable() {
+        @Override
+        public void run() {
+            mHandler.postDelayed(mShowProgressDialogRunnable, DELAY_TIME);
+        }
+    };
+
+    private Runnable mShowProgressDialogRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mProgressDialog != null) {
+                mProgressDialog.show();
+            }
+        }
+    };
 
     public void checkAll() {
         int count = getListView().getCount();
