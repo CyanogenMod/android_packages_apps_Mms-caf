@@ -176,7 +176,7 @@ public class TransactionService extends Service implements Observer {
             @Override
             public void onAvailable(Network network) {
                 Log.d(TAG, "sub:" + mSubId + "NetworkCallback.onAvailable: network=" + network);
-                onMmsPdpConnected();
+                onMmsPdpConnected(mSubId);
 
             }
             @Override
@@ -207,7 +207,7 @@ public class TransactionService extends Service implements Observer {
         };
     }
 
-    private void onMmsPdpConnected() {
+    private void onMmsPdpConnected(String subId) {
         Log.d(TAG, "onMmsPdpConnected");
 
         NetworkInfo mmsNetworkInfo = mConnMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE_MMS);
@@ -230,7 +230,8 @@ public class TransactionService extends Service implements Observer {
 
             if (mmsNetworkInfo.isConnected()) {
                 TransactionSettings settings = new TransactionSettings(
-                        TransactionService.this, mmsNetworkInfo.getExtraInfo());
+                        TransactionService.this, mmsNetworkInfo.getExtraInfo(),
+                        Long.parseLong(subId));
                 // If this APN doesn't have an MMSC, mark everything as failed and bail.
                 if (TextUtils.isEmpty(settings.getMmscUrl())) {
                     Log.v(TAG, "   empty MMSC url, bail");
@@ -866,7 +867,8 @@ public class TransactionService extends Service implements Observer {
                                     mmsc, args.getProxyAddress(), args.getProxyPort());
                         } else {
                             transactionSettings = new TransactionSettings(
-                                                    TransactionService.this, null);
+                                                    TransactionService.this, null,
+                                                    args.getSubId());
                         }
 
                         int transactionType = args.getTransactionType();

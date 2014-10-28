@@ -21,6 +21,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SqliteWrapper;
 import android.net.NetworkUtils;
+import android.net.Uri;
 import android.provider.Telephony;
 import android.text.TextUtils;
 import android.util.Log;
@@ -58,20 +59,24 @@ public class TransactionSettings {
      *
      * @param context The context of the MMS Client
      */
-    public TransactionSettings(Context context, String apnName) {
+    public TransactionSettings(Context context, String apnName, long subId) {
         if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
-            Log.v(TAG, "TransactionSettings: apnName: " + apnName);
+            Log.v(TAG, "TransactionSettings: apnName: " + apnName +
+                    "subId: " + subId);
         }
-        String selection = Telephony.Carriers.CURRENT + " IS NOT NULL";
+        String selection = null;
         String[] selectionArgs = null;
+        Uri contentUri = Telephony.Carriers.CONTENT_URI;
         if (!TextUtils.isEmpty(apnName)) {
             selection = Telephony.Carriers.APN + "=?";
             selectionArgs = new String[]{ apnName.trim() };
+        } else {
+            contentUri = Uri.withAppendedPath(contentUri, "/subId/" + subId);
         }
 
         Cursor cursor = SqliteWrapper.query(context, context.getContentResolver(),
-                            Telephony.Carriers.CONTENT_URI,
-                            APN_PROJECTION, selection, selectionArgs, null);
+                            contentUri, APN_PROJECTION, selection, selectionArgs,
+                            null);
 
         if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
             Log.v(TAG, "TransactionSettings looking for apn: " + selection + " returned: " +
