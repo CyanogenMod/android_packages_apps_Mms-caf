@@ -220,7 +220,7 @@
     <string name="confirm_delete_conversation" msgid="6115966687389279855">"将会删除整个会话。"</string>
     <string name="confirm_delete_all_conversations" msgid="9036166685235092757">"将会删除所有会话。"</string>
     <string name="confirm_delete_message" msgid="9121480656609809591">"将会删除此信息。"</string>
-    <string name="confirm_delete_locked_message" msgid="7203411948190100955">"要删除此锁定的短信吗？"</string>
+    <string name="confirm_delete_locked_message" msgid="7203411948190100955">"要删除锁定的短信吗？"</string>
     <string name="confirm_delete_all_SIM_messages" msgid="8693652297557966665">"系统会删除SIM卡上的所有短信。"</string>
     <string name="confirm_delete_SIM_message" msgid="8535128079045452425">"系统会删除SIM卡上的这条短信。"</string>
     <string name="delete_unlocked" msgid="7545321606698162261">"删除锁定短信"</string>

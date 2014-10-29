@@ -432,7 +432,7 @@
     <!-- Delete message confirmation dialog message -->
     <string name="confirm_delete_message">The message will be deleted.</string>
     <!-- Delete message confirmation dialog message for a locked message -->
-    <string name="confirm_delete_locked_message">Delete this locked message?</string>
+    <string name="confirm_delete_locked_message">Delete locked message?</string>
     <!-- Delete all the messages on the SIM dialog message -->
     <string name="confirm_delete_all_SIM_messages">All messages on the SIM card will be deleted.</string>
     <!-- Delete the selected message on the SIM dialog message -->

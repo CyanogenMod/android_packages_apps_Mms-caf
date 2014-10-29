@@ -5206,6 +5206,7 @@ public class ComposeMessageActivity extends Activity
         // count.
         private int mMmsSelected = 0;
         private int mUnlockedCount = 0;
+        private int mCheckedCount = 0;
 
         private WorkThread mWorkThread;
         public final static int WORK_TOKEN_DELETE = 0;
@@ -5317,23 +5318,13 @@ public class ComposeMessageActivity extends Activity
             calculateSelectedMsgUri();
         }
 
-        private void confirmDeleteDialog(OnClickListener listener) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle(R.string.confirm_dialog_title);
-            builder.setIconAttribute(android.R.attr.alertDialogIcon);
-            builder.setCancelable(true);
-            builder.setPositiveButton(R.string.yes, listener);
-            builder.setNegativeButton(R.string.no, null);
-            builder.setMessage(R.string.confirm_delete_selected_messages);
-            builder.show();
-        }
-
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             logMultiChoice("onCreateActionMode");
             // reset statics
             mMmsSelected = 0;
             mUnlockedCount = 0;
+            mCheckedCount = 0;
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.compose_multi_select_menu, menu);
             if (mMultiSelectActionBarView == null) {
@@ -5442,7 +5433,7 @@ public class ComposeMessageActivity extends Activity
                 forwardMessage();
                 break;
             case R.id.delete:
-                confirmDeleteDialog(new MultiMessagesListener());
+                confirmDeleteDialog(new MultiMessagesListener(), mCheckedCount != mUnlockedCount);
                 break;
             case R.id.copy:
                 copyMessageText();
@@ -5677,12 +5668,12 @@ public class ComposeMessageActivity extends Activity
             logMultiChoice("onItemCheckedStateChanged... position=" + position
                     + ", checked=" + checked);
 
-            final int checkedCount = getListView().getCheckedItemCount();
+            mCheckedCount = getListView().getCheckedItemCount();
             updateStatics(position, checked);
-            customMenuVisibility(mode, checkedCount, position, checked);
+            customMenuVisibility(mode, mCheckedCount, position, checked);
             mSelectionMenu.setTitle(getApplicationContext().getString(
-                    R.string.selected_count, checkedCount));
-            if (getListView().getCount() == checkedCount) {
+                    R.string.selected_count, mCheckedCount));
+            if (getListView().getCount() == mCheckedCount) {
                 mHasSelectAll = true;
             } else {
                 mHasSelectAll = false;
