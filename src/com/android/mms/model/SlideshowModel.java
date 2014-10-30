@@ -292,9 +292,12 @@ public class SlideshowModel extends Model
                 } else if (media.isImage() || media.isVideo() || media.isAudio()
                         || media.isVcard()) {
                     part.setDataUri(media.getUri());
-                    if (media.isVcard()
-                            && !TextUtils.isEmpty(((VcardModel) media).getLookupUri())) {
-                        part.setContentDisposition(((VcardModel) media).getLookupUri().getBytes());
+                    if (media.isVcard()) {
+                        part.setName(src.getBytes());
+                        if (!TextUtils.isEmpty(((VcardModel) media).getLookupUri())) {
+                            part.setContentDisposition(
+                                    ((VcardModel) media).getLookupUri().getBytes());
+                        }
                     }
                 } else {
                     if (media.getUri() != null) {
