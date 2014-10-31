@@ -50,6 +50,7 @@
         android:singleLine="true"
         android:ellipsize="end"
         android:paddingTop="20dip"
+        android:paddingLeft="27.5dip"
         android:paddingBottom="20dip" />
 
     <CheckBox
