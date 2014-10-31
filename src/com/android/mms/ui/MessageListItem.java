@@ -770,19 +770,7 @@ public class MessageListItem extends ZoomMessageListItem implements
                 // Set call-back for the 'Play' button.
                 mSlideShowButton.setOnClickListener(this);
                 mSlideShowButton.setVisibility(View.VISIBLE);
-                setLongClickable(true);
-
-                // When we show the mSlideShowButton, this list item's onItemClickListener doesn't
-                // get called. (It gets set in ComposeMessageActivity:
-                // mMsgListView.setOnItemClickListener) Here we explicitly set the item's
-                // onClickListener. It allows the item to respond to embedded html links and at the
-                // same time, allows the slide show play button to work.
-                setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        onMessageListItemClick();
-                    }
-                });
+                setLongClickable(false);
                 break;
             default:
                 mSlideShowButton.setVisibility(View.GONE);
