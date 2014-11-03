@@ -527,6 +527,7 @@
     <string name="contact_info_text_as_name">姓名：</string>
     <string name="contact_info_text_as_phone">电话：</string>
     <string name="contact_info_text_as_email">电子邮件：</string>
+
     <!-- batch delete message in ConversationList and MailBoxMessageList -->
     <string name="selected_all">全选</string>
     <string name="deselected_all">取消全选</string>

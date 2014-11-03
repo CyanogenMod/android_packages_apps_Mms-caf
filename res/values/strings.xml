@@ -289,6 +289,8 @@
     <string name="duration_zero">Duration must be greater than zero seconds.</string>
     <!-- Dialog box title for display the current mms size  -->
     <string name="title_send_message">Send message</string>
+    <!-- Toast when the subject is full -->
+    <string name="subject_full">Subject full</string>
 
     <!-- In duration selection dialog box, short version of "seconds" -->
     <string name="secs">secs</string>
