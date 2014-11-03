@@ -314,6 +314,8 @@ public class ComposeMessageActivity extends Activity
     private static final int MSG_COPY_TO_SIM_SUCCESS = 2;
 
     private static final int KILOBYTE = 1024;
+    // The max length of characters for subject.
+    private static final int SUBJECT_MAX_LENGTH = MmsConfig.getMaxSubjectLength();
     // The number of buttons in two send button mode
     private static final int NUMBER_OF_BUTTONS = 2;
 
@@ -1996,7 +1998,7 @@ public class ComposeMessageActivity extends Activity
             }
             mSubjectTextEditor = (EditText)findViewById(R.id.subject);
             mSubjectTextEditor.setFilters(new InputFilter[] {
-                    new LengthFilter(MmsConfig.getMaxSubjectLength())});
+                    new LengthFilter(SUBJECT_MAX_LENGTH)});
         }
 
         mSubjectTextEditor.setOnKeyListener(show ? mSubjectKeyListener : null);
@@ -4143,12 +4145,30 @@ public class ComposeMessageActivity extends Activity
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            mWorkingMessage.setSubject(s, true);
-            updateSendButtonState();
+            if (s.toString().getBytes().length <= SUBJECT_MAX_LENGTH) {
+                mWorkingMessage.setSubject(s, true);
+                updateSendButtonState();
+                if (s.toString().getBytes().length == SUBJECT_MAX_LENGTH
+                        && before < SUBJECT_MAX_LENGTH) {
+                    Toast.makeText(ComposeMessageActivity.this,
+                            R.string.subject_full, Toast.LENGTH_SHORT).show();
+                }
+            }
         }
 
         @Override
-        public void afterTextChanged(Editable s) { }
+        public void afterTextChanged(Editable s) {
+            if (s.toString().getBytes().length > SUBJECT_MAX_LENGTH) {
+                String subject = s.toString();
+                Toast.makeText(ComposeMessageActivity.this,
+                        R.string.subject_full, Toast.LENGTH_SHORT).show();
+                while (subject.getBytes().length > SUBJECT_MAX_LENGTH) {
+                    subject = subject.substring(0, subject.length() - 1);
+                }
+                s.clear();
+                s.append(subject);
+            }
+        }
     };
 
     //==========================================================
