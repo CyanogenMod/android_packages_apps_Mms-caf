@@ -330,7 +330,7 @@ public class TransactionService extends Service implements Observer {
         return Service.START_NOT_STICKY;
     }
 
-    private int getSubIdFromDb(Uri uri) {
+    private long[] getSubIdFromDb(Uri uri) {
         int phoneId = 0;
         Cursor c = getApplicationContext().getContentResolver().query(uri,
                 null, null, null, null);
@@ -349,7 +349,13 @@ public class TransactionService extends Service implements Observer {
                 }
             }
         }
-        return phoneId;
+        // If client does not update the DB with phoneId, use default sms
+        // phoneId
+        if (!SubscriptionManager.isValidSlotId(phoneId)) {
+            phoneId = SubscriptionManager.getDefaultSmsPhoneId();
+        }
+        Log.d(TAG, "Destination Phone Id = " + phoneId);
+        return (SubscriptionManager.getSubId(phoneId));
     }
 
     public void onNewIntent(Intent intent, int serviceId) {
@@ -475,17 +481,28 @@ public class TransactionService extends Service implements Observer {
                                         Mms.CONTENT_URI,
                                         cursor.getLong(columnIndexOfMsgId));
 
-                                int destPhoneId = getSubIdFromDb(uri);
-                                long [] subId = SubscriptionManager.getSubId(destPhoneId);
-
+                                long [] subId = getSubIdFromDb(uri);
+                                // subId is null. Bail out.
                                 if (subId == null) {
-                                    Log.e(TAG, "Unable to get Sub Id for Destination Phone id = " +
-                                            destPhoneId);
+                                    Log.e(TAG, "SMS subId is null. Bail out");
                                     return;
                                 }
 
-                                Log.d(TAG, "Destination Phone Id = " + destPhoneId +
-                                        "destination Sub Id = " + subId[0]);
+                                Log.d(TAG, "destination Sub Id = " + subId[0]);
+                                if (subId[0] < 0) {
+                                    Log.d(TAG, "Subscriptions are not yet ready.");
+                                    long defSmsSubId = SubscriptionManager.getDefaultSmsPhoneId();
+                                    // We dont have enough info about subId. We dont know if the
+                                    // phoneId as persent in DB actually would match the subId of
+                                    // defaultSmsSubId. We can not also ignore this transaction
+                                    // since no retry would be scheduled if we return from here. The
+                                    // only option is to do best effort try on current default sms
+                                    // subId, if it failed then a retry would be scheduled and while
+                                    // processing that retry attempt we would be able to get correct
+                                    // subId from subscription manager.
+                                    Log.d(TAG, "Override with default Sms subId = " + defSmsSubId);
+                                    subId[0] = defSmsSubId;
+                                }
 
                                 TransactionBundle args = new TransactionBundle(transactionType,
                                         uri.toString(), subId[0]);
@@ -533,10 +550,19 @@ public class TransactionService extends Service implements Observer {
             String uriStr = intent.getStringExtra("uri");
             Uri uri = Uri.parse(uriStr);
 
-            int destPhoneId = getSubIdFromDb(uri);
-            long [] subId = SubscriptionManager.getSubId(destPhoneId);
-            Log.d(TAG, "Destination Phone Id = " + destPhoneId +
-                    "destination Sub Id = " + subId[0]);
+            long [] subId = getSubIdFromDb(uri);
+            // subId is null. Bail out.
+            if (subId == null) {
+                Log.e(TAG, "SMS subId is null. Bail out");
+                return;
+            }
+
+            Log.d(TAG, "destination Sub Id = " + subId[0]);
+            if (subId[0] < 0) {
+               long defSmsSubId = SubscriptionManager.getDefaultSmsPhoneId();
+                Log.d(TAG, "Override with default Sms subId = " + defSmsSubId);
+                subId[0] = defSmsSubId;
+            }
 
             Bundle bundle = intent.getExtras();
             bundle.putLong(PhoneConstants.SUBSCRIPTION_KEY, subId[0]);
