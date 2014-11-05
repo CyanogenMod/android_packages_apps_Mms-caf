@@ -5500,6 +5500,12 @@ public class ComposeMessageActivity extends Activity
             Toast.makeText(ComposeMessageActivity.this, resId, Toast.LENGTH_SHORT).show();
         }
 
+        private void showReport() {
+            Cursor c = (Cursor) getListView().getAdapter().getItem(
+                    mSelectedPos.get(0));
+            showDeliveryReport(c.getLong(COLUMN_ID), c.getString(COLUMN_MSG_TYPE));
+        }
+
         private void copyMessageText() {
             StringBuilder sBuilder = new StringBuilder();
             for (Integer pos : mSelectedPos) {
@@ -5569,6 +5575,9 @@ public class ComposeMessageActivity extends Activity
                 break;
             case R.id.save_attachment:
                 saveAttachment();
+                break;
+            case R.id.report:
+                showReport();
                 break;
             default:
                 break;
@@ -5725,6 +5734,8 @@ public class ComposeMessageActivity extends Activity
                 mode.getMenu().findItem(R.id.detail).setVisible(false);
                 // no share
                 mode.getMenu().findItem(R.id.share).setVisible(false);
+                // no delivery report
+                mode.getMenu().findItem(R.id.report).setVisible(false);
                 // no save attachment
                 mode.getMenu().findItem(R.id.save_attachment).setVisible(false);
                 // all locked show unlock, other wise show lock.
@@ -5784,6 +5795,27 @@ public class ComposeMessageActivity extends Activity
                     mode.getMenu().findItem(R.id.copy_to_sim).setVisible(true);
                     mode.getMenu().findItem(R.id.copy).setVisible(true);
                 }
+
+                mode.getMenu().findItem(R.id.report).setVisible(isDeliveryReportMsg(position));
+            }
+        }
+
+        private boolean isDeliveryReportMsg(int position) {
+            MessageListItem msglistItem = (MessageListItem) mMsgListView.getChildAt(position);
+            if (msglistItem == null) {
+                return false;
+            }
+
+            MessageItem msgItem = msglistItem.getMessageItem();
+            if (msglistItem == null) {
+                return false;
+            }
+
+            if (msgItem.mDeliveryStatus != MessageItem.DeliveryStatus.NONE ||
+                    msgItem.mReadReport) {
+                return true;
+            } else {
+                return false;
             }
         }
 
