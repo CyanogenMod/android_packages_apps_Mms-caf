@@ -137,11 +137,19 @@ public class RetrieveTransaction extends Transaction implements Runnable {
             // Change the downloading state of the M-Notification.ind.
             downloadManager.markState( mUri, DownloadManager.STATE_DOWNLOADING);
 
-            moveToUnstartedIfCanceled();
+            if (isCancelMyself) {
+                DownloadManager.getInstance().markState(mUri,
+                        DownloadManager.STATE_TRANSIENT_FAILURE);
+                return;
+            }
             // Send GET request to MMSC and retrieve the response data.
             byte[] resp = getPdu(mContentLocation);
 
-            moveToUnstartedIfCanceled();
+            if (isCancelMyself) {
+                DownloadManager.getInstance().markState(mUri,
+                        DownloadManager.STATE_TRANSIENT_FAILURE);
+                return;
+            }
 
             // Parse M-Retrieve.conf
             RetrieveConf retrieveConf = (RetrieveConf) new PduParser(resp).parse();
@@ -323,13 +331,6 @@ public class RetrieveTransaction extends Transaction implements Runnable {
         values.put(Mms.LOCKED, locked);     // preserve the state of the M-Notification.ind lock.
         SqliteWrapper.update(context, context.getContentResolver(),
                              uri, values, null, null);
-    }
-
-    private void moveToUnstartedIfCanceled(){
-        if (isCancelMyself) {
-            DownloadManager.getInstance().markState(mUri, DownloadManager.STATE_UNSTARTED);
-            return;
-        }
     }
 
     @Override
