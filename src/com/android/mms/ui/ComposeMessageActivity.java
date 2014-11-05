@@ -5853,7 +5853,9 @@ public class ComposeMessageActivity extends Activity
                 // no detail
                 menu.findItem(R.id.detail).setVisible(false);
                 // no share
-                menu.findItem(R.id.share).setVisible(false);
+                mode.getMenu().findItem(R.id.share).setVisible(false);
+                // no delivery report
+                mode.getMenu().findItem(R.id.report).setVisible(false);
                 // no save attachment
                 menu.findItem(R.id.save_attachment).setVisible(false);
 
@@ -5870,7 +5872,50 @@ public class ComposeMessageActivity extends Activity
                         shareIntent, getPackageName());
                 menu.findItem(R.id.share).setVisible(noMmsSelected && numShareTargets > 0);
 
-                menu.findItem(R.id.forward).setVisible(true);
+                if (mUnlockedCount == 0) {
+                    mode.getMenu()
+                            .findItem(R.id.lock)
+                            .setTitle(
+                                    getContext()
+                                            .getString(R.string.menu_unlock));
+                } else {
+                    mode.getMenu()
+                            .findItem(R.id.lock)
+                            .setTitle(
+                                    getContext().getString(R.string.menu_lock));
+                }
+
+                mode.getMenu().findItem(R.id.forward).setVisible(true);
+                if (mMmsSelected > 0) {
+                    mode.getMenu().findItem(R.id.copy_to_sim).setVisible(false);
+                    mode.getMenu().findItem(R.id.copy).setVisible(false);
+                    mode.getMenu().findItem(R.id.save_attachment)
+                            .setVisible(isAttachmentSaveable(pos));
+                } else {
+                    mode.getMenu().findItem(R.id.copy_to_sim).setVisible(true);
+                    mode.getMenu().findItem(R.id.copy).setVisible(true);
+                }
+
+                mode.getMenu().findItem(R.id.report).setVisible(isDeliveryReportMsg(position));
+            }
+        }
+
+        private boolean isDeliveryReportMsg(int position) {
+            MessageListItem msglistItem = (MessageListItem) mMsgListView.getChildAt(position);
+            if (msglistItem == null) {
+                return false;
+            }
+
+            MessageItem msgItem = msglistItem.getMessageItem();
+            if (msglistItem == null) {
+                return false;
+            }
+
+            if (msgItem.mDeliveryStatus != MessageItem.DeliveryStatus.NONE ||
+                    msgItem.mReadReport) {
+                return true;
+            } else {
+                return false;
             }
         }
 
