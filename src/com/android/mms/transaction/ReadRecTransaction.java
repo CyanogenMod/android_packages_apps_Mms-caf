@@ -113,6 +113,15 @@ public class ReadRecTransaction extends Transaction implements Runnable{
     }
 
     @Override
+    public void abort() {
+        Log.d(TAG, "markFailed = " + this);
+        mTransactionState.setState(TransactionState.FAILED);
+        mTransactionState.setContentUri(mReadReportURI);
+
+        notifyObservers();
+    }
+
+    @Override
     public int getType() {
         return READREC_TRANSACTION;
     }

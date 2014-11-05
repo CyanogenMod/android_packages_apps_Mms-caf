@@ -46,6 +46,7 @@ public abstract class Observable {
      * @param observer The observer object to be attached to.
      */
     public void attach(Observer observer) {
+        detach(observer);
         mObservers.add(observer);
     }
 
