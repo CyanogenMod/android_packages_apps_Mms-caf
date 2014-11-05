@@ -247,6 +247,8 @@ public abstract class Transaction extends Observable {
     public void cancelTransaction(Uri uri) {
     }
 
+    public abstract void abort();
+
     @Override
     public String toString() {
         return getClass().getName() + ": serviceId=" + mServiceId + " subId= " + mSubId;
