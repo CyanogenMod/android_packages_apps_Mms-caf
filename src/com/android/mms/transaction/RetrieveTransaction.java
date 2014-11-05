@@ -318,6 +318,15 @@ public class RetrieveTransaction extends Transaction implements Runnable {
     }
 
     @Override
+    public void abort() {
+        Log.d(TAG, "markFailed = " + this);
+        DownloadManager downloadManager = DownloadManager.getInstance();
+
+        downloadManager.markState(mUri, DownloadManager.STATE_SKIP_RETRYING);
+        notifyObservers();
+    }
+
+    @Override
     public int getType() {
         return RETRIEVE_TRANSACTION;
     }
