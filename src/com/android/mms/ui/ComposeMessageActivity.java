@@ -5199,7 +5199,6 @@ public class ComposeMessageActivity extends Activity
         private View mMultiSelectActionBarView;
         private TextView mSelectedConvCount;
         private ImageView mSelectedAll;
-        private boolean mHasSelectAll = false;
         // build action bar with a spinner
         private SelectionMenu mSelectionMenu;
         // need define variable to keep info of mms count, lock count, unlock
@@ -5339,10 +5338,10 @@ public class ComposeMessageActivity extends Activity
                         @Override
                         public boolean onPopupItemClick(int itemId) {
                             if (itemId == SelectionMenu.SELECT_OR_DESELECT) {
-                                checkAll(!mHasSelectAll);
-                                mHasSelectAll = !mHasSelectAll;
-                                mSelectionMenu
-                                        .updateSelectAllMode(mHasSelectAll);
+                                boolean selectAll = getListView().getCheckedItemCount() <
+                                        getListView().getCount() ? true : false;
+                                checkAll(selectAll);
+                                mSelectionMenu.updateSelectAllMode(selectAll);
                             }
                             return true;
                         }
@@ -5705,12 +5704,8 @@ public class ComposeMessageActivity extends Activity
             customMenuVisibility(mode, mCheckedCount, position, checked);
             mSelectionMenu.setTitle(getApplicationContext().getString(
                     R.string.selected_count, mCheckedCount));
-            if (getListView().getCount() == mCheckedCount) {
-                mHasSelectAll = true;
-            } else {
-                mHasSelectAll = false;
-            }
-            mSelectionMenu.updateSelectAllMode(mHasSelectAll);
+            mSelectionMenu.updateSelectAllMode(getListView().getCount() == mCheckedCount);
+
         }
     }
 }
