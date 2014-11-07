@@ -320,7 +320,7 @@ public class TransactionService extends Service implements Observer {
         return Service.START_NOT_STICKY;
     }
 
-    private int getSubIdFromDb(Uri uri) {
+    private long[] getSubIdFromDb(Uri uri) {
         int phoneId = 0;
         Cursor c = getApplicationContext().getContentResolver().query(uri,
                 null, null, null, null);
@@ -339,7 +339,13 @@ public class TransactionService extends Service implements Observer {
                 }
             }
         }
-        return phoneId;
+        // If client does not update the DB with phoneId, use default sms
+        // phoneId
+        if (!SubscriptionManager.isValidSlotId(phoneId)) {
+            phoneId = SubscriptionManager.getDefaultSmsPhoneId();
+        }
+        Log.d(TAG, "Destination Phone Id = " + phoneId);
+        return (SubscriptionManager.getSubId(phoneId));
     }
 
     private boolean isMmsAllowed() {
@@ -481,11 +487,14 @@ public class TransactionService extends Service implements Observer {
                                         Mms.CONTENT_URI,
                                         cursor.getLong(columnIndexOfMsgId));
 
-                                int destPhoneId = getSubIdFromDb(uri);
-                                long [] subId = SubscriptionManager.getSubId(destPhoneId);
-                                Log.d(TAG, "Destination Phone Id = " + destPhoneId +
-                                        "destination Sub Id = " + subId[0]);
+                                long [] subId = getSubIdFromDb(uri);
+                                // subId is null. Bail out.
+                                if (subId == null) {
+                                    Log.e(TAG, "SMS subId is null. Bail out");
+                                    return;
+                                }
 
+                                Log.d(TAG, "destination Sub Id = " + subId[0]);
                                 if (subId[0] < 0) {
                                     Log.d(TAG, "Subscriptions are not yet ready.");
                                     long defSmsSubId = getDefaultSmsSubId();
@@ -530,11 +539,14 @@ public class TransactionService extends Service implements Observer {
             String uriStr = intent.getStringExtra("uri");
             Uri uri = Uri.parse(uriStr);
 
-            int destPhoneId = getSubIdFromDb(uri);
-            long [] subId = SubscriptionManager.getSubId(destPhoneId);
-            Log.d(TAG, "Destination Phone Id = " + destPhoneId +
-                    "destination Sub Id = " + subId[0]);
+            long [] subId = getSubIdFromDb(uri);
+            // subId is null. Bail out.
+            if (subId == null) {
+                Log.e(TAG, "SMS subId is null. Bail out");
+                return;
+            }
 
+            Log.d(TAG, "destination Sub Id = " + subId[0]);
             if (subId[0] < 0) {
                long defSmsSubId = getDefaultSmsSubId();
                 Log.d(TAG, "Override with default Sms subId = " + defSmsSubId);
