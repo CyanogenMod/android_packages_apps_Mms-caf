@@ -412,7 +412,7 @@ public class MessageListItem extends ZoomMessageListItem implements
     private void updateAvatarView(String addr, boolean isSelf) {
         Drawable avatarDrawable;
         if (isSelf || !TextUtils.isEmpty(addr)) {
-            Contact contact = isSelf ? Contact.getMe(false) : Contact.get(addr, false);
+            Contact contact = isSelf ? Contact.getMe(false) : Contact.get(addr, true);
             avatarDrawable = contact.getAvatar(mContext, sDefaultContactImage);
 
             if (isSelf) {
