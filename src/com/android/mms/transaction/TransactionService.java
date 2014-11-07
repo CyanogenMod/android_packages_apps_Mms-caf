@@ -1079,6 +1079,7 @@ public class TransactionService extends Service implements Observer {
             synchronized (mProcessing) {
                 while (mPending.size() != 0) {
                     Transaction transaction = mPending.remove(0);
+                    transaction.mTransactionState.setState(TransactionState.FAILED);
                     if (transaction instanceof SendTransaction) {
                         Uri uri = ((SendTransaction)transaction).mSendReqURI;
                         transaction.mTransactionState.setContentUri(uri);
