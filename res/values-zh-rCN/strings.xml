@@ -466,6 +466,7 @@
     <string name="search_as_name">姓名</string>
     <string name="search_as_number">号码</string>
     <string name="search_as_content">内容</string>
+    <string name="search_as_subject">主题</string>
     <string name="invalid_name_toast">请输入有效的姓名！</string>
 
     <!-- Settings item description for Mms Validity period -->
