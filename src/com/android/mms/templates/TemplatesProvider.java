@@ -12,9 +12,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
+import android.database.sqlite.SQLiteStatement;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
+
+import com.android.mms.R;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class TemplatesProvider extends ContentProvider {
 
@@ -24,7 +30,7 @@ public class TemplatesProvider extends ContentProvider {
 
     private static final String TABLE_NAME = "message_template";
 
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
 
     private static final int TEMPLATES = 1;
 
@@ -150,13 +156,37 @@ public class TemplatesProvider extends ContentProvider {
         @Override
         public void onCreate(SQLiteDatabase db) {
             db.execSQL(TEMPLATE_TABLE_CREATE);
+            loadSettings(db);
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+            for (int nextVersion = oldVersion + 1; nextVersion <= newVersion; nextVersion++) {
+                switch (nextVersion) {
+                    case 1: /* no-op, initial version */
+                        break;
+                    case 2:
+                        loadSettings(db);
+                        break;
+                    default: /* unsupported version! */
+                        throw new IllegalStateException("Attempting upgrade to unsupported version: " + nextVersion);
+                }
+            }
         }
 
+        private void loadSettings(SQLiteDatabase db) {
+            SQLiteStatement stmt = null;
+            // Insert default sms message templates, usually from an overlay
+            List<String> templates = Arrays.asList(getContext().getResources()
+                    .getStringArray(R.array.default_message_templates));
+            if (!templates.isEmpty()) {
+                for (String template : templates) {
+                    ContentValues values = new ContentValues();
+                    values.put(Template.TEXT, template);
+                    db.insertWithOnConflict(TABLE_NAME, null, values,
+                            SQLiteDatabase.CONFLICT_IGNORE);
+                }
+            }
+        }
     }
-
 }

@@ -154,4 +154,7 @@
         <item>Smirk</item>                   <!-- 19: :-/ -->
         <item>Poker face</item>              <!-- 20: :-I -->
     </string-array>
+
+    <!-- Overlay initial message templates -->
+    <string-array name="default_message_templates"></string-array>
 </resources>
