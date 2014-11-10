@@ -969,6 +969,7 @@
     <string name="search_as_name">Name</string>
     <string name="search_as_number">Number</string>
     <string name="search_as_content">Content</string>
+    <string name="search_as_subject">Subject</string>
     <string name="invalid_name_toast">Please input valid name!</string>
 
     <string name="sim_capacity_title">SIM Capacity</string>
