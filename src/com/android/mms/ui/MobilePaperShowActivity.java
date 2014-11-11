@@ -282,15 +282,12 @@ public class MobilePaperShowActivity extends Activity {
                         case MotionEvent.ACTION_MOVE: {
                             int x2 = (int) ev.getRawX();
                             int y2 = (int) ev.getRawY();
-                            // To ensure that no conflict between zoom and scroll
-                            if (!mOnScale) {
-                                mScrollViewPort.scrollBy(currentX - x2, currentY - y2);
-                            }
                             currentX = x2;
                             currentY = y2;
                             break;
                         }
                     }
+                    super.onTouchEvent(ev);
                     return true;
                 }
 
@@ -307,15 +304,12 @@ public class MobilePaperShowActivity extends Activity {
                         case MotionEvent.ACTION_MOVE: {
                             int x2 = (int) ev.getRawX();
                             int y2 = (int) ev.getRawY();
-                            // To ensure that no conflict between zoom and scroll
-                            if (!mOnScale) {
-                                mScrollViewPort.scrollBy(currentX - x2, currentY - y2);
-                            }
                             currentX = x2;
                             currentY = y2;
                             break;
                         }
                     }
+                    super.onInterceptTouchEvent(ev);
                     return false;
                 }
             };
