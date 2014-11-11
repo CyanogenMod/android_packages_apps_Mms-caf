@@ -228,7 +228,6 @@ public class ComposeMessageActivity extends Activity
     private static final int MENU_DEBUG_DUMP            = 7;
     private static final int MENU_SEND_BY_SLOT1         = 9;
     private static final int MENU_SEND_BY_SLOT2         = 10;
-    private static final int MENU_FORWARD_CONVERSATION  = 11;
 
     // Context menu ID
     private static final int MENU_VIEW_CONTACT          = 12;
@@ -2897,10 +2896,6 @@ public class ComposeMessageActivity extends Activity
             if ((null != cursor) && (cursor.getCount() > 0)) {
                 menu.add(0, MENU_DELETE_THREAD, 0, R.string.delete_thread).setIcon(
                     android.R.drawable.ic_menu_delete);
-                if (getResources().getBoolean(R.bool.config_forwardconv)
-                        && mMsgListAdapter.hasSmsInConversation(cursor)) {
-                    menu.add(0, MENU_FORWARD_CONVERSATION, 0, R.string.menu_forward_conversation);
-                }
             }
         } else if (mIsSmsEnabled) {
             menu.add(0, MENU_DISCARD, 0, R.string.discard).setIcon(android.R.drawable.ic_menu_delete);
@@ -2989,13 +2984,6 @@ public class ComposeMessageActivity extends Activity
             case MENU_CALL_RECIPIENT:
                 dialRecipient();
                 break;
-            case MENU_FORWARD_CONVERSATION: {
-                Intent intent = new Intent(this, ManageMultiSelectAction.class);
-                intent.putExtra(MANAGE_MODE, MessageUtils.FORWARD_MODE);
-                intent.putExtra(THREAD_ID, mConversation.getThreadId());
-                startActivity(intent);
-                break;
-            }
             case MENU_IMPORT_TEMPLATE:
                 showDialog(DIALOG_IMPORT_TEMPLATE);
                 break;
@@ -5479,6 +5467,10 @@ public class ComposeMessageActivity extends Activity
                     body.append(LINE_BREAK);
                 }
                 body.append(msgItem.mBody);
+                if (!TextUtils.isEmpty(msgItem.mTimestamp)) {
+                    body.append(LINE_BREAK);
+                    body.append(msgItem.mTimestamp);
+                }
             }
             return body.toString();
         }
@@ -5639,7 +5631,9 @@ public class ComposeMessageActivity extends Activity
                     mode.getMenu().findItem(R.id.copy_to_sim).setVisible(false);
                     mode.getMenu().findItem(R.id.copy).setVisible(false);
                 } else {
-                    mode.getMenu().findItem(R.id.forward).setVisible(true);
+                    if (getResources().getBoolean(R.bool.config_forwardconv)) {
+                        mode.getMenu().findItem(R.id.forward).setVisible(true);
+                    }
                     mode.getMenu().findItem(R.id.copy_to_sim).setVisible(true);
                     mode.getMenu().findItem(R.id.copy).setVisible(true);
                 }
@@ -5659,7 +5653,8 @@ public class ComposeMessageActivity extends Activity
                                     getContext().getString(R.string.menu_lock));
                 }
 
-                mode.getMenu().findItem(R.id.forward).setVisible(true);
+                mode.getMenu().findItem(R.id.forward).setVisible(isMessageForwardable(position));
+
                 if (mMmsSelected > 0) {
                     mode.getMenu().findItem(R.id.copy_to_sim).setVisible(false);
                     mode.getMenu().findItem(R.id.copy).setVisible(false);
@@ -5675,14 +5670,17 @@ public class ComposeMessageActivity extends Activity
             }
         }
 
-        private boolean isDeliveryReportMsg(int position) {
+        private MessageItem getMessageItemByPos(int position) {
             MessageListItem msglistItem = (MessageListItem) mMsgListView.getChildAt(position);
             if (msglistItem == null) {
-                return false;
+                return null;
             }
+            return  msglistItem.getMessageItem();
+        }
 
-            MessageItem msgItem = msglistItem.getMessageItem();
-            if (msglistItem == null) {
+        private boolean isDeliveryReportMsg(int position) {
+            MessageItem msgItem = getMessageItemByPos(position);
+            if (msgItem == null) {
                 return false;
             }
 
@@ -5692,6 +5690,15 @@ public class ComposeMessageActivity extends Activity
             } else {
                 return false;
             }
+        }
+
+        private boolean isMessageForwardable(int position) {
+            MessageItem msgItem = getMessageItemByPos(position);
+            if (msgItem == null) {
+                return false;
+            }
+
+            return msgItem.isSms() || (msgItem.isDownloaded() && msgItem.mIsForwardable);
         }
 
         @Override
