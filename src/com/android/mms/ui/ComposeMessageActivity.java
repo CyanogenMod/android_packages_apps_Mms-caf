@@ -5857,9 +5857,31 @@ public class ComposeMessageActivity extends Activity
                 // no delivery report
                 mode.getMenu().findItem(R.id.report).setVisible(false);
                 // no save attachment
-                menu.findItem(R.id.save_attachment).setVisible(false);
-
-                menu.findItem(R.id.forward).setVisible(noMmsSelected);
+                mode.getMenu().findItem(R.id.save_attachment).setVisible(false);
+                // all locked show unlock, other wise show lock.
+                if (mUnlockedCount == 0) {
+                    mode.getMenu()
+                            .findItem(R.id.lock)
+                            .setTitle(
+                                    getContext()
+                                            .getString(R.string.menu_unlock));
+                } else {
+                    mode.getMenu()
+                            .findItem(R.id.lock)
+                            .setTitle(
+                                    getContext().getString(R.string.menu_lock));
+                }
+                if (mMmsSelected > 0) {
+                    mode.getMenu().findItem(R.id.forward).setVisible(false);
+                    mode.getMenu().findItem(R.id.copy_to_sim).setVisible(false);
+                    mode.getMenu().findItem(R.id.copy).setVisible(false);
+                } else {
+                    if (getResources().getBoolean(R.bool.config_forwardconv)) {
+                        mode.getMenu().findItem(R.id.forward).setVisible(true);
+                    }
+                    mode.getMenu().findItem(R.id.copy_to_sim).setVisible(true);
+                    mode.getMenu().findItem(R.id.copy).setVisible(true);
+                }
             } else {
                 int pos = checked ? position : mMsgListView.getCheckedPosition();
 
@@ -5885,7 +5907,8 @@ public class ComposeMessageActivity extends Activity
                                     getContext().getString(R.string.menu_lock));
                 }
 
-                mode.getMenu().findItem(R.id.forward).setVisible(true);
+                mode.getMenu().findItem(R.id.forward).setVisible(isMessageForwardable(position));
+
                 if (mMmsSelected > 0) {
                     mode.getMenu().findItem(R.id.copy_to_sim).setVisible(false);
                     mode.getMenu().findItem(R.id.copy).setVisible(false);
@@ -5897,25 +5920,6 @@ public class ComposeMessageActivity extends Activity
                 }
 
                 mode.getMenu().findItem(R.id.report).setVisible(isDeliveryReportMsg(position));
-            }
-        }
-
-        private boolean isDeliveryReportMsg(int position) {
-            MessageListItem msglistItem = (MessageListItem) mMsgListView.getChildAt(position);
-            if (msglistItem == null) {
-                return false;
-            }
-
-            MessageItem msgItem = msglistItem.getMessageItem();
-            if (msglistItem == null) {
-                return false;
-            }
-
-            if (msgItem.mDeliveryStatus != MessageItem.DeliveryStatus.NONE ||
-                    msgItem.mReadReport) {
-                return true;
-            } else {
-                return false;
             }
         }
 
@@ -5948,14 +5952,6 @@ public class ComposeMessageActivity extends Activity
             }
 
             return msgItem.isSms() || (msgItem.isDownloaded() && msgItem.mIsForwardable);
-        }
-
-        private boolean isFailedMessage(int position) {
-            MessageItem msgItem = getMessageItemByPos(position);
-            if (msgItem == null) {
-                return false;
-            }
-            return msgItem.isFailedMessage();
         }
 
         @Override
