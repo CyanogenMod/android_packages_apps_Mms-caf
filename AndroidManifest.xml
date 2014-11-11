@@ -287,12 +287,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.ManageMultiSelectAction"
-              android:theme="@style/MmsTheme"
-              android:uiOptions="splitActionBarWhenNarrow"
-              android:configChanges="orientation|screenSize|keyboardHidden">
-        </activity>
-
         <!-- Require sender permissions to prevent SMS spoofing -->
         <receiver android:name=".transaction.PrivilegedSmsReceiver"
             android:permission="android.permission.BROADCAST_SMS">
