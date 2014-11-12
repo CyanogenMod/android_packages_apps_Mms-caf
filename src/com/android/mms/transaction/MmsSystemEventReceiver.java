@@ -24,8 +24,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.Telephony.Mms;
+import android.telephony.SubscriptionManager;
 import android.util.Log;
 
+import com.android.internal.telephony.PhoneConstants;
+import com.android.internal.telephony.TelephonyIntents;
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
 
@@ -99,6 +102,18 @@ public class MmsSystemEventReceiver extends BroadcastReceiver {
             // Scan and send pending Mms once after boot completed since
             // ACTION_ANY_DATA_CONNECTION_STATE_CHANGED wasn't registered in a whole life cycle
             wakeUpService(context);
+        } else if (action.equals(TelephonyIntents.ACTION_SUBSCRIPTION_SET_UICC_RESULT)) {
+
+            int status = intent.getIntExtra(TelephonyIntents.EXTRA_RESULT, PhoneConstants.FAILURE);
+            int state = intent.getIntExtra(TelephonyIntents.EXTRA_NEW_SUB_STATE,
+                    SubscriptionManager.INACTIVE);
+            int phoneId = intent.getIntExtra(PhoneConstants.PHONE_KEY, PhoneConstants.PHONE_ID1);
+            Log.d(TAG, "ACTION_SUBSCRIPTION_SET_UICC_RESULT status = " + status + ", state = "
+                    + state + " phoneId: " + phoneId);
+            // Scan and send pending Mms if subscription is activated
+            if (status == PhoneConstants.SUCCESS && state == SubscriptionManager.ACTIVE) {
+                wakeUpService(context);
+            }
         }
     }
 }
