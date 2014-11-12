@@ -282,6 +282,7 @@ public class TransactionService extends Service implements Observer {
         @Override
         public void handleMessage(Message msg) {
             String str = null;
+            boolean showRetryToast = getResources().getBoolean(R.bool.config_mms_retry_toast);
 
             if (msg.what == TOAST_MSG_QUEUED) {
                 str = getString(R.string.message_queued);
@@ -289,9 +290,9 @@ public class TransactionService extends Service implements Observer {
                 str = getString(R.string.download_later);
             } else if (msg.what == TOAST_NO_APN) {
                 str = getString(R.string.no_apn);
-            } else if (msg.what == TOAST_SEND_FAILED_RETRY) {
+            } else if (msg.what == TOAST_SEND_FAILED_RETRY && showRetryToast) {
                 str = getString(R.string.send_failed_retry);
-            } else if (msg.what == TOAST_DOWNLOAD_FAILED_RETRY) {
+            } else if (msg.what == TOAST_DOWNLOAD_FAILED_RETRY && showRetryToast) {
                 str = getString(R.string.download_failed_retry);
             }
 

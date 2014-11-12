@@ -101,4 +101,7 @@
         <item>600000</item>
         <item>1800000</item>
     </integer-array>
+
+    <!-- configuration for error toast during retry -->
+    <bool name="config_mms_retry_toast">false</bool>
 </resources>
