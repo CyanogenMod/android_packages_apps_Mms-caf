@@ -200,6 +200,17 @@ public class MessageListItem extends LinearLayout implements
         }
     }
 
+    private void updateBodyTextView() {
+        if (mMessageItem.isMms() && mMessageItem.mLayoutType == LayoutModel.LAYOUT_TOP_TEXT) {
+            mBodyButtomTextView.setVisibility(View.GONE);
+            mBodyTextView = mBodyTopTextView;
+        } else {
+            mBodyTopTextView.setVisibility(View.GONE);
+            mBodyTextView = mBodyButtomTextView;
+        }
+        mBodyTextView.setVisibility(View.VISIBLE);
+    }
+
     public void bind(MessageItem msgItem, boolean convHasMultiRecipients, int position) {
         if (DEBUG) {
             Log.v(TAG, "bind for item: " + position + " old: " +
@@ -208,12 +219,9 @@ public class MessageListItem extends LinearLayout implements
         }
         boolean sameItem = mMessageItem != null && mMessageItem.mMsgId == msgItem.mMsgId;
         mMessageItem = msgItem;
-        if (mMessageItem.isMms() && mMessageItem.mLayoutType == LayoutModel.LAYOUT_TOP_TEXT) {
-            mBodyTextView = mBodyTopTextView;
-        } else {
-            mBodyTextView = mBodyButtomTextView;
-        }
-        mBodyTextView.setVisibility(View.VISIBLE);
+
+        updateBodyTextView();
+
         mPosition = position;
         mMultiRecipients = convHasMultiRecipients;
 
@@ -441,6 +449,8 @@ public class MessageListItem extends LinearLayout implements
             boolean isSelf = Sms.isOutgoingFolder(mMessageItem.mBoxId);
             String addr = isSelf ? null : mMessageItem.mAddress;
             updateAvatarView(addr, isSelf);
+            //After pdu loaded, update the text view according to the slide-layout setting.
+            updateBodyTextView();
         }
 
         // Add SIM sms address above body.
