@@ -412,6 +412,8 @@ public class SmsReceiverService extends Service {
                             this, address, sms.getDisplayMessageBody(),
                             SubscriptionManager.getPhoneId(subId),
                             sms.getTimestampMillis());
+                    getContentResolver().notifyChange(MessageUtils.getIccUriBySubscription(
+                            SubscriptionManager.getPhoneId(subId)), null);
                 } else {
                     mToastHandler.post(new Runnable() {
                         public void run() {
