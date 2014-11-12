@@ -216,6 +216,9 @@
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="org.codeaurora.intent.action.ACTION_SUBSCRIPTION_SET_UICC_RESULT" />
+            </intent-filter>
         </receiver>
 
         <activity android:name=".ui.ManageSimMessages"
