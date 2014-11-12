@@ -596,7 +596,7 @@ public class MessageListItem extends LinearLayout implements
                 intent.putExtra(CANCEL_URI, mMessageItem.mMessageUri.toString());
                 mContext.startService(intent);
                 DownloadManager.getInstance().markState(mMessageItem.mMessageUri,
-                        DownloadManager.STATE_UNSTARTED);
+                        DownloadManager.STATE_TRANSIENT_FAILURE);
             }
         }
     };
