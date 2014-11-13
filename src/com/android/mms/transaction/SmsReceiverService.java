@@ -65,6 +65,7 @@ import com.android.mms.data.Contact;
 import com.android.mms.data.Conversation;
 import com.android.mms.ui.ClassZeroActivity;
 import com.android.mms.ui.MessageUtils;
+import com.android.mms.ui.MessagingPreferenceActivity;
 import com.android.mms.util.Recycler;
 import com.android.mms.util.SendingProgressTokenManager;
 import com.android.mms.widget.MmsWidgetProvider;
@@ -116,6 +117,12 @@ public class SmsReceiverService extends Service {
     private static final int SEND_COLUMN_PHONE_ID   = 5;
     private static final int SEND_COLUMN_PRIORITY   = 6;
 
+    // SMS sending delay
+    private static Uri sCurrentSendingUri = Uri.EMPTY;
+    public static final String ACTION_SEND_COUNTDOWN ="com.android.mms.transaction.SEND_COUNTDOWN";
+    public static final String DATA_COUNTDOWN = "DATA_COUNTDOWN";
+    public static final String DATA_MESSAGE_URI = "DATA_MESSAGE_URI";
+    private static final long TIMER_DURATION = 1000;
 
     @Override
     public void onCreate() {
@@ -232,6 +239,14 @@ public class SmsReceiverService extends Service {
         }
     }
 
+    public static void cancelSendingMessage(Uri messageUri) {
+        synchronized (sCurrentSendingUri) {
+            if (sCurrentSendingUri.equals(messageUri)) {
+                sCurrentSendingUri.notifyAll();
+            }
+        }
+    }
+
     private void handleServiceStateChanged(Intent intent) {
         // If service just returned, start sending out the queued messages
         ServiceState serviceState = ServiceState.newFromBundle(intent.getExtras());
@@ -251,6 +266,57 @@ public class SmsReceiverService extends Service {
             sendFirstQueuedMessage();
         }
     }
+
+        private boolean maybeDelaySendingAndCheckForCancel(Uri msgUri) {
+            long sendDelay = MessagingPreferenceActivity.getMessageSendDelayDuration(
+                    getApplicationContext());
+            if (sendDelay <= 0) {
+                return false;
+            }
+
+            boolean oldSending = mSending;
+            boolean sendingCancelled = false;
+
+            try {
+                sCurrentSendingUri = msgUri;
+                mSending = true;
+
+                int countDown = (int) sendDelay / 1000;
+                while (countDown >= 0 && !sendingCancelled) {
+                    Intent intent = new Intent(SmsReceiverService.ACTION_SEND_COUNTDOWN);
+                    intent.putExtra(DATA_COUNTDOWN, countDown);
+                    intent.putExtra(DATA_MESSAGE_URI, msgUri);
+                    sendBroadcast(intent);
+
+                    if (countDown > 0) {
+                        long start = System.currentTimeMillis();
+                        synchronized (sCurrentSendingUri) {
+                            sCurrentSendingUri.wait(SmsReceiverService.TIMER_DURATION);
+                        }
+                        long end = System.currentTimeMillis();
+                        if (end - start < SmsReceiverService.TIMER_DURATION) {
+                            sendingCancelled = true;
+                        }
+                        Log.d(TAG, "Delayed send: wait returned after " + (end - start) + " ms");
+                    }
+                    countDown--;
+                }
+            } catch (InterruptedException e) {
+                Log.d(TAG, "sendFirstQueuedMessage: user cancelled sending " + msgUri);
+                sendingCancelled = true;
+            } finally {
+                sCurrentSendingUri = Uri.EMPTY;
+            }
+
+            mSending = oldSending && !sendingCancelled;
+            if (sendingCancelled) {
+                messageFailedToSend(msgUri, SmsManager.RESULT_ERROR_GENERIC_FAILURE);
+                unRegisterForServiceStateChanges();
+                return true;
+            }
+
+            return false;
+        }
 
     private void handleSendInactiveMessage() {
         // Inactive messages includes all messages in outbox and queued box.
@@ -279,6 +345,10 @@ public class SmsReceiverService extends Service {
                     int phoneId = c.getInt(SEND_COLUMN_PHONE_ID);
                     int priority = c.getInt(SEND_COLUMN_PRIORITY);
                     Uri msgUri = ContentUris.withAppendedId(Sms.CONTENT_URI, msgId);
+
+                    if (maybeDelaySendingAndCheckForCancel(msgUri)) {
+                        return;
+                    }
 
                     SmsMessageSender sender = new SmsSingleRecipientSender(this,
                             address, msgText, threadId, status == Sms.STATUS_PENDING,
