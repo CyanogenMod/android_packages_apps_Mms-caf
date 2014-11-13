@@ -77,6 +77,7 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import com.android.internal.telephony.PhoneConstants;
+import com.android.internal.telephony.util.BlacklistUtils;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.data.Contact;
@@ -112,11 +113,6 @@ public class QuickMessagePopup extends Activity {
     public static final String QR_SHOW_KEYBOARD_EXTRA =
             "com.android.mms.QR_SHOW_KEYBOARD";
 
-    // Templates support
-    private static final int DIALOG_TEMPLATE_SELECT        = 1;
-    private static final int DIALOG_TEMPLATE_NOT_AVAILABLE = 2;
-    private SimpleCursorAdapter mTemplatesCursorAdapter;
-
     // View items
     private ImageView mQmPagerArrow;
     private TextView mQmMessageCounter;
@@ -145,14 +141,7 @@ public class QuickMessagePopup extends Activity {
     private MessagePagerAdapter mPagerAdapter;
 
     // Options menu items
-    private static final int MENU_INSERT_SMILEY = 1;
-    private static final int MENU_INSERT_EMOJI = 3;
-    private static final int MENU_ADD_TEMPLATE = 2;
-
-    // Smiley and Emoji support
-    private AlertDialog mSmileyDialog;
-    private AlertDialog mEmojiDialog;
-    private View mEmojiView;
+    private static final int MENU_ADD_TO_BLACKLIST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -333,9 +322,62 @@ public class QuickMessagePopup extends Activity {
         }
     }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        menu.clear();
+
+        // Add to Blacklist item (if enabled)
+        if (BlacklistUtils.isBlacklistEnabled(this)) {
+            menu.add(0, MENU_ADD_TO_BLACKLIST, 0, R.string.add_to_blacklist)
+                    .setIcon(R.drawable.ic_block_message_holo_dark)
+                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case MENU_ADD_TO_BLACKLIST:
+                confirmAddBlacklist();
+                return true;
+
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
     //==========================================================
     // Utility methods
     //==========================================================
+
+    /**
+     * Copied from ComposeMessageActivity.java, this method displays a pop-up a dialog confirming
+     * adding the current senders number to the blacklist
+     */
+    private void confirmAddBlacklist() {
+        // Get the sender number
+        final String number = mCurrentQm.getFromNumber()[0];
+        if (number == null) {
+            return;
+        }
+
+        // Show dialog
+        final String message = getString(R.string.add_to_blacklist_message, number);
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.add_to_blacklist)
+                .setMessage(message)
+                .setPositiveButton(R.string.alert_dialog_yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        BlacklistUtils.addOrUpdate(getApplicationContext(), number,
+                                BlacklistUtils.BLOCK_MESSAGES, BlacklistUtils.BLOCK_MESSAGES);
+                    }
+                })
+                .setNegativeButton(R.string.alert_dialog_no, null)
+                .show();
+    }
 
     /**
      * This method dismisses the on screen keyboard if it is visible for the supplied qm
