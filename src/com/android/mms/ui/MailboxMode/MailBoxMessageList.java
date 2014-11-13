@@ -73,14 +73,15 @@ import android.view.ViewGroup;
 import android.widget.Toolbar;
 
 import com.android.mms.data.Contact;
+import com.android.mms.data.Conversation;
 import com.android.mms.LogTag;
 import com.android.mms.R;
-import com.android.mms.ui.MessageListAdapter;
-import com.android.mms.ui.MessageUtils;
 import com.android.mms.transaction.MessagingNotification;
 import com.android.mms.transaction.Transaction;
 import com.android.mms.transaction.TransactionBundle;
 import com.android.mms.transaction.TransactionService;
+import com.android.mms.ui.MessageListAdapter;
+import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.PopupList;
 import com.android.mms.ui.SearchActivityExtend;
 import com.android.mms.util.DownloadManager;
@@ -628,6 +629,7 @@ public class MailBoxMessageList extends ListActivity implements
             setProgressBarIndeterminateVisibility(false);
             mQueryDone = true;
             MessagingNotification.setCurrentlyDisplayedMsgType(mQueryBoxType);
+            Conversation.markAllConversationsAsSeen(MailBoxMessageList.this);
         }
     }
 
