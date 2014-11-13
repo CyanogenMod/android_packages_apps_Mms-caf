@@ -122,6 +122,10 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private PreferenceCategory mNotificationPrefCategory;
     private PreferenceCategory mSmscPrefCate;
 
+    // Delay send
+    public static final String SEND_DELAY_DURATION = "pref_key_send_delay";
+
+    private ListPreference mMessageSendDelayPref;
     private Preference mSmsLimitPref;
     private Preference mSmsDeliveryReportPref;
     private Preference mSmsDeliveryReportPrefSub1;
@@ -295,6 +299,10 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mEnableQmCloseAllPref = (CheckBoxPreference) findPreference(QM_CLOSE_ALL_ENABLED);
         mEnableQmDarkThemePref = (CheckBoxPreference) findPreference(QM_DARK_THEME_ENABLED);
 
+        // SMS Sending Delay
+        mMessageSendDelayPref = (ListPreference) findPreference(SEND_DELAY_DURATION);
+        mMessageSendDelayPref.setSummary(mMessageSendDelayPref.getEntry());
+
         setMessagePreferences();
     }
 
@@ -413,6 +421,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
         String soundValue = sharedPreferences.getString(NOTIFICATION_RINGTONE, null);
         setRingtoneSummary(soundValue);
+
+        mMessageSendDelayPref.setOnPreferenceChangeListener(this);
     }
 
     private void setMmsRelatedPref() {
@@ -483,6 +493,11 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         setEnabledQmLockscreenPref();
         setEnabledQmCloseAllPref();
         setEnabledQmDarkThemePref();
+    }
+
+    public static long getMessageSendDelayDuration(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return Long.valueOf(prefs.getString(SEND_DELAY_DURATION, "0"));
     }
 
     private void setRingtoneSummary(String soundValue) {
@@ -969,6 +984,11 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         boolean result = false;
         if (preference == mRingtonePref) {
             setRingtoneSummary((String)newValue);
+            result = true;
+        } else if (preference == mMessageSendDelayPref) {
+            String value = (String) newValue;
+            mMessageSendDelayPref.setValue(value);
+            mMessageSendDelayPref.setSummary(mMessageSendDelayPref.getEntry());
             result = true;
         }
         return result;
