@@ -3,6 +3,7 @@
 /*
  * Copyright (C) 2007-2008 Esmertec AG.
  * Copyright (C) 2007-2008 The Android Open Source Project
+ * QuickMessage: Copyright (C) 2012 The CyanogenMod Project (DvTonder)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -213,4 +214,36 @@
                         android:summary="@string/pref_summary_wap_push_enabled"
                         android:defaultValue="@bool/def_wap_push_enabled" />
   </PreferenceCategory>
+
+  <!-- QuickMessage settings -->
+  <PreferenceCategory android:title="@string/pref_quickmessage">
+      <CheckBoxPreference
+              android:key="pref_dark_theme"
+              android:title="@string/pref_dark_theme_title"
+              android:summary="@string/pref_dark_theme_summary"
+              android:defaultValue="false" />
+
+      <CheckBoxPreference
+              android:key="pref_key_quickmessage"
+              android:title="@string/pref_quickmessage_title"
+              android:dependency="pref_key_enable_notifications"
+              android:summary="@string/pref_quickmessage_summary"
+              android:defaultValue="false" />
+
+      <CheckBoxPreference
+              android:key="pref_key_qm_lockscreen"
+              android:title="@string/pref_wake_unlock_title"
+              android:summary="@string/pref_wake_unlock_summary"
+              android:layout="?android:attr/preferenceLayoutChild"
+              android:dependency="pref_key_quickmessage"
+              android:defaultValue="false" />
+
+      <CheckBoxPreference
+              android:key="pref_key_close_all"
+              android:title="@string/pref_close_all_title"
+              android:summary="@string/pref_close_all_summary"
+              android:layout="?android:attr/preferenceLayoutChild"
+              android:dependency="pref_key_quickmessage"
+              android:defaultValue="false" />
+    </PreferenceCategory>
 </PreferenceScreen>

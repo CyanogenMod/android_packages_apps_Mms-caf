@@ -20,6 +20,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
         package="com.android.mms">
 
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="16" />
+
     <original-package android:name="com.android.mms" />
     <uses-sdk android:minSdkVersion="19" android:targetSdkVersion="19" />
 
@@ -53,6 +57,9 @@
     <uses-permission android:name="com.qualcomm.permission.USE_PHONE_SERVICE"/>
     <uses-permission android:name="android.permission.GET_TASKS"/>
     <uses-permission android:name="android.permission.RECEIVE_WAP_PUSH" />
+
+    <!-- Needed for QuickMessage -->
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
 
     <application android:name="MmsApp"
             android:label="@string/app_label"
@@ -442,9 +449,23 @@
                   android:configChanges="orientation|keyboardHidden|screenSize" >
         </activity>
 
-        <!-- Message Template Content Provider -->
-        <provider android:name="MessageTemplateProvider"
-                android:authorities="com.android.mms.MessageTemplateProvider" >
-        </provider>
+        <!-- QuickMessage support -->
+        <!-- This is the "QuickMessage" panel, which has special
+             launch behaviour.  We clear its task affinity, so it will not
+             be associated with the main messaging task and if launched
+             from a notification will not bring the rest of the messaging app
+             to the foreground.We exclude from recent apps since this is accessible
+             through a notification when appropriate. -->
+         <activity
+            android:name=".quickmessage.QuickMessagePopup"
+            android:theme="@android:style/Theme.Holo.Dialog"
+            android:configChanges="orientation|screenSize"
+            android:launchMode="singleTop"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
+            android:exported="true" />
+
+        <receiver android:name=".quickmessage.ClearAllReceiver" />
+
     </application>
 </manifest>
