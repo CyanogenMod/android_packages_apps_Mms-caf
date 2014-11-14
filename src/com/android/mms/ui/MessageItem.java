@@ -71,6 +71,8 @@ public class MessageItem {
 
     public static int ATTACHMENT_TYPE_NOT_LOADED = -1;
 
+    private final static int CDMA_STATUS_SHIFT = 16;
+
     final Context mContext;
     final String mType;
     final long mMsgId;
@@ -143,6 +145,10 @@ public class MessageItem {
             mReadReport = false; // No read reports in sms
 
             long status = cursor.getLong(columnsMap.mColumnSmsStatus);
+            // If the 31-16 bits is not 0, means this is a CDMA sms.
+            if ((status >> CDMA_STATUS_SHIFT) > 0) {
+                status = status >> CDMA_STATUS_SHIFT;
+            }
             if (status == Sms.STATUS_NONE) {
                 // No delivery report requested
                 mDeliveryStatus = DeliveryStatus.NONE;
