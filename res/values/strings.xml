@@ -905,7 +905,7 @@
     <string name="copy_to_phone_success">Message saved</string>
     <string name="copy_to_phone_fail">Unable to save message</string>
     <!-- SMSC -->
-    <string name="pref_smsc_title">SMSC Setings</string>
+    <string name="pref_smsc_title">SMSC Settings</string>
     <string name="pref_one_smcs">"Set the SIM's smsc number"</string>
     <string name="pref_more_smcs">"Set the SIM"<xliff:g id="slot_number">%d</xliff:g>"'s smsc number"</string>
     <string name="set_smsc_error">Set the smsc number error</string>
