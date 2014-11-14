@@ -88,6 +88,8 @@ public class DeliveryReportActivity extends ListActivity {
     static final int COLUMN_DATE_SENT           = 2;
     static final int COLUMN_MESSAGE_TYPE        = 3;
 
+    private final static int CDMA_STATUS_SHIFT = 16;
+
     private long mMessageId;
     private String mMessageType;
 
@@ -349,6 +351,10 @@ public class DeliveryReportActivity extends ListActivity {
     }
 
     private String getSmsStatusText(int status) {
+        // If the 31-16 bits is not 0, means this is a CDMA sms.
+        if ((status >> CDMA_STATUS_SHIFT) > 0) {
+            status = status >> CDMA_STATUS_SHIFT;
+        }
         if (status == Sms.STATUS_NONE) {
             // No delivery report requested
             return getString(R.string.status_none);
