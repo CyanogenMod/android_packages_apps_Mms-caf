@@ -65,7 +65,7 @@ public class MmsConfig {
     private static int mMaxImageHeight = MAX_IMAGE_HEIGHT;      // default value
     private static int mMaxImageWidth = MAX_IMAGE_WIDTH;        // default value
     private static int mRecipientLimit = Integer.MAX_VALUE;     // default value
-    private static int mDefaultSMSMessagesPerThread = 10000;    // default value
+    private static int mDefaultSMSMessagesPerThread = 1000;     // default value
     private static int mDefaultMMSMessagesPerThread = 1000;     // default value
     private static int mMinMessageCountPerThread = 2;           // default value
     private static int mMaxMessageCountPerThread = 5000;        // default value
