@@ -47,6 +47,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Telephony.Mms;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -74,6 +75,7 @@ import com.google.android.mms.MmsException;
 import com.google.android.mms.pdu.EncodedStringValue;
 import com.google.android.mms.pdu.MultimediaMessagePdu;
 import com.google.android.mms.pdu.PduPersister;
+import com.google.android.mms.pdu.SendReq;
 import com.google.android.mms.util.SqliteWrapper;
 
 public class MobilePaperShowActivity extends Activity {
@@ -81,6 +83,7 @@ public class MobilePaperShowActivity extends Activity {
     private static final int MENU_SLIDESHOW = 1;
     private static final int MENU_CALL = 2;
     private static final int MENU_REPLY = 3;
+    private static final int MENU_FORWARD = 4;
 
     private static final int MESSAGE_READ = 1;
 
@@ -94,9 +97,12 @@ public class MobilePaperShowActivity extends Activity {
     private String mNumber;
     private Intent mIntent;
     private Uri mUri;
+    private Uri mTempMmsUri;
+    private long mTempThreadId;
     private ScaleGestureDetector mScaleDetector;
     private ScrollView mScrollViewPort;
     private Cursor mCursor;
+    private String mSubject;
 
     private float mFontSizeForSave = MessageUtils.FONT_SIZE_DEFAULT;
     private Handler mHandler;
@@ -167,10 +173,12 @@ public class MobilePaperShowActivity extends Activity {
 
             MultimediaMessagePdu msgPdu = (MultimediaMessagePdu) PduPersister
                     .getPduPersister(this).load(mUri);
+            mSubject = "";
             if (msgPdu != null) {
                 EncodedStringValue subject = msgPdu.getSubject();
                 if (subject != null) {
                     String subStr = subject.getString();
+                    mSubject = subStr;
                     setTitle(subStr);
                 } else {
                     setTitle("");
@@ -338,6 +346,7 @@ public class MobilePaperShowActivity extends Activity {
                         .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
             }
         }
+        menu.add(0, MENU_FORWARD, 0, R.string.menu_forward);
         menu.add(0, MENU_SLIDESHOW, 0, R.string.view_slideshow);
         return true;
     }
@@ -357,6 +366,9 @@ public class MobilePaperShowActivity extends Activity {
             }
             case MENU_CALL:
                 MessageUtils.dialNumber(this,mNumber);
+                break;
+            case MENU_FORWARD:
+                forwardMms();
                 break;
             case android.R.id.home:
                 finish();
@@ -424,5 +436,53 @@ public class MobilePaperShowActivity extends Activity {
             intent.putStringArrayListExtra("sms_id_list", allIdList);
             context.startActivity(intent);
         }
+    }
+
+    private void forwardMms() {
+        new AsyncDialog(this).runAsync(new Runnable() {
+            @Override
+            public void run() {
+                SendReq sendReq = new SendReq();
+                String subject = getString(R.string.forward_prefix);
+                if (!TextUtils.isEmpty(mSubject)) {
+                    subject += mSubject;
+                }
+                sendReq.setSubject(new EncodedStringValue(subject));
+                sendReq.setBody(mSlideModel.makeCopy());
+                mTempMmsUri = null;
+                try {
+                    PduPersister persister =
+                            PduPersister.getPduPersister(MobilePaperShowActivity.this);
+                    mTempMmsUri = persister.persist(sendReq, Mms.Draft.CONTENT_URI, true,
+                            MessagingPreferenceActivity
+                                    .getIsGroupMmsEnabled(MobilePaperShowActivity.this), null);
+                    mTempThreadId = MessagingNotification.getThreadId(
+                            MobilePaperShowActivity.this, mTempMmsUri);
+                } catch (MmsException e) {
+                    Log.e(TAG, "Failed to forward message: " + mTempMmsUri);
+                    Toast.makeText(MobilePaperShowActivity.this,
+                            R.string.cannot_save_message, Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        }, new Runnable() {
+            @Override
+            public void run() {
+                Intent intentForward = new Intent(MobilePaperShowActivity.this,
+                        ComposeMessageActivity.class);
+                intentForward.putExtra("exit_on_sent", true);
+                intentForward.putExtra("forwarded_message", true);
+                String subject = getString(R.string.forward_prefix);
+                if (!TextUtils.isEmpty(mSubject)) {
+                    subject += mSubject;
+                }
+                intentForward.putExtra("subject", subject);
+                intentForward.putExtra("msg_uri", mTempMmsUri);
+                if (mTempThreadId > 0) {
+                    intentForward.putExtra(Mms.THREAD_ID, mTempThreadId);
+                }
+                MobilePaperShowActivity.this.startActivity(intentForward);
+            }
+        }, R.string.building_slideshow_title);
     }
 }
