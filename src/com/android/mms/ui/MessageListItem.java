@@ -747,9 +747,7 @@ public class MessageListItem extends LinearLayout implements
     }
 
     private boolean isSimCardMessage() {
-        return mContext instanceof ManageSimMessages
-                || (mContext instanceof ManageMultiSelectAction &&
-                mManageMode == MessageUtils.SIM_MESSAGE_MODE);
+        return mContext instanceof ManageSimMessages;
     }
 
     public void setManageSelectMode(int manageMode) {
