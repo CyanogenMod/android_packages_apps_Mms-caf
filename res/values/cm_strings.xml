@@ -208,4 +208,274 @@
 
     <!-- SMSC Preference -->
     <string name="pref_smsc_number">SMSC Number</string>
+
+    <string name="deleting_threads">Deleting threads\u2026</string>
+
+    <!-- Address to display when message is a cell broadcast on channel 50 or 60  -->
+    <string name="cell_broadcast_sender">Cell broadcast channel</string>
+
+    <!-- Time and date a message was sent -->
+    <string name="sent_on">"Sent: <xliff:g id="date">%s</xliff:g>"</string>
+
+    <!-- Time and date a message was received -->
+    <string name="received_on">"Received: <xliff:g id="date">%s</xliff:g>"</string>
+
+    <string name="menu_forward_conversation">Forward conversation</string>
+    <!-- Context menu item on an failed message for resending -->
+    <string name="menu_resend">Resend</string>
+
+    <string name="cancel_downloading">Cancel</string>
+    <string name="confirm_cancel_downloading">Do you want to cancel downloading mms?</string>
+
+    <string name="select_copy_message_text">Select text to copy</string>
+
+    <!-- Button text on edit slide screen indicating the user wants to finish editing that slide -->
+    <string name="slide_done">Done</string>
+
+    <!-- Error message indicating the format is unsupported -->
+    <string name="unsupported_format">Unsupported format.</string>
+
+    <string name="media_size_limit">Message size limit reached, can\'t send out message.</string>
+
+    <!-- Dialog box title that appears when a draft message will not be saved due to invalid recipients -->
+    <string name="discard_message">Discard</string>
+
+    <string name="cannot_send_attach_reason">"Attachment can\'t be accessed，can\'t send message."</string>
+
+    <string name="converting_to_text_message">Converting to text message\u2026</string>
+    <!-- Brief message that appears when the maximum size of slides has been reached -->
+    <string name="cannot_add_text_anymore">Can\'t add more text.</string>
+
+    <!-- Dialog box title for display the current mms size  -->
+    <string name="title_send_message">Send message</string>
+    <!-- Toast when the subject is full -->
+    <string name="subject_full">"subject is full"</string>
+    <!-- Toast when the sms template is full -->
+    <string name="template_full">"Template text number limit reached."</string>
+
+    <string name="pref_summary_manage_sim_messages_slot">Manage messages stored on your SIM card <xliff:g id="NUMBER">%s</xliff:g></string>
+
+    <string name="pref_title_sms_delivery_reports_slot1">Sub1\'s delivery reports</string>
+    <string name="pref_title_sms_delivery_reports_slot2">Sub2\'s delivery reports</string>
+
+    <string name="local_message_class_personal">personal</string>
+    <string name="local_message_class_advertisement">advertisement</string>
+    <string name="local_message_class_informational">informational</string>
+    <string name="local_message_class_auto">auto</string>
+
+    <!-- Status in "Report" window -->
+    <string name="status_deleted_unread">Deleted without being read</string>
+
+    <!-- Device Full Notification dialog text. -->
+    <string name="sms_full_body">Phone memory is full, can\'t send and receive new messages, please delete some old messages.</string>
+    <!-- Device Low Notification dialog title. -->
+    <string name="memory_low_title">Phone memory low</string>
+    <!-- Device Low Notification dialog text. -->
+    <string name="memory_low_body">Phone memory is going to full, please delete some old data to make sure get new message well.</string>
+    <!-- Disk Storage Full Error Notification dialog text. -->
+    <string name="disk_storage_full_error">Error: Storage is full.</string>
+    <!-- Mobile data disable dialog text. -->
+    <string name="mobile_data_disable">Mobile data is turned off, do you still want to <xliff:g>%1$s</xliff:g> MMS? If yes, it will generate mobile data traffic.</string>
+    <string name="mobile_data_send">send</string>
+    <string name="mobile_data_download">download</string>
+    <!-- Mms size is too large dialog text. -->
+    <string name="mms_too_large">The message is too large to download.</string>
+
+    <string name="send_failed_retry">Sending failed, auto retry.</string>
+    <string name="download_failed_retry">Downloading failed, auto retry.</string>
+    <string name="download_canceled">Downloading canceled.</string>
+
+    <string name="system_audio_item">System audio</string>
+    <string name="external_audio_item">External audio</string>
+
+    <string name="pending_mms_title">Pending MMS on other subscription</string>
+    <string name="pending_mms">Messaging: One or more MMS are pending</string>
+    <string name="pending_mms_text">Touch to switch the subscription</string>
+
+    <string name="switch_data_subscription">Data subscription switch </string>
+    <string name="switch_data_subscription_success">was success.</string>
+    <string name="switch_data_subscription_failed">failed.</string>
+
+    <string name="abort_mms">Messaging: Abort MMS</string>
+    <string name="abort_mms_text">Touch to abort and switch back</string>
+
+    <string name="progress_mms_title">MMS transaction on other sub in progress</string>
+    <string name="progress_mms">Messaging: MMS in progress\u2026</string>
+    <string name="progress_mms_text">Touch to retry</string>
+    <string name="mail_to">mailto:</string>
+    <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
+    <string name="menu_connect_url">Connect</string>
+    <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
+    <string name="menu_add_to_label">Save to bookmark</string>
+    <string name="loadurlinfo_str">Load the URL?</string>
+    <!-- Message Template -->
+    <string name="pref_summary_message_template">Edit message template</string>
+    <string name="pref_title_message_template">Message template</string>
+    <string name="title_new_message_template">New template</string>
+    <string name="summary_new_message_template">Compose new message template</string>
+    <string name="message_template_title">Message template</string>
+    <string name="dialog_editSMSTemplate_title">Edit</string>
+    <string name="message_template">Message Template</string>
+    <string name="import_message_template">Import Template</string>
+    <string name="delete_template_message">Delete</string>
+    <string name="discard_message_reason_all_invalid">Your message will be discarded because all the recipients are invalid.</string>
+    <string name="discard_message_reason_some_invalid">Your message will be discarded because it has some invalid recipients.</string>
+    <string name="pref_sms_signature_title">SMS signature</string>
+    <string name="pref_title_enable_signature">SMS signature</string>
+    <string name="pref_summary_enable_signature">SMS signature enabled</string>
+    <string name="pref_summary_disable_signature">SMS signature disabled</string>
+    <string name="pref_title_edit_signature">Edit SMS signature</string>
+    <string name="signature_full_toast">Signature has reached to maximum length.</string>
+
+    <!-- Settings item description for SMS Validity period -->
+    <string name="pref_title_sms_validity_period">SMS Validity Period</string>
+    <string name="pref_title_sms_validity_period_slot1">SMS Validity Period for Card1</string>
+    <string name="pref_title_sms_validity_period_slot2">SMS Validity Period for Card2</string>
+    <string name="sms_validity_period_not_set">Not set</string>
+    <string name="sms_validity_period_one_hour">1 hour</string>
+    <string name="sms_validity_period_six_hours">6 hours</string>
+    <string name="sms_validity_period_twelve_hours">12 hours</string>
+    <string name="sms_validity_period_one_day">1 day</string>
+    <string name="sms_validity_period_maximum">Maximum</string>
+
+    <!-- Copy message to sim -->
+    <string name="menu_copy_to">Copy</string>
+    <string name="operation_to_card_memory">Copy message to SIM card</string>
+    <string name="operate_success">Operate successfully!</string>
+    <string name="copy_to_sim">Copy message to SIM card</string>
+    <string name="copy_to_sim_success">Message saved</string>
+    <string name="copy_to_sim_fail">Unable to save message</string>
+    <string name="copy_to_phone_success">Message saved</string>
+    <string name="copy_to_phone_fail">Unable to save message</string>
+    <!-- SMSC -->
+    <string name="pref_smsc_title">SMSC Settings</string>
+    <string name="pref_one_smcs">"Set the SIM's smsc number"</string>
+    <string name="pref_more_smcs">"Set the SIM"<xliff:g id="slot_number">%d</xliff:g>"'s smsc number"</string>
+    <string name="set_smsc_error">Set the smsc number error</string>
+    <string name="set_smsc_success">Set the smsc number success</string>
+    <string name="set_smsc_confirm_message">Change the smsc may lead to the SMS sending failure, to confirm the change?</string>
+
+    <string name="menu_copy_url">Copy url <xliff:g id="extractedurl">%s</xliff:g></string>
+
+    <string name="contact_app_not_found">Can not find Contact application</string>
+    <!-- Gray hint displayed in the search field in Contacts when empty -->
+    <string name="search_bar_hint">Search contacts</string>
+    <string name="select_all">All</string>
+
+    <string name="operate_failure">Operate unsuccessfully!</string>
+    <string name="menu_reply">Reply</string>
+
+    <string name="slot1">Slot1</string>
+    <string name="slot2">Slot2</string>
+    <!-- Add for share contact feature -->
+    <string name="type_vcard">vCard</string>
+    <string name="import_vcard">Import</string>
+    <string name="attach_add_contact_as_text">Insert contact info</string>
+    <string name="attach_add_contact_as_vcard">Contact vCard</string>
+
+    <string name="contact_info_text_as_name">Name:</string>
+    <string name="contact_info_text_as_phone">Tel:</string>
+    <string name="contact_info_text_as_email">Email:</string>
+
+    <!-- title of mailboxmessagecontent -->
+    <string name="sim_card">SIM card</string>
+
+    <!-- String used in MemoryStatusActivity.java -->
+    <string name="memory_status_title">Memory status</string>
+    <string name="sms_phone_used">Sms Used:</string>
+    <string name="sms_phone_capacity">Sms Capacity:</string>
+    <string name="mms_phone_used">Mms Used:</string>
+    <string name="mms_phone_capacity">Mms Capacity:</string>
+
+    <string name="pref_wap_push_title">"Auto Push Service Message Setting"</string>
+    <string name="pref_title_wap_push_enabled">"Enable WAP PUSH Service"</string>
+    <string name="pref_summary_wap_push_enabled">"Enable to receive service message"</string>
+    <string name="open_wap_push_title">Browser Information</string>
+    <string name="open_wap_push_body">Do you want to open the web site?</string>
+
+    <!-- select contact group -->
+    <string name="no_contact_group">No group</string>
+
+    <string name="confirm_delete_selected_messages">The selected messages will be deleted.</string>
+    <!-- menu item of mailboxmessagecontent -->
+    <string name="menu_load_push">Load</string>
+    <string name="menu_delete_msg">Delete</string>
+    <!-- toast for send result -->
+    <string name="send_failure">Sending failed!</string>
+    <string name="send_success">Send successfully!</string>
+    <!-- title of mailboxmessagecontent -->
+    <string name="message_detail">Message detail</string>
+    <string name="select_messages">Select messages</string>
+    <string name="no_message">No messages</string>
+    <string name="change_mode">Change mode</string>
+    <!-- Spinner item of box type in mailbox-mode -->
+    <string name="box_type_select">Select box type</string>
+    <string name="type_inbox">Inbox</string>
+    <string name="type_sent">Sent</string>
+    <string name="type_outbox">Outbox</string>
+    <string name="type_draft">Drafts</string>
+    <!-- Spinner item of slot type in mailbox-mode -->
+    <string name="slot_type_select">Select slot</string>
+    <string name="type_all">All</string>
+    <string name="type_slot1">Card1</string>
+    <string name="type_slot2">Card2</string>
+    <!-- String used in SearchActivityExtend.java -->
+    <string name="search_title">"Message search"</string>
+    <string name="search_key">Search keyword</string>
+    <string name="search_mode">Search mode</string>
+    <string name="search_as_name">Name</string>
+    <string name="search_as_number">Number</string>
+    <string name="search_as_content">Content</string>
+    <string name="search_as_subject">Subject</string>
+    <string name="invalid_name_toast">Please input valid name!</string>
+    <!-- add for showing slot type in MailBoxMessageContent -->
+    <string name="slot_type">Slot : %s</string>
+
+    <string name="sim_capacity_title">SIM Capacity</string>
+    <string name="sim_capacity_used">Used:  </string>
+    <string name="sim_capacity">Capacity:  </string>
+
+    <!-- Settings item description for Mms Validity period -->
+    <string name="pref_title_mms_save_time">MMS Validity period</string>
+    <string name="pref_title_mms_save_time_slot1">Sub1\'s MMS validity period</string>
+    <string name="pref_title_mms_save_time_slot2">Sub2\'s MMS validity period</string>
+    <string name="mms_one_week">One week</string>
+    <string name="mms_two_days">Two days</string>
+    <string name="mms_max">Maximum</string>
+    <string name="save_description">The time of message storing in server</string>
+    <string name="status_expired">Mms expired</string>
+    
+    <!-- Settings item description for Preferred storage -->
+    <string name="pref_title_sms_store">Preferred storage</string>
+    <string name="pref_title_sms_store_card1">Card1 preferred storage</string>
+    <string name="pref_title_sms_store_card2">Card2 preferred storage</string>
+    <string name="pref_sms_store_phone">Phone</string>
+    <string name="pref_sms_store_card">SIM card</string>
+    <string name="pref_sms_store_card_unknown_fail">Failure to receive new messages, the SIM card can\'t be read correctly</string>
+    <string name="pref_sim_card_full_save_to_phone">SIM card full, save new message to phone.</string>
+
+    <string name="mms_size_indicator"><xliff:g id="mms_size">%1$s</xliff:g>K/<xliff:g id="all_size">%2$s</xliff:g>K</string>
+    <!-- batch delete message in ConversationList and MailBoxMessageList -->
+    <string name="selected_all">Select all</string>
+    <string name="deselected_all">Deselect all</string>
+    <string name="selected_count"><xliff:g id="COUNT">%d</xliff:g> selected</string>
+    <!--add for toast when deleting -->
+    <string name="deleting_title">Deleting</string>
+    <string name="please_wait">Please waiting...</string>
+    <string name="done_delete">DONE</string>
+    <!--add for toast when merging sms -->
+    <string name="merging_sms_title">Merging sms</string>
+    <!-- priority of cdma message -->
+    <string translatable="false" name="default_cdma_priority">0</string>
+    <string name="cdma_priority_normal">Normal</string>
+    <string name="cdma_priority_interactive">Interactive</string>
+    <string name="cdma_priority_urgent">Urgent</string>
+    <string name="cdma_priority_emergency">Emergency</string>
+    <string name="pref_title_cdma_priority">Message priority</string>
+    <string name="pref_summary_cdma_priority">Priority of CDMA message</string>
+    <string name="prefDialogTitle_cdma_priority">Priority</string>
+    <string name="forward_size_over">Forbid forwarding, new message size over 300K.</string>
+    <string name="sub">SUB</string>
+    <string name="menu_batch_delete">Batch delete conversation</string>
+    <string name="download_dialog_title">Comfirm download this MMS?</string>
 </resources>
