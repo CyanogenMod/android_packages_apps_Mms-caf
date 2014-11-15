@@ -283,6 +283,8 @@ public class NotificationTransaction extends Transaction implements Runnable {
     public void abort() {
         Log.d(TAG, "markFailed = " + this);
         DownloadManager downloadManager = DownloadManager.getInstance();
+        mTransactionState.setState(FAILED);
+        mTransactionState.setContentUri(mUri);
 
         downloadManager.markState(mUri, DownloadManager.STATE_SKIP_RETRYING);
         notifyObservers();

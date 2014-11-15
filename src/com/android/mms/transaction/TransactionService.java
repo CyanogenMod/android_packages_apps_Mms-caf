@@ -154,7 +154,7 @@ public class TransactionService extends Service implements Observer {
     // How often to extend the use of the MMS APN while a transaction
     // is still being processed.
     private static final int APN_EXTENSION_WAIT = 30 * 1000;
-    private static final int PDP_ACTIVATION_TIMEOUT = 90 * 1000;
+    private static final int PDP_ACTIVATION_TIMEOUT = 60 * 1000;
 
     private ServiceHandler mServiceHandler;
     private Looper mServiceLooper;
@@ -349,18 +349,18 @@ public class TransactionService extends Service implements Observer {
     }
 
     private boolean isMmsAllowed() {
-        boolean noNetwork = false;
+        boolean flag = true;
 
         if (isAirplaneModeActive()) {
             Log.d(TAG, "Airplane mode is ON, MMS may not be allowed.");
-            noNetwork = true;
+            flag = false;
         }
 
         if(isCurrentRatIwlan()) {
             Log.d(TAG, "Current RAT is IWLAN, MMS allowed");
-            noNetwork = false;
+            flag = true;
         }
-        return noNetwork;
+        return flag;
 
     }
 
@@ -377,6 +377,18 @@ public class TransactionService extends Service implements Observer {
         return flag;
     }
 
+    private boolean isMmsDataConnectivityPossible(long subId) {
+        boolean flag = false;
+        TelephonyManager telephonyManager = (TelephonyManager)getApplicationContext()
+                .getSystemService(Context.TELEPHONY_SERVICE);
+        if (telephonyManager != null) {
+            flag = telephonyManager.isDataPossibleForSubscription(subId,
+                    PhoneConstants.APN_TYPE_MMS);
+        }
+        Log.d(TAG, "isMmsDataConnectivityPossible = " + flag + "subId = " + subId);
+        return flag;
+    }
+
     public void onNewIntent(Intent intent, int serviceId) {
         mConnMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (mConnMgr == null || !MmsConfig.isSmsEnabled(getApplicationContext())) {
@@ -384,7 +396,7 @@ public class TransactionService extends Service implements Observer {
             stopSelf(serviceId);
             return;
         }
-        boolean noNetwork = isMmsAllowed();
+        boolean noNetwork = false;
 
         if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
             Log.v(TAG, "onNewIntent: serviceId: " + serviceId + ": " + intent.getExtras() +
@@ -393,6 +405,9 @@ public class TransactionService extends Service implements Observer {
 
         Bundle extras = intent.getExtras();
         String action = intent.getAction();
+
+        DownloadManager downloadManager = DownloadManager.getInstance();
+
         if ((ACTION_ONALARM.equals(action) || ACTION_ENABLE_AUTO_RETRIEVE.equals(action) ||
                     (extras == null)) || ((extras != null) && !extras.containsKey("uri"))) {
 
@@ -447,7 +462,6 @@ public class TransactionService extends Service implements Observer {
                                 int failureType = cursor.getInt(
                                         cursor.getColumnIndexOrThrow(
                                                 PendingMessages.ERROR_TYPE));
-                                DownloadManager downloadManager = DownloadManager.getInstance();
                                 boolean autoDownload = downloadManager.isAuto();
                                 if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
                                     Log.v(TAG, "onNewIntent: failureType=" + failureType +
@@ -491,7 +505,7 @@ public class TransactionService extends Service implements Observer {
                                 // subId is null. Bail out.
                                 if (subId == null) {
                                     Log.e(TAG, "SMS subId is null. Bail out");
-                                    return;
+                                    break;
                                 }
 
                                 Log.d(TAG, "destination Sub Id = " + subId[0]);
@@ -508,6 +522,16 @@ public class TransactionService extends Service implements Observer {
                                     // subId from subscription manager.
                                     Log.d(TAG, "Override with default Sms subId = " + defSmsSubId);
                                     subId[0] = defSmsSubId;
+                                }
+
+                                if (!isMmsDataConnectivityPossible(subId[0]) || !isMmsAllowed()) {
+                                    Log.d(TAG, "mobileData off or no mms apn or APM, Abort");
+                                    if (transactionType == Transaction.RETRIEVE_TRANSACTION) {
+                                        downloadManager.markState(uri,
+                                                DownloadManager.STATE_SKIP_RETRYING);
+                                    }
+
+                                    break;
                                 }
 
                                 TransactionBundle args = new TransactionBundle(transactionType,
@@ -551,6 +575,13 @@ public class TransactionService extends Service implements Observer {
                long defSmsSubId = getDefaultSmsSubId();
                 Log.d(TAG, "Override with default Sms subId = " + defSmsSubId);
                 subId[0] = defSmsSubId;
+            }
+
+            if (!isMmsDataConnectivityPossible(subId[0]) || !isMmsAllowed()) {
+                Log.d(TAG, "Either mobile data is off or apn not present, Abort");
+
+                downloadManager.markState(uri, DownloadManager.STATE_SKIP_RETRYING);
+                return;
             }
 
             Bundle bundle = intent.getExtras();
@@ -1061,10 +1092,7 @@ public class TransactionService extends Service implements Observer {
                 case EVENT_MMS_PDP_ACTIVATION_TIMEOUT:
                     synchronized (mProcessing) {
                         Transaction txn = null;
-                        if (!mProcessing.isEmpty()) {
-                            // Get the current transaction
-                            txn = mProcessing.get(0);
-                        } else if (!mPending.isEmpty()) {
+                        if (!mPending.isEmpty()) {
                             // Get the pending transaction and delete it.
                             txn = mPending.remove(0);
                         }
@@ -1073,6 +1101,8 @@ public class TransactionService extends Service implements Observer {
                             Log.d(TAG, "PDP activation timer expired, declare failure");
                             txn.attach(TransactionService.this);
                             markFailed(txn);
+                        } else {
+                            Log.d(TAG, "PDP activation timer expired, no pending txn found");
                         }
                     }
                     return;
