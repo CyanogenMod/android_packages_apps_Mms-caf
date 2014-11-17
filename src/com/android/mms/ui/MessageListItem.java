@@ -442,6 +442,17 @@ public class MessageListItem extends ZoomMessageListItem implements
             mDownloadButton.setVisibility(View.GONE);
             mDownloading.setVisibility(View.GONE);
         }
+
+        //layout type may be changed after reload pdu, so update textView here.
+        if (mMessageItem.isMms() && mMessageItem.mLayoutType == LayoutModel.LAYOUT_TOP_TEXT) {
+            mBodyTextView = mBodyTopTextView;
+            mBodyButtomTextView.setVisibility(View.GONE);
+        } else {
+            mBodyTextView = mBodyButtomTextView;
+            mBodyTopTextView.setVisibility(View.GONE);
+        }
+        mBodyTextView.setVisibility(View.VISIBLE);
+
         // Since the message text should be concatenated with the sender's
         // address(or name), I have to display it here instead of
         // displaying it by the Presenter.
