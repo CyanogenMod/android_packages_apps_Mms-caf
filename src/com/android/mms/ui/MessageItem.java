@@ -262,16 +262,6 @@ public class MessageItem {
         mContact = TextUtils.isEmpty(mAddress) ? "" : Contact.get(mAddress, false).getName();
     }
 
-    private int getTimestampStrId() {
-        if (PduHeaders.MESSAGE_TYPE_NOTIFICATION_IND == mMessageType) {
-            return R.string.expire_on;
-        } else if (PduHeaders.MESSAGE_TYPE_RETRIEVE_CONF == mMessageType) {
-            return R.string.received_on;
-        } else {
-            return R.string.sent_on;
-        }
-    }
-
     public boolean isMms() {
         return mType.equals("mms");
     }

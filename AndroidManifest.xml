@@ -408,13 +408,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.MessageTemplate"
-                  android:theme="@android:style/Theme.Holo.Light"
-                  android:launchMode="singleTop"
-                  android:label="@string/message_template_title"
-                  android:configChanges="orientation|screenSize" >
-        </activity>
-
         <activity android:name=".ui.SearchActivityExtend"
             android:theme="@style/MmsHoloTheme"
             android:label="@string/search_title"
@@ -491,11 +484,6 @@
         <service android:name=".widget.MmsWidgetService"
                  android:permission="android.permission.BIND_REMOTEVIEWS"
                  android:exported="false" />
-
-        <!-- Message Template Content Provider -->
-        <provider android:name="MessageTemplateProvider"
-                android:authorities="com.android.mms.MessageTemplateProvider" >
-        </provider>
 
         <!-- Templates support -->
         <activity

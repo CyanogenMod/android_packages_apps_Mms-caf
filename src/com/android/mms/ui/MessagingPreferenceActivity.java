@@ -161,7 +161,6 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private ListPreference mSmsStoreCard2Pref;
     private Recycler mSmsRecycler;
     private Recycler mMmsRecycler;
-    private Preference mSmsTemplate;
     private CheckBoxPreference mSmsSignaturePref;
     private EditTextPreference mSmsSignatureEditPref;
     private static final int CONFIRM_CLEAR_SEARCH_HISTORY_DIALOG = 3;
@@ -328,7 +327,6 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mSmsStorePref = (ListPreference) findPreference("pref_key_sms_store");
         mSmsStoreCard1Pref = (ListPreference) findPreference("pref_key_sms_store_card1");
         mSmsStoreCard2Pref = (ListPreference) findPreference("pref_key_sms_store_card2");
-        mSmsTemplate = findPreference("pref_key_message_template");
 
         mManageTemplate = findPreference(MANAGE_TEMPLATES);
         mGestureSensitivity = (ListPreference) findPreference(GESTURE_SENSITIVITY);
