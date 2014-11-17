@@ -872,18 +872,19 @@ public class Conversation {
         Uri uri = MmsSms.CONTENT_LOCKED_URI;
 
         String selection = null;
-        if (threadIds != null) {
-            StringBuilder buf = new StringBuilder();
+        if (threadIds != null && threadIds.size() > 0) {
+            StringBuilder buf = new StringBuilder(Mms.THREAD_ID);
+            buf.append(" in (");
             int i = 0;
 
             for (long threadId : threadIds) {
-                if (i++ > 0) {
-                    buf.append(" OR ");
+                if (i > 0) {
+                    buf.append(",");
                 }
-                // We have to build the selection arg into the selection because deep down in
-                // provider, the function buildUnionSubQuery takes selectionArgs, but ignores it.
-                buf.append(Mms.THREAD_ID).append("=").append(Long.toString(threadId));
+                buf.append(threadId);
+                i++;
             }
+            buf.append(")");
             selection = buf.toString();
         }
         handler.startQuery(token, threadIds, uri,
