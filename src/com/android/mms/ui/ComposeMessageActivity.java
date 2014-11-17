@@ -5530,6 +5530,12 @@ public class ComposeMessageActivity extends Activity
         @Override
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
             logMultiChoice("onPrepareActionMode");
+            if (MessageUtils.getActivatedIccCardCount() < 1) {
+                MenuItem item = menu.findItem(R.id.copy_to_sim);
+                if (item != null) {
+                    item.setVisible(false);
+                }
+            }
             return true;
         }
 
