@@ -650,14 +650,23 @@ public class SlideView extends AbsoluteLayout implements
             // region. So, put the VideoView below the ImageView.
             mVideoView = new VideoView(mContext);
             viewsByPosition.put(new Position(imageLeft + 1, imageTop), mVideoView);
+
+            // Put the AudioInfoView below the ImageView.
+            LayoutInflater factory = LayoutInflater.from(getContext());
+            mAudioInfoView = factory.inflate(R.layout.playing_audio_info, null);
+            viewsByPosition.put(new Position(imageLeft + 2, imageTop), mAudioInfoView);
         }
         for (View view : viewsByPosition.values()) {
             if (view instanceof VideoView) {
                 mViewPort.addView(view, new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                         LayoutManager.getInstance().getLayoutParameters().getHeight()));
-            } else {
+            } else if (view instanceof TextView || view instanceof ImageView) {
                 mViewPort.addView(view, new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                         LayoutParams.WRAP_CONTENT));
+            } else {
+                // Add AudioInfoView
+                mViewPort.addView(view, new LinearLayout.LayoutParams(
+                        LayoutParams.MATCH_PARENT, AUDIO_INFO_HEIGHT));
             }
             view.setVisibility(View.GONE);
         }

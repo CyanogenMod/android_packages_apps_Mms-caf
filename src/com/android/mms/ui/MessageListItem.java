@@ -430,6 +430,7 @@ public class MessageListItem extends ZoomMessageListItem implements
             mDownloadButton.setVisibility(View.GONE);
             mDownloading.setVisibility(View.GONE);
         }
+
         // Since the message text should be concatenated with the sender's
         // address(or name), I have to display it here instead of
         // displaying it by the Presenter.
