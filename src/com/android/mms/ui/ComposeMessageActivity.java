@@ -5365,6 +5365,12 @@ public class ComposeMessageActivity extends Activity
                 mSelectedConvCount = (TextView) v
                         .findViewById(R.id.selected_conv_count);
             }
+            if (MessageUtils.getActivatedIccCardCount() < 1) {
+                MenuItem item = menu.findItem(R.id.copy_to_sim);
+                if (item != null) {
+                    item.setVisible(false);
+                }
+            }
             return true;
         }
 
