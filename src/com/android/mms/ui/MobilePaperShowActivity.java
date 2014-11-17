@@ -85,8 +85,6 @@ public class MobilePaperShowActivity extends Activity {
     private static final int MENU_REPLY = 3;
     private static final int MENU_FORWARD = 4;
 
-    private static final int MESSAGE_READ = 1;
-
     private int mMailboxId = -1;
 
     private FrameLayout mSlideView;
@@ -207,8 +205,9 @@ public class MobilePaperShowActivity extends Activity {
     private void markAsReadIfNeed() {
         boolean unread = mIntent.getBooleanExtra("unread", false);
         if (unread) {
-            ContentValues values = new ContentValues(1);
-            values.put(Mms.READ, MESSAGE_READ);
+            ContentValues values = new ContentValues(2);
+            values.put(Mms.SEEN, MessageUtils.MESSAGE_SEEN);
+            values.put(Mms.READ, MessageUtils.MESSAGE_READ);
             SqliteWrapper.update(this, getContentResolver(),
                     mUri, values, null, null);
 
