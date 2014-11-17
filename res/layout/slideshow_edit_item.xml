@@ -54,7 +54,7 @@
             android:orientation="horizontal"
             android:layout_toLeftOf="@+id/duration_text">
 
-            <TextView android:id="@+id/text_preview"
+            <TextView android:id="@+id/text_preview_bottom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingStart="5dip"
