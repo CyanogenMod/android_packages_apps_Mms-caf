@@ -5438,6 +5438,17 @@ public class ComposeMessageActivity extends Activity
             }
         }
 
+        private void shareMessage() {
+            Cursor c = (Cursor)mMsgListAdapter.getItem(mSelectedPos.get(0));
+            String body = c.getString(COLUMN_SMS_BODY);
+
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, body);
+            sendIntent.setType("text/plain");
+            startActivity(sendIntent);
+        }
+
         private void saveAttachment() {
             Cursor c = (Cursor) getListView().getAdapter().getItem(
                     mSelectedPos.get(0));
@@ -5509,6 +5520,9 @@ public class ComposeMessageActivity extends Activity
                 break;
             case R.id.detail:
                 showMessageDetail();
+                break;
+            case R.id.share:
+                shareMessage();
                 break;
             case R.id.save_attachment:
                 saveAttachment();
@@ -5666,6 +5680,8 @@ public class ComposeMessageActivity extends Activity
             if (checkedCount > 1) {
                 // no detail
                 mode.getMenu().findItem(R.id.detail).setVisible(false);
+                // no share
+                mode.getMenu().findItem(R.id.share).setVisible(false);
                 // no save attachment
                 mode.getMenu().findItem(R.id.save_attachment).setVisible(false);
                 // all locked show unlock, other wise show lock.
@@ -5692,6 +5708,8 @@ public class ComposeMessageActivity extends Activity
                 }
             } else {
                 mode.getMenu().findItem(R.id.detail).setVisible(true);
+                // share sms only
+                mode.getMenu().findItem(R.id.share).setVisible(mMmsSelected == 0);
                 mode.getMenu().findItem(R.id.save_attachment).setVisible(false);
                 if (mUnlockedCount == 0) {
                     mode.getMenu()
