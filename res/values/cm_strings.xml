@@ -62,4 +62,8 @@
     <string name="alert_dialog_yes">Yes</string>
     <string name="alert_dialog_no">No</string>
 
+    <!-- Extra message options -->
+    <string name="message_share">Share</string>
+    <string name="message_share_intent_title">Share message</string>
+
 </resources>
