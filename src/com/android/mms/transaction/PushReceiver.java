@@ -160,7 +160,8 @@ public class PushReceiver extends BroadcastReceiver {
 
                 return null;
             }
-            PduParser parser = new PduParser(pushData);
+            PduParser parser = new PduParser(
+                    pushData, PduParserUtil.shouldParseContentDisposition());
             GenericPdu pdu = parser.parse();
 
             if (null == pdu) {
