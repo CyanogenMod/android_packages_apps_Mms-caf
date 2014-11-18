@@ -424,6 +424,7 @@ public class SmsReceiverService extends Service {
                     });
                     // save message to phone if failed save to icc.
                     saveMessageToPhone(msgs, error, format);
+                    break;
                 }
             }
         } else {
