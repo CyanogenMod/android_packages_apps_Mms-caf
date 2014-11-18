@@ -375,13 +375,13 @@ public class MultiPickContactGroups extends ListActivity implements
             final MultiPickContactGroups activity = mActivity.get();
             if (token == LOCAL_GROUP_QUERY_TOKEN) {
                 activity.mAdapter.changeCursor(cursor);
-            } else if (token == PHONE_CONTACT_QUERY_TOKEN) {
+            } else if (token == PHONE_CONTACT_QUERY_TOKEN && cursor != null) {
                 Intent intent = new Intent();
                 Bundle bundle = new Bundle();
                 Bundle result = new Bundle();
                 cursor.moveToPosition(-1);
                 Log.e(TAG, "query phone count" + cursor.getCount());
-                while (cursor != null && cursor.moveToNext()) {
+                while (cursor.moveToNext()) {
                     String id = String.valueOf(
                                 cursor.getLong(PHONE_CONTACTS_ID_INDEX));
                     String number = String.valueOf(
@@ -460,7 +460,7 @@ public class MultiPickContactGroups extends ListActivity implements
 
         @Override
         protected void onContentChanged() {
-            updateContent();
+            startQuery(LOCAL_GROUP_QUERY_TOKEN);
         }
 
         @Override
