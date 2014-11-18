@@ -171,6 +171,7 @@ import com.android.mms.ui.MessageUtils.ResizeImageResultCallback;
 import com.android.mms.ui.MultiPickContactGroups;
 import com.android.mms.ui.RecipientsEditor.RecipientContextMenuInfo;
 import com.android.mms.util.DraftCache;
+import com.android.mms.util.IntentUtils;
 import com.android.mms.util.PhoneNumberFormatter;
 import com.android.mms.util.SendingProgressTokenManager;
 import com.android.mms.widget.MmsWidgetProvider;
@@ -5451,6 +5452,34 @@ public class ComposeMessageActivity extends Activity
             }
         }
 
+        private void shareMessage() {
+            Cursor c = (Cursor)mMsgListAdapter.getItem(mSelectedPos.get(0));
+            if (c == null) {
+                return;
+            }
+
+            String body = c.getString(COLUMN_SMS_BODY);
+            Intent shareIntent = getShareMessageIntent(body);
+            Context ctx = getContext();
+            Intent chooserIntent =
+                    IntentUtils.createFilteredChooser(
+                            ctx, ctx.getString(R.string.message_share_intent_title),
+                            shareIntent, ctx.getPackageName());
+            try {
+                startActivity(chooserIntent);
+            } catch (ActivityNotFoundException e) {
+                Log.w(TAG, "No activity for share message intent", e);
+            }
+        }
+
+        private Intent getShareMessageIntent(String text) {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_SEND);
+            intent.putExtra(Intent.EXTRA_TEXT, text);
+            intent.setType("text/plain");
+            return intent;
+        }
+
         private void saveAttachment() {
             Cursor c = (Cursor) getListView().getAdapter().getItem(
                     mSelectedPos.get(0));
@@ -5528,6 +5557,9 @@ public class ComposeMessageActivity extends Activity
                 break;
             case R.id.detail:
                 showMessageDetail();
+                break;
+            case R.id.share:
+                shareMessage();
                 break;
             case R.id.save_attachment:
                 saveAttachment();
@@ -5694,6 +5726,8 @@ public class ComposeMessageActivity extends Activity
                 mode.getMenu().findItem(R.id.detail).setVisible(false);
                 // no delivery report
                 mode.getMenu().findItem(R.id.report).setVisible(false);
+                // no share
+                mode.getMenu().findItem(R.id.share).setVisible(false);
                 // no save attachment
                 mode.getMenu().findItem(R.id.save_attachment).setVisible(false);
                 // all locked show unlock, other wise show lock.
@@ -5723,6 +5757,14 @@ public class ComposeMessageActivity extends Activity
             } else {
                 mode.getMenu().findItem(R.id.detail).setVisible(true);
                 mode.getMenu().findItem(R.id.save_attachment).setVisible(false);
+
+                Intent shareIntent = getShareMessageIntent("");
+                int numShareTargets =
+                        IntentUtils.getTargetActivityCount(getContext(), shareIntent,
+                                getContext().getApplicationContext().getPackageName());
+                mode.getMenu().findItem(R.id.share).setVisible(mMmsSelected == 0
+                        && numShareTargets > 0);
+
                 if (mUnlockedCount == 0) {
                     mode.getMenu()
                             .findItem(R.id.lock)
