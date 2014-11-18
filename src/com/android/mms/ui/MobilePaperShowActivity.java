@@ -248,9 +248,10 @@ public class MobilePaperShowActivity extends Activity {
         for (int index = 0; index < mSlideModel.size(); index++) {
             SlideListItemView view = (SlideListItemView) mInflater.inflate(
                     R.layout.mobile_paper_item, null);
+            view.setLayoutModel(mSlideModel.getLayout().getLayoutType());
             mPresenter = (SlideshowPresenter) PresenterFactory.getPresenter("SlideshowPresenter",
                     this, (SlideViewInterface) view, mSlideModel);
-            TextView contentText = (TextView) view.findViewById(R.id.text_preview);
+            TextView contentText = view.getContentText();
             contentText.setTextIsSelectable(true);
             mPresenter.presentSlide((SlideViewInterface) view, mSlideModel.get(index));
             contentText.setTextSize(TypedValue.COMPLEX_UNIT_PX, MessageUtils.getTextFontSize(this));
