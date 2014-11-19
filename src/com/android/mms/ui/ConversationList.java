@@ -139,6 +139,22 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
     private Toast mComposeDisabledToast;
     private static long mLastDeletedThread = -1;
 
+    private View.OnClickListener mComposeClickHandler = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (mIsSmsEnabled) {
+                createNewMessage();
+            } else {
+                // Display a toast letting the user know they can not compose.
+                if (mComposeDisabledToast == null) {
+                    mComposeDisabledToast = Toast.makeText(ConversationList.this,
+                            R.string.compose_disabled_toast, Toast.LENGTH_SHORT);
+                }
+                mComposeDisabledToast.show();
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -188,6 +204,9 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             mSavedFirstVisiblePosition = AdapterView.INVALID_POSITION;
             mSavedFirstItemOffset = 0;
         }
+
+        View actionButton = findViewById(R.id.floating_action_button);
+        actionButton.setOnClickListener(mComposeClickHandler);
     }
 
     @Override
@@ -580,11 +599,6 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         if (item != null) {
             item.setVisible((mListAdapter.getCount() > 0) && mIsSmsEnabled);
         }
-        item = menu.findItem(R.id.action_compose_new);
-        if (item != null ){
-            // Dim compose if SMS is disabled because it will not work (will show a toast)
-            item.getIcon().setAlpha(mIsSmsEnabled ? 255 : 127);
-        }
 
         if (!getResources().getBoolean(R.bool.config_mailbox_enable)) {
             item = menu.findItem(R.id.action_change_to_folder_mode);
@@ -629,18 +643,6 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                     break;
                 }
                 return true;
-            case R.id.action_compose_new:
-                if (mIsSmsEnabled) {
-                    createNewMessage();
-                } else {
-                    // Display a toast letting the user know they can not compose.
-                    if (mComposeDisabledToast == null) {
-                        mComposeDisabledToast = Toast.makeText(this,
-                                R.string.compose_disabled_toast, Toast.LENGTH_SHORT);
-                    }
-                    mComposeDisabledToast.show();
-                }
-                break;
             case R.id.action_delete_all:
                 // The invalid threadId of -1 means all threads here.
                 confirmDeleteThread(-1L, mQueryHandler);

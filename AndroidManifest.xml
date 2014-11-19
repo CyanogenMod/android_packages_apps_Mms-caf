@@ -20,12 +20,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
         package="com.android.mms">
 
-    <uses-sdk
-        android:minSdkVersion="14"
-        android:targetSdkVersion="16" />
-
     <original-package android:name="com.android.mms" />
-    <uses-sdk android:minSdkVersion="19" android:targetSdkVersion="19" />
+    <uses-sdk android:minSdkVersion="19" android:targetSdkVersion="21" />
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
@@ -79,7 +75,7 @@
         <activity android:name=".ui.ConversationList"
                   android:label="@string/app_label"
                   android:configChanges="orientation|screenSize|keyboardHidden"
-                  android:theme="@style/MmsHoloTheme"
+                  android:theme="@style/MmsTheme"
                   android:uiOptions="splitActionBarWhenNarrow"
                   android:launchMode="singleTop">
             <intent-filter>
@@ -103,7 +99,7 @@
         <activity android:name=".ui.MailBoxMessageList"
             android:label="@string/app_label"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:theme="@style/MmsHoloTheme"
+            android:theme="@style/MmsTheme"
             android:uiOptions="splitActionBarWhenNarrow"
             android:launchMode="singleTop">
             <intent-filter>
@@ -114,7 +110,7 @@
 
         <activity android:name=".ui.MailBoxMessageContent"
             android:label="@string/message_detail"
-            android:theme="@style/MmsHoloTheme"
+            android:theme="@style/MmsTheme"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:launchMode="singleTop" >
         </activity>
@@ -122,7 +118,7 @@
         <activity android:name=".ui.ComposeMessageActivity"
                   android:configChanges="orientation|screenSize|keyboardHidden"
                   android:windowSoftInputMode="stateHidden|adjustResize"
-                  android:theme="@style/MmsHoloTheme"
+                  android:theme="@style/MmsTheme"
                   android:parentActivityName=".ui.ConversationList"
                   android:launchMode="singleTop" >
             <intent-filter>
@@ -178,13 +174,13 @@
                   android:targetActivity=".ui.ComposeMessageActivity"
                   android:configChanges="orientation|screenSize|keyboardHidden"
                   android:windowSoftInputMode="stateHidden"
-                  android:theme="@style/MmsHoloTheme" >
+                  android:theme="@style/MmsTheme" >
         </activity-alias>
 
         <activity android:name=".ui.ComposeMessageActivityNoLockScreen"
                   android:configChanges="orientation|screenSize|keyboardHidden"
                   android:windowSoftInputMode="stateHidden"
-                  android:theme="@style/MmsHoloTheme"
+                  android:theme="@style/MmsTheme"
                   android:exported="false"
                   android:launchMode="singleTop" >
         </activity>
@@ -206,27 +202,27 @@
         </activity>
 
         <activity android:name=".ui.SlideshowEditActivity"
-            android:theme="@style/MmsHoloTheme"
+            android:theme="@style/MmsTheme"
             android:label="@string/edit_slideshow_activity" />
 
         <activity android:name=".ui.RecipientListActivity"
-            android:theme="@style/MmsHoloTheme"
+            android:theme="@style/MmsTheme"
             android:label="@string/recipient_list_activity" />
 
         <activity android:name=".ui.SlideEditorActivity"
             android:windowSoftInputMode="adjustResize"
-            android:theme="@style/MmsHoloTheme"
+            android:theme="@style/MmsTheme"
             android:label="@string/edit_slide_activity" />
 
         <activity android:name=".ui.SlideshowActivity"
             android:noHistory="true"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:theme="@style/MmsHoloTheme"
+            android:theme="@style/MmsTheme"
             android:label="@string/slideshow_activity">
         </activity>
         <activity android:name=".ui.MobilePaperShowActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:theme="@style/MmsHoloTheme"
+            android:theme="@style/MmsTheme"
             android:label="@string/slideshow_activity">
         </activity>
 
@@ -239,7 +235,7 @@
         </activity>
 
         <activity android:name=".ui.MessagingPreferenceActivity"
-            android:theme="@style/MmsHoloTheme"
+            android:theme="@style/MmsTheme"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/preferences_title" />
 
@@ -282,7 +278,7 @@
         </receiver>
 
         <activity android:name=".ui.ManageSimMessages"
-                  android:theme="@style/MmsHoloTheme"
+                  android:theme="@style/MmsTheme"
                   android:launchMode="singleTop"
                   android:configChanges="orientation|screenSize|keyboardHidden"
                   android:label="@string/sim_manage_messages_title">
@@ -292,7 +288,7 @@
         </activity>
 
         <activity android:name=".ui.ManageMultiSelectAction"
-              android:theme="@style/MmsHoloTheme"
+              android:theme="@style/MmsTheme"
               android:uiOptions="splitActionBarWhenNarrow"
               android:configChanges="orientation|screenSize|keyboardHidden">
         </activity>
@@ -361,13 +357,13 @@
         </activity>
 
         <activity android:name=".ui.SearchActivityExtend"
-            android:theme="@style/MmsHoloTheme"
+            android:theme="@style/MmsTheme"
             android:label="@string/search_title"
             android:configChanges="orientation|screenSize|keyboardHidden">
         </activity>
 
         <activity android:name=".ui.SearchActivity"
-            android:theme="@style/MmsHoloTheme"
+            android:theme="@style/MmsTheme"
             android:label="@string/search"
             android:configChanges="orientation|screenSize|keyboardHidden" >
             <intent-filter>
