@@ -73,4 +73,11 @@
     <color name="solid_white">#ffffffff</color>
 
     <color name="slot_indicator_background">#737373</color>
+
+    <!-- material theme colors -->
+    <color name="mms_theme_color">#0288d1</color>
+    <color name="mms_theme_color_dark">#0277bd</color>
+    <color name="mms_theme_color_accent">#0288d1</color>
+
+    <color name="floating_action_button_icon_color">#ffffff</color>
 </resources>
