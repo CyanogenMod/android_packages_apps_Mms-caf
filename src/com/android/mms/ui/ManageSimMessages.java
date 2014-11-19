@@ -189,6 +189,9 @@ public class ManageSimMessages extends Activity
         @Override
         protected void onQueryComplete(
                 int token, Object cookie, Cursor cursor) {
+            if (mCursor != null) {
+                stopManagingCursor(mCursor);
+            }
             mCursor = cursor;
             if (mCursor != null) {
                 if (!mCursor.moveToFirst()) {
@@ -244,10 +247,6 @@ public class ManageSimMessages extends Activity
 
     private void refreshMessageList() {
         updateState(SHOW_BUSY);
-        if (mCursor != null) {
-            stopManagingCursor(mCursor);
-            mCursor.close();
-        }
         startQuery();
     }
 
