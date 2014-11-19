@@ -42,4 +42,6 @@
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
      <include layout="@layout/banner_sms_promo" />
+
+     <include layout="@layout/floating_action_button" />
 </RelativeLayout>
