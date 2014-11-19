@@ -20,9 +20,12 @@ import android.content.Context;
 import android.text.ClipboardManager;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.ListView;
+import com.android.mms.ui.zoom.ZoomMessageListItem;
+import com.android.mms.ui.zoom.ZoomMessageListView;
 
-public final class MessageListView extends ListView {
+public final class MessageListView extends ZoomMessageListView {
     private OnSizeChangedListener mOnSizeChangedListener;
 
     public MessageListView(Context context) {
@@ -81,5 +84,22 @@ public final class MessageListView extends ListView {
         }
         return INVALID_POSITION;
     }
+
+    /**
+     * This function iterates the existing child views and delegates the zooming work onto the view
+     * itself.
+     *
+     * @param scale {@link java.lang.Float}
+     */
+    public void handleZoomWithScale(float scale) {
+        int viewCount = getChildCount();
+        for (int i = 0; i < viewCount; i++) {
+            View view = getChildAt(i);
+            if (view instanceof ZoomMessageListItem) {
+                ((ZoomMessageListItem) view).handleZoomWithScale(scale);
+            }
+        }
+    }
+
 }
 
