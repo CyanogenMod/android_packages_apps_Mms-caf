@@ -170,6 +170,9 @@ import com.android.mms.ui.MessageListView.OnSizeChangedListener;
 import com.android.mms.ui.MessageUtils.ResizeImageResultCallback;
 import com.android.mms.ui.MultiPickContactGroups;
 import com.android.mms.ui.RecipientsEditor.RecipientContextMenuInfo;
+import com.android.mms.ui.zoom.ZoomGestureOverlayView;
+import com.android.mms.ui.zoom.ZoomGestureOverlayView.IZoomListener;
+import com.android.mms.ui.zoom.ZoomMessageListItem;
 import com.android.mms.util.DraftCache;
 import com.android.mms.util.PhoneNumberFormatter;
 import com.android.mms.util.SendingProgressTokenManager;
@@ -197,7 +200,7 @@ import com.google.android.mms.pdu.SendReq;
  */
 public class ComposeMessageActivity extends Activity
         implements View.OnClickListener, TextView.OnEditorActionListener,
-        MessageStatusListener, Contact.UpdateListener {
+        MessageStatusListener, Contact.UpdateListener, IZoomListener {
     public static final int REQUEST_CODE_ATTACH_IMAGE     = 100;
     public static final int REQUEST_CODE_TAKE_PICTURE     = 101;
     public static final int REQUEST_CODE_ATTACH_VIDEO     = 102;
@@ -341,6 +344,7 @@ public class ComposeMessageActivity extends Activity
     private ImageButton mSendButtonSmsViewSec; // The second sms send button without sim indicator
     private ImageView mIndicatorForSimMmsFir, mIndicatorForSimSmsFir;
     private ImageView mIndicatorForSimMmsSec, mIndicatorForSimSmsSec;
+    private ZoomGestureOverlayView mZoomGestureOverlayView; // overlay for handling zoom
 
     private AttachmentEditor mAttachmentEditor;
     private View mAttachmentEditorScrollView;
@@ -1942,7 +1946,13 @@ public class ComposeMessageActivity extends Activity
 
         resetConfiguration(getResources().getConfiguration());
 
-        setContentView(R.layout.compose_message_activity);
+        View inflate = getLayoutInflater().inflate(R.layout.compose_message_activity, null);
+        mZoomGestureOverlayView = new ZoomGestureOverlayView(this);
+        mZoomGestureOverlayView.addZoomListener(this);
+        mZoomGestureOverlayView.addView(inflate);
+        mZoomGestureOverlayView.setEventsInterceptionEnabled(true);
+        mZoomGestureOverlayView.setGestureVisible(false);
+        setContentView(mZoomGestureOverlayView);
         setProgressBarVisibility(false);
 
         mShowAttachIcon = getResources().getBoolean(R.bool.config_show_attach_icon_always);
@@ -1959,6 +1969,16 @@ public class ComposeMessageActivity extends Activity
 
         if (TRACE) {
             android.os.Debug.startMethodTracing("compose");
+        }
+    }
+
+    @Override
+    public void onZoomWithScale(float scale) {
+        if (mMsgListView != null) {
+            mMsgListView.handleZoomWithScale(scale);
+        }
+        if (mTextEditor != null) {
+            ZoomMessageListItem.zoomViewByScale(this, mTextEditor, scale);
         }
     }
 
@@ -2488,6 +2508,9 @@ public class ComposeMessageActivity extends Activity
     protected void onDestroy() {
         if (TRACE) {
             android.os.Debug.stopMethodTracing();
+        }
+        if (mZoomGestureOverlayView != null) {
+            mZoomGestureOverlayView.removeZoomListener(this);
         }
 
         super.onDestroy();
