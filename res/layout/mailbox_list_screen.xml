@@ -44,11 +44,10 @@
             android:entries="@array/slot_type" />
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dip"
-        android:layout_weight="1"
-        android:orientation="vertical" >
+        android:layout_weight="1">
 
         <ListView
             android:id="@android:id/list"
@@ -70,6 +69,8 @@
             android:paddingStart="16dip"
             android:text="@string/no_message"
             android:textAppearance="?android:attr/textAppearanceMedium" />
-    </LinearLayout>
+
+        <include layout="@layout/floating_action_button" />
+    </RelativeLayout>
 
 </LinearLayout>
