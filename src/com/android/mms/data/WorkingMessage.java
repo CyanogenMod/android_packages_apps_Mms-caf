@@ -1457,6 +1457,12 @@ public class WorkingMessage {
                 if (textOnly) {
                     values.put(Mms.TEXT_ONLY, 1);
                 }
+                if ((TelephonyManager.getDefault().getPhoneCount()) > 1) {
+                    values.put(Mms.PHONE_ID, mCurrentConvPhoneId);
+                } else {
+                    values.put(Mms.PHONE_ID, SubscriptionManager.getPhoneId(
+                            SubscriptionManager.getDefaultDataSubId()));
+                }
                 mmsUri = SqliteWrapper.insert(mActivity, mContentResolver, Mms.Outbox.CONTENT_URI,
                         values);
             }
