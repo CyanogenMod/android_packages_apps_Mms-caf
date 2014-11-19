@@ -65,4 +65,5 @@
     <!-- Extra message options -->
     <string name="message_share">Share</string>
 
+    <string name="start_new_message_button">New message</string>
 </resources>
