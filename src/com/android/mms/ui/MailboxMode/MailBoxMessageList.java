@@ -201,6 +201,15 @@ public class MailBoxMessageList extends ListActivity implements
 
         mHandler = new Handler();
         handleIntent(getIntent());
+
+        View composeButton = findViewById(R.id.floating_action_button);
+        composeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(ComposeMessageActivity.createIntent(
+                        MailBoxMessageList.this, 0));
+            }
+        });
     }
 
     @Override
@@ -727,9 +736,6 @@ public class MailBoxMessageList extends ListActivity implements
                     break;
                 }
                 return true;
-            case R.id.action_compose_new:
-                startActivity(ComposeMessageActivity.createIntent(this, 0));
-                break;
             case R.id.action_settings:
                 Intent intent = new Intent(this, MessagingPreferenceActivity.class);
                 startActivityIfNeeded(intent, -1);
