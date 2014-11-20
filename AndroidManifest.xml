@@ -42,6 +42,9 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INSTALL_DRM" />
     <uses-permission android:name="android.permission.WRITE_APN_SETTINGS" />
+    <uses-permission android:name="android.permission.CHANGE_PHONE_BLACKLIST" />
+    <uses-permission android:name="android.permission.READ_PHONE_BLACKLIST" />
+
     <!-- System apps can access the  receiver through intent-->
     <permission android:name="android.permission.MMS_SEND_OUTBOX_MSG"
                 android:protectionLevel="signatureOrSystem"
