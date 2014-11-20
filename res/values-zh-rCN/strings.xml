@@ -266,6 +266,7 @@
     <string name="status_received" msgid="7264334589461906965">"已收到"</string>
     <string name="status_failed" msgid="1998776666856593544">"失败"</string>
     <string name="status_unread" msgid="8555305495998700198">"未读"</string>
+    <string name="status_deleted_unread">"未读已删除"</string>
     <string name="status_rejected" msgid="2613641949065942678">"已拒绝"</string>
     <string name="recipient_label" msgid="3922667485312634446">"接收者： "</string>
     <string name="status_label" msgid="7283375460919181660">"状态： "</string>
