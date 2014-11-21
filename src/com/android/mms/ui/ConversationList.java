@@ -48,6 +48,7 @@ import android.provider.ContactsContract.Contacts;
 import android.provider.Telephony;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Threads;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.ContextMenu;
@@ -68,6 +69,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -124,6 +126,8 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
     private int mSavedFirstVisiblePosition = AdapterView.INVALID_POSITION;
     private int mSavedFirstItemOffset;
     private ProgressDialog mProgressDialog;
+    private Spinner mFilterSpinner;
+    private Integer mFilterSubId = null;
 
     // keys for extras and icicles
     private final static String LAST_LIST_POS = "last_list_pos";
@@ -204,6 +208,8 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             mSavedFirstItemOffset = 0;
         }
 
+        setupFilterSpinner();
+
         View actionButton = findViewById(R.id.floating_action_button);
         actionButton.setOnClickListener(mComposeClickHandler);
     }
@@ -275,6 +281,39 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                         Gravity.CENTER_VERTICAL | Gravity.RIGHT));
 
         mUnreadConvCount = (TextView)v.findViewById(R.id.unread_conv_count);
+    }
+
+    private void setupFilterSpinner() {
+        TelephonyManager mgr =
+                (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        mFilterSpinner = (Spinner) findViewById(R.id.filterSpinner);
+
+        boolean filterEnabled =
+                getResources().getBoolean(R.bool.enable_filter_threads_by_sim);
+
+        if (filterEnabled && mgr.isMultiSimEnabled()) {
+            mFilterSpinner.setAdapter(new MSimSpinnerAdapter(this));
+            mFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent,
+                                           View view, int position, long id) {
+                    if (position == 0) {
+                        mFilterSubId = null;
+                    } else {
+                        mFilterSubId = position - 1;
+                    }
+                    startAsyncQuery();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    mFilterSubId = null;
+                    startAsyncQuery();
+                }
+            });
+        } else {
+            mFilterSpinner.setVisibility(View.GONE);
+        }
     }
 
     private final ConversationListAdapter.OnContentChangedListener mContentChangedListener =
@@ -503,8 +542,9 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         try {
             ((TextView)(getListView().getEmptyView())).setText(R.string.loading_conversations);
 
-            Conversation.startQueryForAll(mQueryHandler, THREAD_LIST_QUERY_TOKEN);
-            Conversation.startQuery(mQueryHandler, UNREAD_THREADS_QUERY_TOKEN, Threads.READ + "=0");
+            Conversation.startQueryForAll(mQueryHandler, THREAD_LIST_QUERY_TOKEN, mFilterSubId);
+            Conversation.startQuery(mQueryHandler,
+                    UNREAD_THREADS_QUERY_TOKEN, Threads.READ + "=0", mFilterSubId);
         } catch (SQLiteException e) {
             SqliteWrapper.checkSQLiteException(this, e);
         }
