@@ -98,4 +98,6 @@
         <item>600000</item>
         <item>1800000</item>
     </integer-array>
+
+    <bool name="enable_filter_threads_by_sim">false</bool>
 </resources>
