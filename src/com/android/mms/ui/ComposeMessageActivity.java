@@ -4210,7 +4210,7 @@ public class ComposeMessageActivity extends Activity
     }
 
     private void startMsgListQuery(int token) {
-        if (mSendDiscreetMode) {
+        if (mSendDiscreetMode || MessageUtils.isMailboxMode()) {
             return;
         }
         Uri conversationUri = mConversation.getUri();
@@ -4257,7 +4257,8 @@ public class ComposeMessageActivity extends Activity
         mMsgListAdapter.setMsgListItemHandler(mMessageListItemHandler);
         mMsgListView.setAdapter(mMsgListAdapter);
         mMsgListView.setItemsCanFocus(false);
-        mMsgListView.setVisibility(mSendDiscreetMode ? View.INVISIBLE : View.VISIBLE);
+        mMsgListView.setVisibility((mSendDiscreetMode || MessageUtils.isMailboxMode())
+                ? View.INVISIBLE : View.VISIBLE);
         mMsgListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -4459,7 +4460,7 @@ public class ComposeMessageActivity extends Activity
             mScrollOnSend = true;   // in the next onQueryComplete, scroll the list to the end.
         }
         // But bail out if we are supposed to exit after the message is sent.
-        if (mSendDiscreetMode) {
+        if (mSendDiscreetMode || MessageUtils.isMailboxMode()) {
             finish();
         }
     }
