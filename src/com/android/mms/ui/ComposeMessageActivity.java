@@ -2452,6 +2452,10 @@ public class ComposeMessageActivity extends Activity
         // Allow any blocked calls to update the thread's read status.
         mConversation.blockMarkAsRead(false);
 
+        // Simply setting the choice mode causes the previous choice mode to finish and we exit
+        // multi-select mode (if we're in it) and remove all the selections.
+        mMsgListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+
         if (mMsgListAdapter != null) {
             // Close the cursor in the ListAdapter if the activity stopped.
             Cursor cursor = mMsgListAdapter.getCursor();
