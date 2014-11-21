@@ -51,6 +51,10 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         android:showAsAction="never|withText"
         android:title="@string/menu_lock"/>
     <item
+        android:id="@+id/resend"
+        android:showAsAction="never|withText"
+        android:title="@string/menu_resend"/>
+    <item
         android:id="@+id/copy_to_sim"
         android:showAsAction="never|withText"
         android:title="@string/operation_to_card_memory"/>
