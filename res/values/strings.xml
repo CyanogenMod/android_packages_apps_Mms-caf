@@ -535,6 +535,8 @@
     <!-- Status in "Report" window -->
     <string name="status_unread">Unread</string>
     <!-- Status in "Report" window -->
+    <string name="status_deleted_unread">Deleted without being read</string>
+    <!-- Status in "Report" window -->
     <string name="status_rejected">Rejected</string>
     <!-- Label in "Report" window -->
     <string name="recipient_label">Recipient:\u0020</string>
