@@ -333,7 +333,7 @@ public class MessageUtils {
     }
 
     public static String getMessageDetails(Context context, Cursor cursor, int size) {
-        if (cursor == null) {
+        if (cursor == null || cursor.getCount() == 0) {
             return null;
         }
         isLayoutRtl = (TextUtils.getLayoutDirectionFromLocale(Locale.getDefault())

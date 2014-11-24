@@ -235,7 +235,9 @@ public class MobilePaperShowActivity extends Activity {
         String messageDetails = MessageUtils.getMessageDetails(
                 MobilePaperShowActivity.this, mCursor,
                 mSlideModel.getTotalMessageSize());
-        mDetailsText.setText(messageDetails);
+        if (!TextUtils.isEmpty(messageDetails)) {
+            mDetailsText.setText(messageDetails);
+        }
     }
 
     private void drawRootView() {
