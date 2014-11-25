@@ -74,4 +74,6 @@
     <!-- check prefix or not. default is true to on,false to off -->
     <bool name="customize_env_phone_checkidp">false</bool>
 
+    <!-- The default value for pref_key_ringtone -->
+    <string name="pref_defaultValue_notification_ringtone">"content://settings/system/notification_sound"</string>
 </resources>
