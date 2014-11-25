@@ -2488,6 +2488,8 @@ public class ComposeMessageActivity extends Activity
 
             mMsgListAdapter.changeCursor(null);
             mMsgListAdapter.cancelBackgroundLoading();
+            // resets multi select mode
+            getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         }
 
         if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
