@@ -178,6 +178,10 @@ public class TransactionService extends Service implements Observer {
     private ConnectivityManager.NetworkCallback mMmsNetworkCallback = null;
     private NetworkRequest mMmsNetworkRequest = null;
 
+    private static TransactionService sInstance = null;
+    public static TransactionService getInstance() {
+        return sInstance;
+    }
 
     private ConnectivityManager.NetworkCallback  getNetworkCallback(String subId) {
         final String mSubId = subId;
@@ -314,6 +318,7 @@ public class TransactionService extends Service implements Observer {
         if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
             Log.v(TAG, "Creating TransactionService");
         }
+        sInstance = this;
 
         // Start up the thread running the service.  Note that we create a
         // separate thread because the service normally runs in the process's
@@ -397,7 +402,7 @@ public class TransactionService extends Service implements Observer {
         mConnMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (mConnMgr == null || !MmsConfig.isSmsEnabled(getApplicationContext())) {
             endMmsConnectivity();
-            stopSelf(serviceId);
+            stopSelfIfIdle(serviceId);
             return;
         }
         boolean noNetwork = isMmsAllowed();
@@ -632,15 +637,26 @@ public class TransactionService extends Service implements Observer {
         return SubscriptionManager.getDefaultSmsSubId();
     }
 
-    private void stopSelfIfIdle(int startId) {
+    public boolean isIdle() {
         synchronized (mProcessing) {
             if (mProcessing.isEmpty() && mPending.isEmpty()) {
                 if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
-                    Log.v(TAG, "stopSelfIfIdle: STOP!");
+                    Log.v(TAG, "Idle: mProcessing & mPending is empty !");
                 }
-
-                stopSelf(startId);
+                return true;
+            } else {
+                return false;
             }
+        }
+    }
+
+    private void stopSelfIfIdle(int startId) {
+        if (isIdle()) {
+            if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
+                Log.v(TAG, "stopSelfIfIdle: STOP!");
+            }
+
+            stopSelf(startId);
         }
     }
 
@@ -713,7 +729,7 @@ public class TransactionService extends Service implements Observer {
             RetryScheduler.scheduleRetry(getApplicationContext(), uri);
             RetryScheduler.setRetryAlarm(getApplicationContext());
         }
-        stopSelf(serviceId);
+        stopSelfIfIdle(serviceId);
     }
 
     private void updateMsgErrorType(Uri mmsUri, int errorType) {
@@ -764,6 +780,8 @@ public class TransactionService extends Service implements Observer {
         releaseWakeLock();
 
         mServiceHandler.sendEmptyMessage(EVENT_QUIT);
+
+        sInstance = null;
     }
 
     @Override
@@ -1196,7 +1214,7 @@ public class TransactionService extends Service implements Observer {
                                 Log.v(TAG, "Transaction was null. Stopping self: " + serviceId);
                             }
                             endMmsConnectivity();
-                            stopSelf(serviceId);
+                            stopSelfIfIdle(serviceId);
                         }
                     }
                     return;
@@ -1306,7 +1324,7 @@ public class TransactionService extends Service implements Observer {
                         }
                     } else {
                         transaction = null;
-                        stopSelf(serviceId);
+                        stopSelfIfIdle(serviceId);
                     }
                 } catch (IOException e) {
                     Log.w(TAG, e.getMessage(), e);
