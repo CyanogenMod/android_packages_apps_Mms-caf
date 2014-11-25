@@ -244,7 +244,7 @@
 
        <activity android:name=".ui.WwwContextMenuActivity"
             android:label="@string/message_options"
-            android:theme="@android:style/Theme.Holo.Light.Dialog"
+            android:theme="@android:style/Theme.Material.Light.Dialog"
             android:excludeFromRecents="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -353,7 +353,7 @@
         </activity>
 
         <activity android:name=".ui.MessageTemplate"
-                  android:theme="@android:style/Theme.Holo.Light"
+                  android:theme="@android:style/Theme.Material.Light.Dialog"
                   android:launchMode="singleTop"
                   android:label="@string/message_template_title"
                   android:configChanges="orientation|screenSize" >
@@ -458,7 +458,7 @@
              through a notification when appropriate. -->
          <activity
             android:name=".quickmessage.QuickMessagePopup"
-            android:theme="@android:style/Theme.Holo.Dialog"
+            android:theme="@android:style/Theme.Material.Dialog"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTop"
             android:taskAffinity=""
