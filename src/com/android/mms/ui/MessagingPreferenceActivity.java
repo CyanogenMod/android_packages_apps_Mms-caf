@@ -149,6 +149,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private ArrayList<Preference> mSmscPrefList = new ArrayList<Preference>();
     private static final int CONFIRM_CLEAR_SEARCH_HISTORY_DIALOG = 3;
 
+    private AsyncDialog mAsyncDialog;
+
     // Whether or not we are currently enabled for SMS. This field is updated in onResume to make
     // sure we notice if the user has changed the default SMS app.
     private boolean mIsSmsEnabled;
@@ -227,6 +229,10 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     protected void onPause() {
         super.onPause();
         unregisterReceiver(mReceiver);
+
+        if (mAsyncDialog != null) {
+            mAsyncDialog.clearPendingProgressDialog();
+        }
     }
 
     private void loadPrefs() {
@@ -798,6 +804,14 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             public void onNumberSet(int limit) {
                 mSmsRecycler.setMessageLimit(MessagingPreferenceActivity.this, limit);
                 setSmsDisplayLimit();
+                if (mSmsRecycler.checkForThreadsOverLimit(MessagingPreferenceActivity.this)) {
+                    getAsyncDialog().runAsync(new Runnable() {
+                        @Override
+                        public void run() {
+                            mSmsRecycler.deleteOldMessages(MessagingPreferenceActivity.this);
+                        }
+                    }, null, R.string.pref_title_auto_delete);
+                }
             }
     };
 
@@ -806,8 +820,23 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             public void onNumberSet(int limit) {
                 mMmsRecycler.setMessageLimit(MessagingPreferenceActivity.this, limit);
                 setMmsDisplayLimit();
+                if (mMmsRecycler.checkForThreadsOverLimit(MessagingPreferenceActivity.this)) {
+                    getAsyncDialog().runAsync(new Runnable() {
+                        @Override
+                        public void run() {
+                            mMmsRecycler.deleteOldMessages(MessagingPreferenceActivity.this);
+                        }
+                    }, null, R.string.pref_title_auto_delete);
+                }
             }
     };
+
+    AsyncDialog getAsyncDialog() {
+        if (mAsyncDialog == null) {
+            mAsyncDialog = new AsyncDialog(this);
+        }
+        return mAsyncDialog;
+    }
 
     @Override
     protected Dialog onCreateDialog(int id) {
