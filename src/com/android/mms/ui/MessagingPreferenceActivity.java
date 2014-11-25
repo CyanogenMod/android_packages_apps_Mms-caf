@@ -348,10 +348,14 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private void setMessagePreferences() {
         updateSignatureStatus();
 
+        boolean showSmsc = getResources().getBoolean(R.bool.config_show_smsc_pref);
         mSmscPrefCate = (PreferenceCategory) findPreference("pref_key_smsc");
-        showSmscPref();
+        if (showSmsc) {
+            showSmscPref();
+        } else if (mSmscPrefCate != null) {
+            getPreferenceScreen().removePreference(mSmscPrefCate);
+        }
         setMessagePriorityPref();
-
         // Set SIM card SMS management preference
         updateSIMSMSPref();
 
