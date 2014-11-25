@@ -69,7 +69,7 @@ public class VcardModel extends MediaModel {
         }
 
         if (scheme.equals("file")) {
-            mSrc = getFileSrc(uri);
+            mSrc = uri.getLastPathSegment();
         } else if (scheme.equals("content")){
             Cursor c = null;
             try {
@@ -86,11 +86,6 @@ public class VcardModel extends MediaModel {
             }
         }
         initMediaDuration();
-    }
-
-    private String getFileSrc(Uri uri) {
-        String path = uri.toString();
-        return path.substring(path.lastIndexOf('/') + 1);
     }
 
     private Cursor getContentCursor(Uri uri) {
