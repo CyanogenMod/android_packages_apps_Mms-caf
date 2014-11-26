@@ -5459,6 +5459,16 @@ public class ComposeMessageActivity extends Activity
             recordAllSelectedItems();
             switch (item.getItemId()) {
             case R.id.forward:
+                int position = mSelectedPos.get(0).intValue();
+                MessageItem msgItem = getMessageItemByPos(position);
+                if (msgItem != null &&
+                        msgItem.isMms() &&
+                        !isAllowForwardMessage(msgItem)) {
+                    Toast.makeText(ComposeMessageActivity.this,
+                            R.string.forward_size_over,
+                            Toast.LENGTH_SHORT).show();
+                    return false;
+                }
                 forwardMessage();
                 break;
             case R.id.delete:
