@@ -4790,14 +4790,18 @@ public class ComposeMessageActivity extends Activity
                         log("##### onQueryComplete: msg history result for threadId " + tid);
                     }
                     if (tid != mConversation.getThreadId()) {
-                        log("onQueryComplete: msg history query result is for threadId " +
-                                tid + ", but mConversation has threadId " +
-                                mConversation.getThreadId() + " starting a new query");
-                        if (cursor != null) {
-                            cursor.close();
+                        if (mConversation.getThreadId() == 0) {
+                            mConversation.setThreadId(tid);
+                        } else {
+                            log("onQueryComplete: msg history query result is for threadId " +
+                                    tid + ", but mConversation has threadId " +
+                                    mConversation.getThreadId() + " starting a new query");
+                            if (cursor != null) {
+                                cursor.close();
+                            }
+                            startMsgListQuery();
+                            return;
                         }
-                        startMsgListQuery();
-                        return;
                     }
 
                     // check consistency b/t mConversation & mWorkingMessage.mConversation
