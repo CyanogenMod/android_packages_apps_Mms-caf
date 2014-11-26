@@ -5417,6 +5417,12 @@ public class ComposeMessageActivity extends Activity
             copyToClipboard(sBuilder.toString());
         }
 
+        private void resendCheckedMessage() {
+            Cursor c = (Cursor) getListView().getAdapter().getItem(mSelectedPos.get(0));
+            resendMessage(mMsgListAdapter.getCachedMessageItem(c.getString(COLUMN_MSG_TYPE),
+                    c.getLong(COLUMN_ID), c));
+        }
+
         private void copySmsToSim() {
             mMessageItems.clear();
             for (Integer pos : mSelectedPos) {
@@ -5464,6 +5470,9 @@ public class ComposeMessageActivity extends Activity
                 } else {
                     getWorkThread().startWork(WORK_TOKEN_UNLOCK);
                 }
+                break;
+            case R.id.resend:
+                resendCheckedMessage();
                 break;
             case R.id.copy_to_sim:
                 copySmsToSim();
@@ -5651,6 +5660,10 @@ public class ComposeMessageActivity extends Activity
                             .setTitle(
                                     getContext().getString(R.string.menu_lock));
                 }
+
+                // no resend
+                mode.getMenu().findItem(R.id.resend).setVisible(false);
+
                 if (mMmsSelected > 0) {
                     mode.getMenu().findItem(R.id.forward).setVisible(false);
                     mode.getMenu().findItem(R.id.copy_to_sim).setVisible(false);
@@ -5678,6 +5691,7 @@ public class ComposeMessageActivity extends Activity
                                     getContext().getString(R.string.menu_lock));
                 }
 
+                mode.getMenu().findItem(R.id.resend).setVisible(isFailedMessage(position));
                 mode.getMenu().findItem(R.id.forward).setVisible(isMessageForwardable(position));
 
                 if (mMmsSelected > 0) {
@@ -5724,6 +5738,14 @@ public class ComposeMessageActivity extends Activity
             }
 
             return msgItem.isSms() || (msgItem.isDownloaded() && msgItem.mIsForwardable);
+        }
+
+        private boolean isFailedMessage(int position) {
+            MessageItem msgItem = getMessageItemByPos(position);
+            if (msgItem == null) {
+                return false;
+            }
+            return msgItem.isFailedMessage();
         }
 
         @Override
