@@ -264,6 +264,8 @@ public class MobilePaperShowActivity extends Activity {
                     MessageUtils.onMessageContentClick(MobilePaperShowActivity.this, (TextView) v);
                 }
             });
+            contentText.setFocusable(false);
+            contentText.setFocusableInTouchMode(false);
             TextView text = (TextView) view.findViewById(R.id.slide_number_text);
             text.setFocusable(false);
             text.setFocusableInTouchMode(false);
