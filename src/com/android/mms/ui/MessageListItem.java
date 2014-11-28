@@ -308,7 +308,6 @@ public class MessageListItem extends LinearLayout implements
             case DownloadManager.STATE_TRANSIENT_FAILURE:
             case DownloadManager.STATE_PERMANENT_FAILURE:
             default:
-                setLongClickable(true);
                 inflateDownloadControls();
                 mDownloading.setVisibility(View.GONE);
                 mDownloadButton.setVisibility(View.VISIBLE);
