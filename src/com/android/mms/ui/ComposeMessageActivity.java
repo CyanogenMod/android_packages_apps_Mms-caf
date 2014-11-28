@@ -1886,7 +1886,7 @@ public class ComposeMessageActivity extends Activity
         }
         mRecipientsPicker.setOnClickListener(this);
         mRecipientsPickerGroups.setOnClickListener(this);
-
+        mRecipientsEditor.addTextChangedListener(mRecipientsWatcher);
         mRecipientsEditor.setAdapter(new ChipsRecipientAdapter(this));
         mRecipientsEditor.populate(recipients);
         mRecipientsEditor.setOnCreateContextMenuListener(mRecipientsMenuCreateListener);
@@ -2376,9 +2376,6 @@ public class ComposeMessageActivity extends Activity
 
         mIsPickingContact = false;
         addRecipientsListeners();
-        if (isRecipientsEditorVisible()) {
-            mRecipientsEditor.addTextChangedListener(mRecipientsWatcher);
-        }
 
         if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
             log("update title, mConversation=" + mConversation.toString());
@@ -2417,9 +2414,6 @@ public class ComposeMessageActivity extends Activity
         //Contact.stopPresenceObserver();
 
         removeRecipientsListeners();
-        if (isRecipientsEditorVisible()) {
-            mRecipientsEditor.removeTextChangedListener(mRecipientsWatcher);
-        }
 
         // remove any callback to display a progress spinner
         if (mAsyncDialog != null) {
@@ -4645,7 +4639,6 @@ public class ComposeMessageActivity extends Activity
         // and the text editor is not already focused, focus the
         // recipients editor.
         if (isRecipientsEditorVisible()
-                && TextUtils.isEmpty(mRecipientsEditor.getText())
                 && !mTextEditor.isFocused()) {
             mRecipientsEditor.requestFocus();
             return;
@@ -4876,7 +4869,6 @@ public class ComposeMessageActivity extends Activity
                     if (cursor != null && cursor.getCount() == 0
                             && !isRecipientsEditorVisible() && !mSentMessage) {
                         initRecipientsEditor();
-                        mRecipientsEditor.addTextChangedListener(mRecipientsWatcher);
                     }
 
                     // FIXME: freshing layout changes the focused view to an unexpected
