@@ -729,7 +729,11 @@ public class SlideEditorActivity extends Activity {
                 }
 
                 try {
-                    mSlideshowEditor.changeAudio(mPosition, uri);
+                    if (uri != null) {
+                        mSlideshowEditor.changeAudio(mPosition, uri);
+                    } else {
+                        throw new MmsException("uri from activity result data is null");
+                    }
                 } catch (MmsException e) {
                     Log.e(TAG, "add audio failed", e);
                     notifyUser("add music failed");
