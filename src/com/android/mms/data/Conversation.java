@@ -1487,4 +1487,8 @@ public class Conversation {
         }
         return address;
     }
+
+    public void setThreadId(long id) {
+        mThreadId = id;
+    }
 }
