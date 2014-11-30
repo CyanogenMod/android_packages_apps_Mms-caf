@@ -139,34 +139,27 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
     }
 
     private void updateAvatarView() {
-        Drawable avatarDrawable;
-        Drawable sDefaultContactImage = mContext.getResources().getDrawable(
-                R.drawable.ic_contact_picture);
-        Drawable sDefaultContactImageMms = mContext.getResources().getDrawable(
-                R.drawable.ic_contact_picture_mms);
-
-        boolean isDraft = false;
-        if (mMsgType.equals("mms") && mMsgBox == Mms.MESSAGE_BOX_DRAFTS ||
-                mMsgType.equals("sms") && mMsgBox == Sms.MESSAGE_TYPE_DRAFT) {
-            isDraft = true;
-        }
+        int overlayResId;
+        boolean isMms = mMsgType.equals("mms");
+        boolean isDraft = mMsgBox == Mms.MESSAGE_BOX_DRAFTS || mMsgBox == Sms.MESSAGE_TYPE_DRAFT;
 
         if (!isDraft && MessageUtils.isMsimIccCardActive()) {
-            sDefaultContactImage = (mSubscription == MessageUtils.SUB1) ? mContext.getResources()
-                    .getDrawable(R.drawable.ic_contact_picture_card1) : mContext.getResources()
-                    .getDrawable(R.drawable.ic_contact_picture_card2);
-            sDefaultContactImageMms = (mSubscription == MessageUtils.SUB1) ? mContext
-                    .getResources().getDrawable(R.drawable.ic_contact_picture_mms_card1) : mContext
-                    .getResources().getDrawable(R.drawable.ic_contact_picture_mms_card2);
+            if (isMms) {
+                overlayResId = mSubscription == MessageUtils.SUB1
+                        ? R.drawable.quickcontact_overlay_sim1_mms
+                        : R.drawable.quickcontact_overlay_sim2_mms;
+            } else {
+                overlayResId = mSubscription == MessageUtils.SUB1
+                        ? R.drawable.quickcontact_overlay_sim1
+                        : R.drawable.quickcontact_overlay_sim2;
+            }
+        } else if (isMms) {
+            overlayResId = R.drawable.quickcontact_overlay_mms;
+        } else {
+            overlayResId = 0;
         }
 
         Contact contact = Contact.get(mAddress, true);
-        if (mMsgType.equals("mms")) {
-            avatarDrawable = sDefaultContactImageMms;
-        } else {
-            avatarDrawable = sDefaultContactImage;
-        }
-
         if (contact.existsInDatabase()) {
             mAvatarView.assignContactUri(contact.getUri());
         } else if (MessageUtils.isWapPushNumber(contact.getNumber())) {
@@ -176,7 +169,9 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
             mAvatarView.assignContactFromPhone(contact.getNumber(), true);
         }
 
-        mAvatarView.setImageDrawable(avatarDrawable);
+        mAvatarView.setOverlay(overlayResId != 0
+                ? mContext.getResources().getDrawable(overlayResId) : null);
+        contact.bindAvatar(mAvatarView);
         mAvatarView.setVisibility(View.VISIBLE);
     }
 

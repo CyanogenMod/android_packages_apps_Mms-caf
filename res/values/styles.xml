@@ -31,7 +31,25 @@
         <item name="android:actionBarStyle">@style/MmsActionBarStyle</item>
     </style>
 
-    <style name="MmsActionBarStyle" parent="android:Widget.Material.ActionBar">
+    <style name="MmsTheme.NoActionBar">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
+    </style>
+
+    <style name="HeaderTheme" parent="android:ThemeOverlay.Material.Dark.ActionBar">
+        <item name="android:colorAccent">?android:attr/textColorPrimary</item>
+        <item name="android:popupTheme">@android:style/ThemeOverlay.Material.Light</item>
+        <item name="android:spinnerDropDownItemStyle">@style/HeaderSpinnerDropDown</item>
+        <!-- All popups should have light background -->
+        <item name="android:colorBackground">@*android:color/background_material_light</item>
+    </style>
+
+    <style name="HeaderSpinnerDropDown" parent="android:Widget.Material.Light.DropDownItem.Spinner">
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+    </style>
+
+    <style name="MmsActionBarStyle" parent="android:Widget.Material.Light.ActionBar.Solid">
         <item name="android:background">@color/mms_theme_color</item>
         <item name="android:elevation">@dimen/action_bar_elevation</item>
         <!-- Empty icon -->

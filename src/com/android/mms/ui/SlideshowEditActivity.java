@@ -138,7 +138,7 @@ public class SlideshowEditActivity extends ListActivity {
         text.setVisibility(View.VISIBLE);
 
         ImageView image = (ImageView) v.findViewById(R.id.image_preview);
-        image.setImageResource(R.drawable.ic_attach_slideshow_holo_light);
+        image.setImageResource(R.drawable.ic_attach_slideshow);
 
         return v;
     }

@@ -22,27 +22,28 @@
     android:id="@+id/mms_view"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:paddingTop="7dip"
-    android:paddingBottom="7dip">
+    android:minWidth="@dimen/mms_inline_attachment_min_width"
+    android:minHeight="@dimen/mms_inline_attachment_min_height"
+    android:layout_gravity="center_horizontal"
+    android:paddingTop="5dp">
 
     <ImageView
         android:id="@+id/image_view"
-        android:layout_width="@dimen/mms_inline_attachment_size"
-        android:layout_height="@dimen/mms_inline_attachment_size"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:maxWidth="@dimen/mms_inline_attachment_size"
-        android:maxHeight="@dimen/mms_inline_attachment_size"
-        android:adjustViewBounds="false"
-        android:scaleType="centerInside"
-        android:background="@drawable/attachment_selector"
+        android:scaleType="centerCrop"
         android:visibility="visible" />
 
     <ImageButton
         android:id="@+id/play_slideshow_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/mms_play_btn"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:layout_gravity="center"
+        android:background="@null"
+        android:src="@drawable/mms_play_btn"
         android:visibility="gone" />
 
 </FrameLayout>
