@@ -454,7 +454,6 @@ public class ManageMultiSelectAction extends Activity {
                     setupActionBar();
                     mMsgListAdapter = new MessageListAdapter(
                             ManageMultiSelectAction.this, mCursor, mMsgListView, false, null);
-                    mMsgListAdapter.setMultiChoiceMode(true);
                     mMsgListAdapter.setMultiManageMode(mManageMode);
                     mMsgListView.setAdapter(mMsgListAdapter);
                     mMsgListView.setVisibility(View.VISIBLE);

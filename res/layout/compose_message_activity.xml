@@ -64,6 +64,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dip"
             android:layout_weight="1.0"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             android:transcriptMode="disabled"
             android:smoothScrollbar="false"
             android:stackFromBottom="true"
@@ -72,7 +74,7 @@
             android:layout_marginBottom="1dip"
             android:cacheColorHint="@android:color/white"
             android:scrollbarAlwaysDrawVerticalTrack="false"
-            android:scrollbarStyle="insideOverlay"
+            android:scrollbarStyle="outsideOverlay"
             android:paddingBottom="@dimen/input_text_height_adjusted"
         />
 
