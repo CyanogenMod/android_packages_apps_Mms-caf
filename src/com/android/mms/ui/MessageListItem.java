@@ -30,11 +30,15 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.sqlite.SqliteWrapper;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Paint.FontMetricsInt;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
@@ -42,6 +46,8 @@ import android.provider.Browser;
 import android.provider.ContactsContract.Profile;
 import android.provider.Telephony.Sms;
 import android.provider.Telephony.Mms;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.SubscriptionManager;
 import android.telephony.SubInfoRecord;
@@ -65,11 +71,11 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Checkable;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.QuickContactBadge;
 import android.widget.TextView;
 
 import com.android.mms.LogTag;
@@ -127,19 +133,16 @@ public class MessageListItem extends ZoomMessageListItem implements
     private ImageButton mSlideShowButton;
     private TextView mSimMessageAddress;
     private TextView mBodyTextView;
-    private TextView mBodyButtomTextView;
-    private TextView mBodyTopTextView;
     private Button mDownloadButton;
     private View mDownloading;
     private LinearLayout mMmsLayout;
-    private CheckBox mChecked;
     private Handler mHandler;
     private MessageItem mMessageItem;
     private String mDefaultCountryIso;
     private TextView mDateView;
     public View mMessageBlock;
-    private QuickContactDivot mAvatar;
-    static private Drawable sDefaultContactImage;
+    private QuickContactBadge mAvatar;
+    static private RoundedBitmapDrawable sDefaultContactImage;
     private Presenter mPresenter;
     private int mPosition;      // for debugging
     private ImageLoadedCallback mImageLoadedCallback;
@@ -147,23 +150,22 @@ public class MessageListItem extends ZoomMessageListItem implements
     private int mManageMode;
 
     public MessageListItem(Context context) {
-        super(context);
-        mDefaultCountryIso = MmsApp.getApplication().getCurrentCountryIso();
-
-        if (sDefaultContactImage == null) {
-            sDefaultContactImage = context.getResources().getDrawable(R.drawable.ic_contact_picture);
-        }
+        this(context, null);
     }
 
     public MessageListItem(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        int color = mContext.getResources().getColor(R.color.timestamp_color);
-        mColorSpan = new ForegroundColorSpan(color);
+        Resources res = context.getResources();
+        mColorSpan = new ForegroundColorSpan(res.getColor(R.color.timestamp_color));
         mDefaultCountryIso = MmsApp.getApplication().getCurrentCountryIso();
 
         if (sDefaultContactImage == null) {
-            sDefaultContactImage = context.getResources().getDrawable(R.drawable.ic_contact_picture);
+            Bitmap defaultImage = BitmapFactory.decodeResource(res, R.drawable.ic_contact_picture);
+            sDefaultContactImage = RoundedBitmapDrawableFactory.create(res, defaultImage);
+            sDefaultContactImage.setAntiAlias(true);
+            sDefaultContactImage.setCornerRadius(
+                    Math.max(defaultImage.getWidth() / 2, defaultImage.getHeight() / 2));
         }
     }
 
@@ -171,24 +173,21 @@ public class MessageListItem extends ZoomMessageListItem implements
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mBodyTopTextView = (TextView) findViewById(R.id.text_view_top);
-        mBodyTopTextView.setVisibility(View.GONE);
-        mBodyButtomTextView = (TextView) findViewById(R.id.text_view_buttom);
-        mBodyButtomTextView.setVisibility(View.GONE);
+        mBodyTextView = (TextView) findViewById(R.id.text_view);
         mDateView = (TextView) findViewById(R.id.date_view);
         mLockedIndicator = (ImageView) findViewById(R.id.locked_indicator);
         mDeliveredIndicator = (ImageView) findViewById(R.id.delivered_indicator);
         mDetailsIndicator = (ImageView) findViewById(R.id.details_indicator);
-        mAvatar = (QuickContactDivot) findViewById(R.id.avatar);
+        mAvatar = (QuickContactBadge) findViewById(R.id.avatar);
         mSimIndicatorView = (ImageView) findViewById(R.id.sim_indicator_icon);
         mMessageBlock = findViewById(R.id.message_block);
         mSimMessageAddress = (TextView) findViewById(R.id.sim_message_address);
         mMmsLayout = (LinearLayout) findViewById(R.id.mms_layout_view_parent);
-        mChecked = (CheckBox) findViewById(R.id.selected_check);
+
+        mAvatar.setOverlay(null);
 
         // Add the views to be managed by the zoom control
-        addZoomableTextView(mBodyTopTextView);
-        addZoomableTextView(mBodyButtomTextView);
+        addZoomableTextView(mBodyTextView);
         addZoomableTextView(mDateView);
         addZoomableTextView(mSimMessageAddress);
 
@@ -196,22 +195,11 @@ public class MessageListItem extends ZoomMessageListItem implements
 
     // add for setting the background according to whether the item is selected
     public void markAsSelected(boolean selected) {
-        if (selected) {
-            if (mChecked != null) {
-                mChecked.setChecked(selected);
-            }
-            mMessageBlock.getBackground().setAlpha(ALPHA_TRANSPARENT);
-            mMmsLayout.setBackgroundResource(R.drawable.list_selected_holo_light);
-        } else {
-            if (mChecked != null) {
-                mChecked.setChecked(selected);
-            }
-            mMessageBlock.setBackgroundResource(R.drawable.listitem_background);
-            mMmsLayout.setBackgroundResource(R.drawable.listitem_background);
-        }
+        mMessageBlock.setSelected(selected);
     }
 
-    public void bind(MessageItem msgItem, boolean convHasMultiRecipients, int position) {
+    public void bind(MessageItem msgItem, int accentColor,
+            boolean convHasMultiRecipients, int position) {
         if (DEBUG) {
             Log.v(TAG, "bind for item: " + position + " old: " +
                    (mMessageItem != null ? mMessageItem.toString() : "NULL" ) +
@@ -219,12 +207,6 @@ public class MessageListItem extends ZoomMessageListItem implements
         }
         boolean sameItem = mMessageItem != null && mMessageItem.mMsgId == msgItem.mMsgId;
         mMessageItem = msgItem;
-        if (mMessageItem.isMms() && mMessageItem.mLayoutType == LayoutModel.LAYOUT_TOP_TEXT) {
-            mBodyTextView = mBodyTopTextView;
-        } else {
-            mBodyTextView = mBodyButtomTextView;
-        }
-        mBodyTextView.setVisibility(View.VISIBLE);
         mPosition = position;
         mMultiRecipients = convHasMultiRecipients;
 
@@ -243,7 +225,22 @@ public class MessageListItem extends ZoomMessageListItem implements
                 break;
         }
 
+        tintBackground(mMessageBlock.getBackground(), accentColor);
         customSIMSmsView();
+    }
+
+    private void tintBackground(Drawable background, int color) {
+        if (background instanceof LayerDrawable) {
+            Drawable base = ((LayerDrawable) background).findDrawableByLayerId(R.id.base_layer);
+            if (base instanceof StateListDrawable) {
+                StateListDrawable sld = (StateListDrawable) base;
+                base = sld.getStateDrawable(sld.getStateDrawableIndex(null));
+
+            }
+            if (base != null) {
+                base.setTint(color);
+            }
+        }
     }
 
     public void unbind() {
@@ -405,7 +402,7 @@ public class MessageListItem extends ZoomMessageListItem implements
         Drawable avatarDrawable;
         if (isSelf || !TextUtils.isEmpty(addr)) {
             Contact contact = isSelf ? Contact.getMe(false) : Contact.get(addr, false);
-            avatarDrawable = contact.getAvatar(mContext, sDefaultContactImage);
+            contact.bindAvatar(mAvatar);
 
             if (isSelf) {
                 mAvatar.assignContactUri(Profile.CONTENT_URI);
@@ -420,9 +417,8 @@ public class MessageListItem extends ZoomMessageListItem implements
                 }
             }
         } else {
-            avatarDrawable = sDefaultContactImage;
+            mAvatar.setImageDrawable(sDefaultContactImage);
         }
-        mAvatar.setImageDrawable(avatarDrawable);
     }
 
     public TextView getBodyTextView() {
@@ -636,7 +632,10 @@ public class MessageListItem extends ZoomMessageListItem implements
         showMmsView(true);
 
         try {
-            mImageView.setImageBitmap(bitmap);
+            RoundedBitmapDrawable drawable =
+                    RoundedBitmapDrawableFactory.create(getResources(), bitmap);
+            drawable.setCornerRadius(MmsConfig.getMmsCornerRadius());
+            mImageView.setImageDrawable(drawable);
             mImageView.setVisibility(VISIBLE);
         } catch (java.lang.OutOfMemoryError e) {
             Log.e(TAG, "setImage: out of memory: ", e);
@@ -1017,16 +1016,9 @@ public class MessageListItem extends ZoomMessageListItem implements
     }
 
     @Override
-    public void setChecked(boolean arg0) {
-        mIsCheck = arg0;
-        if (mIsCheck) {
-            mMessageBlock.getBackground().setAlpha(ALPHA_TRANSPARENT);
-            mMmsLayout
-                    .setBackgroundResource(R.drawable.list_selected_holo_light);
-        } else {
-            mMessageBlock.setBackgroundResource(R.drawable.listitem_background);
-            mMmsLayout.setBackgroundResource(R.drawable.listitem_background);
-        }
+    public void setChecked(boolean checked) {
+        mIsCheck = checked;
+        mMessageBlock.setSelected(checked);
     }
 
     @Override
