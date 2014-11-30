@@ -1143,25 +1143,21 @@ public class MessagingNotification {
             title = context.getString(R.string.message_count_notification, messageCount);
         } else {    // same thread, single or multiple messages
             title = mostRecentNotification.mTitle;
-            BitmapDrawable contactDrawable = (BitmapDrawable)mostRecentNotification.mSender
-                    .getAvatar(context, null);
-            if (contactDrawable != null) {
+            avatar = mostRecentNotification.mSender.getAvatar(context);
+            if (avatar != null) {
                 // Show the sender's avatar as the big icon. Contact bitmaps are 96x96 so we
                 // have to scale 'em up to 128x128 to fill the whole notification large icon.
-                avatar = contactDrawable.getBitmap();
+                final int idealIconHeight =
+                    res.getDimensionPixelSize(android.R.dimen.notification_large_icon_height);
+                final int idealIconWidth =
+                        res.getDimensionPixelSize(android.R.dimen.notification_large_icon_width);
+                if (avatar.getHeight() < idealIconHeight) {
+                    // Scale this image to fit the intended size
+                    avatar = Bitmap.createScaledBitmap(
+                            avatar, idealIconWidth, idealIconHeight, true);
+                }
                 if (avatar != null) {
-                    final int idealIconHeight =
-                        res.getDimensionPixelSize(android.R.dimen.notification_large_icon_height);
-                    final int idealIconWidth =
-                         res.getDimensionPixelSize(android.R.dimen.notification_large_icon_width);
-                    if (avatar.getHeight() < idealIconHeight) {
-                        // Scale this image to fit the intended size
-                        avatar = Bitmap.createScaledBitmap(
-                                avatar, idealIconWidth, idealIconHeight, true);
-                    }
-                    if (avatar != null) {
-                        noti.setLargeIcon(avatar);
-                    }
+                    noti.setLargeIcon(avatar);
                 }
             }
 

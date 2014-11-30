@@ -93,6 +93,8 @@ public class SlideshowEditActivity extends ListActivity {
         mList.addFooterView(mAddSlideItem);
         mAddSlideItem.setVisibility(View.GONE);
 
+        getActionBar().setTitle(R.string.edit_slideshow_activity);
+
         if (icicle != null) {
             // Retrieve previously saved state of this activity.
             mState = icicle.getBundle(STATE);
@@ -138,7 +140,7 @@ public class SlideshowEditActivity extends ListActivity {
         text.setVisibility(View.VISIBLE);
 
         ImageView image = (ImageView) v.findViewById(R.id.image_preview);
-        image.setImageResource(R.drawable.ic_attach_slideshow_holo_light);
+        image.setVisibility(View.INVISIBLE);
 
         return v;
     }

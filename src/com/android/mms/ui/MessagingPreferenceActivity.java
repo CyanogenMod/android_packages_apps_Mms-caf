@@ -826,14 +826,16 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                     mSmsRecycler.getMessageLimit(this),
                     mSmsRecycler.getMessageMinLimit(),
                     mSmsRecycler.getMessageMaxLimit(),
-                    R.string.pref_title_sms_delete).show();
+                    R.string.pref_title_sms_delete,
+                    R.string.pref_messages_to_save).show();
         } else if (preference == mMmsLimitPref) {
             new NumberPickerDialog(this,
                     mMmsLimitListener,
                     mMmsRecycler.getMessageLimit(this),
                     mMmsRecycler.getMessageMinLimit(),
                     mMmsRecycler.getMessageMaxLimit(),
-                    R.string.pref_title_mms_delete).show();
+                    R.string.pref_title_mms_delete,
+                    R.string.pref_messages_to_save).show();
         } else if (preference == mSmsTemplate) {
             startActivity(new Intent(this, MessageTemplate.class));
         } else if (preference == mManageSimPref) {

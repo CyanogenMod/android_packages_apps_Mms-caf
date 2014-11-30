@@ -40,10 +40,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
 
 import com.android.ex.chips.DropdownChipLayouter;
 import com.android.ex.chips.RecipientEditTextView;
+import com.android.ex.chips.RecipientEntry;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.data.Contact;
@@ -136,6 +138,15 @@ public class RecipientsEditor extends RecipientEditTextView {
             @Override
             protected int getItemLayoutResId(AdapterType type) {
                 return R.layout.mms_chips_recipient_dropdown_item;
+            }
+            @Override
+            protected void bindIconToView(boolean showImage, RecipientEntry entry,
+                    ImageView view, AdapterType type) {
+                if (view != null && !showImage) {
+                    view.setVisibility(View.INVISIBLE);
+                } else {
+                    super.bindIconToView(showImage, entry, view, type);
+                }
             }
         });
     }
