@@ -43,7 +43,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         android:title="@string/menu_delete_msg"/>
     <item
         android:id="@+id/copy"
-        android:icon="@drawable/ic_menu_copy_holo_dark"
+        android:icon="@drawable/ic_menu_copy"
         android:showAsAction="ifRoom|withText"
         android:title="@string/menu_copy_to"/>
     <item
@@ -66,5 +66,8 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         android:id="@+id/save_attachment"
         android:showAsAction="never|withText"
         android:title="@string/copy_to_sdcard"/>
-
+    <item
+        android:id="@+id/selection_toggle"
+        android:showAsAction="never|withText"
+        android:title="@string/selected_all" />
 </menu>

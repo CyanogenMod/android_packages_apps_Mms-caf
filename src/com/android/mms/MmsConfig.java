@@ -24,6 +24,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.preference.PreferenceManager;
 import android.provider.Telephony;
@@ -114,6 +115,8 @@ public class MmsConfig {
 
     private static int MAX_SLIDE_NUM = 10;
 
+    private static float sMmsCornerRadius = 5;
+
     public static void init(Context context) {
         if (LOCAL_LOGV) {
             Log.v(TAG, "MmsConfig.init()");
@@ -124,8 +127,9 @@ public class MmsConfig {
 
         loadMmsSettings(context);
 
-        MAX_SLIDE_NUM = context.getResources().getInteger(R.integer.max_slide_num);
-
+        final Resources res = context.getResources();
+        MAX_SLIDE_NUM = res.getInteger(R.integer.max_slide_num);
+        sMmsCornerRadius = res.getDimension(R.dimen.mms_image_corner_radius);
     }
 
     public static int getMaxSlideNumber() {
@@ -277,6 +281,10 @@ public class MmsConfig {
 
     public static int getMaxSizeScaleForPendingMmsAllowed() {
         return mMaxSizeScaleForPendingMmsAllowed;
+    }
+
+    public static float getMmsCornerRadius() {
+        return sMmsCornerRadius;
     }
 
     public static boolean isAliasEnabled() {

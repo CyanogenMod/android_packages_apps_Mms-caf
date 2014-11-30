@@ -21,14 +21,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="?android:attr/listPreferredItemHeight"
-    android:paddingTop="1dip"
-    android:paddingBottom="1dip"
-    android:paddingStart="9dip"
-    android:paddingEnd="9dip">
+    android:minHeight="?android:attr/listPreferredItemHeightSmall"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp">
 
     <ImageView android:id="@+id/icon"
-        android:paddingEnd="9dip"
+        android:paddingEnd="16dip"
         android:layout_gravity="center_vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
@@ -37,7 +35,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_gravity="center_horizontal|center_vertical" />
+        android:textAppearance="?android:attr/textAppearanceListItemSmall"
+        android:textColor="?android:attr/textColorAlertDialogListItem"
+        android:layout_gravity="center_vertical" />
 </LinearLayout>
 
