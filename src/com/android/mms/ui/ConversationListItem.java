@@ -18,9 +18,14 @@
 package com.android.mms.ui;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Typeface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -59,7 +64,7 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
     private View mErrorIndicator;
     private QuickContactBadge mAvatarView;
 
-    static private Drawable sDefaultContactImage;
+    static private RoundedBitmapDrawable sDefaultContactImage;
 
     // For posting UI update Runnables from other threads:
     private Handler mHandler = new Handler();
@@ -76,7 +81,12 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         super(context, attrs);
 
         if (sDefaultContactImage == null) {
-            sDefaultContactImage = context.getResources().getDrawable(R.drawable.ic_contact_picture);
+            Resources res = context.getResources();
+            Bitmap defaultImage = BitmapFactory.decodeResource(res, R.drawable.ic_contact_picture);
+            sDefaultContactImage = RoundedBitmapDrawableFactory.create(res, defaultImage);
+            sDefaultContactImage.setAntiAlias(true);
+            sDefaultContactImage.setCornerRadius(
+                    Math.max(defaultImage.getWidth() / 2, defaultImage.getHeight() / 2));
         }
     }
 
@@ -91,6 +101,7 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         mAttachmentView = findViewById(R.id.attachment);
         mErrorIndicator = findViewById(R.id.error);
         mAvatarView = (QuickContactBadge) findViewById(R.id.avatar);
+        mAvatarView.setOverlay(null);
     }
 
     public Conversation getConversation() {
@@ -202,7 +213,7 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         Drawable avatarDrawable;
         if (mConversation.getRecipients().size() == 1) {
             Contact contact = mConversation.getRecipients().get(0);
-            avatarDrawable = contact.getAvatar(mContext, sDefaultContactImage);
+            contact.bindAvatar(mAvatarView);
 
             if (contact.existsInDatabase()) {
                 mAvatarView.assignContactUri(contact.getUri());
@@ -214,10 +225,9 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
             }
         } else {
             // TODO get a multiple recipients asset (or do something else)
-            avatarDrawable = sDefaultContactImage;
+            mAvatarView.setImageDrawable(sDefaultContactImage);
             mAvatarView.assignContactUri(null);
         }
-        mAvatarView.setImageDrawable(avatarDrawable);
         mAvatarView.setVisibility(View.VISIBLE);
     }
 
@@ -241,8 +251,6 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         //if (DEBUG) Log.v(TAG, "bind()");
 
         mConversation = conversation;
-
-        updateBackground();
 
         LayoutParams attachmentLayout = (LayoutParams)mAttachmentView.getLayoutParams();
         boolean hasError = conversation.hasError();
@@ -273,29 +281,19 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         Contact.addListener(this);
 
         // Subject
-        mSubjectView.setText(conversation.getSnippet());
-        LayoutParams subjectLayout = (LayoutParams)mSubjectView.getLayoutParams();
-        // We have to make the subject left of whatever optional items are shown on the right.
-        subjectLayout.addRule(RelativeLayout.START_OF, hasAttachment ? R.id.attachment :
-            (hasError ? R.id.error : R.id.date));
+        final String snippet = conversation.getSnippet();
+        if (mConversation.hasUnreadMessages()) {
+            SpannableStringBuilder buf = new SpannableStringBuilder(snippet);
+            buf.setSpan(STYLE_BOLD, 0, buf.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+            mSubjectView.setText(buf);
+        } else {
+            mSubjectView.setText(snippet);
+        }
 
         // Transmission error indicator.
         mErrorIndicator.setVisibility(hasError ? VISIBLE : GONE);
 
         updateAvatarView();
-    }
-
-    private void updateBackground() {
-        int backgroundId;
-        if (mConversation.isChecked()) {
-            backgroundId = R.drawable.list_selected_holo_light;
-        } else if (mConversation.hasUnreadMessages()) {
-            backgroundId = R.drawable.conversation_item_background_unread;
-        } else {
-            backgroundId = R.drawable.conversation_item_background_read;
-        }
-        Drawable background = mContext.getResources().getDrawable(backgroundId);
-        setBackground(background);
     }
 
     public final void unbind() {
@@ -308,7 +306,7 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
 
     public void setChecked(boolean checked) {
         mConversation.setIsChecked(checked);
-        updateBackground();
+        setActivated(checked);
     }
 
     public boolean isChecked() {
