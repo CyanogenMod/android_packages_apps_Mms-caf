@@ -24,11 +24,13 @@ import org.xmlpull.v1.XmlPullParserException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.preference.PreferenceManager;
 import android.provider.Telephony;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.TypedValue;
 
 import com.android.internal.telephony.TelephonyProperties;
 import com.android.mms.ui.MessageUtils;
@@ -114,6 +116,8 @@ public class MmsConfig {
 
     private static int MAX_SLIDE_NUM = 10;
 
+    private static float sMmsCornerRadius = 5;
+
     public static void init(Context context) {
         if (LOCAL_LOGV) {
             Log.v(TAG, "MmsConfig.init()");
@@ -124,7 +128,12 @@ public class MmsConfig {
 
         loadMmsSettings(context);
 
-        MAX_SLIDE_NUM = context.getResources().getInteger(R.integer.max_slide_num);
+        Resources r = context.getResources();
+        MAX_SLIDE_NUM = r.getInteger(R.integer.max_slide_num);
+
+        float radiusDips = r.getDimension(R.dimen.mms_image_corner_radius);
+        sMmsCornerRadius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                radiusDips, r.getDisplayMetrics());
 
     }
 
@@ -277,6 +286,10 @@ public class MmsConfig {
 
     public static int getMaxSizeScaleForPendingMmsAllowed() {
         return mMaxSizeScaleForPendingMmsAllowed;
+    }
+
+    public static float getMmsCornerRadius() {
+        return sMmsCornerRadius;
     }
 
     public static boolean isAliasEnabled() {
