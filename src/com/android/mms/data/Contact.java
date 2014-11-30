@@ -16,8 +16,6 @@ import android.database.Cursor;
 import android.database.sqlite.SqliteWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -28,10 +26,15 @@ import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.Presence;
 import android.provider.ContactsContract.Profile;
 import android.provider.Telephony.Mms;
+import android.support.v7.graphics.Palette;
 import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.ImageView;
 
+import com.android.contacts.common.ContactPhotoManager;
+import com.android.contacts.common.ContactPhotoManager.DefaultImageRequest;
+import com.android.contacts.common.lettertiles.LetterTileDrawable;
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
 import com.android.mms.R;
@@ -47,6 +50,7 @@ public class Contact {
     private static final int CONTACT_METHOD_ID_UNKNOWN = -1;
     private static final String TAG = LogTag.TAG;
     private static ContactsCache sContactCache;
+    private static ContactPhotoManager sContactPhotoManager;
     private static final String SELF_ITEM_KEY = "Self_Item_Key";
 
 //    private static final ContentObserver sContactsObserver = new ContentObserver(new Handler()) {
@@ -84,10 +88,12 @@ public class Contact {
     private long mRecipientId;       // used to find the Recipient cache entry
     private String mLabel;
     private long mPersonId;
+    private long mPhotoId;
     private int mPresenceResId;      // TODO: make this a state instead of a res ID
     private String mPresenceText;
-    private BitmapDrawable mAvatar;
+    private Bitmap mAvatar;
     private byte [] mAvatarData;
+    private int mAccentColor;
     private boolean mIsStale;
     private boolean mQueryPending;
     private boolean mIsMe;          // true if this contact is me!
@@ -120,18 +126,19 @@ public class Contact {
         mNumberIsModified = false;
         mLabel = "";
         mPersonId = 0;
+        mPhotoId = 0;
         mPresenceResId = 0;
         mIsStale = true;
         mSendToVoicemail = false;
     }
     @Override
     public String toString() {
-        return String.format("{ number=%s, name=%s, nameAndNumber=%s, label=%s, person_id=%d, hash=%d method_id=%d }",
+        return String.format("{ number=%s, name=%s, nameAndNumber=%s, label=%s, person_id=%d, photo_id=%d, hash=%d method_id=%d }",
                 (mNumber != null ? mNumber : "null"),
                 (mName != null ? mName : "null"),
                 (mNameAndNumber != null ? mNameAndNumber : "null"),
                 (mLabel != null ? mLabel : "null"),
-                mPersonId, hashCode(),
+                mPersonId, mPhotoId, hashCode(),
                 mContactMethodId);
     }
 
@@ -288,6 +295,11 @@ public class Contact {
         return ContentUris.withAppendedId(Contacts.CONTENT_URI, mPersonId);
     }
 
+    public synchronized void bindAvatar(ImageView view) {
+        sContactPhotoManager.loadThumbnail(view, mPhotoId, false, true,
+                new DefaultImageRequest(getName(), getUri().toString(), true));
+    }
+
     public synchronized int getPresenceResId() {
         return mPresenceResId;
     }
@@ -349,14 +361,38 @@ public class Contact {
         }
     }
 
-    public synchronized Drawable getAvatar(Context context, Drawable defaultValue) {
+    public synchronized Bitmap getAvatar(Context context) {
         if (mAvatar == null) {
             if (mAvatarData != null) {
-                Bitmap b = BitmapFactory.decodeByteArray(mAvatarData, 0, mAvatarData.length);
-                mAvatar = new BitmapDrawable(context.getResources(), b);
+                mAvatar = BitmapFactory.decodeByteArray(mAvatarData, 0, mAvatarData.length);
             }
         }
-        return mAvatar != null ? mAvatar : defaultValue;
+        return mAvatar;
+    }
+
+    public int getAccentColor(Context context) {
+        synchronized (this) {
+            if (mAccentColor != 0) {
+                return mAccentColor;
+            }
+        }
+
+        Bitmap avatar = getAvatar(context);
+        if (avatar != null) {
+            final Palette palette = Palette.generate(avatar, 24);
+            if (palette != null && palette.getVibrantSwatch() != null) {
+                synchronized (this) {
+                    mAccentColor = palette.getVibrantSwatch().getRgb();
+                    return mAccentColor;
+                }
+            }
+        }
+        LetterTileDrawable lt = new LetterTileDrawable(context, null);
+        lt.setContactDetails(getName(), getUri().toString());
+        synchronized (this) {
+            mAccentColor = lt.getColor();
+            return mAccentColor;
+        }
     }
 
     public static void init(final Context context) {
@@ -364,6 +400,7 @@ public class Contact {
             sContactCache.mTaskQueue.mWorkerThread.interrupt();
         }
         sContactCache = new ContactsCache(context);
+        sContactPhotoManager = ContactPhotoManager.getInstance(context);
 
         RecipientIdCache.init(context);
 
@@ -432,7 +469,8 @@ public class Contact {
                 Phone.CONTACT_PRESENCE,         // 5
                 Phone.CONTACT_STATUS,           // 6
                 Phone.NORMALIZED_NUMBER,        // 7
-                Contacts.SEND_TO_VOICEMAIL      // 8
+                Phone.PHOTO_ID,                 // 8
+                Contacts.SEND_TO_VOICEMAIL      // 9
         };
 
         private static final int PHONE_ID_COLUMN = 0;
@@ -443,7 +481,8 @@ public class Contact {
         private static final int CONTACT_PRESENCE_COLUMN = 5;
         private static final int CONTACT_STATUS_COLUMN = 6;
         private static final int PHONE_NORMALIZED_NUMBER = 7;
-        private static final int SEND_TO_VOICEMAIL = 8;
+        private static final int CONTACT_PHOTO_ID_COLUMN = 8;
+        private static final int SEND_TO_VOICEMAIL = 9;
 
         private static final String[] SELF_PROJECTION = new String[] {
                 Phone._ID,                      // 0
@@ -465,14 +504,16 @@ public class Contact {
                 Email.CONTACT_PRESENCE,       // 2
                 Email.CONTACT_ID,             // 3
                 Phone.DISPLAY_NAME,           // 4
-                Contacts.SEND_TO_VOICEMAIL    // 5
+                Email.PHOTO_ID,               // 5
+                Contacts.SEND_TO_VOICEMAIL    // 6
         };
         private static final int EMAIL_ID_COLUMN = 0;
         private static final int EMAIL_NAME_COLUMN = 1;
         private static final int EMAIL_STATUS_COLUMN = 2;
         private static final int EMAIL_CONTACT_ID_COLUMN = 3;
         private static final int EMAIL_CONTACT_NAME_COLUMN = 4;
-        private static final int EMAIL_SEND_TO_VOICEMAIL_COLUMN = 5;
+        private static final int EMAIL_PHOTO_ID_COLUMN = 5;
+        private static final int EMAIL_SEND_TO_VOICEMAIL_COLUMN = 6;
 
         private final Context mContext;
 
@@ -687,6 +728,13 @@ public class Contact {
                 return true;
             }
 
+            if (orig.mPhotoId != newContactData.mPhotoId) {
+                if (Log.isLoggable(LogTag.CONTACT, Log.DEBUG)) {
+                    Log.d(TAG, "photo id changed");
+                }
+                return true;
+            }
+
             if (orig.mPresenceResId != newContactData.mPresenceResId) {
                 if (Log.isLoggable(LogTag.CONTACT, Log.DEBUG)) {
                     Log.d(TAG, "presence changed");
@@ -741,6 +789,7 @@ public class Contact {
                     c.mNumber = entry.mNumber;
                     c.mLabel = entry.mLabel;
                     c.mPersonId = entry.mPersonId;
+                    c.mPhotoId = entry.mPhotoId;
                     c.mPresenceResId = entry.mPresenceResId;
                     c.mPresenceText = entry.mPresenceText;
                     c.mAvatarData = entry.mAvatarData;
@@ -928,6 +977,7 @@ public class Contact {
                 contact.mLabel = cursor.getString(PHONE_LABEL_COLUMN);
                 contact.mName = cursor.getString(CONTACT_NAME_COLUMN);
                 contact.mPersonId = cursor.getLong(CONTACT_ID_COLUMN);
+                contact.mPhotoId = cursor.getLong(CONTACT_PHOTO_ID_COLUMN);
                 contact.mPresenceResId = getPresenceIconResourceId(
                         cursor.getInt(CONTACT_PRESENCE_COLUMN));
                 contact.mPresenceText = cursor.getString(CONTACT_STATUS_COLUMN);
@@ -1042,6 +1092,7 @@ public class Contact {
                             entry.mPresenceResId = getPresenceIconResourceId(
                                     cursor.getInt(EMAIL_STATUS_COLUMN));
                             entry.mPersonId = cursor.getLong(EMAIL_CONTACT_ID_COLUMN);
+                            entry.mPhotoId = cursor.getLong(EMAIL_PHOTO_ID_COLUMN);
                             entry.mSendToVoicemail =
                                     cursor.getInt(EMAIL_SEND_TO_VOICEMAIL_COLUMN) == 1;
 
@@ -1065,7 +1116,6 @@ public class Contact {
                             synchronized (entry) {
                                 entry.mAvatarData = data;
                             }
-
                             break;
                         }
                     }

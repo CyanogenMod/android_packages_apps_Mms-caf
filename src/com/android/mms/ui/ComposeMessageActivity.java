@@ -55,6 +55,8 @@ import java.util.regex.Pattern;
 import java.util.Set;
 
 import android.R.integer;
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -78,7 +80,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SqliteWrapper;
 import android.drm.DrmStore;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -145,6 +149,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Button;
 
+import com.android.contacts.common.util.MaterialColorMapUtils;
+import com.android.contacts.common.util.MaterialColorMapUtils.MaterialPalette;
 import com.android.internal.telephony.PhoneConstants;
 import com.android.internal.telephony.RILConstants;
 import com.android.internal.telephony.TelephonyIntents;
@@ -283,7 +289,8 @@ public class ComposeMessageActivity extends Activity
     protected static final String KEY_EXIT_ON_SENT = "exit_on_sent";
     protected static final String KEY_FORWARDED_MESSAGE = "forwarded_message";
     protected static final String KEY_REPLY_MESSAGE = "reply_message";
-
+    private static final String KEY_PRIMARY_THEME_COLOR = "primary_theme_color";
+    private static final String KEY_SECONDARY_THEME_COLOR = "secondary_theme_color";
 
     private static final String EXIT_ECM_RESULT = "exit_ecm_result";
 
@@ -465,6 +472,10 @@ public class ComposeMessageActivity extends Activity
     private final static int REPLACE_ATTACHMEN_MASK = 1 << 16;
 
     private boolean mShowTwoButtons = false;
+
+    private int mPrimaryThemeColor = 0;
+    private int mSecondaryThemeColor = 0;
+    private boolean mCheckingThemeColor = false;
 
     @SuppressWarnings("unused")
     public static void log(String logMsg) {
@@ -1861,11 +1872,57 @@ public class ComposeMessageActivity extends Activity
         }
         mDebugRecipients = list.serialize();
 
+        if (cnt > 0 && mPrimaryThemeColor == 0 && !mCheckingThemeColor) {
+            final Contact contact = list.get(0);
+            mCheckingThemeColor = true;
+            new AsyncTask<Void, Void, MaterialPalette>() {
+                @Override
+                protected MaterialPalette doInBackground(Void... params) {
+                    int color = contact.getAccentColor(ComposeMessageActivity.this);
+                    final Resources res = getResources();
+                    if (color != 0) {
+                        MaterialColorMapUtils mcmu = new MaterialColorMapUtils(res);
+                        return mcmu.calculatePrimaryAndSecondaryColor(color);
+                    }
+                    return MaterialColorMapUtils.getDefaultPrimaryAndSecondaryColors(res);
+                }
+
+                @Override
+                protected void onPostExecute(MaterialPalette palette) {
+                    mPrimaryThemeColor = palette.mPrimaryColor;
+                    mSecondaryThemeColor = palette.mSecondaryColor;
+                    mCheckingThemeColor = false;
+                    updateThemeColors();
+                }
+            }.execute();
+        }
+
         // the cnt is already be added recipients count
         mExistsRecipientsCount = cnt;
         ActionBar actionBar = getActionBar();
         actionBar.setTitle(title);
         actionBar.setSubtitle(subTitle);
+    }
+
+    private void updateThemeColors() {
+        Drawable from = new ColorDrawable(getResources().getColor(R.color.mms_theme_color));
+        Drawable to = new ColorDrawable(mPrimaryThemeColor);
+
+        TransitionDrawable transition = new TransitionDrawable(new Drawable[] {
+            from, to
+        });
+        getActionBar().setBackgroundDrawable(transition);
+        transition.startTransition(300);
+
+        final ObjectAnimator animation = ObjectAnimator.ofInt(getWindow(), "statusBarColor",
+                getWindow().getStatusBarColor(), mSecondaryThemeColor);
+        animation.setDuration(300);
+        animation.setEvaluator(new ArgbEvaluator());
+        animation.start();
+
+        if (mMsgListAdapter != null) {
+            mMsgListAdapter.setAccentColor(mPrimaryThemeColor);
+        }
     }
 
     // Get the recipients editor ready to be displayed onscreen.
@@ -2388,6 +2445,10 @@ public class ComposeMessageActivity extends Activity
         }
         if (mForwardMessageMode) {
             outState.putBoolean(KEY_FORWARDED_MESSAGE, mForwardMessageMode);
+        }
+        if (mPrimaryThemeColor != 0) {
+            outState.putInt(KEY_PRIMARY_THEME_COLOR, mPrimaryThemeColor);
+            outState.putInt(KEY_SECONDARY_THEME_COLOR, mSecondaryThemeColor);
         }
     }
 
@@ -4343,6 +4404,10 @@ public class ComposeMessageActivity extends Activity
         });
         mMsgListView.setMultiChoiceModeListener(new ModeCallback());
         mMsgListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+
+        if (mPrimaryThemeColor != 0) {
+            mMsgListAdapter.setAccentColor(mPrimaryThemeColor);
+        }
     }
 
     /**
@@ -4667,6 +4732,12 @@ public class ComposeMessageActivity extends Activity
                 mMsgListView.setVisibility(View.INVISIBLE);
             }
             mWorkingMessage.readStateFromBundle(bundle);
+
+            mPrimaryThemeColor = bundle.getInt(KEY_PRIMARY_THEME_COLOR, 0);
+            mSecondaryThemeColor = bundle.getInt(KEY_SECONDARY_THEME_COLOR, 0);
+            if (mPrimaryThemeColor != 0) {
+                updateThemeColors();
+            }
 
             return;
         }
