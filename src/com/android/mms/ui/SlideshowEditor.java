@@ -238,6 +238,10 @@ public class SlideshowEditor {
         }
     }
 
+    public int getDuration(int position) {
+        return mModel.get(position).getDuration();
+    }
+
     public void changeLayout(int layout) {
         mModel.getLayout().changeTo(layout);
     }

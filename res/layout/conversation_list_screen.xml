@@ -28,16 +28,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/banner_sms_promo"
+        android:divider="@null"
+        android:dividerHeight="0dp"
         android:drawSelectorOnTop="false"
         android:scrollbarStyle="insideOverlay"
         android:background="@android:color/white"
-        android:cacheColorHint="@android:color/white"
         android:fadingEdgeLength="16dip" />
 
     <TextView android:id="@+id/empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
+        android:background="@android:color/white"
         android:text="@string/loading_conversations"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 

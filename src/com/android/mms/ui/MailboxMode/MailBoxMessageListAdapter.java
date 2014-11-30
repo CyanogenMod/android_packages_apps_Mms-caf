@@ -83,22 +83,7 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
     // For posting UI update Runnables from other threads:
     private Handler mHandler = new Handler();
     private ListView mListView;
-    QuickContactBadge mAvatarView;
-    TextView mNameView;
-    TextView mBodyView;
-    TextView mDateView;
-    ImageView mErrorIndicator;
-    ImageView mImageViewLock;
-    Drawable mBgSelectedDrawable;
-    Drawable mBgUnReadDrawable;
-    Drawable mBgReadDrawable;
-
-    private int mSubscription = MessageUtils.SUB_INVALID;
-    private String mMsgType; // "sms" or "mms"
-    private String mAddress;
-    private String mName;
-    private int mMsgBox;
-    private boolean mIsUnread;
+    private int mWapPushAddressIndex;
 
     public MailBoxMessageListAdapter(Context context, OnListContentChangedListener changedListener,
             Cursor cursor) {
@@ -113,12 +98,7 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
                 return size() > CACHE_SIZE;
             }
         };
-        mBgSelectedDrawable = context.getResources().getDrawable(
-                R.drawable.list_selected_holo_light);
-        mBgUnReadDrawable = context.getResources().getDrawable(
-                R.drawable.conversation_item_background_unread);
-        mBgReadDrawable = context.getResources().getDrawable(
-                R.drawable.conversation_item_background_read);
+        mWapPushAddressIndex = context.getResources().getInteger(R.integer.wap_push_address_index);
     }
 
     public BoxMessageItem getCachedMessageItem(String type, long msgId, Cursor c) {
@@ -138,46 +118,40 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
         }
     }
 
-    private void updateAvatarView() {
-        Drawable avatarDrawable;
-        Drawable sDefaultContactImage = mContext.getResources().getDrawable(
-                R.drawable.ic_contact_picture);
-        Drawable sDefaultContactImageMms = mContext.getResources().getDrawable(
-                R.drawable.ic_contact_picture_mms);
-
-        boolean isDraft = false;
-        if (mMsgType.equals("mms") && mMsgBox == Mms.MESSAGE_BOX_DRAFTS ||
-                mMsgType.equals("sms") && mMsgBox == Sms.MESSAGE_TYPE_DRAFT) {
-            isDraft = true;
-        }
+    private void updateAvatarView(QuickContactBadge view, String address,
+            int subscription, boolean isMms, boolean isDraft) {
+        int overlayResId;
 
         if (!isDraft && MessageUtils.isMsimIccCardActive()) {
-            sDefaultContactImage = (mSubscription == MessageUtils.SUB1) ? mContext.getResources()
-                    .getDrawable(R.drawable.ic_contact_picture_card1) : mContext.getResources()
-                    .getDrawable(R.drawable.ic_contact_picture_card2);
-            sDefaultContactImageMms = (mSubscription == MessageUtils.SUB1) ? mContext
-                    .getResources().getDrawable(R.drawable.ic_contact_picture_mms_card1) : mContext
-                    .getResources().getDrawable(R.drawable.ic_contact_picture_mms_card2);
-        }
-
-        Contact contact = Contact.get(mAddress, true);
-        if (mMsgType.equals("mms")) {
-            avatarDrawable = sDefaultContactImageMms;
+            if (isMms) {
+                overlayResId = subscription == MessageUtils.SUB1
+                        ? R.drawable.quickcontact_overlay_sim1_mms
+                        : R.drawable.quickcontact_overlay_sim2_mms;
+            } else {
+                overlayResId = subscription == MessageUtils.SUB1
+                        ? R.drawable.quickcontact_overlay_sim1
+                        : R.drawable.quickcontact_overlay_sim2;
+            }
+        } else if (isMms) {
+            overlayResId = R.drawable.quickcontact_overlay_mms;
         } else {
-            avatarDrawable = sDefaultContactImage;
+            overlayResId = 0;
         }
 
+        Contact contact = Contact.get(address, true);
         if (contact.existsInDatabase()) {
-            mAvatarView.assignContactUri(contact.getUri());
+            view.assignContactUri(contact.getUri());
         } else if (MessageUtils.isWapPushNumber(contact.getNumber())) {
-            mAvatarView.assignContactFromPhone(
+            view.assignContactFromPhone(
                     MessageUtils.getWapPushNumber(contact.getNumber()), true);
         } else {
-            mAvatarView.assignContactFromPhone(contact.getNumber(), true);
+            view.assignContactFromPhone(contact.getNumber(), true);
         }
 
-        mAvatarView.setImageDrawable(avatarDrawable);
-        mAvatarView.setVisibility(View.VISIBLE);
+        view.setOverlay(overlayResId != 0
+                ? mContext.getResources().getDrawable(overlayResId) : null);
+        contact.bindAvatar(view);
+        view.setVisibility(View.VISIBLE);
     }
 
     public void onUpdate(Contact updated) {
@@ -187,9 +161,7 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
 
         mHandler.post(new Runnable() {
             public void run() {
-                updateAvatarView();
-                mName = Contact.get(mAddress, true).getName();
-                formatNameView(mAddress, mName);
+                notifyDataSetChanged();
             }
         });
     }
@@ -205,26 +177,6 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
         return position;
     }
 
-    public void updateItemBackgroud(int position) {
-        Cursor cursor = (Cursor)getItem(position);
-        View view = mListView.getChildAt(position);
-        if (cursor == null || view == null) {
-            return;
-        }
-
-        String type = cursor.getString(COLUMN_MSG_TYPE);
-        int read = type.equals("mms") ? cursor.getInt(COLUMN_MMS_READ) :
-                cursor.getInt(COLUMN_SMS_READ);
-        boolean isUnread = read == 0 ? true : false;
-        if (mListView.isItemChecked(position)) {
-            view.setBackgroundDrawable(mBgSelectedDrawable);
-        } else if (isUnread) {
-            view.setBackgroundDrawable(mBgUnReadDrawable);
-        } else {
-            view.setBackgroundDrawable(mBgReadDrawable);
-        }
-    }
-
     public void bindView(View view, Context context, Cursor cursor) {
         if (Log.isLoggable(LogTag.CONTACT, Log.DEBUG)) {
             Log.v(TAG, "bind: contacts.addListeners " + this);
@@ -233,7 +185,6 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
         cleanItemCache();
 
         final String type = cursor.getString(COLUMN_MSG_TYPE);
-        mMsgType = type;
         long msgId = cursor.getLong(COLUMN_ID);
         long threadId = cursor.getLong(COLUMN_THREAD_ID);
         String addr = "";
@@ -246,15 +197,16 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
         Drawable sendTypeIcon = null;
         boolean isError = false;
         boolean isLocked = false;
-        mMsgBox = Sms.MESSAGE_TYPE_INBOX;
+        boolean isUnread = false;
+        boolean isDraft = false;
+        int subscription = MessageUtils.SUB_INVALID;
 
         if (type.equals("sms")) {
             BoxMessageItem item = getCachedMessageItem(type, msgId, cursor);
             int status = item.mStatus;
-            mMsgBox = item.mSmsType;
-            int smsRead = item.mRead;
-            mIsUnread = (smsRead == 0 ? true : false);
-            mSubscription = item.mSubID;
+            isDraft = item.mSmsType == Sms.MESSAGE_TYPE_DRAFT;
+            isUnread = item.mRead == 0;
+            subscription = item.mSubID;
             addr = item.mAddress;
             isError = item.mSmsType == Sms.MESSAGE_TYPE_FAILED;
             isLocked = item.mLocked;
@@ -263,16 +215,18 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
             nameContact = item.mName;
         } else if (type.equals("mms")) {
             final int mmsRead = cursor.getInt(COLUMN_MMS_READ);
-            mSubscription = cursor.getInt(COLUMN_MMS_SUB_ID);
+            subscription = cursor.getInt(COLUMN_MMS_SUB_ID);
             int messageType = cursor.getInt(COLUMN_MMS_MESSAGE_TYPE);
-            mMsgBox = cursor.getInt(COLUMN_MMS_MESSAGE_BOX);
+            int msgBox = cursor.getInt(COLUMN_MMS_MESSAGE_BOX);
+
             isError = cursor.getInt(COLUMN_MMS_ERROR_TYPE)
                     >= MmsSms.ERR_TYPE_GENERIC_PERMANENT;
             isLocked = cursor.getInt(COLUMN_MMS_LOCKED) != 0;
+            isDraft = msgBox == Mms.MESSAGE_BOX_DRAFTS;
             recipientIds = cursor.getString(COLUMN_RECIPIENT_IDS);
 
-            if (0 == mmsRead && mMsgBox == Mms.MESSAGE_BOX_INBOX) {
-                mIsUnread = true;
+            if (mmsRead == 0 && msgBox == Mms.MESSAGE_BOX_INBOX) {
+                isUnread = true;
             }
 
             bodyStr = MessageUtils.extractEncStrFromCursor(cursor, COLUMN_MMS_SUBJECT,
@@ -298,68 +252,50 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
             }
         }
 
-        if (mListView.isItemChecked(cursor.getPosition())) {
-            view.setBackgroundDrawable(mBgSelectedDrawable);
-        } else if (mIsUnread) {
-            view.setBackgroundDrawable(mBgUnReadDrawable);
-        } else {
-            view.setBackgroundDrawable(mBgReadDrawable);
+        TextView bodyView = (TextView) view.findViewById(R.id.msgBody);
+        TextView dateView = (TextView) view.findViewById(R.id.textViewDate);
+        ImageView errorIndicator = (ImageView)view.findViewById(R.id.error);
+        ImageView lockView = (ImageView) view.findViewById(R.id.imageViewLock);
+        TextView nameView = (TextView) view.findViewById(R.id.textName);
+        QuickContactBadge avatarView = (QuickContactBadge) view.findViewById(R.id.avatar);
+
+        if (MessageUtils.isWapPushNumber(addr)) {
+            String[] mailBoxAddresses = addr.split(":");
+            addr = mailBoxAddresses[mWapPushAddressIndex];
+        }
+        if (MessageUtils.isWapPushNumber(nameContact)) {
+            String[] mailBoxName = nameContact.split(":");
+            nameContact = mailBoxName[mWapPushAddressIndex];
         }
 
-        mBodyView = (TextView) view.findViewById(R.id.msgBody);
-        mDateView = (TextView) view.findViewById(R.id.textViewDate);
-        mErrorIndicator = (ImageView)view.findViewById(R.id.error);
-        mImageViewLock = (ImageView) view.findViewById(R.id.imageViewLock);
-        mNameView = (TextView) view.findViewById(R.id.textName);
-        mAvatarView = (QuickContactBadge) view.findViewById(R.id.avatar);
-        mAddress = addr;
-        mName = nameContact;
+        formatNameView(nameView, addr, nameContact, isUnread);
+        updateAvatarView(avatarView, addr, subscription, type.equals("mms"), isDraft);
 
-        if (MessageUtils.isWapPushNumber(addr) && MessageUtils.isWapPushNumber(nameContact)) {
-            String[] mMailBoxAddresses = addr.split(":");
-            String[] mMailBoxName = nameContact.split(":");
-            formatNameView(
-                    mMailBoxAddresses[context.getResources().getInteger(
-                            R.integer.wap_push_address_index)],
-                    mMailBoxName[context.getResources()
-                            .getInteger(R.integer.wap_push_address_index)]);
-        } else if (MessageUtils.isWapPushNumber(addr)) {
-            String[] mMailBoxAddresses = addr.split(":");
-            formatNameView(
-                    mMailBoxAddresses[context.getResources().getInteger(
-                            R.integer.wap_push_address_index)], mName);
-        } else if (MessageUtils.isWapPushNumber(nameContact)) {
-            String[] mMailBoxName = nameContact.split(":");
-            formatNameView(mAddress,
-                    mMailBoxName[context.getResources()
-                            .getInteger(R.integer.wap_push_address_index)]);
+        lockView.setVisibility(isLocked ? View.VISIBLE : View.GONE);
+        errorIndicator.setVisibility(isError ? View.VISIBLE : View.GONE);
+
+        dateView.setText(dateStr);
+        if (isUnread) {
+            SpannableStringBuilder buf = new SpannableStringBuilder(bodyStr);
+            buf.setSpan(STYLE_BOLD, 0, buf.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+            bodyView.setText(buf);
         } else {
-            formatNameView(mAddress, mName);
+            bodyView.setText(bodyStr);
         }
-
-        updateAvatarView();
-
-        mImageViewLock.setVisibility(isLocked ? View.VISIBLE : View.GONE);
-
-        // Transmission error indicator.
-        mErrorIndicator.setVisibility(isError ? View.VISIBLE : View.GONE);
-
-        mDateView.setText(dateStr);
-        mBodyView.setText(bodyStr);
     }
 
-    public void formatNameView(String address, String name) {
+    private void formatNameView(TextView view, String address, String name, boolean isUnread) {
         SpannableStringBuilder buf = null;
         if (TextUtils.isEmpty(name)) {
             buf = new SpannableStringBuilder(address);
         } else {
             buf = new SpannableStringBuilder(name);
         }
-        if (mIsUnread) {
+        if (isUnread) {
             buf.setSpan(STYLE_BOLD, 0, buf.length(),
                     Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
         }
-        mNameView.setText(buf);
+        view.setText(buf);
     }
 
     public void cleanItemCache() {
