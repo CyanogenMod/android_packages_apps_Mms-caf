@@ -20,70 +20,74 @@
 
 <com.android.mms.ui.ConversationListItem xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:layout_height="72dp"
     android:background="?android:attr/activatedBackgroundIndicator"
-    android:paddingEnd="10dip" >
+    android:paddingStart="16dip"
+    android:paddingEnd="16dip" >
 
     <android.widget.QuickContactBadge
         android:id="@+id/avatar"
         android:visibility="gone"
         android:layout_centerVertical="true"
-        style="?android:attr/quickContactBadgeStyleWindowLarge" />
+        android:layout_marginEnd="16dp"
+        style="?android:attr/quickContactBadgeStyleSmallWindowMedium" />
 
-    <TextView android:id="@+id/from"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:singleLine="true"
-        android:layout_marginTop="6dip"
-        android:layout_marginEnd="5dip"
-        android:layout_marginStart="10dip"
-        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
         android:layout_toEndOf="@id/avatar"
-        android:layout_alignWithParentIfMissing="true"
-        android:ellipsize="marquee"  />
+        android:layout_alignParentEnd="true" >
 
-    <TextView android:id="@+id/date"
-        android:layout_marginTop="2dip"
-        android:layout_marginBottom="10dip"
-        android:layout_marginStart="5dip"
-        android:layout_marginEnd="10dip"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:singleLine="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true" />
+        <TextView android:id="@+id/date"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:textAppearance="@android:style/TextAppearance.Material.Caption"
+            android:singleLine="true" />
 
-    <ImageView android:id="@+id/error"
-        android:layout_marginStart="3dip"
-        android:visibility="invisible"
-        android:layout_toStartOf="@id/date"
-        android:layout_alignBottom="@id/date"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:src="@drawable/ic_list_alert_sms_failed" />
+        <TextView android:id="@+id/from"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@id/date"
+            android:layout_alignBaseline="@id/date"
+            android:layout_alignWithParentIfMissing="true"
+            android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+            android:singleLine="true"
+            android:ellipsize="marquee"  />
 
-    <ImageView android:id="@+id/attachment"
-        android:layout_marginStart="3dip"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:visibility="gone"
-        android:layout_toStartOf="@id/error"
-        android:layout_alignBottom="@id/date"
-        android:src="@drawable/ic_attachment_universal_small" />
+        <ImageView android:id="@+id/error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="3dip"
+            android:layout_below="@id/from"
+            android:layout_alignParentEnd="true"
+            android:visibility="invisible"
+            android:src="@drawable/ic_list_alert_sms_failed" />
 
-    <TextView android:id="@+id/subject"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:singleLine="true"
-        android:layout_marginBottom="10dip"
-        android:layout_marginStart="10dip"
-        android:layout_alignParentBottom="true"
-        android:layout_toEndOf="@id/avatar"
-        android:layout_alignWithParentIfMissing="true"
-        android:layout_toStartOf="@id/date"
-        android:ellipsize="end" />
+        <ImageView android:id="@+id/attachment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="3dip"
+            android:layout_toStartOf="@id/error"
+            android:layout_below="@id/from"
+            android:layout_alignWithParentIfMissing="true"
+            android:visibility="gone"
+            android:src="@drawable/ic_attachment_universal_small" />
+
+        <TextView android:id="@+id/subject"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/attachment"
+            android:layout_alignParentStart="true"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_below="@id/from"
+            android:textAppearance="@android:style/TextAppearance.Material.Body1"
+            android:textColor="?android:attr/textColorSecondary"
+            android:singleLine="true"
+            android:ellipsize="end" />
+
+    </RelativeLayout>
 
 </com.android.mms.ui.ConversationListItem>
