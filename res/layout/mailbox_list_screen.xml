@@ -24,24 +24,40 @@
     android:orientation="vertical" >
 
     <LinearLayout
-        android:id="@+id/spinners"
         android:layout_width="match_parent"
-        android:layout_height="45dip"
-        android:orientation="horizontal" >
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/mms_theme_color"
+        android:elevation="@dimen/action_bar_elevation"
+        android:theme="@style/HeaderTheme">
 
-        <Spinner
-            android:id="@+id/box_spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:entries="@array/box_type" />
+        <Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize" />
 
-        <Spinner
-            android:id="@+id/slot_spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:entries="@array/slot_type" />
+        <LinearLayout
+            android:id="@+id/spinners"
+            android:layout_width="match_parent"
+            android:layout_height="45dip"
+            android:orientation="horizontal" >
+
+            <Spinner
+                android:id="@+id/box_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:entries="@array/box_type" />
+
+            <Spinner
+                android:id="@+id/slot_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:entries="@array/slot_type" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
     <RelativeLayout
@@ -54,20 +70,17 @@
             style="?android:attr/listViewWhiteStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/white"
-            android:cacheColorHint="@android:color/white"
-            android:drawSelectorOnTop="false"
             android:fadingEdgeLength="16dip"
+            android:background="@android:color/white"
             android:scrollbarStyle="insideOverlay" />
 
         <TextView
             android:id="@+id/emptyview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/white"
             android:gravity="center"
-            android:paddingStart="16dip"
             android:text="@string/no_message"
+            android:background="@android:color/white"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <include layout="@layout/floating_action_button" />
