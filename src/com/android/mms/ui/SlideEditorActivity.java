@@ -72,7 +72,8 @@ import java.util.Locale;
 /**
  * This activity allows user to edit the contents of a slide.
  */
-public class SlideEditorActivity extends Activity {
+public class SlideEditorActivity extends Activity implements
+        NumberPickerDialog.OnNumberSetListener {
     private static final String TAG = LogTag.TAG;
     private static final boolean DEBUG = false;
     private static final boolean LOCAL_LOGV = false;
@@ -106,8 +107,7 @@ public class SlideEditorActivity extends Activity {
     private final static int REQUEST_CODE_CHANGE_MUSIC       = 3;
     private final static int REQUEST_CODE_RECORD_SOUND       = 4;
     private final static int REQUEST_CODE_CHANGE_VIDEO       = 5;
-    private final static int REQUEST_CODE_CHANGE_DURATION    = 6;
-    private final static int REQUEST_CODE_TAKE_VIDEO         = 7;
+    private final static int REQUEST_CODE_TAKE_VIDEO         = 6;
 
     // number of items in the duration selector dialog that directly map from
     // item index to duration in seconds (duration = index + 1)
@@ -469,10 +469,8 @@ public class SlideEditorActivity extends Activity {
                 R.drawable.ic_menu_add_slide);
 
         // Slide duration
-        String duration = getResources().getString(R.string.duration_sec);
-        menu.add(0, MENU_DURATION, 0,
-                duration.replace("%s", String.valueOf(slide.getDuration() / 1000))).setIcon(
-                        R.drawable.ic_menu_duration);
+        String duration = getString(R.string.duration_sec, slide.getDuration() / 1000);
+        menu.add(0, MENU_DURATION, 0, duration).setIcon(R.drawable.ic_menu_duration);
 
         // Slide layout
         int resId;
@@ -574,7 +572,9 @@ public class SlideEditorActivity extends Activity {
                 break;
 
             case MENU_DURATION:
-                showDurationDialog();
+                new NumberPickerDialog(this, this,
+                        mSlideshowEditor.getDuration(mPosition) / 1000,
+                        1, 120, R.string.duration_selector_title, 0, R.string.secs).show();
                 break;
         }
 
@@ -585,33 +585,9 @@ public class SlideEditorActivity extends Activity {
         mReplaceImage.setText(text);
     }
 
-    private void showDurationDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setIcon(R.drawable.ic_mms_duration);
-        String title = getResources().getString(R.string.duration_selector_title);
-        builder.setTitle(title + (mPosition + 1) + "/" + mSlideshowModel.size());
-
-        builder.setItems(R.array.select_dialog_items,
-                new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                if ((which >= 0) && (which < NUM_DIRECT_DURATIONS)) {
-                    mSlideshowEditor.changeDuration(
-                            mPosition, (which + 1) * 1000);
-                } else {
-                    Intent intent = new Intent(SlideEditorActivity.this,
-                            EditSlideDurationActivity.class);
-                    intent.putExtra(EditSlideDurationActivity.SLIDE_INDEX, mPosition);
-                    intent.putExtra(EditSlideDurationActivity.SLIDE_TOTAL,
-                            mSlideshowModel.size());
-                    intent.putExtra(EditSlideDurationActivity.SLIDE_DUR,
-                            mSlideshowModel.get(mPosition).getDuration() / 1000); // in seconds
-                    startActivityForResult(intent, REQUEST_CODE_CHANGE_DURATION);
-                }
-                dialog.dismiss();
-            }
-        });
-
-        builder.show();
+    @Override
+    public void onNumberSet(int number) {
+        mSlideshowEditor.changeDuration(mPosition, number * 1000);
     }
 
     private void showLayoutSelectorDialog() {
@@ -790,10 +766,6 @@ public class SlideEditorActivity extends Activity {
                 }
                 break;
 
-            case REQUEST_CODE_CHANGE_DURATION:
-                mSlideshowEditor.changeDuration(mPosition,
-                    Integer.valueOf(data.getAction()) * 1000);
-                break;
         }
     }
 

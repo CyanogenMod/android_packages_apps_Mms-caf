@@ -20,9 +20,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
         package="com.android.mms">
 
-    <original-package android:name="com.android.mms" />
-    <uses-sdk android:minSdkVersion="19" android:targetSdkVersion="21" />
-
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -102,8 +99,7 @@
         <activity android:name=".ui.MailBoxMessageList"
             android:label="@string/app_label"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:theme="@style/MmsTheme"
-            android:uiOptions="splitActionBarWhenNarrow"
+            android:theme="@style/MmsTheme.NoActionBar"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -121,7 +117,7 @@
         <activity android:name=".ui.ComposeMessageActivity"
                   android:configChanges="orientation|screenSize|keyboardHidden"
                   android:windowSoftInputMode="stateHidden|adjustResize"
-                  android:theme="@style/MmsTheme"
+                  android:theme="@style/MmsTheme.NoActionBar"
                   android:parentActivityName=".ui.ConversationList"
                   android:launchMode="singleTop" >
             <intent-filter>
@@ -177,13 +173,13 @@
                   android:targetActivity=".ui.ComposeMessageActivity"
                   android:configChanges="orientation|screenSize|keyboardHidden"
                   android:windowSoftInputMode="stateHidden"
-                  android:theme="@style/MmsTheme" >
+                  android:theme="@style/MmsTheme.NoActionBar" >
         </activity-alias>
 
         <activity android:name=".ui.ComposeMessageActivityNoLockScreen"
                   android:configChanges="orientation|screenSize|keyboardHidden"
                   android:windowSoftInputMode="stateHidden"
-                  android:theme="@style/MmsTheme"
+                  android:theme="@style/MmsTheme.NoActionBar"
                   android:exported="false"
                   android:launchMode="singleTop" >
         </activity>
@@ -197,11 +193,6 @@
                 android:theme="@android:style/Theme.Dialog"
                 android:label="@string/storage_limits_activity"
                 android:excludeFromRecents="true">
-        </activity>
-
-        <activity android:name=".ui.EditSlideDurationActivity"
-            android:label="@string/change_duration_activity"
-            android:theme="@android:style/Theme.Dialog">
         </activity>
 
         <activity android:name=".ui.SlideshowEditActivity"

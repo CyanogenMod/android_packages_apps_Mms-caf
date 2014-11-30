@@ -28,14 +28,12 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:ellipsize="end"
-        android:gravity="bottom"
+        android:gravity="center_vertical"
         android:includeFontPadding="false"
-        android:paddingBottom="12dip"
         android:paddingEnd="10dip"
         android:singleLine="true"
         android:text="@string/app_label"
-        android:textColor="@android:color/white"
-        android:textSize="18sp" />
+        android:textAppearance="@android:style/TextAppearance.Material.Widget.ActionBar.Title.Inverse" />
 
     <TextView
         android:id="@+id/message_count"
@@ -43,12 +41,10 @@
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
         android:ellipsize="end"
-        android:gravity="bottom"
+        android:gravity="center_vertical"
         android:includeFontPadding="false"
-        android:paddingBottom="8dip"
-        android:paddingEnd="10dip"
         android:singleLine="true"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#ccffffff" />
+        android:textAppearance="@android:style/TextAppearance.Material.Widget.ActionBar.Title.Inverse"
+        android:textColor="?android:attr/textColorSecondaryInverse" />
 
 </RelativeLayout>

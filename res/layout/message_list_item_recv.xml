@@ -23,23 +23,24 @@
     android:id="@+id/msg_list_item_recv"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp"
     android:orientation="horizontal">
 
     <LinearLayout android:id="@+id/mms_layout_view_parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:gravity="start">
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="4dp">
 
-            <view xmlns:android="http://schemas.android.com/apk/res/android"
-                class="com.android.mms.ui.QuickContactDivot"
+            <QuickContactBadge
                 android:id="@+id/avatar"
-                position="right_upper"
-                android:layout_alignParentStart="true"
                 android:layout_width="@dimen/avatar_width_height"
                 android:layout_height="@dimen/avatar_width_height" />
 
@@ -49,38 +50,34 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/avatar"
-                android:layout_alignParentEnd="true"
-                android:background="@drawable/hairline_left"
+                android:paddingTop="@dimen/message_bubble_padding_vertical"
+                android:paddingBottom="@dimen/message_bubble_padding_vertical"
+                android:paddingStart="@dimen/message_bubble_padding_horizontal_extra"
+                android:paddingEnd="@dimen/message_bubble_padding_horizontal"
+                android:background="@drawable/message_bubble_incoming"
+                android:theme="@android:style/ThemeOverlay.Material.Dark"
                 android:orientation="vertical" >
 
                 <TextView
                     android:id="@+id/sim_message_address"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingStart="@dimen/message_item_text_padding_left_right"
                     android:paddingTop="@dimen/message_item_text_padding_top"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="#ff000000"
-                    android:textSize="16sp"
                     android:visibility="gone"/>
-                <TextView android:id="@+id/text_view_top"
+                <TextView android:id="@+id/text_view"
                     android:autoLink="all"
-                    android:paddingStart="@dimen/message_item_text_padding_left_right"
-                    android:paddingEnd="@dimen/message_item_text_padding_left_right"
                     android:paddingTop="@dimen/message_item_text_padding_top"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:linksClickable="false"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="#ff000000"
-                    android:textSize="16sp"
-                    android:visibility="gone"/>
+                    android:textColorLink="@color/outgoing_message_bg"
+                    android:textAppearance="@android:style/TextAppearance.Material.Body1" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dip"
-                    android:paddingStart="@dimen/message_item_text_padding_left_right"
+                    android:layout_marginTop="4dip"
                     android:orientation="horizontal" >
 
                     <ImageView
@@ -93,12 +90,10 @@
                         android:layout_gravity="center_vertical"/>
 
                     <TextView android:id="@+id/date_view"
-                        android:background="@drawable/listitem_background"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingEnd="3dip"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:textColor="@color/text_hairline" />
+                        android:textAppearance="@android:style/TextAppearance.Material.Caption" />
 
                     <ImageView
                         android:id="@+id/locked_indicator"
@@ -126,20 +121,8 @@
 
                 <ViewStub android:id="@+id/mms_layout_view_stub"
                     android:layout="@layout/mms_layout_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-                <TextView android:id="@+id/text_view_buttom"
-                    android:autoLink="all"
-                    android:paddingStart="@dimen/message_item_text_padding_left_right"
-                    android:paddingEnd="@dimen/message_item_text_padding_left_right"
-                    android:paddingTop="@dimen/message_item_text_padding_top"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:linksClickable="false"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="#ff000000"
-                    android:textSize="16sp"
-                    android:visibility="gone" />
+                    android:layout_height="wrap_content"/>
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>

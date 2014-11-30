@@ -20,7 +20,6 @@ import android.app.ActionBar;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.ContactsContract.Profile;
 import android.text.TextUtils;
@@ -114,7 +113,6 @@ public class RecipientListActivity extends ListActivity {
     private static class RecipientListAdapter extends ArrayAdapter<Contact> {
         private final int mResourceId;
         private final LayoutInflater mInflater;
-        private final Drawable mDefaultContactImage;
 
         public RecipientListAdapter(Context context, int resource,
                 ContactList recipients) {
@@ -122,8 +120,6 @@ public class RecipientListActivity extends ListActivity {
 
             mResourceId = resource;
             mInflater = LayoutInflater.from(context);
-            mDefaultContactImage =
-                    context.getResources().getDrawable(R.drawable.ic_contact_picture);
         }
 
         @Override
@@ -150,8 +146,7 @@ public class RecipientListActivity extends ListActivity {
             } else {
                 badge.assignContactFromPhone(contact.getNumber(), true);
             }
-            final Drawable avatarDrawable = contact.getAvatar(getContext(), mDefaultContactImage);
-            badge.setImageDrawable(avatarDrawable);
+            contact.bindAvatar(badge);
 
             return listItemView;
         }

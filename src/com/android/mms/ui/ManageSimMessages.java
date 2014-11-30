@@ -561,12 +561,6 @@ public class ManageSimMessages extends Activity
     }
 
     private class ModeCallback implements ListView.MultiChoiceModeListener {
-        private View mMultiSelectActionBarView;
-        private TextView mSelectedConvCount;
-        private ImageView mSelectedAll;
-        private boolean mHasSelectAll = false;
-        // build action bar with a spinner
-        private SelectionMenu mSelectionMenu;
         ArrayList<Integer> mSelectedPos = new ArrayList<Integer>();
         ArrayList<Uri> mSelectedMsg = new ArrayList<Uri>();
 
@@ -626,6 +620,9 @@ public class ManageSimMessages extends Activity
                 case R.id.forward:
                     forwardMessage();
                     break;
+                case R.id.selection_toggle:
+                    checkAll(!allItemsSelected());
+                    break;
                 case R.id.delete:
                     confirmDeleteDialog(new MultiMessagesListener());
                     break;
@@ -648,39 +645,15 @@ public class ManageSimMessages extends Activity
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.sim_msg_multi_select_menu, menu);
-
-            if (mMultiSelectActionBarView == null) {
-                mMultiSelectActionBarView = LayoutInflater.from(getContext()).inflate(
-                        R.layout.action_mode, null);
-            }
-            mode.setCustomView(mMultiSelectActionBarView);
-            mSelectionMenu = new SelectionMenu(getContext(),
-                    (Button) mMultiSelectActionBarView.findViewById(R.id.selection_menu),
-                    new PopupList.OnPopupItemClickListener() {
-                        @Override
-                        public boolean onPopupItemClick(int itemId) {
-                            if (itemId == SelectionMenu.SELECT_OR_DESELECT) {
-                                checkAll(!mHasSelectAll);
-                            }
-                            return true;
-                        }
-                    });
             return true;
         }
 
         @Override
         public void onDestroyActionMode(ActionMode arg0) {
-            mSelectionMenu.dismiss();
         }
 
         @Override
         public boolean onPrepareActionMode(ActionMode mode, Menu arg1) {
-            if (mMultiSelectActionBarView == null) {
-                ViewGroup v = (ViewGroup) LayoutInflater.from(getContext()).inflate(
-                        R.layout.conversation_list_multi_select_actionbar, null);
-                mode.setCustomView(v);
-                mSelectedConvCount = (TextView) v.findViewById(R.id.selected_conv_count);
-            }
             return true;
         }
 
@@ -688,31 +661,31 @@ public class ManageSimMessages extends Activity
         public void onItemCheckedStateChanged(ActionMode mode, int arg1, long arg2, boolean arg3) {
             final int checkedCount = getListView().getCheckedItemCount();
 
-            mSelectionMenu.setTitle(getApplicationContext().getString(R.string.selected_count,
-                    checkedCount));
+            mode.setTitle(getString(R.string.selected_count, checkedCount));
             if (checkedCount == 1) {
                 recoredCheckedItemPositions();
             }
             customMenuVisibility(mode, checkedCount);
-            if (getListView().getCount() == checkedCount) {
-                mHasSelectAll = true;
-                Log.d(TAG, "onItemCheck select all true");
-            } else {
-                mHasSelectAll = false;
-                Log.d(TAG, "onItemCheck select all false");
-            }
-            mSelectionMenu.updateSelectAllMode(mHasSelectAll);
+
+            mode.getMenu().findItem(R.id.selection_toggle).setTitle(getString(
+                        allItemsSelected() ? R.string.deselected_all : R.string.selected_all));
+        }
+
+        private boolean allItemsSelected() {
+            final ListView lv = getListView();
+            return lv.getCount() == lv.getCheckedItemCount();
         }
 
         private void customMenuVisibility(ActionMode mode, int checkedCount) {
+            Menu menu = mode.getMenu();
             if (checkedCount > 1) {
-                mode.getMenu().findItem(R.id.forward).setVisible(false);
-                mode.getMenu().findItem(R.id.reply).setVisible(false);
-                mode.getMenu().findItem(R.id.copy_to_phone).setVisible(false);
+                menu.findItem(R.id.forward).setVisible(false);
+                menu.findItem(R.id.reply).setVisible(false);
+                menu.findItem(R.id.copy_to_phone).setVisible(false);
             } else if(checkedCount == 1) {
-                mode.getMenu().findItem(R.id.forward).setVisible(true);
-                mode.getMenu().findItem(R.id.copy_to_phone).setVisible(true);
-                mode.getMenu().findItem(R.id.reply).setVisible(isInboxSms());
+                menu.findItem(R.id.forward).setVisible(true);
+                menu.findItem(R.id.copy_to_phone).setVisible(true);
+                menu.findItem(R.id.reply).setVisible(isInboxSms());
             }
         }
 

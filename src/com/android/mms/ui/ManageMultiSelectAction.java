@@ -51,7 +51,6 @@ import android.os.Message;
 import android.provider.Telephony.Sms;
 import android.provider.Telephony.Sms.Conversations;
 import android.util.SparseBooleanArray;
-import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -66,7 +65,6 @@ import android.widget.Toast;
 import com.android.mms.data.Contact;
 import com.android.mms.R;
 import com.android.mms.ui.PopupList;
-import com.android.mms.ui.SelectionMenu;
 
 import java.util.ArrayList;
 
@@ -80,12 +78,9 @@ public class ManageMultiSelectAction extends Activity {
     private Cursor mCursor;
     private ListView mMsgListView;
     private TextView mMessage;
-    private Button mActionButton;
-    private SelectionMenu mSelectionMenu;
     private MessageListAdapter mMsgListAdapter;
     private ContentResolver mContentResolver;
     private BackgroundQueryHandler mBackgroundQueryHandler;
-    private boolean mHasSelectAll = false;
     private int mSubscription; // add for DSDS
     private Uri mIccUri;
     private ProgressDialog mProgressDialog = null;
@@ -187,13 +182,39 @@ public class ManageMultiSelectAction extends Activity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (areItemsSelected()) {
+            MenuItem item = null;
+            if (mManageMode == MessageUtils.FORWARD_MODE) {
+                item = menu.add(Menu.NONE, Menu.FIRST, Menu.NONE, R.string.menu_forward);
+            } else if (mManageMode == MessageUtils.SIM_MESSAGE_MODE) {
+                item = menu.add(Menu.NONE, Menu.FIRST, Menu.NONE, R.string.done_delete);
+            }
+            if (item != null) {
+                item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            }
+            menu.add(Menu.NONE, Menu.FIRST + 1, Menu.NONE,
+                    areAllItemsSelected() ? R.string.deselected_all : R.string.selected_all);
+        }
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case Menu.FIRST:
+                confirmMultiAction();
+                break;
+            case Menu.FIRST + 1:
+                if (areAllItemsSelected()) {
+                    clearSelect();
+                } else {
+                    allSelect();
+                }
+                break;
             case android.R.id.home:
                 finish();
                 break;
-            default:
-                return true;
         }
         return true;
     }
@@ -356,54 +377,15 @@ public class ManageMultiSelectAction extends Activity {
     private void setupActionBar() {
         ActionBar actionBar = getActionBar();
         if (actionBar != null) {
-            actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP |
-                    ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM,
-                    ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE |
-                    ActionBar.DISPLAY_SHOW_CUSTOM);
+            actionBar.setDisplayOptions(
+                    ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE);
             actionBar.setTitle("");
-            actionBar.setCustomView(R.layout.conversation_list_multi_actionbar);
-            mActionButton = (Button) findViewById(R.id.multi_action_done);
-            if (mManageMode == MessageUtils.FORWARD_MODE) {
-                mActionButton.setText(R.string.menu_forward);
-            } else if (mManageMode == MessageUtils.SIM_MESSAGE_MODE) {
-                mActionButton.setText(R.string.done_delete);
-            }
-            mActionButton.setEnabled(false);
-            mActionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    confirmMultiAction();
-                }
-            });
-            Button mSelectionMenuButton = (Button) findViewById(R.id.select_menu);
-            mSelectionMenu = new SelectionMenu(this, mSelectionMenuButton,
-                    new PopupList.OnPopupItemClickListener() {
-                        @Override
-                        public boolean onPopupItemClick(int itemId) {
-                            if (itemId == SelectionMenu.SELECT_OR_DESELECT) {
-                                if (mHasSelectAll) {
-                                    clearSelect();
-                                    mHasSelectAll = false;
-                                } else {
-                                    allSelect();
-                                    mHasSelectAll = true;
-                                }
-                                mSelectionMenu.updateSelectAllMode(mHasSelectAll);
-                            }
-                            return true;
-                        }
-                    });
-            mSelectionMenu.setTitle(getString(R.string.selected_count, 0));
         }
     }
 
     private void clearSelect() {
         mMsgListView.clearChoices();
-        final int checkedCount = mMsgListView.getCheckedItemCount();
-        mSelectionMenu.setTitle(getString(R.string.selected_count, checkedCount));
-        if (checkedCount == 0) {
-            mActionButton.setEnabled(false);
-        }
+        updateSelectionState();
         mMsgListView.invalidateViews();
     }
 
@@ -412,12 +394,22 @@ public class ManageMultiSelectAction extends Activity {
         for (int i = 0; i < count; i++) {
             mMsgListView.setItemChecked(i, true);
         }
-        final int checkedCount = mMsgListView.getCheckedItemCount();
-        mSelectionMenu.setTitle(getString(R.string.selected_count, checkedCount));
-        if (checkedCount > 0) {
-            mActionButton.setEnabled(true);
-        }
+        updateSelectionState();
         mMsgListView.invalidateViews();
+    }
+
+    private void updateSelectionState() {
+        final int checkedCount = mMsgListView.getCheckedItemCount();
+        getActionBar().setTitle(getString(R.string.selected_count, checkedCount));
+        invalidateOptionsMenu();
+    }
+
+    private boolean areItemsSelected() {
+        return mMsgListView.getCheckedItemCount() != 0;
+    }
+
+    private boolean areAllItemsSelected() {
+        return mMsgListView.getCheckedItemCount() == mMsgListView.getCount();
     }
 
     private class OperateThread extends Thread {
@@ -454,7 +446,6 @@ public class ManageMultiSelectAction extends Activity {
                     setupActionBar();
                     mMsgListAdapter = new MessageListAdapter(
                             ManageMultiSelectAction.this, mCursor, mMsgListView, false, null);
-                    mMsgListAdapter.setMultiChoiceMode(true);
                     mMsgListAdapter.setMultiManageMode(mManageMode);
                     mMsgListView.setAdapter(mMsgListAdapter);
                     mMsgListView.setVisibility(View.VISIBLE);
@@ -464,22 +455,7 @@ public class ManageMultiSelectAction extends Activity {
                         public void onItemClick(AdapterView<?> parent, View view, int position,
                                 long id) {
                             mMsgListView.invalidateViews();
-                            final int checkedCount = mMsgListView.getCheckedItemCount();
-                            mSelectionMenu
-                                    .setTitle(getString(R.string.selected_count, checkedCount));
-                            int count = mMsgListAdapter.getCount();
-                            if (checkedCount == count) {
-                                mHasSelectAll = true;
-                            }
-                            else {
-                                mHasSelectAll = false;
-                            }
-                            mSelectionMenu.updateSelectAllMode(mHasSelectAll);
-                            if (checkedCount == 0) {
-                                mActionButton.setEnabled(false);
-                            } else {
-                                mActionButton.setEnabled(true);
-                            }
+                            updateSelectionState();
                         }
                     });
                     mMsgListView.requestFocus();
