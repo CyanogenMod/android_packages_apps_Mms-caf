@@ -28,6 +28,8 @@ import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.Presence;
 import android.provider.ContactsContract.Profile;
 import android.provider.Telephony.Mms;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 import android.util.Log;
@@ -86,7 +88,7 @@ public class Contact {
     private long mPersonId;
     private int mPresenceResId;      // TODO: make this a state instead of a res ID
     private String mPresenceText;
-    private BitmapDrawable mAvatar;
+    private RoundedBitmapDrawable mAvatar;
     private byte [] mAvatarData;
     private boolean mIsStale;
     private boolean mQueryPending;
@@ -353,7 +355,9 @@ public class Contact {
         if (mAvatar == null) {
             if (mAvatarData != null) {
                 Bitmap b = BitmapFactory.decodeByteArray(mAvatarData, 0, mAvatarData.length);
-                mAvatar = new BitmapDrawable(context.getResources(), b);
+                mAvatar = RoundedBitmapDrawableFactory.create(context.getResources(), b);
+                mAvatar.setAntiAlias(true);
+                mAvatar.setCornerRadius(Math.max(b.getWidth() / 2, b.getHeight() / 2));
             }
         }
         return mAvatar != null ? mAvatar : defaultValue;

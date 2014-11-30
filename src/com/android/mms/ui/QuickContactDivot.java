@@ -68,6 +68,7 @@ public class QuickContactDivot extends QuickContactBadge implements Divot{
         mDensity = r.getDisplayMetrics().density;
 
         setDrawable();
+        setOverlay(null);
     }
 
     private void setDrawable() {
