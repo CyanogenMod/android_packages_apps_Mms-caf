@@ -55,6 +55,9 @@ import java.util.regex.Pattern;
 import java.util.Set;
 
 import android.R.integer;
+import android.animation.AnimatorSet;
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -78,7 +81,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SqliteWrapper;
 import android.drm.DrmStore;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -145,6 +150,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Button;
 
+import com.android.contacts.common.util.MaterialColorMapUtils;
+import com.android.contacts.common.util.MaterialColorMapUtils.MaterialPalette;
 import com.android.internal.telephony.PhoneConstants;
 import com.android.internal.telephony.RILConstants;
 import com.android.internal.telephony.TelephonyIntents;
@@ -283,7 +290,6 @@ public class ComposeMessageActivity extends Activity
     protected static final String KEY_EXIT_ON_SENT = "exit_on_sent";
     protected static final String KEY_FORWARDED_MESSAGE = "forwarded_message";
     protected static final String KEY_REPLY_MESSAGE = "reply_message";
-
 
     private static final String EXIT_ECM_RESULT = "exit_ecm_result";
 
@@ -465,6 +471,10 @@ public class ComposeMessageActivity extends Activity
     private final static int REPLACE_ATTACHMEN_MASK = 1 << 16;
 
     private boolean mShowTwoButtons = false;
+
+    private int mPrimaryThemeColor = 0;
+    private int mSecondaryThemeColor = 0;
+    private boolean mCheckingThemeColor = false;
 
     @SuppressWarnings("unused")
     public static void log(String logMsg) {
@@ -1861,11 +1871,71 @@ public class ComposeMessageActivity extends Activity
         }
         mDebugRecipients = list.serialize();
 
+        if (cnt > 0 && mPrimaryThemeColor == 0 && !mCheckingThemeColor) {
+            final Contact contact = list.get(0);
+            // first see whether there's a cached color already
+            int color = contact.getAccentColor(this, false);
+            if (color != 0) {
+                updateColorPalette(color);
+            } else {
+                mCheckingThemeColor = true;
+                new AsyncTask<Void, Void, Integer>() {
+                    @Override
+                    protected Integer doInBackground(Void... params) {
+                        return contact.getAccentColor(ComposeMessageActivity.this, true);
+                    }
+
+                    @Override
+                    protected void onPostExecute(Integer color) {
+                        mCheckingThemeColor = false;
+                        updateColorPalette(color);
+                    }
+                }.execute();
+            }
+        }
+
         // the cnt is already be added recipients count
         mExistsRecipientsCount = cnt;
         ActionBar actionBar = getActionBar();
         actionBar.setTitle(title);
         actionBar.setSubtitle(subTitle);
+    }
+
+    private void updateColorPalette(int color) {
+        MaterialPalette palette = determinePalette(color);
+        mPrimaryThemeColor = palette.mPrimaryColor;
+        mSecondaryThemeColor = palette.mSecondaryColor;
+        updateThemeColors(isResumed() ? 200 : 0);
+    }
+
+    private MaterialPalette determinePalette(int color) {
+        final Resources res = getResources();
+        if (color != 0) {
+            MaterialColorMapUtils mcmu = new MaterialColorMapUtils(res);
+            return mcmu.calculatePrimaryAndSecondaryColor(color);
+        }
+        return MaterialColorMapUtils.getDefaultPrimaryAndSecondaryColors(res);
+    }
+
+    private void updateThemeColors(int animationDuration) {
+        final ColorDrawable background = new ColorDrawable();
+        final ObjectAnimator backgroundAnimation = ObjectAnimator.ofInt(background,
+                "color", getResources().getColor(R.color.mms_theme_color), mPrimaryThemeColor);
+        final ObjectAnimator statusBarAnimation = ObjectAnimator.ofInt(getWindow(),
+                "statusBarColor", getWindow().getStatusBarColor(), mSecondaryThemeColor);
+
+        backgroundAnimation.setEvaluator(new ArgbEvaluator());
+        statusBarAnimation.setEvaluator(new ArgbEvaluator());
+        getActionBar().setBackgroundDrawable(background);
+
+        final AnimatorSet animation = new AnimatorSet();
+        animation.playTogether(backgroundAnimation, statusBarAnimation);
+        animation.setDuration(animationDuration);
+        animation.start();
+
+        if (mMsgListAdapter != null) {
+            mMsgListAdapter.setAccentColor(mPrimaryThemeColor);
+        }
     }
 
     // Get the recipients editor ready to be displayed onscreen.
