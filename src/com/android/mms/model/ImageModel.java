@@ -42,6 +42,7 @@ import com.android.mms.ui.UriImage;
 import com.android.mms.util.ItemLoadedCallback;
 import com.android.mms.util.ItemLoadedFuture;
 import com.android.mms.util.ThumbnailManager;
+import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
 import com.google.android.mms.pdu.PduPart;
 import com.google.android.mms.pdu.PduPersister;
@@ -179,7 +180,7 @@ public class ImageModel extends RegionMediaModel {
 
     @Override
     public boolean getMediaResizable() {
-        return true;
+        return !ContentType.IMAGE_GIF.equals(mContentType);
     }
 
     @Override
