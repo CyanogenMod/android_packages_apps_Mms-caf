@@ -112,6 +112,7 @@ public class ManageSimMessages extends Activity
     private AsyncQueryHandler mQueryHandler = null;
     private boolean mIsDeleteAll = false;
     private boolean mIsQuery = false;
+    private AlertDialog mDeleteDialog;
 
     public static final int SIM_FULL_NOTIFICATION_ID = 234;
 
@@ -243,6 +244,9 @@ public class ManageSimMessages extends Activity
     }
 
     private void refreshMessageList() {
+        if (mDeleteDialog != null && mDeleteDialog.isShowing()) {
+            mDeleteDialog.dismiss();
+        }
         updateState(SHOW_BUSY);
         if (mCursor != null) {
             stopManagingCursor(mCursor);
@@ -477,18 +481,6 @@ public class ManageSimMessages extends Activity
         return true;
     }
 
-    private void confirmDeleteDialog(OnClickListener listener, int messageId) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.confirm_dialog_title);
-        builder.setIconAttribute(android.R.attr.alertDialogIcon);
-        builder.setCancelable(true);
-        builder.setPositiveButton(R.string.yes, listener);
-        builder.setNegativeButton(R.string.no, null);
-        builder.setMessage(messageId);
-
-        builder.show();
-    }
-
     private void showSimCapacityDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.sim_capacity_title);
@@ -585,7 +577,7 @@ public class ManageSimMessages extends Activity
             builder.setPositiveButton(R.string.yes, listener);
             builder.setNegativeButton(R.string.no, null);
             builder.setMessage(R.string.confirm_delete_selected_messages);
-            builder.show();
+            mDeleteDialog = builder.show();
         }
 
         private class MultiMessagesListener implements OnClickListener {
