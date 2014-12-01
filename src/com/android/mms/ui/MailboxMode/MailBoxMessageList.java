@@ -85,6 +85,7 @@ import com.android.mms.ui.PopupList;
 import com.android.mms.ui.SearchActivityExtend;
 import com.android.mms.ui.SelectionMenu;
 import com.android.mms.util.DownloadManager;
+import com.android.mms.util.DraftCache;
 
 import com.google.android.mms.pdu.PduHeaders;
 
@@ -153,6 +154,7 @@ public class MailBoxMessageList extends ListActivity implements
     private int mQueryBoxType = TYPE_INBOX;
     private int mQuerySlotType = TYPE_ALL_SLOT;
     private BoxMsgListQueryHandler mQueryHandler;
+    private long mThreadId;
     private String mSmsWhereDelete = "";
     private String mMmsWhereDelete = "";
     private boolean mHasLockedMessage = false;
@@ -831,6 +833,9 @@ public class MailBoxMessageList extends ListActivity implements
                 int delSmsCount = SqliteWrapper.delete(this, getContentResolver(),
                         Uri.parse("content://sms"), whereClause, null);
                 if (delSmsCount > 0) {
+                    if (mQueryBoxType == TYPE_DRAFTBOX) {
+                        updateDraftCache();
+                    }
                     Toast.makeText(MailBoxMessageList.this, getString(R.string.operate_success),
                             Toast.LENGTH_LONG).show();
                 }
@@ -851,6 +856,9 @@ public class MailBoxMessageList extends ListActivity implements
                 int delMmsCount = SqliteWrapper.delete(this, getContentResolver(),
                         Uri.parse("content://mms"), whereClause, null);
                 if (delMmsCount > 0) {
+                    if (mQueryBoxType == TYPE_DRAFTBOX) {
+                        updateDraftCache();
+                    }
                     Toast.makeText(MailBoxMessageList.this, getString(R.string.operate_success),
                             Toast.LENGTH_LONG).show();
                 }
@@ -902,10 +910,17 @@ public class MailBoxMessageList extends ListActivity implements
                 String msgId = c.getString(COLUMN_ID);
                 mmsWhereDelete += msgId + ",";
             }
+            mThreadId = c.getLong(COLUMN_THREAD_ID);
         }
         mSmsWhereDelete = smsWhereDelete;
         mMmsWhereDelete = mmsWhereDelete;
         mHasLockedMessage = hasLocked;
+    }
+
+    private void updateDraftCache() {
+        if (mThreadId <= 0)
+            return;
+        DraftCache.getInstance().setDraftState(mThreadId, false);
     }
 
     public void onListContentChanged() {
