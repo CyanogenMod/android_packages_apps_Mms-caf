@@ -1754,6 +1754,12 @@ public class MessageUtils {
         return false;
     }
 
+    public static boolean isMobileDataDisabled(Context context) {
+        ConnectivityManager mConnService = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        return !mConnService.getMobileDataEnabled();
+    }
+
     public static float onFontSizeScale(ArrayList<TextView> list, float scale,
             float mFontSizeForSave) {
         float mCurrentSize = 0;
