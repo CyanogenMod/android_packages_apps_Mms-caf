@@ -48,11 +48,13 @@ public class MmsSystemEventReceiver extends BroadcastReceiver {
     private static ConnectivityManager mConnMgr = null;
 
     public static void wakeUpService(Context context) {
-        if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
+        if (TransactionService.getInstance() == null
+                || TransactionService.getInstance().isIdle()) {
             Log.v(TAG, "wakeUpService: start transaction service ...");
+            context.startService(new Intent(context, TransactionService.class));
+        } else {
+            Log.v(TAG, "No need to start transaction service ...");
         }
-
-        context.startService(new Intent(context, TransactionService.class));
     }
 
     @Override
