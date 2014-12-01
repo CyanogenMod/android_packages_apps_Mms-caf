@@ -314,7 +314,6 @@ public class MessageListItem extends LinearLayout implements
                 mDownloadButton.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mDownloading.setVisibility(View.VISIBLE);
                         try {
                             NotificationInd nInd = (NotificationInd) PduPersister.getPduPersister(
                                     mContext).load(mMessageItem.mMessageUri);
@@ -345,11 +344,18 @@ public class MessageListItem extends LinearLayout implements
                                 builder.show();
                                 return;
                             }
+                            // If mobile data is turned off, inform user start data and try again.
+                            else if (MessageUtils.isMobileDataDisabled(mContext)) {
+                                builder.setMessage(mContext.getString(R.string.inform_data_off));
+                                builder.show();
+                                return;
+                            }
                         } catch (MmsException e) {
                             Log.e(TAG, e.getMessage(), e);
                             return;
                         }
                         mDownloadButton.setVisibility(View.GONE);
+                        mDownloading.setVisibility(View.VISIBLE);
                         Intent intent = new Intent(mContext, TransactionService.class);
                         intent.putExtra(TransactionBundle.URI, mMessageItem.mMessageUri.toString());
                         intent.putExtra(TransactionBundle.TRANSACTION_TYPE,
