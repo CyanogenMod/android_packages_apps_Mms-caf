@@ -706,7 +706,8 @@ public class Conversation {
 
     @Override
     public synchronized String toString() {
-        return String.format("[%s] (tid %d)", mRecipients.serialize(), mThreadId);
+        String serialize = mRecipients.serialize().replace("%", "%%");
+        return String.format("[%s] (tid %d)", serialize, mThreadId);
     }
 
     /**
