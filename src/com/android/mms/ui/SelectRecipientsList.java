@@ -352,7 +352,7 @@ public class SelectRecipientsList extends ListActivity implements
 
         if (getIntent() != null) {
             String[] initialRecipients = getIntent().getStringArrayExtra(EXTRA_RECIPIENTS);
-            if (initialRecipients != null) {
+            if (initialRecipients != null && mMode == MODE_DEFAULT) {
                 for (String recipient : initialRecipients) {
                     for (RecipientsListLoader.Result result : data) {
                         if (result.phoneNumber != null && result.phoneNumber.equals(recipient)) {
