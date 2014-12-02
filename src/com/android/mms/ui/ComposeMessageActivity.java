@@ -526,6 +526,9 @@ public class ComposeMessageActivity extends Activity
 
     private void pickContacts(int mode, int requestCode) {
         Intent intent = new Intent(ComposeMessageActivity.this, SelectRecipientsList.class);
+        if (mRecipientsEditor == null) {
+            initRecipientsEditor();
+        }
         ContactList contacts = mRecipientsEditor.constructContactsFromInput(false);
         intent.putExtra(SelectRecipientsList.EXTRA_RECIPIENTS, contacts.getNumbers());
         intent.putExtra(SelectRecipientsList.MODE, mode);
