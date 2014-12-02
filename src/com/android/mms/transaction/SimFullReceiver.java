@@ -45,7 +45,8 @@ public class SimFullReceiver extends BroadcastReceiver {
             NotificationManager nm = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-            int phoneId = intent.getIntExtra(PhoneConstants.PHONE_KEY, 0);
+            int phoneId = intent.getIntExtra(PhoneConstants.PHONE_KEY,
+                    MessageUtils.SUB_INVALID);
             Intent viewSimIntent = new Intent(context, ManageSimMessages.class);
             viewSimIntent.setAction(Intent.ACTION_VIEW);
             viewSimIntent.putExtra(MessageUtils.SUBSCRIPTION_KEY, phoneId);
