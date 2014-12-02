@@ -194,8 +194,12 @@ public class MessagingNotification {
         }
     }
 
-    public static final long THREAD_ALL = -1;
+    public static final long THREAD_ALL  = -1;
     public static final long THREAD_NONE = -2;
+    public static final long THREAD_SIM1 = -3;
+    public static final long THREAD_SIM2 = -4;
+    public static final long THREAD_SIM  = -5;
+
     /**
      * Keeps track of the thread ID of the conversation that's currently displayed to the user
      */
@@ -377,6 +381,13 @@ public class MessagingNotification {
 
     public static void blockingUpdateNewIccMessageIndicator(Context context, String address,
             String message, int phoneId, long timeMillis) {
+        if (MessageUtils.getSimThreadByPhoneId(phoneId) == sCurrentlyDisplayedThreadId) {
+            // We are already diplaying the messages list view, no need to send notification.
+            // Just play notification sound.
+            Log.d(TAG, "blockingUpdateNewIccMessageIndicator displaying sim messages now");
+            playInConversationNotificationSound(context);
+            return;
+        }
         final Notification.Builder noti = new Notification.Builder(context).setWhen(timeMillis);
         Contact contact = Contact.get(address, false);
         NotificationInfo info = getNewIccMessageNotificationInfo(context, true /* isSms */,

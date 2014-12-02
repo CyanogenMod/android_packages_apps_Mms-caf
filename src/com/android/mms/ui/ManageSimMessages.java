@@ -164,6 +164,7 @@ public class ManageSimMessages extends Activity
         registerReceiver(mReceiver, filter);
 
         init();
+        registerSimChangeObserver();
     }
 
     @Override
@@ -356,15 +357,18 @@ public class ManageSimMessages extends Activity
     @Override
     public void onResume() {
         super.onResume();
-        registerSimChangeObserver();
         // Clean up the notification according to the SIM number.
         MessagingNotification.blockingRemoveIccNotifications(this, mSubscription);
+
+        // Set current SIM thread id according to the SIM number.
+        MessagingNotification.setCurrentlyDisplayedThreadId(
+                MessageUtils.getSimThreadByPhoneId(mSubscription));
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mContentResolver.unregisterContentObserver(simChangeObserver);
+        MessagingNotification.setCurrentlyDisplayedThreadId(MessagingNotification.THREAD_NONE);
     }
 
     @Override
@@ -379,6 +383,7 @@ public class ManageSimMessages extends Activity
     @Override
     public void onDestroy() {
         unregisterReceiver(mReceiver);
+        mContentResolver.unregisterContentObserver(simChangeObserver);
         super.onDestroy();
     }
 

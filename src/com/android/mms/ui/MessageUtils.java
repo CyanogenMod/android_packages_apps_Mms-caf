@@ -1591,6 +1591,17 @@ public class MessageUtils {
         return context.getString(R.string.slot1);
     }
 
+    public static long getSimThreadByPhoneId(int phoneId) {
+        switch (phoneId) {
+            case SUB1:
+                return MessagingNotification.THREAD_SIM1;
+            case SUB2:
+                return MessagingNotification.THREAD_SIM2;
+            default:
+                return MessagingNotification.THREAD_SIM;
+        }
+    }
+
     public static String getAddressByName(Context context, String name) {
         String resultAddr = "";
         if (TextUtils.isEmpty(name)) {
