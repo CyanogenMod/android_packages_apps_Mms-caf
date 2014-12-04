@@ -94,10 +94,11 @@ public class SelectMmsSubscription extends Service {
                 if (result == -1) {
                     Log.d(TAG, "No DDS switch required.");
                 } else {
-                    String status = mContext.getString(R.string.switch_data_subscription) +
-                                    ((result ==1) ? mContext.getString(R.string.
-                                    switch_data_subscription_success) :
-                                    mContext.getString(R.string.switch_data_subscription_failed));
+                    String statusResult = ((result == 1) ?
+                            mContext.getString(R.string.switch_data_subscription_success) :
+                            mContext.getString(R.string.switch_data_subscription_failed));
+                    String status = mContext.getString(R.string.switch_data_subscription,
+                            statusResult);
                     Toast.makeText(mContext, status, Toast.LENGTH_SHORT).show();
                 }
 
