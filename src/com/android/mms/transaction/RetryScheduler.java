@@ -32,6 +32,7 @@ import android.net.Uri;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.MmsSms;
 import android.provider.Telephony.MmsSms.PendingMessages;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.android.mms.LogTag;
@@ -39,6 +40,8 @@ import com.android.mms.R;
 import com.android.mms.util.DownloadManager;
 import com.google.android.mms.pdu.PduHeaders;
 import com.google.android.mms.pdu.PduPersister;
+
+import com.android.internal.telephony.PhoneConstants;
 
 public class RetryScheduler implements Observer {
     private static final String TAG = LogTag.TAG;
@@ -61,16 +64,20 @@ public class RetryScheduler implements Observer {
         return sInstance;
     }
 
-    private boolean isConnected() {
-        ConnectivityManager mConnMgr = (ConnectivityManager)
-                mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo ni = mConnMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE_MMS);
-        return (ni == null ? false : ni.isConnected());
+    private boolean isMmsDataConnectivityPossible(long subId) {
+        boolean flag = false;
+        TelephonyManager telephonyManager = (TelephonyManager)mContext
+            .getSystemService(Context.TELEPHONY_SERVICE);
+        if (telephonyManager != null) {
+            flag = telephonyManager.isDataPossibleForSubscription(subId,
+                    PhoneConstants.APN_TYPE_MMS);
+        }
+        Log.d(TAG, "isMmsDataConnectivityPossible = " + flag + "subId = " + subId);
+        return flag;
     }
 
     public void update(Observable observable) {
         Transaction t = (Transaction) observable;
-        TransactionState state = t.getState();
         try {
 
             if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
@@ -84,6 +91,7 @@ public class RetryScheduler implements Observer {
                     || (t instanceof ReadRecTransaction)
                     || (t instanceof SendTransaction)) {
                 try {
+                    TransactionState state = t.getState();
                     if (state.getState() == TransactionState.FAILED) {
                         Uri uri = state.getContentUri();
                         if (uri != null) {
@@ -95,8 +103,10 @@ public class RetryScheduler implements Observer {
                 }
             }
         } finally {
-            if (state.getState() == TransactionState.FAILED) {
+            if (isMmsDataConnectivityPossible(t.getSubId())) {
                 setRetryAlarm(mContext);
+            } else {
+                Log.d(TAG, "Retry alarm is not set");
             }
         }
     }
@@ -186,7 +196,8 @@ public class RetryScheduler implements Observer {
                     } else {
                         errorType = MmsSms.ERR_TYPE_GENERIC_PERMANENT;
                         if (isRetryDownloading) {
-                            Cursor c = SqliteWrapper.query(context, context.getContentResolver(), uri,
+                            Cursor c = SqliteWrapper.query(context, context.getContentResolver(),
+                                    uri,
                                     new String[] { Mms.THREAD_ID }, null, null, null);
 
                             long threadId = -1;
