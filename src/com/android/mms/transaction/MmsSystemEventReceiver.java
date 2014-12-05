@@ -48,13 +48,11 @@ public class MmsSystemEventReceiver extends BroadcastReceiver {
     private static ConnectivityManager mConnMgr = null;
 
     public static void wakeUpService(Context context) {
-        if (TransactionService.getInstance() == null
-                || TransactionService.getInstance().isIdle()) {
+        if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
             Log.v(TAG, "wakeUpService: start transaction service ...");
-            context.startService(new Intent(context, TransactionService.class));
-        } else {
-            Log.v(TAG, "No need to start transaction service ...");
         }
+
+        context.startService(new Intent(context, TransactionService.class));
     }
 
     @Override
@@ -114,6 +112,12 @@ public class MmsSystemEventReceiver extends BroadcastReceiver {
                     + state + " phoneId: " + phoneId);
             // Scan and send pending Mms if subscription is activated
             if (status == PhoneConstants.SUCCESS && state == SubscriptionManager.ACTIVE) {
+                wakeUpService(context);
+            }
+        } else if (action.equals(Intent.ACTION_AIRPLANE_MODE_CHANGED)) {
+            boolean apm = intent.getBooleanExtra("state", false);
+            if (!apm) {
+                Log.d(TAG, "Airplane mode OFF");
                 wakeUpService(context);
             }
         }

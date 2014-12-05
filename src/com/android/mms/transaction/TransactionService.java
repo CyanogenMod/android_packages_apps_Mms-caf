@@ -164,7 +164,7 @@ public class TransactionService extends Service implements Observer {
     // How often to extend the use of the MMS APN while a transaction
     // is still being processed.
     private static final int APN_EXTENSION_WAIT = 30 * 1000;
-    private static final int PDP_ACTIVATION_TIMEOUT = 90 * 1000;
+    private static final int PDP_ACTIVATION_TIMEOUT = 60 * 1000;
 
     private ServiceHandler mServiceHandler;
     private Looper mServiceLooper;
@@ -370,18 +370,18 @@ public class TransactionService extends Service implements Observer {
     }
 
     private boolean isMmsAllowed() {
-        boolean noNetwork = false;
+        boolean flag = true;
 
         if (isAirplaneModeActive()) {
             Log.d(TAG, "Airplane mode is ON, MMS may not be allowed.");
-            noNetwork = true;
+            flag = false;
         }
 
         if(isCurrentRatIwlan()) {
             Log.d(TAG, "Current RAT is IWLAN, MMS allowed");
-            noNetwork = false;
+            flag = true;
         }
-        return noNetwork;
+        return flag;
 
     }
 
@@ -395,6 +395,18 @@ public class TransactionService extends Service implements Observer {
         TelephonyManager telephonyManager = (TelephonyManager)getSystemService(TELEPHONY_SERVICE);
         flag = (telephonyManager != null
                 && (telephonyManager.getNetworkType() == TelephonyManager.NETWORK_TYPE_IWLAN));
+        return flag;
+    }
+
+    private boolean isMmsDataConnectivityPossible(long subId) {
+        boolean flag = false;
+        TelephonyManager telephonyManager = (TelephonyManager)getApplicationContext()
+                .getSystemService(Context.TELEPHONY_SERVICE);
+        if (telephonyManager != null) {
+            flag = telephonyManager.isDataPossibleForSubscription(subId,
+                    PhoneConstants.APN_TYPE_MMS);
+        }
+        Log.d(TAG, "isMmsDataConnectivityPossible = " + flag + "subId = " + subId);
         return flag;
     }
 
@@ -414,6 +426,9 @@ public class TransactionService extends Service implements Observer {
 
         Bundle extras = intent.getExtras();
         String action = intent.getAction();
+
+        DownloadManager downloadManager = DownloadManager.getInstance();
+
         if ((ACTION_ONALARM.equals(action) || ACTION_ENABLE_AUTO_RETRIEVE.equals(action) ||
                 (extras == null)) || ((extras != null) && !extras.containsKey("uri")
                 && !extras.containsKey(CANCEL_URI))) {
@@ -475,9 +490,6 @@ public class TransactionService extends Service implements Observer {
                             onNetworkUnavailable(serviceId, transactionType, uri, inRetry);
                             return;
                         }
-                        int failureType = cursor.getInt(
-                                cursor.getColumnIndexOrThrow(
-                                        PendingMessages.ERROR_TYPE));
                         switch (transactionType) {
                             case -1:
                                 break;
@@ -486,7 +498,9 @@ public class TransactionService extends Service implements Observer {
                                 // we should retry it in spite of current
                                 // downloading mode. If the user just turned on the auto-retrieve
                                 // option, we also retry those messages that don't have any errors.
-                                DownloadManager downloadManager = DownloadManager.getInstance();
+                                int failureType = cursor.getInt(
+                                        cursor.getColumnIndexOrThrow(
+                                                PendingMessages.ERROR_TYPE));
                                 boolean autoDownload = downloadManager.isAuto();
                                 if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
                                     Log.v(TAG, "onNewIntent: failureType=" + failureType +
@@ -525,7 +539,7 @@ public class TransactionService extends Service implements Observer {
                                 // subId is null. Bail out.
                                 if (subId == null) {
                                     Log.e(TAG, "SMS subId is null. Bail out");
-                                    return;
+                                    break;
                                 }
 
                                 Log.d(TAG, "destination Sub Id = " + subId[0]);
@@ -544,31 +558,18 @@ public class TransactionService extends Service implements Observer {
                                     subId[0] = defSmsSubId;
                                 }
 
-                                if (subId[0] < 0) {
-                                    Log.d(TAG, "Subscriptions are not yet ready.");
-                                    long defSmsSubId = getDefaultSmsSubId();
-                                    // We dont have enough info about subId. We dont know if the
-                                    // phoneId as persent in DB actually would match the subId of
-                                    // defaultSmsSubId. We can not also ignore this transaction
-                                    // since no retry would be scheduled if we return from here. The
-                                    // only option is to do best effort try on current default sms
-                                    // subId, if it failed then a retry would be scheduled and while
-                                    // processing that retry attempt we would be able to get correct
-                                    // subId from subscription manager.
-                                    Log.d(TAG, "Override with default Sms subId = " + defSmsSubId);
-                                    subId[0] = defSmsSubId;
+                                if (!isMmsDataConnectivityPossible(subId[0]) || !isMmsAllowed()) {
+                                    Log.d(TAG, "mobileData off or no mms apn or APM, Abort");
+                                    if (transactionType == Transaction.RETRIEVE_TRANSACTION) {
+                                        downloadManager.markState(uri,
+                                                DownloadManager.STATE_SKIP_RETRYING);
+                                    }
+
+                                    break;
                                 }
 
                                 TransactionBundle args = new TransactionBundle(transactionType,
                                         uri.toString(), subId[0]);
-                                // Handle no net work failed case.
-                                // If the network is restored, then
-                                // show the MMS status as sending.
-                                if (failureType == MmsSms.ERR_TYPE_MMS_PROTO_TRANSIENT
-                                        && getResources().getBoolean(R.bool.config_manual_resend)) {
-                                    updateMsgErrorType(uri, MmsSms.NO_ERROR);
-                                }
-
                                 // FIXME: We use the same startId for all MMs.
                                 if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
                                     Log.v(TAG, "onNewIntent: launchTransaction uri=" + uri);
@@ -619,10 +620,11 @@ public class TransactionService extends Service implements Observer {
                 subId[0] = defSmsSubId;
             }
 
-            if (subId[0] < 0) {
-               long defSmsSubId = getDefaultSmsSubId();
-                Log.d(TAG, "Override with default Sms subId = " + defSmsSubId);
-                subId[0] = defSmsSubId;
+            if (!isMmsDataConnectivityPossible(subId[0]) || !isMmsAllowed()) {
+                Log.d(TAG, "Either mobile data is off or apn not present, Abort");
+
+                downloadManager.markState(uri, DownloadManager.STATE_SKIP_RETRYING);
+                return;
             }
 
             Bundle bundle = intent.getExtras();
@@ -637,25 +639,13 @@ public class TransactionService extends Service implements Observer {
         return SubscriptionManager.getDefaultSmsSubId();
     }
 
-    public boolean isIdle() {
+    private void stopSelfIfIdle(int startId) {
         synchronized (mProcessing) {
             if (mProcessing.isEmpty() && mPending.isEmpty()) {
                 if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
-                    Log.v(TAG, "Idle: mProcessing & mPending is empty !");
+                    Log.v(TAG, "stopSelfIfIdle: STOP!");
                 }
-                return true;
-            } else {
-                return false;
             }
-        }
-    }
-
-    private void stopSelfIfIdle(int startId) {
-        if (isIdle()) {
-            if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
-                Log.v(TAG, "stopSelfIfIdle: STOP!");
-            }
-
             stopSelf(startId);
         }
     }
@@ -1238,6 +1228,7 @@ public class TransactionService extends Service implements Observer {
                             return;
                         }
                     }
+                    return;
                 case EVENT_MMS_PDP_ACTIVATION_TIMEOUT:
                     synchronized (mProcessing) {
                         Transaction txn = null;
@@ -1253,6 +1244,8 @@ public class TransactionService extends Service implements Observer {
                             Log.d(TAG, "PDP activation timer expired, declare failure");
                             txn.attach(TransactionService.this);
                             markFailed(txn);
+                        } else {
+                            Log.d(TAG, "PDP activation timer expired, no pending txn found");
                         }
                     }
                     return;

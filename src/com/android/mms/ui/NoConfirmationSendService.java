@@ -29,6 +29,7 @@ import com.android.mms.LogTag;
 import com.android.mms.data.Conversation;
 import com.android.mms.transaction.SmsMessageSender;
 
+import com.android.internal.telephony.PhoneConstants;
 /**
  * Respond to a special intent and send an SMS message without the user's intervention.
  */
@@ -58,6 +59,8 @@ public class NoConfirmationSendService extends IntentService {
             ComposeMessageActivity.log("Called to send SMS but no extras");
             return;
         }
+        long sub = extras.getLong(PhoneConstants.SUBSCRIPTION_KEY, SubscriptionManager
+                .getDefaultSubId());
 
         String message = extras.getString(Intent.EXTRA_TEXT);
 
@@ -83,7 +86,7 @@ public class NoConfirmationSendService extends IntentService {
             // provider looks up the threadId based on the recipient(s).
             long threadId = 0;
             SmsMessageSender smsMessageSender = new SmsMessageSender(this, dests, message, threadId,
-                    SubscriptionManager.getPhoneId(SubscriptionManager.getDefaultSmsSubId()));
+                    SubscriptionManager.getPhoneId(sub));
             try {
                 // This call simply puts the message on a queue and sends a broadcast to start
                 // a service to send the message. In queing up the message, however, it does
