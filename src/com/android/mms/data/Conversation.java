@@ -18,6 +18,7 @@ import android.database.sqlite.SQLiteFullException;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.provider.BaseColumns;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.MmsSms;
@@ -1490,5 +1491,81 @@ public class Conversation {
 
     public void setThreadId(long id) {
         mThreadId = id;
+    }
+
+    private static class ThreadUpateHandler {
+        private static final HandlerThread sHandlerThread =
+                new HandlerThread("ThreadUpateHandler");
+        private static final Handler sHandler;
+
+        static {
+            sHandlerThread.setPriority(Thread.MIN_PRIORITY);
+            sHandlerThread.start();
+            sHandler = new Handler(sHandlerThread.getLooper());
+        }
+
+        public static void post(Runnable r) {
+            sHandler.post(r);
+        }
+
+        private ThreadUpateHandler() {};
+    }
+
+    private static Handler mUpateThreadHandler = new Handler();
+    private final static ArrayList<Long> mPendingThread = new ArrayList<Long>();
+    private final static int POST_DELAY = 200;
+    private static final Uri UPDATE_THREAD_CONTENT_URI = Uri.parse(
+                "content://mms-sms/update-thread/");
+
+    private static void postHandlePendingThreads() {
+        mUpateThreadHandler.removeCallbacks(mHandlePendingChips);
+        mUpateThreadHandler.postDelayed(mHandlePendingChips, POST_DELAY);
+    }
+
+    private static Runnable mHandlePendingChips = new Runnable() {
+        @Override
+        public void run() {
+            handlePendingThreads();
+        }
+    };
+
+    private static void handlePendingThreads() {
+        synchronized (mPendingThread) {
+            Log.e(TAG, "update thread count : " + mPendingThread.size());
+            for (final long threadId : mPendingThread) {
+                ThreadUpateHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Context context = MmsApp.getApplication().getApplicationContext();
+                        Log.e(TAG, "process update thread ID : " + threadId);
+                        SqliteWrapper.update(context, context.getContentResolver(),
+                                ContentUris.withAppendedId(UPDATE_THREAD_CONTENT_URI, threadId),
+                                new ContentValues(1), null, null);
+                    }
+                });
+            }
+            mPendingThread.clear();
+        }
+    }
+
+    private static boolean isNeedPostPendingThreads(ArrayList<Long> threadIds) {
+        synchronized (mPendingThread) {
+            int pendingCount = 0;
+            for (long threadId : threadIds) {
+                if (threadId >= 0 && !mPendingThread.contains(threadId)) {
+                    mPendingThread.add(threadId);
+                    pendingCount ++;
+                }
+            }
+            return pendingCount > 0;
+        }
+    }
+
+    public static void updateThreads(ArrayList<Long> threadIds) {
+        synchronized (mPendingThread) {
+            if (isNeedPostPendingThreads(threadIds)) {
+                postHandlePendingThreads();
+            }
+        }
     }
 }
