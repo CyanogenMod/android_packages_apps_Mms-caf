@@ -476,6 +476,13 @@ public class TransactionService extends Service implements Observer {
 
                                 int destPhoneId = getSubIdFromDb(uri);
                                 long [] subId = SubscriptionManager.getSubId(destPhoneId);
+
+                                if (subId == null) {
+                                    Log.e(TAG, "Unable to get Sub Id for Destination Phone id = " +
+                                            destPhoneId);
+                                    return;
+                                }
+
                                 Log.d(TAG, "Destination Phone Id = " + destPhoneId +
                                         "destination Sub Id = " + subId[0]);
 
