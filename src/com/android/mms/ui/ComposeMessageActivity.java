@@ -536,6 +536,7 @@ public class ComposeMessageActivity extends Activity
                 case AttachmentEditor.MSG_PLAY_VIDEO:
                 case AttachmentEditor.MSG_PLAY_AUDIO:
                 case AttachmentEditor.MSG_PLAY_SLIDESHOW:
+                case AttachmentEditor.MSG_VIEW_ICAL:
                 case AttachmentEditor.MSG_VIEW_VCARD:
                     if (mWorkingMessage.getSlideshow() != null) {
                          viewMmsMessageAttachment(msg.what);
@@ -545,6 +546,7 @@ public class ComposeMessageActivity extends Activity
                 case AttachmentEditor.MSG_REPLACE_IMAGE:
                 case AttachmentEditor.MSG_REPLACE_VIDEO:
                 case AttachmentEditor.MSG_REPLACE_AUDIO:
+                case AttachmentEditor.MSG_REPLACE_ICAL:
                 case AttachmentEditor.MSG_REPLACE_VCARD:
                     showAddAttachmentDialog(true);
                     break;
@@ -3807,6 +3809,11 @@ public class ComposeMessageActivity extends Activity
         handleAddAttachmentError(result, R.string.type_vcard);
     }
 
+    private void addIcal(Uri uri) {
+        int result = mWorkingMessage.setAttachment(WorkingMessage.ICAL, uri, false);
+        handleAddAttachmentError(result, R.string.type_ical);
+    }
+
     AsyncDialog getAsyncDialog() {
         if (mAsyncDialog == null) {
             mAsyncDialog = new AsyncDialog(this);
@@ -3922,6 +3929,9 @@ public class ComposeMessageActivity extends Activity
                     && (type.equals("text/x-vcard")
                     || (wildcard && isVcardFile(uri)))) {
                 addVcard(uri);
+           } else if ((type.equals("text/calendar")
+                       && isIcalFile(uri))) {
+                addIcal(uri);
            }
         }
     }
@@ -5261,6 +5271,13 @@ public class ComposeMessageActivity extends Activity
     private boolean isVcardFile(Uri uri) {
         String path = uri.getPath();
         return null != path && path.toLowerCase().endsWith(".vcf");
+    }
+
+    // Get the path of uri and compare it to ".ics" to judge whether it is an
+    // icalendar file.
+    private boolean isIcalFile(Uri uri) {
+        String path = uri.getPath();
+        return null != path && path.toLowerCase().endsWith(".ics");
     }
 
     private ListView getListView() {

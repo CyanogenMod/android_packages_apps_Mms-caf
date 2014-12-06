@@ -67,4 +67,7 @@
     <string name="message_share_intent_title">Share message</string>
 
     <string name="start_new_message_button">New message</string>
+
+    <!-- Sharing ics files from Calendar -->
+    <string name="type_ical">iCal</string>
 </resources>

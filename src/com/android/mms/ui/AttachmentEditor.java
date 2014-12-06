@@ -56,6 +56,8 @@ public class AttachmentEditor extends LinearLayout {
     static final int MSG_REMOVE_ATTACHMENT = 10;
     static final int MSG_VIEW_VCARD        = 11;
     static final int MSG_REPLACE_VCARD     = 12;
+    static final int MSG_VIEW_ICAL        = 13;
+    static final int MSG_REPLACE_ICAL     = 14;
 
     private static final int KILOBYTE = 1024;
 
@@ -182,6 +184,13 @@ public class AttachmentEditor extends LinearLayout {
                     R.id.replace_vcard_button,
                     R.id.remove_vcard_button,
                     MSG_VIEW_VCARD, MSG_REPLACE_VCARD, MSG_REMOVE_ATTACHMENT);
+        } else if (slide.hasICal()) {
+            return createMediaView(R.id.ical_attachment_view_stub,
+                    R.id.ical_attachment_view,
+                    R.id.view_ical_button,
+                    R.id.replace_ical_button,
+                    R.id.remove_ical_button,
+                    MSG_VIEW_ICAL, MSG_REPLACE_ICAL, MSG_REMOVE_ATTACHMENT);
         } else {
             throw new IllegalArgumentException();
         }

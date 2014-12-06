@@ -1012,6 +1012,11 @@ public class MessageListItem extends ZoomMessageListItem implements
     }
 
     @Override
+    public void setICal(Uri icalUri, String name) {
+
+    }
+
+    @Override
     public boolean isChecked() {
         return mIsCheck;
     }

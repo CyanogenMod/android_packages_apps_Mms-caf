@@ -23,6 +23,7 @@ import android.text.TextUtils;
 
 import com.android.mms.LogTag;
 import com.android.mms.model.AudioModel;
+import com.android.mms.model.ICalModel;
 import com.android.mms.model.ImageModel;
 import com.android.mms.model.Model;
 import com.android.mms.model.SlideModel;
@@ -62,6 +63,8 @@ public class MmsThumbnailPresenter extends Presenter {
             presentAudioThumbnail(view, slide.getAudio());
         } else if (slide.hasVcard()) {
             presentVcardThumbnail(view, slide.getVcard());
+        } else if (slide.hasICal()) {
+            presentICalThumbnail(view, slide.getICal());
         }
     }
 
@@ -108,6 +111,10 @@ public class MmsThumbnailPresenter extends Presenter {
         view.setVcard(
                 TextUtils.isEmpty(vcard.getLookupUri()) ? null : Uri.parse(vcard.getLookupUri()),
                 vcard.getSrc());
+    }
+
+    protected void presentICalThumbnail(SlideViewInterface view, ICalModel icalModel) {
+        view.setICal(icalModel.getUri(), icalModel.getSrc());
     }
 
     public void onModelChanged(Model model, boolean dataChanged) {
