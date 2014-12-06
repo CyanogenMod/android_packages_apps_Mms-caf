@@ -79,4 +79,7 @@
     <string name="start_new_message_button">New message</string>
 
     <string name="all_spinner_option">All</string>
+
+    <!-- Sharing vcs files from Calendar -->
+    <string name="type_vcal">vCal</string>
 </resources>

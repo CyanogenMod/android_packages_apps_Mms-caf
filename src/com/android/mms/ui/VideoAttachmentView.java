@@ -165,4 +165,9 @@ public class VideoAttachmentView extends LinearLayout implements
     @Override
     public void setVcard(Uri lookupUri, String name) {
     }
+
+    @Override
+    public void setVCal(Uri vcalUri, String name) {
+
+    }
 }
