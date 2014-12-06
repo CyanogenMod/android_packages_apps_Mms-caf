@@ -48,4 +48,5 @@ public interface SlideViewInterface extends ViewInterface {
     void setTextVisibility(boolean visible);
 
     void setVcard(Uri lookupUri, String name);
+    void setVCal(Uri vcalUri, String name);
 }
