@@ -127,6 +127,7 @@ public class WorkingMessage {
     public static final int AUDIO = 3;
     public static final int SLIDESHOW = 4;
     public static final int VCARD = 5;
+    public static final int VCAL = 6;
 
     // Current attachment type of the message; one of the above values.
     private int mAttachmentType;
@@ -672,6 +673,8 @@ public class WorkingMessage {
                 slideShowEditor.changeAudio(slideNum, uri);
             } else if (type == VCARD) {
                 slideShowEditor.changeVcard(slideNum, uri);
+            } else if (type == VCAL) {
+                slideShowEditor.changeVCal(slideNum, uri);
             } else {
                 result = UNSUPPORTED_TYPE;
             }
