@@ -817,6 +817,7 @@ public class MessageListItem extends ZoomMessageListItem implements
     private void setOnClickListener(final MessageItem msgItem) {
         switch(msgItem.mAttachmentType) {
             case WorkingMessage.VCARD:
+            case WorkingMessage.VCAL:
             case WorkingMessage.IMAGE:
             case WorkingMessage.VIDEO:
                 mImageView.setOnClickListener(new OnClickListener() {
@@ -994,6 +995,19 @@ public class MessageListItem extends ZoomMessageListItem implements
         } catch (java.lang.OutOfMemoryError e) {
             // shouldn't be here.
             Log.e(TAG, "setVcard: out of memory: ", e);
+        }
+    }
+
+    @Override
+    public void setVCal(Uri vcalUri, String name) {
+        showMmsView(true);
+
+        try {
+            mImageView.setImageResource(R.drawable.ic_attach_cal_event);
+            mImageView.setVisibility(VISIBLE);
+        } catch (java.lang.OutOfMemoryError e) {
+            // shouldn't be here.
+            Log.e(TAG, "setVCal: out of memory: ", e);
         }
     }
 
