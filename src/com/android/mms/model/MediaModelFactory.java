@@ -146,7 +146,8 @@ public class MediaModelFactory {
                     part.getDataUri());
         } else if (tag.equals(SmilHelper.ELEMENT_TAG_REF)) {
             if (ContentType.isTextType(contentType)
-                    && !contentType.toLowerCase().equals(ContentType.TEXT_VCARD.toLowerCase())) {
+                && !contentType.toLowerCase().equals(ContentType.TEXT_VCARD.toLowerCase())
+                && !contentType.toLowerCase().equals(ContentType.TEXT_VCALENDAR.toLowerCase())) {
                 media = new TextModel(context, contentType, src,
                         part.getCharset(), part.getData(), regionModel);
             } else if (ContentType.isImageType(contentType)) {
@@ -160,6 +161,9 @@ public class MediaModelFactory {
                         part.getDataUri());
             } else if (contentType.toLowerCase().equals(ContentType.TEXT_VCARD.toLowerCase())) {
                 media = new VcardModel(context, contentType, src,
+                        part.getDataUri());
+            } else if (contentType.toLowerCase().equals(ContentType.TEXT_VCALENDAR.toLowerCase())) {
+                media = new VCalModel(context, contentType, src,
                         part.getDataUri());
             } else {
                 Log.d(TAG, "[MediaModelFactory] getGenericMediaModel Unsupported Content-Type: "
