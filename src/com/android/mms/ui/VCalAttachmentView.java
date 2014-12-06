@@ -32,52 +32,42 @@ package com.android.mms.ui;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.android.mms.R;
 
 import java.util.Map;
 
-public class VcardAttachmentView extends LinearLayout implements
+public class VCalAttachmentView extends LinearLayout implements
         SlideViewInterface {
 
     private TextView mNameView;
     private Button mViewButton;
 
-    public VcardAttachmentView(Context context) {
+    public VCalAttachmentView(Context context) {
         super(context);
     }
 
-    public VcardAttachmentView(Context context, AttributeSet attrs) {
+    public VCalAttachmentView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
     @Override
     protected void onFinishInflate() {
-        mNameView = (TextView) findViewById(R.id.vcard_name);
-        mViewButton = (Button) findViewById(R.id.view_vcard_button);
-    }
-
-    @Override
-    public void setVcard(Uri lookupUri, String name) {
-        synchronized (this) {
-            if (lookupUri != null && !TextUtils.isEmpty(lookupUri.toString())) {
-                mViewButton.setText(R.string.view);
-            } else {
-                mViewButton.setText(R.string.import_vcard);
-            }
-        }
-
-        mNameView.setText(name);
+        mNameView = (TextView) findViewById(R.id.vcal_name);
+        mViewButton = (Button) findViewById(R.id.view_vcal_button);
+        mViewButton.setText(R.string.view);
     }
 
     @Override
     public void setVCal(Uri vcalUri, String name) {
+        mNameView.setText(name);
+    }
 
+    @Override
+    public void setVcard(Uri lookupUri, String name) {
     }
 
     @Override

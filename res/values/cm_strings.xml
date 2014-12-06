@@ -357,4 +357,6 @@
     <string name="manage_sdcard_messages">Manage sdcard messages</string>
     <string name="no_backups_found">No backed up messages found</string>
 
+    <!-- Sharing vcs files from Calendar -->
+    <string name="type_vcal">vCal</string>
 </resources>
