@@ -290,7 +290,7 @@ public class SlideshowModel extends Model
                 if (media.isText()) {
                     part.setData(((TextModel) media).getText().getBytes());
                 } else if (media.isImage() || media.isVideo() || media.isAudio()
-                        || media.isVcard()) {
+                           || media.isVcard() || media.isVCal()) {
                     part.setDataUri(media.getUri());
                     if (media.isVcard()) {
                         part.setName(src.getBytes());
@@ -708,17 +708,17 @@ public class SlideshowModel extends Model
     }
 
     private boolean isSlideValid(SlideModel slide) {
-        // The slide must have either an image or video or vcard, and only one of them.
+        // The slide must have either an image, video, vcard or vcal and only one of them.
         boolean hasImage = slide.hasImage();
         boolean hasVideo = slide.hasVideo();
         boolean hasVcard = slide.hasVcard();
-        if ((hasImage && !hasVideo && !hasVcard)
-                || (!hasImage && hasVideo && !hasVcard)
-                || (!hasImage && !hasVideo && hasVcard)) {
-            return true;
-        } else {
-            return false;
-        }
+        boolean hasVCal = slide.hasVCal();
+        int numAttachments = 0;
+        if (hasImage) numAttachments++;
+        if (hasVideo) numAttachments++;
+        if (hasVcard) numAttachments++;
+        if (hasVCal) numAttachments++;
+        return numAttachments == 1;
     }
 
     /**

@@ -53,6 +53,7 @@ import android.content.res.Resources;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SqliteWrapper;
 import android.graphics.drawable.Drawable;
 import android.media.CamcorderProfile;
@@ -113,6 +114,7 @@ import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.TempFileProvider;
 import com.android.mms.data.WorkingMessage;
+import com.android.mms.model.VCalModel;
 import com.android.mms.model.MediaModel;
 import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
@@ -648,6 +650,10 @@ public class MessageUtils {
                 return WorkingMessage.VCARD;
             }
 
+            if (slide.hasVCal()) {
+                return WorkingMessage.VCAL;
+            }
+
             if (slide.hasText()) {
                 return WorkingMessage.TEXT;
             }
@@ -844,6 +850,29 @@ public class MessageUtils {
             // distinguish view vcard from mms or contacts.
             intent.putExtra(VIEW_VCARD, true);
             context.startActivity(intent);
+            return;
+        } else if (slide.hasVCal()) {
+            mm = slide.getVCal();
+            Intent intent = new Intent();
+            Uri vCalFileUri = mm.getUri();;
+            // change the intent type based on the view triggering this call
+            // from compose - use ACTION_VIEW
+            // from others - use ACTION_SEND
+            String [] projection = { "_data" };     // absolute file path
+            Cursor cursor = context.getContentResolver().query(mm.getUri(), projection,
+                    null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                // if file exists , then we are looking at a local mms msg
+                intent.setAction(Intent.ACTION_SEND);
+                cursor.close();
+            } else {
+                intent.setAction(Intent.ACTION_VIEW);
+            }
+
+            intent.setDataAndType(vCalFileUri, ContentType.TEXT_VCALENDAR.toLowerCase());
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            context.startActivity(intent);
+
             return;
         }
 
