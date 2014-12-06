@@ -998,9 +998,24 @@ public class MessageListItem extends ZoomMessageListItem implements
         try {
             mImageView.setImageResource(R.drawable.ic_attach_vcard);
             mImageView.setVisibility(VISIBLE);
+            Log.e("TEST", "setting VCard!!", new Exception());
         } catch (java.lang.OutOfMemoryError e) {
             // shouldn't be here.
             Log.e(TAG, "setVcard: out of memory: ", e);
+        }
+    }
+
+    @Override
+    public void setVCal(Uri vcalUri, String name) {
+        showMmsView(true);
+
+        try {
+            mImageView.setImageResource(R.drawable.ic_attach_cal_event);
+            mImageView.setVisibility(VISIBLE);
+            Log.e("TEST", "setting vcal!!", new Exception());
+        } catch (java.lang.OutOfMemoryError e) {
+            // shouldn't be here.
+            Log.e(TAG, "setVCal: out of memory: ", e);
         }
     }
 
