@@ -25,6 +25,7 @@ import android.util.Log;
 
 import com.android.mms.LogTag;
 import com.android.mms.model.AudioModel;
+import com.android.mms.model.ICalModel;
 import com.android.mms.model.ImageModel;
 import com.android.mms.model.LayoutModel;
 import com.android.mms.model.MediaModel;
@@ -137,6 +138,9 @@ public class SlideshowPresenter extends Presenter {
             } else if (media.isVcard()) {
                 // the media is vcard.
                 presentVcard(view, (VcardModel) media, true);
+            } else if (media.isICal()) {
+                // the media is an iCal file.
+                presentICal(view, (ICalModel) media, true);
             }
         }
     }
@@ -184,6 +188,16 @@ public class SlideshowPresenter extends Presenter {
         if (view instanceof SlideListItemView) {
             SlideListItemView item = (SlideListItemView) view;
             item.setVcard(vcard.getUri(), vcard.getLookupUri(), vcard.getSrc());
+        }
+    }
+
+    protected void presentICal(SlideViewInterface view, ICalModel icalModel, boolean dataChanged) {
+        if (dataChanged) {
+            view.setICal(icalModel.getUri(), icalModel.getSrc());
+        }
+        if (view instanceof SlideListItemView) {
+            SlideListItemView item = (SlideListItemView) view;
+            item.setICal(icalModel.getUri(), icalModel.getSrc());
         }
     }
 

@@ -42,42 +42,34 @@ import com.android.mms.R;
 
 import java.util.Map;
 
-public class VcardAttachmentView extends LinearLayout implements
+public class ICalAttachmentView extends LinearLayout implements
         SlideViewInterface {
 
     private TextView mNameView;
     private Button mViewButton;
 
-    public VcardAttachmentView(Context context) {
+    public ICalAttachmentView(Context context) {
         super(context);
     }
 
-    public VcardAttachmentView(Context context, AttributeSet attrs) {
+    public ICalAttachmentView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
     @Override
     protected void onFinishInflate() {
-        mNameView = (TextView) findViewById(R.id.vcard_name);
-        mViewButton = (Button) findViewById(R.id.view_vcard_button);
-    }
-
-    @Override
-    public void setVcard(Uri lookupUri, String name) {
-        synchronized (this) {
-            if (lookupUri != null && !TextUtils.isEmpty(lookupUri.toString())) {
-                mViewButton.setText(R.string.view);
-            } else {
-                mViewButton.setText(R.string.import_vcard);
-            }
-        }
-
-        mNameView.setText(name);
+        mNameView = (TextView) findViewById(R.id.ical_name);
+        mViewButton = (Button) findViewById(R.id.view_ical_button);
+        mViewButton.setText(R.string.view);
     }
 
     @Override
     public void setICal(Uri icalUri, String name) {
+        mNameView.setText(name);
+    }
 
+    @Override
+    public void setVcard(Uri lookupUri, String name) {
     }
 
     @Override

@@ -161,6 +161,9 @@ public class MediaModelFactory {
             } else if (contentType.toLowerCase().equals(ContentType.TEXT_VCARD.toLowerCase())) {
                 media = new VcardModel(context, contentType, src,
                         part.getDataUri());
+            } else if (contentType.toLowerCase().equals(ContentType.TEXT_VCALENDAR.toLowerCase())) {
+                media = new ICalModel(context, contentType, src,
+                        part.getDataUri());
             } else {
                 Log.d(TAG, "[MediaModelFactory] getGenericMediaModel Unsupported Content-Type: "
                         + contentType);

@@ -49,11 +49,13 @@ public class SlideModel extends Model implements List<MediaModel>, EventListener
     private MediaModel mAudio;
     private MediaModel mVideo;
     private MediaModel mVcard;
+    private MediaModel mICal;
 
     private boolean mCanAddImage = true;
     private boolean mCanAddAudio = true;
     private boolean mCanAddVideo = true;
     private boolean mCanAddVcard = true;
+    private boolean mCanAddICal = true;
 
     private int mDuration;
     private boolean mVisible = true;
@@ -137,11 +139,13 @@ public class SlideModel extends Model implements List<MediaModel>, EventListener
                 mCanAddImage = false;
                 mCanAddAudio = false;
                 mCanAddVcard = false;
+                mCanAddICal = false;
             } else {
                 Log.w(TAG, "[SlideModel] content type " + media.getContentType() +
                     " - can't add video in this state");
             }
         } else if (media.isVcard()) {
+            Log.d("TEST", "Adding vcard!");
             if (mCanAddVcard) {
                 internalAddOrReplace(mVcard, media);
                 mVcard = media;
@@ -149,6 +153,17 @@ public class SlideModel extends Model implements List<MediaModel>, EventListener
             } else {
                 Log.w(TAG, "[SlideModel] content type " + media.getContentType() +
                         " - can't add vcard in this state");
+            }
+        } else if (media.isICal()) {
+            Log.d("TEST", "Adding ical!");
+            if (mCanAddICal) {
+                Log.d("TEST", "Adding ical 2!");
+                internalAddOrReplace(mICal, media);
+                mICal = media;
+                mCanAddVideo = false;
+            } else {
+                Log.w(TAG, "[SlideModel] content type " + media.getContentType() +
+                        " - can't add ical in this state");
             }
         }
     }
@@ -202,8 +217,12 @@ public class SlideModel extends Model implements List<MediaModel>, EventListener
                 mCanAddImage = true;
                 mCanAddAudio = true;
                 mCanAddVcard = true;
+                mCanAddICal = true;
             } else if (object instanceof VcardModel) {
                 mVcard = null;
+                mCanAddVideo = true;
+            } else if (object instanceof ICalModel) {
+                mICal = null;
                 mCanAddVideo = true;
             }
             // If the media is resizable, at this point consider it to be zero length.
@@ -325,6 +344,7 @@ public class SlideModel extends Model implements List<MediaModel>, EventListener
             mCanAddAudio = true;
             mCanAddVideo = true;
             mCanAddVcard = true;
+            mCanAddICal = true;
 
             notifyModelChanged(true);
         }
@@ -514,6 +534,10 @@ public class SlideModel extends Model implements List<MediaModel>, EventListener
         return mVcard != null;
     }
 
+    public boolean hasICal() {
+        return mICal != null;
+    }
+
     public boolean removeText() {
         return remove(mText);
     }
@@ -540,6 +564,12 @@ public class SlideModel extends Model implements List<MediaModel>, EventListener
         return result;
     }
 
+    public boolean removeICal() {
+        boolean result = remove(mICal);
+        resetDuration();
+        return result;
+    }
+
     public TextModel getText() {
         return (TextModel) mText;
     }
@@ -558,6 +588,10 @@ public class SlideModel extends Model implements List<MediaModel>, EventListener
 
     public VcardModel getVcard() {
         return (VcardModel) mVcard;
+    }
+
+    public ICalModel getICal() {
+        return (ICalModel) mICal;
     }
 
     public void resetDuration() {

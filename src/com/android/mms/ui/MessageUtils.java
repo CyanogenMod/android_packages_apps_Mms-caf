@@ -111,6 +111,7 @@ import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.TempFileProvider;
 import com.android.mms.data.WorkingMessage;
+import com.android.mms.model.ICalModel;
 import com.android.mms.model.MediaModel;
 import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
@@ -839,6 +840,14 @@ public class MessageUtils {
             }
             // distinguish view vcard from mms or contacts.
             intent.putExtra(VIEW_VCARD, true);
+            context.startActivity(intent);
+            return;
+        } else if (slide.hasICal()) {
+            mm = slide.getICal();
+            Uri icalFileUri = ((ICalModel) mm).getUri();
+
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(icalFileUri, "text/calendar");
             context.startActivity(intent);
             return;
         }

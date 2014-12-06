@@ -290,7 +290,7 @@ public class SlideshowModel extends Model
                 if (media.isText()) {
                     part.setData(((TextModel) media).getText().getBytes());
                 } else if (media.isImage() || media.isVideo() || media.isAudio()
-                        || media.isVcard()) {
+                           || media.isICal()) {
                     part.setDataUri(media.getUri());
                     if (media.isVcard()
                             && !TextUtils.isEmpty(((VcardModel) media).getLookupUri())) {
@@ -709,9 +709,11 @@ public class SlideshowModel extends Model
         boolean hasImage = slide.hasImage();
         boolean hasVideo = slide.hasVideo();
         boolean hasVcard = slide.hasVcard();
+        boolean hasICal = slide.hasICal();
         if ((hasImage && !hasVideo && !hasVcard)
                 || (!hasImage && hasVideo && !hasVcard)
-                || (!hasImage && !hasVideo && hasVcard)) {
+                || (!hasImage && !hasVideo && hasVcard)
+                || (!hasImage && !hasVideo && hasICal)) {
             return true;
         } else {
             return false;

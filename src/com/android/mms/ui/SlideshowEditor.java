@@ -30,6 +30,7 @@ import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
 import com.android.mms.model.TextModel;
 import com.android.mms.model.VcardModel;
+import com.android.mms.model.ICalModel;
 import com.android.mms.model.VideoModel;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
@@ -181,6 +182,10 @@ public class SlideshowEditor {
         return mModel.get(position).removeVcard();
     }
 
+    public boolean removeICal(int position) {
+        return mModel.get(position).removeICal();
+    }
+
     public void changeText(int position, String newText) {
         if (newText != null) {
             SlideModel slide = mModel.get(position);
@@ -222,6 +227,13 @@ public class SlideshowEditor {
         SlideModel slide = mModel.get(position);
         slide.add(vCard);
         slide.updateDuration(vCard.getDuration());
+    }
+
+    public void changeICal(int position, Uri newIcal) throws MmsException {
+        ICalModel ical = new ICalModel(mContext, newIcal);
+        SlideModel slide = mModel.get(position);
+        slide.add(ical);
+        slide.updateDuration(ical.getDuration());
     }
 
     public void moveSlideUp(int position) {
