@@ -153,4 +153,9 @@ public class ImageAttachmentView extends LinearLayout implements SlideViewInterf
     @Override
     public void setVcard(Uri lookupUri, String name) {
     }
+
+    @Override
+    public void setVCal(Uri vcalUri, String name) {
+
+    }
 }

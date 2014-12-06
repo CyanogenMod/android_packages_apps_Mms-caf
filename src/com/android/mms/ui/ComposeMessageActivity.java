@@ -554,6 +554,7 @@ public class ComposeMessageActivity extends Activity
                 case AttachmentEditor.MSG_PLAY_VIDEO:
                 case AttachmentEditor.MSG_PLAY_AUDIO:
                 case AttachmentEditor.MSG_PLAY_SLIDESHOW:
+                case AttachmentEditor.MSG_VIEW_VCAL:
                 case AttachmentEditor.MSG_VIEW_VCARD:
                     if (mWorkingMessage.getSlideshow() != null) {
                          viewMmsMessageAttachment(msg.what);
@@ -562,6 +563,7 @@ public class ComposeMessageActivity extends Activity
                 case AttachmentEditor.MSG_REPLACE_IMAGE:
                 case AttachmentEditor.MSG_REPLACE_VIDEO:
                 case AttachmentEditor.MSG_REPLACE_AUDIO:
+                case AttachmentEditor.MSG_REPLACE_VCAL:
                 case AttachmentEditor.MSG_REPLACE_VCARD:
                     showAddAttachmentDialog(true);
                     break;
@@ -876,9 +878,6 @@ public class ComposeMessageActivity extends Activity
     private class CancelSendingListener implements OnClickListener {
         @Override
         public void onClick(DialogInterface dialog, int whichButton) {
-            if (isRecipientsEditorVisible()) {
-                mRecipientsEditor.requestFocus();
-            }
             dialog.dismiss();
         }
     }
@@ -2502,9 +2501,6 @@ public class ComposeMessageActivity extends Activity
 
         mIsPickingContact = false;
         addRecipientsListeners();
-        if (isRecipientsEditorVisible()) {
-            mRecipientsEditor.addTextChangedListener(mRecipientsWatcher);
-        }
 
         if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
             log("update title, mConversation=" + mConversation.toString());
@@ -2543,9 +2539,6 @@ public class ComposeMessageActivity extends Activity
         //Contact.stopPresenceObserver();
 
         removeRecipientsListeners();
-        if (isRecipientsEditorVisible()) {
-            mRecipientsEditor.removeTextChangedListener(mRecipientsWatcher);
-        }
 
         // remove any callback to display a progress spinner
         if (mAsyncDialog != null) {
@@ -3937,6 +3930,11 @@ public class ComposeMessageActivity extends Activity
         handleAddAttachmentError(result, R.string.type_vcard);
     }
 
+    private void addVCal(Uri uri) {
+        int result = mWorkingMessage.setAttachment(WorkingMessage.VCAL, uri, false);
+        handleAddAttachmentError(result, R.string.type_vcal);
+    }
+
     AsyncDialog getAsyncDialog() {
         if (mAsyncDialog == null) {
             mAsyncDialog = new AsyncDialog(this);
@@ -4052,6 +4050,9 @@ public class ComposeMessageActivity extends Activity
                     && (type.equals("text/x-vcard")
                     || (wildcard && isVcardFile(uri)))) {
                 addVcard(uri);
+           } else if ((type.equals("text/x-vcalendar")
+                       && isVCalFile(uri))) {
+                addVCal(uri);
            }
         }
     }
@@ -5105,7 +5106,6 @@ public class ComposeMessageActivity extends Activity
                     if (cursor != null && cursor.getCount() == 0
                             && !isRecipientsEditorVisible() && !mSentMessage) {
                         initRecipientsEditor();
-                        mRecipientsEditor.addTextChangedListener(mRecipientsWatcher);
                     }
 
                     // FIXME: freshing layout changes the focused view to an unexpected
@@ -5420,6 +5420,13 @@ public class ComposeMessageActivity extends Activity
         return null != path && path.toLowerCase().endsWith(".vcf");
     }
 
+    // Get the path of uri and compare it to ".vcs" to judge whether it is a
+    // vcalendar file.
+    private boolean isVCalFile(Uri uri) {
+        String path = uri.getPath();
+        return null != path && path.toLowerCase().endsWith(".vcs");
+    }
+
     private ListView getListView() {
         return mMsgListView;
     }
@@ -5566,12 +5573,6 @@ public class ComposeMessageActivity extends Activity
         @Override
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
             logMultiChoice("onPrepareActionMode");
-            if (MessageUtils.getActivatedIccCardCount() < 1) {
-                MenuItem item = menu.findItem(R.id.copy_to_sim);
-                if (item != null) {
-                    item.setVisible(false);
-                }
-            }
             return true;
         }
 
