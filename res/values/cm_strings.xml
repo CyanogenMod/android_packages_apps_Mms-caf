@@ -339,4 +339,6 @@
         <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> messages will be deleted.</item>
     </plurals>
 
+    <!-- Sharing vcs files from Calendar -->
+    <string name="type_vcal">vCal</string>
 </resources>
