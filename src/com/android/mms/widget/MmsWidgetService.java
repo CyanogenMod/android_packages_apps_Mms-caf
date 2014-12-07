@@ -38,6 +38,7 @@ import com.android.mms.data.Contact;
 import com.android.mms.data.Conversation;
 import com.android.mms.ui.ConversationList;
 import com.android.mms.ui.ConversationListItem;
+import com.android.mms.ui.MailBoxMessageList;
 import com.android.mms.ui.MessageUtils;
 
 public class MmsWidgetService extends RemoteViewsService {
@@ -276,9 +277,14 @@ public class MmsWidgetService extends RemoteViewsService {
                                     SUBJECT_TEXT_COLOR_READ));
 
                 // On click intent.
-                Intent clickIntent = new Intent(Intent.ACTION_VIEW);
-                clickIntent.setType("vnd.android-dir/mms-sms");
-                clickIntent.putExtra("thread_id", conv.getThreadId());
+                Intent clickIntent;
+                if (!MessageUtils.isMailboxMode()) {
+                    clickIntent = new Intent(Intent.ACTION_VIEW);
+                    clickIntent.setType("vnd.android-dir/mms-sms");
+                    clickIntent.putExtra("thread_id", conv.getThreadId());
+                } else {
+                    clickIntent = new Intent(mContext, MailBoxMessageList.class);
+                }
 
                 remoteViews.setOnClickFillInIntent(R.id.widget_conversation, clickIntent);
 
