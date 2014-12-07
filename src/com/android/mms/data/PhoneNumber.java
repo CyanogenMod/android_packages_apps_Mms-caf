@@ -24,7 +24,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
-import android.provider.ContactsContract.ContactCounts;
+import android.provider.ContactsContract.InternalContactCounts;
 import android.telephony.PhoneNumberUtils;
 import android.util.Log;
 
@@ -220,7 +220,7 @@ public class PhoneNumber implements Comparable<PhoneNumber> {
         boolean useAlternative = contactsPreferences.getSortOrder()
                 == ContactsPreferences.SORT_ORDER_ALTERNATIVE ? true : false;
         final Uri uri = Phone.CONTENT_URI.buildUpon()
-                .appendQueryParameter(ContactCounts.EXTRA_ADDRESS_BOOK_INDEX, "true")
+                .appendQueryParameter(InternalContactCounts.EXTRA_ADDRESS_BOOK_INDEX, "true")
                 .build();
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         boolean mobileOnly = prefs.getBoolean(SelectRecipientsList.PREF_MOBILE_NUMBERS_ONLY, true);
@@ -242,9 +242,9 @@ public class PhoneNumber implements Comparable<PhoneNumber> {
         String[] sections = null;
         int[] counts = null;
 
-        if (bundle.containsKey(ContactCounts.EXTRA_ADDRESS_BOOK_INDEX_TITLES)) {
-            sections = bundle.getStringArray(ContactCounts.EXTRA_ADDRESS_BOOK_INDEX_TITLES);
-            counts = bundle.getIntArray(ContactCounts.EXTRA_ADDRESS_BOOK_INDEX_COUNTS);
+        if (bundle.containsKey(InternalContactCounts.EXTRA_ADDRESS_BOOK_INDEX_TITLES)) {
+            sections = bundle.getStringArray(InternalContactCounts.EXTRA_ADDRESS_BOOK_INDEX_TITLES);
+            counts = bundle.getIntArray(InternalContactCounts.EXTRA_ADDRESS_BOOK_INDEX_COUNTS);
         }
 
         // As we can't sort by super primary state when using the index extra query parameter,
