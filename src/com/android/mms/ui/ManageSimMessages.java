@@ -196,6 +196,9 @@ public class ManageSimMessages extends Activity
         @Override
         protected void onQueryComplete(
                 int token, Object cookie, Cursor cursor) {
+            if (mCursor != null) {
+                stopManagingCursor(mCursor);
+            }
             mCursor = cursor;
             if (mCursor != null) {
                 if (!mCursor.moveToFirst()) {
@@ -255,10 +258,6 @@ public class ManageSimMessages extends Activity
             mDeleteDialog.dismiss();
         }
         updateState(SHOW_BUSY);
-        if (mCursor != null) {
-            stopManagingCursor(mCursor);
-            mCursor.close();
-        }
         startQuery();
     }
 
@@ -378,6 +377,14 @@ public class ManageSimMessages extends Activity
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // Simply setting the choice mode causes the previous choice mode to finish and we exit
+        // multi-select mode (if we're in it) and remove all the selections.
+        mSimList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
     }
 
     @Override

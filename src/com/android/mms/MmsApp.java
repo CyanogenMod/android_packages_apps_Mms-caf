@@ -21,13 +21,17 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.ContentObserver;
 import android.drm.DrmManagerClient;
 import android.location.Country;
 import android.location.CountryDetector;
 import android.location.CountryListener;
+import android.net.Uri;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.provider.SearchRecentSuggestions;
+import android.provider.Settings;
+import android.provider.Settings.SettingNotFoundException;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -98,6 +102,41 @@ public class MmsApp extends Application {
         MessagingNotification.init(this);
 
         activePendingMessages();
+
+        registerMobileDataObserver();
+    }
+
+    private void registerMobileDataObserver() {
+        int phoneCount = TelephonyManager.getDefault().getPhoneCount();
+        final int MOBILE_DATA_ON = 1;
+
+        for( int i =0; i < phoneCount; i++) {
+            Uri uri = Settings.Global.getUriFor(Settings.Global.MOBILE_DATA + i);
+            getContentResolver().registerContentObserver(uri, false, new ContentObserver(null) {
+                @Override
+                public void onChange(boolean selfChange, Uri uri) {
+                     Log.d(LOG_TAG, "MobileData UI changed = " + uri);
+                     String uriLastSegment = uri.getLastPathSegment();
+                     int uriLength = uriLastSegment.length();
+                     int phoneId = Character.getNumericValue(uriLastSegment.charAt(uriLength - 1));
+
+                     try {
+                         int value = Settings.Global.getInt(getContentResolver(),
+                                 Settings.Global.MOBILE_DATA + phoneId);
+                         Log.d(LOG_TAG, "value = " + value);
+                         if (value == MOBILE_DATA_ON) {
+                             if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
+                                 Log.d(LOG_TAG,
+                                         "MobileData turned ON, trigger pending mms processing");
+                             }
+                             activePendingMessages();
+                         }
+                     } catch (SettingNotFoundException e) {
+                         Log.e(LOG_TAG, "Exception in getting MobileData UI value. e = " + e);
+                     }
+                }
+            });
+        }
     }
 
     /**

@@ -1409,6 +1409,17 @@ public class WorkingMessage {
         long threadId = 0;
         Cursor cursor = null;
         boolean newMessage = false;
+        boolean forwardMessage = conv.getHasMmsForward();
+        boolean sameRecipient = false;
+        ContactList contactList = conv.getRecipients();
+        if (contactList != null) {
+            String[] numbers = contactList.getNumbers();
+            if (numbers != null && numbers.length == 1) {
+                if (numbers[0].equals(conv.getForwardRecipientNumber())) {
+                    sameRecipient = true;
+                }
+            }
+        }
         try {
             // Put a placeholder message in the database first
             DraftCache.getInstance().setSavingDraft(true);
@@ -1417,6 +1428,9 @@ public class WorkingMessage {
             // Make sure we are still using the correct thread ID for our
             // recipient set.
             threadId = conv.ensureThreadId();
+            if (forwardMessage && sameRecipient) {
+                MessageUtils.sSameRecipientList.add(threadId);
+            }
 
             if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
                 LogTag.debug("sendMmsWorker: update draft MMS message " + mmsUri +
@@ -1456,6 +1470,12 @@ public class WorkingMessage {
                 values.put(Mms.MESSAGE_TYPE, PduHeaders.MESSAGE_TYPE_SEND_REQ);
                 if (textOnly) {
                     values.put(Mms.TEXT_ONLY, 1);
+                }
+                if ((TelephonyManager.getDefault().getPhoneCount()) > 1) {
+                    values.put(Mms.PHONE_ID, mCurrentConvPhoneId);
+                } else {
+                    values.put(Mms.PHONE_ID, SubscriptionManager.getPhoneId(
+                            SubscriptionManager.getDefaultDataSubId()));
                 }
                 mmsUri = SqliteWrapper.insert(mActivity, mContentResolver, Mms.Outbox.CONTENT_URI,
                         values);
@@ -1543,6 +1563,9 @@ public class WorkingMessage {
             Recycler.getMmsRecycler().deleteOldMessagesByThreadId(mActivity, threadId);
         } catch (Exception e) {
             Log.e(TAG, "Failed to send message: " + mmsUri + ", threadId=" + threadId, e);
+        }
+        if (forwardMessage && sameRecipient) {
+            MessageUtils.sSameRecipientList.remove(threadId);
         }
         MmsWidgetProvider.notifyDatasetChanged(mActivity);
     }

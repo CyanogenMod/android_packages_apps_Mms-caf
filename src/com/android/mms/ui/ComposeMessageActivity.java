@@ -2269,6 +2269,11 @@ public class ComposeMessageActivity extends Activity
 
         // reset mMessagesAndDraftLoaded
         mMessagesAndDraftLoaded = false;
+        long threadId = mWorkingMessage.getConversation().getThreadId();
+        // Same recipient for ForwardMms will not load draft
+        if (MessageUtils.sSameRecipientList.contains(threadId)) {
+            mShouldLoadDraft = false;
+        }
 
         CharSequence text = mWorkingMessage.getText();
         if (text != null) {
@@ -2449,6 +2454,10 @@ public class ComposeMessageActivity extends Activity
 
         // Allow any blocked calls to update the thread's read status.
         mConversation.blockMarkAsRead(false);
+
+        // Simply setting the choice mode causes the previous choice mode to finish and we exit
+        // multi-select mode (if we're in it) and remove all the selections.
+        mMsgListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 
         if (mMsgListAdapter != null) {
             // Close the cursor in the ListAdapter if the activity stopped.
@@ -3725,9 +3734,17 @@ public class ComposeMessageActivity extends Activity
         // If this is a forwarded message, it will have an Intent extra
         // indicating so.  If not, bail out.
         if (!mForwardMessageMode) {
+            if (mConversation != null) {
+                mConversation.setHasMmsForward(false);
+            }
             return false;
         }
 
+        if (mConversation != null) {
+            mConversation.setHasMmsForward(true);
+            String recipientNumber = intent.getStringExtra("msg_recipient");
+            mConversation.setForwardRecipientNumber(recipientNumber);
+        }
         Uri uri = intent.getParcelableExtra("msg_uri");
 
         if (Log.isLoggable(LogTag.APP, Log.DEBUG)) {
@@ -4208,7 +4225,7 @@ public class ComposeMessageActivity extends Activity
     }
 
     private void startMsgListQuery(int token) {
-        if (mSendDiscreetMode) {
+        if (mSendDiscreetMode || MessageUtils.isMailboxMode()) {
             return;
         }
         Uri conversationUri = mConversation.getUri();
@@ -4255,7 +4272,8 @@ public class ComposeMessageActivity extends Activity
         mMsgListAdapter.setMsgListItemHandler(mMessageListItemHandler);
         mMsgListView.setAdapter(mMsgListAdapter);
         mMsgListView.setItemsCanFocus(false);
-        mMsgListView.setVisibility(mSendDiscreetMode ? View.INVISIBLE : View.VISIBLE);
+        mMsgListView.setVisibility((mSendDiscreetMode || MessageUtils.isMailboxMode())
+                ? View.INVISIBLE : View.VISIBLE);
         mMsgListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -4457,7 +4475,7 @@ public class ComposeMessageActivity extends Activity
             mScrollOnSend = true;   // in the next onQueryComplete, scroll the list to the end.
         }
         // But bail out if we are supposed to exit after the message is sent.
-        if (mSendDiscreetMode) {
+        if (mSendDiscreetMode || MessageUtils.isMailboxMode()) {
             finish();
         }
     }
@@ -5416,6 +5434,12 @@ public class ComposeMessageActivity extends Activity
             copyToClipboard(sBuilder.toString());
         }
 
+        private void resendCheckedMessage() {
+            Cursor c = (Cursor) getListView().getAdapter().getItem(mSelectedPos.get(0));
+            resendMessage(mMsgListAdapter.getCachedMessageItem(c.getString(COLUMN_MSG_TYPE),
+                    c.getLong(COLUMN_ID), c));
+        }
+
         private void copySmsToSim() {
             mMessageItems.clear();
             for (Integer pos : mSelectedPos) {
@@ -5448,6 +5472,16 @@ public class ComposeMessageActivity extends Activity
             recordAllSelectedItems();
             switch (item.getItemId()) {
             case R.id.forward:
+                int position = mSelectedPos.get(0).intValue();
+                MessageItem msgItem = getMessageItemByPos(position);
+                if (msgItem != null &&
+                        msgItem.isMms() &&
+                        !isAllowForwardMessage(msgItem)) {
+                    Toast.makeText(ComposeMessageActivity.this,
+                            R.string.forward_size_over,
+                            Toast.LENGTH_SHORT).show();
+                    return false;
+                }
                 forwardMessage();
                 break;
             case R.id.delete:
@@ -5463,6 +5497,9 @@ public class ComposeMessageActivity extends Activity
                 } else {
                     getWorkThread().startWork(WORK_TOKEN_UNLOCK);
                 }
+                break;
+            case R.id.resend:
+                resendCheckedMessage();
                 break;
             case R.id.copy_to_sim:
                 copySmsToSim();
@@ -5660,6 +5697,10 @@ public class ComposeMessageActivity extends Activity
                             .setTitle(
                                     getContext().getString(R.string.menu_lock));
                 }
+
+                // no resend
+                mode.getMenu().findItem(R.id.resend).setVisible(false);
+
                 if (mMmsSelected > 0) {
                     mode.getMenu().findItem(R.id.forward).setVisible(false);
                     mode.getMenu().findItem(R.id.copy_to_sim).setVisible(false);
@@ -5687,6 +5728,7 @@ public class ComposeMessageActivity extends Activity
                                     getContext().getString(R.string.menu_lock));
                 }
 
+                mode.getMenu().findItem(R.id.resend).setVisible(isFailedMessage(position));
                 mode.getMenu().findItem(R.id.forward).setVisible(isMessageForwardable(position));
 
                 if (mMmsSelected > 0) {
@@ -5733,6 +5775,14 @@ public class ComposeMessageActivity extends Activity
             }
 
             return msgItem.isSms() || (msgItem.isDownloaded() && msgItem.mIsForwardable);
+        }
+
+        private boolean isFailedMessage(int position) {
+            MessageItem msgItem = getMessageItemByPos(position);
+            if (msgItem == null) {
+                return false;
+            }
+            return msgItem.isFailedMessage();
         }
 
         @Override

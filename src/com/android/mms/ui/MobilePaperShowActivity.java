@@ -63,6 +63,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.mms.MmsConfig;
 import com.android.mms.model.LayoutModel;
 import com.android.mms.model.RegionModel;
 import com.android.mms.model.SlideModel;
@@ -235,7 +236,9 @@ public class MobilePaperShowActivity extends Activity {
         String messageDetails = MessageUtils.getMessageDetails(
                 MobilePaperShowActivity.this, mCursor,
                 mSlideModel.getTotalMessageSize());
-        mDetailsText.setText(messageDetails);
+        if (!TextUtils.isEmpty(messageDetails)) {
+            mDetailsText.setText(messageDetails);
+        }
     }
 
     private void drawRootView() {
@@ -337,6 +340,14 @@ public class MobilePaperShowActivity extends Activity {
         drawRootView();
     }
 
+    private boolean isAllowForwardMessage() {
+        int messageSize = mSlideModel.getTotalMessageSize();
+        int forwardStrSize = getString(R.string.forward_prefix).getBytes().length;
+        int subjectSize =  mSubject == null ? 0 : mSubject.getBytes().length;
+        int totalSize = messageSize + forwardStrSize + subjectSize;
+        return totalSize <= (MmsConfig.getMaxMessageSize() - SlideshowModel.SLIDESHOW_SLOP);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (Mms.MESSAGE_BOX_INBOX == mMailboxId) {
@@ -370,6 +381,11 @@ public class MobilePaperShowActivity extends Activity {
                 MessageUtils.dialNumber(this,mNumber);
                 break;
             case MENU_FORWARD:
+                if (!isAllowForwardMessage()) {
+                    Toast.makeText(MobilePaperShowActivity.this,
+                            R.string.forward_size_over, Toast.LENGTH_SHORT).show();
+                    return false;
+                }
                 forwardMms();
                 break;
             case android.R.id.home:
