@@ -55,15 +55,6 @@ public class ImageModel extends RegionMediaModel {
 
     private static final int PICTURE_SIZE_LIMIT = 100 * 1024;
 
-    /**
-     * These are the image content types that MMS supports. Anything else needs to be transcoded
-     * into one of these content types before being sent over MMS.
-     */
-    protected static final Set<String> SUPPORTED_MMS_IMAGE_CONTENT_TYPES =
-        new HashSet<String>(Arrays.asList(new String[] {
-                "image/jpeg",
-            }));
-
     private int mWidth;
     private int mHeight;
     private SoftReference<Bitmap> mFullSizeBitmapCache = new SoftReference<Bitmap>(null);
@@ -215,8 +206,7 @@ public class ImageModel extends RegionMediaModel {
         // set the size.
         if (size != 0 && size <= byteLimit &&
                 image.getWidth() <= widthLimit &&
-                image.getHeight() <= heightLimit &&
-                SUPPORTED_MMS_IMAGE_CONTENT_TYPES.contains(image.getContentType())) {
+                image.getHeight() <= heightLimit) {
             if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
                 Log.v(TAG, "resizeMedia - already sized");
             }
