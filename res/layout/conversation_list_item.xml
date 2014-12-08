@@ -21,11 +21,11 @@
 <com.android.mms.ui.ConversationListItem xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="72dp"
-    android:background="?android:attr/activatedBackgroundIndicator"
+    android:background="@drawable/list_item_background_material"
     android:paddingStart="16dip"
     android:paddingEnd="16dip" >
 
-    <android.widget.QuickContactBadge
+    <com.android.contacts.common.widget.CheckableQuickContactBadge
         android:id="@+id/avatar"
         android:visibility="gone"
         android:layout_centerVertical="true"

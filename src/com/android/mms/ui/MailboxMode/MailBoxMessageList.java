@@ -1004,6 +1004,7 @@ public class MailBoxMessageList extends ListActivity implements
             mode.setTitle(getString(R.string.selected_count, checkedCount));
             mode.getMenu().findItem(R.id.selection_toggle).setTitle(getString(
                     allItemsSelected() ? R.string.deselected_all : R.string.selected_all));
+            mListAdapter.notifyDataSetChanged();
         }
 
         private boolean allItemsSelected() {
