@@ -220,13 +220,6 @@ public class MessageListAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         if (view instanceof MessageListItem) {
-            if (mListView.isItemChecked(cursor.getPosition())) {
-                if (view != null) {
-                    ((MessageListItem) view).markAsSelected(true);
-                }
-            } else {
-                ((MessageListItem) view).markAsSelected(false);
-            }
             String type = cursor.getString(mColumnsMap.mColumnMsgType);
             long msgId = cursor.getLong(mColumnsMap.mColumnMsgId);
 
@@ -250,7 +243,8 @@ public class MessageListAdapter extends CursorAdapter {
                     accentColor = res.getColor(R.color.incoming_message_bg_default);
                 }
 
-                mli.bind(msgItem, accentColor, mIsGroupConversation, position);
+                mli.bind(msgItem, accentColor, mIsGroupConversation, position,
+                        mListView.isItemChecked(position));
                 mli.setMsgListItemHandler(mMsgListItemHandler);
             }
         }
