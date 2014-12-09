@@ -17,6 +17,7 @@
 package com.android.mms.ui;
 
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
@@ -27,9 +28,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
-import android.widget.QuickContactBadge;
 import android.widget.TextView;
 
+import com.android.contacts.common.widget.CheckableQuickContactBadge;
 import com.android.mms.R;
 import com.android.mms.data.Contact;
 import com.android.mms.data.Group;
@@ -51,14 +52,11 @@ public class SelectRecipientsListItem extends LinearLayout implements Contact.Up
         }
     };
 
-    private View mHeader;
-    private View mFooter;
-    private TextView mSeparator;
+    private TextView mSectionHeader;
     private TextView mNameView;
     private TextView mNumberView;
     private TextView mLabelView;
-    private QuickContactBadge mAvatarView;
-    private CheckBox mCheckBox;
+    private CheckableQuickContactBadge mAvatarView;
 
     private Contact mContact;
 
@@ -70,14 +68,11 @@ public class SelectRecipientsListItem extends LinearLayout implements Contact.Up
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mHeader = findViewById(R.id.header);
-        mFooter = findViewById(R.id.footer);
-        mSeparator = (TextView) findViewById(R.id.separator);
+        mSectionHeader = (TextView) findViewById(R.id.section_header);
         mNameView = (TextView) findViewById(R.id.name);
         mNumberView = (TextView) findViewById(R.id.number);
         mLabelView = (TextView) findViewById(R.id.label);
-        mAvatarView = (QuickContactBadge) findViewById(R.id.avatar);
-        mCheckBox = (CheckBox) findViewById(R.id.checkbox);
+        mAvatarView = (CheckableQuickContactBadge) findViewById(R.id.avatar);
 
         mAvatarView.setOverlay(null);
     }
@@ -106,19 +101,13 @@ public class SelectRecipientsListItem extends LinearLayout implements Contact.Up
     }
 
     public final void bind(Context context, final PhoneNumber phoneNumber,
-            boolean showHeader, boolean showFooter, boolean isFirst) {
+            boolean showHeader, boolean isFirst) {
         if (showHeader) {
             String index = phoneNumber.getSectionIndex();
-            mHeader.setVisibility(View.VISIBLE);
-            mSeparator.setText(index != null ? index.toUpperCase() : "");
+            mSectionHeader.setVisibility(View.VISIBLE);
+            mSectionHeader.setText(index != null ? index.toUpperCase() : "");
         } else {
-            mHeader.setVisibility(View.GONE);
-        }
-
-        if (showFooter) {
-            mFooter.setVisibility(View.VISIBLE);
-        } else {
-            mFooter.setVisibility(View.GONE);
+            mSectionHeader.setVisibility(View.INVISIBLE);
         }
 
         if (isFirst) {
@@ -130,44 +119,23 @@ public class SelectRecipientsListItem extends LinearLayout implements Contact.Up
             }
             updateAvatarView();
         } else {
+            mAvatarView.setImageDrawable(new ColorDrawable(android.R.color.transparent));
             mNameView.setVisibility(View.GONE);
-            mAvatarView.setVisibility(View.INVISIBLE);
         }
 
-        mNumberView.setText(phoneNumber.getNumber());
+        String lastNumber = (String) mAvatarView.getTag();
+        String newNumber = phoneNumber.getNumber();
+        boolean sameItem = lastNumber != null && lastNumber.equals(newNumber);
+
+        mAvatarView.setChecked(phoneNumber.isChecked(), sameItem);
+        mAvatarView.setTag(newNumber);
+        mAvatarView.setVisibility(View.VISIBLE);
+
+        mNumberView.setText(newNumber);
         mNameView.setText(phoneNumber.getName());
         mLabelView.setText(Phone.getTypeLabel(getResources(),
                 phoneNumber.getType(), phoneNumber.getLabel()));
         mLabelView.setVisibility(View.VISIBLE);
-        mCheckBox.setChecked(phoneNumber.isChecked());
-    }
-
-    public final void bind(Context context, final Group group, boolean showHeader) {
-        if (showHeader) {
-            mHeader.setVisibility(View.VISIBLE);
-            mSeparator.setText(R.string.groups_header);
-        } else {
-            mHeader.setVisibility(View.GONE);
-        }
-
-        mFooter.setVisibility(View.VISIBLE);
-        mNameView.setVisibility(View.VISIBLE);
-
-        SpannableStringBuilder groupTitle = new SpannableStringBuilder(group.getTitle());
-        int before = groupTitle.length();
-
-        groupTitle.append(" ");
-        groupTitle.append(Integer.toString(group.getSummaryCount()));
-        groupTitle.setSpan(new ForegroundColorSpan(
-                context.getResources().getColor(R.color.message_count_color)),
-                before, groupTitle.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-        mNameView.setText(groupTitle);
-
-        mNumberView.setVisibility(View.VISIBLE);
-        mNumberView.setText(group.getAccountName());
-        mLabelView.setVisibility(View.GONE);
-        mCheckBox.setChecked(group.isChecked());
-        mAvatarView.setVisibility(View.GONE);
     }
 
     public void unbind() {
