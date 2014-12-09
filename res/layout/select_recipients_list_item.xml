@@ -18,88 +18,61 @@
 <com.android.mms.ui.SelectRecipientsListItem
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:paddingEnd="16dp"
+    android:orientation="horizontal" >
 
-    <LinearLayout
-        android:id="@+id/header"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/section_header"
+        android:layout_width="@dimen/contact_list_section_header_width"
         android:layout_height="wrap_content"
-        android:visibility="gone">
+        android:layout_gravity="center_vertical"
+        android:textAppearance="@style/SectionHeaderStyle" />
+
+    <com.android.contacts.common.widget.CheckableQuickContactBadge
+        android:id="@+id/avatar"
+        android:layout_width="@dimen/avatar_width_height"
+        android:layout_height="@dimen/avatar_width_height"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="16dp"
+        style="?android:attr/quickContactBadgeStyleWindowLarge" />
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical" >
 
         <TextView
-            android:id="@+id/separator"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="?android:attr/listSeparatorTextViewStyle" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="?android:attr/listPreferredItemHeight"
-        android:orientation="horizontal" >
-
-        <android.widget.QuickContactBadge
-            android:id="@+id/avatar"
-            android:layout_width="@dimen/avatar_width_height"
-            android:layout_height="@dimen/avatar_width_height"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="8dp"
-            style="?android:attr/quickContactBadgeStyleWindowLarge" />
-
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical" >
-
-            <TextView
-                android:id="@+id/name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:textAppearance="@android:style/TextAppearance.Material.Subhead"
-                android:singleLine="true"
-                android:ellipsize="marquee" />
-
-           <TextView
-               android:id="@+id/number"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:textAppearance="@android:style/TextAppearance.Material.Small"
-               android:singleLine="true"
-               android:layout_alignParentStart="true"
-               android:layout_below="@id/name"
-               android:ellipsize="end" />
-
-            <TextView
-                android:id="@+id/label"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:textAppearance="@android:style/TextAppearance.Material.Caption"
-                android:textAllCaps="true"
-                android:singleLine="true"
-                android:layout_toEndOf="@id/number"
-                android:layout_alignBaseline="@id/number"
-                android:layout_marginStart="8dp" />
-
-        </RelativeLayout>
-
-        <CheckBox
-            android:id="@+id/checkbox"
+            android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:clickable="false"
-            android:focusable="false" />
+            android:layout_alignParentStart="true"
+            android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+            android:singleLine="true"
+            android:ellipsize="marquee" />
 
-    </LinearLayout>
+       <TextView
+           android:id="@+id/number"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:textAppearance="@android:style/TextAppearance.Material.Small"
+           android:singleLine="true"
+           android:layout_alignParentStart="true"
+           android:layout_below="@id/name"
+           android:ellipsize="end" />
 
-    <View
-        android:id="@+id/footer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?android:attr/listDivider" />
+        <TextView
+            android:id="@+id/label"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textAppearance="@android:style/TextAppearance.Material.Caption"
+            android:textAllCaps="true"
+            android:singleLine="true"
+            android:layout_toEndOf="@id/number"
+            android:layout_alignBaseline="@id/number"
+            android:layout_marginStart="8dp" />
+
+    </RelativeLayout>
 
 </com.android.mms.ui.SelectRecipientsListItem>
