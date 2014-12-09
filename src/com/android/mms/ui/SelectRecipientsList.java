@@ -17,7 +17,9 @@
 package com.android.mms.ui;
 
 import android.app.ActionBar;
-import android.app.ListActivity;
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
@@ -27,14 +29,22 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
+import android.support.v13.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
+import com.android.contacts.common.list.ViewPagerTabs;
+import com.android.contacts.common.preference.ContactsPreferences;
 import com.android.mms.R;
 import com.android.mms.data.Group;
 import com.android.mms.data.PhoneNumber;
@@ -43,12 +53,11 @@ import com.android.mms.data.RecipientsListLoader;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class SelectRecipientsList extends ListActivity implements
-        AdapterView.OnItemClickListener,
-        LoaderManager.LoaderCallbacks<ArrayList<RecipientsListLoader.Result>> {
+public class SelectRecipientsList extends Activity implements
+        LoaderManager.LoaderCallbacks<RecipientsListLoader.Result> {
     private static final int MENU_DONE = 0;
     private static final int MENU_MOBILE = 1;
-    private static final int MENU_GROUPS = 2;
+    private static final int MENU_NAME_ORDER = 2;
 
     public static final String MODE = "mode";
     public static final int MODE_DEFAULT = 0;
@@ -84,14 +93,22 @@ public class SelectRecipientsList extends ListActivity implements
             + ContactsContract.CommonDataKinds.LocalGroup.CONTENT_ITEM_TYPE
             + "'";
 
-    private SelectRecipientsListAdapter mListAdapter;
+    private ContactsPreferences mContactsPreferences;
     private HashSet<PhoneNumber> mCheckedPhoneNumbers;
     private HashSet<Group> mLocalGroups;
     private PhoneNumber mVCardNumber = null;
     private boolean mMobileOnly = true;
-    private boolean mShowGroups = true;
-    private View mProgressSpinner;
     private int mMode = MODE_DEFAULT;
+    private boolean mDataLoaded;
+
+    private ViewPager mTabPager;
+    private ViewPagerTabs mViewPagerTabs;
+
+    private ItemListFragment mContactFragment;
+    private ItemListFragment mGroupFragment;
+
+    private SelectRecipientsListAdapter mContactListAdapter;
+    private SelectRecipientsGroupListAdapter mGroupListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,13 +122,20 @@ public class SelectRecipientsList extends ListActivity implements
             mMode = getIntent().getIntExtra(MODE, MODE_INFO);
         }
 
-        if (mMode == MODE_INFO || mMode == MODE_VCARD) {
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-            prefs.edit().putBoolean(PREF_SHOW_GROUPS, false).commit();
-        } else {
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-            prefs.edit().putBoolean(PREF_SHOW_GROUPS, true).commit();
-        }
+        mContactsPreferences = new ContactsPreferences(this);
+
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setActionBar(toolbar);
+
+        mTabPager = (ViewPager) findViewById(R.id.tab_pager);
+        mTabPager.setAdapter(new ListTabAdapter());
+        mTabPager.setOnPageChangeListener(new TabPagerListener());
+        mViewPagerTabs = (ViewPagerTabs) findViewById(R.id.lists_pager_header);
+        mViewPagerTabs.setViewPager(mTabPager);
+        mViewPagerTabs.setVisibility(mMode == MODE_DEFAULT ? View.VISIBLE : View.GONE);
+
+        mContactListAdapter = new SelectRecipientsListAdapter(this);
+        mGroupListAdapter = new SelectRecipientsGroupListAdapter(this);
 
         switch (mMode) {
             case MODE_INFO:
@@ -124,37 +148,21 @@ public class SelectRecipientsList extends ListActivity implements
                 // leave it be
         }
 
-        mProgressSpinner = findViewById(R.id.progress_spinner);
-
-        // List view
-        ListView listView = getListView();
-        if (mMode == MODE_VCARD) {
-            listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        } else {
-            listView.setChoiceMode(ListView.CHOICE_MODE_NONE);
-        }
-        listView.setFastScrollEnabled(true);
-        listView.setFastScrollAlwaysVisible(true);
-        listView.setDivider(null);
-        listView.setDividerHeight(0);
-        listView.setEmptyView(findViewById(R.id.empty));
-        listView.setOnItemClickListener(this);
-
         // Get things ready
         mCheckedPhoneNumbers = new HashSet<PhoneNumber>();
         mLocalGroups = new HashSet<Group>();
         getLoaderManager().initLoader(0, null, this);
 
-        ActionBar mActionBar = getActionBar();
-        if (mActionBar != null) {
-            mActionBar.setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (mListAdapter != null) {
+        if (mContactFragment != null && mContactListAdapter != null) {
             unbindListItems();
         }
     }
@@ -164,11 +172,11 @@ public class SelectRecipientsList extends ListActivity implements
         // Load the required preference values
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mMobileOnly = sharedPreferences.getBoolean(PREF_MOBILE_NUMBERS_ONLY, true);
-        mShowGroups = sharedPreferences.getBoolean(PREF_SHOW_GROUPS, true);
 
         menu.add(0, MENU_DONE, 0, R.string.menu_done)
              .setIcon(R.drawable.ic_menu_done)
-             .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT)
+             .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS
+                     | MenuItem.SHOW_AS_ACTION_WITH_TEXT)
              .setVisible(false);
 
         menu.add(0, MENU_MOBILE, 0, R.string.menu_mobile)
@@ -177,24 +185,23 @@ public class SelectRecipientsList extends ListActivity implements
              .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_NEVER
                      | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 
-        if (mMode == MODE_DEFAULT) {
-            menu.add(0, MENU_GROUPS, 0, R.string.menu_groups)
-                    .setCheckable(true)
-                    .setChecked(mShowGroups)
-                    .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_NEVER
-                            | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-        }
+        boolean useAltNameOrdering = mContactsPreferences.getSortOrder()
+                == ContactsPreferences.SORT_ORDER_ALTERNATIVE;
+        int nameOrderItemTitleRes = useAltNameOrdering
+                ? R.string.menu_order_by_given_name : R.string.menu_order_by_last_name;
+
+        menu.add(0, MENU_NAME_ORDER, 0, nameOrderItemTitleRes)
+             .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_NEVER
+                     | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (mCheckedPhoneNumbers.size() > 0 || mLocalGroups.size() > 0 || mVCardNumber != null) {
-            menu.findItem(MENU_DONE).setVisible(true);
-        } else {
-            menu.findItem(MENU_DONE).setVisible(false);
-        }
+        boolean hasSelection = mCheckedPhoneNumbers.size() > 0
+                || mLocalGroups.size() > 0 || mVCardNumber != null;
+        menu.findItem(MENU_DONE).setVisible(hasSelection);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -214,14 +221,20 @@ public class SelectRecipientsList extends ListActivity implements
                 item.setChecked(mMobileOnly);
                 prefs.edit().putBoolean(PREF_MOBILE_NUMBERS_ONLY, mMobileOnly).commit();
 
+                if (mContactFragment != null) {
+                    mContactFragment.setIsMobileOnly(mMobileOnly);
+                }
+
                 // Restart the loader to reflect the change
                 getLoaderManager().restartLoader(0, null, this);
                 return true;
-            case MENU_GROUPS:
-                // If it was checked before it should be unchecked now and vice versa
-                mShowGroups = !mShowGroups;
-                item.setChecked(mShowGroups);
-                prefs.edit().putBoolean(PREF_SHOW_GROUPS, mShowGroups).commit();
+            case MENU_NAME_ORDER:
+                int currOrder = mContactsPreferences.getSortOrder();
+                int newOrder = currOrder == ContactsPreferences.SORT_ORDER_ALTERNATIVE
+                        ? ContactsPreferences.SORT_ORDER_PRIMARY
+                        : ContactsPreferences.SORT_ORDER_ALTERNATIVE;
+                mContactsPreferences.setSortOrder(newOrder);
+                invalidateOptionsMenu();
 
                 // Restart the loader to reflect the change
                 getLoaderManager().restartLoader(0, null, this);
@@ -231,24 +244,22 @@ public class SelectRecipientsList extends ListActivity implements
         }
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
-        RecipientsListLoader.Result item =
-                (RecipientsListLoader.Result) adapter.getItemAtPosition(position);
-
-        if (mMode == MODE_VCARD) {
-            flipVCardNumberState(item.phoneNumber);
+    private void onListItemClick(ListAdapter adapter, int position) {
+        if (adapter == mGroupListAdapter) {
+            Group group = mGroupListAdapter.getItem(position);
+            checkGroup(group, !group.isChecked());
+            mGroupListAdapter.notifyDataSetChanged();
+            mContactListAdapter.notifyDataSetChanged();
         } else {
-            if (item.group != null) {
-                checkGroup(item.group, !item.group.isChecked());
+            PhoneNumber number = mContactListAdapter.getItem(position);
+            if (mMode == MODE_VCARD) {
+                flipVCardNumberState(number);
             } else {
-                checkPhoneNumber(item.phoneNumber, !item.phoneNumber.isChecked());
-                updateGroupCheckStateForNumber(item.phoneNumber, null);
+                checkPhoneNumber(number, !number.isChecked());
             }
+            mContactListAdapter.notifyDataSetChanged();
         }
-
         invalidateOptionsMenu();
-        mListAdapter.notifyDataSetChanged();
     }
 
     private void flipVCardNumberState(PhoneNumber number) {
@@ -321,43 +332,29 @@ public class SelectRecipientsList extends ListActivity implements
     }
 
     private void unbindListItems() {
-        final ListView listView = getListView();
+        final ListView listView = mContactFragment.getListView();
         final int count = listView.getChildCount();
         for (int i = 0; i < count; i++) {
-            mListAdapter.unbindView(listView.getChildAt(i));
+            mContactListAdapter.unbindView(listView.getChildAt(i));
         }
     }
 
     @Override
-    public Loader<ArrayList<RecipientsListLoader.Result>> onCreateLoader(int id, Bundle args) {
-        // Show the progress indicator
-        mProgressSpinner.setVisibility(View.VISIBLE);
-        return new RecipientsListLoader(this);
+    public Loader<RecipientsListLoader.Result> onCreateLoader(int id, Bundle args) {
+        return new RecipientsListLoader(this, mContactsPreferences);
     }
 
     @Override
-    public void onLoadFinished(Loader<ArrayList<RecipientsListLoader.Result>> loader,
-            ArrayList<RecipientsListLoader.Result> data) {
-        // We have an old list, get rid of it before we start again
-        if (mListAdapter != null) {
-            mListAdapter.notifyDataSetInvalidated();
-            unbindListItems();
-        }
-
-        // Hide the progress indicator
-        mProgressSpinner.setVisibility(View.GONE);
-
-        // Create and set the list adapter
-        mListAdapter = new SelectRecipientsListAdapter(this, data);
-
+    public void onLoadFinished(Loader<RecipientsListLoader.Result> loader,
+            RecipientsListLoader.Result data) {
         if (getIntent() != null) {
             String[] initialRecipients = getIntent().getStringArrayExtra(EXTRA_RECIPIENTS);
             if (initialRecipients != null && mMode == MODE_DEFAULT) {
                 for (String recipient : initialRecipients) {
-                    for (RecipientsListLoader.Result result : data) {
-                        if (result.phoneNumber != null && result.phoneNumber.equals(recipient)) {
-                            checkPhoneNumber(result.phoneNumber, true);
-                            updateGroupCheckStateForNumber(result.phoneNumber, null);
+                    for (PhoneNumber number : data.phoneNumbers) {
+                        if (number.equals(recipient)) {
+                            checkPhoneNumber(number, true);
+                            updateGroupCheckStateForNumber(number, null);
                             break;
                         }
                     }
@@ -367,20 +364,25 @@ public class SelectRecipientsList extends ListActivity implements
             setIntent(null);
         }
 
-        if (mListAdapter == null) {
-            // We have no numbers to show, indicate it
-            TextView emptyText = (TextView) getListView().getEmptyView();
-            emptyText.setText(mMobileOnly ?
-                    R.string.no_recipients_mobile_only : R.string.no_recipients);
-        } else {
-            setListAdapter(mListAdapter);
-            getListView().setRecyclerListener(mListAdapter);
+        mContactListAdapter.setNotifyOnChange(false);
+        mContactListAdapter.clear();
+        if (data.phoneNumbers != null) {
+            mContactListAdapter.addAll(data.phoneNumbers);
         }
+        mContactListAdapter.notifyDataSetChanged();
+
+        mGroupListAdapter.clear();
+        if (data.groups != null) {
+            mGroupListAdapter.addAll(data.groups);
+        }
+        mDataLoaded = true;
+        applyListAdapters();
     }
 
     @Override
-    public void onLoaderReset(Loader<ArrayList<RecipientsListLoader.Result>> data) {
-        mListAdapter.notifyDataSetInvalidated();
+    public void onLoaderReset(Loader<RecipientsListLoader.Result> data) {
+        mContactListAdapter.notifyDataSetInvalidated();
+        mGroupListAdapter.notifyDataSetInvalidated();
     }
 
     private void putExtraWithContact(Intent intent) {
@@ -407,7 +409,6 @@ public class SelectRecipientsList extends ListActivity implements
         }
     }
 
-
     private String getCheckedNumbersAsText() {
         StringBuilder result = new StringBuilder();
 
@@ -418,12 +419,12 @@ public class SelectRecipientsList extends ListActivity implements
             Cursor cursor = getContactsDetailCursor(number.getContactId());
             try {
                 if (cursor != null) {
-                    int mimeIndex = cursor
-                            .getColumnIndexOrThrow(ContactsContract.Data.MIMETYPE);
-                    int phoneIndex = cursor
-                            .getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER);
-                    int emailIndex = cursor
-                            .getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Email.ADDRESS);
+                    int mimeIndex = cursor.getColumnIndexOrThrow(
+                            ContactsContract.Data.MIMETYPE);
+                    int phoneIndex = cursor.getColumnIndexOrThrow(
+                            ContactsContract.CommonDataKinds.Phone.NUMBER);
+                    int emailIndex = cursor.getColumnIndexOrThrow(
+                            ContactsContract.CommonDataKinds.Email.ADDRESS);
                     while (cursor.moveToNext()) {
                         result.append(ITEM_SEP);
                         String mimeType = cursor.getString(mimeIndex);
@@ -451,10 +452,10 @@ public class SelectRecipientsList extends ListActivity implements
     }
 
     private void appendLocalGroupContacts(ArrayList<String> numbers) {
-        Cursor cursor = getContentResolver()
-                .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                        PhoneNumber.PROJECTION, getContactsForCheckedGroupsSelectionQuery(),
-                        getContactsForCheckedGroupsSelectionArgs(), null);
+        Cursor cursor = getContentResolver().query(
+                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                PhoneNumber.PROJECTION, getContactsForCheckedGroupsSelectionQuery(),
+                getContactsForCheckedGroupsSelectionArgs(), null);
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 PhoneNumber number = new PhoneNumber(cursor);
@@ -476,10 +477,8 @@ public class SelectRecipientsList extends ListActivity implements
                 .append(ContactsContract.Data.MIMETYPE + "='"
                         + ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE + "')");
 
-        Cursor cursor = getContentResolver().query(
-                ContactsContract.Data.CONTENT_URI, null, selection.toString(), null, null);
-
-        return cursor;
+        return getContentResolver().query(ContactsContract.Data.CONTENT_URI,
+                null, selection.toString(), null, null);
     }
 
     private Uri getSelectedAsVcard(PhoneNumber number) {
@@ -513,5 +512,129 @@ public class SelectRecipientsList extends ListActivity implements
             return selectionArgs;
         }
         return null;
+    }
+
+    private void applyListAdapters() {
+        if (!mDataLoaded) {
+            return;
+        }
+        if (mContactFragment != null && mContactFragment.getListAdapter() == null) {
+            mContactFragment.setListAdapter(mContactListAdapter);
+        }
+        if (mGroupFragment != null && mGroupFragment.getListAdapter() == null) {
+            mGroupFragment.setListAdapter(mGroupListAdapter);
+        }
+    }
+
+    private class ListTabAdapter extends FragmentPagerAdapter {
+        public ListTabAdapter() {
+            super(getFragmentManager());
+        }
+
+        @Override
+        public int getCount() {
+            return mMode == MODE_DEFAULT ? 2 : 1;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            Bundle args = new Bundle();
+
+            args.putBoolean(ItemListFragment.IS_GROUP, position == 1);
+            args.putInt(ItemListFragment.MODE, mMode);
+
+            ItemListFragment f = new ItemListFragment();
+            f.setArguments(args);
+
+            if (position == 1) {
+                mGroupFragment = f;
+            } else {
+                mContactFragment = f;
+                f.setIsMobileOnly(mMobileOnly);
+            }
+            applyListAdapters();
+
+            return f;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return getString(position == 0 ? R.string.contactsList : R.string.groupsLabel);
+        }
+    }
+
+    private class TabPagerListener implements ViewPager.OnPageChangeListener {
+        @Override
+        public void onPageScrollStateChanged(int state) {
+            mViewPagerTabs.onPageScrollStateChanged(state);
+        }
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            mViewPagerTabs.onPageScrolled(position, positionOffset, positionOffsetPixels);
+        }
+        @Override
+        public void onPageSelected(int position) {
+            mViewPagerTabs.onPageSelected(position);
+        }
+    }
+
+    private static class ItemListFragment extends ListFragment implements
+            AdapterView.OnItemClickListener {
+        public static final String IS_GROUP = "is_group";
+        public static final String MODE = "mode";
+
+        private boolean mMobileOnly;
+
+        public void setIsMobileOnly(boolean mobileOnly) {
+            mMobileOnly = mobileOnly;
+            updateEmptyText();
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                Bundle savedInstanceState) {
+            return inflater.inflate(R.layout.select_recipients_list_list, container, false);
+        }
+
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            super.onActivityCreated(savedInstanceState);
+
+            ListView listView = getListView();
+            boolean isGroup = getArguments().getBoolean(IS_GROUP, false);
+            int mode = getArguments().getInt(MODE, -1);
+
+            listView.setChoiceMode(mode == MODE_VCARD
+                    ? ListView.CHOICE_MODE_SINGLE : ListView.CHOICE_MODE_NONE);
+            listView.setFastScrollEnabled(!isGroup);
+            listView.setFastScrollAlwaysVisible(!isGroup);
+            listView.setEmptyView(getView().findViewById(android.R.id.empty));
+            listView.setOnItemClickListener(this);
+
+            updateEmptyText();
+        }
+
+        @Override
+        public void setListAdapter(ListAdapter adapter) {
+            super.setListAdapter(adapter);
+            if (getView() != null && adapter instanceof ListView.RecyclerListener) {
+                ListView.RecyclerListener l = (ListView.RecyclerListener) adapter;
+                getListView().setRecyclerListener(l);
+            }
+        }
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            SelectRecipientsList activity = (SelectRecipientsList) getActivity();
+            activity.onListItemClick(getListAdapter(), position);
+        }
+
+        private void updateEmptyText() {
+            if (getView() != null && !getArguments().getBoolean(IS_GROUP, false)) {
+                TextView emptyView = (TextView) getListView().getEmptyView();
+                emptyView.setText(getString(mMobileOnly
+                        ? R.string.no_recipients_mobile_only : R.string.no_recipients));
+            }
+        }
     }
 }
