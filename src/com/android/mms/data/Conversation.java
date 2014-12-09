@@ -103,6 +103,8 @@ public class Conversation {
     private static Object sDeletingThreadsLock = new Object();
     private boolean mMarkAsReadBlocked;
     private boolean mMarkAsReadWaiting;
+    private boolean mHasMmsForward = false; // True if has forward mms
+    private String mForwardRecipientNumber; // The recipient that the forwarded Mms received from
 
     private static Handler sToastHandler = new Handler();
 
@@ -704,7 +706,8 @@ public class Conversation {
 
     @Override
     public synchronized String toString() {
-        return String.format("[%s] (tid %d)", mRecipients.serialize(), mThreadId);
+        String serialize = mRecipients.serialize().replace("%", "%%");
+        return String.format("[%s] (tid %d)", serialize, mThreadId);
     }
 
     /**
@@ -1564,5 +1567,21 @@ public class Conversation {
                 postHandlePendingThreads();
             }
         }
+    }
+
+    public boolean getHasMmsForward() {
+        return mHasMmsForward;
+    }
+
+    public void setHasMmsForward(boolean value) {
+        mHasMmsForward = value;
+    }
+
+    public String getForwardRecipientNumber() {
+        return mForwardRecipientNumber;
+    }
+
+    public void setForwardRecipientNumber(String forwardRecipientNumber) {
+        mForwardRecipientNumber = forwardRecipientNumber;
     }
 }

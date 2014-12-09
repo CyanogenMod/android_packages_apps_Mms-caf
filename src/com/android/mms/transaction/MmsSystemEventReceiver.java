@@ -114,6 +114,12 @@ public class MmsSystemEventReceiver extends BroadcastReceiver {
             if (status == PhoneConstants.SUCCESS && state == SubscriptionManager.ACTIVE) {
                 wakeUpService(context);
             }
+        } else if (action.equals(Intent.ACTION_AIRPLANE_MODE_CHANGED)) {
+            boolean apm = intent.getBooleanExtra("state", false);
+            if (!apm) {
+                Log.d(TAG, "Airplane mode OFF");
+                wakeUpService(context);
+            }
         }
     }
 }

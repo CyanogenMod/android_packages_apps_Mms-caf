@@ -233,7 +233,7 @@ public class DeliveryReportActivity extends ListActivity {
                     case PduHeaders.READ_STATUS_READ:
                         return getString(R.string.status_read);
                     case PduHeaders.READ_STATUS__DELETED_WITHOUT_BEING_READ:
-                        return getString(R.string.status_unread);
+                        return getString(R.string.status_deleted_unread);
                 }
             }
         }
