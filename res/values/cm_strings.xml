@@ -63,14 +63,14 @@
     <string name="alert_dialog_no">No</string>
 
     <!-- Multi recipients -->
+    <string name="loading">Loading\u2026</string>
     <string name="select_recipients">Select recipients</string>
-    <string name="groups_header">Groups</string>
     <string name="no_recipients">No contacts found</string>
     <string name="no_recipients_mobile_only">No matching contacts found. Try without the \'Mobile numbers only\' filter</string>
     <string name="menu_done">Done</string>
     <string name="menu_mobile">Mobile numbers only</string>
-    <string name="menu_groups">Show groups</string>
-    <string name="fastscroll_index_groups">GR</string> <!-- CHAR LIMIT=3 -->
+    <string name="menu_order_by_given_name">Order by first name</string>
+    <string name="menu_order_by_last_name">Order by last name</string>
 
     <!-- Extra message options -->
     <string name="message_share">Share</string>

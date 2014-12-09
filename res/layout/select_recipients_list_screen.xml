@@ -18,41 +18,35 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center" >
+    android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/progress_spinner"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical" >
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/mms_theme_color"
+        android:elevation="@dimen/action_bar_elevation"
+        android:theme="@style/HeaderTheme">
 
-        <ProgressBar
-            android:layout_width="wrap_content"
+        <Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
+        <com.android.contacts.common.list.ViewPagerTabs
+            android:id="@+id/lists_pager_header"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            android:layout_gravity="top"
+            android:textAllCaps="true"
+            android:orientation="horizontal"
+            style="@style/HeaderTabText" />
 
     </LinearLayout>
 
-    <ListView
-        android:id="@android:id/list"
-        style="?android:attr/listViewWhiteStyle"
-        android:listSelector="@android:color/transparent"
-        android:layout_width="match_parent"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/tab_pager"
         android:layout_height="match_parent"
-        android:drawSelectorOnTop="false"
-        android:scrollbarStyle="outsideOverlay"
-        android:background="@color/background"
-        android:cacheColorHint="@color/background"
-        android:fadingEdgeLength="16dip"
-        android:paddingLeft="16dip"
-        android:paddingRight="32dip" />
-
-    <TextView
-        android:id="@+id/empty"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:layout_width="match_parent" />
 
 </LinearLayout>

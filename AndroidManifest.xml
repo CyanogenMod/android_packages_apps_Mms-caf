@@ -201,7 +201,7 @@
             android:label="@string/edit_slideshow_activity" />
 
         <activity android:name=".ui.SelectRecipientsList"
-            android:theme="@style/MmsTheme"
+            android:theme="@style/MmsTheme.NoActionBar"
             android:label="@string/select_recipients"
             android:parentActivityName=".ui.ComposeMessageActivity">
         </activity>
