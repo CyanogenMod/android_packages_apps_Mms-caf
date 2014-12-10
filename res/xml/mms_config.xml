@@ -25,6 +25,9 @@
     <!-- Flag indicating whether MMS should be enabled -->
     <bool name="enabledMMS">true</bool>
 
+    <!-- Flag indicating whether OMA CP should be enabled -->
+    <bool name="enableOMACP">false</bool>
+
     <!-- Maximum message size in bytes for a MMS message -->
     <int name="maxMessageSize">307200</int>
 
@@ -106,6 +109,5 @@
     <!--
     <string name="httpParamsLine1Key">##LINE1##</string>
     -->
-
 
 </mms_config>

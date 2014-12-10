@@ -559,4 +559,9 @@
     <string name="sms_phone_capacity">"短信容量:"</string>
     <string name="mms_phone_used">"已用彩信:"</string>
     <string name="mms_phone_capacity">"彩信容量:"</string>
+
+    <!-- ConfigurationClient -->
+    <string name="omacp_configuration">OMACP配置</string>
+    <string name="configuration_message_key">配置短信</string>
+    <string name="configuration_message_key_activity">触摸即可配置您的OMACP短信</string>
 </resources>

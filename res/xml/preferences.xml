@@ -222,4 +222,13 @@
                         android:summary="@string/pref_summary_wap_push_enabled"
                         android:defaultValue="@bool/def_wap_push_enabled" />
   </PreferenceCategory>
+  <!-- ConfigurationClient -->
+    <PreferenceCategory
+        android:key="pref_key_sms_omacp_configuration"
+        android:title="@string/omacp_configuration" >
+        <Preference
+            android:key="pref_key_configuration_message"
+            android:summary="@string/configuration_message_key_activity"
+            android:title="@string/configuration_message_key" />
+    </PreferenceCategory>
 </PreferenceScreen>
