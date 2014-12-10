@@ -113,6 +113,9 @@ public class MmsConfig {
     // activity.
     private static boolean mEnableGroupMms = true;
 
+    //Configuration client
+    public static boolean mEnableOMACP = false;
+
     private static int MAX_SLIDE_NUM = 10;
 
     private static float sMmsCornerRadius = 5;
@@ -311,6 +314,11 @@ public class MmsConfig {
         return mEnableGroupMms;
     }
 
+    //Configuration client
+    public static boolean isOMACPEnabled() {
+        return mEnableOMACP;
+    }
+
     public static final void beginDocument(XmlPullParser parser, String firstElementName) throws XmlPullParserException, IOException
     {
         int type;
@@ -386,6 +394,8 @@ public class MmsConfig {
                             mEnableMMSDeliveryReports = "true".equalsIgnoreCase(text);
                         } else if ("enableGroupMms".equalsIgnoreCase(value)) {
                             mEnableGroupMms = "true".equalsIgnoreCase(text);
+                        } else if ("enableOMACP".equalsIgnoreCase(value)) {//Configuration Client
+                            mEnableOMACP = "true".equalsIgnoreCase(text);
                         }
                     } else if ("int".equals(tag)) {
                         // int config tags go here
