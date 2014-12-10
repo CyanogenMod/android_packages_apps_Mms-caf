@@ -372,6 +372,7 @@ public class ComposeMessageActivity extends Activity
 
     private Intent mAddContactIntent;   // Intent used to add a new contact
 
+    private String mBodyString;         // Only used as a temporary to hold a message body
     private Uri mTempMmsUri;            // Only used as a temporary to hold a slideshow uri
     private long mTempThreadId;         // Only used as a temporary to hold a threadId
 
@@ -436,6 +437,9 @@ public class ComposeMessageActivity extends Activity
     private final static int MSG_ONLY_ONE_FAIL_LIST_ITEM = 1;
 
     private static final String LINE_BREAK = "\n";
+    private static final String COLON = ":";
+    private static final String LEFT_PARENTHESES = "(";
+    private static final String RIGHT_PARENTHESES = ")";
 
     private boolean isLocked = false;
     private boolean mIsPickingContact = false;
@@ -5523,6 +5527,16 @@ public class ComposeMessageActivity extends Activity
                 if (mMessageItems.indexOf(msgItem) != 0) {
                     body.append(LINE_BREAK);
                 }
+                if (Sms.isOutgoingFolder(msgItem.mBoxId)) {
+                    body.append(msgItem.mContact + COLON + LINE_BREAK);
+                } else {
+                    if (Contact.get(msgItem.mAddress, false).existsInDatabase()) {
+                        body.append(msgItem.mContact + LEFT_PARENTHESES +
+                                msgItem.mAddress + RIGHT_PARENTHESES + COLON + LINE_BREAK);
+                    } else {
+                        body.append(msgItem.mAddress + COLON + LINE_BREAK);
+                    }
+                }
                 body.append(msgItem.mBody);
                 if (!TextUtils.isEmpty(msgItem.mTimestamp)) {
                     body.append(LINE_BREAK);
@@ -5533,7 +5547,6 @@ public class ComposeMessageActivity extends Activity
         }
 
         private void forwardMessage() {
-            final String bodyString;
             mMessageItems.clear();
             for (Integer pos : mSelectedPos) {
                 Cursor c = (Cursor) mMsgListAdapter.getItem(pos);
@@ -5542,7 +5555,6 @@ public class ComposeMessageActivity extends Activity
 
             }
 
-            bodyString = getAllSMSBody();
             final MessageItem msgItem = mMessageItems.get(0);
             getAsyncDialog().runAsync(new Runnable() {
                 @Override
@@ -5580,6 +5592,8 @@ public class ComposeMessageActivity extends Activity
                                     Toast.LENGTH_SHORT).show();
                             return;
                         }
+                    } else {
+                        mBodyString = getAllSMSBody();
                     }
                 }
             }, new Runnable() {
@@ -5597,7 +5611,7 @@ public class ComposeMessageActivity extends Activity
                     }
 
                     if (msgItem.mType.equals("sms")) {
-                        intent.putExtra("sms_body", bodyString);
+                        intent.putExtra("sms_body", mBodyString);
                     } else {
                         intent.putExtra("msg_uri", mTempMmsUri);
                         String subject = getString(R.string.forward_prefix);
