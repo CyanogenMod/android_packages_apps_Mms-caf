@@ -18,6 +18,7 @@ import android.database.sqlite.SQLiteFullException;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Message;
 import android.provider.BaseColumns;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.MmsSms;
@@ -38,6 +39,7 @@ import com.android.mms.R;
 import com.android.mms.transaction.MessagingNotification;
 import com.android.mms.transaction.MmsMessageSender;
 import com.android.mms.ui.ComposeMessageActivity;
+import com.android.mms.ui.ConversationList;
 import com.android.mms.ui.MessageUtils;
 import com.android.mms.util.AddressUtils;
 import com.android.mms.util.DraftCache;
@@ -60,12 +62,17 @@ public class Conversation {
         Threads.HAS_ATTACHMENT
     };
 
+    public static final String[] ALL_THREADS_DELETE_PROJECTION = {
+            Threads._ID
+    };
+
     public static final String[] UNREAD_PROJECTION = {
         Threads._ID,
         Threads.READ
     };
 
     private static final String UNREAD_SELECTION = "(read=0 OR seen=0)";
+    private static final Uri MMS_THREAD_URI = Uri.parse("content://mms/thread");
 
     private static final String[] SEEN_PROJECTION = new String[] {
         "seen"
@@ -784,7 +791,7 @@ public class Conversation {
      * @param threadIds Collection of thread IDs of the conversations to be deleted
      */
     public static void startDelete(ConversationQueryHandler handler, int token, boolean deleteAll,
-            Collection<Long> threadIds) {
+            Collection<Long> threadIds, ConversationList.MessageDeleteTypes deleteType) {
         synchronized(sDeletingThreadsLock) {
             if (DELETEDEBUG) {
                 Log.v(TAG, "Conversation startDelete sDeletingThreads: " +
@@ -797,7 +804,18 @@ public class Conversation {
             sDeletingThreads = true;
 
             for (long threadId : threadIds) {
-                Uri uri = ContentUris.withAppendedId(Threads.CONTENT_URI, threadId);
+                Uri uri = null;
+                switch (deleteType) {
+                    case ALL:
+                        uri = ContentUris.withAppendedId(Threads.CONTENT_URI, threadId);
+                        break;
+                    case SMS:
+                        uri = ContentUris.withAppendedId(Conversations.CONTENT_URI, threadId);
+                        break;
+                    case MMS:
+                        uri = ContentUris.withAppendedId(MMS_THREAD_URI, threadId);
+                        break;
+                }
                 String selection = deleteAll ? null : "locked=0";
 
                 handler.setDeleteToken(token);
@@ -877,22 +895,33 @@ public class Conversation {
      * Check for locked messages in all threads or a specified thread.
      * @param handler An AsyncQueryHandler that will receive onQueryComplete
      *                upon completion of looking for locked messages
-     * @param threadIds   A list of threads to search. null means all threads
      * @param token   The token that will be passed to onQueryComplete
      */
     public static void startQueryHaveLockedMessages(AsyncQueryHandler handler,
-            Collection<Long> threadIds,
-            int token) {
+            int token, ConversationList.DeleteInfo info) {
         handler.cancelOperation(token);
-        Uri uri = MmsSms.CONTENT_LOCKED_URI;
+
+        Uri uri = null;
+
+        switch (info.getDeleteType()) {
+            case SMS:
+                uri = Sms.CONTENT_URI;
+                break;
+            case MMS:
+                uri = Mms.CONTENT_URI;
+                break;
+            case ALL:
+                uri = MmsSms.CONTENT_LOCKED_URI;
+                break;
+        }
 
         String selection = null;
-        if (threadIds != null && threadIds.size() > 0) {
+        if (info.getThreadIds() != null && info.getThreadIds().size() > 0) {
             StringBuilder buf = new StringBuilder(Mms.THREAD_ID);
             buf.append(" in (");
             int i = 0;
 
-            for (long threadId : threadIds) {
+            for (long threadId : info.getThreadIds()) {
                 if (i > 0) {
                     buf.append(",");
                 }
@@ -900,10 +929,21 @@ public class Conversation {
                 i++;
             }
             buf.append(")");
+
+            switch (info.getDeleteType()) {
+                case SMS:
+                    buf.append(" AND ").append(Sms.LOCKED).append("=").append("1");
+                    break;
+                case MMS:
+                    buf.append(" AND ").append(Mms.LOCKED).append("=").append("1");
+                    break;
+            }
+
             selection = buf.toString();
         }
-        handler.startQuery(token, threadIds, uri,
-                ALL_THREADS_PROJECTION, selection, null, Conversations.DEFAULT_SORT_ORDER);
+
+        handler.startQuery(token, info, uri,
+                ALL_THREADS_DELETE_PROJECTION, selection, null, Conversations.DEFAULT_SORT_ORDER);
     }
 
     /**
@@ -914,14 +954,14 @@ public class Conversation {
      * @param token   The token that will be passed to onQueryComplete
      */
     public static void startQueryHaveLockedMessages(AsyncQueryHandler handler,
-            long threadId,
-            int token) {
+            long threadId, int token, ConversationList.DeleteInfo info) {
         ArrayList<Long> threadIds = null;
         if (threadId != -1) {
             threadIds = new ArrayList<Long>();
             threadIds.add(threadId);
         }
-        startQueryHaveLockedMessages(handler, threadIds, token);
+        info.setThreadIds(threadIds);
+        startQueryHaveLockedMessages(handler, token, info);
     }
 
     /**
