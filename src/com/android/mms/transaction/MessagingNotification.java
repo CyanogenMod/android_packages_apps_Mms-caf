@@ -1922,7 +1922,7 @@ public class MessagingNotification {
                 Context.NOTIFICATION_SERVICE);
 
         String title = context.getString(R.string.sms_full_title);
-        String description = context.getString(R.string.sms_full_body);
+        String description = context.getString(R.string.sms_full_body_cm);
         PendingIntent intent = PendingIntent.getActivity(context, 0,  new Intent(), 0);
         Notification notification = new Notification();
         notification.icon = R.drawable.stat_notify_sms_failed;
