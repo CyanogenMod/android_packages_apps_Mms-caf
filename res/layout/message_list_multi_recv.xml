@@ -92,7 +92,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     android:paddingRight="@dimen/message_item_text_padding_left_right"
                     android:paddingTop="@dimen/message_item_text_padding_top"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="#ff000000"
+                    android:textColor="@color/message_received"
                     android:textSize="16sp"
                     android:visibility="gone" />
 
@@ -151,7 +151,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     android:linksClickable="false"
                     android:gravity="right"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="#ff000000"
+                    android:textColor="@color/message_received"
                     android:textSize="16sp"
                     android:visibility="gone"/>
             </LinearLayout>

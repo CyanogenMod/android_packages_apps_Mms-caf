@@ -131,7 +131,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                android:background="#fff" >
+                android:background="@color/background" >
 
                 <EditText
                     android:textColor="@color/compose_message_edit_text"
