@@ -295,8 +295,6 @@
     <string name="discard_message_reason_some_invalid">Your message will be discarded because some of the recipients are invalid.</string>
     <string name="pref_sms_signature_title">SMS signature</string>
     <string name="pref_title_enable_signature">SMS signature</string>
-    <string name="pref_summary_enable_signature">SMS signature enabled</string>
-    <string name="pref_summary_disable_signature">SMS signature disabled</string>
     <string name="pref_title_edit_signature">Edit SMS signature</string>
     <string name="signature_full_toast">Signature has reached maximum length.</string>
 
