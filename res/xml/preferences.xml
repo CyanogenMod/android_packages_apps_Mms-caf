@@ -149,8 +149,6 @@
     <PreferenceCategory android:title="@string/pref_sms_signature_title"
             android:key="pref_key_sms_signature" >
         <CheckBoxPreference android:key="pref_key_enable_signature"
-                android:summaryOn="@string/pref_summary_enable_signature"
-                android:summaryOff="@string/pref_summary_disable_signature"
                 android:title="@string/pref_title_enable_signature" />
 
         <EditTextPreference android:key="pref_key_edit_signature"
