@@ -122,4 +122,10 @@
         <item>@string/search_as_subject</item>
     </string-array>
 
+    <string-array name="delete_thread_entries" translatable="false">
+        <item>@string/menu_delete_all_entries</item>
+        <item>@string/menu_delete_sms</item>
+        <item>@string/menu_delete_mms</item>
+    </string-array>
+
 </resources>

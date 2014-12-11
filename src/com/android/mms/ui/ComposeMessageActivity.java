@@ -25,16 +25,8 @@ import static com.android.mms.transaction.ProgressCallbackEntity.PROGRESS_STATUS
 import static com.android.mms.ui.MessageListAdapter.COLUMN_ID;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_LOCKED;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_MSG_TYPE;
-import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_ADDRESS;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_BODY;
-import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_DATE;
-import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_DATE_SENT;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_LOCKED;
-import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_READ;
-import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_STATUS;
-import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_TYPE;
-import static com.android.mms.ui.MessageListAdapter.COLUMN_PHONE_ID;
-import static com.android.mms.ui.MessageListAdapter.COLUMN_THREAD_ID;
 import static com.android.mms.ui.MessageListAdapter.PROJECTION;
 
 
@@ -46,15 +38,11 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.Set;
 
-import android.R.integer;
 import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
@@ -84,7 +72,6 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SqliteWrapper;
 import android.drm.DrmStore;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -100,7 +87,6 @@ import android.provider.Telephony;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Contacts;
-import android.provider.ContactsContract.Intents;
 import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Video;
 import android.provider.Settings;
@@ -116,13 +102,11 @@ import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputFilter.LengthFilter;
-import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.TextKeyListener;
 import android.text.style.URLSpan;
-import android.text.util.Linkify;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
@@ -146,7 +130,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -281,8 +264,9 @@ public class ComposeMessageActivity extends Activity
 
     private static final int MESSAGE_LIST_QUERY_TOKEN = 9527;
     private static final int MESSAGE_LIST_QUERY_AFTER_DELETE_TOKEN = 9528;
+    private static final int MESSAGE_LIST_TYPE_QUERY_TOKEN = 9529;
 
-    private static final int DELETE_MESSAGE_TOKEN  = 9700;
+    public static final int DELETE_MESSAGE_TOKEN  = 9700;
 
     private static final int CHARS_REMAINING_BEFORE_COUNTER_SHOWN = 10;
 
@@ -325,6 +309,19 @@ public class ComposeMessageActivity extends Activity
     private static final int SUBJECT_MAX_LENGTH = MmsConfig.getMaxSubjectLength();
     // The number of buttons in two send button mode
     private static final int NUMBER_OF_BUTTONS = 2;
+
+    private static final String MMS_SMS_AUTHORITY = "mms-sms";
+
+    private static final Uri CONVERSATION_TYPE_URI;
+    static {
+        Uri.Builder builder = new Uri.Builder();
+        builder.scheme(ContentResolver.SCHEME_CONTENT);
+        builder.authority(MMS_SMS_AUTHORITY);
+        builder.appendPath("conversations");
+        builder.appendPath("type");
+        CONVERSATION_TYPE_URI = builder.build();
+        System.out.println("URI " + CONVERSATION_TYPE_URI);
+    }
 
     private ContentResolver mContentResolver;
 
@@ -478,6 +475,9 @@ public class ComposeMessageActivity extends Activity
     private int mStatusBarColor = 0;
     private boolean mAccentColorLoaded = false;
     private boolean mLoadingAccentColor = false;
+
+    private int mNumSms = -1;
+    private int mNumMms = -1;
 
     @SuppressWarnings("unused")
     public static void log(String logMsg) {
@@ -2574,6 +2574,7 @@ public class ComposeMessageActivity extends Activity
 
         // No need to do the querying when finished this activity
         mBackgroundQueryHandler.cancelOperation(MESSAGE_LIST_QUERY_TOKEN);
+        mBackgroundQueryHandler.cancelOperation(MESSAGE_LIST_TYPE_QUERY_TOKEN);
 
         // Allow any blocked calls to update the thread's read status.
         mConversation.blockMarkAsRead(false);
@@ -3111,9 +3112,40 @@ public class ComposeMessageActivity extends Activity
                 onSearchRequested();
                 break;
             case MENU_DELETE_THREAD:
-                confirmDeleteThread(mConversation.getThreadId());
+                boolean hasSms = mNumSms > 0;
+                boolean hasMms = mNumMms > 0;
+                if (!hasSms || !hasMms) {
+                    ConversationList.DeleteInfo info = new ConversationList.DeleteInfo(
+                            ConversationList.MessageDeleteTypes.ALL);
+                    confirmDeleteThread(mConversation.getThreadId(), info);
+                } else {
+                    String[] items = getResources().getStringArray(R.array.delete_thread_entries);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setCancelable(true)
+                            .setItems(items, new OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    ConversationList.MessageDeleteTypes deleteType = ConversationList
+                                            .MessageDeleteTypes.values()[which];
+                                    int count = 0;
+                                    switch (deleteType) {
+                                        case ALL:
+                                            count = mNumSms + mNumMms;
+                                            break;
+                                        case SMS:
+                                            count = mNumSms;
+                                            break;
+                                        case MMS:
+                                            count = mNumMms;
+                                            break;
+                                    }
+                                    ConversationList.DeleteInfo info = new ConversationList.DeleteInfo(
+                                            deleteType, count);
+                                    confirmDeleteThread(mConversation.getThreadId(), info);
+                                }
+                            }).show();
+                }
                 break;
-
             case android.R.id.home:
             case MENU_CONVERSATION_LIST:
                 exitComposeMessageActivity(new Runnable() {
@@ -3285,9 +3317,9 @@ public class ComposeMessageActivity extends Activity
         return null;
     }
 
-    private void confirmDeleteThread(long threadId) {
+    private void confirmDeleteThread(long threadId, ConversationList.DeleteInfo info) {
         Conversation.startQueryHaveLockedMessages(mBackgroundQueryHandler,
-                threadId, ConversationList.HAVE_LOCKED_MESSAGES_TOKEN);
+                threadId, ConversationList.HAVE_LOCKED_MESSAGES_TOKEN, info);
     }
 
 //    static class SystemProperties { // TODO, temp class to get unbundling working
@@ -4375,20 +4407,32 @@ public class ComposeMessageActivity extends Activity
 
     private void startMsgListQuery() {
         startMsgListQuery(MESSAGE_LIST_QUERY_TOKEN);
+        startMsgListQuery(MESSAGE_LIST_TYPE_QUERY_TOKEN);
     }
 
     private void startMsgListQuery(int token) {
         if (mSendDiscreetMode || MessageUtils.isMailboxMode()) {
             return;
         }
-        Uri conversationUri = mConversation.getUri();
 
-        if (conversationUri == null) {
+        if (mConversation.getUri() == null) {
             log("##### startMsgListQuery: conversationUri is null, bail!");
             return;
         }
 
+        Uri conversationUri = null;
         long threadId = mConversation.getThreadId();
+
+        switch (token) {
+            case MESSAGE_LIST_QUERY_TOKEN:
+                conversationUri = mConversation.getUri();
+                break;
+            case MESSAGE_LIST_TYPE_QUERY_TOKEN:
+                conversationUri = Uri.withAppendedPath(CONVERSATION_TYPE_URI,
+                        String.valueOf(threadId));
+                break;
+        }
+
         if (LogTag.VERBOSE || Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
             log("startMsgListQuery for " + conversationUri + ", threadId=" + threadId +
                     " token: " + token + " mConversation: " + mConversation);
@@ -4949,6 +4993,26 @@ public class ComposeMessageActivity extends Activity
         @Override
         protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
             switch(token) {
+                case MESSAGE_LIST_TYPE_QUERY_TOKEN:
+                    mNumSms = mNumMms = -1;
+                    if (cursor != null) {
+                        try {
+                            int typeIndex = cursor.getColumnIndex(
+                                    Telephony.MmsSms.TYPE_DISCRIMINATOR_COLUMN);
+                            int countIndex = cursor.getColumnIndex(
+                                    Telephony.MmsSms.TRANSPORT_TYPE_COUNT_COLUMN);
+                            while (cursor.moveToNext()) {
+                                if (MessageListAdapter.SMS_TYPE.equals(cursor.getString(typeIndex))) {
+                                    mNumSms = cursor.getInt(countIndex);
+                                } else if (MessageListAdapter.MMS_TYPE.equals(cursor.getString(typeIndex))) {
+                                    mNumMms = cursor.getInt(countIndex);
+                                }
+                            }
+                        } finally {
+                            cursor.close();
+                        }
+                    }
+                    break;
                 case MESSAGE_LIST_QUERY_TOKEN:
                     mConversation.blockMarkAsRead(false);
 
@@ -5060,12 +5124,11 @@ public class ComposeMessageActivity extends Activity
                         return ;
                     }
                     @SuppressWarnings("unchecked")
-                    ArrayList<Long> threadIds = (ArrayList<Long>)cookie;
+                    ConversationList.DeleteInfo info = (ConversationList.DeleteInfo)cookie;
                     ConversationList.confirmDeleteThreadDialog(
-                            new ConversationList.DeleteThreadListener(threadIds,
+                            new ConversationList.DeleteThreadListener(info,
                                 mBackgroundQueryHandler, null, ComposeMessageActivity.this),
-                            threadIds,
-                            cursor != null && cursor.getCount() > 0,
+                            info.getThreadIds(), cursor != null && cursor.getCount() > 0,
                             ComposeMessageActivity.this);
                     if (cursor != null) {
                         cursor.close();

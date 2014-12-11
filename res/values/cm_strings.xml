@@ -327,4 +327,16 @@
     <string name="pre_define_message_template_2">I am in conference. I\'ll call you back later.</string>
     <string name="pre_define_message_template_3">Please call me later.</string>
     <string name="pre_define_message_template_4">Will you please call me back?</string>
+
+    <string name="menu_delete_all_entries">Delete all</string>
+    <string name="menu_delete_sms">Delete SMS</string>
+    <string name="menu_delete_mms">Delete MMS</string>
+
+    <plurals name="confirm_delete_messages">
+        <!-- Case of 1 result. -->
+        <item quantity="one">One message will be deleted.</item>
+        <!-- Case of 0 or 2 or more results. -->
+        <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> messages will be deleted.</item>
+    </plurals>
+
 </resources>

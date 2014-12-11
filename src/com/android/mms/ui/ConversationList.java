@@ -64,7 +64,6 @@ import android.view.View.OnCreateContextMenuListener;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -82,7 +81,6 @@ import com.android.mms.data.Conversation;
 import com.android.mms.data.Conversation.ConversationQueryHandler;
 import com.android.mms.transaction.MessagingNotification;
 import com.android.mms.transaction.SmsRejectedReceiver;
-import com.android.mms.ui.PopupList;
 import com.android.mms.util.DraftCache;
 import com.android.mms.util.Recycler;
 import com.android.mms.widget.MmsWidgetProvider;
@@ -111,6 +109,44 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
     public static final int MENU_VIEW                 = 1;
     public static final int MENU_VIEW_CONTACT         = 2;
     public static final int MENU_ADD_TO_CONTACTS      = 3;
+
+    public static final class DeleteInfo {
+
+        private final MessageDeleteTypes mDeleteType;
+        private final int mDeleteCount;
+        private Collection<Long> threadIds;
+
+        public MessageDeleteTypes getDeleteType() {
+            return mDeleteType;
+        }
+
+        public int getDeleteCount() {
+            return mDeleteCount;
+        }
+
+        public Collection<Long> getThreadIds() {
+            return threadIds;
+        }
+
+        public void setThreadIds(Collection<Long> threadIds) {
+            this.threadIds = threadIds;
+        }
+
+        public DeleteInfo(MessageDeleteTypes deleteType) {
+            this(deleteType, -1);
+        }
+
+        public DeleteInfo(MessageDeleteTypes deleteType, int deleteCount) {
+            mDeleteType = deleteType;
+            mDeleteCount = deleteCount;
+        }
+    }
+
+    public static enum MessageDeleteTypes {
+        ALL,
+        SMS,
+        MMS
+    }
 
     public static boolean mIsRunning;
 
@@ -868,8 +904,9 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
      * @param handler query handler to do the background locked query
      */
     public static void confirmDeleteThreads(Collection<Long> threadIds, AsyncQueryHandler handler) {
-        Conversation.startQueryHaveLockedMessages(handler, threadIds,
-                HAVE_LOCKED_MESSAGES_TOKEN);
+        DeleteInfo info = new DeleteInfo(MessageDeleteTypes.ALL);
+        info.setThreadIds(threadIds);
+        Conversation.startQueryHaveLockedMessages(handler, HAVE_LOCKED_MESSAGES_TOKEN, info);
     }
 
     /**
@@ -892,9 +929,17 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             msg.setText(R.string.confirm_delete_all_conversations);
         } else {
             // Show the number of threads getting deleted in the confirmation dialog.
-            int cnt = threadIds.size();
+            int cnt = 0;
+            int resId = 0;
+            if (listener.mInfo.getDeleteType() == MessageDeleteTypes.ALL) {
+                resId = R.plurals.confirm_delete_conversation;
+                cnt = threadIds.size();
+            } else {
+                resId = R.plurals.confirm_delete_messages;
+                cnt = listener.mInfo.getDeleteCount();
+            }
             msg.setText(context.getResources().getQuantityString(
-                R.plurals.confirm_delete_conversation, cnt, cnt));
+                resId, cnt, cnt));
         }
 
         final CheckBox checkbox = (CheckBox)contents.findViewById(R.id.delete_locked);
@@ -939,15 +984,15 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
     };
 
     public static class DeleteThreadListener implements OnClickListener {
-        private final Collection<Long> mThreadIds;
         private final ConversationQueryHandler mHandler;
         private final Context mContext;
+        private final DeleteInfo mInfo;
         private boolean mDeleteLockedMessages;
         private final Runnable mCallBack;
 
-        public DeleteThreadListener(Collection<Long> threadIds, ConversationQueryHandler handler,
+        public DeleteThreadListener(DeleteInfo info, ConversationQueryHandler handler,
                 Runnable callBack, Context context) {
-            mThreadIds = threadIds;
+            mInfo = info;
             mHandler = handler;
             mContext = context;
             mCallBack = callBack;
@@ -959,34 +1004,39 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
 
         @Override
         public void onClick(DialogInterface dialog, final int whichButton) {
-            MessageUtils.handleReadReport(mContext, mThreadIds,
+            MessageUtils.handleReadReport(mContext, mInfo.getThreadIds(),
                     PduHeaders.READ_STATUS__DELETED_WITHOUT_BEING_READ, new Runnable() {
                 @Override
                 public void run() {
                     int token = DELETE_CONVERSATION_TOKEN;
+                    if (mInfo.getDeleteType() != MessageDeleteTypes.ALL) {
+                        token = ComposeMessageActivity.DELETE_MESSAGE_TOKEN;
+                    }
+
                     if (mCallBack != null) {
                         mCallBack.run();
                     }
                     if (mContext instanceof ConversationList) {
-                        ((ConversationList)mContext).unbindListeners(mThreadIds);
+                        ((ConversationList)mContext).unbindListeners(mInfo.getThreadIds());
                     }
-                    if (mThreadIds == null) {
+                    if (mInfo.getThreadIds() == null) {
                         Conversation.startDeleteAll(mHandler, token, mDeleteLockedMessages);
                         DraftCache.getInstance().refresh();
                     } else {
-                        int size = mThreadIds.size();
+                        int size = mInfo.getThreadIds().size();
                         if (size > 0 && mCallBack != null) {
                             // Save the last thread id.
                             // And cancel deleting dialog after this thread been deleted.
-                            mLastDeletedThread = (mThreadIds.toArray(new Long[size]))[size - 1];
+                            mLastDeletedThread = (mInfo.getThreadIds().toArray(new Long[size]))[size - 1];
                         }
                         Conversation.startDelete(mHandler, token, mDeleteLockedMessages,
-                                mThreadIds);
+                                mInfo.getThreadIds(), mInfo.getDeleteType());
                     }
                 }
             });
             dialog.dismiss();
         }
+
     }
 
     private final Runnable mDeleteObsoleteThreadsRunnable = new Runnable() {
@@ -1082,9 +1132,9 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                     return ;
                 }
                 @SuppressWarnings("unchecked")
-                Collection<Long> threadIds = (Collection<Long>)cookie;
-                confirmDeleteThreadDialog(new DeleteThreadListener(threadIds, mQueryHandler,
-                        mDeletingRunnable, ConversationList.this), threadIds,
+                DeleteInfo info = (DeleteInfo) cookie;
+                confirmDeleteThreadDialog(new DeleteThreadListener(info, mQueryHandler,
+                        mDeletingRunnable, ConversationList.this), info.getThreadIds(),
                         cursor != null && cursor.getCount() > 0,
                         ConversationList.this);
                 if (cursor != null) {
