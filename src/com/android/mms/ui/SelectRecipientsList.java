@@ -537,6 +537,21 @@ public class SelectRecipientsList extends Activity implements
         }
 
         @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            ItemListFragment result =
+                    (ItemListFragment) super.instantiateItem(container, position);
+            if (position == 1) {
+                mGroupFragment = result;
+            } else {
+                mContactFragment = result;
+                result.setIsMobileOnly(mMobileOnly);
+            }
+
+            applyListAdapters();
+            return result;
+        }
+
+        @Override
         public Fragment getItem(int position) {
             Bundle args = new Bundle();
 
@@ -545,14 +560,6 @@ public class SelectRecipientsList extends Activity implements
 
             ItemListFragment f = new ItemListFragment();
             f.setArguments(args);
-
-            if (position == 1) {
-                mGroupFragment = f;
-            } else {
-                mContactFragment = f;
-                f.setIsMobileOnly(mMobileOnly);
-            }
-            applyListAdapters();
 
             return f;
         }
@@ -578,7 +585,7 @@ public class SelectRecipientsList extends Activity implements
         }
     }
 
-    private static class ItemListFragment extends ListFragment implements
+    public static class ItemListFragment extends ListFragment implements
             AdapterView.OnItemClickListener {
         public static final String IS_GROUP = "is_group";
         public static final String MODE = "mode";
