@@ -54,6 +54,9 @@ public class MessageListAdapter extends CursorAdapter {
     private static final String TAG = LogTag.TAG;
     private static final boolean LOCAL_LOGV = false;
 
+    public static final String MMS_TYPE = "mms";
+    public static final String SMS_TYPE = "sms";
+
     static final String[] PROJECTION = new String[] {
         // TODO: should move this symbol into com.android.mms.telephony.Telephony.
         MmsSms.TYPE_DISCRIMINATOR_COLUMN,
@@ -395,22 +398,21 @@ public class MessageListAdapter extends CursorAdapter {
         }
     }
 
-    public boolean hasSmsInConversation(Cursor cursor) {
-        boolean hasSms = false;
+    public int getTypeCountInConversation(Cursor cursor, String keyword) {
+        int count = 0;
         if (isCursorValid(cursor)) {
             if (cursor.moveToFirst()) {
                 do {
                     String type = cursor.getString(mColumnsMap.mColumnMsgType);
-                    if ("sms".equals(type)) {
-                        hasSms = true;
-                        break;
+                    if (keyword.equals(type)) {
+                        count++;
                     }
                 } while (cursor.moveToNext());
                 // Reset the position to 0
                 cursor.moveToFirst();
             }
         }
-        return hasSms;
+        return count;
     }
 
     public Cursor getCursorForItem(MessageItem item) {
