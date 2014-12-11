@@ -282,7 +282,7 @@ public class ComposeMessageActivity extends Activity
     private static final int MESSAGE_LIST_QUERY_TOKEN = 9527;
     private static final int MESSAGE_LIST_QUERY_AFTER_DELETE_TOKEN = 9528;
 
-    private static final int DELETE_MESSAGE_TOKEN  = 9700;
+    public static final int DELETE_MESSAGE_TOKEN  = 9700;
 
     private static final int CHARS_REMAINING_BEFORE_COUNTER_SHOWN = 10;
 
@@ -3111,9 +3111,25 @@ public class ComposeMessageActivity extends Activity
                 onSearchRequested();
                 break;
             case MENU_DELETE_THREAD:
-                confirmDeleteThread(mConversation.getThreadId());
+                Cursor cursor = mMsgListAdapter.getCursor();
+                boolean hasSms = mMsgListAdapter.hasSmsInConversation(cursor);
+                boolean hasMms = mMsgListAdapter.hasMmsInConversation(cursor);
+                if (!hasSms || !hasMms) {
+                    confirmDeleteThread(mConversation.getThreadId(), ConversationList.MessageDeleteTypes.ALL);
+                } else {
+                    String[] items = getResources().getStringArray(R.array.delete_thread_entries);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setCancelable(true)
+                            .setItems(items, new OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    ConversationList.MessageDeleteTypes deleteType = ConversationList
+                                            .MessageDeleteTypes.values()[which];
+                                    confirmDeleteThread(mConversation.getThreadId(), deleteType);
+                                }
+                            }).show();
+                }
                 break;
-
             case android.R.id.home:
             case MENU_CONVERSATION_LIST:
                 exitComposeMessageActivity(new Runnable() {
@@ -3285,9 +3301,9 @@ public class ComposeMessageActivity extends Activity
         return null;
     }
 
-    private void confirmDeleteThread(long threadId) {
+    private void confirmDeleteThread(long threadId, ConversationList.MessageDeleteTypes deleteType) {
         Conversation.startQueryHaveLockedMessages(mBackgroundQueryHandler,
-                threadId, ConversationList.HAVE_LOCKED_MESSAGES_TOKEN);
+                threadId, ConversationList.HAVE_LOCKED_MESSAGES_TOKEN, deleteType);
     }
 
 //    static class SystemProperties { // TODO, temp class to get unbundling working
@@ -5060,13 +5076,12 @@ public class ComposeMessageActivity extends Activity
                         return ;
                     }
                     @SuppressWarnings("unchecked")
-                    ArrayList<Long> threadIds = (ArrayList<Long>)cookie;
+                    Conversation.LockedMessageResult lockedMessageResult = (Conversation.LockedMessageResult)cookie;
                     ConversationList.confirmDeleteThreadDialog(
-                            new ConversationList.DeleteThreadListener(threadIds,
-                                mBackgroundQueryHandler, null, ComposeMessageActivity.this),
-                            threadIds,
-                            cursor != null && cursor.getCount() > 0,
-                            ComposeMessageActivity.this);
+                            new ConversationList.DeleteThreadListener(lockedMessageResult.threadIds,
+                                mBackgroundQueryHandler, null, ComposeMessageActivity.this, lockedMessageResult.deleteType),
+                            lockedMessageResult.threadIds, cursor != null && cursor.getCount() > 0,
+                            ComposeMessageActivity.this, true);
                     if (cursor != null) {
                         cursor.close();
                     }

@@ -79,4 +79,9 @@
     <string name="start_new_message_button">New message</string>
 
     <string name="all_spinner_option">All</string>
+
+    <string name="menu_delete_all_entries">Delete all</string>
+    <string name="menu_delete_sms">Delete sms</string>
+    <string name="menu_delete_mms">Delete mms</string>
+
 </resources>

@@ -64,7 +64,6 @@ import android.view.View.OnCreateContextMenuListener;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -82,7 +81,6 @@ import com.android.mms.data.Conversation;
 import com.android.mms.data.Conversation.ConversationQueryHandler;
 import com.android.mms.transaction.MessagingNotification;
 import com.android.mms.transaction.SmsRejectedReceiver;
-import com.android.mms.ui.PopupList;
 import com.android.mms.util.DraftCache;
 import com.android.mms.util.Recycler;
 import com.android.mms.widget.MmsWidgetProvider;
@@ -102,7 +100,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
 
     private static final int THREAD_LIST_QUERY_TOKEN       = 1701;
     private static final int UNREAD_THREADS_QUERY_TOKEN    = 1702;
-    public static final int DELETE_CONVERSATION_TOKEN      = 1801;
+    public static final int DELETE_CONVERSATION_TOKEN = 1801;
     public static final int HAVE_LOCKED_MESSAGES_TOKEN     = 1802;
     private static final int DELETE_OBSOLETE_THREADS_TOKEN = 1803;
 
@@ -111,6 +109,12 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
     public static final int MENU_VIEW                 = 1;
     public static final int MENU_VIEW_CONTACT         = 2;
     public static final int MENU_ADD_TO_CONTACTS      = 3;
+
+    public static enum MessageDeleteTypes {
+        ALL,
+        SMS,
+        MMS
+    }
 
     public static boolean mIsRunning;
 
@@ -869,7 +873,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
      */
     public static void confirmDeleteThreads(Collection<Long> threadIds, AsyncQueryHandler handler) {
         Conversation.startQueryHaveLockedMessages(handler, threadIds,
-                HAVE_LOCKED_MESSAGES_TOKEN);
+                HAVE_LOCKED_MESSAGES_TOKEN, MessageDeleteTypes.ALL);
     }
 
     /**
@@ -882,9 +886,15 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
      * @param context used to load the various UI elements
      */
     public static void confirmDeleteThreadDialog(final DeleteThreadListener listener,
-            Collection<Long> threadIds,
-            boolean hasLockedMessages,
-            Context context) {
+            final Collection<Long> threadIds,
+            final boolean hasLockedMessages,
+            final Context context,
+            boolean insideThread) {
+            showDeleteDialog(listener, threadIds, hasLockedMessages, context);
+    }
+
+    private static void showDeleteDialog(final DeleteThreadListener listener, Collection<Long> threadIds,
+                                         boolean hasLockedMessages, Context context) {
         View contents = View.inflate(context, R.layout.delete_thread_dialog_view, null);
         TextView msg = (TextView)contents.findViewById(R.id.message);
 
@@ -944,13 +954,15 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         private final Context mContext;
         private boolean mDeleteLockedMessages;
         private final Runnable mCallBack;
+        private MessageDeleteTypes mDeleteType;
 
         public DeleteThreadListener(Collection<Long> threadIds, ConversationQueryHandler handler,
-                Runnable callBack, Context context) {
+                Runnable callBack, Context context, MessageDeleteTypes type) {
             mThreadIds = threadIds;
             mHandler = handler;
             mContext = context;
             mCallBack = callBack;
+            mDeleteType = type;
         }
 
         public void setDeleteLockedMessage(boolean deleteLockedMessages) {
@@ -964,6 +976,10 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                 @Override
                 public void run() {
                     int token = DELETE_CONVERSATION_TOKEN;
+                    if (mDeleteType != MessageDeleteTypes.ALL) {
+                        token = ComposeMessageActivity.DELETE_MESSAGE_TOKEN;
+                    }
+
                     if (mCallBack != null) {
                         mCallBack.run();
                     }
@@ -981,11 +997,15 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                             mLastDeletedThread = (mThreadIds.toArray(new Long[size]))[size - 1];
                         }
                         Conversation.startDelete(mHandler, token, mDeleteLockedMessages,
-                                mThreadIds);
+                                mThreadIds, mDeleteType);
                     }
                 }
             });
             dialog.dismiss();
+        }
+
+        public void setDeleteType(MessageDeleteTypes deleteType) {
+            mDeleteType = deleteType;
         }
     }
 
@@ -1082,11 +1102,11 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                     return ;
                 }
                 @SuppressWarnings("unchecked")
-                Collection<Long> threadIds = (Collection<Long>)cookie;
-                confirmDeleteThreadDialog(new DeleteThreadListener(threadIds, mQueryHandler,
-                        mDeletingRunnable, ConversationList.this), threadIds,
+                Conversation.LockedMessageResult lockedMessageResult = (Conversation.LockedMessageResult)cookie;
+                confirmDeleteThreadDialog(new DeleteThreadListener(lockedMessageResult.threadIds, mQueryHandler,
+                        mDeletingRunnable, ConversationList.this, lockedMessageResult.deleteType), lockedMessageResult.threadIds,
                         cursor != null && cursor.getCount() > 0,
-                        ConversationList.this);
+                        ConversationList.this, false);
                 if (cursor != null) {
                     cursor.close();
                 }

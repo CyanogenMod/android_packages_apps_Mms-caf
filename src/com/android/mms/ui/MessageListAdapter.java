@@ -395,14 +395,14 @@ public class MessageListAdapter extends CursorAdapter {
         }
     }
 
-    public boolean hasSmsInConversation(Cursor cursor) {
-        boolean hasSms = false;
+    private boolean hasTypeInConversation(Cursor cursor, String keyword) {
+        boolean hasItem = false;
         if (isCursorValid(cursor)) {
             if (cursor.moveToFirst()) {
                 do {
                     String type = cursor.getString(mColumnsMap.mColumnMsgType);
-                    if ("sms".equals(type)) {
-                        hasSms = true;
+                    if (keyword.equals(type)) {
+                        hasItem = true;
                         break;
                     }
                 } while (cursor.moveToNext());
@@ -410,7 +410,15 @@ public class MessageListAdapter extends CursorAdapter {
                 cursor.moveToFirst();
             }
         }
-        return hasSms;
+        return hasItem;
+    }
+
+    public boolean hasSmsInConversation(Cursor cursor) {
+        return hasTypeInConversation(cursor, "sms");
+    }
+
+    public boolean hasMmsInConversation(Cursor cursor) {
+        return hasTypeInConversation(cursor, "mms");
     }
 
     public Cursor getCursorForItem(MessageItem item) {
