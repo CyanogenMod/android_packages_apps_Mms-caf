@@ -254,7 +254,7 @@
         </activity>
 
         <activity android:name=".ui.MessagingPreferenceActivity"
-            android:theme="@android:style/Theme.Holo.Light"
+            android:theme="@style/MmsHoloTheme"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/preferences_title" />
 
@@ -318,7 +318,7 @@
         </activity>
 
         <activity android:name=".ui.SelectSubscription"
-            android:theme="@android:style/Theme.Holo.Light"
+            android:theme="@style/MmsHoloTheme"
             android:label="@string/select_subscription_title">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -326,7 +326,7 @@
         </activity>
 
         <activity android:name=".ui.SubscriptionSettingsActivity"
-            android:theme="@android:style/Theme.Holo.Light"
+            android:theme="@style/MmsHoloTheme"
             android:label="@string/subscription_settings_title">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
