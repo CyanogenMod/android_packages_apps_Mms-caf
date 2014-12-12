@@ -240,7 +240,7 @@
     <!-- Dialog box title for display the current mms size  -->
     <string name="title_send_message">Send message</string>
     <!-- Toast when the subject is full -->
-    <string name="subject_full">"subject is full"</string>
+    <string name="subject_full">Subject is full</string>
 
     <!-- Status in "Report" window -->
     <string name="status_deleted_unread">Deleted without being read</string>
@@ -273,7 +273,7 @@
     <string name="pending_mms">Messaging: One or more MMS are pending</string>
     <string name="pending_mms_text">Touch to switch the SIM card</string>
 
-    <string name="switch_data_subscription">Data subscription switch <xliff:g id="result" example="failed">%1$s</xliff:g></string>
+    <string name="switch_data_subscription">Data SIM card switch <xliff:g id="result" example="failed">%1$s</xliff:g></string>
     <!-- Second part of switch_data_subscription -->
     <string name="switch_data_subscription_success">was successful.</string>
     <!-- Second part of switch_data_subscription -->
