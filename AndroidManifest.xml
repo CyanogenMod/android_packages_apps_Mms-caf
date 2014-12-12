@@ -345,7 +345,7 @@
         </activity>
 
         <activity android:name=".ui.MessageTemplate"
-                  android:theme="@android:style/Theme.Material.Light.Dialog"
+                  android:theme="@style/MmsTheme"
                   android:launchMode="singleTop"
                   android:label="@string/message_template_title"
                   android:configChanges="orientation|screenSize" >
@@ -445,6 +445,10 @@
             android:exported="true" />
 
         <receiver android:name=".quickmessage.ClearAllReceiver" />
+
+        <!-- Message Template Content Provider -->
+        <provider android:name="MessageTemplateProvider"
+                android:authorities="com.android.mms.MessageTemplateProvider" />
 
     </application>
 </manifest>
