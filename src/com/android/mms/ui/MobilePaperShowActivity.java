@@ -86,6 +86,9 @@ public class MobilePaperShowActivity extends Activity {
     private static final int MENU_REPLY = 3;
     private static final int MENU_FORWARD = 4;
 
+    // If the finger move over 100px, we don't think it's for click.
+    private static final int CLICK_LIMIT = 100;
+
     private int mMailboxId = -1;
 
     private FrameLayout mSlideView;
@@ -281,6 +284,7 @@ public class MobilePaperShowActivity extends Activity {
             mScrollViewPort = new ScrollView(this) {
                 private int currentX;
                 private int currentY;
+                private int move;
 
                 @Override
                 public boolean onTouchEvent(MotionEvent ev) {
@@ -312,18 +316,20 @@ public class MobilePaperShowActivity extends Activity {
                         case MotionEvent.ACTION_DOWN: {
                             currentX = (int) ev.getRawX();
                             currentY = (int) ev.getRawY();
+                            move = 0;
                             break;
                         }
                         case MotionEvent.ACTION_MOVE: {
                             int x2 = (int) ev.getRawX();
                             int y2 = (int) ev.getRawY();
+                            move += Math.abs(currentY - y2);
                             currentX = x2;
                             currentY = y2;
                             break;
                         }
                     }
                     super.onInterceptTouchEvent(ev);
-                    return false;
+                    return move > CLICK_LIMIT;
                 }
             };
 
