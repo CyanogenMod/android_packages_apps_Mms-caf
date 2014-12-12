@@ -331,7 +331,6 @@
     <string name="pre_define_message_template_2">I am in conference. I\'ll call you back later.</string>
     <string name="pre_define_message_template_3">Please call me later.</string>
     <string name="pre_define_message_template_4">Will you please call me back?</string>
-
     <string name="menu_delete_all_entries">Delete all</string>
     <string name="menu_delete_sms">Delete SMS</string>
     <string name="menu_delete_mms">Delete MMS</string>
@@ -364,4 +363,10 @@
     <string name="type_vcal">vCal</string>
 
     <string name="menu_delete_cm">Delete entries</string>
+
+    <!-- QuickMessage Wear-->
+    <string name="qm_wear_sending_message">Sending reply to <xliff:g id="name">%s</xliff:g></string>
+    <string name="qm_wear_messaged_failed">Your text message to <xliff:g id="name">%s</xliff:g> has failed to send please try again.</string>
+    <string name="qm_wear_voice_reply">What\'s your reply?</string>
+    <string name="qm_wear_reply_by_voice">Reply using voice</string>
 </resources>
