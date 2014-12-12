@@ -452,6 +452,17 @@
             android:excludeFromRecents="true"
             android:exported="true" />
 
+        <!--QuickMessage for wear-->
+        <!-- This allows for users to reply to a message
+             via voice using there Android Wear device.
+             Make Transparent so that nothing shows on
+             screen but toasts for sending and errors-->
+        <activity android:name=".quickmessage.QuickMessageWear"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.Transparent"
+            android:excludeFromRecents="true"
+            android:exported="true"/>
+
         <receiver android:name=".quickmessage.ClearAllReceiver" />
 
         <!-- Message Template Content Provider -->
