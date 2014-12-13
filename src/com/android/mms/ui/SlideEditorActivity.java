@@ -694,6 +694,9 @@ public class SlideEditorActivity extends Activity implements
                 Uri uri;
                 if (requestCode == REQUEST_CODE_CHANGE_MUSIC) {
                     uri = (Uri) data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+                    if (uri == null) {
+                        uri = data.getData();
+                    }
                     if (Settings.System.DEFAULT_RINGTONE_URI.equals(uri)) {
                         return;
                     }

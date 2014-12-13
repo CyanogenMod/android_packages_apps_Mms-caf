@@ -336,7 +336,7 @@ public class MessagingNotification {
                         ", newMsgThreadId=" + newMsgThreadId);
             }
 
-            if (isInCurrentConveration(newMsgThreadId, threads)) {
+            if (isInCurrentConversation(newMsgThreadId, threads)) {
                 if (DEBUG) {
                     Log.d(TAG, "blockingUpdateNewMessageIndicator: newMsgThreadId == " +
                             "sCurrentlyDisplayedThreadId so NOT showing notification," +
@@ -360,7 +360,7 @@ public class MessagingNotification {
         threads.clear();
     }
 
-    private static boolean isInCurrentConveration(long newMsgThreadId, Set<Long> threads) {
+    private static boolean isInCurrentConversation(long newMsgThreadId, Set<Long> threads) {
         if (MessageUtils.isMailboxMode()) {
             // For mail box mode, only message with the same tpye will not show the notification.
             long newMsgType = (newMsgThreadId == THREAD_NONE) ?
@@ -1922,7 +1922,7 @@ public class MessagingNotification {
                 Context.NOTIFICATION_SERVICE);
 
         String title = context.getString(R.string.sms_full_title);
-        String description = context.getString(R.string.sms_full_body);
+        String description = context.getString(R.string.sms_full_body_cm);
         PendingIntent intent = PendingIntent.getActivity(context, 0,  new Intent(), 0);
         Notification notification = new Notification();
         notification.icon = R.drawable.stat_notify_sms_failed;

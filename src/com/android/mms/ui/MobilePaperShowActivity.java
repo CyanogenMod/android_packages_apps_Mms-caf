@@ -47,6 +47,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Telephony.Mms;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -74,6 +75,7 @@ import com.google.android.mms.MmsException;
 import com.google.android.mms.pdu.EncodedStringValue;
 import com.google.android.mms.pdu.MultimediaMessagePdu;
 import com.google.android.mms.pdu.PduPersister;
+import com.google.android.mms.pdu.SendReq;
 import com.google.android.mms.util.SqliteWrapper;
 
 public class MobilePaperShowActivity extends Activity {
@@ -81,8 +83,7 @@ public class MobilePaperShowActivity extends Activity {
     private static final int MENU_SLIDESHOW = 1;
     private static final int MENU_CALL = 2;
     private static final int MENU_REPLY = 3;
-
-    private static final int MESSAGE_READ = 1;
+    private static final int MENU_FORWARD = 4;
 
     private int mMailboxId = -1;
 
@@ -94,9 +95,12 @@ public class MobilePaperShowActivity extends Activity {
     private String mNumber;
     private Intent mIntent;
     private Uri mUri;
+    private Uri mTempMmsUri;
+    private long mTempThreadId;
     private ScaleGestureDetector mScaleDetector;
     private ScrollView mScrollViewPort;
     private Cursor mCursor;
+    private String mSubject;
 
     private float mFontSizeForSave = MessageUtils.FONT_SIZE_DEFAULT;
     private Handler mHandler;
@@ -167,10 +171,12 @@ public class MobilePaperShowActivity extends Activity {
 
             MultimediaMessagePdu msgPdu = (MultimediaMessagePdu) PduPersister
                     .getPduPersister(this).load(mUri);
+            mSubject = "";
             if (msgPdu != null) {
                 EncodedStringValue subject = msgPdu.getSubject();
                 if (subject != null) {
                     String subStr = subject.getString();
+                    mSubject = subStr;
                     setTitle(subStr);
                 } else {
                     setTitle("");
@@ -199,8 +205,9 @@ public class MobilePaperShowActivity extends Activity {
     private void markAsReadIfNeed() {
         boolean unread = mIntent.getBooleanExtra("unread", false);
         if (unread) {
-            ContentValues values = new ContentValues(1);
-            values.put(Mms.READ, MESSAGE_READ);
+            ContentValues values = new ContentValues(2);
+            values.put(Mms.SEEN, MessageUtils.MESSAGE_SEEN);
+            values.put(Mms.READ, MessageUtils.MESSAGE_READ);
             SqliteWrapper.update(this, getContentResolver(),
                     mUri, values, null, null);
 
@@ -241,9 +248,10 @@ public class MobilePaperShowActivity extends Activity {
         for (int index = 0; index < mSlideModel.size(); index++) {
             SlideListItemView view = (SlideListItemView) mInflater.inflate(
                     R.layout.mobile_paper_item, null);
+            view.setLayoutModel(mSlideModel.getLayout().getLayoutType());
             mPresenter = (SlideshowPresenter) PresenterFactory.getPresenter("SlideshowPresenter",
                     this, (SlideViewInterface) view, mSlideModel);
-            TextView contentText = (TextView) view.findViewById(R.id.text_preview);
+            TextView contentText = view.getContentText();
             contentText.setTextIsSelectable(true);
             mPresenter.presentSlide((SlideViewInterface) view, mSlideModel.get(index));
             contentText.setTextSize(TypedValue.COMPLEX_UNIT_PX, MessageUtils.getTextFontSize(this));
@@ -282,15 +290,12 @@ public class MobilePaperShowActivity extends Activity {
                         case MotionEvent.ACTION_MOVE: {
                             int x2 = (int) ev.getRawX();
                             int y2 = (int) ev.getRawY();
-                            // To ensure that no conflict between zoom and scroll
-                            if (!mOnScale) {
-                                mScrollViewPort.scrollBy(currentX - x2, currentY - y2);
-                            }
                             currentX = x2;
                             currentY = y2;
                             break;
                         }
                     }
+                    super.onTouchEvent(ev);
                     return true;
                 }
 
@@ -307,15 +312,12 @@ public class MobilePaperShowActivity extends Activity {
                         case MotionEvent.ACTION_MOVE: {
                             int x2 = (int) ev.getRawX();
                             int y2 = (int) ev.getRawY();
-                            // To ensure that no conflict between zoom and scroll
-                            if (!mOnScale) {
-                                mScrollViewPort.scrollBy(currentX - x2, currentY - y2);
-                            }
                             currentX = x2;
                             currentY = y2;
                             break;
                         }
                     }
+                    super.onInterceptTouchEvent(ev);
                     return false;
                 }
             };
@@ -344,6 +346,7 @@ public class MobilePaperShowActivity extends Activity {
                         .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
             }
         }
+        menu.add(0, MENU_FORWARD, 0, R.string.menu_forward);
         menu.add(0, MENU_SLIDESHOW, 0, R.string.view_slideshow);
         return true;
     }
@@ -363,6 +366,9 @@ public class MobilePaperShowActivity extends Activity {
             }
             case MENU_CALL:
                 MessageUtils.dialNumber(this,mNumber);
+                break;
+            case MENU_FORWARD:
+                forwardMms();
                 break;
             case android.R.id.home:
                 finish();
@@ -430,5 +436,53 @@ public class MobilePaperShowActivity extends Activity {
             intent.putStringArrayListExtra("sms_id_list", allIdList);
             context.startActivity(intent);
         }
+    }
+
+    private void forwardMms() {
+        new AsyncDialog(this).runAsync(new Runnable() {
+            @Override
+            public void run() {
+                SendReq sendReq = new SendReq();
+                String subject = getString(R.string.forward_prefix);
+                if (!TextUtils.isEmpty(mSubject)) {
+                    subject += mSubject;
+                }
+                sendReq.setSubject(new EncodedStringValue(subject));
+                sendReq.setBody(mSlideModel.makeCopy());
+                mTempMmsUri = null;
+                try {
+                    PduPersister persister =
+                            PduPersister.getPduPersister(MobilePaperShowActivity.this);
+                    mTempMmsUri = persister.persist(sendReq, Mms.Draft.CONTENT_URI, true,
+                            MessagingPreferenceActivity
+                                    .getIsGroupMmsEnabled(MobilePaperShowActivity.this), null);
+                    mTempThreadId = MessagingNotification.getThreadId(
+                            MobilePaperShowActivity.this, mTempMmsUri);
+                } catch (MmsException e) {
+                    Log.e(TAG, "Failed to forward message: " + mTempMmsUri);
+                    Toast.makeText(MobilePaperShowActivity.this,
+                            R.string.cannot_save_message, Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        }, new Runnable() {
+            @Override
+            public void run() {
+                Intent intentForward = new Intent(MobilePaperShowActivity.this,
+                        ComposeMessageActivity.class);
+                intentForward.putExtra("exit_on_sent", true);
+                intentForward.putExtra("forwarded_message", true);
+                String subject = getString(R.string.forward_prefix);
+                if (!TextUtils.isEmpty(mSubject)) {
+                    subject += mSubject;
+                }
+                intentForward.putExtra("subject", subject);
+                intentForward.putExtra("msg_uri", mTempMmsUri);
+                if (mTempThreadId > 0) {
+                    intentForward.putExtra(Mms.THREAD_ID, mTempThreadId);
+                }
+                MobilePaperShowActivity.this.startActivity(intentForward);
+            }
+        }, R.string.building_slideshow_title);
     }
 }

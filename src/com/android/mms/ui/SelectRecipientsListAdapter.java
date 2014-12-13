@@ -34,32 +34,58 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class SelectRecipientsListAdapter extends ArrayAdapter<RecipientsListLoader.Result>
-        implements SectionIndexer, AbsListView.RecyclerListener {
+public class SelectRecipientsListAdapter extends ArrayAdapter<PhoneNumber> implements
+        SectionIndexer, AbsListView.RecyclerListener {
     private final LayoutInflater mInflater;
     private String[] mSections;
     private int[] mPositions;
 
-    public SelectRecipientsListAdapter(Context context,
-            List<RecipientsListLoader.Result> items) {
-        super(context, R.layout.select_recipients_list_item, items);
+    public SelectRecipientsListAdapter(Context context) {
+        super(context, 0);
         mInflater = LayoutInflater.from(context);
+    }
 
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+        rebuildSections();
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        SelectRecipientsListItem view;
+
+        if (convertView == null) {
+            view = (SelectRecipientsListItem) mInflater.inflate(
+                    R.layout.select_recipients_list_item, parent, false);
+        } else {
+            view = (SelectRecipientsListItem) convertView;
+        }
+
+        bindView(position, view);
+        return view;
+    }
+
+    @Override
+    public void onMovedToScrapHeap(View view) {
+        unbindView(view);
+    }
+
+    public void unbindView(View view) {
+        if (view instanceof SelectRecipientsListItem) {
+            SelectRecipientsListItem srli = (SelectRecipientsListItem) view;
+            srli.unbind();
+        }
+    }
+
+    private void rebuildSections() {
         ArrayList<String> sections = new ArrayList<String>();
         ArrayList<Integer> positions = new ArrayList<Integer>();
-        String groupIndex = context.getString(R.string.fastscroll_index_groups);
         String lastSectionIndex = null;
         boolean hasSections = true;
 
-        for (int i = 0; i < items.size(); i++) {
-            RecipientsListLoader.Result item = items.get(i);
-            String index;
-
-            if (item.phoneNumber == null) {
-                index = groupIndex;
-            } else {
-                index = item.phoneNumber.getSectionIndex();
-            }
+        for (int i = 0; i < getCount(); i++) {
+            String index = getItem(i).getSectionIndex();
 
             if (index == null) {
                 hasSections = false;
@@ -89,54 +115,17 @@ public class SelectRecipientsListAdapter extends ArrayAdapter<RecipientsListLoad
         }
     }
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup viewGroup) {
-        SelectRecipientsListItem view;
-
-        if (convertView == null) {
-            view = (SelectRecipientsListItem) mInflater.inflate(
-                    R.layout.select_recipients_list_item, viewGroup, false);
-        } else {
-            view = (SelectRecipientsListItem) convertView;
-        }
-
-        bindView(position, view);
-        return view;
-    }
-
-    @Override
-    public void onMovedToScrapHeap(View view) {
-        unbindView(view);
-    }
-
-    public void unbindView(View view) {
-        if (view instanceof SelectRecipientsListItem) {
-            SelectRecipientsListItem srli = (SelectRecipientsListItem) view;
-            srli.unbind();
-        }
-    }
-
     private void bindView(int position, SelectRecipientsListItem view) {
-        final RecipientsListLoader.Result item = getItem(position);
+        final PhoneNumber phoneNumber = getItem(position);
+        PhoneNumber lastNumber = position != 0 ? getItem(position - 1) : null;
 
-        if (item.group == null) {
-            PhoneNumber phoneNumber = item.phoneNumber;
-            PhoneNumber lastNumber = position != 0
-                    ? getItem(position - 1).phoneNumber : null;
-            PhoneNumber nextNumber = position != getCount() - 1
-                    ? getItem(position + 1).phoneNumber : null;
-            long contactId = phoneNumber.getContactId();
-            long lastContactId = lastNumber != null ? lastNumber.getContactId() : -1;
-            long nextContactId = nextNumber != null ? nextNumber.getContactId() : -1;
+        long contactId = phoneNumber.getContactId();
+        long lastContactId = lastNumber != null ? lastNumber.getContactId() : -1;
 
-            boolean showHeader = Arrays.binarySearch(mPositions, position) >= 0;
-            boolean showFooter = contactId != nextContactId;
-            boolean isFirst = contactId != lastContactId;
+        boolean showHeader = Arrays.binarySearch(mPositions, position) >= 0;
+        boolean isFirst = contactId != lastContactId;
 
-            view.bind(getContext(), phoneNumber, showHeader, showFooter, isFirst);
-        } else {
-            view.bind(getContext(), item.group, position == 0);
-        }
+        view.bind(getContext(), phoneNumber, showHeader, isFirst);
     }
 
     @Override

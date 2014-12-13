@@ -23,17 +23,30 @@
     android:layout_height="match_parent"
     android:focusable="true"  >
 
-    <ListView android:id="@android:id/list"
-        style="?android:attr/listViewWhiteStyle"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/banner_sms_promo"
-        android:divider="@null"
-        android:dividerHeight="0dp"
-        android:drawSelectorOnTop="false"
-        android:scrollbarStyle="insideOverlay"
-        android:background="@android:color/white"
-        android:fadingEdgeLength="16dip" />
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/banner_sms_promo"
+            android:orientation="vertical">
+
+        <Spinner
+            android:id="@+id/filterSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <ListView android:id="@android:id/list"
+            style="?android:attr/listViewWhiteStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/banner_sms_promo"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            android:drawSelectorOnTop="false"
+            android:scrollbarStyle="insideOverlay"
+            android:background="@android:color/white"
+            android:fadingEdgeLength="16dip" />
+
+    </LinearLayout>
 
     <TextView android:id="@+id/empty"
         android:layout_width="match_parent"

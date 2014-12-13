@@ -45,6 +45,13 @@
         <item name="android:colorBackground">@*android:color/background_material_light</item>
     </style>
 
+    <style name="HeaderTabText" parent="android:style/Widget.Material.Light.ActionBar.TabText">
+        <item name="android:textColor">@color/tab_text_color</item>
+        <item name="android:textSize">@dimen/tab_text_size</item>
+        <item name="android:fontFamily">@string/tab_font_family</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="HeaderSpinnerDropDown" parent="android:Widget.Material.Light.DropDownItem.Spinner">
         <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
     </style>

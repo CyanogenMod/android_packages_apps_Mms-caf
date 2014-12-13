@@ -18,6 +18,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.Message;
 import android.os.Parcelable;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
@@ -53,27 +54,45 @@ public class Contact {
     private static ContactPhotoManager sContactPhotoManager;
     private static final String SELF_ITEM_KEY = "Self_Item_Key";
 
-//    private static final ContentObserver sContactsObserver = new ContentObserver(new Handler()) {
-//        @Override
-//        public void onChange(boolean selfUpdate) {
-//            if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
-//                log("contact changed, invalidate cache");
-//            }
-//            invalidateCache();
-//        }
-//    };
+    private static final int CONTACT_UPDATE = 4;
 
-    private static final ContentObserver sPresenceObserver = new ContentObserver(new Handler()) {
+    private static final ContentObserver sContactsObserver = new ContentObserver(new Handler()) {
         @Override
         public void onChange(boolean selfUpdate) {
             if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
-                log("presence changed, invalidate cache");
+                log("contact changed, invalidate cache");
             }
-            invalidateCache();
+            if (contactUpdateHandler != null) {
+                contactUpdateHandler.sendEmptyMessage(CONTACT_UPDATE);
+            }
         }
     };
 
     private final static HashSet<UpdateListener> mListeners = new HashSet<UpdateListener>();
+
+    private static Runnable invalidateCache = new Runnable() {
+        @Override
+        public void run() {
+            invalidateCache();
+        }
+    };
+
+    private static Handler contactUpdateHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case CONTACT_UPDATE:
+                    if (null != invalidateCache && hasCallbacks(invalidateCache)) {
+                        removeCallbacks(invalidateCache);
+                    }
+                    postDelayed(invalidateCache, 20);
+                    break;
+                default:
+                    Log.e(TAG, "Unkown message, message.what " + msg.what);
+                    break;
+            }
+        };
+    };
 
     private long mContactMethodId;   // Id in phone or email Uri returned by provider of current
                                      // Contact, -1 is invalid. e.g. contact method id is 20 when
@@ -432,10 +451,8 @@ public class Contact {
         // cache each time that occurs. Unless we can get targeted updates for the contacts we
         // care about(which probably won't happen for a long time), we probably should just
         // invalidate cache peoridically, or surgically.
-        /*
         context.getContentResolver().registerContentObserver(
                 Contacts.CONTENT_URI, true, sContactsObserver);
-        */
     }
 
     public static void dump() {
