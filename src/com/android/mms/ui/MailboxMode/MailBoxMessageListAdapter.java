@@ -49,7 +49,6 @@ import android.widget.ListView;
 import android.widget.QuickContactBadge;
 import android.widget.TextView;
 
-import com.android.contacts.common.widget.CheckableQuickContactBadge;
 import com.android.mms.data.Contact;
 import com.android.mms.LogTag;
 import com.android.mms.R;
@@ -168,7 +167,9 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
     }
 
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        return mInflater.inflate(R.layout.mailbox_msg_list, parent, false);
+        /* FIXME: this is called 3+x times too many by the ListView */
+        View ret = mInflater.inflate(R.layout.mailbox_msg_list, parent, false);
+        return ret;
     }
 
     @Override
@@ -256,8 +257,7 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
         ImageView errorIndicator = (ImageView)view.findViewById(R.id.error);
         ImageView lockView = (ImageView) view.findViewById(R.id.imageViewLock);
         TextView nameView = (TextView) view.findViewById(R.id.textName);
-        CheckableQuickContactBadge avatarView =
-                (CheckableQuickContactBadge) view.findViewById(R.id.avatar);
+        QuickContactBadge avatarView = (QuickContactBadge) view.findViewById(R.id.avatar);
 
         if (MessageUtils.isWapPushNumber(addr)) {
             String[] mailBoxAddresses = addr.split(":");
@@ -270,11 +270,6 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
 
         formatNameView(nameView, addr, nameContact, isUnread);
         updateAvatarView(avatarView, addr, subscription, type.equals("mms"), isDraft);
-
-        Long lastMsgId = (Long) avatarView.getTag();
-        boolean sameItem = lastMsgId != null && lastMsgId.equals(msgId);
-        avatarView.setChecked(mListView.isItemChecked(cursor.getPosition()), sameItem);
-        avatarView.setTag(Long.valueOf(msgId));
 
         lockView.setVisibility(isLocked ? View.VISIBLE : View.GONE);
         errorIndicator.setVisibility(isError ? View.VISIBLE : View.GONE);

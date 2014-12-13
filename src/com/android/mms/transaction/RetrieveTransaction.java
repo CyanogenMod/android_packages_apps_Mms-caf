@@ -137,19 +137,11 @@ public class RetrieveTransaction extends Transaction implements Runnable {
             // Change the downloading state of the M-Notification.ind.
             downloadManager.markState( mUri, DownloadManager.STATE_DOWNLOADING);
 
-            if (isCancelMyself) {
-                DownloadManager.getInstance().markState(mUri,
-                        DownloadManager.STATE_TRANSIENT_FAILURE);
-                return;
-            }
+            moveToUnstartedIfCanceled();
             // Send GET request to MMSC and retrieve the response data.
             byte[] resp = getPdu(mContentLocation);
 
-            if (isCancelMyself) {
-                DownloadManager.getInstance().markState(mUri,
-                        DownloadManager.STATE_TRANSIENT_FAILURE);
-                return;
-            }
+            moveToUnstartedIfCanceled();
 
             // Parse M-Retrieve.conf
             RetrieveConf retrieveConf = (RetrieveConf) new PduParser(resp).parse();
@@ -333,13 +325,11 @@ public class RetrieveTransaction extends Transaction implements Runnable {
                              uri, values, null, null);
     }
 
-    @Override
-    public void abort() {
-        Log.d(TAG, "markFailed = " + this);
-        DownloadManager downloadManager = DownloadManager.getInstance();
-
-        downloadManager.markState(mUri, DownloadManager.STATE_SKIP_RETRYING);
-        notifyObservers();
+    private void moveToUnstartedIfCanceled(){
+        if (isCancelMyself) {
+            DownloadManager.getInstance().markState(mUri, DownloadManager.STATE_UNSTARTED);
+            return;
+        }
     }
 
     @Override

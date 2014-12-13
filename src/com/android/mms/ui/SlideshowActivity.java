@@ -73,8 +73,6 @@ public class SlideshowActivity extends Activity implements EventListener {
     private MediaController mMediaController;
     private SmilPlayer mSmilPlayer;
 
-    private SmilPlayerController mSmilPlayerController;
-
     private Handler mHandler;
 
     private SMILDocument mSmilDoc;
@@ -240,17 +238,16 @@ public class SlideshowActivity extends Activity implements EventListener {
                 mSmilPlayer.init(mSmilDoc);
                 if (isRotating()) {
                     mSmilPlayer.reload();
+                } else {
+                    mSmilPlayer.play();
                 }
-                // Play or replay in the after of reloaded
-                mSmilPlayer.play();
             }
         });
     }
 
     private void initMediaController() {
         mMediaController = new MediaController(SlideshowActivity.this, false);
-        mSmilPlayerController = new SmilPlayerController(mSmilPlayer);
-        mMediaController.setMediaPlayer(mSmilPlayerController);
+        mMediaController.setMediaPlayer(new SmilPlayerController(mSmilPlayer));
         mMediaController.setAnchorView(findViewById(R.id.slide_view));
         mMediaController.setPrevNextListeners(
             new OnClickListener() {
@@ -274,27 +271,14 @@ public class SlideshowActivity extends Activity implements EventListener {
     }
 
     @Override
-    protected void onResume() {
-        // we need add this eventListener.Because this listener is been remove in method onPause()
-        if (null != mSmilDoc) {
-            ((EventTarget) mSmilDoc).addEventListener(SmilDocumentImpl.SMIL_DOCUMENT_END_EVENT,
-                    this, false);
-        }
-        super.onResume();
-    }
-
-    @Override
     protected void onPause() {
         super.onPause();
         if (mSmilDoc != null) {
             ((EventTarget) mSmilDoc).removeEventListener(
                     SmilDocumentImpl.SMIL_DOCUMENT_END_EVENT, this, false);
         }
-        // mSmilPlayer will be paused by mSmilPlayerController
         if (mSmilPlayer != null) {
-            // Make the SmilPlayer execute pause, and set the field named
-            // mCachedIsPlaying to false so that the UI can change to pause too.
-            mSmilPlayerController.pause();
+            mSmilPlayer.pause();
         }
     }
 
@@ -304,7 +288,7 @@ public class SlideshowActivity extends Activity implements EventListener {
         if ((null != mSmilPlayer)) {
             if (isFinishing()) {
                 mSmilPlayer.stop();
-                //only delete the element while this activity finish.
+            } else {
                 mSmilPlayer.stopWhenReload();
             }
             if (mMediaController != null) {
@@ -323,9 +307,6 @@ public class SlideshowActivity extends Activity implements EventListener {
 
     @Override
     protected void onDestroy() {
-        if (!mSmilPlayer.isStoppedState()) {
-            mSmilPlayer.stop();
-        }
         if (mSlideView != null) {
             mSlideView.setMediaController(null);
         }

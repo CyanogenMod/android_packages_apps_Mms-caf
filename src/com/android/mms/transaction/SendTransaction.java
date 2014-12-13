@@ -173,15 +173,6 @@ public class SendTransaction extends Transaction implements Runnable {
     }
 
     @Override
-    public void abort() {
-        Log.d(TAG, "markFailed = " + this);
-        mTransactionState.setState(TransactionState.FAILED);
-        mTransactionState.setContentUri(mSendReqURI);
-
-        notifyObservers();
-    }
-
-    @Override
     public int getType() {
         return SEND_TRANSACTION;
     }

@@ -520,8 +520,6 @@ public class SmsReceiverService extends Service {
                             this, address, sms.getDisplayMessageBody(),
                             SubscriptionManager.getPhoneId(subId),
                             sms.getTimestampMillis());
-                    getContentResolver().notifyChange(MessageUtils.getIccUriBySubscription(
-                            SubscriptionManager.getPhoneId(subId)), null);
                 } else {
                     mToastHandler.post(new Runnable() {
                         public void run() {
@@ -532,7 +530,6 @@ public class SmsReceiverService extends Service {
                     });
                     // save message to phone if failed save to icc.
                     saveMessageToPhone(msgs, error, format);
-                    break;
                 }
             }
         } else {
