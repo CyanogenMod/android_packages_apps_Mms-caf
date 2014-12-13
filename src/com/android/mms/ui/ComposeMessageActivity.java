@@ -25,8 +25,16 @@ import static com.android.mms.transaction.ProgressCallbackEntity.PROGRESS_STATUS
 import static com.android.mms.ui.MessageListAdapter.COLUMN_ID;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_LOCKED;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_MSG_TYPE;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_ADDRESS;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_BODY;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_DATE;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_DATE_SENT;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_LOCKED;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_READ;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_STATUS;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_TYPE;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_PHONE_ID;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_THREAD_ID;
 import static com.android.mms.ui.MessageListAdapter.PROJECTION;
 
 
@@ -38,11 +46,15 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.Set;
 
+import android.R.integer;
 import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
@@ -72,6 +84,7 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SqliteWrapper;
 import android.drm.DrmStore;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -87,6 +100,7 @@ import android.provider.Telephony;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Contacts;
+import android.provider.ContactsContract.Intents;
 import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Video;
 import android.provider.Settings;
@@ -102,11 +116,13 @@ import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputFilter.LengthFilter;
+import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.TextKeyListener;
 import android.text.style.URLSpan;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
@@ -130,6 +146,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -226,6 +243,7 @@ public class ComposeMessageActivity extends Activity
     private static final int MENU_DEBUG_DUMP            = 7;
     private static final int MENU_SEND_BY_SLOT1         = 9;
     private static final int MENU_SEND_BY_SLOT2         = 10;
+    private static final int MENU_FORWARD_CONVERSATION  = 11;
 
     // Context menu ID
     private static final int MENU_VIEW_CONTACT          = 12;
@@ -264,9 +282,8 @@ public class ComposeMessageActivity extends Activity
 
     private static final int MESSAGE_LIST_QUERY_TOKEN = 9527;
     private static final int MESSAGE_LIST_QUERY_AFTER_DELETE_TOKEN = 9528;
-    private static final int MESSAGE_LIST_TYPE_QUERY_TOKEN = 9529;
 
-    public static final int DELETE_MESSAGE_TOKEN  = 9700;
+    private static final int DELETE_MESSAGE_TOKEN  = 9700;
 
     private static final int CHARS_REMAINING_BEFORE_COUNTER_SHOWN = 10;
 
@@ -305,23 +322,8 @@ public class ComposeMessageActivity extends Activity
     private static final int MSG_COPY_TO_SIM_SUCCESS = 2;
 
     private static final int KILOBYTE = 1024;
-    // The max length of characters for subject.
-    private static final int SUBJECT_MAX_LENGTH = MmsConfig.getMaxSubjectLength();
     // The number of buttons in two send button mode
     private static final int NUMBER_OF_BUTTONS = 2;
-
-    private static final String MMS_SMS_AUTHORITY = "mms-sms";
-
-    private static final Uri CONVERSATION_TYPE_URI;
-    static {
-        Uri.Builder builder = new Uri.Builder();
-        builder.scheme(ContentResolver.SCHEME_CONTENT);
-        builder.authority(MMS_SMS_AUTHORITY);
-        builder.appendPath("conversations");
-        builder.appendPath("type");
-        CONVERSATION_TYPE_URI = builder.build();
-        System.out.println("URI " + CONVERSATION_TYPE_URI);
-    }
 
     private ContentResolver mContentResolver;
 
@@ -475,9 +477,6 @@ public class ComposeMessageActivity extends Activity
     private int mStatusBarColor = 0;
     private boolean mAccentColorLoaded = false;
     private boolean mLoadingAccentColor = false;
-
-    private int mNumSms = -1;
-    private int mNumMms = -1;
 
     @SuppressWarnings("unused")
     public static void log(String logMsg) {
@@ -681,7 +680,6 @@ public class ComposeMessageActivity extends Activity
             if ((keyCode == KeyEvent.KEYCODE_DEL) && (mSubjectTextEditor.length() == 0)) {
                 showSubjectEditor(false);
                 mWorkingMessage.setSubject(null, true);
-                updateSendButtonState();
                 return true;
             }
             return false;
@@ -1055,11 +1053,7 @@ public class ComposeMessageActivity extends Activity
             // as the destination.
             ContactList contacts = mRecipientsEditor.constructContactsFromInput(false);
             mDebugRecipients = contacts.serialize();
-            if ((TelephonyManager.getDefault().getPhoneCount()) > 1) {
-                sendMsimMessage(true);
-            } else {
-                sendMessage(true);
-            }
+            sendMessage(true);
         }
     }
 
@@ -2096,7 +2090,7 @@ public class ComposeMessageActivity extends Activity
             }
             mSubjectTextEditor = (EditText)findViewById(R.id.subject);
             mSubjectTextEditor.setFilters(new InputFilter[] {
-                    new LengthFilter(SUBJECT_MAX_LENGTH)});
+                    new LengthFilter(MmsConfig.getMaxSubjectLength())});
         }
 
         mSubjectTextEditor.setOnKeyListener(show ? mSubjectKeyListener : null);
@@ -2574,7 +2568,6 @@ public class ComposeMessageActivity extends Activity
 
         // No need to do the querying when finished this activity
         mBackgroundQueryHandler.cancelOperation(MESSAGE_LIST_QUERY_TOKEN);
-        mBackgroundQueryHandler.cancelOperation(MESSAGE_LIST_TYPE_QUERY_TOKEN);
 
         // Allow any blocked calls to update the thread's read status.
         mConversation.blockMarkAsRead(false);
@@ -3032,6 +3025,10 @@ public class ComposeMessageActivity extends Activity
             if ((null != cursor) && (cursor.getCount() > 0)) {
                 menu.add(0, MENU_DELETE_THREAD, 0, R.string.delete_thread).setIcon(
                     android.R.drawable.ic_menu_delete);
+                if (getResources().getBoolean(R.bool.config_forwardconv)
+                        && mMsgListAdapter.hasSmsInConversation(cursor)) {
+                    menu.add(0, MENU_FORWARD_CONVERSATION, 0, R.string.menu_forward_conversation);
+                }
             }
         } else if (mIsSmsEnabled) {
             menu.add(0, MENU_DISCARD, 0, R.string.discard).setIcon(android.R.drawable.ic_menu_delete);
@@ -3112,40 +3109,9 @@ public class ComposeMessageActivity extends Activity
                 onSearchRequested();
                 break;
             case MENU_DELETE_THREAD:
-                boolean hasSms = mNumSms > 0;
-                boolean hasMms = mNumMms > 0;
-                if (!hasSms || !hasMms) {
-                    ConversationList.DeleteInfo info = new ConversationList.DeleteInfo(
-                            ConversationList.MessageDeleteTypes.ALL);
-                    confirmDeleteThread(mConversation.getThreadId(), info);
-                } else {
-                    String[] items = getResources().getStringArray(R.array.delete_thread_entries);
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setCancelable(true)
-                            .setItems(items, new OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    ConversationList.MessageDeleteTypes deleteType = ConversationList
-                                            .MessageDeleteTypes.values()[which];
-                                    int count = 0;
-                                    switch (deleteType) {
-                                        case ALL:
-                                            count = mNumSms + mNumMms;
-                                            break;
-                                        case SMS:
-                                            count = mNumSms;
-                                            break;
-                                        case MMS:
-                                            count = mNumMms;
-                                            break;
-                                    }
-                                    ConversationList.DeleteInfo info = new ConversationList.DeleteInfo(
-                                            deleteType, count);
-                                    confirmDeleteThread(mConversation.getThreadId(), info);
-                                }
-                            }).show();
-                }
+                confirmDeleteThread(mConversation.getThreadId());
                 break;
+
             case android.R.id.home:
             case MENU_CONVERSATION_LIST:
                 exitComposeMessageActivity(new Runnable() {
@@ -3158,6 +3124,13 @@ public class ComposeMessageActivity extends Activity
             case MENU_CALL_RECIPIENT:
                 dialRecipient();
                 break;
+            case MENU_FORWARD_CONVERSATION: {
+                Intent intent = new Intent(this, ManageMultiSelectAction.class);
+                intent.putExtra(MANAGE_MODE, MessageUtils.FORWARD_MODE);
+                intent.putExtra(THREAD_ID, mConversation.getThreadId());
+                startActivity(intent);
+                break;
+            }
             case MENU_IMPORT_TEMPLATE:
                 showDialog(DIALOG_IMPORT_TEMPLATE);
                 break;
@@ -3317,9 +3290,9 @@ public class ComposeMessageActivity extends Activity
         return null;
     }
 
-    private void confirmDeleteThread(long threadId, ConversationList.DeleteInfo info) {
+    private void confirmDeleteThread(long threadId) {
         Conversation.startQueryHaveLockedMessages(mBackgroundQueryHandler,
-                threadId, ConversationList.HAVE_LOCKED_MESSAGES_TOKEN, info);
+                threadId, ConversationList.HAVE_LOCKED_MESSAGES_TOKEN);
     }
 
 //    static class SystemProperties { // TODO, temp class to get unbundling working
@@ -3622,6 +3595,12 @@ public class ComposeMessageActivity extends Activity
 
             case REQUEST_CODE_ATTACH_ADD_CONTACT_VCARD:
                 if (data != null) {
+                    // In a case that a draft message has an attachment whose type is slideshow,
+                    // then reopen it and replace the attachment through attach icon, we have to
+                    // remove the old attachement silently first.
+                    if (mWorkingMessage != null) {
+                        mWorkingMessage.removeAttachment(false);
+                    }
                     String extraVCard = data.getStringExtra(SelectRecipientsList.EXTRA_VCARD);
                     if (extraVCard != null) {
                         Uri vcard = Uri.parse(extraVCard);
@@ -4245,30 +4224,12 @@ public class ComposeMessageActivity extends Activity
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (s.toString().getBytes().length <= SUBJECT_MAX_LENGTH) {
-                mWorkingMessage.setSubject(s, true);
-                updateSendButtonState();
-                if (s.toString().getBytes().length == SUBJECT_MAX_LENGTH
-                        && before < SUBJECT_MAX_LENGTH) {
-                    Toast.makeText(ComposeMessageActivity.this,
-                            R.string.subject_full, Toast.LENGTH_SHORT).show();
-                }
-            }
+            mWorkingMessage.setSubject(s, true);
+            updateSendButtonState();
         }
 
         @Override
-        public void afterTextChanged(Editable s) {
-            if (s.toString().getBytes().length > SUBJECT_MAX_LENGTH) {
-                String subject = s.toString();
-                Toast.makeText(ComposeMessageActivity.this,
-                        R.string.subject_full, Toast.LENGTH_SHORT).show();
-                while (subject.getBytes().length > SUBJECT_MAX_LENGTH) {
-                    subject = subject.substring(0, subject.length() - 1);
-                }
-                s.clear();
-                s.append(subject);
-            }
-        }
+        public void afterTextChanged(Editable s) { }
     };
 
     //==========================================================
@@ -4407,32 +4368,20 @@ public class ComposeMessageActivity extends Activity
 
     private void startMsgListQuery() {
         startMsgListQuery(MESSAGE_LIST_QUERY_TOKEN);
-        startMsgListQuery(MESSAGE_LIST_TYPE_QUERY_TOKEN);
     }
 
     private void startMsgListQuery(int token) {
-        if (mSendDiscreetMode || MessageUtils.isMailboxMode()) {
+        if (mSendDiscreetMode) {
             return;
         }
+        Uri conversationUri = mConversation.getUri();
 
-        if (mConversation.getUri() == null) {
+        if (conversationUri == null) {
             log("##### startMsgListQuery: conversationUri is null, bail!");
             return;
         }
 
-        Uri conversationUri = null;
         long threadId = mConversation.getThreadId();
-
-        switch (token) {
-            case MESSAGE_LIST_QUERY_TOKEN:
-                conversationUri = mConversation.getUri();
-                break;
-            case MESSAGE_LIST_TYPE_QUERY_TOKEN:
-                conversationUri = Uri.withAppendedPath(CONVERSATION_TYPE_URI,
-                        String.valueOf(threadId));
-                break;
-        }
-
         if (LogTag.VERBOSE || Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
             log("startMsgListQuery for " + conversationUri + ", threadId=" + threadId +
                     " token: " + token + " mConversation: " + mConversation);
@@ -4469,8 +4418,7 @@ public class ComposeMessageActivity extends Activity
         mMsgListAdapter.setMsgListItemHandler(mMessageListItemHandler);
         mMsgListView.setAdapter(mMsgListAdapter);
         mMsgListView.setItemsCanFocus(false);
-        mMsgListView.setVisibility((mSendDiscreetMode || MessageUtils.isMailboxMode())
-                ? View.INVISIBLE : View.VISIBLE);
+        mMsgListView.setVisibility(mSendDiscreetMode ? View.INVISIBLE : View.VISIBLE);
         mMsgListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -4672,7 +4620,7 @@ public class ComposeMessageActivity extends Activity
             mScrollOnSend = true;   // in the next onQueryComplete, scroll the list to the end.
         }
         // But bail out if we are supposed to exit after the message is sent.
-        if (mSendDiscreetMode || MessageUtils.isMailboxMode()) {
+        if (mSendDiscreetMode) {
             finish();
         }
     }
@@ -4993,26 +4941,6 @@ public class ComposeMessageActivity extends Activity
         @Override
         protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
             switch(token) {
-                case MESSAGE_LIST_TYPE_QUERY_TOKEN:
-                    mNumSms = mNumMms = -1;
-                    if (cursor != null) {
-                        try {
-                            int typeIndex = cursor.getColumnIndex(
-                                    Telephony.MmsSms.TYPE_DISCRIMINATOR_COLUMN);
-                            int countIndex = cursor.getColumnIndex(
-                                    Telephony.MmsSms.TRANSPORT_TYPE_COUNT_COLUMN);
-                            while (cursor.moveToNext()) {
-                                if (MessageListAdapter.SMS_TYPE.equals(cursor.getString(typeIndex))) {
-                                    mNumSms = cursor.getInt(countIndex);
-                                } else if (MessageListAdapter.MMS_TYPE.equals(cursor.getString(typeIndex))) {
-                                    mNumMms = cursor.getInt(countIndex);
-                                }
-                            }
-                        } finally {
-                            cursor.close();
-                        }
-                    }
-                    break;
                 case MESSAGE_LIST_QUERY_TOKEN:
                     mConversation.blockMarkAsRead(false);
 
@@ -5124,11 +5052,12 @@ public class ComposeMessageActivity extends Activity
                         return ;
                     }
                     @SuppressWarnings("unchecked")
-                    ConversationList.DeleteInfo info = (ConversationList.DeleteInfo)cookie;
+                    ArrayList<Long> threadIds = (ArrayList<Long>)cookie;
                     ConversationList.confirmDeleteThreadDialog(
-                            new ConversationList.DeleteThreadListener(info,
+                            new ConversationList.DeleteThreadListener(threadIds,
                                 mBackgroundQueryHandler, null, ComposeMessageActivity.this),
-                            info.getThreadIds(), cursor != null && cursor.getCount() > 0,
+                            threadIds,
+                            cursor != null && cursor.getCount() > 0,
                             ComposeMessageActivity.this);
                     if (cursor != null) {
                         cursor.close();
@@ -5566,12 +5495,6 @@ public class ComposeMessageActivity extends Activity
         @Override
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
             logMultiChoice("onPrepareActionMode");
-            if (MessageUtils.getActivatedIccCardCount() < 1) {
-                MenuItem item = menu.findItem(R.id.copy_to_sim);
-                if (item != null) {
-                    item.setVisible(false);
-                }
-            }
             return true;
         }
 
@@ -5623,12 +5546,6 @@ public class ComposeMessageActivity extends Activity
             int resId = copyMedia(c.getLong(COLUMN_ID)) ? R.string.copy_to_sdcard_success :
                 R.string.copy_to_sdcard_fail;
             Toast.makeText(ComposeMessageActivity.this, resId, Toast.LENGTH_SHORT).show();
-        }
-
-        private void showReport() {
-            Cursor c = (Cursor) getListView().getAdapter().getItem(
-                    mSelectedPos.get(0));
-            showDeliveryReport(c.getLong(COLUMN_ID), c.getString(COLUMN_MSG_TYPE));
         }
 
         private void copyMessageText() {
@@ -5704,9 +5621,6 @@ public class ComposeMessageActivity extends Activity
             case R.id.save_attachment:
                 saveAttachment();
                 break;
-            case R.id.report:
-                showReport();
-                break;
             default:
                 break;
             }
@@ -5722,10 +5636,6 @@ public class ComposeMessageActivity extends Activity
                     body.append(LINE_BREAK);
                 }
                 body.append(msgItem.mBody);
-                if (!TextUtils.isEmpty(msgItem.mTimestamp)) {
-                    body.append(LINE_BREAK);
-                    body.append(msgItem.mTimestamp);
-                }
             }
             return body.toString();
         }
@@ -5874,35 +5784,11 @@ public class ComposeMessageActivity extends Activity
                 // no detail
                 menu.findItem(R.id.detail).setVisible(false);
                 // no share
-                mode.getMenu().findItem(R.id.share).setVisible(false);
-                // no delivery report
-                mode.getMenu().findItem(R.id.report).setVisible(false);
+                menu.findItem(R.id.share).setVisible(false);
                 // no save attachment
-                mode.getMenu().findItem(R.id.save_attachment).setVisible(false);
-                // all locked show unlock, other wise show lock.
-                if (mUnlockedCount == 0) {
-                    mode.getMenu()
-                            .findItem(R.id.lock)
-                            .setTitle(
-                                    getContext()
-                                            .getString(R.string.menu_unlock));
-                } else {
-                    mode.getMenu()
-                            .findItem(R.id.lock)
-                            .setTitle(
-                                    getContext().getString(R.string.menu_lock));
-                }
-                if (mMmsSelected > 0) {
-                    mode.getMenu().findItem(R.id.forward).setVisible(false);
-                    mode.getMenu().findItem(R.id.copy_to_sim).setVisible(false);
-                    mode.getMenu().findItem(R.id.copy).setVisible(false);
-                } else {
-                    if (getResources().getBoolean(R.bool.config_forwardconv)) {
-                        mode.getMenu().findItem(R.id.forward).setVisible(true);
-                    }
-                    mode.getMenu().findItem(R.id.copy_to_sim).setVisible(true);
-                    mode.getMenu().findItem(R.id.copy).setVisible(true);
-                }
+                menu.findItem(R.id.save_attachment).setVisible(false);
+
+                menu.findItem(R.id.forward).setVisible(noMmsSelected);
             } else {
                 int pos = checked ? position : mMsgListView.getCheckedPosition();
 
@@ -5915,64 +5801,8 @@ public class ComposeMessageActivity extends Activity
                         shareIntent, getPackageName());
                 menu.findItem(R.id.share).setVisible(noMmsSelected && numShareTargets > 0);
 
-                if (mUnlockedCount == 0) {
-                    mode.getMenu()
-                            .findItem(R.id.lock)
-                            .setTitle(
-                                    getContext()
-                                            .getString(R.string.menu_unlock));
-                } else {
-                    mode.getMenu()
-                            .findItem(R.id.lock)
-                            .setTitle(
-                                    getContext().getString(R.string.menu_lock));
-                }
-
-                mode.getMenu().findItem(R.id.forward).setVisible(isMessageForwardable(position));
-
-                if (mMmsSelected > 0) {
-                    mode.getMenu().findItem(R.id.copy_to_sim).setVisible(false);
-                    mode.getMenu().findItem(R.id.copy).setVisible(false);
-                    mode.getMenu().findItem(R.id.save_attachment)
-                            .setVisible(isAttachmentSaveable(pos));
-                } else {
-                    mode.getMenu().findItem(R.id.copy_to_sim).setVisible(true);
-                    mode.getMenu().findItem(R.id.copy).setVisible(true);
-                }
-
-                mode.getMenu().findItem(R.id.report).setVisible(isDeliveryReportMsg(position));
+                menu.findItem(R.id.forward).setVisible(true);
             }
-        }
-
-        private MessageItem getMessageItemByPos(int position) {
-            MessageListItem msglistItem = (MessageListItem) mMsgListView.getChildAt(position);
-            if (msglistItem == null) {
-                return null;
-            }
-            return  msglistItem.getMessageItem();
-        }
-
-        private boolean isDeliveryReportMsg(int position) {
-            MessageItem msgItem = getMessageItemByPos(position);
-            if (msgItem == null) {
-                return false;
-            }
-
-            if (msgItem.mDeliveryStatus != MessageItem.DeliveryStatus.NONE ||
-                    msgItem.mReadReport) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        private boolean isMessageForwardable(int position) {
-            MessageItem msgItem = getMessageItemByPos(position);
-            if (msgItem == null) {
-                return false;
-            }
-
-            return msgItem.isSms() || (msgItem.isDownloaded() && msgItem.mIsForwardable);
         }
 
         @Override

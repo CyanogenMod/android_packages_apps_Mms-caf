@@ -25,7 +25,6 @@
     android:layout_height="wrap_content"
     android:paddingTop="4dp"
     android:paddingBottom="4dp"
-    android:descendantFocusability="blocksDescendants"
     android:orientation="horizontal">
 
     <LinearLayout android:id="@+id/mms_layout_view_parent"
@@ -40,7 +39,7 @@
             android:layout_height="wrap_content"
             android:padding="4dp">
 
-            <com.android.contacts.common.widget.CheckableQuickContactBadge
+            <QuickContactBadge
                 android:id="@+id/avatar"
                 android:layout_alignParentEnd="true"
                 android:layout_width="@dimen/avatar_width_height"

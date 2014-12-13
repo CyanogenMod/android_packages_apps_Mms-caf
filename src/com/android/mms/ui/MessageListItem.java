@@ -75,9 +75,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.QuickContactBadge;
 import android.widget.TextView;
 
-import com.android.contacts.common.widget.CheckableQuickContactBadge;
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
@@ -141,7 +141,7 @@ public class MessageListItem extends ZoomMessageListItem implements
     private String mDefaultCountryIso;
     private TextView mDateView;
     public View mMessageBlock;
-    private CheckableQuickContactBadge mAvatar;
+    private QuickContactBadge mAvatar;
     static private RoundedBitmapDrawable sDefaultContactImage;
     private Presenter mPresenter;
     private int mPosition;      // for debugging
@@ -178,7 +178,7 @@ public class MessageListItem extends ZoomMessageListItem implements
         mLockedIndicator = (ImageView) findViewById(R.id.locked_indicator);
         mDeliveredIndicator = (ImageView) findViewById(R.id.delivered_indicator);
         mDetailsIndicator = (ImageView) findViewById(R.id.details_indicator);
-        mAvatar = (CheckableQuickContactBadge) findViewById(R.id.avatar);
+        mAvatar = (QuickContactBadge) findViewById(R.id.avatar);
         mSimIndicatorView = (ImageView) findViewById(R.id.sim_indicator_icon);
         mMessageBlock = findViewById(R.id.message_block);
         mSimMessageAddress = (TextView) findViewById(R.id.sim_message_address);
@@ -193,8 +193,13 @@ public class MessageListItem extends ZoomMessageListItem implements
 
     }
 
+    // add for setting the background according to whether the item is selected
+    public void markAsSelected(boolean selected) {
+        mMessageBlock.setSelected(selected);
+    }
+
     public void bind(MessageItem msgItem, int accentColor,
-            boolean convHasMultiRecipients, int position, boolean selected) {
+            boolean convHasMultiRecipients, int position) {
         if (DEBUG) {
             Log.v(TAG, "bind for item: " + position + " old: " +
                    (mMessageItem != null ? mMessageItem.toString() : "NULL" ) +
@@ -221,8 +226,6 @@ public class MessageListItem extends ZoomMessageListItem implements
         }
 
         tintBackground(mMessageBlock.getBackground(), accentColor);
-        mMessageBlock.setSelected(selected);
-        mAvatar.setChecked(selected, sameItem);
         customSIMSmsView();
     }
 
@@ -332,7 +335,7 @@ public class MessageListItem extends ZoomMessageListItem implements
                             }
                             // Judge whether memory is full
                             else if (MessageUtils.isMmsMemoryFull()) {
-                                builder.setMessage(mContext.getString(R.string.sms_full_body_cm));
+                                builder.setMessage(mContext.getString(R.string.sms_full_body));
                                 builder.show();
                                 return;
                             }
@@ -398,7 +401,7 @@ public class MessageListItem extends ZoomMessageListItem implements
     private void updateAvatarView(String addr, boolean isSelf) {
         Drawable avatarDrawable;
         if (isSelf || !TextUtils.isEmpty(addr)) {
-            Contact contact = isSelf ? Contact.getMe(false) : Contact.get(addr, true);
+            Contact contact = isSelf ? Contact.getMe(false) : Contact.get(addr, false);
             contact.bindAvatar(mAvatar);
 
             if (isSelf) {
@@ -427,7 +430,6 @@ public class MessageListItem extends ZoomMessageListItem implements
             mDownloadButton.setVisibility(View.GONE);
             mDownloading.setVisibility(View.GONE);
         }
-
         // Since the message text should be concatenated with the sender's
         // address(or name), I have to display it here instead of
         // displaying it by the Presenter.
@@ -605,7 +607,7 @@ public class MessageListItem extends ZoomMessageListItem implements
                 intent.putExtra(CANCEL_URI, mMessageItem.mMessageUri.toString());
                 mContext.startService(intent);
                 DownloadManager.getInstance().markState(mMessageItem.mMessageUri,
-                        DownloadManager.STATE_TRANSIENT_FAILURE);
+                        DownloadManager.STATE_UNSTARTED);
             }
         }
     };
@@ -749,7 +751,9 @@ public class MessageListItem extends ZoomMessageListItem implements
     }
 
     private boolean isSimCardMessage() {
-        return mContext instanceof ManageSimMessages;
+        return mContext instanceof ManageSimMessages
+                || (mContext instanceof ManageMultiSelectAction &&
+                mManageMode == MessageUtils.SIM_MESSAGE_MODE);
     }
 
     public void setManageSelectMode(int manageMode) {
@@ -766,7 +770,19 @@ public class MessageListItem extends ZoomMessageListItem implements
                 // Set call-back for the 'Play' button.
                 mSlideShowButton.setOnClickListener(this);
                 mSlideShowButton.setVisibility(View.VISIBLE);
-                setLongClickable(false);
+                setLongClickable(true);
+
+                // When we show the mSlideShowButton, this list item's onItemClickListener doesn't
+                // get called. (It gets set in ComposeMessageActivity:
+                // mMsgListView.setOnItemClickListener) Here we explicitly set the item's
+                // onClickListener. It allows the item to respond to embedded html links and at the
+                // same time, allows the slide show play button to work.
+                setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onMessageListItemClick();
+                    }
+                });
                 break;
             default:
                 mSlideShowButton.setVisibility(View.GONE);
@@ -869,7 +885,7 @@ public class MessageListItem extends ZoomMessageListItem implements
         // we show the icon if the read report or delivery report setting was set when the
         // message was sent. Showing the icon tells the user there's more information
         // by selecting the "View report" menu.
-        if (msgItem.mDeliveryStatus == MessageItem.DeliveryStatus.INFO
+        if (msgItem.mDeliveryStatus == MessageItem.DeliveryStatus.INFO || msgItem.mReadReport
                 || (msgItem.isMms() && !msgItem.isSending() &&
                         msgItem.mDeliveryStatus == MessageItem.DeliveryStatus.PENDING)) {
             mDetailsIndicator.setImageResource(R.drawable.ic_sms_mms_details);
@@ -877,9 +893,6 @@ public class MessageListItem extends ZoomMessageListItem implements
         } else if (msgItem.isMms() && !msgItem.isSending() &&
                 msgItem.mDeliveryStatus == MessageItem.DeliveryStatus.RECEIVED) {
             mDetailsIndicator.setImageResource(R.drawable.ic_sms_mms_delivered);
-            mDetailsIndicator.setVisibility(View.VISIBLE);
-        } else if (msgItem.mReadReport) {
-            mDetailsIndicator.setImageResource(R.drawable.ic_sms_mms_details);
             mDetailsIndicator.setVisibility(View.VISIBLE);
         } else {
             mDetailsIndicator.setVisibility(View.GONE);
@@ -1006,7 +1019,6 @@ public class MessageListItem extends ZoomMessageListItem implements
     public void setChecked(boolean checked) {
         mIsCheck = checked;
         mMessageBlock.setSelected(checked);
-        mAvatar.setChecked(checked, true);
     }
 
     @Override

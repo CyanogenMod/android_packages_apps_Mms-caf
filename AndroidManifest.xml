@@ -53,7 +53,6 @@
     <uses-permission android:name="com.qualcomm.permission.USE_PHONE_SERVICE"/>
     <uses-permission android:name="android.permission.GET_TASKS"/>
     <uses-permission android:name="android.permission.RECEIVE_WAP_PUSH" />
-    <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
 
     <!-- Needed for QuickMessage -->
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
@@ -201,7 +200,7 @@
             android:label="@string/edit_slideshow_activity" />
 
         <activity android:name=".ui.SelectRecipientsList"
-            android:theme="@style/MmsTheme.NoActionBar"
+            android:theme="@style/MmsTheme"
             android:label="@string/select_recipients"
             android:parentActivityName=".ui.ComposeMessageActivity">
         </activity>
@@ -288,6 +287,12 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ui.ManageMultiSelectAction"
+              android:theme="@style/MmsTheme"
+              android:uiOptions="splitActionBarWhenNarrow"
+              android:configChanges="orientation|screenSize|keyboardHidden">
+        </activity>
+
         <!-- Require sender permissions to prevent SMS spoofing -->
         <receiver android:name=".transaction.PrivilegedSmsReceiver"
             android:permission="android.permission.BROADCAST_SMS">
@@ -345,7 +350,7 @@
         </activity>
 
         <activity android:name=".ui.MessageTemplate"
-                  android:theme="@style/MmsTheme"
+                  android:theme="@android:style/Theme.Material.Light.Dialog"
                   android:launchMode="singleTop"
                   android:label="@string/message_template_title"
                   android:configChanges="orientation|screenSize" >
@@ -445,10 +450,6 @@
             android:exported="true" />
 
         <receiver android:name=".quickmessage.ClearAllReceiver" />
-
-        <!-- Message Template Content Provider -->
-        <provider android:name="MessageTemplateProvider"
-                android:authorities="com.android.mms.MessageTemplateProvider" />
 
     </application>
 </manifest>

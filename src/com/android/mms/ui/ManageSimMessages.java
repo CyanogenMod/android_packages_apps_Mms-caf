@@ -189,9 +189,6 @@ public class ManageSimMessages extends Activity
         @Override
         protected void onQueryComplete(
                 int token, Object cookie, Cursor cursor) {
-            if (mCursor != null) {
-                stopManagingCursor(mCursor);
-            }
             mCursor = cursor;
             if (mCursor != null) {
                 if (!mCursor.moveToFirst()) {
@@ -247,6 +244,10 @@ public class ManageSimMessages extends Activity
 
     private void refreshMessageList() {
         updateState(SHOW_BUSY);
+        if (mCursor != null) {
+            stopManagingCursor(mCursor);
+            mCursor.close();
+        }
         startQuery();
     }
 
@@ -628,9 +629,7 @@ public class ManageSimMessages extends Activity
                 case R.id.copy_to_phone:
                     int pos = mSelectedPos.get(0);
                     Cursor cursor = (Cursor) getListView().getAdapter().getItem(pos);
-                    if (!MessageUtils.checkIsPhoneMessageFull(getContext())) {
-                        copyToPhoneMemory(cursor);
-                    }
+                    copyToPhoneMemory(cursor);
                     break;
                 case R.id.reply:
                     replyMessage();

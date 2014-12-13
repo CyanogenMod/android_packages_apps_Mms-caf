@@ -1012,20 +1012,19 @@ public class MessageUtils {
                 + " AND " + Mms.READ_REPORT + " = " + PduHeaders.VALUE_YES);
 
         String[] selectionArgs = null;
-        if (threadIds != null && threadIds.size() > 0) {
+        if (threadIds != null) {
             String threadIdSelection = null;
-            StringBuilder buf = new StringBuilder(Mms.THREAD_ID);
-            buf.append(" in (");
+            StringBuilder buf = new StringBuilder();
+            selectionArgs = new String[threadIds.size()];
             int i = 0;
 
             for (long threadId : threadIds) {
                 if (i > 0) {
-                    buf.append(",");
+                    buf.append(" OR ");
                 }
-                buf.append(threadId);
-                i++;
+                buf.append(Mms.THREAD_ID).append("=?");
+                selectionArgs[i++] = Long.toString(threadId);
             }
-            buf.append(")");
             threadIdSelection = buf.toString();
 
             selectionBuilder.append(" AND (" + threadIdSelection + ")");
@@ -1033,7 +1032,7 @@ public class MessageUtils {
 
         final Cursor c = SqliteWrapper.query(context, context.getContentResolver(),
                         Mms.Inbox.CONTENT_URI, new String[] {Mms._ID, Mms.MESSAGE_ID},
-                        selectionBuilder.toString(), null, null);
+                        selectionBuilder.toString(), selectionArgs, null);
 
         if (c == null) {
             return;
