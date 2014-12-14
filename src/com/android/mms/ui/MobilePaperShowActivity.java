@@ -207,7 +207,8 @@ public class MobilePaperShowActivity extends Activity {
     }
 
     private void markAsReadIfNeed() {
-        boolean unread = mIntent.getBooleanExtra("unread", false);
+        boolean unread = mIntent.getBooleanExtra(
+                MessageUtils.EXTRA_KEY_NEW_MESSAGE_UNREAD, false);
         if (unread) {
             ContentValues values = new ContentValues(2);
             values.put(Mms.SEEN, MessageUtils.MESSAGE_SEEN);

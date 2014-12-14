@@ -260,6 +260,8 @@ public class MessageUtils {
 
     public static final String EXTRA_KEY_NEW_MESSAGE_NEED_RELOAD = "reload";
 
+    public static final String EXTRA_KEY_NEW_MESSAGE_UNREAD = "unread";
+
     public static final String KEY_SMS_FONTSIZE = "smsfontsize";
     public static final int DELAY_TIME = 200;
     public static final float FONT_SIZE_DEFAULT = 30f;

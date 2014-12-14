@@ -982,6 +982,7 @@ public class MessagingNotification {
         } else if (DownloadManager.getInstance().isAuto()) {
             intent = new Intent(context, MobilePaperShowActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra(MessageUtils.EXTRA_KEY_NEW_MESSAGE_UNREAD, true);
         } else {
             // Else case: for MMS not downloaded.
             intent = new Intent(context, MailBoxMessageList.class);
