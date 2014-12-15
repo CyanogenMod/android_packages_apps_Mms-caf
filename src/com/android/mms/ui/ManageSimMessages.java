@@ -45,6 +45,7 @@ import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Sms;
 import android.telephony.SmsManager;
+import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.text.SpannableString;
@@ -381,7 +382,14 @@ public class ManageSimMessages extends Activity
                 cursor.getColumnIndexOrThrow("address"));
         String body = cursor.getString(cursor.getColumnIndexOrThrow("body"));
         Long date = cursor.getLong(cursor.getColumnIndexOrThrow("date"));
-        int subscription = cursor.getInt(cursor.getColumnIndexOrThrow("phone_id"));
+        int subscription;
+        try {
+            subscription = cursor.getInt(cursor.getColumnIndexOrThrow("phone_id"));
+        } catch (IllegalArgumentException e) {
+            // not msim
+            subscription = (int) SubscriptionManager.getDefaultSmsSubId();
+
+        }
         boolean success = true;
         try {
             if (isIncomingMessage(cursor)) {
@@ -668,8 +676,11 @@ public class ManageSimMessages extends Activity
             }
             customMenuVisibility(mode, checkedCount);
 
-            mode.getMenu().findItem(R.id.selection_toggle).setTitle(getString(
+            MenuItem item = mode.getMenu().findItem(R.id.selection_toggle);
+            if (item != null) {
+                item.setTitle(getString(
                         allItemsSelected() ? R.string.deselected_all : R.string.selected_all));
+            }
         }
 
         private boolean allItemsSelected() {
