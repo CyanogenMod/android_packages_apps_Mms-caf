@@ -668,8 +668,11 @@ public class ManageSimMessages extends Activity
             }
             customMenuVisibility(mode, checkedCount);
 
-            mode.getMenu().findItem(R.id.selection_toggle).setTitle(getString(
+            MenuItem item = mode.getMenu().findItem(R.id.selection_toggle);
+            if (item != null) {
+                item.setTitle(getString(
                         allItemsSelected() ? R.string.deselected_all : R.string.selected_all));
+            }
         }
 
         private boolean allItemsSelected() {
