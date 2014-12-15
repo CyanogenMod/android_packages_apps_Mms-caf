@@ -30,12 +30,12 @@ import android.content.SharedPreferences;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.*;
 import android.os.Bundle;
-import android.os.Vibrator;
-import android.os.Message;
 import android.os.Handler;
-import android.os.Bundle;
 import android.os.Looper;
+import android.os.Message;
+import android.os.Vibrator;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
@@ -70,6 +70,7 @@ import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.transaction.TransactionService;
 import com.android.mms.util.Recycler;
+import com.android.mms.QTIBackupSMS;
 import java.util.ArrayList;
 
 
@@ -116,6 +117,9 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     // Menu entries
     private static final int MENU_RESTORE_DEFAULTS    = 1;
 
+    // SMS export file name
+    static final String SMS = "smsBackup";
+
     // Preferences for enabling and disabling SMS
     private Preference mSmsDisabledPref;
     private Preference mSmsEnabledPref;
@@ -141,6 +145,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private Preference mManageSimPref;
     private Preference mManageSim1Pref;
     private Preference mManageSim2Pref;
+    private Preference mExportSMSPref;
+    private Preference mImportSMSPref;
     private Preference mClearHistoryPref;
     private CheckBoxPreference mVibratePref;
     private CheckBoxPreference mEnableNotificationsPref;
@@ -278,6 +284,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mManageSimPref = findPreference("pref_key_manage_sim_messages");
         mManageSim1Pref = findPreference("pref_key_manage_sim_messages_slot1");
         mManageSim2Pref = findPreference("pref_key_manage_sim_messages_slot2");
+        mExportSMSPref = findPreference("pref_key_export_sms_messages");
+        mImportSMSPref = findPreference("pref_key_import_sms_messages");
         mSmsLimitPref = findPreference("pref_key_sms_delete_limit");
         mSmsDeliveryReportPref = findPreference("pref_key_sms_delivery_reports");
         mSmsDeliveryReportPrefSub1 = findPreference("pref_key_sms_delivery_reports_slot1");
@@ -840,6 +848,10 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             startActivity(new Intent(this, MessageTemplate.class));
         } else if (preference == mManageSimPref) {
             startActivity(new Intent(this, ManageSimMessages.class));
+        } else if (preference == mExportSMSPref) {
+            backupSMS();
+        } else if (preference == mImportSMSPref) {
+            importSMS();
         } else if (preference == mManageSim1Pref) {
             Intent intent = new Intent(this, ManageSimMessages.class);
             intent.putExtra(MessageUtils.SUBSCRIPTION_KEY, MessageUtils.SUB1);
@@ -875,6 +887,16 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         }
 
         return super.onPreferenceTreeClick(preferenceScreen, preference);
+    }
+
+    private void backupSMS() {
+        QTIBackupSMS smsBackup = new QTIBackupSMS(getApplicationContext(), SMS);
+        smsBackup.performBackup();
+    }
+
+    private void importSMS() {
+        QTIBackupSMS smsBackup = new QTIBackupSMS(getApplicationContext(), SMS);
+        smsBackup.performRestore();
     }
 
     /**

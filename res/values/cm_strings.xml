@@ -123,6 +123,9 @@
     <string name="pref_title_manage_sim_messages_slot1">Manage SIM1 card messages</string>
     <string name="pref_title_manage_sim_messages_slot2">Manage SIM2 card messages</string>
 
+    <string name="prefs_title_export_sms_messages">Export SMS messages</string>
+    <string name="prefs_title_import_sms_messages">Import SMS messages</string>
+
     <string name="pref_title_sms_delivery_reports_slot1">Delivery reports for SIM1</string>
     <string name="pref_title_sms_delivery_reports_slot2">Delivery reports for SIM2</string>
 

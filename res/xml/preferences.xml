@@ -111,6 +111,10 @@
                       android:title="@string/pref_title_manage_sim_messages_slot1" />
     <Preference android:key="pref_key_manage_sim_messages_slot2"
                       android:title="@string/pref_title_manage_sim_messages_slot2" />
+    <Preference android:key="pref_key_export_sms_messages"
+                      android:title="@string/prefs_title_export_sms_messages" />
+    <Preference android:key="pref_key_import_sms_messages"
+                      android:title="@string/prefs_title_import_sms_messages" />
     <ListPreference
         android:defaultValue="-1"
         android:dialogTitle="@string/pref_title_sms_validity_period"
