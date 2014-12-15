@@ -20,6 +20,7 @@ package com.android.mms.ui;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.app.DialogFragment;
 import android.content.Context;
@@ -30,12 +31,15 @@ import android.content.SharedPreferences;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Vibrator;
 import android.os.Message;
 import android.os.Handler;
-import android.os.Bundle;
 import android.os.Looper;
+import android.os.Message;
+import android.os.Vibrator;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
@@ -56,11 +60,11 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.util.Log;
 
-import com.android.internal.telephony.IccCardConstants;
 import com.android.internal.telephony.TelephonyIntents;
 import com.android.internal.telephony.PhoneConstants;
 
@@ -70,7 +74,12 @@ import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.transaction.TransactionService;
 import com.android.mms.util.Recycler;
+import com.android.mms.QTIBackupSMS;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 
 /**
@@ -141,6 +150,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private Preference mManageSimPref;
     private Preference mManageSim1Pref;
     private Preference mManageSim2Pref;
+    private Preference mManageSdcardSMSPref;
     private Preference mClearHistoryPref;
     private CheckBoxPreference mVibratePref;
     private CheckBoxPreference mEnableNotificationsPref;
@@ -278,6 +288,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mManageSimPref = findPreference("pref_key_manage_sim_messages");
         mManageSim1Pref = findPreference("pref_key_manage_sim_messages_slot1");
         mManageSim2Pref = findPreference("pref_key_manage_sim_messages_slot2");
+        mManageSdcardSMSPref = findPreference("pref_key_manage_sdcard_messages");
         mSmsLimitPref = findPreference("pref_key_sms_delete_limit");
         mSmsDeliveryReportPref = findPreference("pref_key_sms_delivery_reports");
         mSmsDeliveryReportPrefSub1 = findPreference("pref_key_sms_delivery_reports_slot1");
@@ -840,6 +851,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             startActivity(new Intent(this, MessageTemplate.class));
         } else if (preference == mManageSimPref) {
             startActivity(new Intent(this, ManageSimMessages.class));
+        } else if (preference == mManageSdcardSMSPref) {
+            manageSMS();
         } else if (preference == mManageSim1Pref) {
             Intent intent = new Intent(this, ManageSimMessages.class);
             intent.putExtra(MessageUtils.SUBSCRIPTION_KEY, MessageUtils.SUB1);
@@ -875,6 +888,181 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         }
 
         return super.onPreferenceTreeClick(preferenceScreen, preference);
+    }
+
+    private class BackupRestoreSMSTask extends AsyncTask<Void, Void, File> {
+
+        private File mRestoreFile;
+        private ProgressDialog mDialog;
+        private boolean mShouldBackup;
+
+        public BackupRestoreSMSTask(File restoreFile) {
+            mRestoreFile = restoreFile;
+            mShouldBackup = restoreFile == null ? true : false;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            String title = getString(mShouldBackup ? R.string.perform_backup_title :
+                    R.string.perform_restore_title);
+            String msg = getString(R.string.wait_progress_message);
+            mDialog = ProgressDialog.show(MessagingPreferenceActivity.this, title, msg, true);
+        }
+
+        @Override
+        protected File doInBackground(Void... params) {
+            File folder = new File(Environment.getExternalStorageDirectory(), BACKUP_FOLDER_NAME);
+            if (!folder.exists()) {
+                folder.mkdir();
+            }
+            File operationFile;
+            if (mShouldBackup) {
+                operationFile = new File(folder, String.valueOf(System.currentTimeMillis()));
+            } else {
+                operationFile = mRestoreFile;
+            }
+            QTIBackupSMS smsBackup = new QTIBackupSMS(getApplicationContext(), operationFile);
+            if (mShouldBackup) {
+                smsBackup.performBackup();
+            } else {
+                smsBackup.performRestore();
+            }
+            return operationFile;
+        }
+
+        @Override
+        protected void onPostExecute(final File file) {
+            mDialog.cancel();
+            if (mShouldBackup) {
+                AlertDialog.Builder builder =
+                        new AlertDialog.Builder(MessagingPreferenceActivity.this);
+                builder.setMessage(R.string.export_sms_toast)
+                        .setMessage(String.format(getString(R.string.backup_file_name_message,
+                                file.getAbsolutePath())))
+                        .setPositiveButton(android.R.string.ok, null)
+                        .setNegativeButton(R.string.message_share,
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                                        shareIntent.putExtra(Intent.EXTRA_STREAM,
+                                                Uri.fromFile(file));
+                                        shareIntent.setType("application/octet-stream");
+                                        startActivity(shareIntent);
+                                    }
+                                });
+                builder.show();
+            } else {
+                Toast.makeText(MessagingPreferenceActivity.this,
+                        R.string.import_sms_toast, Toast.LENGTH_SHORT).show();
+            }
+        }
+
+    }
+
+    private class DeleteSMSTask extends AsyncTask<File, Void, Void> {
+
+        @Override
+        protected Void doInBackground(File... params) {
+            params[0].delete();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            Toast.makeText(MessagingPreferenceActivity.this, R.string.delete_sms_toast,
+                    Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private class RestoreDeleteListFilesTask extends AsyncTask<Void, Void, File[]> {
+
+        private boolean mShouldDelete;
+
+        public RestoreDeleteListFilesTask(boolean shouldDelete) {
+            mShouldDelete = shouldDelete;
+        }
+
+        @Override
+        protected File[] doInBackground(Void... params) {
+            File folder = new File(Environment.getExternalStorageDirectory(), BACKUP_FOLDER_NAME);
+            File[] result = null;
+            if (folder.exists()) {
+                result = folder.listFiles();
+            }
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(File[] files) {
+            if (files == null || files.length == 0) {
+                Toast.makeText(MessagingPreferenceActivity.this, R.string.no_backups_found,
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+            final RestoreFileListAdapter adapter = new RestoreFileListAdapter(files);
+            AlertDialog.Builder builder = new AlertDialog.Builder(MessagingPreferenceActivity.this);
+            builder.setTitle(R.string.pick_sms_backup_title)
+                    .setAdapter(adapter, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (mShouldDelete) {
+                                new DeleteSMSTask().execute(adapter.getFile(which));
+                            } else {
+                                new BackupRestoreSMSTask(adapter.getFile(which)).execute();
+                            }
+
+                        }
+                    });
+            builder.show();
+        }
+
+    }
+
+    private class RestoreFileListAdapter extends ArrayAdapter {
+
+        private final File[] mItems;
+
+        public RestoreFileListAdapter(File[] objects) {
+            super(MessagingPreferenceActivity.this, android.R.layout.simple_list_item_1, objects);
+            mItems = objects;
+        }
+
+        @Override
+        public String getItem(int position) {
+            File file = mItems[position];
+            Date date = new Date(Long.parseLong(file.getName()));
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            return format.format(date);
+        }
+
+        public File getFile(int index) {
+            return mItems[index];
+        }
+
+    }
+
+    private static final String BACKUP_FOLDER_NAME = "BackupSms";
+    private static final int SMS_IMPORT = 0;
+    private static final int SMS_EXPORT = 1;
+    private static final int SMS_DELETE = 2;
+
+    private void manageSMS() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setItems(R.array.manage_sms_entries, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case SMS_IMPORT:
+                        new RestoreDeleteListFilesTask(false).execute();
+                        break;
+                    case SMS_EXPORT:
+                        new BackupRestoreSMSTask(null).execute();
+                        break;
+                    case SMS_DELETE:
+                        new RestoreDeleteListFilesTask(true).execute();
+                        break;
+                }
+        }});
+        builder.show();
     }
 
     /**

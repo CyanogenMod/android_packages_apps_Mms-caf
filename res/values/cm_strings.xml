@@ -123,6 +123,9 @@
     <string name="pref_title_manage_sim_messages_slot1">Manage SIM1 card messages</string>
     <string name="pref_title_manage_sim_messages_slot2">Manage SIM2 card messages</string>
 
+    <string name="prefs_title_export_sms_messages">Export SMS messages</string>
+    <string name="prefs_title_import_sms_messages">Import SMS messages</string>
+
     <string name="pref_title_sms_delivery_reports_slot1">Delivery reports for SIM1</string>
     <string name="pref_title_sms_delivery_reports_slot2">Delivery reports for SIM2</string>
 
@@ -339,5 +342,19 @@
         <!-- Case of 0 or 2 or more results. -->
         <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> messages will be deleted.</item>
     </plurals>
+
+    <string name="import_sms_title">Import SMS</string>
+    <string name="export_sms_title">Export SMS</string>
+    <string name="delete_sms_title">Delete SMS</string>
+    <string name="pick_sms_backup_title">Pick SMS backup</string>
+    <string name="delete_sms_toast">SMS message deleted successfully</string>
+    <string name="import_sms_toast">SMS imported successfully</string>
+    <string name="export_sms_toast">SMS exported successfully</string>
+    <string name="perform_backup_title">Performing backup</string>
+    <string name="perform_restore_title">Performing restore</string>
+    <string name="wait_progress_message">Please wait...</string>
+    <string name="backup_file_name_message">File path : %1s</string>
+    <string name="manage_sdcard_messages">Manage sdcard messages</string>
+    <string name="no_backups_found">No backed up messages found</string>
 
 </resources>
