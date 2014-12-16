@@ -273,11 +273,8 @@
     <string name="pending_mms">Messaging: One or more MMS are pending</string>
     <string name="pending_mms_text">Touch to switch the SIM card</string>
 
-    <string name="switch_data_subscription">Data SIM card switch <xliff:g id="result" example="failed">%1$s</xliff:g></string>
-    <!-- Second part of switch_data_subscription -->
-    <string name="switch_data_subscription_success">was successful.</string>
-    <!-- Second part of switch_data_subscription -->
-    <string name="switch_data_subscription_failed">failed.</string>
+    <string name="switch_data_subscription_success">Data SIM card switch was successful.</string>
+    <string name="switch_data_subscription_failed">Data SIM card switch failed.</string>
 
     <string name="abort_mms">Messaging: Abort MMS</string>
     <string name="abort_mms_text">Touch to abort</string>
@@ -400,7 +397,7 @@
     <string name="pref_sms_store_card">SIM card</string>
     <string name="pref_sim_card_full_save_to_phone">SIM card is full, saving new messages to phone.</string>
 
-    <string name="mms_size_indicator"><xliff:g id="mms_size">%1$s</xliff:g>K/<xliff:g id="all_size">%2$s</xliff:g>K</string>
+    <string name="mms_size_indicator"><xliff:g id="mms_size">%1$s</xliff:g>KB/<xliff:g id="all_size">%2$s</xliff:g>KB</string>
     <!-- batch delete message in ConversationList and MailBoxMessageList -->
     <string name="selected_all">Select all</string>
     <string name="deselected_all">Deselect all</string>

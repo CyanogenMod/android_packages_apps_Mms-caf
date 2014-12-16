@@ -97,9 +97,7 @@ public class SelectMmsSubscription extends Service {
                     String statusResult = ((result == 1) ?
                             mContext.getString(R.string.switch_data_subscription_success) :
                             mContext.getString(R.string.switch_data_subscription_failed));
-                    String status = mContext.getString(R.string.switch_data_subscription,
-                            statusResult);
-                    Toast.makeText(mContext, status, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, statusResult, Toast.LENGTH_SHORT).show();
                 }
 
                 //TODO: Below set of nested conditions are dirty, need a better
