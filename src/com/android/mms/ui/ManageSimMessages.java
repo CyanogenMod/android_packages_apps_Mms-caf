@@ -45,6 +45,7 @@ import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Sms;
 import android.telephony.SmsManager;
+import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.text.SpannableString;
@@ -381,7 +382,14 @@ public class ManageSimMessages extends Activity
                 cursor.getColumnIndexOrThrow("address"));
         String body = cursor.getString(cursor.getColumnIndexOrThrow("body"));
         Long date = cursor.getLong(cursor.getColumnIndexOrThrow("date"));
-        int subscription = cursor.getInt(cursor.getColumnIndexOrThrow("phone_id"));
+        int subscription;
+        // the regular ICC_URI does not return a phone_id, so we need to populate it ourselves.
+        if (mIccUri.equals(MessageUtils.ICC_URI)) {
+            subscription = SubscriptionManager.getPhoneId(
+                    SubscriptionManager.getDefaultDataSubId());
+        } else {
+            subscription = cursor.getInt(cursor.getColumnIndexOrThrow("phone_id"));
+        }
         boolean success = true;
         try {
             if (isIncomingMessage(cursor)) {
