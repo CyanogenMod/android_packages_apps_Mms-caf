@@ -640,7 +640,7 @@ public class ManageSimMessages extends Activity
                     break;
                 case R.id.selection_toggle:
                     checkAll(!allItemsSelected());
-                    break;
+                    return true;
                 case R.id.delete:
                     confirmDeleteDialog(new MultiMessagesListener());
                     break;
