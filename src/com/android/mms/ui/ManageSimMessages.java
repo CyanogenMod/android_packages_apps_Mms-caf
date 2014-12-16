@@ -646,7 +646,6 @@ public class ManageSimMessages extends Activity
                 default:
                     break;
             }
-            mode.finish();
             return true;
         }
 
