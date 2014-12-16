@@ -49,4 +49,8 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         android:id="@+id/copy_to_phone"
         android:showAsAction="never|withText"
         android:title="@string/sim_copy_to_phone_memory"/>
+    <item
+        android:id="@+id/selection_toggle"
+        android:showAsAction="never|withText"
+        android:title="@string/selected_all" />
 </menu>
