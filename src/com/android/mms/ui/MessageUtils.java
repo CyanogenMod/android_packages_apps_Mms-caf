@@ -89,9 +89,11 @@ import android.text.format.Time;
 import android.text.style.URLSpan;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -295,6 +297,8 @@ public class MessageUtils {
     private static final String IDP_PLUS = "+";
     private static final String IDP_PREFIX = "01033";
 
+    private static final String PREF_SHOW_URL_WARNING = "pref_should_show_url_warning";
+    private static final boolean PREF_SHOULD_SHOW_URL_WARNING = true;
 
     static {
         for (int i = 0; i < NUMERIC_CHARS_SUGAR.length; i++) {
@@ -2463,30 +2467,57 @@ public class MessageUtils {
     }
 
     private static void loadUrlDialog(final Context context, final String urlString) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(R.string.menu_connect_url);
-        builder.setMessage(context.getString(R.string.loadurlinfo_str));
-        builder.setCancelable(true);
-        builder.setPositiveButton(R.string.yes, new OnClickListener() {
-            @Override
-            final public void onClick(DialogInterface dialog, int which) {
-                loadUrl(context, urlString);
-            }
-        });
-        builder.setNegativeButton(R.string.no, new OnClickListener() {
-            @Override
-            final public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                dialog.dismiss();
-            }
-        });
-        builder.show();
+        if (!showUrlLoadingWarning(context)) {
+            loadUrl(context, urlString);
+            return;
+        }
 
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View container = inflater.inflate(R.layout.open_url_dialog, null);
+        final CheckBox doNotShow = (CheckBox) container.findViewById(R.id.do_not_show);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setView(container)
+                .setTitle(R.string.menu_connect_url)
+                .setMessage(context.getString(R.string.loadurlinfo_str))
+                .setCancelable(true)
+                .setPositiveButton(R.string.yes, new OnClickListener() {
+                    @Override
+                    final public void onClick(DialogInterface dialog, int which) {
+                        if (doNotShow.isChecked()) {
+                            setShouldShowUrlWarning(context);
+                        }
+                        loadUrl(context, urlString);
+                    }
+                })
+                .setNegativeButton(R.string.no, new OnClickListener() {
+                    @Override
+                    final public void onClick(DialogInterface dialog, int which) {
+                        if (doNotShow.isChecked()) {
+                            setShouldShowUrlWarning(context);
+                        }
+                        dialog.dismiss();
+                    }
+                })
+                .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        dialog.dismiss();
+                    }
+                });
+
+        builder.show();
+    }
+
+    private static boolean showUrlLoadingWarning(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(PREF_SHOW_URL_WARNING, PREF_SHOULD_SHOW_URL_WARNING);
+    }
+
+    private static void setShouldShowUrlWarning(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(PREF_SHOW_URL_WARNING, false);
+        editor.apply();
     }
 
     private static void loadUrl(Context context, String url) {

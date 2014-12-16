@@ -146,9 +146,10 @@
     <string name="mail_to">mailto:</string>
     <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
     <string name="menu_connect_url">Connect</string>
+    <string name="do_not_show_connect_warning">Do not show me this warning again.</string>
     <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
     <string name="menu_add_to_label">Save to bookmark</string>
-    <string name="loadurlinfo_str">Load the URL?</string>
+    <string name="loadurlinfo_str">Warning: URLs from unknown sources can lead to phishing attempts</string>
     <!-- Message Template -->
     <string name="pref_summary_message_template">Edit message template</string>
     <string name="pref_title_message_template">Message template</string>
