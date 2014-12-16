@@ -591,6 +591,8 @@
     <!-- Disk Storage Full Error Notification dialog text. -->
     <string name="disk_storage_full_error">Error: Storage is full.</string>
 
+    <!-- Mobile data is turned off dialog text. -->
+    <string name="inform_data_off">Mobile data is turned off, turn it on in the system setting and try again.</string>
     <!-- Mms size is too large dialog text. -->
     <string name="mms_too_large">The message is too large to download.</string>
 
