@@ -49,7 +49,7 @@
     <bool name="config_mms_cancelable">false</bool>
 
     <!-- configuration for showing smsc pref -->
-    <bool name="config_show_smsc_pref">true</bool>
+    <bool name="config_show_smsc_pref">false</bool>
 
     <!-- configuration for max slide num -->
     <integer name="max_slide_num">10</integer>
