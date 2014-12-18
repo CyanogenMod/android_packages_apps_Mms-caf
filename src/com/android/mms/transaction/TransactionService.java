@@ -469,6 +469,9 @@ public class TransactionService extends Service implements Observer {
                             Log.v(TAG, "onNewIntent: msgType=" + msgType + " transactionType=" +
                                     transactionType);
                         }
+                        Uri uri = ContentUris.withAppendedId(
+                                Mms.CONTENT_URI,
+                                cursor.getLong(columnIndexOfMsgId));
                         if (noNetwork) {
                             // Because there is a MMS queue list including
                             // unsent and undownload MMS in database while data
@@ -483,9 +486,6 @@ public class TransactionService extends Service implements Observer {
                             cursor.moveToLast();
                             transactionType = getTransactionType(cursor
                                     .getInt(columnIndexOfMsgType));
-                            Uri uri = ContentUris.withAppendedId(
-                                    Mms.CONTENT_URI,
-                                    cursor.getLong(columnIndexOfMsgId));
                             boolean inRetry = ACTION_ONALARM.equals(intent.getAction());
                             onNetworkUnavailable(serviceId, transactionType, uri, inRetry);
                             return;
@@ -516,6 +516,12 @@ public class TransactionService extends Service implements Observer {
                                     }
                                     break;
                                 }
+                                // If retry always is enabled, need mark state to downloading.
+                                if (getResources().getBoolean(R.bool.config_retry_always)) {
+                                    downloadManager.markState(
+                                            uri, DownloadManager.STATE_DOWNLOADING);
+
+                                }
                                 // Logic is twisty. If there's no failure or the failure
                                 // is a non-permanent failure, we want to process the transaction.
                                 // Otherwise, break out and skip processing this transaction.
@@ -531,9 +537,6 @@ public class TransactionService extends Service implements Observer {
                                 }
                                // fall-through
                             default:
-                                Uri uri = ContentUris.withAppendedId(
-                                        Mms.CONTENT_URI,
-                                        cursor.getLong(columnIndexOfMsgId));
 
                                 long [] subId = getSubIdFromDb(uri);
                                 // subId is null. Bail out.
@@ -558,7 +561,8 @@ public class TransactionService extends Service implements Observer {
                                     subId[0] = defSmsSubId;
                                 }
 
-                                if (!isMmsDataConnectivityPossible(subId[0]) || !isMmsAllowed()) {
+                                if ((!isMmsDataConnectivityPossible(subId[0]) || !isMmsAllowed())
+                                        && !getResources().getBoolean(R.bool.config_retry_always)) {
                                     Log.d(TAG, "mobileData off or no mms apn or APM, Abort");
                                     if (transactionType == Transaction.RETRIEVE_TRANSACTION) {
                                         downloadManager.markState(uri,
@@ -620,7 +624,8 @@ public class TransactionService extends Service implements Observer {
                 subId[0] = defSmsSubId;
             }
 
-            if (!isMmsDataConnectivityPossible(subId[0]) || !isMmsAllowed()) {
+            if ((!isMmsDataConnectivityPossible(subId[0]) || !isMmsAllowed())
+                    && !getResources().getBoolean(R.bool.config_retry_always)) {
                 Log.d(TAG, "Either mobile data is off or apn not present, Abort");
 
                 downloadManager.markState(uri, DownloadManager.STATE_SKIP_RETRYING);
