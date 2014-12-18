@@ -103,7 +103,8 @@ public class RetryScheduler implements Observer {
                 }
             }
         } finally {
-            if (isMmsDataConnectivityPossible(t.getSubId())) {
+            if (isMmsDataConnectivityPossible(t.getSubId()) || mContext
+                    .getResources().getBoolean(R.bool.config_retry_always)) {
                 setRetryAlarm(mContext);
             } else {
                 Log.d(TAG, "Retry alarm is not set");
