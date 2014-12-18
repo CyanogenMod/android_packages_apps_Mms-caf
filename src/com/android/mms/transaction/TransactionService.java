@@ -417,7 +417,7 @@ public class TransactionService extends Service implements Observer {
             stopSelfIfIdle(serviceId);
             return;
         }
-        boolean noNetwork = isMmsAllowed();
+        boolean noNetwork = false;
 
         if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
             Log.v(TAG, "onNewIntent: serviceId: " + serviceId + ": " + intent.getExtras() +
