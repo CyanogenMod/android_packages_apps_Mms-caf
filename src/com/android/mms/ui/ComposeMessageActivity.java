@@ -138,6 +138,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -5256,6 +5257,7 @@ public class ComposeMessageActivity extends Activity
         private int mMmsSelected = 0;
         private int mUnlockedCount = 0;
         private int mCheckedCount = 0;
+        private boolean mDeleteLockedMessages = false;
 
         private WorkThread mWorkThread;
         public final static int WORK_TOKEN_DELETE = 0;
@@ -5266,6 +5268,7 @@ public class ComposeMessageActivity extends Activity
         ArrayList<Integer> mSelectedPos = new ArrayList<Integer>();
         ArrayList<Uri> mSelectedMsg = new ArrayList<Uri>();
         ArrayList<MessageItem> mMessageItems = new ArrayList<MessageItem>();
+        ArrayList<Uri> mSelectedLockedMsg = new ArrayList<Uri>();
 
         public void checkAll(boolean isCheck) {
             for (int i = 0; i < getListView().getCount(); i++) {
@@ -5273,7 +5276,11 @@ public class ComposeMessageActivity extends Activity
             }
         }
 
-        private class MultiMessagesListener implements OnClickListener {
+        private class DeleteMessagesListener implements OnClickListener {
+            public void setDeleteLockedMessage(boolean deleteLockedMessage) {
+                mDeleteLockedMessages = deleteLockedMessage;
+            }
+
             public void onClick(DialogInterface dialog, int whichButton) {
                 deleteMessages();
             }
@@ -5329,13 +5336,18 @@ public class ComposeMessageActivity extends Activity
 
         private void deleteCheckedMessage() {
             for (Uri uri : mSelectedMsg) {
+                if (!mDeleteLockedMessages && mSelectedLockedMsg.contains(uri)) {
+                    continue;
+                }
                 SqliteWrapper.delete(getContext(), mContentResolver, uri, null,
                         null);
             }
+            mDeleteLockedMessages = false;
         }
 
         private void calculateSelectedMsgUri() {
             mSelectedMsg.clear();
+            mSelectedLockedMsg.clear();
             for (Integer pos : mSelectedPos) {
                 Cursor c = (Cursor) getListView().getAdapter().getItem(pos);
                 String type = c.getString(COLUMN_MSG_TYPE);
@@ -5343,9 +5355,17 @@ public class ComposeMessageActivity extends Activity
                 if ("sms".equals(type)) {
                     mSelectedMsg.add(ContentUris.withAppendedId(
                             Sms.CONTENT_URI, c.getLong(COLUMN_ID)));
+                    if (c.getInt(COLUMN_SMS_LOCKED) != 0) {
+                        mSelectedLockedMsg.add(ContentUris.withAppendedId(
+                                Sms.CONTENT_URI, c.getLong(COLUMN_ID)));
+                    }
                 } else if ("mms".equals(type)) {
                     mSelectedMsg.add(ContentUris.withAppendedId(
                             Mms.CONTENT_URI, c.getLong(COLUMN_ID)));
+                    if (c.getInt(COLUMN_MMS_LOCKED) != 0) {
+                        mSelectedLockedMsg.add(ContentUris.withAppendedId(
+                                Mms.CONTENT_URI, c.getLong(COLUMN_ID)));
+                    }
                 }
             }
         }
@@ -5510,7 +5530,7 @@ public class ComposeMessageActivity extends Activity
                 forwardMessage();
                 break;
             case R.id.delete:
-                confirmDeleteDialog(new MultiMessagesListener(), mCheckedCount != mUnlockedCount);
+                confirmDeleteDialog(new DeleteMessagesListener(), mCheckedCount != mUnlockedCount);
                 break;
             case R.id.copy:
                 copyMessageText();
@@ -5823,6 +5843,36 @@ public class ComposeMessageActivity extends Activity
                     R.string.selected_count, mCheckedCount));
             mSelectionMenu.updateSelectAllMode(getListView().getCount() == mCheckedCount);
 
+        }
+
+        private void confirmDeleteDialog(final DeleteMessagesListener listener,
+                boolean locked) {
+            View contents = View.inflate(ComposeMessageActivity.this,
+                    R.layout.delete_thread_dialog_view, null);
+            TextView msg = (TextView) contents.findViewById(R.id.message);
+            msg.setText(getString(R.string.confirm_delete_selected_messages));
+            final CheckBox checkbox = (CheckBox) contents
+                    .findViewById(R.id.delete_locked);
+            checkbox.setChecked(false);
+            if (mSelectedLockedMsg.size() == 0) {
+                checkbox.setVisibility(View.GONE);
+            } else {
+                listener.setDeleteLockedMessage(checkbox.isChecked());
+                checkbox.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        listener.setDeleteLockedMessage(checkbox.isChecked());
+                    }
+                });
+            }
+            AlertDialog.Builder builder = new AlertDialog.Builder(
+                    ComposeMessageActivity.this);
+            builder.setTitle(R.string.confirm_dialog_title);
+            builder.setIconAttribute(android.R.attr.alertDialogIcon);
+            builder.setCancelable(true);
+            builder.setView(contents);
+            builder.setPositiveButton(R.string.yes, listener);
+            builder.setNegativeButton(R.string.no, null);
+            builder.show();
         }
     }
 }
