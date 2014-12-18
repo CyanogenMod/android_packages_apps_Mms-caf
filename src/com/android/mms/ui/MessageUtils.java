@@ -25,6 +25,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.Override;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -49,6 +50,8 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.ContentResolver;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
@@ -2619,17 +2622,14 @@ public class MessageUtils {
     }
 
     public static void showEmailOptions(final Context context, final String address) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context).setTitle(address)
-                .setCancelable(true);
-        builder.setItems(R.array.email_options, new OnClickListener() {
-
+        final Intent intent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse(MAIL_TO_PREFIX + address));
+        OnClickListener listener = new OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case DIALOG_ITEM_EMAIL_TO:
-                        context.startActivity(new Intent(Intent.ACTION_VIEW, Uri
-                                .parse(MAIL_TO_PREFIX + address))
-                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET));
+                        context.startActivity(intent);
                         break;
                     case DIALOG_ITEM_EMAIL_ADD_CONTACTS:
                         context.startActivity(ConversationList.createAddContactIntent(address));
@@ -2639,7 +2639,16 @@ public class MessageUtils {
                 }
                 dialog.dismiss();
             }
-        }).show();
+        };
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        PackageManager pm = context.getPackageManager();
+        List<ResolveInfo> infos = pm.queryIntentActivities(intent, 0);
+        boolean handleSend = infos != null ? (infos.size() > 0) : false;
+        AlertDialog.Builder builder = new AlertDialog.Builder(context).setTitle(address)
+                .setCancelable(true);
+        builder.setItems(handleSend ? R.array.email_options : R.array.email_options_no_send,
+                listener)
+                .show();
     }
 
     public static void showNumberOptions(Context context, String number) {
