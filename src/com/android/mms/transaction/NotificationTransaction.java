@@ -41,6 +41,7 @@ import android.util.Log;
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
+import com.android.mms.R;
 import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.MessagingPreferenceActivity;
 import com.android.mms.util.DownloadManager;
@@ -300,8 +301,11 @@ public class NotificationTransaction extends Transaction implements Runnable {
         DownloadManager downloadManager = DownloadManager.getInstance();
         mTransactionState.setState(FAILED);
         mTransactionState.setContentUri(mUri);
-
-        downloadManager.markState(mUri, DownloadManager.STATE_SKIP_RETRYING);
+        if (mContext.getResources().getBoolean(R.bool.config_retry_always)) {
+            downloadManager.markState(mUri, DownloadManager.STATE_PERMANENT_FAILURE);
+        } else {
+            downloadManager.markState(mUri, DownloadManager.STATE_SKIP_RETRYING);
+        }
         notifyObservers();
     }
 
