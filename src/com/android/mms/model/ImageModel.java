@@ -74,6 +74,7 @@ public class ImageModel extends RegionMediaModel {
         super(context, SmilHelper.ELEMENT_TAG_IMAGE, uri, region);
         initModelFromUri(uri);
         checkContentRestriction();
+        mSrc = System.currentTimeMillis() + "_" + mSrc;
     }
 
     public ImageModel(Context context, String contentType, String src,
