@@ -893,12 +893,6 @@ public class ComposeMessageActivity extends Activity
         }
     }
 
-    private void dismissMsimDialog() {
-        if (mMsimDialog != null) {
-            mMsimDialog.dismiss();
-        }
-    }
-
    private void processMsimSendMessage(int phoneId, final boolean bCheckEcmMode) {
         if (mMsimDialog != null) {
             mMsimDialog.dismiss();
@@ -908,64 +902,17 @@ public class ComposeMessageActivity extends Activity
     }
 
     private void LaunchMsimDialog(final boolean bCheckEcmMode) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(ComposeMessageActivity.this);
-        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        View layout = inflater.inflate(R.layout.multi_sim_sms_sender,
-                              (ViewGroup)findViewById(R.id.layout_root));
-        builder.setView(layout);
-        builder.setOnKeyListener(new DialogInterface.OnKeyListener() {
-                public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-                    switch (keyCode) {
-                        case KeyEvent.KEYCODE_BACK: {
-                            dismissMsimDialog();
-                            return true;
-                        }
-                        case KeyEvent.KEYCODE_SEARCH: {
-                            return true;
-                        }
-                    }
-                    return false;
-                }
-            }
-        );
-
-        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dismissMsimDialog();
-            }
-        });
-
         ContactList recipients = isRecipientsEditorVisible() ?
             mRecipientsEditor.constructContactsFromInput(false) : getRecipients();
-        builder.setTitle(getResources().getString(R.string.to_address_label)
-                + recipients.formatNamesAndNumbers(","));
-
-        mMsimDialog = builder.create();
-        mMsimDialog.setCanceledOnTouchOutside(true);
-
-        int[] smsBtnIds = {R.id.BtnSimOne, R.id.BtnSimTwo, R.id.BtnSimThree};
-        int phoneCount = TelephonyManager.getDefault().getPhoneCount();
-        Button[] smsBtns = new Button[phoneCount];
-
-        for (int i = 0; i < phoneCount; i++) {
-            final int phoneId = i;
-            smsBtns[i] = (Button) layout.findViewById(smsBtnIds[i]);
-            smsBtns[i].setVisibility(View.VISIBLE);
-            List<SubInfoRecord> sir = SubscriptionManager.getSubInfoUsingSlotId(phoneId);
-
-            String displayName = ((sir != null) && (sir.size() > 0)) ?
-                    sir.get(0).displayName : "SIM " + (i + 1);
-
-            Log.e(TAG, "PhoneID : " + phoneId + " displayName " + displayName);
-            smsBtns[i].setText(displayName);
-            smsBtns[i].setOnClickListener(
-                new View.OnClickListener() {
-                    public void onClick(View v) {
-                        Log.d(TAG, "Phone Id slected " + phoneId);
-                        processMsimSendMessage(phoneId, bCheckEcmMode);
-                }
-            });
-        }
+        mMsimDialog = new MsimDialog(this,
+                                     new MsimDialog.OnSimButtonClickListener() {
+                                         @Override
+                                         public void onSimButtonClick(int phoneId) {
+                                             processMsimSendMessage(phoneId,
+                                                                    bCheckEcmMode);
+                                         }
+                                     },
+                                     recipients);
         mMsimDialog.show();
     }
 

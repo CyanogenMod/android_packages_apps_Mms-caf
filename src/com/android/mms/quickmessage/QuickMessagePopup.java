@@ -39,6 +39,7 @@ import android.preference.PreferenceManager;
 import android.provider.ContactsContract.Profile;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.telephony.SubscriptionManager;
 import android.text.InputFilter;
 import android.text.InputFilter.LengthFilter;
 import android.text.InputType;
@@ -81,18 +82,21 @@ import com.android.internal.telephony.util.BlacklistUtils;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.data.Contact;
+import com.android.mms.data.ContactList;
 import com.android.mms.data.Conversation;
 import com.android.mms.transaction.MessagingNotification;
 import com.android.mms.transaction.MessagingNotification.NotificationInfo;
 import com.android.mms.transaction.SmsMessageSender;
 import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.MessagingPreferenceActivity;
+import com.android.mms.ui.MsimDialog;
 import com.google.android.mms.MmsException;
 
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -537,25 +541,68 @@ public class QuickMessagePopup extends Activity {
     }
 
     /**
+     * Sends a quick message immediately, with the only UI being a Toast indicating
+     * success or failure.
+     * @param phoneId The phoneId of the SIM slot to send the message with.
+     * @param threadId The thread ID of the QuickMessage.
+     * @param message The actual message.
+     * @param qm The QuickMessage object to send.
+     */
+    private void sendQuickMessageBackground(int phoneId, long threadId,
+                                            String message, QuickMessage qm) {
+        SmsMessageSender sender = new SmsMessageSender(getBaseContext(),
+                                                       qm.getFromNumber(), message,
+                                                       threadId, phoneId);
+
+        try {
+            if (DEBUG) {
+                Log.d(LOG_TAG, "sendQuickMessage(): Sending message to " + qm.getFromName()
+                               + ", with threadID = " + threadId + ". Current page is #" + (
+                        mCurrentPage + 1));
+            }
+
+            sender.sendMessage(threadId);
+            Toast.makeText(mContext, R.string.toast_sending_message, Toast.LENGTH_SHORT)
+                    .show();
+        } catch (MmsException e) {
+            if (DEBUG) {
+                Log.e(LOG_TAG, "Error sending message to " + qm.getFromName());
+            }
+        }
+    }
+
+    /**
      * Use standard api to send the supplied message
      *
      * @param message - message to send
      * @param qm - qm to reply to (for sender details)
      */
-    private void sendQuickMessage(String message, QuickMessage qm) {
+    private void sendQuickMessage(final String message, final QuickMessage qm) {
         if (message != null && qm != null) {
-            long threadId = qm.getThreadId();
-            SmsMessageSender sender = new SmsMessageSender(getBaseContext(),
-                    qm.getFromNumber(), message, threadId, PhoneConstants.PHONE_ID1);
-            try {
-                if (DEBUG)
-                    Log.d(LOG_TAG, "sendQuickMessage(): Sending message to " + qm.getFromName()
-                            + ", with threadID = " + threadId + ". Current page is #" + (mCurrentPage+1));
+            final long threadId = qm.getThreadId();
 
-                sender.sendMessage(threadId);
-                Toast.makeText(mContext, R.string.toast_sending_message, Toast.LENGTH_SHORT).show();
-            } catch (MmsException e) {
-                Log.e(LOG_TAG, "Error sending message to " + qm.getFromName());
+            // If SMS prompt is enabled, prompt the user.
+            // Use the default SMS phone ID to reply in the multi-sim environment.
+            if (SubscriptionManager.isSMSPromptEnabled()) {
+                List<String> fromNumbers = Arrays.asList(qm.getFromNumber());
+                ContactList recipients = ContactList.getByNumbers(fromNumbers,
+                                                                  true);
+                MsimDialog dialog = new MsimDialog(this,
+                                         new MsimDialog.OnSimButtonClickListener() {
+                                             @Override
+                                             public void onSimButtonClick(int phoneId) {
+                                                 sendQuickMessageBackground(phoneId,
+                                                                            threadId,
+                                                                            message,
+                                                                            qm);
+                                             }
+                                         },
+                                         recipients);
+                dialog.show();
+            } else {
+                long subId = SubscriptionManager.getDefaultSmsSubId();
+                int phoneId = SubscriptionManager.getPhoneId(subId);
+                sendQuickMessageBackground(phoneId, threadId, message, qm);
             }
         }
     }
