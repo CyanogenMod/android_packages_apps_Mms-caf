@@ -17,7 +17,7 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string-array name="pref_templates_gestures_sensitivity_entries">
-    <item>1 (最寬鬆)</item>
+    <item>1 (plašākais)</item>
     <item>2</item>
     <item>3</item>
     <item>4</item>
@@ -28,29 +28,29 @@
     <item>9</item>
     <item>10</item>
     <item>11</item>
-    <item>12 (最嚴格)</item>
+    <item>12 (stingrākais)</item>
   </string-array>
   <string-array name="default_smiley_names">
-    <item>開心</item>
-    <item>Sad</item>
-    <item>眨眼</item>
-    <item>吐舌頭</item>
-    <item>驚訝</item>
-    <item>Kissing</item>
-    <item>大喊</item>
-    <item>超酷</item>
-    <item>Money mouth</item>
-    <item>Foot in mouth</item>
-    <item>害羞</item>
-    <item>天使</item>
-    <item>Undecided</item>
-    <item>嚎啕大哭</item>
-    <item>Lips are sealed</item>
-    <item>開懷大笑</item>
-    <item>Confused</item>
-    <item>Heart</item>
-    <item>Mad</item>
-    <item>Smirk</item>
-    <item>撲克臉</item>
+    <item>Laimīgs</item>
+    <item>Bēdīgs</item>
+    <item>Mirkšķina</item>
+    <item>Izbāzta mēle</item>
+    <item>Pārsteigts</item>
+    <item>Skūpsts</item>
+    <item>Kliedz</item>
+    <item>Vēss</item>
+    <item>Naudas mute</item>
+    <item>Kāja mutē</item>
+    <item>Samulsis</item>
+    <item>Enģelis</item>
+    <item>Neizlēmīgs</item>
+    <item>Raud</item>
+    <item>Lūpas ir aizzīmogotas</item>
+    <item>Smejas</item>
+    <item>Apmulsis</item>
+    <item>Sirds</item>
+    <item>Dusmīgs</item>
+    <item>Smīns</item>
+    <item>Pokerseja</item>
   </string-array>
 </resources>

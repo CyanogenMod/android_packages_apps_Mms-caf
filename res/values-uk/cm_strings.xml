@@ -48,9 +48,6 @@
   <string name="template_insert_hint">Вставити сюди шаблон тексту</string>
   <string name="template_empty_text">Текстове поле не може бути пустим</string>
   <string name="template_save">Зберегти</string>
-  <string name="template_ctx_menu_title">Дії</string>
-  <string name="template_edit">Редагувати</string>
-  <string name="template_delete">Видалити</string>
   <string name="template_list_title">Шаблони</string>
   <string name="template_new_title">Новий шаблон</string>
   <string name="template_insert">Вставити шаблон</string>
@@ -89,7 +86,6 @@
   <string name="menu_as_unread">Позначити як непрочитано</string>
   <string name="menu_all_as_unread">Помітити все як непрочитане</string>
   <string name="confirm_mark_unread_dialog_title">Позначити як непрочитано?</string>
-  <string name="confirm_mark_unread_conversation">Розмови будуть позначені як непрочитані.</string>
   <string name="confirm_mark_unread_all_conversations">Усі лацюжки будуть позначені як непрочитані.</string>
   <string name="select_recipients">Оберіть отримувачів</string>
   <string name="groups_header">Групи</string>
@@ -117,9 +113,20 @@
   <string name="menu_insert_smiley">Вставити смайлик</string>
   <string name="pref_title_enable_emoticons">Підтримка смайликів</string>
   <string name="pref_summary_enable_emoticons">Замінювати текстові смайлики графічними</string>
-  <string name="normal_show">Нормальний режим</string>
   <string name="cannot_play">Неможливо відтворити слайд-шоу.</string>
   <string name="menu_conversation_options">Параметри розмови</string>
   <string name="pref_title_reset_convopt_to_default">Скинути до типових</string>
   <string name="pref_summary_reset_convopt_to_default">Скидає параметри розмови до налаштуваннь програми</string>
+  <string name="failed_open_associated_activity_msg">Не вдалося відкрити необхідний додаток</string>
+  <string name="select_subscription_title">Виберіть SIM-картку</string>
+  <string name="cell_broadcast_sender">Канал сповіщення населення</string>
+  <string name="system_audio_item">Системне аудіо</string>
+  <string name="external_audio_item">Зовнішнє аудіо</string>
+  <string name="pending_mms">Повідомлення: Є одне або більше MMS що в режимі очікування</string>
+  <string name="switch_data_subscription_success">SIM-картка для передачі даних переключена.</string>
+  <string name="switch_data_subscription_failed">Не вдалося переключити SIM-картку для передачі даних.</string>
+  <string name="abort_mms">Повідомлення: Скасування MMS</string>
+  <string name="progress_mms">Повідомлення: Обробка MMS\u2026</string>
+  <string name="progress_mms_text">Натисніть, щоб повторити спробу</string>
+  <string name="mms_size_indicator"><xliff:g id="mms_size">%1$s</xliff:g>KБ/<xliff:g id="all_size">%2$s</xliff:g> KБ</string>
 </resources>

@@ -48,9 +48,6 @@
   <string name="template_insert_hint">Inxertar la plantía de testu equí</string>
   <string name="template_empty_text">El campu de testu nun pue tar baleru</string>
   <string name="template_save">Guardar</string>
-  <string name="template_ctx_menu_title">Aiciones</string>
-  <string name="template_edit">Editar</string>
-  <string name="template_delete">Desaniciar</string>
   <string name="template_list_title">Plantíes</string>
   <string name="template_new_title">Plantía nueva</string>
   <string name="template_insert">Inxertar plantía</string>
@@ -89,7 +86,6 @@
   <string name="menu_as_unread">Marcar como non lleío</string>
   <string name="menu_all_as_unread">Marcar toos como ensin lleer</string>
   <string name="confirm_mark_unread_dialog_title">Marcar como non lleío?</string>
-  <string name="confirm_mark_unread_conversation">La conversación va marcase como non lleída.</string>
   <string name="confirm_mark_unread_all_conversations">Van marcase tolos filos como non lleíos.</string>
   <string name="select_recipients">Esbillar destinatarios</string>
   <string name="groups_header">Grupos</string>
@@ -117,9 +113,16 @@
   <string name="menu_insert_smiley">Inxertar fustaxe</string>
   <string name="pref_title_enable_emoticons">Sofitu pa emoticonos</string>
   <string name="pref_summary_enable_emoticons">Sustituyir los emoticonos de testu polos sos equivalentes gráficos</string>
-  <string name="normal_show">Ver en mou normal</string>
   <string name="cannot_play">Nun pue amosase la presentación.</string>
   <string name="menu_conversation_options">Opciones de conversación</string>
   <string name="pref_title_reset_convopt_to_default">Restablecer valores</string>
   <string name="pref_summary_reset_convopt_to_default">Reafitar los axustes de conversación a los axustes de nivel d\'aplicación</string>
+  <string name="failed_open_associated_activity_msg">Fallu al abrir l\'actividá asociada</string>
+  <string name="cell_broadcast_sender">Canal de radiodifusión</string>
+  <string name="system_audio_item">Sistema d\'audiu</string>
+  <string name="external_audio_item">Audiu esternu</string>
+  <string name="pending_mms">Mensaxería: Tán pendientes ún o más MMS</string>
+  <string name="abort_mms">Mensaxería: Encaboxar MMS</string>
+  <string name="progress_mms">Mensaxería: MMS en progresu\u2026</string>
+  <string name="progress_mms_text">Toca pa reintentar</string>
 </resources>

@@ -17,12 +17,18 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <plurals name="template_confirm_delete_conversation">
-    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> 個範本將會被刪除。</item>
+    <item quantity="zero"><xliff:g id="number" example="15">%1$s</xliff:g> veidne tiks dzēsta.</item>
+    <item quantity="one"><xliff:g id="number" example="15">%1$s</xliff:g> veidne tiks dzēsta.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> veidnes tiks dzēstas.</item>
   </plurals>
   <plurals name="remaining_delay_time">
-    <item quantity="other">%1$d 秒後寄出，輕觸以取消。</item>
+    <item quantity="zero">Sūtīs pēc %1$d sekundes, piesitiet, lai atceltu.</item>
+    <item quantity="one">Sūtīs pēc %1$d sekundes, piesitiet, lai atceltu.</item>
+    <item quantity="other">Sūtīs pēc %1$d sekundēm, piesitiet, lai atceltu.</item>
   </plurals>
   <plurals name="confirm_mark_unread_conversation">
-    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> 個會話將被標示為未讀。</item>
+    <item quantity="zero"><xliff:g id="number" example="15">%1$s</xliff:g> saruna tiks atzīmēta kā nelasīta.</item>
+    <item quantity="one"><xliff:g id="number" example="15">%1$s</xliff:g> saruna tiks atzīmēta kā nelasīta.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> sarunas tiks atzīmētas kā nelasītas.</item>
   </plurals>
 </resources>

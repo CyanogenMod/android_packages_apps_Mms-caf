@@ -48,9 +48,6 @@
   <string name="template_insert_hint">Testu txantiloia hemen txertatu</string>
   <string name="template_empty_text">Testu eremua ezin da hutsik egon</string>
   <string name="template_save">Gorde</string>
-  <string name="template_ctx_menu_title">Ekintzak</string>
-  <string name="template_edit">Editatu</string>
-  <string name="template_delete">Ezabatu</string>
   <string name="template_list_title">Txantiloiak</string>
   <string name="template_new_title">Txantiloi berria</string>
   <string name="template_insert">Txantiloia txertatu</string>
@@ -89,7 +86,6 @@
   <string name="menu_as_unread">Irakurri gabe bezala markatu</string>
   <string name="menu_all_as_unread">Denak ez irakurriak bezala markatu</string>
   <string name="confirm_mark_unread_dialog_title">Irakurri gabe bezala markatu?</string>
-  <string name="confirm_mark_unread_conversation">Elkarrizketa ez irakurria bezala markatuko da.</string>
   <string name="confirm_mark_unread_all_conversations">Elkarrizketa guztiak ez irakurriak bezala markatuko dira.</string>
   <string name="select_recipients">Hartzaileak hautatu</string>
   <string name="groups_header">Taldeak</string>
@@ -117,6 +113,5 @@
   <string name="menu_insert_smiley">Emotikonoa txertatu</string>
   <string name="pref_title_enable_emoticons">Emotikonoentzako euskarria</string>
   <string name="pref_summary_enable_emoticons">Testu emotikonoak beraien baliokide grafikoekin ordeztu</string>
-  <string name="normal_show">Modu arruntean ikusi</string>
   <string name="cannot_play">Aurkezpena ezin da bistaratu.</string>
 </resources>

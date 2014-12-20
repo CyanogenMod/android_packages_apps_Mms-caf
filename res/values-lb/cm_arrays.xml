@@ -17,7 +17,7 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string-array name="pref_templates_gestures_sensitivity_entries">
-    <item>1 (最寬鬆)</item>
+    <item>1 (net empfindlech)</item>
     <item>2</item>
     <item>3</item>
     <item>4</item>
@@ -28,29 +28,29 @@
     <item>9</item>
     <item>10</item>
     <item>11</item>
-    <item>12 (最嚴格)</item>
+    <item>12 (empfindlech)</item>
   </string-array>
   <string-array name="default_smiley_names">
-    <item>開心</item>
-    <item>Sad</item>
-    <item>眨眼</item>
-    <item>吐舌頭</item>
-    <item>驚訝</item>
-    <item>Kissing</item>
-    <item>大喊</item>
-    <item>超酷</item>
-    <item>Money mouth</item>
-    <item>Foot in mouth</item>
-    <item>害羞</item>
-    <item>天使</item>
-    <item>Undecided</item>
-    <item>嚎啕大哭</item>
-    <item>Lips are sealed</item>
-    <item>開懷大笑</item>
-    <item>Confused</item>
-    <item>Heart</item>
-    <item>Mad</item>
-    <item>Smirk</item>
-    <item>撲克臉</item>
+    <item>Frou</item>
+    <item>Traureg</item>
+    <item>Zwinkeren</item>
+    <item>Zong erausstrecken</item>
+    <item>Iwwerrascht</item>
+    <item>Kuss</item>
+    <item>Blären</item>
+    <item>Cool</item>
+    <item>Räich</item>
+    <item>Fettdëppchen</item>
+    <item>Peinlech</item>
+    <item>Engel</item>
+    <item>Ondecidéiert</item>
+    <item>Kräischen</item>
+    <item>Mond zou</item>
+    <item>Laachen</item>
+    <item>Duercherneen</item>
+    <item>Häerz</item>
+    <item>Rosen</item>
+    <item>Grinsen</item>
+    <item>Pokergesiicht</item>
   </string-array>
 </resources>

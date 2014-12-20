@@ -48,9 +48,6 @@
   <string name="template_insert_hint">Mata in malltexten här</string>
   <string name="template_empty_text">Textfältet kan inte lämnas tomt</string>
   <string name="template_save">Spara</string>
-  <string name="template_ctx_menu_title">Åtgärder</string>
-  <string name="template_edit">Ändra</string>
-  <string name="template_delete">Ta bort</string>
   <string name="template_list_title">Mallar</string>
   <string name="template_new_title">Ny mall</string>
   <string name="template_insert">Lägg till mall</string>
@@ -89,7 +86,6 @@
   <string name="menu_as_unread">Markera som oläst</string>
   <string name="menu_all_as_unread">Markera alla som olästa</string>
   <string name="confirm_mark_unread_dialog_title">Markera som oläst?</string>
-  <string name="confirm_mark_unread_conversation">Konversationen kommer att markeras som oläst.</string>
   <string name="confirm_mark_unread_all_conversations">Alla trådar kommer att markeras som oläst.</string>
   <string name="select_recipients">Välj mottagare</string>
   <string name="groups_header">Grupper</string>
@@ -117,9 +113,20 @@
   <string name="menu_insert_smiley">Infoga känsloikon</string>
   <string name="pref_title_enable_emoticons">Aktivera känsloikoner</string>
   <string name="pref_summary_enable_emoticons">Ersätt textkänsloikoner med grafiska motsvarigheter</string>
-  <string name="normal_show">Visa normalläge</string>
   <string name="cannot_play">Kan inte visa bildspelet.</string>
   <string name="menu_conversation_options">Konversationsalternativ</string>
   <string name="pref_title_reset_convopt_to_default">Återställ till standard</string>
   <string name="pref_summary_reset_convopt_to_default">Återställer konversationsinställningarna till standard på applikationsnivå</string>
+  <string name="sub_no_sim">Inget SIM</string>
+  <string name="sent_on">"Skickat: <xliff:g id="date">%s</xliff:g>"</string>
+  <string name="received_on">"Mottaget: <xliff:g id="date">%s</xliff:g>"</string>
+  <string name="cancel_downloading">Avbryt</string>
+  <string name="slide_done">Färdig</string>
+  <string name="mobile_data_send">Skicka</string>
+  <string name="system_audio_item">Systemljud</string>
+  <string name="external_audio_item">Externt ljud</string>
+  <string name="progress_mms_text">Tryck för att försöka igen</string>
+  <string name="type_slot1">SIM 1</string>
+  <string name="type_slot2">SIM 2</string>
+  <string name="done_delete">Färdig</string>
 </resources>
