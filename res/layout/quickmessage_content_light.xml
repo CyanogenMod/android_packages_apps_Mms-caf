@@ -138,7 +138,7 @@
             android:hint="@string/type_to_reply_text_enter_to_send"
             android:minHeight="@dimen/input_text_height"
             android:textColor="?android:attr/textColorPrimaryInverse"
-            android:textColorHint="?android:attr/textColorTertiary"
+            android:textColorHint="?android:attr/textColorTertiaryInverse"
             android:textCursorDrawable = "@null"
             android:maxLines="3"
             android:imeOptions="actionSend|flagNoEnterAction"
