@@ -48,6 +48,9 @@
     <!-- configuration for cancel mms -->
     <bool name="config_mms_cancelable">false</bool>
 
+    <!-- configuration for showing smsc pref -->
+    <bool name="config_show_smsc_pref">true</bool>
+
     <!-- configuration for max slide num -->
     <integer name="max_slide_num">10</integer>
     <!-- configuration for limit count -->
@@ -101,4 +104,5 @@
 
     <!-- configuration for error toast during retry -->
     <bool name="config_mms_retry_toast">false</bool>
+    <bool name="enable_filter_threads_by_sim">true</bool>
 </resources>

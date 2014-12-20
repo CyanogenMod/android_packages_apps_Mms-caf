@@ -118,7 +118,7 @@ public class SearchActivityExtend extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(0, MENU_SEARCH, 0, R.string.menu_search)
-            .setIcon(R.drawable.ic_menu_search_holo_dark)
+            .setIcon(R.drawable.ic_menu_search_white)
             .setAlphabeticShortcut(android.app.SearchManager.MENU_KEY)
             .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         return true;

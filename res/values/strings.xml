@@ -837,9 +837,10 @@
     <string name="mail_to">mailto:</string>
     <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
     <string name="menu_connect_url">Connect</string>
+    <string name="do_not_show_connect_warning">Do not show me this warning again.</string>
     <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
     <string name="menu_add_to_label">Save to bookmark</string>
-    <string name="loadurlinfo_str">Load the URL?</string>
+    <string name="loadurlinfo_str">Warning: URLs from unknown sources can lead to phishing attempts</string>
     <!-- Message Template -->
     <string name="pref_summary_message_template">Edit message template</string>
     <string name="pref_title_message_template">Message template</string>
@@ -1023,4 +1024,21 @@
     <string name="pref_sms_store_card_unknown_fail">Failure to receive new messages, the SIM card can\'t be read correctly</string>
     <string name="mms_size_indicator"><xliff:g id="mms_size">%1$s</xliff:g>K/<xliff:g id="all_size">%2$s</xliff:g>K</string>
     <string name="forward_size_over">Forbid forwarding, new message size over 300K.</string>
+
+    <string name="prefs_title_export_sms_messages">Export SMS messages</string>
+    <string name="prefs_title_import_sms_messages">Import SMS messages</string>
+
+    <string name="import_sms_title">Import SMS</string>
+    <string name="export_sms_title">Export SMS</string>
+    <string name="delete_sms_title">Delete SMS</string>
+    <string name="pick_sms_backup_title">Pick SMS backup</string>
+    <string name="delete_sms_toast">SMS message deleted successfully</string>
+    <string name="import_sms_toast">SMS imported successfully</string>
+    <string name="export_sms_toast">SMS exported successfully</string>
+    <string name="perform_backup_title">Performing backup</string>
+    <string name="perform_restore_title">Performing restore</string>
+    <string name="wait_progress_message">Please wait...</string>
+    <string name="backup_file_name_message">File path : %1s</string>
+    <string name="manage_sdcard_messages">Manage sdcard messages</string>
+    <string name="no_backups_found">No backed up messages found</string>
 </resources>

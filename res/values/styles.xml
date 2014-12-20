@@ -2,9 +2,9 @@
 <resources>
     <style name="TextAppearance">
         <item name="android:textColor">?android:textColorPrimary</item>
-        <item name="android:textColorHighlight">#FFFF9200</item>
+        <item name="android:textColorHighlight">#ffff4444</item>
         <item name="android:textColorHint">?android:textColorHint</item>
-        <item name="android:textColorLink">#5C5CFF</item>
+        <item name="android:textColorLink">@color/mms_theme_color</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">normal</item>
     </style>
@@ -24,7 +24,43 @@
         <item name="android:textColor">?android:textColorSecondaryInverse</item>
     </style>
 
-    <style name="MmsHoloTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar">
+    <style name="MmsTheme" parent="android:Theme.Material.Light.DarkActionBar">
+        <item name="android:colorPrimary">@color/mms_theme_color</item>
+        <item name="android:colorPrimaryDark">@color/mms_theme_color_dark</item>
+        <item name="android:colorAccent">@color/mms_theme_color_accent</item>
+        <item name="android:actionBarStyle">@style/MmsActionBarStyle</item>
+    </style>
+
+    <style name="MmsTheme.NoActionBar">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
+    </style>
+
+    <style name="HeaderTheme" parent="android:ThemeOverlay.Material.Dark.ActionBar">
+        <item name="android:colorAccent">?android:attr/textColorPrimary</item>
+        <item name="android:popupTheme">@android:style/ThemeOverlay.Material.Light</item>
+        <item name="android:spinnerDropDownItemStyle">@style/HeaderSpinnerDropDown</item>
+        <!-- All popups should have light background -->
+        <item name="android:colorBackground">@*android:color/background_material_light</item>
+    </style>
+
+    <style name="HeaderTabText" parent="android:style/Widget.Material.Light.ActionBar.TabText">
+        <item name="android:textColor">@color/tab_text_color</item>
+        <item name="android:textSize">@dimen/tab_text_size</item>
+        <item name="android:fontFamily">@string/tab_font_family</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="HeaderSpinnerDropDown" parent="android:Widget.Material.Light.DropDownItem.Spinner">
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+    </style>
+
+    <style name="MmsActionBarStyle" parent="android:Widget.Material.Light.ActionBar.Solid">
+        <item name="android:background">@color/mms_theme_color</item>
+        <item name="android:elevation">@dimen/action_bar_elevation</item>
+        <!-- Empty icon -->
+        <item name="android:icon">@android:color/transparent</item>
     </style>
 
     <style name="WidgetTitle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">

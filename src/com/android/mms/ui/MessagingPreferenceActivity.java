@@ -20,6 +20,7 @@ package com.android.mms.ui;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.app.DialogFragment;
 import android.content.Context;
@@ -30,12 +31,15 @@ import android.content.SharedPreferences;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Vibrator;
 import android.os.Message;
 import android.os.Handler;
-import android.os.Bundle;
 import android.os.Looper;
+import android.os.Message;
+import android.os.Vibrator;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
@@ -56,20 +60,26 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.util.Log;
 
-import com.android.internal.telephony.IccCardConstants;
 import com.android.internal.telephony.TelephonyIntents;
 import com.android.internal.telephony.PhoneConstants;
 
+import com.android.internal.telephony.util.BlacklistUtils;
 import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.transaction.TransactionService;
 import com.android.mms.util.Recycler;
+import com.android.mms.QTIBackupSMS;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 
 /**
@@ -103,6 +113,15 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private final static String EXPIRY_ONE_WEEK = "604800"; // 7 * 24 * 60 * 60
     private final static String EXPIRY_TWO_DAYS = "172800"; // 2 * 24 * 60 * 60
 
+    // QuickMessage
+    public static final String QUICKMESSAGE_ENABLED      = "pref_key_quickmessage";
+    public static final String QM_LOCKSCREEN_ENABLED     = "pref_key_qm_lockscreen";
+    public static final String QM_CLOSE_ALL_ENABLED      = "pref_key_close_all";
+    public static final String QM_DARK_THEME_ENABLED     = "pref_dark_theme";
+
+    // Blacklist
+    public static final String BLACKLIST                 = "pref_blacklist";
+
     // Menu entries
     private static final int MENU_RESTORE_DEFAULTS    = 1;
 
@@ -116,6 +135,10 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private PreferenceCategory mNotificationPrefCategory;
     private PreferenceCategory mSmscPrefCate;
 
+    // Delay send
+    public static final String SEND_DELAY_DURATION = "pref_key_send_delay";
+
+    private ListPreference mMessageSendDelayPref;
     private Preference mSmsLimitPref;
     private Preference mSmsDeliveryReportPref;
     private Preference mSmsDeliveryReportPrefSub1;
@@ -127,6 +150,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private Preference mManageSimPref;
     private Preference mManageSim1Pref;
     private Preference mManageSim2Pref;
+    private Preference mManageSdcardSMSPref;
     private Preference mClearHistoryPref;
     private CheckBoxPreference mVibratePref;
     private CheckBoxPreference mEnableNotificationsPref;
@@ -177,6 +201,15 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         }
     };
 
+    // QuickMessage
+    private CheckBoxPreference mEnableQuickMessagePref;
+    private CheckBoxPreference mEnableQmLockscreenPref;
+    private CheckBoxPreference mEnableQmCloseAllPref;
+    private CheckBoxPreference mEnableQmDarkThemePref;
+
+    // Blacklist
+    private PreferenceScreen mBlacklist;
+
     @Override
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -198,10 +231,11 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         }
 
         // Since the enabled notifications pref can be changed outside of this activity,
-        // we have to reload it whenever we resume.
+        // we have to reload it whenever we resume, including the blacklist summary
         setEnabledNotificationsPref();
         // Initialize the sms signature
         updateSignatureStatus();
+        updateBlacklistSummary();
         registerListeners();
         updateSmsEnabledState();
         updateSMSCPref();
@@ -235,6 +269,16 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         }
     }
 
+    private void updateBlacklistSummary() {
+        if (mBlacklist != null) {
+            if (BlacklistUtils.isBlacklistEnabled(this)) {
+                mBlacklist.setSummary(R.string.blacklist_summary);
+            } else {
+                mBlacklist.setSummary(R.string.blacklist_summary_disabled);
+            }
+        }
+    }
+
     private void loadPrefs() {
         addPreferencesFromResource(R.xml.preferences);
 
@@ -250,6 +294,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mManageSimPref = findPreference("pref_key_manage_sim_messages");
         mManageSim1Pref = findPreference("pref_key_manage_sim_messages_slot1");
         mManageSim2Pref = findPreference("pref_key_manage_sim_messages_slot2");
+        mManageSdcardSMSPref = findPreference("pref_key_manage_sdcard_messages");
         mSmsLimitPref = findPreference("pref_key_sms_delete_limit");
         mSmsDeliveryReportPref = findPreference("pref_key_sms_delivery_reports");
         mSmsDeliveryReportPrefSub1 = findPreference("pref_key_sms_delivery_reports_slot1");
@@ -283,6 +328,19 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mSmsValidityCard2Pref
             = (ListPreference) findPreference("pref_key_sms_validity_period_slot2");
 
+        // QuickMessage
+        mEnableQuickMessagePref = (CheckBoxPreference) findPreference(QUICKMESSAGE_ENABLED);
+        mEnableQmLockscreenPref = (CheckBoxPreference) findPreference(QM_LOCKSCREEN_ENABLED);
+        mEnableQmCloseAllPref = (CheckBoxPreference) findPreference(QM_CLOSE_ALL_ENABLED);
+        mEnableQmDarkThemePref = (CheckBoxPreference) findPreference(QM_DARK_THEME_ENABLED);
+
+        // SMS Sending Delay
+        mMessageSendDelayPref = (ListPreference) findPreference(SEND_DELAY_DURATION);
+        mMessageSendDelayPref.setSummary(mMessageSendDelayPref.getEntry());
+
+        // Blacklist screen - Needed for setting summary
+        mBlacklist = (PreferenceScreen) findPreference(BLACKLIST);
+
         setMessagePreferences();
     }
 
@@ -307,10 +365,14 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private void setMessagePreferences() {
         updateSignatureStatus();
 
+        boolean showSmsc = getResources().getBoolean(R.bool.config_show_smsc_pref);
         mSmscPrefCate = (PreferenceCategory) findPreference("pref_key_smsc");
-        showSmscPref();
+        if (showSmsc) {
+            showSmscPref();
+        } else if (mSmscPrefCate != null) {
+            getPreferenceScreen().removePreference(mSmscPrefCate);
+        }
         setMessagePriorityPref();
-
         // Set SIM card SMS management preference
         updateSIMSMSPref();
 
@@ -401,6 +463,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
         String soundValue = sharedPreferences.getString(NOTIFICATION_RINGTONE, null);
         setRingtoneSummary(soundValue);
+
+        mMessageSendDelayPref.setOnPreferenceChangeListener(this);
     }
 
     private void setMmsRelatedPref() {
@@ -455,16 +519,6 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         if (getResources().getBoolean(R.bool.config_sms_validity)) {
             if (MessageUtils.isMultiSimEnabledMms()) {
                 storageOptions.removePreference(mSmsValidityPref);
-                if (!MessageUtils.isIccCardActivated(MessageUtils.SUB1)) {
-                    mSmsValidityCard1Pref.setEnabled(false);
-                } else {
-                    setSmsPreferValiditySummary(MessageUtils.SUB1);
-                }
-                if (!MessageUtils.isIccCardActivated(MessageUtils.SUB2)) {
-                    mSmsValidityCard2Pref.setEnabled(false);
-                } else {
-                    setSmsPreferValiditySummary(MessageUtils.SUB2);
-                }
             } else {
                 storageOptions.removePreference(mSmsValidityCard1Pref);
                 storageOptions.removePreference(mSmsValidityCard2Pref);
@@ -475,6 +529,17 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             storageOptions.removePreference(mSmsValidityCard1Pref);
             storageOptions.removePreference(mSmsValidityCard2Pref);
         }
+
+        // QuickMessage
+        setEnabledQuickMessagePref();
+        setEnabledQmLockscreenPref();
+        setEnabledQmCloseAllPref();
+        setEnabledQmDarkThemePref();
+    }
+
+    public static long getMessageSendDelayDuration(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return Long.valueOf(prefs.getString(SEND_DELAY_DURATION, "0"));
     }
 
     private void setRingtoneSummary(String soundValue) {
@@ -633,6 +698,30 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mEnableNotificationsPref.setChecked(getNotificationEnabled(this));
     }
 
+    private void setEnabledQuickMessagePref() {
+        // The "enable quickmessage" setting is really stored in our own prefs. Read the
+        // current value and set the checkbox to match.
+        mEnableQuickMessagePref.setChecked(getQuickMessageEnabled(this));
+    }
+
+    private void setEnabledQmLockscreenPref() {
+        // The "enable quickmessage on lock screen " setting is really stored in our own prefs. Read the
+        // current value and set the checkbox to match.
+        mEnableQmLockscreenPref.setChecked(getQmLockscreenEnabled(this));
+    }
+
+    private void setEnabledQmCloseAllPref() {
+        // The "enable close all" setting is really stored in our own prefs. Read the
+        // current value and set the checkbox to match.
+        mEnableQmCloseAllPref.setChecked(getQmCloseAllEnabled(this));
+    }
+
+    private void setEnabledQmDarkThemePref() {
+        // The "Use dark theme" setting is really stored in our own prefs. Read the
+        // current value and set the checkbox to match.
+        mEnableQmDarkThemePref.setChecked(getQmDarkThemeEnabled(this));
+    }
+
     private void setSmsDisplayLimit() {
         mSmsLimitPref.setSummary(
                 getString(R.string.pref_summary_delete_limit,
@@ -754,18 +843,22 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                     mSmsRecycler.getMessageLimit(this),
                     mSmsRecycler.getMessageMinLimit(),
                     mSmsRecycler.getMessageMaxLimit(),
-                    R.string.pref_title_sms_delete).show();
+                    R.string.pref_title_sms_delete,
+                    R.string.pref_messages_to_save).show();
         } else if (preference == mMmsLimitPref) {
             new NumberPickerDialog(this,
                     mMmsLimitListener,
                     mMmsRecycler.getMessageLimit(this),
                     mMmsRecycler.getMessageMinLimit(),
                     mMmsRecycler.getMessageMaxLimit(),
-                    R.string.pref_title_mms_delete).show();
+                    R.string.pref_title_mms_delete,
+                    R.string.pref_messages_to_save).show();
         } else if (preference == mSmsTemplate) {
             startActivity(new Intent(this, MessageTemplate.class));
         } else if (preference == mManageSimPref) {
             startActivity(new Intent(this, ManageSimMessages.class));
+        } else if (preference == mManageSdcardSMSPref) {
+            manageSMS();
         } else if (preference == mManageSim1Pref) {
             Intent intent = new Intent(this, ManageSimMessages.class);
             intent.putExtra(MessageUtils.SUBSCRIPTION_KEY, MessageUtils.SUB1);
@@ -782,6 +875,18 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             enableNotifications(mEnableNotificationsPref.isChecked(), this);
         } else if (preference == mSmsSignaturePref) {
             updateSignatureStatus();
+        } else if (preference == mEnableQuickMessagePref) {
+            // Update the actual "enable quickmessage" value that is stored in secure settings.
+            enableQuickMessage(mEnableQuickMessagePref.isChecked(), this);
+        } else if (preference == mEnableQmLockscreenPref) {
+            // Update the actual "enable quickmessage on lockscreen" value that is stored in secure settings.
+            enableQmLockscreen(mEnableQmLockscreenPref.isChecked(), this);
+        } else if (preference == mEnableQmCloseAllPref) {
+            // Update the actual "enable close all" value that is stored in secure settings.
+            enableQmCloseAll(mEnableQmCloseAllPref.isChecked(), this);
+        } else if (preference == mEnableQmDarkThemePref) {
+            // Update the actual "enable dark theme" value that is stored in secure settings.
+            enableQmDarkTheme(mEnableQmDarkThemePref.isChecked(), this);
         } else if (preference == mMmsAutoRetrievialPref) {
             if (mMmsAutoRetrievialPref.isChecked()) {
                 startMmsDownload();
@@ -789,6 +894,181 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         }
 
         return super.onPreferenceTreeClick(preferenceScreen, preference);
+    }
+
+    private class BackupRestoreSMSTask extends AsyncTask<Void, Void, File> {
+
+        private File mRestoreFile;
+        private ProgressDialog mDialog;
+        private boolean mShouldBackup;
+
+        public BackupRestoreSMSTask(File restoreFile) {
+            mRestoreFile = restoreFile;
+            mShouldBackup = restoreFile == null ? true : false;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            String title = getString(mShouldBackup ? R.string.perform_backup_title :
+                    R.string.perform_restore_title);
+            String msg = getString(R.string.wait_progress_message);
+            mDialog = ProgressDialog.show(MessagingPreferenceActivity.this, title, msg, true);
+        }
+
+        @Override
+        protected File doInBackground(Void... params) {
+            File folder = new File(Environment.getExternalStorageDirectory(), BACKUP_FOLDER_NAME);
+            if (!folder.exists()) {
+                folder.mkdir();
+            }
+            File operationFile;
+            if (mShouldBackup) {
+                operationFile = new File(folder, String.valueOf(System.currentTimeMillis()));
+            } else {
+                operationFile = mRestoreFile;
+            }
+            QTIBackupSMS smsBackup = new QTIBackupSMS(getApplicationContext(), operationFile);
+            if (mShouldBackup) {
+                smsBackup.performBackup();
+            } else {
+                smsBackup.performRestore();
+            }
+            return operationFile;
+        }
+
+        @Override
+        protected void onPostExecute(final File file) {
+            mDialog.cancel();
+            if (mShouldBackup) {
+                AlertDialog.Builder builder =
+                        new AlertDialog.Builder(MessagingPreferenceActivity.this);
+                builder.setMessage(R.string.export_sms_toast)
+                        .setMessage(String.format(getString(R.string.backup_file_name_message,
+                                file.getAbsolutePath())))
+                        .setPositiveButton(android.R.string.ok, null)
+                        .setNegativeButton(R.string.message_share,
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                                        shareIntent.putExtra(Intent.EXTRA_STREAM,
+                                                Uri.fromFile(file));
+                                        shareIntent.setType("application/octet-stream");
+                                        startActivity(shareIntent);
+                                    }
+                                });
+                builder.show();
+            } else {
+                Toast.makeText(MessagingPreferenceActivity.this,
+                        R.string.import_sms_toast, Toast.LENGTH_SHORT).show();
+            }
+        }
+
+    }
+
+    private class DeleteSMSTask extends AsyncTask<File, Void, Void> {
+
+        @Override
+        protected Void doInBackground(File... params) {
+            params[0].delete();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            Toast.makeText(MessagingPreferenceActivity.this, R.string.delete_sms_toast,
+                    Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private class RestoreDeleteListFilesTask extends AsyncTask<Void, Void, File[]> {
+
+        private boolean mShouldDelete;
+
+        public RestoreDeleteListFilesTask(boolean shouldDelete) {
+            mShouldDelete = shouldDelete;
+        }
+
+        @Override
+        protected File[] doInBackground(Void... params) {
+            File folder = new File(Environment.getExternalStorageDirectory(), BACKUP_FOLDER_NAME);
+            File[] result = null;
+            if (folder.exists()) {
+                result = folder.listFiles();
+            }
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(File[] files) {
+            if (files == null || files.length == 0) {
+                Toast.makeText(MessagingPreferenceActivity.this, R.string.no_backups_found,
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+            final RestoreFileListAdapter adapter = new RestoreFileListAdapter(files);
+            AlertDialog.Builder builder = new AlertDialog.Builder(MessagingPreferenceActivity.this);
+            builder.setTitle(R.string.pick_sms_backup_title)
+                    .setAdapter(adapter, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (mShouldDelete) {
+                                new DeleteSMSTask().execute(adapter.getFile(which));
+                            } else {
+                                new BackupRestoreSMSTask(adapter.getFile(which)).execute();
+                            }
+
+                        }
+                    });
+            builder.show();
+        }
+
+    }
+
+    private class RestoreFileListAdapter extends ArrayAdapter {
+
+        private final File[] mItems;
+
+        public RestoreFileListAdapter(File[] objects) {
+            super(MessagingPreferenceActivity.this, android.R.layout.simple_list_item_1, objects);
+            mItems = objects;
+        }
+
+        @Override
+        public String getItem(int position) {
+            File file = mItems[position];
+            Date date = new Date(Long.parseLong(file.getName()));
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            return format.format(date);
+        }
+
+        public File getFile(int index) {
+            return mItems[index];
+        }
+
+    }
+
+    private static final String BACKUP_FOLDER_NAME = "BackupSms";
+    private static final int SMS_IMPORT = 0;
+    private static final int SMS_EXPORT = 1;
+    private static final int SMS_DELETE = 2;
+
+    private void manageSMS() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setItems(R.array.manage_sms_entries, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case SMS_IMPORT:
+                        new RestoreDeleteListFilesTask(false).execute();
+                        break;
+                    case SMS_EXPORT:
+                        new BackupRestoreSMSTask(null).execute();
+                        break;
+                    case SMS_DELETE:
+                        new RestoreDeleteListFilesTask(true).execute();
+                        break;
+                }
+        }});
+        builder.show();
     }
 
     /**
@@ -879,6 +1159,63 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         editor.apply();
     }
 
+    public static boolean getQuickMessageEnabled(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean quickMessageEnabled =
+            prefs.getBoolean(MessagingPreferenceActivity.QUICKMESSAGE_ENABLED, false);
+        return quickMessageEnabled;
+    }
+
+    public static void enableQuickMessage(boolean enabled, Context context) {
+        // Store the value of notifications in SharedPreferences
+        SharedPreferences.Editor editor =
+            PreferenceManager.getDefaultSharedPreferences(context).edit();
+        editor.putBoolean(MessagingPreferenceActivity.QUICKMESSAGE_ENABLED, enabled);
+        editor.apply();
+    }
+
+    public static boolean getQmLockscreenEnabled(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean qmLockscreenEnabled =
+            prefs.getBoolean(MessagingPreferenceActivity.QM_LOCKSCREEN_ENABLED, false);
+        return qmLockscreenEnabled;
+    }
+
+    public static void enableQmLockscreen(boolean enabled, Context context) {
+        SharedPreferences.Editor editor =
+            PreferenceManager.getDefaultSharedPreferences(context).edit();
+        editor.putBoolean(MessagingPreferenceActivity.QM_LOCKSCREEN_ENABLED, enabled);
+        editor.apply();
+    }
+
+    public static boolean getQmCloseAllEnabled(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean qmCloseAllEnabled =
+            prefs.getBoolean(MessagingPreferenceActivity.QM_CLOSE_ALL_ENABLED, false);
+        return qmCloseAllEnabled;
+    }
+
+    public static void enableQmCloseAll(boolean enabled, Context context) {
+        SharedPreferences.Editor editor =
+            PreferenceManager.getDefaultSharedPreferences(context).edit();
+        editor.putBoolean(MessagingPreferenceActivity.QM_CLOSE_ALL_ENABLED, enabled);
+        editor.apply();
+    }
+
+    public static void enableQmDarkTheme(boolean enabled, Context context) {
+        SharedPreferences.Editor editor =
+            PreferenceManager.getDefaultSharedPreferences(context).edit();
+        editor.putBoolean(MessagingPreferenceActivity.QM_DARK_THEME_ENABLED, enabled);
+        editor.apply();
+    }
+
+    public static boolean getQmDarkThemeEnabled(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean qmDarkThemeEnabled =
+            prefs.getBoolean(MessagingPreferenceActivity.QM_DARK_THEME_ENABLED, false);
+        return qmDarkThemeEnabled;
+    }
+
     private void registerListeners() {
         mRingtonePref.setOnPreferenceChangeListener(this);
         final IntentFilter intentFilter =
@@ -891,6 +1228,11 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         boolean result = false;
         if (preference == mRingtonePref) {
             setRingtoneSummary((String)newValue);
+            result = true;
+        } else if (preference == mMessageSendDelayPref) {
+            String value = (String) newValue;
+            mMessageSendDelayPref.setValue(value);
+            mMessageSendDelayPref.setSummary(mMessageSendDelayPref.getEntry());
             result = true;
         }
         return result;

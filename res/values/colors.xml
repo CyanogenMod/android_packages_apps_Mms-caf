@@ -24,15 +24,14 @@
     <!-- text color -->
     <drawable name="text_color_red">#ffff4444</drawable>
     <drawable name="text_color_black">#ff000000</drawable>
-    <color name="text_hairline">#ffcccccc</color>
     <color name="message_count_color">#66333333</color>
 
     <!-- Chat "sent time" text background -->
     <color name="timestamp_color">#bf000000</color>
 
-    <!-- the background color used for unread conversation -->
-    <color name="unread_bgcolor">#ffffffff</color>
-    <color name="read_bgcolor">#ffeeeeee</color>
+    <color name="outgoing_message_bg">#ffffff</color>
+    <color name="incoming_message_bg_default">#26c6da</color>
+    <color name="selected_list_item_bg">#ffeeeeee</color>
 
     <color name="widget_sender_text_color_read">#555555</color>
     <color name="widget_sender_text_color_unread">#333333</color>
@@ -40,6 +39,28 @@
     <color name="widget_subject_text_color_unread">#555555</color>
 
     <color name="translucent_white">#ccffffff</color>
+
+    <!-- New text colors from layouts to make theme chooser apk easier to theme -->
+    <color name="compose_message_text_counter">#cc333333</color>
+    <color name="actionbar_text">#ccffffff</color>
+    <color name="delete_thread_dialog">#000000</color>
+    <color name="delivery_report_header">#ffffff</color>
+    <color name="delivery_report_recipient">#000000</color>
+    <color name="delivery_report_status">#000000</color>
+    <color name="delivery_report_date">#000000</color>
+    <color name="button_text">#000000</color>
+    <color name="message_recieved">#000000</color>
+    <color name="message_sent">#000000</color>
+    <color name="widget_unread_text">#777777</color>
+    <color name="widget_loading">#000000</color>
+
+    <!-- New Background colors from layouts to make theme chooser apk easier to theme -->
+    <color name="background">#ffffff</color>
+    <color name="darkgray_backgrounds">#888888</color>
+    <color name="quickmessage_body_dark_bg">#ff1e1e1e</color>
+    <color name="quickmessage_body_light_bg">#fff3f3f3</color>
+    <color name="dividers">#eeeeee</color>
+    <color name="transparent">#00000000</color>
 
     <color name="banner_item_transparent">#00000000</color>
     <color name="banner_item_activated">#670099cc</color>
@@ -50,4 +71,12 @@
     <color name="solid_white">#ffffffff</color>
 
     <color name="slot_indicator_background">#737373</color>
+
+    <!-- material theme colors -->
+    <color name="mms_theme_color">#00ACC1</color>
+    <color name="mms_theme_color_dark">#0097A7</color>
+    <color name="mms_theme_color_accent">#00BCD4</color>
+
+    <color name="actionbar_background_color">@color/mms_theme_color</color>
+    <color name="floating_action_button_icon_color">#ffffff</color>
 </resources>

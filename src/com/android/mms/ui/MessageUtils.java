@@ -53,6 +53,7 @@ import android.content.res.Resources;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SqliteWrapper;
 import android.graphics.drawable.Drawable;
 import android.media.CamcorderProfile;
@@ -89,9 +90,11 @@ import android.text.format.Time;
 import android.text.style.URLSpan;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -111,6 +114,7 @@ import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.TempFileProvider;
 import com.android.mms.data.WorkingMessage;
+import com.android.mms.model.VCalModel;
 import com.android.mms.model.MediaModel;
 import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
@@ -299,6 +303,9 @@ public class MessageUtils {
 
     // Save the thread id for same recipient forward mms
     public static ArrayList<Long> sSameRecipientList = new ArrayList<Long>();
+
+    private static final String PREF_SHOW_URL_WARNING = "pref_should_show_url_warning";
+    private static final boolean PREF_SHOULD_SHOW_URL_WARNING = true;
 
     static {
         for (int i = 0; i < NUMERIC_CHARS_SUGAR.length; i++) {
@@ -648,6 +655,10 @@ public class MessageUtils {
                 return WorkingMessage.VCARD;
             }
 
+            if (slide.hasVCal()) {
+                return WorkingMessage.VCAL;
+            }
+
             if (slide.hasText()) {
                 return WorkingMessage.TEXT;
             }
@@ -844,6 +855,29 @@ public class MessageUtils {
             // distinguish view vcard from mms or contacts.
             intent.putExtra(VIEW_VCARD, true);
             context.startActivity(intent);
+            return;
+        } else if (slide.hasVCal()) {
+            mm = slide.getVCal();
+            Intent intent = new Intent();
+            Uri vCalFileUri = mm.getUri();;
+            // change the intent type based on the view triggering this call
+            // from compose - use ACTION_VIEW
+            // from others - use ACTION_SEND
+            String [] projection = { "_data" };     // absolute file path
+            Cursor cursor = context.getContentResolver().query(mm.getUri(), projection,
+                    null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                // if file exists , then we are looking at a local mms msg
+                intent.setAction(Intent.ACTION_SEND);
+                cursor.close();
+            } else {
+                intent.setAction(Intent.ACTION_VIEW);
+            }
+
+            intent.setDataAndType(vCalFileUri, ContentType.TEXT_VCALENDAR.toLowerCase());
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            context.startActivity(intent);
+
             return;
         }
 
@@ -2484,30 +2518,57 @@ public class MessageUtils {
     }
 
     private static void loadUrlDialog(final Context context, final String urlString) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(R.string.menu_connect_url);
-        builder.setMessage(context.getString(R.string.loadurlinfo_str));
-        builder.setCancelable(true);
-        builder.setPositiveButton(R.string.yes, new OnClickListener() {
-            @Override
-            final public void onClick(DialogInterface dialog, int which) {
-                loadUrl(context, urlString);
-            }
-        });
-        builder.setNegativeButton(R.string.no, new OnClickListener() {
-            @Override
-            final public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                dialog.dismiss();
-            }
-        });
-        builder.show();
+        if (!showUrlLoadingWarning(context)) {
+            loadUrl(context, urlString);
+            return;
+        }
 
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View container = inflater.inflate(R.layout.open_url_dialog, null);
+        final CheckBox doNotShow = (CheckBox) container.findViewById(R.id.do_not_show);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setView(container)
+                .setTitle(R.string.menu_connect_url)
+                .setMessage(context.getString(R.string.loadurlinfo_str))
+                .setCancelable(true)
+                .setPositiveButton(R.string.yes, new OnClickListener() {
+                    @Override
+                    final public void onClick(DialogInterface dialog, int which) {
+                        if (doNotShow.isChecked()) {
+                            setShouldShowUrlWarning(context);
+                        }
+                        loadUrl(context, urlString);
+                    }
+                })
+                .setNegativeButton(R.string.no, new OnClickListener() {
+                    @Override
+                    final public void onClick(DialogInterface dialog, int which) {
+                        if (doNotShow.isChecked()) {
+                            setShouldShowUrlWarning(context);
+                        }
+                        dialog.dismiss();
+                    }
+                })
+                .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        dialog.dismiss();
+                    }
+                });
+
+        builder.show();
+    }
+
+    private static boolean showUrlLoadingWarning(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(PREF_SHOW_URL_WARNING, PREF_SHOULD_SHOW_URL_WARNING);
+    }
+
+    private static void setShouldShowUrlWarning(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(PREF_SHOW_URL_WARNING, false);
+        editor.apply();
     }
 
     private static void loadUrl(Context context, String url) {
