@@ -39,7 +39,6 @@ import android.preference.PreferenceManager;
 import android.provider.ContactsContract.Profile;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.telephony.SubscriptionManager;
 import android.text.InputFilter;
 import android.text.InputFilter.LengthFilter;
 import android.text.InputType;
@@ -546,11 +545,8 @@ public class QuickMessagePopup extends Activity {
     private void sendQuickMessage(String message, QuickMessage qm) {
         if (message != null && qm != null) {
             long threadId = qm.getThreadId();
-            // Use the default SMS phone ID to reply in the multi-sim environment.
-            // TODO: Attempt replying on the SIM the message was delivered on first.
-            int phoneId = SubscriptionManager.getPhoneId(SubscriptionManager.getDefaultSmsSubId());
             SmsMessageSender sender = new SmsMessageSender(getBaseContext(),
-                    qm.getFromNumber(), message, threadId, phoneId);
+                    qm.getFromNumber(), message, threadId, PhoneConstants.PHONE_ID1);
             try {
                 if (DEBUG)
                     Log.d(LOG_TAG, "sendQuickMessage(): Sending message to " + qm.getFromName()
