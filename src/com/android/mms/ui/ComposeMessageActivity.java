@@ -71,7 +71,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SqliteWrapper;
 import android.drm.DrmStore;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.VectorDrawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -129,6 +133,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -342,7 +347,9 @@ public class ComposeMessageActivity extends Activity
     private TextView mTextCounter;          // Shows the number of characters used in text editor
     private TextView mSendButtonMms;        // Press to send mms
     private ImageButton mSendButtonSms;     // Press to send sms
+    private LinearLayout mSubjectWrapper;   // Wrapp for subject and cancel button
     private EditText mSubjectTextEditor;    // Text editor for MMS subject
+    private ImageView mSubjectRemoveButton; // Remove the subject and editor
     private TextView mTextCounterSec;   // The second send button text counter
     private View mSendLayoutMmsFir;        // The first mms send layout with sim indicator
     private View mSendLayoutSmsFir;     // The first sms send layout with sim indicator
@@ -2091,18 +2098,29 @@ public class ComposeMessageActivity extends Activity
             log("" + show);
         }
 
+        if (mSubjectWrapper == null) {
+            mSubjectWrapper = (LinearLayout) findViewById(R.id.subject_wrapper);
+        }
+
         if (mSubjectTextEditor == null) {
-            // Don't bother to initialize the subject editor if
-            // we're just going to hide it.
-            if (show == false) {
-                return;
-            }
             mSubjectTextEditor = (EditText)findViewById(R.id.subject);
             mSubjectTextEditor.setFilters(new InputFilter[] {
                     new LengthFilter(SUBJECT_MAX_LENGTH)});
         }
 
-        mSubjectTextEditor.setOnKeyListener(show ? mSubjectKeyListener : null);
+        if (mSubjectRemoveButton == null) {
+            mSubjectRemoveButton = (ImageView) findViewById(R.id.subject_cancel);
+            // Adding this removal button so we don't have to rely on the broken on key listener which
+            // only works on select third party soft IMEs or hardware keyboards from back in the old
+            // days. Lollipop LatinIME specifies that it will refuse to send backward compat updown key
+            // events for anything less than jelly bean.
+            mSubjectRemoveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showSubjectEditor(false);
+                }
+            });
+        }
 
         if (show) {
             mSubjectTextEditor.addTextChangedListener(mSubjectEditorWatcher);
@@ -2110,8 +2128,11 @@ public class ComposeMessageActivity extends Activity
             mSubjectTextEditor.removeTextChangedListener(mSubjectEditorWatcher);
         }
 
+        mSubjectTextEditor.setOnKeyListener(show ? mSubjectKeyListener : null);
         mSubjectTextEditor.setText(mWorkingMessage.getSubject());
-        mSubjectTextEditor.setVisibility(show ? View.VISIBLE : View.GONE);
+
+        mSubjectWrapper.setVisibility(show ? View.VISIBLE : View.GONE);
+
         hideOrShowTopPanel();
     }
 
@@ -2806,8 +2827,8 @@ public class ComposeMessageActivity extends Activity
     }
 
     private boolean isSubjectEditorVisible() {
-        return (null != mSubjectTextEditor)
-                    && (View.VISIBLE == mSubjectTextEditor.getVisibility());
+        return (null != mSubjectWrapper)
+                    && (View.VISIBLE == mSubjectWrapper.getVisibility());
     }
 
     @Override
