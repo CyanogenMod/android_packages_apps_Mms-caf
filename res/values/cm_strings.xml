@@ -356,6 +356,7 @@
     <string name="backup_file_name_message">File path : %1s</string>
     <string name="manage_sdcard_messages">Manage sdcard messages</string>
     <string name="no_backups_found">No backed up messages found</string>
+    <string name="remove_subject">Remove subject</string>
 
     <!-- Sharing vcs files from Calendar -->
     <string name="type_vcal">vCal</string>
