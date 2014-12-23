@@ -24,6 +24,7 @@
   <string name="toast_sending_message">正在傳送訊息</string>
   <string name="qm_quick_reply">回覆</string>
   <string name="qm_mark_read">已讀</string>
+  <string name="message_counter">%2$d 中的 %1$d</string>
   <string name="pref_title_notification_privacy_mode_enabled">私隱模式</string>
   <string name="pref_summary_notification_privacy_mode_enabled">隱藏狀態列中的寄件者和訊息並停用「快速回覆」</string>
   <string name="notification_single_title_privacy_mode">新訊息</string>
@@ -37,19 +38,16 @@
   <string name="pref_quickmessage_title">顯示彈出式視窗</string>
   <string name="pref_quickmessage_summary">為收到的短訊顯示 QuickMessage 彈出式視窗</string>
   <string name="pref_wake_unlock_title">喚醒和解鎖</string>
-  <string name="pref_wake_unlock_summary">收到訊息時喚醒和解鎖裝置 (僅限不安全的鎖定螢幕)</string>
+  <string name="pref_wake_unlock_summary">收到訊息時喚醒和解鎖裝置（僅限不安全的鎖定畫面）</string>
   <string name="pref_close_all_title">全部關閉</string>
   <string name="pref_close_all_summary">關閉按鈕關閉所有訊息</string>
   <string name="prefs_templates_settings">短訊範本</string>
   <string name="pref_title_templates_manage">範本</string>
   <string name="pref_summary_templates_manage">管理您的短訊範本</string>
   <string name="template_explanation">插入或修改範本文字，也可以畫出要與其關聯的手勢</string>
-  <string name="template_insert_hint">將範本文字插入這裡</string>
+  <string name="template_insert_hint">將範本文字插入這裏</string>
   <string name="template_empty_text">文字欄位不可留空</string>
   <string name="template_save">儲存</string>
-  <string name="template_ctx_menu_title">操作</string>
-  <string name="template_edit">編輯</string>
-  <string name="template_delete">刪除</string>
   <string name="template_list_title">範本</string>
   <string name="template_new_title">新範本</string>
   <string name="template_insert">插入範本</string>
@@ -86,8 +84,8 @@
   <string name="alert_dialog_yes">是</string>
   <string name="alert_dialog_no">否</string>
   <string name="menu_as_unread">標記為未讀</string>
+  <string name="menu_all_as_unread">全部標為未讀</string>
   <string name="confirm_mark_unread_dialog_title">標記為未讀？</string>
-  <string name="confirm_mark_unread_conversation">談話將被標記為未讀。</string>
   <string name="confirm_mark_unread_all_conversations">所有的主題將被標記為未讀。 </string>
   <string name="select_recipients">選取收件人</string>
   <string name="groups_header">群組</string>
@@ -115,4 +113,6 @@
   <string name="menu_insert_smiley">插入表情符號</string>
   <string name="pref_title_enable_emoticons">表情符號支援</string>
   <string name="pref_summary_enable_emoticons">用等同的圖形來替代文字表情符號</string>
+  <string name="cannot_play">無法顯示幻燈片。</string>
+  <string name="pref_title_reset_convopt_to_default">重設為預設值</string>
 </resources>

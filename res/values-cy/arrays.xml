@@ -17,10 +17,6 @@
  * limitations under the License.
  -->
 <resources>
-  <string-array name="empty_subject_strings">
-    <item>بابەت نیە</item>
-    <item>NoSubject</item>
-  </string-array>
   <array name="sim_icons">
     <item>@drawable/ic_sim_icon_1</item>
     <item>@drawable/ic_sim_icon_2</item>

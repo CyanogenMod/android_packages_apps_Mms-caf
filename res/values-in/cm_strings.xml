@@ -48,9 +48,6 @@
   <string name="template_insert_hint">Memasukkan teks template di sini</string>
   <string name="template_empty_text">Bidang teks tak boleh kosong</string>
   <string name="template_save">Simpan</string>
-  <string name="template_ctx_menu_title">Tindakan</string>
-  <string name="template_edit">Ubah</string>
-  <string name="template_delete">Hapus</string>
   <string name="template_list_title">Template</string>
   <string name="template_new_title">Template baru</string>
   <string name="template_insert">Masukkan template</string>
@@ -89,7 +86,6 @@
   <string name="menu_as_unread">Tandai Jika Belum Dibaca</string>
   <string name="menu_all_as_unread">Tandai semua belum dibaca</string>
   <string name="confirm_mark_unread_dialog_title">Tandai Jika Belum Dibaca?</string>
-  <string name="confirm_mark_unread_conversation">Percakapan akan ditandai sebagai belum dibaca.</string>
   <string name="confirm_mark_unread_all_conversations">Semua Thread akan ditandai sebagai belum dibaca.</string>
   <string name="select_recipients">Pilih Penerima</string>
   <string name="groups_header">Grup</string>
@@ -117,9 +113,16 @@
   <string name="menu_insert_smiley">Masukkan smiley</string>
   <string name="pref_title_enable_emoticons">Dukungan Emotikon</string>
   <string name="pref_summary_enable_emoticons">Gantikan teks emotikon dengan grafis setara</string>
-  <string name="normal_show">Lihat mode normal</string>
   <string name="cannot_play">Tidak dapat menyajikan tampilan slide.</string>
   <string name="menu_conversation_options">Pilihan percakapan</string>
   <string name="pref_title_reset_convopt_to_default">Setel ulang ke Standar</string>
   <string name="pref_summary_reset_convopt_to_default">Setel ulang pengaturan percakapan ke pengaturan tingkat aplikasi</string>
+  <string name="failed_open_associated_activity_msg">Gagal membuka kegiatan yang terkait</string>
+  <string name="cell_broadcast_sender">Saluran siaran seluler</string>
+  <string name="system_audio_item">Sistem audio</string>
+  <string name="external_audio_item">Suara eksternal</string>
+  <string name="pending_mms">Pesan: Satu atau lebih MMS tertunda</string>
+  <string name="abort_mms">Pesan: Batalkan MMS</string>
+  <string name="progress_mms">Pesan: MMS dalam proses\u2026</string>
+  <string name="progress_mms_text">Sentuh untuk mencoba kembali</string>
 </resources>

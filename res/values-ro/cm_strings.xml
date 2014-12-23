@@ -17,7 +17,7 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="menu_add_to_calendar">Adaugă la calendar</string>
-  <string name="button_close">Închideți</string>
+  <string name="button_close">Închide</string>
   <string name="button_view">Vizualizați</string>
   <string name="button_templates">Șabloane</string>
   <string name="type_to_reply_text_enter_to_send">Introduceți text pentru a răspunde</string>
@@ -48,9 +48,6 @@
   <string name="template_insert_hint">Introduceți aici textul șablonului</string>
   <string name="template_empty_text">Câmpul textului nu poate fi gol</string>
   <string name="template_save">Salvați</string>
-  <string name="template_ctx_menu_title">Acțiuni</string>
-  <string name="template_edit">Editați</string>
-  <string name="template_delete">Ștergeți</string>
   <string name="template_list_title">Șabloane</string>
   <string name="template_new_title">Șablon nou</string>
   <string name="template_insert">Introduceți șablonul</string>
@@ -89,7 +86,6 @@
   <string name="menu_as_unread">Marcare ca necitit</string>
   <string name="menu_all_as_unread">Marchează toate ca necitite</string>
   <string name="confirm_mark_unread_dialog_title">Marcați ca necitit?</string>
-  <string name="confirm_mark_unread_conversation">Conversația va fi marcată ca necitită.</string>
   <string name="confirm_mark_unread_all_conversations">Toate subiectele vor fi marcate ca necitite.</string>
   <string name="select_recipients">Selectați destinatarii</string>
   <string name="groups_header">Grupuri</string>
@@ -112,14 +108,56 @@
   <string name="pref_mms_notification_vibrate_normal">Normal</string>
   <string name="pref_mms_notification_vibrate_med_vib">Vibrare medie</string>
   <string name="pref_mms_notification_vibrate_long_vib">Vibrare lungă</string>
-  <string name="pref_mms_notification_vibrate_mult_short">Mai multe scurt</string>
-  <string name="pref_mms_notification_vibrate_mult_long">Mai multe lung</string>
+  <string name="pref_mms_notification_vibrate_mult_short">Mai multe și scurte</string>
+  <string name="pref_mms_notification_vibrate_mult_long">Mai multe și prelungite</string>
   <string name="menu_insert_smiley">Inserați un emoticon</string>
   <string name="pref_title_enable_emoticons">Suport emoticoane</string>
   <string name="pref_summary_enable_emoticons">Substituie emoticoanele text cu echivalentele grafice</string>
-  <string name="normal_show">Vezi în modul normal</string>
   <string name="cannot_play">Slide show-ul nu poate fi prezentat.</string>
   <string name="menu_conversation_options">Opțiuni conversație</string>
   <string name="pref_title_reset_convopt_to_default">Resetare la valori implicite</string>
   <string name="pref_summary_reset_convopt_to_default">Resetează setările conversațiilor la setările de nivel de aplicație</string>
+  <string name="failed_open_associated_activity_msg">Nu s-a reuşit să se deschidă activitatea asociată</string>
+  <string name="select_subscription_title">Selectați cartela SIM</string>
+  <string name="subscription1_title">SIM 1</string>
+  <string name="subscription2_title">SIM 2</string>
+  <string name="subscription_settings_title">Setări cartelă SIM</string>
+  <string name="sub_no_sim">Niciun SIM</string>
+  <string name="pref_manage_subs_title">Gestionare cartele SIM</string>
+  <string name="deleting_threads">Ştergerea conversațiilor\u2026</string>
+  <string name="sent_on">"Trimis: <xliff:g id="date">%s</xliff:g>"</string>
+  <string name="received_on">"Primit: <xliff:g id="date">%s</xliff:g>"</string>
+  <string name="menu_resend">Retrimite</string>
+  <string name="cancel_downloading">Revocare</string>
+  <string name="confirm_cancel_downloading">Doriți anularea descărcării MMS?</string>
+  <string name="unsupported_format">Format nesuportat.</string>
+  <string name="discard_message">Anulați</string>
+  <string name="title_send_message">Trimitere mesaj</string>
+  <string name="system_audio_item">Sistem audio</string>
+  <string name="external_audio_item">Audio Extern</string>
+  <string name="pending_mms">Mesagerie: Unul sau mai multe MMS sunt în așteptare</string>
+  <string name="abort_mms">Mesagerie: Abandonare MMS</string>
+  <string name="progress_mms">Mesagerie:: MMS în curs\u2026</string>
+  <string name="progress_mms_text">Atingeţi pentru a reîncerca</string>
+  <string name="sms_validity_period_one_hour">1 oră</string>
+  <string name="sms_validity_period_six_hours">6 ore</string>
+  <string name="sms_validity_period_twelve_hours">12 ore</string>
+  <string name="sms_validity_period_one_day">1 zi</string>
+  <string name="slot1">SIM 1</string>
+  <string name="slot2">SIM 2</string>
+  <string name="type_vcard">vCard</string>
+  <string name="contact_info_text_as_name">Nume:</string>
+  <string name="contact_info_text_as_phone">Tel:</string>
+  <string name="contact_info_text_as_email">Email:</string>
+  <string name="memory_status_title">Stare memorie</string>
+  <string name="message_detail">Detalii mesaj</string>
+  <string name="type_slot1">SIM 1</string>
+  <string name="type_slot2">SIM 2</string>
+  <string name="search_as_name">Nume</string>
+  <string name="search_as_number">Număr</string>
+  <string name="search_as_content">Conţinut</string>
+  <string name="search_as_subject">Subiect</string>
+  <string name="cdma_priority_urgent">Urgent</string>
+  <string name="cdma_priority_emergency">Urgență</string>
+  <string name="prefDialogTitle_cdma_priority">Prioritate</string>
 </resources>

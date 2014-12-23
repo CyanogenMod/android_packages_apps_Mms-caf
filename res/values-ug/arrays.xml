@@ -18,7 +18,7 @@
  -->
 <resources>
   <string-array name="empty_subject_strings">
-    <item>بابەت نیە</item>
+    <item>تېما يوق</item>
     <item>NoSubject</item>
   </string-array>
   <array name="sim_icons">

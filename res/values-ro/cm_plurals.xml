@@ -21,6 +21,11 @@
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> șabloane vor fi șterse.</item>
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> de șabloane vor fi șterse.</item>
   </plurals>
+  <plurals name="remaining_delay_time">
+    <item quantity="one">Trimit în %1$d secundă, apasă pentru a anula.</item>
+    <item quantity="few">Trimit în %1$d secunde, apasă pentru a anula.</item>
+    <item quantity="other">Trimit în %1$d secunde, apasă pentru a anula.</item>
+  </plurals>
   <plurals name="confirm_mark_unread_conversation">
     <item quantity="one"><xliff:g id="number">%1$s</xliff:g> conversație va fi marcată ca necitită.</item>
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> conversații vor fi marcate ca necitite.</item>

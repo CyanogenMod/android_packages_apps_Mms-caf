@@ -48,9 +48,6 @@
   <string name="template_insert_hint">لێره‌ نوسینێکی داڕێژراو بنوسه‌</string>
   <string name="template_empty_text">سەردێڕ نابێ بەتاڵ بێت</string>
   <string name="template_save">پاراستن</string>
-  <string name="template_ctx_menu_title">فرمانەکان</string>
-  <string name="template_edit">دەستکاریکردن</string>
-  <string name="template_delete">سڕینەوە</string>
   <string name="template_list_title">قاڵبەکان</string>
   <string name="template_new_title">قاڵبێکی نوێ</string>
   <string name="template_insert">زیادکردنی قاڵب</string>
@@ -89,7 +86,6 @@
   <string name="menu_as_unread">نیشانەکردن وەکو نەخوێندراوە</string>
   <string name="menu_all_as_unread">دیاریکردنی هه‌مووی وه‌کو خوێندراوه‌</string>
   <string name="confirm_mark_unread_dialog_title">نیشانەکردن وەکو نەخوێندراوە؟</string>
-  <string name="confirm_mark_unread_conversation">گفت و گۆکه‌ دیاری ده‌کرێ وه‌ک نه‌خوێنراوه‌.</string>
   <string name="confirm_mark_unread_all_conversations">هه‌موو بابه‌ته‌کان دیاری ده‌کرێن وه‌ک نه‌خوێندراوه‌.</string>
   <string name="select_recipients">دیاریکردنی وه‌رگر</string>
   <string name="groups_header">گرووپەکان</string>
@@ -117,7 +113,6 @@
   <string name="menu_insert_smiley">زیادکردنی خەندە</string>
   <string name="pref_title_enable_emoticons">پاڵپشتی وێنۆچکه‌ی ئاماژە دەکات</string>
   <string name="pref_summary_enable_emoticons">جێگاگره‌وه‌ی نوسینی وێنۆچکه‌کانی چات له‌گه‌ڵ هاوتا گرافیکییه‌کان</string>
-  <string name="normal_show">پیشاندان بەشێوازی ئاسایی</string>
   <string name="cannot_play">نه‌توانرا نیشاندانی جوڵه‌ په‌خش بکرێت.</string>
   <string name="menu_conversation_options">ڕێکخستنی گفتوگۆ</string>
   <string name="pref_title_reset_convopt_to_default">ڕێکخستنه‌وه‌ بۆ بنه‌ڕه‌ت</string>

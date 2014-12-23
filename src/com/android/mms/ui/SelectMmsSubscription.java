@@ -94,11 +94,10 @@ public class SelectMmsSubscription extends Service {
                 if (result == -1) {
                     Log.d(TAG, "No DDS switch required.");
                 } else {
-                    String status = mContext.getString(R.string.switch_data_subscription) +
-                                    ((result ==1) ? mContext.getString(R.string.
-                                    switch_data_subscription_success) :
-                                    mContext.getString(R.string.switch_data_subscription_failed));
-                    Toast.makeText(mContext, status, Toast.LENGTH_SHORT).show();
+                    String statusResult = ((result == 1) ?
+                            mContext.getString(R.string.switch_data_subscription_success) :
+                            mContext.getString(R.string.switch_data_subscription_failed));
+                    Toast.makeText(mContext, statusResult, Toast.LENGTH_SHORT).show();
                 }
 
                 //TODO: Below set of nested conditions are dirty, need a better

@@ -16,8 +16,16 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <plurals name="template_confirm_delete_conversation">
+    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> Virlag gëtt geläscht.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> Virlage gi geläscht.</item>
+  </plurals>
+  <plurals name="remaining_delay_time">
+    <item quantity="one">Gëtt an %1$d Sekonn geschéckt, drécke fir ofzebriechen.</item>
+    <item quantity="other">Gëtt a(n) %1$d Sekonne geschéckt, drécke fir ofzebriechen.</item>
+  </plurals>
   <plurals name="confirm_mark_unread_conversation">
-    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> sohbet okunmadı olarak işaretlenecek.</item>
-    <item quantity="other"><xliff:g id="number">%1$s</xliff:g> sohbet okunmadı olarak işaretlenecek.</item>
+    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> Diskussioun gëtt als ongelies markéiert.</item>
+    <item quantity="other"><xliff:g id="number">%1$s</xliff:g> Diskussioune ginn als ongelies markéiert.</item>
   </plurals>
 </resources>

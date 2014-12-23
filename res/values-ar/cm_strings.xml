@@ -48,9 +48,6 @@
   <string name="template_insert_hint">أدرج نث القالب</string>
   <string name="template_empty_text">حقل نص لا يمكن أن يكون فارغاً</string>
   <string name="template_save">حفظ</string>
-  <string name="template_ctx_menu_title">الاجراءات</string>
-  <string name="template_edit">تحرير</string>
-  <string name="template_delete">حذف</string>
   <string name="template_list_title">قوالب</string>
   <string name="template_new_title">قالب جديد</string>
   <string name="template_insert">قم بإدراج قالب</string>
@@ -89,7 +86,6 @@
   <string name="menu_as_unread">وضع علامة غير مقروء</string>
   <string name="menu_all_as_unread">ضع الكل كغير مقروءة</string>
   <string name="confirm_mark_unread_dialog_title">وضع علامة غير مقروء؟</string>
-  <string name="confirm_mark_unread_conversation">سيتم المحادثة في وضع علامة كغير مقروءة.</string>
   <string name="confirm_mark_unread_all_conversations">جميع المواضيع سيتم وضع علامة كغير مقروءة.</string>
   <string name="select_recipients">تحديد المستلمين</string>
   <string name="groups_header">المجموعات</string>
@@ -117,9 +113,9 @@
   <string name="menu_insert_smiley">إدخال وجه مبتسم</string>
   <string name="pref_title_enable_emoticons">دعم الفيسات</string>
   <string name="pref_summary_enable_emoticons">إستبدال انصه الفيسات بي المساويه لها جرافيكس</string>
-  <string name="normal_show">وضع العرض العادي</string>
   <string name="cannot_play">لا يمكن تقديم عرض الشرائح.</string>
   <string name="menu_conversation_options">خيارات المحادثة</string>
   <string name="pref_title_reset_convopt_to_default">إعادة التعيين إلى الافتراضي</string>
   <string name="pref_summary_reset_convopt_to_default">إعادة تعيين إعدادات المحادثة إلى إعداد مستوى التطبيق</string>
+  <string name="failed_open_associated_activity_msg">فشل في فتح نشاط مقترن</string>
 </resources>
