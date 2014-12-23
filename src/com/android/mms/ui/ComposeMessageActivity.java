@@ -5183,11 +5183,9 @@ public class ComposeMessageActivity extends Activity
                 // Rebuild the message list so each MessageItem will get the last contact info.
                 ComposeMessageActivity.this.mMsgListAdapter.notifyDataSetChanged();
 
-                // Don't do this anymore. When we're showing chips, we don't want to switch from
-                // chips to text.
-//                if (mRecipientsEditor != null) {
-//                    mRecipientsEditor.populate(recipients);
-//                }
+                if (mRecipientsEditor != null) {
+                    mRecipientsEditor.populate(recipients);
+                }
             }
         });
     }
