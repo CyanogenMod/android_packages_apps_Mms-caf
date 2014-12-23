@@ -224,7 +224,7 @@
     <string name="confirm_delete_locked_message" msgid="7203411948190100955">"要删除锁定的短信吗？"</string>
     <string name="confirm_delete_all_SIM_messages" msgid="8693652297557966665">"系统会删除SIM卡上的所有短信。"</string>
     <string name="confirm_delete_SIM_message" msgid="8535128079045452425">"系统会删除SIM卡上的这条短信。"</string>
-    <string name="delete_unlocked" msgid="7545321606698162261">"删除锁定短信"</string>
+    <string name="delete_unlocked" msgid="7545321606698162261">"删除锁定信息"</string>
     <string name="delete" msgid="1409973060081564612">"删除"</string>
     <string name="select_conversations" msgid="7816517565640002844">"选择会话"</string>
     <string name="no_conversations" msgid="6773767655149258445">"无会话。"</string>
