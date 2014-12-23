@@ -48,7 +48,7 @@
                       android:title="@string/pref_mms_clear_search_history_title"
                       android:summary="@string/pref_mms_clear_search_history_summary" />
 -->
-     <CheckBoxPreference android:defaultValue="true"
+     <SwitchPreference android:defaultValue="true"
                       android:key="pref_key_auto_delete"
                       android:summary="@string/pref_summary_auto_delete"
                       android:title="@string/pref_title_auto_delete" />
@@ -90,15 +90,15 @@
                       android:entries="@array/send_delay_duration_entries"
                       android:entryValues="@array/send_delay_duration_values"
                       android:defaultValue="0"/>
-    <CheckBoxPreference android:defaultValue="@bool/def_sms_delivery_reports"
+    <SwitchPreference android:defaultValue="@bool/def_sms_delivery_reports"
                       android:key="pref_key_sms_delivery_reports"
                       android:summary="@string/pref_summary_sms_delivery_reports"
                       android:title="@string/pref_title_sms_delivery_reports" />
-    <CheckBoxPreference android:defaultValue="@bool/def_sms_delivery_reports_slot1"
+    <SwitchPreference android:defaultValue="@bool/def_sms_delivery_reports_slot1"
                       android:key="pref_key_sms_delivery_reports_slot1"
                       android:summary="@string/pref_summary_sms_delivery_reports"
                       android:title="@string/pref_title_sms_delivery_reports_slot1" />
-    <CheckBoxPreference android:defaultValue="@bool/def_sms_delivery_reports_slot2"
+    <SwitchPreference android:defaultValue="@bool/def_sms_delivery_reports_slot2"
                       android:key="pref_key_sms_delivery_reports_slot2"
                       android:summary="@string/pref_summary_sms_delivery_reports"
                       android:title="@string/pref_title_sms_delivery_reports_slot2" />
@@ -147,7 +147,7 @@
 
   <PreferenceCategory android:title="@string/pref_sms_signature_title"
                       android:key="pref_key_sms_signature" >
-    <CheckBoxPreference android:key="pref_key_enable_signature"
+    <SwitchPreference android:key="pref_key_enable_signature"
                       android:summaryOn="@string/pref_summary_enable_signature"
                       android:summaryOff="@string/pref_summary_disable_signature"
                       android:title="@string/pref_title_enable_signature" />
@@ -158,23 +158,23 @@
 
   <PreferenceCategory android:title="@string/pref_mms_settings_title"
                       android:key="pref_key_mms_settings">
-    <CheckBoxPreference android:defaultValue="true"
+    <SwitchPreference android:defaultValue="true"
                       android:key="pref_key_mms_group_mms"
                       android:summary="@string/pref_summary_mms_group_mms"
                       android:title="@string/pref_title_mms_group_mms" />
-    <CheckBoxPreference android:defaultValue="@bool/def_mms_delivery_reports"
+    <SwitchPreference android:defaultValue="@bool/def_mms_delivery_reports"
                       android:key="pref_key_mms_delivery_reports"
                       android:summary="@string/pref_summary_mms_delivery_reports"
                       android:title="@string/pref_title_mms_delivery_reports" />
-    <CheckBoxPreference android:defaultValue="false"
+    <SwitchPreference android:defaultValue="false"
                       android:key="pref_key_mms_read_reports"
                       android:summary="@string/pref_summary_mms_read_reports"
                       android:title="@string/pref_title_mms_read_reports" />
-    <CheckBoxPreference android:defaultValue="@bool/def_sms_auto_retrieval"
+    <SwitchPreference android:defaultValue="@bool/def_sms_auto_retrieval"
                       android:key="pref_key_mms_auto_retrieval"
                       android:title="@string/pref_title_mms_auto_retrieval"
                       android:summary="@string/pref_summary_mms_auto_retrieval" />
-    <CheckBoxPreference android:layout="?android:attr/preferenceLayoutChild"
+    <SwitchPreference android:layout="?android:attr/preferenceLayoutChild"
                         android:dependency="pref_key_mms_auto_retrieval"
                         android:defaultValue="false"
                         android:key="pref_key_mms_retrieval_during_roaming"
@@ -201,7 +201,7 @@
   </PreferenceCategory>
   <PreferenceCategory android:title="@string/pref_notification_settings_title"
                       android:key="pref_key_notification_settings">
-    <CheckBoxPreference android:key="pref_key_enable_notifications"
+    <SwitchPreference android:key="pref_key_enable_notifications"
                         android:title="@string/pref_title_notification_enabled"
                         android:defaultValue="true" />
     <RingtonePreference android:key="pref_key_ringtone"
@@ -209,7 +209,7 @@
                         android:ringtoneType="notification"
                         android:dependency="pref_key_enable_notifications"
                         android:defaultValue="content://settings/system/notification_sound" />
-    <CheckBoxPreference android:key="pref_key_vibrate"
+    <SwitchPreference android:key="pref_key_vibrate"
                         android:title="@string/pref_title_notification_vibrateWhen"
                         android:dependency="pref_key_enable_notifications"
                         android:defaultValue="false" />
@@ -218,7 +218,7 @@
                       android:key="pref_key_smsc" >
   </PreferenceCategory>
   <PreferenceCategory android:title="@string/pref_wap_push_title">
-    <CheckBoxPreference android:key="pref_key_enable_wap_push"
+    <SwitchPreference android:key="pref_key_enable_wap_push"
                         android:title="@string/pref_title_wap_push_enabled"
                         android:summary="@string/pref_summary_wap_push_enabled"
                         android:defaultValue="@bool/def_wap_push_enabled" />
@@ -226,20 +226,20 @@
 
   <!-- QuickMessage settings -->
   <PreferenceCategory android:title="@string/pref_quickmessage">
-      <CheckBoxPreference
+      <SwitchPreference
               android:key="pref_dark_theme"
               android:title="@string/pref_dark_theme_title"
               android:summary="@string/pref_dark_theme_summary"
               android:defaultValue="false" />
 
-      <CheckBoxPreference
+      <SwitchPreference
               android:key="pref_key_quickmessage"
               android:title="@string/pref_quickmessage_title"
               android:dependency="pref_key_enable_notifications"
               android:summary="@string/pref_quickmessage_summary"
               android:defaultValue="false" />
 
-      <CheckBoxPreference
+      <SwitchPreference
               android:key="pref_key_qm_lockscreen"
               android:title="@string/pref_wake_unlock_title"
               android:summary="@string/pref_wake_unlock_summary"
@@ -247,7 +247,7 @@
               android:dependency="pref_key_quickmessage"
               android:defaultValue="false" />
 
-      <CheckBoxPreference
+      <SwitchPreference
               android:key="pref_key_close_all"
               android:title="@string/pref_close_all_title"
               android:summary="@string/pref_close_all_summary"
