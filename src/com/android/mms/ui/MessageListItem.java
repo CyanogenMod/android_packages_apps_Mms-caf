@@ -30,11 +30,15 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.sqlite.SqliteWrapper;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Paint.FontMetricsInt;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
@@ -42,12 +46,15 @@ import android.provider.Browser;
 import android.provider.ContactsContract.Profile;
 import android.provider.Telephony.Sms;
 import android.provider.Telephony.Mms;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.SubscriptionManager;
 import android.telephony.SubInfoRecord;
 import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.style.ForegroundColorSpan;
@@ -64,12 +71,13 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Checkable;
-import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.contacts.common.widget.CheckableQuickContactBadge;
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
@@ -79,10 +87,12 @@ import com.android.mms.data.WorkingMessage;
 import com.android.mms.model.LayoutModel;
 import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
+import com.android.mms.transaction.SmsReceiverService;
 import com.android.mms.transaction.Transaction;
 import com.android.mms.transaction.TransactionBundle;
 import com.android.mms.transaction.TransactionService;
 import com.android.mms.ui.WwwContextMenuActivity;
+import com.android.mms.ui.zoom.ZoomMessageListItem;
 import com.android.mms.util.DownloadManager;
 import com.android.mms.util.ItemLoadedCallback;
 import com.android.mms.util.ThumbnailManager.ImageLoaded;
@@ -95,7 +105,7 @@ import com.google.android.mms.pdu.PduPersister;
 /**
  * This class provides view of a message in the messages list.
  */
-public class MessageListItem extends LinearLayout implements
+public class MessageListItem extends ZoomMessageListItem implements
         SlideViewInterface, OnClickListener, Checkable {
     public static final String EXTRA_URLS = "com.android.mms.ExtraUrls";
 
@@ -123,19 +133,16 @@ public class MessageListItem extends LinearLayout implements
     private ImageButton mSlideShowButton;
     private TextView mSimMessageAddress;
     private TextView mBodyTextView;
-    private TextView mBodyButtomTextView;
-    private TextView mBodyTopTextView;
     private Button mDownloadButton;
     private View mDownloading;
     private LinearLayout mMmsLayout;
-    private CheckBox mChecked;
     private Handler mHandler;
     private MessageItem mMessageItem;
     private String mDefaultCountryIso;
     private TextView mDateView;
     public View mMessageBlock;
-    private QuickContactDivot mAvatar;
-    static private Drawable sDefaultContactImage;
+    private CheckableQuickContactBadge mAvatar;
+    static private RoundedBitmapDrawable sDefaultContactImage;
     private Presenter mPresenter;
     private int mPosition;      // for debugging
     private ImageLoadedCallback mImageLoadedCallback;
@@ -143,23 +150,22 @@ public class MessageListItem extends LinearLayout implements
     private int mManageMode;
 
     public MessageListItem(Context context) {
-        super(context);
-        mDefaultCountryIso = MmsApp.getApplication().getCurrentCountryIso();
-
-        if (sDefaultContactImage == null) {
-            sDefaultContactImage = context.getResources().getDrawable(R.drawable.ic_contact_picture);
-        }
+        this(context, null);
     }
 
     public MessageListItem(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        int color = mContext.getResources().getColor(R.color.timestamp_color);
-        mColorSpan = new ForegroundColorSpan(color);
+        Resources res = context.getResources();
+        mColorSpan = new ForegroundColorSpan(res.getColor(R.color.timestamp_color));
         mDefaultCountryIso = MmsApp.getApplication().getCurrentCountryIso();
 
         if (sDefaultContactImage == null) {
-            sDefaultContactImage = context.getResources().getDrawable(R.drawable.ic_contact_picture);
+            Bitmap defaultImage = BitmapFactory.decodeResource(res, R.drawable.ic_contact_picture);
+            sDefaultContactImage = RoundedBitmapDrawableFactory.create(res, defaultImage);
+            sDefaultContactImage.setAntiAlias(true);
+            sDefaultContactImage.setCornerRadius(
+                    Math.max(defaultImage.getWidth() / 2, defaultImage.getHeight() / 2));
         }
     }
 
@@ -167,51 +173,28 @@ public class MessageListItem extends LinearLayout implements
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mBodyTopTextView = (TextView) findViewById(R.id.text_view_top);
-        mBodyTopTextView.setVisibility(View.GONE);
-        mBodyButtomTextView = (TextView) findViewById(R.id.text_view_buttom);
-        mBodyButtomTextView.setVisibility(View.GONE);
+        mBodyTextView = (TextView) findViewById(R.id.text_view);
         mDateView = (TextView) findViewById(R.id.date_view);
         mLockedIndicator = (ImageView) findViewById(R.id.locked_indicator);
         mDeliveredIndicator = (ImageView) findViewById(R.id.delivered_indicator);
         mDetailsIndicator = (ImageView) findViewById(R.id.details_indicator);
-        mAvatar = (QuickContactDivot) findViewById(R.id.avatar);
+        mAvatar = (CheckableQuickContactBadge) findViewById(R.id.avatar);
         mSimIndicatorView = (ImageView) findViewById(R.id.sim_indicator_icon);
         mMessageBlock = findViewById(R.id.message_block);
         mSimMessageAddress = (TextView) findViewById(R.id.sim_message_address);
         mMmsLayout = (LinearLayout) findViewById(R.id.mms_layout_view_parent);
-        mChecked = (CheckBox) findViewById(R.id.selected_check);
+
+        mAvatar.setOverlay(null);
+
+        // Add the views to be managed by the zoom control
+        addZoomableTextView(mBodyTextView);
+        addZoomableTextView(mDateView);
+        addZoomableTextView(mSimMessageAddress);
+
     }
 
-    // add for setting the background according to whether the item is selected
-    public void markAsSelected(boolean selected) {
-        if (selected) {
-            if (mChecked != null) {
-                mChecked.setChecked(selected);
-            }
-            mMessageBlock.getBackground().setAlpha(ALPHA_TRANSPARENT);
-            mMmsLayout.setBackgroundResource(R.drawable.list_selected_holo_light);
-        } else {
-            if (mChecked != null) {
-                mChecked.setChecked(selected);
-            }
-            mMessageBlock.setBackgroundResource(R.drawable.listitem_background);
-            mMmsLayout.setBackgroundResource(R.drawable.listitem_background);
-        }
-    }
-
-    private void updateBodyTextView() {
-        if (mMessageItem.isMms() && mMessageItem.mLayoutType == LayoutModel.LAYOUT_TOP_TEXT) {
-            mBodyButtomTextView.setVisibility(View.GONE);
-            mBodyTextView = mBodyTopTextView;
-        } else {
-            mBodyTopTextView.setVisibility(View.GONE);
-            mBodyTextView = mBodyButtomTextView;
-        }
-        mBodyTextView.setVisibility(View.VISIBLE);
-    }
-
-    public void bind(MessageItem msgItem, boolean convHasMultiRecipients, int position) {
+    public void bind(MessageItem msgItem, int accentColor,
+            boolean convHasMultiRecipients, int position, boolean selected) {
         if (DEBUG) {
             Log.v(TAG, "bind for item: " + position + " old: " +
                    (mMessageItem != null ? mMessageItem.toString() : "NULL" ) +
@@ -219,8 +202,6 @@ public class MessageListItem extends LinearLayout implements
         }
         boolean sameItem = mMessageItem != null && mMessageItem.mMsgId == msgItem.mMsgId;
         mMessageItem = msgItem;
-
-        updateBodyTextView();
 
         mPosition = position;
         mMultiRecipients = convHasMultiRecipients;
@@ -240,7 +221,24 @@ public class MessageListItem extends LinearLayout implements
                 break;
         }
 
+        tintBackground(mMessageBlock.getBackground(), accentColor);
+        mMessageBlock.setSelected(selected);
+        mAvatar.setChecked(selected, sameItem);
         customSIMSmsView();
+    }
+
+    private void tintBackground(Drawable background, int color) {
+        if (background instanceof LayerDrawable) {
+            Drawable base = ((LayerDrawable) background).findDrawableByLayerId(R.id.base_layer);
+            if (base instanceof StateListDrawable) {
+                StateListDrawable sld = (StateListDrawable) base;
+                base = sld.getStateDrawable(sld.getStateDrawableIndex(null));
+
+            }
+            if (base != null) {
+                base.setTint(color);
+            }
+        }
     }
 
     public void unbind() {
@@ -406,8 +404,8 @@ public class MessageListItem extends LinearLayout implements
     private void updateAvatarView(String addr, boolean isSelf) {
         Drawable avatarDrawable;
         if (isSelf || !TextUtils.isEmpty(addr)) {
-            Contact contact = isSelf ? Contact.getMe(false) : Contact.get(addr, true);
-            avatarDrawable = contact.getAvatar(mContext, sDefaultContactImage);
+            Contact contact = isSelf ? Contact.getMe(false) : Contact.get(addr, false);
+            contact.bindAvatar(mAvatar);
 
             if (isSelf) {
                 mAvatar.assignContactUri(Profile.CONTENT_URI);
@@ -422,9 +420,8 @@ public class MessageListItem extends LinearLayout implements
                 }
             }
         } else {
-            avatarDrawable = sDefaultContactImage;
+            mAvatar.setImageDrawable(sDefaultContactImage);
         }
-        mAvatar.setImageDrawable(avatarDrawable);
     }
 
     public TextView getBodyTextView() {
@@ -438,13 +435,6 @@ public class MessageListItem extends LinearLayout implements
         }
 
         //layout type may be changed after reload pdu, so update textView here.
-        if (mMessageItem.isMms() && mMessageItem.mLayoutType == LayoutModel.LAYOUT_TOP_TEXT) {
-            mBodyTextView = mBodyTopTextView;
-            mBodyButtomTextView.setVisibility(View.GONE);
-        } else {
-            mBodyTextView = mBodyButtomTextView;
-            mBodyTopTextView.setVisibility(View.GONE);
-        }
         mBodyTextView.setVisibility(View.VISIBLE);
 
         // Since the message text should be concatenated with the sender's
@@ -466,7 +456,6 @@ public class MessageListItem extends LinearLayout implements
             String addr = isSelf ? null : mMessageItem.mAddress;
             updateAvatarView(addr, isSelf);
             //After pdu loaded, update the text view according to the slide-layout setting.
-            updateBodyTextView();
         }
 
         // Add SIM sms address above body.
@@ -521,8 +510,12 @@ public class MessageListItem extends LinearLayout implements
         // If we're in the process of sending a message (i.e. pending), then we show a "SENDING..."
         // string in place of the timestamp.
         if (!sameItem || haveLoadedPdu) {
+            boolean isCountingDown = mMessageItem.getCountDown() > 0 &&
+                MessagingPreferenceActivity.getMessageSendDelayDuration(mContext) > 0;
+            int sendingTextResId = isCountingDown
+                    ? R.string.sent_countdown : R.string.sending_message;
             mDateView.setText(buildTimestampLine(mMessageItem.isSending() ?
-                    mContext.getResources().getString(R.string.sending_message) :
+                    mContext.getResources().getString(sendingTextResId) :
                         mMessageItem.mTimestamp));
         }
         if (mMessageItem.isSms()) {
@@ -647,7 +640,10 @@ public class MessageListItem extends LinearLayout implements
         showMmsView(true);
 
         try {
-            mImageView.setImageBitmap(bitmap);
+            RoundedBitmapDrawable drawable =
+                    RoundedBitmapDrawableFactory.create(getResources(), bitmap);
+            drawable.setCornerRadius(MmsConfig.getMmsCornerRadius());
+            mImageView.setImageDrawable(drawable);
             mImageView.setVisibility(VISIBLE);
         } catch (java.lang.OutOfMemoryError e) {
             Log.e(TAG, "setImage: out of memory: ", e);
@@ -803,6 +799,10 @@ public class MessageListItem extends LinearLayout implements
     }
 
     public void onMessageListItemClick() {
+        if (mMessageItem != null && mMessageItem.isSending() && mMessageItem.isSms()) {
+            SmsReceiverService.cancelSendingMessage(mMessageItem.mMessageUri);
+            return;
+        }
         // If the message is a failed one, clicking it should reload it in the compose view,
         // regardless of whether it has links in it
         if (mMessageItem != null &&
@@ -827,6 +827,7 @@ public class MessageListItem extends LinearLayout implements
     private void setOnClickListener(final MessageItem msgItem) {
         switch(msgItem.mAttachmentType) {
             case WorkingMessage.VCARD:
+            case WorkingMessage.VCAL:
             case WorkingMessage.IMAGE:
             case WorkingMessage.VIDEO:
                 mImageView.setOnClickListener(new OnClickListener() {
@@ -980,6 +981,20 @@ public class MessageListItem extends LinearLayout implements
 
     }
 
+    public void updateDelayCountDown() {
+        if (mMessageItem.isSms() && mMessageItem.getCountDown() > 0 && mMessageItem.isSending()) {
+            String content = mContext.getResources().getQuantityString(
+                R.plurals.remaining_delay_time,
+                mMessageItem.getCountDown(), mMessageItem.getCountDown());
+            Spanned spanned = Html.fromHtml(buildTimestampLine(content));
+            mDateView.setText(spanned);
+        } else {
+            mDateView.setText(buildTimestampLine(mMessageItem.isSending()
+                ? mContext.getResources().getString(R.string.sending_message)
+                : mMessageItem.mTimestamp));
+        }
+    }
+
     @Override
     public void setVcard(Uri lookupUri, String name) {
         showMmsView(true);
@@ -994,21 +1009,28 @@ public class MessageListItem extends LinearLayout implements
     }
 
     @Override
+    public void setVCal(Uri vcalUri, String name) {
+        showMmsView(true);
+
+        try {
+            mImageView.setImageResource(R.drawable.ic_attach_cal_event);
+            mImageView.setVisibility(VISIBLE);
+        } catch (java.lang.OutOfMemoryError e) {
+            // shouldn't be here.
+            Log.e(TAG, "setVCal: out of memory: ", e);
+        }
+    }
+
+    @Override
     public boolean isChecked() {
         return mIsCheck;
     }
 
     @Override
-    public void setChecked(boolean arg0) {
-        mIsCheck = arg0;
-        if (mIsCheck) {
-            mMessageBlock.getBackground().setAlpha(ALPHA_TRANSPARENT);
-            mMmsLayout
-                    .setBackgroundResource(R.drawable.list_selected_holo_light);
-        } else {
-            mMessageBlock.setBackgroundResource(R.drawable.listitem_background);
-            mMmsLayout.setBackgroundResource(R.drawable.listitem_background);
-        }
+    public void setChecked(boolean checked) {
+        mIsCheck = checked;
+        mMessageBlock.setSelected(checked);
+        mAvatar.setChecked(checked, true);
     }
 
     @Override

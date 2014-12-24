@@ -96,7 +96,7 @@ public class SlideListItemView extends LinearLayout implements SlideViewInterfac
         if (name != null) {
             mAttachmentName.setText(name);
             if (mContext instanceof MobilePaperShowActivity) {
-                mAttachmentIcon.setImageResource(R.drawable.ic_attach_capture_audio_holo_light);
+                mAttachmentIcon.setImageResource(R.drawable.ic_attach_capture_audio);
                 setOnClickListener(new ViewAttachmentListener(audio, name, false));
             } else {
                 mAttachmentIcon.setImageResource(R.drawable.ic_mms_music);
@@ -347,6 +347,18 @@ public class SlideListItemView extends LinearLayout implements SlideViewInterfac
 
     @Override
     public void setVcard(Uri lookupUri, String name) {
+    }
+
+    @Override
+    public void setVCal(Uri vcalUri, String name) {
+        if (name != null) {
+            mAttachmentName.setText(name);
+            if (mContext instanceof MobilePaperShowActivity) {
+                mAttachmentIcon.setImageResource(R.drawable.ic_attach_cal_event);
+                ViewAttachmentListener l = new ViewAttachmentListener(vcalUri, name, false);
+                setOnClickListener(l);
+            }
+        }
     }
 
     public void setVcard(Uri uri, String lookupUri, String name) {

@@ -37,7 +37,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         android:title="@string/menu_forward"/>
     <item
         android:id="@+id/delete"
-        android:icon="@drawable/ic_menu_trash_holo_dark"
+        android:icon="@drawable/ic_menu_delete"
         android:showAsAction="always|withText"
         android:title="@string/menu_delete_msg"/>
     <item
@@ -49,4 +49,8 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         android:id="@+id/copy_to_phone"
         android:showAsAction="never|withText"
         android:title="@string/sim_copy_to_phone_memory"/>
+    <item
+        android:id="@+id/selection_toggle"
+        android:showAsAction="never|withText"
+        android:title="@string/selected_all" />
 </menu>

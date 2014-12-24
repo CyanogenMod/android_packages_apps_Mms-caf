@@ -17,6 +17,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/delete"
           android:title="@string/delete"
-          android:icon="@drawable/ic_menu_trash_holo_dark"
+          android:icon="@drawable/ic_menu_delete"
           android:showAsAction="always|withText" />
+    <item android:id="@+id/selection_toggle"
+          android:showAsAction="never|withText"
+          android:title="@string/selected_all" />
 </menu>

@@ -211,6 +211,11 @@ public abstract class MediaModel extends Model implements EventListener {
                 && mContentType.toLowerCase().equals(ContentType.TEXT_VCARD.toLowerCase());
     }
 
+    public boolean isVCal() {
+        return mTag.equals(SmilHelper.ELEMENT_TAG_REF)
+               && mContentType.toLowerCase().equals(ContentType.TEXT_VCALENDAR.toLowerCase());
+    }
+
     protected void initMediaDuration() throws MmsException {
         if (mUri == null) {
             throw new IllegalArgumentException("Uri may not be null.");

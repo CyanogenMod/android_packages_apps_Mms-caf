@@ -31,6 +31,7 @@ import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
 import com.android.mms.model.TextModel;
 import com.android.mms.model.VcardModel;
+import com.android.mms.model.VCalModel;
 import com.android.mms.model.VideoModel;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
@@ -182,6 +183,10 @@ public class SlideshowEditor {
         return mModel.get(position).removeVcard();
     }
 
+    public boolean removeVCal(int position) {
+        return mModel.get(position).removeVCal();
+    }
+
     public void changeText(int position, String newText) {
         if (newText != null) {
             SlideModel slide = mModel.get(position);
@@ -248,6 +253,13 @@ public class SlideshowEditor {
         slide.updateDuration(vCard.getDuration());
     }
 
+    public void changeVCal(int position, Uri newIcal) throws MmsException {
+        VCalModel vcal = new VCalModel(mContext, newIcal);
+        SlideModel slide = mModel.get(position);
+        slide.add(vcal);
+        slide.updateDuration(vcal.getDuration());
+    }
+
     public void moveSlideUp(int position) {
         mModel.add(position - 1, mModel.remove(position));
     }
@@ -260,6 +272,10 @@ public class SlideshowEditor {
         if (dur >= 0) {
             mModel.get(position).setDuration(dur);
         }
+    }
+
+    public int getDuration(int position) {
+        return mModel.get(position).getDuration();
     }
 
     public void changeLayout(int layout) {

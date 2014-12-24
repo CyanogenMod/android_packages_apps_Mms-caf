@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.NumberPicker;
+import android.widget.TextView;
 
 import com.android.mms.R;
 
@@ -58,24 +59,25 @@ public class NumberPickerDialog extends AlertDialog implements OnClickListener {
             int number,
             int rangeMin,
             int rangeMax,
-            int title) {
-        this(context, AlertDialog.THEME_HOLO_LIGHT, callBack, number, rangeMin, rangeMax, title);
+            int title,
+            int header) {
+        this(context, callBack, number, rangeMin, rangeMax, title, header, 0);
     }
 
     /**
      * @param context Parent.
-     * @param theme the theme to apply to this dialog
      * @param callBack How parent is notified.
      * @param number The initial number.
      */
     public NumberPickerDialog(Context context,
-            int theme,
             OnNumberSetListener callBack,
             int number,
             int rangeMin,
             int rangeMax,
-            int title) {
-        super(context, theme);
+            int title,
+            int header,
+            int unit) {
+        super(context);
         mCallback = callBack;
 
         setTitle(title);
@@ -89,6 +91,21 @@ public class NumberPickerDialog extends AlertDialog implements OnClickListener {
         View view = inflater.inflate(R.layout.number_picker_dialog, null);
         setView(view);
         mNumberPicker = (NumberPicker) view.findViewById(R.id.number_picker);
+
+        TextView headerView = (TextView) view.findViewById(R.id.header);
+        if (header != 0) {
+            headerView.setText(header);
+            headerView.setVisibility(View.VISIBLE);
+        } else {
+            headerView.setVisibility(View.GONE);
+        }
+        TextView unitView = (TextView) view.findViewById(R.id.unit);
+        if (unit != 0) {
+            unitView.setText(unit);
+            unitView.setVisibility(View.VISIBLE);
+        } else {
+            unitView.setVisibility(View.GONE);
+        }
 
         // initialize state
         mNumberPicker.setMinValue(rangeMin);

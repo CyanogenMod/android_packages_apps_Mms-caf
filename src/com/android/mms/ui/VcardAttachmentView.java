@@ -76,6 +76,11 @@ public class VcardAttachmentView extends LinearLayout implements
     }
 
     @Override
+    public void setVCal(Uri vcalUri, String name) {
+
+    }
+
+    @Override
     public void reset() {
         // TODO Auto-generated method stub
 
