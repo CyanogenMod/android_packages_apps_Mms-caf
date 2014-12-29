@@ -153,6 +153,17 @@
                 android:visibility="gone"
                 android:background="#fff" >
 
+                <ImageButton
+                    android:id="@+id/add_attachment_first"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:src="@drawable/ic_attach"
+                    android:layout_width="54dp"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/add_attachment"
+                    android:nextFocusLeft="@+id/embedded_text_editor"
+                    android:layout_gravity="bottom"
+                    android:visibility="gone" />
+
                 <EditText
                     android:textColor="@android:color/black"
                     android:id="@+id/embedded_text_editor"
@@ -257,6 +268,17 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                      >
+
+                    <ImageButton
+                        android:id="@+id/add_attachment_second"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:src="@drawable/ic_attach"
+                        android:layout_width="54dp"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/add_attachment"
+                        android:nextFocusLeft="@+id/embedded_text_editor_btnstyle"
+                        android:layout_gravity="bottom"
+                        android:visibility="gone" />
 
                     <LinearLayout
                         android:id="@+id/first_button_with_counter"
@@ -416,6 +438,47 @@
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/attachments_selector"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fff"
+                android:visibility="gone" >
+
+                <FrameLayout
+                    android:id="@+id/attachments_pager_root"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <android.support.v4.view.ViewPager
+                        android:id="@+id/attachments_selector_pager"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:id="@+id/pager_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="6dp">
+
+                    <ImageView android:id="@+id/pager_indicator_first"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/dot_chosen" />
+
+                    <ImageView android:id="@+id/pager_indicator_second"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/dot_unchosen"
+                        android:layout_marginStart="10dp" />
+                </LinearLayout>
+            </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
