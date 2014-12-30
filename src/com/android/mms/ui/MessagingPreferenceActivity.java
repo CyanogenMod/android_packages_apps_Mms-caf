@@ -493,20 +493,22 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             final Preference pref = new Preference(this);
             pref.setKey(String.valueOf(i));
             pref.setTitle(getSMSCDialogTitle(count, i));
-
-            pref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    MyEditDialogFragment dialog = MyEditDialogFragment.newInstance(
+            if (getResources().getBoolean(R.bool.show_edit_smsc)) {
+                pref.setOnPreferenceClickListener(null);
+            } else {
+                pref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        MyEditDialogFragment dialog = MyEditDialogFragment.newInstance(
                             MessagingPreferenceActivity.this,
                             preference.getTitle(),
                             preference.getSummary(),
                             Integer.valueOf(preference.getKey()));
-                    dialog.show(getFragmentManager(), "dialog");
-                    return true;
-                }
-            });
-
+                        dialog.show(getFragmentManager(), "dialog");
+                        return true;
+                    }
+                });
+            }
             mSmscPrefCate.addPreference(pref);
             mSmscPrefList.add(pref);
         }
