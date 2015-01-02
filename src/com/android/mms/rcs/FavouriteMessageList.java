@@ -20,11 +20,11 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
- 
-package com.android.mms.ui;
+
+package com.android.mms.rcs;
 
 import java.util.ArrayList;
-
+import com.android.mms.ui.AsyncDialog;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -53,6 +53,8 @@ import android.provider.Telephony.Sms;
 import android.telephony.SubscriptionManager;
 import android.text.TextUtils;
 import android.util.Log;
+import com.android.mms.ui.MessagingPreferenceActivity;
+import com.android.mms.ui.ConversationList;
 import android.util.SparseBooleanArray;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView;
@@ -74,13 +76,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
+import com.android.mms.ui.SearchActivity;
 import com.android.mms.data.Contact;
 import com.android.mms.LogTag;
 import com.android.mms.R;
 import com.android.mms.ui.MessageListAdapter;
 import com.android.mms.ui.MessageUtils;
-import com.android.mms.rcs.RcsChatMessageUtils;
 import com.android.mms.transaction.MessagingNotification;
 import com.android.mms.transaction.Transaction;
 import com.android.mms.transaction.TransactionBundle;
@@ -88,10 +89,11 @@ import com.android.mms.transaction.TransactionService;
 import com.android.mms.ui.PopupList;
 import com.android.mms.ui.SearchActivityExtend;
 import com.android.mms.ui.SelectionMenu;
+import com.android.mms.ui.MailBoxMessageListAdapter;
+import com.android.mms.ui.MailBoxMessageListAdapter.OnListContentChangedListener;
 import com.android.mms.util.DownloadManager;
-
 import com.google.android.mms.pdu.PduHeaders;
-
+import com.android.mms.ui.ComposeMessageActivity;
 import static com.android.mms.ui.MessageListAdapter.MAILBOX_PROJECTION;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_MSG_TYPE;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_ID;
@@ -406,7 +408,7 @@ public class FavouriteMessageList extends ListActivity implements
         } else {
             mListView.setMultiChoiceModeListener(mModeCallback);
         }
-        
+
         // Cancel failed notification.
         MessageUtils.cancelFailedToDeliverNotification(intent, this);
         MessageUtils.cancelFailedDownloadNotification(intent, this);
@@ -823,7 +825,7 @@ public class FavouriteMessageList extends ListActivity implements
         }
         mListAdapter.notifyDataSetChanged();
     }
-    
+
     private void deleteMessages(boolean deleteLocked) {
         String whereClause;
         String smsWhereDelete = mSmsWhereDelete;

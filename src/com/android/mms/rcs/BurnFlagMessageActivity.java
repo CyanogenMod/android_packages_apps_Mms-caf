@@ -30,10 +30,7 @@ import com.suntek.mway.rcs.client.api.provider.SuntekMessageData;
 import com.suntek.mway.rcs.client.api.provider.model.ChatMessage;
 import com.suntek.mway.rcs.client.api.util.ServiceDisconnectedException;
 import com.suntek.mway.rcs.client.api.util.log.LogHelper;
-
 import com.android.mms.R;
-import com.android.mms.RcsApiManager;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
@@ -60,6 +57,7 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import java.util.HashMap;
+
 import android.util.Log;
 
 public class BurnFlagMessageActivity extends Activity {

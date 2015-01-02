@@ -20,8 +20,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
 -->
-
-<com.android.mms.ui.RcsNotificationMessageListItem xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.mms.rcs.RcsNotificationMessageListItem xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
 
@@ -39,4 +38,4 @@
         android:textColor="#333"
         android:textSize="12sp" />
 
-</com.android.mms.ui.RcsNotificationMessageListItem>
+</com.android.mms.rcs.RcsNotificationMessageListItem>

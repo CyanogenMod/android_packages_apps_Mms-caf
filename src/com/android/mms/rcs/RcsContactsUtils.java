@@ -36,7 +36,6 @@ import android.provider.ContactsContract.RawContacts;
 import android.text.TextUtils;
 import android.util.Base64;
 
-import com.android.mms.RcsApiManager;
 import com.android.mms.data.Conversation;
 import com.suntek.mway.rcs.client.api.contacts.RCSContact;
 import com.suntek.mway.rcs.client.api.plugin.entity.profile.Profile;

@@ -120,6 +120,8 @@
     <string name="select_contact_conversation">选择联系人或会话</string>
     <string name="file_share">彩云文件分享</string>
     <string name="save_back_message">消息备份/恢复</string>
+    <string name="message_save">消息备份</string>
+    <string name="message_back">消息恢复</string>
     <string name="not_online_message_too_big">非在线状态，文本过大</string>
     <string name="on_airplain_mode">飞行模式无法转发</string>
     <string name="rcs_mcloud_share_file">彩云文件分享</string>

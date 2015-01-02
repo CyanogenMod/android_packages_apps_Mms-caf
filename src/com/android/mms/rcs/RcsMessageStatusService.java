@@ -23,7 +23,6 @@
 
 package com.android.mms.rcs;
 
-import com.android.mms.RcsApiManager;
 import com.android.mms.transaction.MessagingNotification;
 import com.suntek.mway.rcs.client.api.constant.BroadcastConstants;
 import com.suntek.mway.rcs.client.api.im.impl.MessageApi;
@@ -140,7 +139,7 @@ public class RcsMessageStatusService extends IntentService {
                     Log.i("RCS_UI", "com.suntek.mway.rcs.ACTION_UI_MESSAGE_STATUS_CHANGE_NOTIFY"
                             + id + status);
                     RcsUtils.updateState(RcsMessageStatusService.this, id, status);
-                    RcsNotifyManager.getInstance(RcsMessageStatusService.this).showNewMessageNotif(
+                    RcsNotifyManager.sendMessageFailNotif(RcsMessageStatusService.this,
                             status, id, true);
                 } else if (BroadcastConstants.UI_DOWNLOADING_FILE_CHANGE.equals(action)) {
                     String rcs_message_id = intent

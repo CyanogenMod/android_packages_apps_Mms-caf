@@ -24,7 +24,7 @@
 package com.android.mms.rcs;
 
 import com.android.mms.R;
-import com.android.mms.RcsApiManager;
+import com.android.mms.data.ContactList;
 import com.android.mms.data.Conversation;
 import com.android.mms.data.WorkingMessage;
 import com.android.mms.ui.ComposeMessageActivity;
@@ -35,21 +35,30 @@ import com.suntek.mway.rcs.client.api.util.log.LogHelper;
 import com.suntek.mway.rcs.client.api.contacts.RCSContact;
 import com.suntek.mway.rcs.client.api.plugin.entity.profile.Profile;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+
 import com.suntek.mway.rcs.client.api.provider.model.GroupChatModel;
 import com.suntek.mway.rcs.client.api.provider.model.MessageSessionModel;
 import com.suntek.mway.rcs.client.api.util.FileSuffixException;
 import com.suntek.mway.rcs.client.api.util.FileTransferException;
 import com.suntek.mway.rcs.client.api.im.impl.MessageApi;
 
+import android.app.AlertDialog;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 import android.content.Intent;
+import android.content.DialogInterface.OnClickListener;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -140,6 +149,8 @@ public class RcsChatMessageUtils {
         if (TextUtils.isEmpty(filePath)) {
             return false;
         }
+        if(fileSize==0)
+            return false;
         boolean isDownload = false;
         File file = new File(filePath);
         if (file != null) {
@@ -299,6 +310,113 @@ public class RcsChatMessageUtils {
         }
         return true;
     }
+
+    public static void sendForwardRcsMessage(Intent data,int mRcsId,Context context) {
+        Bundle bundle = data.getExtras().getBundle("result");
+        if(bundle == null){
+            return;
+        }
+        final Set<String> keySet = bundle.keySet();
+        final int recipientCount = (keySet != null) ? keySet.size() : 0;
+        final ContactList list;
+
+        list = ContactList.blockingGetByUris(buildUris(keySet, recipientCount));
+
+        long a = -1;
+        boolean success = false;
+        String[] numbers = list.getNumbers(false);
+        try {
+            ChatMessage message = RcsApiManager.getMessageApi().getMessageById(mRcsId + "");
+            success = RcsChatMessageUtils.forwardMessage(a,
+                    Arrays.asList(list.getNumbers()), message);
+            if (success) {
+                Toast.makeText(context,
+               context.getString(R.string.forward_message_success), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context,
+             context.getString(R.string.forward_message_fail), Toast.LENGTH_SHORT).show();
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            Toast.makeText(context,
+          context.getString(R.string.forward_message_fail), Toast.LENGTH_SHORT).show();
+        } catch(ServiceDisconnectedException e){
+            e.printStackTrace();
+            Toast.makeText(context,
+        context.getString(R.string.forward_message_fail), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private static Uri[] buildUris(final Set<String> keySet, final int newPickRecipientsCount) {
+        Uri[] newUris = new Uri[newPickRecipientsCount];
+        Iterator<String> it = keySet.iterator();
+        int i = 0;
+        while (it.hasNext()) {
+            String id = it.next();
+            newUris[i++] = ContentUris.withAppendedId(Phone.CONTENT_URI, Integer.parseInt(id));
+            if (i == newPickRecipientsCount) {
+                break;
+            }
+        }
+        return newUris;
+    }
+
+    public static void forwardContactOrConversation(Context context,OnClickListener listener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setCancelable(true);
+        builder.setTitle(R.string.select_contact_conversation);
+        builder.setItems(new String[] {
+                context.getString(R.string.forward_contact),
+                context.getString(R.string.forward_conversation),
+                context.getString(R.string.forward_contact_group)
+        },listener);
+        builder.show();
+    }
+
+    public static void sendForwardRcsMessageToConv(Intent data, int mRcsId, Context context) {
+        if (data != null && !"".equals(data)) {
+            ContactList contactList = new ContactList();
+            HashSet<Long> threadIds = (HashSet)data.getSerializableExtra("selectThreadId");
+            Log.i("RCS_UI", "threadIds.size=" + threadIds.size());
+            Iterator it = threadIds.iterator();
+            Conversation conv = null;
+            while (it.hasNext()) {
+                conv = Conversation.get(context, Long.valueOf(it.next().toString()), true);
+                contactList.addAll(conv.getRecipients());
+            }
+            try {
+                long a = -1;
+                boolean success = false;
+                ChatMessage message = RcsApiManager.getMessageApi().getMessageById(mRcsId + "");
+                if (conv.isGroupChat()) {
+                    GroupChatModel groupChatModel = conv.getGroupChat();
+                    success = RcsChatMessageUtils.forwardToGroupMessage(a,
+                            Arrays.asList(contactList.getNumbers()), message, groupChatModel);
+                } else {
+                    success = RcsChatMessageUtils.forwardMessage(a,
+                            Arrays.asList(contactList.getNumbers()), message);
+                }
+                if (success) {
+                    Toast.makeText(context, context.getString(R.string.forward_message_success),
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, context.getString(R.string.forward_message_fail),
+                            Toast.LENGTH_SHORT).show();
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            } catch (ServiceDisconnectedException e) {
+                e.printStackTrace();
+            } catch (FileSuffixException e) {
+                e.printStackTrace();
+            } catch (FileTransferException e) {
+                e.printStackTrace();
+            } catch (FileDurationException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     //forward
     //forward List<String> String[]
     public static boolean forwardMessage(long threadId, List<String> numberList,
