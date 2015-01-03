@@ -141,6 +141,7 @@
   <string name="converting_to_text_message">Omskakeling na SMS-boodskap\u2026</string>
   <string name="cannot_add_text_anymore">Kan nie meer teks byvoeg.</string>
   <string name="title_send_message">Stuur Boodskap</string>
+  <string name="subject_full">Onderwerp is vol</string>
   <string name="status_deleted_unread">Verwyder sonder om te lees</string>
   <string name="sms_full_body_cm">Foon geheue is vol, kan nie stuur en nuwe boodskappe ontvang nie. Verwyder \'n paar ou boodskappe.</string>
   <string name="memory_low_title">SMS-boodskap geheue is laag</string>
@@ -158,6 +159,8 @@
   <string name="pending_mms_title">Hangende MMS op ander SIM kaart</string>
   <string name="pending_mms">Boodskappe: Een of meer hangende MMS</string>
   <string name="pending_mms_text">Raak om die SIM-kaart oor te skakel</string>
+  <string name="switch_data_subscription_success">Verandering van Data SIM was suksesvol.</string>
+  <string name="switch_data_subscription_failed">Verandering van Data SIM was onsuksesvol.</string>
   <string name="abort_mms">Boodskappe: Staak MMS</string>
   <string name="abort_mms_text">Raak om te staak</string>
   <string name="progress_mms_title">MMS transaksie op ander SIM-kaart aan die gang</string>
@@ -247,6 +250,7 @@
   <string name="pref_sms_store_phone">Foon</string>
   <string name="pref_sms_store_card">SIM-kaart</string>
   <string name="pref_sim_card_full_save_to_phone">SIM-kaart is vol, stoor nuwe boodskappe na foon.</string>
+  <string name="mms_size_indicator"><xliff:g id="mms_size">%1$s</xliff:g>KB/<xliff:g id="all_size">%2$s</xliff:g>KB</string>
   <string name="selected_all">Kies alles</string>
   <string name="deselected_all">Deselekteer alles</string>
   <string name="selected_count"><xliff:g id="COUNT">%d</xliff:g> gekies</string>

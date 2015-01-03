@@ -32,7 +32,7 @@
   <string name="menu_delete">Konversatioun läschen</string>
   <string name="menu_view">Konversatioun ukucken</string>
   <string name="menu_debug_dump">DEBUGSÉCHERUNG</string>
-  <string name="refreshing">Nei lueden\u2026</string>
+  <string name="refreshing">Gëtt opgefrëscht\u2026</string>
   <string name="menu_cell_broadcasts">Zelliwwerdroungen</string>
   <string name="has_draft">Brouillon</string>
   <string name="no_subject_view">(Kee Sujet)</string>
@@ -83,8 +83,8 @@
   <string name="mms">MMS</string>
   <string name="send_mms">MMS schécken</string>
   <string name="all_threads">All d\'Konversatiounen</string>
-  <string name="type_to_compose_text_enter_to_send">Message schreiwen</string>
-  <string name="open_keyboard_to_compose_message">Tastatur opmaachen, fir e Message ze schreiwen</string>
+  <string name="type_to_compose_text_enter_to_send">Message aginn</string>
+  <string name="open_keyboard_to_compose_message">Tastatur opmaachen, fir e Message anzeginn</string>
   <string name="sending_disabled_not_default_app">Schécken desaktivéiert</string>
   <string name="compose_disabled_toast">Schreiwen ass net méiglich, well et net deng Standard-SMS-App ass.</string>
   <string name="compressing">Bild ass ze grouss. Gëtt kompriméiert\u2026</string>
@@ -200,8 +200,8 @@
   <string name="delete_unlocked">Gespaart Messagë läschen</string>
   <string name="delete">Läschen</string>
   <string name="select_conversations">Konversatiounen auswielen</string>
-  <string name="no_conversations">Keng Gespréicher.</string>
-  <string name="loading_conversations">Gespréicher gi gelueden.</string>
+  <string name="no_conversations">Keng Konversatiounen.</string>
+  <string name="loading_conversations">Konversatioune gi gelueden.</string>
   <string name="cannot_get_details">Detailer net ofruffbar.</string>
   <string name="message_details_title">Messagendetailer</string>
   <string name="message_type_label">Typ:\u0020</string>
