@@ -80,6 +80,7 @@ import com.android.mms.data.Conversation;
 import com.android.mms.data.WorkingMessage;
 import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
+import com.android.mms.quickmessage.QmMarkRead;
 import com.android.mms.quickmessage.QuickMessagePopup;
 import com.android.mms.ui.ComposeMessageActivity;
 import com.android.mms.ui.ConversationList;
@@ -110,7 +111,7 @@ public class MessagingNotification {
     private static final String TAG = LogTag.APP;
     private static final boolean DEBUG = false;
 
-    private static final int NOTIFICATION_ID = 123;
+    public static final int NOTIFICATION_ID = 123;
     public static final int FULL_NOTIFICATION_ID   = 125;
     private static final int ICC_NOTIFICATION_ID_SLOT1 = 126;
     private static final int ICC_NOTIFICATION_ID_SLOT2 = 127;
@@ -1244,26 +1245,36 @@ public class MessagingNotification {
         final Notification notification;
 
         if (messageCount == 1 || uniqueThreadCount == 1) {
-            // Add the QuickMessage action only if the pop-up won't be shown already
+            // Add the Quick Reply action only if the pop-up won't be shown already
             if (!qmPopupEnabled && qmIntent != null) {
 
                 // This is a QR, we should show the keyboard when the user taps to reply
                 qmIntent.putExtra(QuickMessagePopup.QR_SHOW_KEYBOARD_EXTRA, true);
 
-                // Create the pending intent and add it to the notification
+                // Create the Quick reply pending intent and add it to the notification
                 CharSequence qmText = context.getText(R.string.qm_quick_reply);
                 PendingIntent qmPendingIntent = PendingIntent.getActivity(context, 0, qmIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT);
                 noti.addAction(R.drawable.ic_reply, qmText, qmPendingIntent);
             }
 
+            // Add the 'Mark as read' action
+            CharSequence markReadText = context.getText(R.string.qm_mark_read);
+            Intent mrIntent = new Intent();
+            mrIntent.setClass(context, QmMarkRead.class);
+            mrIntent.putExtra(QmMarkRead.SMS_THREAD_ID, mostRecentNotification.mThreadId);
+            PendingIntent mrPendingIntent = PendingIntent.getBroadcast(context, 0, mrIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+            noti.addAction(R.drawable.ic_mark_read, markReadText, mrPendingIntent);
+
             // Add the Call action
             CharSequence callText = context.getText(R.string.menu_call);
             Intent callIntent = new Intent(Intent.ACTION_CALL);
             callIntent.setData(mostRecentNotification.mSender.getPhoneUri());
-            PendingIntent mCallPendingIntent = PendingIntent.getActivity(context, 0, callIntent,
+            PendingIntent callPendingIntent = PendingIntent.getActivity(context, 0, callIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT);
-            noti.addAction(R.drawable.ic_menu_call, callText, mCallPendingIntent);
+            noti.addAction(R.drawable.ic_menu_call, callText, callPendingIntent);
+
         }
 
         if (messageCount == 1) {
