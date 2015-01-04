@@ -213,14 +213,17 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
+            PreferenceCategory smsCategory =
+                    (PreferenceCategory) findPreference("pref_key_sms_settings");
             if (TelephonyIntents.ACTION_SIM_STATE_CHANGED.equals(action)) {
-                    PreferenceCategory smsCategory =
-                            (PreferenceCategory)findPreference("pref_key_sms_settings");
-                    if (smsCategory != null) {
-                        updateSIMSMSPref();
-                    }
+                if (smsCategory != null) {
+                    updateSIMSMSPref();
+                }
             } else if (Intent.ACTION_AIRPLANE_MODE_CHANGED.equals(action)) {
-                    updateSMSCPref();
+                updateSMSCPref();
+                if (smsCategory != null) {
+                    updateSIMSMSPref();
+                }
             }
         }
     };
@@ -637,16 +640,22 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
     private void updateSIMSMSPref() {
         if (MessageUtils.isMultiSimEnabledMms()) {
-            if (!MessageUtils.isIccCardActivated(MessageUtils.SUB1)) {
-                mManageSim1Pref.setEnabled(false);
+            if (isAirPlaneModeOn() || !MessageUtils.isIccCardActivated(MessageUtils.SUB1)) {
+                mSmsPrefCategory.removePreference(mManageSim1Pref);
+            } else {
+                mSmsPrefCategory.addPreference(mManageSim1Pref);
             }
-            if (!MessageUtils.isIccCardActivated(MessageUtils.SUB2)) {
-                mManageSim2Pref.setEnabled(false);
+            if (isAirPlaneModeOn() || !MessageUtils.isIccCardActivated(MessageUtils.SUB2)) {
+                mSmsPrefCategory.removePreference(mManageSim2Pref);
+            } else {
+                mSmsPrefCategory.addPreference(mManageSim2Pref);
             }
             mSmsPrefCategory.removePreference(mManageSimPref);
         } else {
-            if (!MessageUtils.hasIccCard()) {
-                mManageSimPref.setEnabled(false);
+            if (isAirPlaneModeOn() || !MessageUtils.hasIccCard()) {
+                mSmsPrefCategory.removePreference(mManageSimPref);
+            } else {
+                mSmsPrefCategory.addPreference(mManageSimPref);
             }
             mSmsPrefCategory.removePreference(mManageSim1Pref);
             mSmsPrefCategory.removePreference(mManageSim2Pref);
