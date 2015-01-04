@@ -569,7 +569,7 @@ public class MessageUtils {
         }
 
         // Sent: ***
-        if (smsType == Sms.MESSAGE_TYPE_SENT) {
+        if (smsType == Sms.MESSAGE_TYPE_INBOX) {
             long date_sent = cursor.getLong(cursor.getColumnIndexOrThrow(Sms.DATE_SENT));
             if (date_sent > 0) {
                 details.append('\n');
