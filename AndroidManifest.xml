@@ -463,7 +463,11 @@
             android:excludeFromRecents="true"
             android:exported="true"/>
 
-        <receiver android:name=".quickmessage.ClearAllReceiver" />
+         <receiver
+            android:name=".quickmessage.QmMarkRead"
+            android:exported="true" />
+
+         <receiver android:name=".quickmessage.ClearAllReceiver" />
 
         <!-- Message Template Content Provider -->
         <provider android:name="MessageTemplateProvider"

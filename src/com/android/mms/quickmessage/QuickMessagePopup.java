@@ -98,6 +98,7 @@ import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -116,6 +117,12 @@ public class QuickMessagePopup extends Activity {
             "com.android.mms.NOTIFICATION_OBJECT";
     public static final String QR_SHOW_KEYBOARD_EXTRA =
             "com.android.mms.QR_SHOW_KEYBOARD";
+
+    // Message removal
+    public static final String QR_REMOVE_MESSAGES_EXTRA =
+            "com.android.mms.QR_REMOVE_MESSAGES";
+    public static final String QR_THREAD_ID_EXTRA =
+            "com.android.mms.QR_THREAD_ID";
 
     // View items
     private ImageView mQmPagerArrow;
@@ -256,35 +263,44 @@ public class QuickMessagePopup extends Activity {
             return;
         }
 
-        // Parse the intent and ensure we have a notification object to work with
-        NotificationInfo nm = (NotificationInfo) extras.getParcelable(SMS_NOTIFICATION_OBJECT_EXTRA);
-        if (nm != null) {
-            QuickMessage qm = new QuickMessage(extras.getString(SMS_FROM_NAME_EXTRA),
-                    extras.getString(SMS_FROM_NUMBER_EXTRA), nm);
-            mMessageList.add(qm);
-            mPagerAdapter.notifyDataSetChanged();
-            // If triggered from Quick Reply the keyboard should be visible immediately
-            if (extras.getBoolean(QR_SHOW_KEYBOARD_EXTRA, false)) {
-                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        // Check if we are being called to remove messages already showing
+        if (extras.getBoolean(QR_REMOVE_MESSAGES_EXTRA, false)) {
+            // Get the ID
+            long threadId = extras.getLong(QR_THREAD_ID_EXTRA, -1);
+            if (threadId != -1) {
+                removeMatchingMessages(threadId);
             }
+        } else {
+            // Parse the intent and ensure we have a notification object to work with
+            NotificationInfo nm = (NotificationInfo) extras.getParcelable(SMS_NOTIFICATION_OBJECT_EXTRA);
+            if (nm != null) {
+                QuickMessage qm = new QuickMessage(extras.getString(SMS_FROM_NAME_EXTRA),
+                        extras.getString(SMS_FROM_NUMBER_EXTRA), nm);
+                mMessageList.add(qm);
+                mPagerAdapter.notifyDataSetChanged();
+                // If triggered from Quick Reply the keyboard should be visible immediately
+                if (extras.getBoolean(QR_SHOW_KEYBOARD_EXTRA, false)) {
+                    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                }
 
-            if (newMessage && mCurrentPage != -1) {
-                // There is already a message showing
-                // Stay on the current message
-                mMessagePager.setCurrentItem(mCurrentPage);
-            } else {
-                // Set the current message to the last message received
-                mCurrentPage = mMessageList.size()-1;
-                mMessagePager.setCurrentItem(mCurrentPage);
+                if (newMessage && mCurrentPage != -1) {
+                    // There is already a message showing
+                    // Stay on the current message
+                    mMessagePager.setCurrentItem(mCurrentPage);
+                } else {
+                    // Set the current message to the last message received
+                    mCurrentPage = mMessageList.size()-1;
+                    mMessagePager.setCurrentItem(mCurrentPage);
+                }
+
+                if (DEBUG)
+                    Log.d(LOG_TAG, "parseIntent(): New message from " + qm.getFromName().toString()
+                            + " added. Number of messages = " + mMessageList.size()
+                            + ". Displaying page #" + (mCurrentPage+1));
+
+                // Make sure the counter is accurate
+                updateMessageCounter();
             }
-
-            if (DEBUG)
-                Log.d(LOG_TAG, "parseIntent(): New message from " + qm.getFromName().toString()
-                        + " added. Number of messages = " + mMessageList.size()
-                        + ". Displaying page #" + (mCurrentPage+1));
-
-            // Make sure the counter is accurate
-            updateMessageCounter();
         }
     }
 
@@ -479,6 +495,37 @@ public class QuickMessagePopup extends Activity {
             Log.d(LOG_TAG, "updatePages(): Removed message " + removeMsg.getThreadId()
                     + " and changed to page #" + (gotoPage+1) + ". Remaining messages = "
                     + mMessageList.size());
+    }
+
+    /**
+     * Remove all matching quickmessages for the supplied thread id
+     *
+     * @param threadId
+     */
+    public void removeMatchingMessages(long threadId) {
+        if (DEBUG)
+            Log.d(LOG_TAG, "removeMatchingMessages() looking for match with threadID = " + threadId);
+
+        Iterator<QuickMessage> itr = mMessageList.iterator();
+        QuickMessage qmElement = null;
+
+        // Iterate through the list and remove the messages that match
+        while(itr.hasNext()){
+            qmElement = itr.next();
+            if(qmElement.getThreadId() == threadId) {
+                itr.remove();
+            }
+        }
+
+        // See if there are any remaining messages and update the pager
+        if (mMessageList.size() > 0) {
+            mPagerAdapter.notifyDataSetChanged();
+            mMessagePager.setCurrentItem(1); // First message
+            updateMessageCounter();
+        } else {
+            // we are done
+            finish();
+        }
     }
 
     /**
