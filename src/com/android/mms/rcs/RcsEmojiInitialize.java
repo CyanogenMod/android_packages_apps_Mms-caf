@@ -133,20 +133,19 @@ public class RcsEmojiInitialize {
     }
 
     private void initEmojiView() {
-        mEmojiPackages.clear();
-        mEmojiPackages.addAll(RcsEmojiStoreUtil.getStorePackageList());
-
-        if (mEmojiPackages.size() == 0)
-            return;
         mEmojiView = mViewStub.inflate();
         mEmojiGridView = (GridView) mEmojiView.findViewById(R.id.emoji_grid_view);
         mLinearLayout = (LinearLayout) mEmojiView
                 .findViewById(R.id.content_linear_layout);
         mDeleteBtn = (ImageButton) mEmojiView.findViewById(R.id.delete_emoji_btn);
+        mDeleteBtn.setVisibility(View.GONE);
         mEmojiView.findViewById(R.id.add_emoji_btn).setOnClickListener(
                 mClickListener);
+        mEmojiPackages.clear();
+        mEmojiPackages.addAll(RcsEmojiStoreUtil.getStorePackageList());
+        if (mEmojiPackages.size() == 0)
+            return;
         mDeleteBtn.setOnClickListener(mClickListener);
-
         RcsEmojiPackageObject selectPackageBean = mEmojiPackages.get(0);
         mSelectPackageId = selectPackageBean.getPackageId();
         initPackageView(selectPackageBean);

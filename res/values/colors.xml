@@ -24,6 +24,7 @@
     <!-- text color -->
     <drawable name="text_color_red">#ffff4444</drawable>
     <drawable name="text_color_black">#ff000000</drawable>
+    <color name="text_hairline">#ffcccccc</color>
     <color name="message_count_color">#66333333</color>
 
     <!-- Chat "sent time" text background -->
@@ -32,6 +33,9 @@
     <color name="outgoing_message_bg">#ffffff</color>
     <color name="incoming_message_bg_default">#26c6da</color>
     <color name="selected_list_item_bg">#ffeeeeee</color>
+    <!-- the background color used for unread conversation -->
+    <color name="unread_bgcolor">#ffffffff</color>
+    <color name="read_bgcolor">#ffeeeeee</color>
 
     <color name="widget_sender_text_color_read">#555555</color>
     <color name="widget_sender_text_color_unread">#333333</color>
@@ -79,4 +83,11 @@
 
     <color name="actionbar_background_color">@color/mms_theme_color</color>
     <color name="floating_action_button_icon_color">#ffffff</color>
+    <color name="white">#ffffffff</color>
+    <color name="gray">#dcdcdc</color>
+<!--     <color name="transparent">#50000000</color> -->
+
+    <color name="black">#000000</color>
+    <color name="gray2">#ededed</color>
+    <color name="gray5">#e0e0e0</color>
 </resources>

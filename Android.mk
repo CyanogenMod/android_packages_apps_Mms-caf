@@ -22,13 +22,16 @@ LOCAL_PACKAGE_NAME := Mms
 # Builds against the public SDK
 #LOCAL_SDK_VERSION := current
 
-LOCAL_JAVA_LIBRARIES += telephony-common
+LOCAL_JAVA_LIBRARIES := telephony-common
+LOCAL_JAVA_LIBRARIES += rcs_service_api
+
 LOCAL_STATIC_JAVA_LIBRARIES += android-common jsr305
 LOCAL_STATIC_JAVA_LIBRARIES += libchips
 LOCAL_STATIC_JAVA_LIBRARIES += com.android.vcard libphonenumber libgeocoding guava
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v7-palette
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v4
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v13
+
 
 LOCAL_AAPT_FLAGS := \
     --auto-add-overlay \
@@ -37,7 +40,6 @@ LOCAL_AAPT_FLAGS := \
     --extra-packages com.android.phone.common
 
 LOCAL_REQUIRED_MODULES := SoundRecorder
-
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 
 LOCAL_PRIVILEGED_MODULE := true

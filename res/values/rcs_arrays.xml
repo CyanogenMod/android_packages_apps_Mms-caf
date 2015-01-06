@@ -30,4 +30,9 @@
         <item>cancel</item>
     </string-array>
 
+    <string-array name="compose_message_items">
+        <item>@string/new_message</item>
+        <item>@string/new_group_chat</item>
+    </string-array>
+
 </resources>

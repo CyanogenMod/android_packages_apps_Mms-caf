@@ -55,6 +55,33 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             android:textColor="#000000"
             android:textSize="18dip" />
 
+        <LinearLayout
+            android:id="@+id/other_type_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:paddingStart="20dp"
+            android:visibility="gone" >
+
+            <ImageView
+                android:id="@+id/image_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="fitCenter"
+                android:minWidth="100dp"
+                android:minHeight="100dp"/>
+
+            <TextView
+                android:id="@+id/type_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dip"
+                android:gravity="center"
+                android:textColor="#000000"
+                android:textSize="20sp" />
+        </LinearLayout>
+
         <ImageView
             android:id="@+id/titleDivider"
             android:layout_width="match_parent"

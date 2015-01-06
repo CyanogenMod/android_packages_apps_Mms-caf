@@ -40,6 +40,7 @@ import android.os.Environment;
 import android.os.Vibrator;
 import android.os.Message;
 import android.os.Handler;
+import android.os.Bundle;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Vibrator;
@@ -69,6 +70,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.util.Log;
 
+import com.android.internal.telephony.IccCardConstants;
 import com.android.internal.telephony.TelephonyIntents;
 import com.android.internal.telephony.PhoneConstants;
 
@@ -252,7 +254,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         }
 
         // Since the enabled notifications pref can be changed outside of this activity,
-        // we have to reload it whenever we resume, including the blacklist summary
+        // we have to reload it whenever we resume.
         setEnabledNotificationsPref();
         // Initialize the sms signature
         updateSignatureStatus();
@@ -404,6 +406,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             getPreferenceScreen().removePreference(mSmscPrefCate);
         }
         setMessagePriorityPref();
+
         // Set SIM card SMS management preference
         updateSIMSMSPref();
 
@@ -553,6 +556,16 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         if (getResources().getBoolean(R.bool.config_sms_validity)) {
             if (MessageUtils.isMultiSimEnabledMms()) {
                 storageOptions.removePreference(mSmsValidityPref);
+                if (!MessageUtils.isIccCardActivated(MessageUtils.SUB1)) {
+                    mSmsValidityCard1Pref.setEnabled(false);
+                } else {
+                    setSmsPreferValiditySummary(MessageUtils.SUB1);
+                }
+                if (!MessageUtils.isIccCardActivated(MessageUtils.SUB2)) {
+                    mSmsValidityCard2Pref.setEnabled(false);
+                } else {
+                    setSmsPreferValiditySummary(MessageUtils.SUB2);
+                }
             } else {
                 storageOptions.removePreference(mSmsValidityCard1Pref);
                 storageOptions.removePreference(mSmsValidityCard2Pref);

@@ -40,6 +40,7 @@ import com.android.mms.model.LayoutModel;
 import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
 import com.android.mms.model.TextModel;
+import com.android.mms.rcs.RcsUtils;
 import com.android.mms.ui.MessageListAdapter.ColumnsMap;
 import com.android.mms.util.AddressUtils;
 import com.android.mms.util.DownloadManager;
@@ -123,6 +124,19 @@ public class MessageItem {
     boolean mIsDrmRingtoneWithRights = false;
 
     int mCountDown = 0;
+    public String mRcsPath;
+    public String mRcsThumbPath;
+    public int mRcsType;
+    public int mRcsId;
+    public int mRcsBurnFlag;
+    public int mRcsIsBurn;
+    public static int mRcsIsDownload;
+    public int mRcsMsgState;
+    public int mRcsPlayTime;
+    public int mRcsFileSize;
+    public String mRcsMimeType;
+    public int mRcsChatType;
+    public String mRcsMessageId;
 
     public int getCountDown() {
         return mCountDown;
@@ -176,6 +190,19 @@ public class MessageItem {
                 // For incoming messages, the ADDRESS field contains the sender.
                 mContact = Contact.get(mAddress, false).getName();
             }
+            mRcsPath = cursor.getString(columnsMap.mColumnRcsPath);
+            mRcsThumbPath = cursor.getString(columnsMap.mColumnRcsThumbPath);
+            mRcsType = cursor.getInt(columnsMap.mColumnRcsMsgType);
+            mRcsId = cursor.getInt(columnsMap.mColumnRcsId);
+            mRcsBurnFlag = cursor.getInt(columnsMap.mColumnRcsBurnFlag);
+            mRcsIsBurn = cursor.getInt(columnsMap.mColumnRcsIsBurn);
+            mRcsIsDownload = cursor.getInt(columnsMap.mColumnRcsIsDownload);
+            mRcsMsgState = cursor.getInt(columnsMap.mColumnRcsMsgState);
+            mRcsMimeType = cursor.getString(columnsMap.mColumnRcsMimeType);
+            mRcsPlayTime= cursor.getInt(columnsMap.mColumnRcsPlayTime);
+            mRcsFileSize= cursor.getInt(columnsMap.mColumnRcsFileSize);
+            mRcsChatType = cursor.getInt(columnsMap.mColumnRcsChatType);
+            mRcsMessageId = cursor.getString(columnsMap.mColumnRcsMessageId);
             mBody = cursor.getString(columnsMap.mColumnSmsBody);
 
             mPhoneId = cursor.getInt(columnsMap.mColumnPhoneId);
@@ -322,6 +349,10 @@ public class MessageItem {
                                                     // to show "Sending..." or the sent date.
         }
         return mCachedFormattedMessage;
+    }
+
+    public static void setRcsIsDownload(int mRcsIsDownload) {
+        MessageItem.mRcsIsDownload = mRcsIsDownload;
     }
 
     public int getBoxId() {
@@ -572,5 +603,9 @@ public class MessageItem {
 
     public SlideshowModel getSlideshow() {
         return mSlideshow;
+    }
+
+    public String getTimestamp() {
+        return mTimestamp;
     }
 }

@@ -78,4 +78,21 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         android:id="@+id/selection_toggle"
         android:showAsAction="never|withText"
         android:title="@string/selected_all" />
+    <item
+        android:id="@+id/save_attachment"
+        android:showAsAction="never|withText"
+        android:title="@string/copy_to_sdcard"/>
+       <item
+        android:id="@+id/complain"
+        android:showAsAction="never|withText"
+        android:title="@string/message_complain"/>
+
+         <item
+        android:id="@+id/save_back"
+        android:showAsAction="never|withText"
+        android:title="@string/save_back_message"/>
+        <item
+        android:id="@+id/favourite"
+        android:showAsAction="never|withText"
+        android:title="@string/favorited"/>
 </menu>

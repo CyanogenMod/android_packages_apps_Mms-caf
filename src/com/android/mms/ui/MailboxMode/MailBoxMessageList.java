@@ -87,7 +87,6 @@ import com.android.mms.ui.PopupList;
 import com.android.mms.ui.SearchActivityExtend;
 import com.android.mms.util.DownloadManager;
 import com.android.mms.util.DraftCache;
-
 import com.google.android.mms.pdu.PduHeaders;
 
 import static com.android.mms.ui.MessageListAdapter.MAILBOX_PROJECTION;
@@ -111,7 +110,8 @@ import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_MESSAGE_BOX;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_DELIVERY_REPORT;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_LOCKED;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_LOCKED;
-
+import com.android.mms.rcs.FavouriteMessageList;
+import com.android.mms.rcs.RcsSelectionMenu;
 /**
  * This activity provides a list view of MailBox-Mode.
  */
@@ -600,28 +600,38 @@ public class MailBoxMessageList extends ListActivity implements
                         mCursor.close();
                     }
                     mCursor = cursor;
+                    TextView emptyView = (TextView) findViewById(R.id.emptyview);
                     if (mListAdapter == null) {
                         mListAdapter = new MailBoxMessageListAdapter(MailBoxMessageList.this,
                                 MailBoxMessageList.this, cursor);
                         invalidateOptionsMenu();
-                        setListAdapter(mListAdapter);
+                        MailBoxMessageList.this.setListAdapter(mListAdapter);
                         if (mIsInSearchMode) {
-                            TextView emptyView = (TextView) mListView.getEmptyView();
-                            emptyView.setText(R.string.search_empty);
-                        }
-                    } else {
+                            int count = cursor.getCount();
+                            setMessageTitle(count);
+                            if (count == 0) {
+                                emptyView.setText(getString(R.string.search_empty));
+                             }
+                         } else if (cursor.getCount() == 0) {
+                             mListView.setEmptyView(emptyView);
+                         } else if (needShowCountNum(cursor)) {
+                            showMessageCount(cursor);
+                         }
+                     } else {
                         mListAdapter.changeCursor(mCursor);
                         if (!getResources().getBoolean(R.bool.config_classify_search)) {
                             if (mSearchView != null && !mSearchView.isIconified()) {
                                 resetSearchView();
                             }
                         }
-                    }
-
-                    if (mIsInSearchMode) {
-                        setMessageTitle(cursor.getCount());
-                    } else if (needShowCountNum(cursor)) {
-                        showMessageCount(cursor);
+                        if (needShowCountNum(cursor)) {
+                            showMessageCount(cursor);
+                        } else if (mIsInSearchMode) {
+                            setMessageTitle(cursor.getCount());
+                        } else {
+                            mListView.setEmptyView(emptyView);
+                            mCountTextView.setVisibility(View.INVISIBLE);
+                        }
                     }
                 } else {
                     if (LogTag.VERBOSE || Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
@@ -738,6 +748,9 @@ public class MailBoxMessageList extends ListActivity implements
                     break;
                 }
                 return true;
+            case R.id.action_compose_new:
+                startActivity(ComposeMessageActivity.createIntent(this, 0));
+                break;
             case R.id.action_settings:
                 Intent intent = new Intent(this, MessagingPreferenceActivity.class);
                 startActivityIfNeeded(intent, -1);
@@ -757,6 +770,14 @@ public class MailBoxMessageList extends ListActivity implements
                 } catch (ActivityNotFoundException e) {
                     Log.e(TAG, "ActivityNotFoundException for CellBroadcastListActivity");
                 }
+                break;
+            case R.id.my_favorited:
+                Intent favouriteIntent = new Intent(this, FavouriteMessageList.class);
+                favouriteIntent.putExtra("favorited", true);
+                startActivityIfNeeded(favouriteIntent, -1);
+                MessageUtils.setMailboxMode(true);
+
+                break;
             default:
                 return true;
         }
@@ -978,7 +999,13 @@ public class MailBoxMessageList extends ListActivity implements
     }
 
     private class ModeCallback implements ListView.MultiChoiceModeListener {
-        @Override
+        private View mMultiSelectActionBarView;
+        private TextView mSelectedConvCount;
+        private ImageView mSelectedAll;
+        //used in MultiChoiceMode
+        private boolean mHasSelectAll = false;
+        private RcsSelectionMenu mSelectionMenu;
+
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             // comes into MultiChoiceMode
             mMultiChoiceMode = true;
@@ -986,6 +1013,29 @@ public class MailBoxMessageList extends ListActivity implements
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.conversation_multi_select_menu, menu);
 
+            if (mMultiSelectActionBarView == null) {
+                mMultiSelectActionBarView = (ViewGroup) LayoutInflater
+                        .from(MailBoxMessageList.this).inflate(R.layout.action_mode, null);
+            }
+            mode.setCustomView(mMultiSelectActionBarView);
+            mSelectionMenu = new RcsSelectionMenu(getApplicationContext(),
+                    (Button) mMultiSelectActionBarView.findViewById(R.id.selection_menu),
+                    new PopupList.OnPopupItemClickListener() {
+                        @Override
+                        public boolean onPopupItemClick(int itemId) {
+                            if (itemId == RcsSelectionMenu.SELECT_OR_DESELECT) {
+                                if (mHasSelectAll) {
+                                    unCheckAll();
+                                    mHasSelectAll = false;
+                                } else {
+                                    checkAll();
+                                    mHasSelectAll = true;
+                                }
+                                mSelectionMenu.updateSelectAllMode(mHasSelectAll);
+                            }
+                            return true;
+                        }
+                    });
             return true;
         }
 

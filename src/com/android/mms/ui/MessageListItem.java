@@ -17,6 +17,7 @@
 
 package com.android.mms.ui;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -33,10 +34,12 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.database.sqlite.SqliteWrapper;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint.FontMetricsInt;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
@@ -72,6 +75,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Checkable;
 import android.widget.EditText;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -101,7 +105,32 @@ import com.google.android.mms.MmsException;
 import com.google.android.mms.pdu.NotificationInd;
 import com.google.android.mms.pdu.PduHeaders;
 import com.google.android.mms.pdu.PduPersister;
+import com.suntek.mway.rcs.client.api.im.impl.MessageApi;
+import com.suntek.mway.rcs.client.api.provider.SuntekMessageData;
+import com.suntek.mway.rcs.client.api.provider.model.ChatMessage;
+import com.suntek.mway.rcs.client.api.util.ServiceDisconnectedException;
 
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.IOException;
+
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
+import android.media.MediaMetadataRetriever;
+import android.media.MediaPlayer;
+import android.media.ThumbnailUtils;
+import android.provider.MediaStore;
+
+import com.android.mms.rcs.GeoLocation;
+import com.android.mms.rcs.RcsApiManager;
+import com.android.mms.rcs.RcsContactsUtils;
+import com.android.mms.rcs.RcsMessageOpenUtils;
+import com.android.mms.rcs.RcsUtils;
+import com.android.mms.rcs.RcsChatMessageUtils;
+
+import android.os.Environment;
+import android.widget.Toast;
 /**
  * This class provides view of a message in the messages list.
  */
@@ -122,7 +151,10 @@ public class MessageListItem extends ZoomMessageListItem implements
     static final int MSG_LIST_PLAY    = 2;
     static final int MSG_LIST_DETAILS = 3;
 
+    private static final int MEDIA_IS_DOWNING = 2;
+
     private boolean mIsCheck = false;
+    private static boolean mRcsIsStopDown = false;
 
     private View mMmsView;
     private ImageView mImageView;
@@ -133,9 +165,12 @@ public class MessageListItem extends ZoomMessageListItem implements
     private ImageButton mSlideShowButton;
     private TextView mSimMessageAddress;
     private TextView mBodyTextView;
+    private TextView mBodyButtomTextView;
+    private TextView mBodyTopTextView;
     private Button mDownloadButton;
     private View mDownloading;
     private LinearLayout mMmsLayout;
+    private CheckBox mChecked;
     private Handler mHandler;
     private MessageItem mMessageItem;
     private String mDefaultCountryIso;
@@ -143,14 +178,43 @@ public class MessageListItem extends ZoomMessageListItem implements
     public View mMessageBlock;
     private CheckableQuickContactBadge mAvatar;
     static private RoundedBitmapDrawable sDefaultContactImage;
+    static private Drawable sRcsBurnFlagImage;
+    static private Drawable sRcsBurnMessageHasBurnImage;
     private Presenter mPresenter;
     private int mPosition;      // for debugging
     private ImageLoadedCallback mImageLoadedCallback;
     private boolean mMultiRecipients;
     private int mManageMode;
+    private TextView downloadTextView;
+    private TextView mNameView;
+    boolean mRcsShowMmsView = false;
+    private int mRcsGroupId;
+    private String mRcsContentType = "";
+    public static HashMap<String, Long> sFileTrasnfer = new HashMap<String, Long>();
+
+    public static void setsFileTrasnfer(HashMap<String, Long> sFileTrasnfer) {
+        MessageListItem.sFileTrasnfer = sFileTrasnfer;
+    }
 
     public MessageListItem(Context context) {
         this(context, null);
+        Resources res = context.getResources();
+        mDefaultCountryIso = MmsApp.getApplication().getCurrentCountryIso();
+
+        if (sDefaultContactImage == null) {
+            Bitmap defaultImage = BitmapFactory.decodeResource(res, R.drawable.ic_contact_picture);
+            sDefaultContactImage = RoundedBitmapDrawableFactory.create(res, defaultImage);
+            sDefaultContactImage.setAntiAlias(true);
+            sDefaultContactImage.setCornerRadius(
+                    Math.max(defaultImage.getWidth() / 2, defaultImage.getHeight() / 2));
+        }
+        if (sRcsBurnFlagImage == null) {
+            sRcsBurnFlagImage = res.getDrawable(R.drawable.rcs_burn_flag);
+        }
+        if (sRcsBurnMessageHasBurnImage == null) {
+            sRcsBurnMessageHasBurnImage = res.getDrawable(
+                    R.drawable.rcs_burnmessage_has_burn);
+        }
     }
 
     public MessageListItem(Context context, AttributeSet attrs) {
@@ -167,13 +231,23 @@ public class MessageListItem extends ZoomMessageListItem implements
             sDefaultContactImage.setCornerRadius(
                     Math.max(defaultImage.getWidth() / 2, defaultImage.getHeight() / 2));
         }
+        if (sRcsBurnFlagImage == null) {
+            sRcsBurnFlagImage = res.getDrawable(R.drawable.rcs_burn_flag);
+        }
+        if (sRcsBurnMessageHasBurnImage == null) {
+            sRcsBurnMessageHasBurnImage = res.getDrawable(
+                    R.drawable.rcs_burnmessage_has_burn);
+        }
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mBodyTextView = (TextView) findViewById(R.id.text_view);
+        mBodyTopTextView = (TextView) findViewById(R.id.text_view);
+        mBodyTopTextView.setVisibility(View.GONE);
+        mBodyButtomTextView = (TextView) findViewById(R.id.text_view_buttom);
+        mBodyButtomTextView.setVisibility(View.GONE);
         mDateView = (TextView) findViewById(R.id.date_view);
         mLockedIndicator = (ImageView) findViewById(R.id.locked_indicator);
         mDeliveredIndicator = (ImageView) findViewById(R.id.delivered_indicator);
@@ -183,18 +257,40 @@ public class MessageListItem extends ZoomMessageListItem implements
         mMessageBlock = findViewById(R.id.message_block);
         mSimMessageAddress = (TextView) findViewById(R.id.sim_message_address);
         mMmsLayout = (LinearLayout) findViewById(R.id.mms_layout_view_parent);
-
+        mChecked = (CheckBox) findViewById(R.id.selected_check);
+        downloadTextView = (TextView) findViewById(R.id.label_downloading);
+        mNameView = (TextView) findViewById(R.id.name_view);
         mAvatar.setOverlay(null);
+    }
 
-        // Add the views to be managed by the zoom control
-        addZoomableTextView(mBodyTextView);
-        addZoomableTextView(mDateView);
-        addZoomableTextView(mSimMessageAddress);
+    private void updateBodyTextView() {
+        if (mMessageItem.isMms() && mMessageItem.mLayoutType == LayoutModel.LAYOUT_TOP_TEXT) {
+            mBodyButtomTextView.setVisibility(View.GONE);
+            mBodyTextView = mBodyTopTextView;
+        } else {
+            mBodyTopTextView.setVisibility(View.GONE);
+            mBodyTextView = mBodyButtomTextView;
+        }
+        if (mMessageItem.mRcsId == RcsUtils.SMS_DEFAULT_RCS_ID) {
+            mBodyTextView.setVisibility(View.VISIBLE);
+        }
+    }
 
+    private void updateNameTextView() {
+        if (mMessageItem.mRcsId != RcsUtils.SMS_DEFAULT_RCS_ID) {
+            if (mMessageItem.mRcsChatType == SuntekMessageData.CHAT_TYPE_GROUP
+                    && mMessageItem.mRcsType != SuntekMessageData.MSG_TYPE_NOTIFICATION) {
+                if (mNameView != null) {
+                    mNameView.setText(RcsContactsUtils.getGroupChatMemberDisplayName(getContext(),
+                            mRcsGroupId, mMessageItem.mAddress));
+                    mNameView.setVisibility(View.VISIBLE);
+                }
+            }
+        }
     }
 
     public void bind(MessageItem msgItem, int accentColor,
-            boolean convHasMultiRecipients, int position, boolean selected) {
+            boolean convHasMultiRecipients, int position, boolean selected, int rcsGroupId) {
         if (DEBUG) {
             Log.v(TAG, "bind for item: " + position + " old: " +
                    (mMessageItem != null ? mMessageItem.toString() : "NULL" ) +
@@ -203,7 +299,10 @@ public class MessageListItem extends ZoomMessageListItem implements
         boolean sameItem = mMessageItem != null && mMessageItem.mMsgId == msgItem.mMsgId;
         mMessageItem = msgItem;
 
+        updateBodyTextView();
+
         mPosition = position;
+        this.mRcsGroupId = rcsGroupId;
         mMultiRecipients = convHasMultiRecipients;
 
         setLongClickable(false);
@@ -212,6 +311,9 @@ public class MessageListItem extends ZoomMessageListItem implements
                                 // to this listitem. We always want the listview to handle the
                                 // clicks first.
 
+        if (isRcsMessage()) {
+            bindRcsMessage();
+        }
         switch (msgItem.mMessageType) {
             case PduHeaders.MESSAGE_TYPE_NOTIFICATION_IND:
                 bindNotifInd();
@@ -239,6 +341,112 @@ public class MessageListItem extends ZoomMessageListItem implements
                 base.setTint(color);
             }
         }
+    }
+
+    private boolean isRcsMessage() {
+        return mMessageItem.mRcsId != RcsUtils.SMS_DEFAULT_RCS_ID;
+    }
+
+    private void bindRcsMessage() {
+        updateNameTextView();
+
+        if (mMessageItem.mRcsBurnFlag == RcsUtils.RCS_IS_BURN_TRUE) {
+            bindRcsBurnMessage();
+        } else {
+            bindRcsNotBurnMessage();
+        }
+    }
+
+    private void bindRcsBurnMessage() {
+        setLongClickable(true);
+        setClickable(true);
+        mRcsContentType = "";
+        mRcsShowMmsView = true;
+        showMmsView(true);
+        if (mMessageItem.mRcsIsBurn == 0) {
+            mImageView.setImageDrawable(sRcsBurnFlagImage);
+        } else {
+            mImageView.setImageDrawable(sRcsBurnMessageHasBurnImage);
+        }
+        mImageView.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                if (mMessageItem.mRcsMsgState == RcsUtils.MESSAGE_FAIL) {
+                    RcsMessageOpenUtils.retransmisMessage(mMessageItem);
+                } else {
+                    RcsChatMessageUtils.startBurnMessageActivity(mContext,
+                            mMessageItem.mRcsIsBurn, mMessageItem.getMessageId());
+                }
+            }
+        });
+
+        mBodyTextView.setVisibility(View.GONE);
+    }
+
+    private void bindRcsNotBurnMessage() {
+        if (mMessageItem.mRcsType != RcsUtils.RCS_MSG_TYPE_MAP) {
+            mBodyTextView.setVisibility(View.GONE);
+        }
+        mRcsContentType = RcsUtils.getContentTypeForMessageItem(mMessageItem);
+        switch (mMessageItem.mRcsType) {
+            case RcsUtils.RCS_MSG_TYPE_VIDEO: {
+                mMessageItem.mBody = mMessageItem.mRcsFileSize / 1024 + "KB/ "
+                        + mMessageItem.mRcsPlayTime + "''";
+                mBodyTextView.setVisibility(View.VISIBLE);
+                break;
+            }
+            case RcsUtils.RCS_MSG_TYPE_AUDIO: {
+                mBodyTextView.setVisibility(View.VISIBLE);
+                mBodyTextView.setText(mMessageItem.mRcsPlayTime + "''");
+                mMessageItem.mBody = mMessageItem.mRcsPlayTime + "''";
+                break;
+            }
+        }
+
+        if (mMessageItem.mRcsType == RcsUtils.RCS_MSG_TYPE_TEXT) {
+            mBodyTextView.setVisibility(View.VISIBLE);
+            mRcsShowMmsView = false;
+            showMmsView(false);
+        } else {
+            showMmsView(true);
+            if (mSlideShowButton == null) {
+                mSlideShowButton = (ImageButton) findViewById(R.id.play_slideshow_button);
+            }
+            if (mMessageItem.mRcsType == RcsUtils.RCS_MSG_TYPE_VIDEO) {
+                mSlideShowButton.setVisibility(View.VISIBLE);
+                mSlideShowButton.setFocusable(false);
+            } else {
+                mSlideShowButton.setVisibility(View.GONE);
+            }
+            mSlideShowButton.setOnClickListener(new OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    RcsMessageOpenUtils.openRcsSlideShowMessage(MessageListItem.this);
+                }
+            });
+            Bitmap bitmap = RcsUtils.getThumbnailForMessageItem(getContext(), mMessageItem);
+            if (bitmap != null) {
+                mImageView.setImageBitmap(bitmap);
+            }
+            mImageView.setOnClickListener(new OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    RcsMessageOpenUtils.resendOrOpenRcsMessage(MessageListItem.this);
+                }
+            });
+            mRcsShowMmsView = true;
+        }
+    }
+
+    public boolean isDownloading() {
+        return sFileTrasnfer.containsKey(mMessageItem.mRcsMessageId);
+    }
+
+    private void toast(int resId) {
+        Toast.makeText(mContext, resId, Toast.LENGTH_LONG).show();
     }
 
     public void unbind() {
@@ -312,6 +520,7 @@ public class MessageListItem extends ZoomMessageListItem implements
                 mDownloadButton.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        mDownloading.setVisibility(View.VISIBLE);
                         try {
                             NotificationInd nInd = (NotificationInd) PduPersister.getPduPersister(
                                     mContext).load(mMessageItem.mMessageUri);
@@ -406,7 +615,6 @@ public class MessageListItem extends ZoomMessageListItem implements
     }
 
     private void updateAvatarView(String addr, boolean isSelf) {
-        Drawable avatarDrawable;
         if (isSelf || !TextUtils.isEmpty(addr)) {
             Contact contact = isSelf ? Contact.getMe(false) : Contact.get(addr, false);
             contact.bindAvatar(mAvatar);
@@ -439,7 +647,16 @@ public class MessageListItem extends ZoomMessageListItem implements
         }
 
         //layout type may be changed after reload pdu, so update textView here.
-        mBodyTextView.setVisibility(View.VISIBLE);
+        if (mMessageItem.isMms() && mMessageItem.mLayoutType == LayoutModel.LAYOUT_TOP_TEXT) {
+            mBodyTextView = mBodyTopTextView;
+            mBodyButtomTextView.setVisibility(View.GONE);
+        } else {
+            mBodyTextView = mBodyButtomTextView;
+            mBodyTopTextView.setVisibility(View.GONE);
+        }
+        if (!isRcsMessage()) {
+            mBodyTextView.setVisibility(View.VISIBLE);
+        }
 
         // Since the message text should be concatenated with the sender's
         // address(or name), I have to display it here instead of
@@ -460,6 +677,7 @@ public class MessageListItem extends ZoomMessageListItem implements
             String addr = isSelf ? null : mMessageItem.mAddress;
             updateAvatarView(addr, isSelf);
             //After pdu loaded, update the text view according to the slide-layout setting.
+            updateBodyTextView();
         }
 
         // Add SIM sms address above body.
@@ -522,63 +740,114 @@ public class MessageListItem extends ZoomMessageListItem implements
                     mContext.getResources().getString(sendingTextResId) :
                         mMessageItem.mTimestamp));
         }
-        if (mMessageItem.isSms()) {
-            showMmsView(false);
-            mMessageItem.setOnPduLoaded(null);
-        } else {
-            if (DEBUG) {
-                Log.v(TAG, "bindCommonMessage for item: " + mPosition + " " +
-                        mMessageItem.toString() +
-                        " mMessageItem.mAttachmentType: " + mMessageItem.mAttachmentType +
-                        " sameItem: " + sameItem);
-            }
-            if (mMessageItem.mAttachmentType != WorkingMessage.TEXT) {
-                if (!sameItem) {
-                    setImage(null, null);
-                }
-                setOnClickListener(mMessageItem);
-                drawPlaybackButton(mMessageItem);
-            } else {
+        if (isRcsMessage()) {
+            bindCommonRcsMessage();
+        }
+        if (!mRcsShowMmsView) {
+            if (mMessageItem.isSms()) {
                 showMmsView(false);
-            }
-            if (mMessageItem.mSlideshow == null) {
-                final int mCurrentAttachmentType = mMessageItem.mAttachmentType;
-                mMessageItem.setOnPduLoaded(new MessageItem.PduLoadedCallback() {
-                    public void onPduLoaded(MessageItem messageItem) {
-                        if (DEBUG) {
-                            Log.v(TAG, "PduLoadedCallback in MessageListItem for item: " + mPosition +
-                                    " " + (mMessageItem == null ? "NULL" : mMessageItem.toString()) +
-                                    " passed in item: " +
-                                    (messageItem == null ? "NULL" : messageItem.toString()));
-                        }
-                        if (messageItem != null && mMessageItem != null &&
-                                messageItem.getMessageId() == mMessageItem.getMessageId()) {
-                            mMessageItem.setCachedFormattedMessage(null);
-                            bindCommonMessage(
-                                    mCurrentAttachmentType == messageItem.mAttachmentType);
-                        }
-                    }
-                });
+                mMessageItem.setOnPduLoaded(null);
             } else {
-                if (mPresenter == null) {
-                    mPresenter = PresenterFactory.getPresenter(
-                            "MmsThumbnailPresenter", mContext,
-                            this, mMessageItem.mSlideshow);
-                } else {
-                    mPresenter.setModel(mMessageItem.mSlideshow);
-                    mPresenter.setView(this);
+                if (DEBUG) {
+                    Log.v(TAG,
+                            "bindCommonMessage for item: " + mPosition + " "
+                                    + mMessageItem.toString() + " mMessageItem.mAttachmentType: "
+                                    + mMessageItem.mAttachmentType + " sameItem: " + sameItem);
                 }
-                if (mImageLoadedCallback == null) {
-                    mImageLoadedCallback = new ImageLoadedCallback(this);
+                if (mMessageItem.mAttachmentType != WorkingMessage.TEXT) {
+                    if (!sameItem) {
+                        setImage(null, null);
+                    }
+                    setOnClickListener(mMessageItem);
+                    drawPlaybackButton(mMessageItem);
                 } else {
-                    mImageLoadedCallback.reset(this);
+                    showMmsView(false);
                 }
-                mPresenter.present(mImageLoadedCallback);
+                if (mMessageItem.mSlideshow == null) {
+                    final int mCurrentAttachmentType = mMessageItem.mAttachmentType;
+                    mMessageItem.setOnPduLoaded(new MessageItem.PduLoadedCallback() {
+                        public void onPduLoaded(MessageItem messageItem) {
+                            if (DEBUG) {
+                                Log.v(TAG, "PduLoadedCallback in MessageListItem for item: "
+                                        + mPosition + " "
+                                        + (mMessageItem == null ? "NULL" : mMessageItem.toString())
+                                        + " passed in item: "
+                                        + (messageItem == null ? "NULL" : messageItem.toString()));
+                            }
+                            if (messageItem != null && mMessageItem != null
+                                    && messageItem.getMessageId() == mMessageItem.getMessageId()) {
+                                mMessageItem.setCachedFormattedMessage(null);
+                                bindCommonMessage(mCurrentAttachmentType == messageItem.mAttachmentType);
+                            }
+                        }
+                    });
+                } else {
+                    if (mPresenter == null) {
+                        mPresenter = PresenterFactory.getPresenter("MmsThumbnailPresenter",
+                                mContext, this, mMessageItem.mSlideshow);
+                    } else {
+                        mPresenter.setModel(mMessageItem.mSlideshow);
+                        mPresenter.setView(this);
+                    }
+                    if (mImageLoadedCallback == null) {
+                        mImageLoadedCallback = new ImageLoadedCallback(this);
+                    } else {
+                        mImageLoadedCallback.reset(this);
+                    }
+                    mPresenter.present(mImageLoadedCallback);
+                }
             }
         }
         drawRightStatusIndicator(mMessageItem);
 
         requestLayout();
+    }
+
+    private void bindCommonRcsMessage() {
+        if (mMessageItem.isMe()) {
+            mDateView.setText(RcsUtils.getRcsMessageStatusText(getContext(), mMessageItem));
+        } else {
+            if ((mMessageItem.mRcsType == RcsUtils.RCS_MSG_TYPE_IMAGE || mMessageItem.mRcsType == RcsUtils.RCS_MSG_TYPE_VIDEO)) {
+                if (mMessageItem.mRcsIsDownload == RcsUtils.RCS_IS_DOWNLOAD_FALSE
+                        && mMessageItem.mRcsBurnFlag != RcsUtils.RCS_IS_BURN_TRUE
+                        && !isDownloading()) {
+                    mDateView.setText(R.string.message_download);
+                } else if (isDownloading() && !mRcsIsStopDown) {
+                    if (sFileTrasnfer != null) {
+                        Long percent = sFileTrasnfer.get(mMessageItem.mRcsMessageId);
+                        if (percent != null) {
+                            if (!mMessageItem.isMe()) {
+                                mDateView.setText(getContext().getString(
+                                        R.string.downloading_percent, percent.intValue()));
+                            } else {
+                                mDateView.setText(getContext().getString(
+                                        R.string.uploading_percent, percent.intValue()));
+                            }
+                        }
+                    }
+                } else if (mRcsIsStopDown) {
+                    mDateView.setText(getContext().getString(R.string.stop_down_load));
+                } else if (mMessageItem.mRcsIsDownload == RcsUtils.RCS_IS_DOWNLOAD_OK) {
+                    mDateView.setText(buildTimestampLine(mMessageItem.isSending() ? mContext
+                            .getResources().getString(R.string.sending_message)
+                            : mMessageItem.mTimestamp));
+                }
+            }
+        }
+        if (mMessageItem.mRcsMsgState == 0
+                && mMessageItem.mRcsType != SuntekMessageData.MSG_TYPE_TEXT
+                && sFileTrasnfer != null) {
+            Long percent = sFileTrasnfer.get(mMessageItem.mRcsMessageId);
+            if (percent != null) {
+                if (!mMessageItem.isMe()) {
+                    mDateView.setText(getContext().getString(R.string.downloading_percent,
+                            percent.intValue()));
+                } else {
+                    mDateView.setText(getContext().getString(R.string.uploading_percent,
+                            percent.intValue()));
+                }
+            }
+        }
     }
 
     static private class ImageLoadedCallback implements ItemLoadedCallback<ImageLoaded> {
@@ -662,7 +931,8 @@ public class MessageListItem extends ZoomMessageListItem implements
             if (visible && mMmsView == null) {
                 //inflate the mms view_stub
                 View mmsStub = findViewById(R.id.mms_layout_view_stub);
-                mmsStub.setVisibility(View.VISIBLE);
+                if (mmsStub != null)
+                    mmsStub.setVisibility(View.VISIBLE);
                 mMmsView = findViewById(R.id.mms_view);
             }
         }
@@ -812,7 +1082,10 @@ public class MessageListItem extends ZoomMessageListItem implements
         if (mMessageItem != null &&
                 mMessageItem.isOutgoingMessage() &&
                 mMessageItem.isFailedMessage() ) {
-
+            //if message is rcsMessage except text,return.
+            if( mMessageItem.mRcsId != RcsUtils.SMS_DEFAULT_RCS_ID && mMessageItem.mRcsType != RcsUtils.RCS_MSG_TYPE_TEXT ){
+                return;
+            }
             // Assuming the current message is a failed one, reload it into the compose view so
             // the user can resend it.
             sendMessage(mMessageItem, MSG_LIST_EDIT);
@@ -1050,5 +1323,25 @@ public class MessageListItem extends ZoomMessageListItem implements
                 mDateView.setVisibility(View.GONE);
             }
         }
+    }
+
+    public static boolean rcsIsStopDown() {
+        return mRcsIsStopDown;
+    }
+
+    public static void setRcsIsStopDown(boolean mRcsIsStopDown) {
+            MessageListItem.mRcsIsStopDown = mRcsIsStopDown;
+    }
+
+    public static HashMap<String, Long> getFileTrasnferHashMap() {
+        return sFileTrasnfer;
+    }
+
+    public String getRcsContentType() {
+        return mRcsContentType;
+    }
+
+    public void setDateViewText(int resId) {
+        mDateView.setText(resId);
     }
 }

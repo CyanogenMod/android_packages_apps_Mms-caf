@@ -45,6 +45,7 @@ import com.suntek.mway.rcs.client.api.util.FileTransferException;
 import com.suntek.mway.rcs.client.api.util.ServiceDisconnectedException;
 import com.suntek.mway.rcs.client.api.util.log.LogHelper;
 
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -69,6 +70,7 @@ import android.provider.BaseColumns;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.Telephony;
+import android.provider.ContactsContract.Groups;
 import android.provider.Telephony.CanonicalAddressesColumns;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.MmsSms;
@@ -737,13 +739,12 @@ public class RcsUtils {
         return threadId;
     }
 
-    public static int getDuration(final Context context, final Uri uri) {
-        MediaPlayer mPlayer = MediaPlayer.create(context, uri);
-        if (mPlayer == null) {
+    public static int getDuration(Context context, Uri uri) {
+        MediaPlayer player = MediaPlayer.create(context, uri);
+        if (player == null) {
             return 0;
         }
-        int duration = mPlayer.getDuration() / 1000;
-        return duration;
+        return player.getDuration() / 1000;
     }
 
     /**
@@ -1083,6 +1084,67 @@ public class RcsUtils {
         return body;
     }
 
+    public static void UpdateGroupChatSubject(Context context,GroupChatModel groupChatModel){
+        if(context == null) return;
+        ContentResolver resolver = context.getContentResolver();
+        String thread_id = String.valueOf(groupChatModel.getThreadId());
+        String group_id = String.valueOf(groupChatModel.getId());
+        String groupTitle = TextUtils.isEmpty(groupChatModel
+                .getRemark()) ? groupChatModel.getSubject()
+                : groupChatModel.getRemark();
+
+        StringBuilder where = new StringBuilder();
+        where.append(Groups.SYSTEM_ID);
+        where.append("="+group_id);
+        
+        ContentValues values = new ContentValues();
+        values.put(Groups.TITLE, groupTitle);
+        values.put(Groups.SYSTEM_ID,group_id);
+        values.put(Groups.SOURCE_ID,"RCS");
+
+        try{
+            resolver.update(Groups.CONTENT_URI, values, where.toString(), null);
+        } catch(Exception ex) {
+            //
+        }  
+    }
+
+    public static void createGroupChat(Context context,GroupChatModel groupChatModel){
+        if(context == null) return;
+        ContentResolver resolver = context.getContentResolver();
+        String thread_id = String.valueOf(groupChatModel.getThreadId());
+        String group_id = String.valueOf(groupChatModel.getId());
+        String groupTitle = TextUtils.isEmpty(groupChatModel
+                .getRemark()) ? groupChatModel.getSubject()
+                : groupChatModel.getRemark();
+
+        ContentValues values = new ContentValues();
+        values.put(Groups.TITLE, groupTitle);
+        values.put(Groups.SYSTEM_ID,group_id);
+        values.put(Groups.SOURCE_ID,"RCS");
+
+        try{
+            resolver.insert(Groups.CONTENT_URI, values);
+        } catch(Exception ex) {
+            //
+        }  
+    }
+
+    public static void disBandGroupChat(Context context,GroupChatModel groupChatModel){
+        if(context == null) return;
+        ContentResolver resolver = context.getContentResolver();
+        String thread_id = String.valueOf(groupChatModel.getThreadId());
+        String group_id = String.valueOf(groupChatModel.getId());
+        StringBuilder where = new StringBuilder();
+        where.append(Groups.SYSTEM_ID);
+        where.append("="+group_id);
+
+        try{
+            resolver.delete(Groups.CONTENT_URI, where.toString(), null);
+        } catch(Exception ex) {
+            //
+        }  
+    }
     /**
      * Make sure the bytes length of <b>src</b> is less than <b>bytesLength</b>.
      */
@@ -1435,6 +1497,10 @@ public class RcsUtils {
                         Toast.LENGTH_SHORT).show();
             }
             Looper.loop();
+        } else if (exception instanceof NumberFormatException) {
+            exception.printStackTrace();
+        } else {
+            exception.printStackTrace();
         }
     }
 
@@ -1562,5 +1628,17 @@ public class RcsUtils {
         }
 
         return text;
+    }
+
+    public static void startEmojiStore(Context context) {
+        if (RcsUtils.isPackageInstalled(context, "com.temobi.dm.emoji.store")) {
+            Intent mIntent = new Intent();
+            ComponentName comp = new ComponentName("com.temobi.dm.emoji.store",
+                    "com.temobi.dm.emoji.store.activity.EmojiActivity");
+            mIntent.setComponent(comp);
+            context.startActivity(mIntent);
+        } else {
+            Toast.makeText(context, R.string.install_emoj_store, Toast.LENGTH_SHORT).show();
+        }
     }
 }

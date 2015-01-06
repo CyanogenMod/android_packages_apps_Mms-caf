@@ -28,12 +28,15 @@ import com.android.mms.data.ContactList;
 import com.android.mms.data.Conversation;
 import com.android.mms.data.WorkingMessage;
 import com.android.mms.ui.ComposeMessageActivity;
+import com.android.mms.ui.SelectRecipientsList;
 import com.suntek.mway.rcs.client.api.provider.SuntekMessageData;
 import com.suntek.mway.rcs.client.api.provider.model.ChatMessage;
 import com.suntek.mway.rcs.client.api.util.ServiceDisconnectedException;
 import com.suntek.mway.rcs.client.api.util.log.LogHelper;
 import com.suntek.mway.rcs.client.api.contacts.RCSContact;
 import com.suntek.mway.rcs.client.api.plugin.entity.profile.Profile;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -312,23 +315,16 @@ public class RcsChatMessageUtils {
     }
 
     public static void sendForwardRcsMessage(Intent data,int mRcsId,Context context) {
-        Bundle bundle = data.getExtras().getBundle("result");
-        if(bundle == null){
+        if(data == null){
             return;
         }
-        final Set<String> keySet = bundle.keySet();
-        final int recipientCount = (keySet != null) ? keySet.size() : 0;
-        final ContactList list;
-
-        list = ContactList.blockingGetByUris(buildUris(keySet, recipientCount));
-
+        ArrayList<String> numbers = data.getStringArrayListExtra(SelectRecipientsList.EXTRA_RECIPIENTS);
         long a = -1;
         boolean success = false;
-        String[] numbers = list.getNumbers(false);
         try {
             ChatMessage message = RcsApiManager.getMessageApi().getMessageById(mRcsId + "");
             success = RcsChatMessageUtils.forwardMessage(a,
-                    Arrays.asList(list.getNumbers()), message);
+                    numbers, message);
             if (success) {
                 Toast.makeText(context,
                context.getString(R.string.forward_message_success), Toast.LENGTH_SHORT).show();

@@ -88,7 +88,6 @@ import com.android.mms.transaction.TransactionBundle;
 import com.android.mms.transaction.TransactionService;
 import com.android.mms.ui.PopupList;
 import com.android.mms.ui.SearchActivityExtend;
-import com.android.mms.ui.SelectionMenu;
 import com.android.mms.ui.MailBoxMessageListAdapter;
 import com.android.mms.ui.MailBoxMessageListAdapter.OnListContentChangedListener;
 import com.android.mms.util.DownloadManager;
@@ -966,7 +965,7 @@ public class FavouriteMessageList extends ListActivity implements
         private ImageView mSelectedAll;
         //used in MultiChoiceMode
         private boolean mHasSelectAll = false;
-        private SelectionMenu mSelectionMenu;
+        private RcsSelectionMenu mSelectionMenu;
 
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             // comes into MultiChoiceMode
@@ -980,12 +979,12 @@ public class FavouriteMessageList extends ListActivity implements
                         .from(FavouriteMessageList.this).inflate(R.layout.action_mode, null);
             }
             mode.setCustomView(mMultiSelectActionBarView);
-            mSelectionMenu = new SelectionMenu(getApplicationContext(),
+            mSelectionMenu = new RcsSelectionMenu(getApplicationContext(),
                     (Button) mMultiSelectActionBarView.findViewById(R.id.selection_menu),
                     new PopupList.OnPopupItemClickListener() {
                         @Override
                         public boolean onPopupItemClick(int itemId) {
-                            if (itemId == SelectionMenu.SELECT_OR_DESELECT) {
+                            if (itemId == RcsSelectionMenu.SELECT_OR_DESELECT) {
                                 if (mHasSelectAll) {
                                     unCheckAll();
                                     mHasSelectAll = false;
