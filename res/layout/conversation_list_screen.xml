@@ -46,17 +46,17 @@
             android:background="@android:color/white"
             android:fadingEdgeLength="16dip" />
 
+        <TextView android:id="@+id/empty"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@android:color/white"
+            android:text="@string/loading_conversations"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
 
-    <TextView android:id="@+id/empty"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:background="@android:color/white"
-        android:text="@string/loading_conversations"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+    <include layout="@layout/banner_sms_promo" />
 
-     <include layout="@layout/banner_sms_promo" />
-
-     <include layout="@layout/floating_action_button" />
+    <include layout="@layout/floating_action_button" />
 </RelativeLayout>
