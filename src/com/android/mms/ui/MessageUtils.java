@@ -20,9 +20,12 @@
 
 package com.android.mms.ui;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
@@ -34,6 +37,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -2702,5 +2708,83 @@ public class MessageUtils {
             }
         }
         return number;
+    }
+
+    public static void zipFile(File inputFile, String zipFilePath) throws IOException {
+        FileOutputStream fileOutputStream = null;
+        ZipOutputStream zipOutputStream = null;
+        FileInputStream fileInputStream = null;
+
+        try {
+            fileOutputStream = new FileOutputStream(zipFilePath);
+            zipOutputStream = new ZipOutputStream(fileOutputStream);
+
+            ZipEntry zipEntry = new ZipEntry(inputFile.getName());
+            zipOutputStream.putNextEntry(zipEntry);
+
+            fileInputStream = new FileInputStream(inputFile);
+            byte[] buf = new byte[1024];
+            int bytesRead;
+
+            while ((bytesRead = fileInputStream.read(buf)) > 0) {
+                zipOutputStream.write(buf, 0, bytesRead);
+            }
+
+            zipOutputStream.closeEntry();
+
+            zipOutputStream.close();
+            fileOutputStream.close();
+        } finally {
+            if (fileOutputStream != null) {
+                fileOutputStream.close();
+            }
+            if (zipOutputStream != null) {
+                zipOutputStream.close();
+            }
+            if (fileInputStream != null) {
+                fileInputStream.close();
+            }
+        }
+    }
+
+    public static File unzipBackupFile(File zipFilePath, String destDirectory) throws IOException {
+        File destDir = new File(destDirectory);
+        if (!destDir.exists()) {
+            destDir.mkdir();
+        }
+
+        ZipInputStream zipIn = null;
+
+        try {
+            zipIn = new ZipInputStream(new FileInputStream(zipFilePath));
+            ZipEntry entry = zipIn.getNextEntry();
+            while (entry != null) {
+                String filePath = destDirectory + File.separator + entry.getName();
+                if (!entry.isDirectory()) {
+                    return extractFile(zipIn, filePath);
+                } else {
+                    // No backup file found in zip
+                    return null;
+                }
+            }
+
+            return null;
+        } finally {
+            if (zipIn != null) {
+                zipIn.close();
+            }
+        }
+    }
+
+    private static File extractFile(ZipInputStream zipIn, String filePath) throws IOException {
+        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));
+        byte[] bytesIn = new byte[4096];
+        int read = 0;
+        while ((read = zipIn.read(bytesIn)) != -1) {
+            bos.write(bytesIn, 0, read);
+        }
+        bos.close();
+
+        return new File(filePath);
     }
 }
