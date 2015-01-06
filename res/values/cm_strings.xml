@@ -350,6 +350,8 @@
     <string name="delete_sms_toast">SMS message deleted successfully</string>
     <string name="import_sms_toast">SMS imported successfully</string>
     <string name="export_sms_toast">SMS exported successfully</string>
+    <string name="export_sms_failed_toast">Unable to export SMS</string>
+    <string name="import_sms_failed_toast">Unable to import SMS</string>
     <string name="perform_backup_title">Performing backup</string>
     <string name="perform_restore_title">Performing restore</string>
     <string name="wait_progress_message">Please wait...</string>

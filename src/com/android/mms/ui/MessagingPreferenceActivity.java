@@ -77,6 +77,7 @@ import com.android.mms.util.Recycler;
 import com.android.mms.QTIBackupSMS;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -919,11 +920,30 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             if (mShouldBackup) {
                 operationFile = new File(folder, String.valueOf(System.currentTimeMillis()));
             } else {
-                operationFile = mRestoreFile;
+                try {
+                    operationFile = MessageUtils.unzipBackupFile(mRestoreFile,
+                            folder.getAbsolutePath());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return null;
+                }
             }
             QTIBackupSMS smsBackup = new QTIBackupSMS(getApplicationContext(), operationFile);
             if (mShouldBackup) {
                 smsBackup.performBackup();
+
+                // compress and return zip file
+                String zipFileName = operationFile.getAbsolutePath() + ".zip";
+
+                try {
+                    MessageUtils.zipFile(operationFile, zipFileName);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+
+                operationFile.delete();
+                operationFile = new File(zipFileName);
             } else {
                 smsBackup.performRestore();
             }
@@ -933,7 +953,16 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         @Override
         protected void onPostExecute(final File file) {
             mDialog.cancel();
+
             if (mShouldBackup) {
+                if (file == null) {
+                    Toast.makeText(MessagingPreferenceActivity.this,
+                            R.string.export_sms_failed_toast,
+                            Toast.LENGTH_SHORT).show();
+
+                    return;
+                }
+
                 AlertDialog.Builder builder =
                         new AlertDialog.Builder(MessagingPreferenceActivity.this);
                 builder.setMessage(R.string.export_sms_toast)
@@ -946,14 +975,18 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                                         Intent shareIntent = new Intent(Intent.ACTION_SEND);
                                         shareIntent.putExtra(Intent.EXTRA_STREAM,
                                                 Uri.fromFile(file));
-                                        shareIntent.setType("application/octet-stream");
+                                        shareIntent.setType("application/zip");
                                         startActivity(shareIntent);
                                     }
                                 });
                 builder.show();
             } else {
-                Toast.makeText(MessagingPreferenceActivity.this,
-                        R.string.import_sms_toast, Toast.LENGTH_SHORT).show();
+                if (file != null) {
+                    file.delete();
+                }
+                Toast.makeText(MessagingPreferenceActivity.this, (file == null) ?
+                        R.string.import_sms_failed_toast : R.string.import_sms_toast,
+                        Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -1029,8 +1062,9 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
         @Override
         public String getItem(int position) {
-            File file = mItems[position];
-            Date date = new Date(Long.parseLong(file.getName()));
+            String file = mItems[position].getName();
+            int lastIndex = file.indexOf('.') != -1 ? file.indexOf('.') : file.length();
+            Date date = new Date(Long.parseLong(file.substring(0, lastIndex)));
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             return format.format(date);
         }
