@@ -991,10 +991,8 @@ public class MessageUtils {
 
     public static void showDiscardDraftConfirmDialog(Context context,
             OnClickListener listener, int validNum) {
-        // the alert icon shoud has black triangle and white exclamation mark in white background.
         new AlertDialog.Builder(context)
-                .setIconAttribute(android.R.attr.alertDialogIcon)
-                .setTitle(R.string.discard_message)
+                .setTitle(R.string.discard)
                 .setMessage(getDiscardMessageId(validNum))
                 .setPositiveButton(R.string.yes, listener)
                 .setNegativeButton(R.string.no, null)
@@ -1012,7 +1010,7 @@ public class MessageUtils {
         // If validNum == ALL_RECIPIENTS_INVALID, means all of the recipients are invalid.
         if (ALL_RECIPIENTS_EMPTY != validNum) {
             msgId = validNum > ALL_RECIPIENTS_VALID ? R.string.discard_message_reason_some_invalid
-                : R.string.discard_message_reason_all_invalid;
+                : R.string.discard_message_reason;
         }
         return msgId;
     }
@@ -2600,15 +2598,13 @@ public class MessageUtils {
         @Override
         protected StringBuilder doInBackground(String... params) {
             StringBuilder memoryStatus = new StringBuilder();
-            memoryStatus.append(mContext.getString(R.string.sms_phone_used));
-            memoryStatus.append(" " + getSmsMessageCount(mContext) + "\n");
-            memoryStatus.append(mContext.getString(R.string.sms_phone_capacity));
-            memoryStatus.append(" " + mContext.getResources()
-                    .getInteger(R.integer.max_sms_message_count) + "\n\n");
-            memoryStatus.append(mContext.getString(R.string.mms_phone_used));
-            memoryStatus.append(" " + formatMemorySize(getMmsUsed(mContext)) + "\n");
-            memoryStatus.append(mContext.getString(R.string.mms_phone_capacity));
-            memoryStatus.append(" " + formatMemorySize(getStoreAll()) + "\n");
+            memoryStatus.append(mContext.getString(R.string.sms_phone_memory_usage,
+                    getSmsMessageCount(mContext),
+                    mContext.getResources().getInteger(R.integer.max_sms_message_count)));
+            memoryStatus.append("\n");
+            memoryStatus.append(mContext.getString(R.string.mms_phone_memory_usage,
+                    formatMemorySize(getMmsUsed(mContext)),
+                    formatMemorySize(getStoreAll())));
             return memoryStatus;
         }
 
