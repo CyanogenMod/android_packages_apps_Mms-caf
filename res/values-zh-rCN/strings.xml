@@ -307,7 +307,7 @@
     <string name="confirm_rate_limit" msgid="234228299751243067">"即将发送多条彩信。确定要这样做吗？"</string>
     <string name="message_download_failed_title" msgid="5722226064394767921">"信息未下载"</string>
     <string name="message_send_failed_title" msgid="3469894907399046372">"信息未发送"</string>
-    <string name="message_failed_body" msgid="3421296112073915245">"触摸可查看短信并重试。"</string>
+    <string name="message_failed_body" msgid="3421296112073915245">"触摸可查看信息并重试。"</string>
     <string name="download_later" msgid="5531365714424360903">"目前无法下载。请稍后再试。"</string>
     <string name="send_failed_retry">"发送失败，自动重新发送。"</string>
     <string name="download_failed_retry">"下载失败，自动重新下载。"</string>
