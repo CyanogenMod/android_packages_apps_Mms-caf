@@ -97,6 +97,7 @@ import android.os.Parcelable;
 import android.os.SystemProperties;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.QuickContact;
+import android.provider.DocumentsContract.Document;
 import android.provider.Telephony;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
@@ -318,6 +319,8 @@ public class ComposeMessageActivity extends Activity
     // even if we tell it to (turning off and on the screen). So we need to force load the
     // messages+draft after the max delay.
     private static final int LOADING_MESSAGES_AND_DRAFT_MAX_DELAY_MS = 500;
+
+    private static final int MSG_ADD_ATTACHMENT_FAILED = 1;
 
     private static final int DIALOG_IMPORT_TEMPLATE = 1;
 
@@ -4023,9 +4026,13 @@ public class ComposeMessageActivity extends Activity
             getAsyncDialog().runAsync(new Runnable() {
                 @Override
                 public void run() {
+                    String type = mimeType;
                     for (int i = 0; i < numberToImport; i++) {
                         Parcelable uri = uris.get(i);
-                        addAttachment(mimeType, (Uri) uri, true);
+                        if (uri != null && "*/*".equals(mimeType)) {
+                            type = getAttachmentMimeType((Uri) uri);
+                        }
+                        addAttachment(type, (Uri) uri, true);
                     }
                     updateMmsSizeIndicator();
                 }
@@ -4033,6 +4040,41 @@ public class ComposeMessageActivity extends Activity
             return true;
         }
         return false;
+    }
+
+    private String getAttachmentMimeType(Uri uri) {
+        ContentResolver contentResolver = getContentResolver();
+        String scheme = uri.getScheme();
+        String attachmentType = "*/*";
+        // Support uri with "content" scheme
+        if ("content".equals(scheme)) {
+            Cursor metadataCursor = null;
+            try {
+                metadataCursor = contentResolver.query(uri, new String[] {
+                        Document.COLUMN_MIME_TYPE}, null, null, null);
+            } catch (SQLiteException e) {
+                // some content providers don't support the COLUMN_MIME_TYPE columns
+                if (metadataCursor != null) {
+                    metadataCursor.close();
+                }
+                metadataCursor = null;
+            } catch (Exception e) {
+                metadataCursor = null;
+            }
+
+            if (metadataCursor != null) {
+                try {
+                    if (metadataCursor.moveToFirst()) {
+                        attachmentType = metadataCursor.getString(0);
+                        Log.d(TAG, "attachmentType = " + attachmentType);
+                    }
+                 } finally {
+                     metadataCursor.close();
+                 }
+            }
+        }
+
+        return attachmentType;
     }
 
     private boolean isAudioFile(Uri uri) {
@@ -4070,12 +4112,62 @@ public class ComposeMessageActivity extends Activity
                     && (type.equals("text/x-vcard")
                     || (wildcard && isVcardFile(uri)))) {
                 addVcard(uri);
-           } else if ((type.equals("text/x-vcalendar")
+            } else if ((type.equals("text/x-vcalendar")
                        && isVCalFile(uri))) {
                 addVCal(uri);
-           }
+            } else {
+                // Add prompt when file type is not image/video/audio.
+                Message msg = Message.obtain(mAddAttachmentHandler,
+                        MSG_ADD_ATTACHMENT_FAILED, uri);
+                mAddAttachmentHandler.sendMessage(msg);
+            }
         }
     }
+
+    // handler for handle add attachment failt.
+    private Handler mAddAttachmentHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MSG_ADD_ATTACHMENT_FAILED:
+                    Toast.makeText(ComposeMessageActivity.this,
+                            getAttachmentPostfix((Uri) msg.obj), Toast.LENGTH_SHORT)
+                            .show();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private String getAttachmentPostfix(Uri uri) {
+            // if uri is valid,parse it as normal.
+            if (isValidUri(uri)) {
+                int lastDot = uri.toString().lastIndexOf(".");
+                String postfix = uri.toString().substring(lastDot + 1);
+                return getResourcesString(R.string.unsupported_media_format,
+                        postfix);
+            } else {
+                // if uri is invalid,show just show unsupported "Unsupported format".
+                return getResources().getString(R.string.unsupported_format);
+            }
+        }
+
+        //Used to check the uri is valid or not.
+        private boolean isValidUri(Uri uri) {
+            String path = uri == null ? null : uri.toString();
+            if (null != path && path.contains("/")) {
+                String fileName = path.substring(path.lastIndexOf("/"));
+                if (null != fileName && !fileName.isEmpty()
+                        && fileName.contains(".")) {
+                    String fileType = fileName.substring(fileName
+                            .lastIndexOf(".") + 1);
+                    return !fileType.isEmpty() && fileType.trim().length() > 0
+                            && fileType != "";
+                }
+            }
+            return false;
+        }
+    };
 
     private String getResourcesString(int id, String mediaName) {
         Resources r = getResources();
