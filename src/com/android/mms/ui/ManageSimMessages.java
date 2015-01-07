@@ -501,10 +501,6 @@ public class ManageSimMessages extends Activity
         builder.setTitle(R.string.sim_capacity_title);
         builder.setCancelable(true);
         builder.setPositiveButton(R.string.yes, null);
-        StringBuilder capacityMessage = new StringBuilder();
-        capacityMessage.append(getString(R.string.sim_capacity_used));
-        capacityMessage.append(" " + mCursor.getCount() + "\n");
-        capacityMessage.append(getString(R.string.sim_capacity));
         int iccCapacityAll = -1;
         if (TelephonyManager.getDefault().isMultiSimEnabled()) {
             iccCapacityAll = SmsManager.getSmsManagerForSubscriber(mSubscription)
@@ -512,8 +508,8 @@ public class ManageSimMessages extends Activity
         } else {
             iccCapacityAll = SmsManager.getDefault().getSmsCapacityOnIcc();
         }
-
-        capacityMessage.append(" " + iccCapacityAll);
+        String capacityMessage = getString(R.string.sim_capacity, mCursor.getCount(),
+                iccCapacityAll);
         builder.setMessage(capacityMessage);
 
         builder.show();

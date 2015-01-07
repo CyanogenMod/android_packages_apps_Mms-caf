@@ -838,7 +838,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                 }
             }
             if (mIsSmsEnabled) {
-                menu.add(0, MENU_DELETE, 0, R.string.menu_delete_cm);
+                menu.add(0, MENU_DELETE, 0, R.string.delete);
             }
         }
     };

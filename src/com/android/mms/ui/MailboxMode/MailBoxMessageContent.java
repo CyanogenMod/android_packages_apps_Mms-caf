@@ -228,19 +228,19 @@ public class MailBoxMessageContent extends Activity {
         if (mMsgType == Sms.MESSAGE_TYPE_INBOX) {
             menu.add(0, MENU_REPLY, 0, R.string.menu_reply);
             menu.add(0, MENU_FORWARD, 0, R.string.menu_forward);
-            menu.add(0, MENU_DELETE, 0, R.string.menu_delete_msg);
+            menu.add(0, MENU_DELETE, 0, R.string.delete);
         } else if (mMsgType == Sms.MESSAGE_TYPE_FAILED
                 || mMsgType == Sms.MESSAGE_TYPE_OUTBOX) {
             menu.add(0, MENU_FORWARD, 0, R.string.menu_forward);
             menu.add(0, MENU_RESEND, 0, R.string.menu_resend);
-            menu.add(0, MENU_DELETE, 0, R.string.menu_delete_msg);
+            menu.add(0, MENU_DELETE, 0, R.string.delete);
         } else if (mMsgType == Sms.MESSAGE_TYPE_SENT) {
             menu.add(0, MENU_FORWARD, 0, R.string.menu_forward);
             menu.add(0, MENU_RESEND, 0, R.string.menu_resend);
-            menu.add(0, MENU_DELETE, 0, R.string.menu_delete_msg);
+            menu.add(0, MENU_DELETE, 0, R.string.delete);
         } else if (mMsgType == Sms.MESSAGE_TYPE_QUEUED) {
             menu.add(0, MENU_FORWARD, 0, R.string.menu_forward);
-            menu.add(0, MENU_DELETE, 0, R.string.menu_delete_msg);
+            menu.add(0, MENU_DELETE, 0, R.string.delete);
         }
 
         if (isLockMessage()) {

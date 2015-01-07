@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2013 The CyanogenMod Project
+<!--
+     Copyright (C) 2013-2015 The CyanogenMod Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -47,19 +48,21 @@
     </string-array>
 
     <string-array name="slot_type" translatable="false">
-        <item>@string/type_all</item>
-        <item>@string/type_slot1</item>
-        <item>@string/type_slot2</item>
+        <item>@string/all_spinner_option</item>
+        <item>@string/slot1</item>
+        <item>@string/slot2</item>
     </string-array>
 
     <string-array name="save_time" translatable="false">
-        <item>@string/mms_max</item>
-        <item>@string/mms_two_days</item>
+        <item>@string/validity_period_maximum</item>
+        <item>@string/mms_validity_period_two_days</item>
+        <item>@string/mms_validity_period_one_week</item>
     </string-array>
 
     <string-array name="save_time_values" translatable="false">
-        <item>0</item>  <!-- maxmum -->
+        <item>0</item>  <!-- maximum -->
         <item>172800</item>   <!--2*24*60*60 -->
+        <item>604800</item>
     </string-array>
 
     <string-array name="number_options" translatable="false">
@@ -107,7 +110,7 @@
         <item>@string/sms_validity_period_six_hours</item>
         <item>@string/sms_validity_period_twelve_hours</item>
         <item>@string/sms_validity_period_one_day</item>
-        <item>@string/sms_validity_period_maximum</item>
+        <item>@string/validity_period_maximum</item>
     </string-array>
 
     <string-array name="entries_sms_validity_period_value" translatable="false">

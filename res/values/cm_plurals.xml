@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2013 The CyanogenMod Project
+<!--
+     Copyright (C) 2013-2015 The CyanogenMod Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -17,5 +18,12 @@
     <plurals name="remaining_delay_time">
         <item quantity="one">Sending in 1 second, touch to cancel.</item>
         <item quantity="other">Sending in %1$d seconds, touch to cancel.</item>
+    </plurals>
+
+    <plurals name="confirm_delete_messages">
+        <!-- Case of 1 result. -->
+        <item quantity="one">One message will be deleted.</item>
+        <!-- Case of 0 or 2 or more results. -->
+        <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> messages will be deleted.</item>
     </plurals>
 </resources>
