@@ -39,8 +39,8 @@ public class AttachmentTypeSelectorAdapter extends IconListAdapter {
     public final static int ADD_SOUND               = 4;
     public final static int RECORD_SOUND            = 5;
     public final static int ADD_SLIDESHOW           = 6;
-    public final static int ADD_CONTACT_AS_TEXT     = 7;
-    public final static int ADD_CONTACT_AS_VCARD    = 8;
+    public final static int ADD_CONTACT_AS_VCARD    = 7;
+    public final static int ADD_CONTACT_AS_TEXT     = 8;
 
     private boolean mShowMediaOnly = false;
     private static int mMediaCount;
@@ -88,11 +88,11 @@ public class AttachmentTypeSelectorAdapter extends IconListAdapter {
                     R.drawable.ic_attach_slideshow, ADD_SLIDESHOW);
         }
         if (context.getResources().getBoolean(R.bool.config_vcard)) {
-            addItem(data, context.getString(R.string.attach_add_contact_as_text),
-                    R.drawable.ic_attach_contact_info, ADD_CONTACT_AS_TEXT);
-
             addItem(data, context.getString(R.string.attach_add_contact_as_vcard),
                     R.drawable.ic_attach_vcard, ADD_CONTACT_AS_VCARD);
+
+            addItem(data, context.getString(R.string.attach_add_contact_as_text),
+                    R.drawable.ic_attach_contact_info, ADD_CONTACT_AS_TEXT);
         }
         return data;
     }

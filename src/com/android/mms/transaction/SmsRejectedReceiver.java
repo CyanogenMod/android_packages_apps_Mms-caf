@@ -69,7 +69,7 @@ public class SmsRejectedReceiver extends BroadcastReceiver {
             int bodyId;
             if (outOfMemory) {
                 titleId = R.string.sms_full_title;
-                bodyId = R.string.sms_full_body_cm;
+                bodyId = R.string.sms_full_body;
             } else {
                 titleId = R.string.sms_rejected_title;
                 bodyId = R.string.sms_rejected_body;

@@ -181,25 +181,13 @@ public class MessageItem {
             mPhoneId = cursor.getInt(columnsMap.mColumnPhoneId);
             // Unless the message is currently in the progress of being sent, it gets a time stamp.
             if (!isOutgoingMessage()) {
-                if (mBoxId == Sms.MESSAGE_TYPE_SENT) {
-                    // Set "sent" time stamp
-                    mDate = cursor.getLong(columnsMap.mColumnSmsDate);
-                    //cdma sms stored in UIM card don not have timestamp
-                    if (0 == mDate) {
-                        mDate = System.currentTimeMillis();
-                    }
-                    mTimestamp = String.format(context.getString(R.string.sent_on),
-                            MessageUtils.formatTimeStampString(context, mDate));
-                } else {
-                    // Set "received" time stamp
-                    mDate = cursor.getLong(columnsMap.mColumnSmsDate);
-                    //cdma sms stored in UIM card don not have timestamp
-                    if (0 == mDate) {
-                        mDate = System.currentTimeMillis();
-                    }
-                    mTimestamp = String.format(context.getString(R.string.received_on),
-                            MessageUtils.formatTimeStampString(context, mDate));
+                // Set "received" or "sent" time stamp
+                mDate = cursor.getLong(columnsMap.mColumnSmsDate);
+                // CDMA SMS stored in UIM card don't have timestamps
+                if (0 == mDate) {
+                    mDate = System.currentTimeMillis();
                 }
+                mTimestamp = MessageUtils.formatTimeStampString(context, mDate));
             }
 
             mLocked = cursor.getInt(columnsMap.mColumnSmsLocked) != 0;
