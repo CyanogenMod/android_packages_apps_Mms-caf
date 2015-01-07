@@ -3217,7 +3217,7 @@ public class ComposeMessageActivity extends Activity
 
         TemplateSelectListener listener = new TemplateSelectListener(smsTempArray);
         return new AlertDialog.Builder(ComposeMessageActivity.this)
-                .setTitle(R.string.message_template)
+                .setTitle(R.string.import_message_template)
                 .setItems(smsTempArray, listener)
                 .create();
     }

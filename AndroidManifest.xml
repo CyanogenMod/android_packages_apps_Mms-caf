@@ -355,7 +355,7 @@
         <activity android:name=".ui.MessageTemplate"
                   android:theme="@style/MmsTheme"
                   android:launchMode="singleTop"
-                  android:label="@string/message_template_title"
+                  android:label="@string/pref_title_message_template"
                   android:configChanges="orientation|screenSize" >
         </activity>
 
