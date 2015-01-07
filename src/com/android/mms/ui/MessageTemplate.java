@@ -215,8 +215,8 @@ public class MessageTemplate extends Activity {
 
     @Override
     public void onCreateContextMenu(ContextMenu menu,View view,ContextMenuInfo menuInfo){
-        menu.setHeaderTitle(R.string.message_template);
-        menu.add(0,0,0,R.string.delete_template_message)
+        menu.setHeaderTitle(R.string.pref_title_message_template);
+        menu.add(0,0,0,R.string.delete)
             .setOnMenuItemClickListener(menuItemClickListener);
     }
 
