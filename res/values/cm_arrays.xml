@@ -47,9 +47,9 @@
     </string-array>
 
     <string-array name="slot_type" translatable="false">
-        <item>@string/type_all</item>
-        <item>@string/type_slot1</item>
-        <item>@string/type_slot2</item>
+        <item>@string/all_spinner_option</item>
+        <item>@string/slot1</item>
+        <item>@string/slot2</item>
     </string-array>
 
     <string-array name="save_time" translatable="false">

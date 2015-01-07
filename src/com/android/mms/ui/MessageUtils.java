@@ -991,9 +991,7 @@ public class MessageUtils {
 
     public static void showDiscardDraftConfirmDialog(Context context,
             OnClickListener listener, int validNum) {
-        // the alert icon shoud has black triangle and white exclamation mark in white background.
         new AlertDialog.Builder(context)
-                .setIconAttribute(android.R.attr.alertDialogIcon)
                 .setTitle(R.string.discard_message)
                 .setMessage(getDiscardMessageId(validNum))
                 .setPositiveButton(R.string.yes, listener)
@@ -1012,7 +1010,7 @@ public class MessageUtils {
         // If validNum == ALL_RECIPIENTS_INVALID, means all of the recipients are invalid.
         if (ALL_RECIPIENTS_EMPTY != validNum) {
             msgId = validNum > ALL_RECIPIENTS_VALID ? R.string.discard_message_reason_some_invalid
-                : R.string.discard_message_reason_all_invalid;
+                : R.string.discard_message_reason;
         }
         return msgId;
     }
