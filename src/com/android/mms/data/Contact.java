@@ -530,10 +530,14 @@ public class Contact {
         private static final String[] SELF_PROJECTION = new String[] {
                 Phone._ID,                      // 0
                 Phone.DISPLAY_NAME,             // 1
+                Phone.PHOTO_ID,                 // 2
+                Phone.LOOKUP_KEY,               // 3
         };
 
         private static final int SELF_ID_COLUMN = 0;
         private static final int SELF_NAME_COLUMN = 1;
+        private static final int SELF_CONTACT_PHOTO_ID_COLUMN = 2;
+        private static final int SELF_CONTACT_LOOKUP_KEY_COLUMN = 3;
 
         // query params for contact lookup by email
         private static final Uri EMAIL_WITH_PRESENCE_URI = Data.CONTENT_URI;
@@ -1062,6 +1066,12 @@ public class Contact {
                 if (TextUtils.isEmpty(contact.mName)) {
                     contact.mName = mContext.getString(R.string.messagelist_sender_self);
                 }
+
+                String lookupKey = cursor.getString(SELF_CONTACT_LOOKUP_KEY_COLUMN);
+                contact.mLookupUri = Contacts.getLookupUri(contact.mPersonId, lookupKey);
+
+                contact.mPhotoId = cursor.getLong(SELF_CONTACT_PHOTO_ID_COLUMN);
+
                 if (Log.isLoggable(LogTag.CONTACT, Log.DEBUG)) {
                     log("fillSelfContact: name=" + contact.mName + ", number="
                             + contact.mNumber);
