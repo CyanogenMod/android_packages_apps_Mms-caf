@@ -332,7 +332,7 @@ public class MessageListItem extends ZoomMessageListItem implements
                             }
                             // Judge whether memory is full
                             else if (MessageUtils.isMmsMemoryFull()) {
-                                builder.setMessage(mContext.getString(R.string.sms_full_body_cm));
+                                builder.setMessage(mContext.getString(R.string.sms_full_body));
                                 builder.show();
                                 return;
                             }

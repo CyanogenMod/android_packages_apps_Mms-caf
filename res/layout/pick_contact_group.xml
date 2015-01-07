@@ -62,7 +62,7 @@
             android:layout_marginEnd="5dip"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:singleLine="true"
-            android:text="@string/select_all"
+            android:text="@string/selected_all"
         />
         <CheckBox
             android:id="@+id/select_all_check"

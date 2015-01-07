@@ -486,16 +486,6 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         }
 
         if (TelephonyManager.getDefault().isMultiSimEnabled()) {
-            if(MessageUtils.getActivatedIccCardCount() < PhoneConstants.MAX_PHONE_COUNT_DUAL_SIM) {
-                long subId = SmsManager.getDefault().getDefaultSmsSubId();
-                int phoneId = SubscriptionManager.getPhoneId(subId);
-                mManageSimPref.setSummary(
-                        getString(R.string.pref_summary_manage_sim_messages_slot,
-                                phoneId + 1));
-            } else {
-                mManageSimPref.setSummary(
-                        getString(R.string.pref_summary_manage_sim_messages));
-            }
             mMmsPrefCategory.removePreference(mMmsExpiryPref);
         } else {
             mMmsPrefCategory.removePreference(mMmsExpiryCard1Pref);
