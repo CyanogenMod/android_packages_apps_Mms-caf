@@ -1258,7 +1258,7 @@ public class MessagingNotification {
                 qmIntent.putExtra(QuickMessagePopup.QR_SHOW_KEYBOARD_EXTRA, true);
 
                 // Create the pending intent and add it to the notification
-                CharSequence qmText = context.getText(R.string.qm_quick_reply);
+                CharSequence qmText = context.getText(R.string.menu_reply);
                 PendingIntent qmPendingIntent = PendingIntent.getActivity(context, 0, qmIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT);
                 noti.addAction(R.drawable.ic_reply, qmText, qmPendingIntent);
@@ -1974,7 +1974,7 @@ public class MessagingNotification {
                 Context.NOTIFICATION_SERVICE);
 
         String title = context.getString(R.string.sms_full_title);
-        String description = context.getString(R.string.sms_full_body_cm);
+        String description = context.getString(R.string.sms_full_body);
         PendingIntent intent = PendingIntent.getActivity(context, 0,  new Intent(), 0);
         Notification notification = new Notification();
         notification.icon = R.drawable.stat_notify_sms_failed;
