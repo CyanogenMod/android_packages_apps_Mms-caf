@@ -1258,7 +1258,7 @@ public class MessagingNotification {
                 qmIntent.putExtra(QuickMessagePopup.QR_SHOW_KEYBOARD_EXTRA, true);
 
                 // Create the pending intent and add it to the notification
-                CharSequence qmText = context.getText(R.string.qm_quick_reply);
+                CharSequence qmText = context.getText(R.string.menu_reply);
                 PendingIntent qmPendingIntent = PendingIntent.getActivity(context, 0, qmIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT);
                 noti.addAction(R.drawable.ic_reply, qmText, qmPendingIntent);
