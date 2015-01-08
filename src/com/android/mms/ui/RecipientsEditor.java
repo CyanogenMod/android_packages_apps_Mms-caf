@@ -113,7 +113,9 @@ public class RecipientsEditor extends RecipientEditTextView {
             @Override
             public void onTextChanged(CharSequence s, int start,
                     int before, int after) {
-                if (before == 0 && after == 1) {    // inserting a character
+                // inserting a character
+                if (before == 0 && after == 1 &&
+                        start >= 0 && start < s.length()) {
                     char c = s.charAt(start);
                     if (c == ',' || c == ';') {
                         // Remember the delimiter the user typed to end this recipient. We'll
