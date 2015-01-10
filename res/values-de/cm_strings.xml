@@ -137,11 +137,17 @@
   <string name="unsupported_format">Format nicht unterstützt.</string>
   <string name="media_size_limit">Größenbeschränkung der Nachricht erreicht. Nachricht kann nicht versandt werden.</string>
   <string name="discard_message">Verwerfen</string>
+  <string name="cannot_send_attach_reason">Anhang nicht verfügbar, Senden fehlgeschlagen.</string>
   <string name="converting_to_text_message">In Textnachricht umwandeln\u2026</string>
+  <string name="cannot_add_text_anymore">Kein weiterer Text kann hinzugefügt werden.</string>
   <string name="title_send_message">Nachricht senden</string>
+  <string name="subject_full">Betreff ist voll</string>
+  <string name="status_deleted_unread">Gelöscht ohne zu lesen</string>
   <string name="sms_full_body_cm">Der Telefonspeicher ist voll. Löschen Sie einige Nachrichten, um neue Nachrichten senden oder empfangen zu können.</string>
+  <string name="memory_low_title">Textnachrichtenspeicher gering</string>
   <string name="memory_low_body">Wenig Telefonspeicher verfügbar. Löschen Sie einige alte Nachrichten, um genug Speicher für den Empfang neuer Nachrichten zu haben.</string>
   <string name="disk_storage_full_error">Ihr Telefonspeicher ist voll.</string>
+  <string name="mobile_data_disable">Mobile Daten sind deaktiviert, wollen Sie wirklich die MMS <xliff:g id="action" example="download">%1$s</xliff:g>? Dies verursacht mobilen Datenverkehr.</string>
   <string name="mobile_data_send">senden</string>
   <string name="mobile_data_download">herunterladen</string>
   <string name="mms_too_large">Die Nachricht ist zu groß zum Herunterladen.</string>
@@ -155,12 +161,14 @@
   <string name="switch_data_subscription_failed">Wechsel der SIM-Karte für Daten fehlgeschlagen.</string>
   <string name="abort_mms">Nachrichten: MMS abbrechen</string>
   <string name="abort_mms_text">Zum Abbrechen berühren</string>
+  <string name="progress_mms_title">MMS-Transaktion auf anderer SIM-Karte in Bearbeitung</string>
   <string name="progress_mms">Nachrichten: MMS wird versandt\u2026</string>
   <string name="progress_mms_text">Zum Wiederholen berühren</string>
   <string name="menu_connect_url">Verbinden</string>
   <string name="menu_add_to_label">Als Favorit speichern</string>
   <string name="loadurlinfo_str">Link öffnen?</string>
   <string name="discard_message_reason_all_invalid">Ihre Nachricht wird verworfen, da alle Empfänger ungültig sind.</string>
+  <string name="discard_message_reason_some_invalid">Ihre Nachricht wird verworfen werden, da einige Empfänger ungültig sind.</string>
   <string name="pref_sms_signature_title">SMS-Signatur</string>
   <string name="pref_title_enable_signature">SMS-Signatur</string>
   <string name="pref_title_edit_signature">SMS-Signatur bearbeiten</string>
@@ -179,6 +187,9 @@
   <string name="copy_to_sim_fail">Nachricht konnte nicht gespeichert werden</string>
   <string name="pref_smsc_title">SMSC-Einstellungen</string>
   <string name="pref_smsc_number">SMSC-Nummer</string>
+  <string name="set_smsc_error">Festlegen der SMSC-Nummer fehlgeschlagen</string>
+  <string name="set_smsc_success">SMSC-Nummer erfolgreich festgelegt</string>
+  <string name="set_smsc_confirm_message">Ändern der SMSC kann zu SMS-Transaktionsfehlern führen. Dennoch fortfahren?</string>
   <string name="menu_copy_url">URL <xliff:g id="extractedurl">%s</xliff:g> kopieren</string>
   <string name="menu_reply">Antworten</string>
   <string name="slot1">SIM 1</string>
@@ -197,6 +208,7 @@
   <string name="mms_phone_capacity">SMS-Kapazität:</string>
   <string name="pref_wap_push_title">PUSH-Dienst-Nachrichten</string>
   <string name="pref_title_wap_push_enabled">WAP-PUSH-Dienst aktivieren</string>
+  <string name="pref_summary_wap_push_enabled">Dienstmitteilungsempfang aktivieren</string>
   <string name="open_wap_push_title">Mehr Informationen</string>
   <string name="open_wap_push_body">Möchten Sie die Webseite mit Informationen über WAP-PUSH öffnen?</string>
   <string name="confirm_delete_selected_messages">Die ausgewählten Nachrichten werden gelöscht.</string>
@@ -221,14 +233,18 @@
   <string name="search_as_content">Inhalt</string>
   <string name="search_as_subject">Betreff</string>
   <string name="invalid_name_toast">Bitte geben Sie einen gültigen Namen ein</string>
+  <string name="slot_type">Slot <xliff:g id="number">%s</xliff:g></string>
   <string name="sim_capacity_title">SIM-Kapazität</string>
   <string name="sim_capacity_used">Verwendet:\u0020</string>
   <string name="sim_capacity">Kapazität:\u0020</string>
   <string name="pref_title_mms_save_time">MMS-Gültigkeitsdauer</string>
   <string name="mms_two_days">Zwei Tage</string>
   <string name="mms_max">Maximum</string>
+  <string name="save_description">Zeitraum für den die Nachricht auf dem Server gespeichert bleibt</string>
   <string name="status_expired">MMS abgelaufen</string>
   <string name="pref_title_sms_store">Bevorzugter Speicher</string>
+  <string name="pref_title_sms_store_card1">Bevorzugter Speicher: SIM-Karte 1</string>
+  <string name="pref_title_sms_store_card2">Bevorzugter Speicher: SIM-Karte 2</string>
   <string name="pref_sms_store_phone">Telefon</string>
   <string name="pref_sms_store_card">SIM-Karte</string>
   <string name="pref_sim_card_full_save_to_phone">SIM-Karte ist voll, neue Nachrichten werden im Telefon gespeichert.</string>

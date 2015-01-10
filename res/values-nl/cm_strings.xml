@@ -159,6 +159,8 @@
   <string name="pending_mms_title">Mms wordt verwerkt op andere simkaart</string>
   <string name="pending_mms">Berichten: één of meer mms worden verwerkt</string>
   <string name="pending_mms_text">Tik om van simkaart te wisselen</string>
+  <string name="switch_data_subscription_success">Gegevenssimkaart wisselen gelukt.</string>
+  <string name="switch_data_subscription_failed">Gegevenssimkaart wisselen mislukt.</string>
   <string name="abort_mms">Berichten: mms annuleren</string>
   <string name="abort_mms_text">Tik om te annuleren</string>
   <string name="progress_mms_title">Mms wordt verwerkt op andere simkaart</string>
@@ -232,8 +234,8 @@
   <string name="search_as_number">Nummer</string>
   <string name="search_as_content">Inhoud</string>
   <string name="search_as_subject">Onderwerp</string>
-  <string name="invalid_name_toast">Voer a.u.b. een geldige naam in</string>
-  <string name="slot_type">Slot <xliff:g id="number">%s</xliff:g></string>
+  <string name="invalid_name_toast">Voer een geldige naam in</string>
+  <string name="slot_type">SIM <xliff:g id="number">%s</xliff:g></string>
   <string name="sim_capacity_title">SIM-capaciteit</string>
   <string name="sim_capacity_used">Gebruikt:\u0020</string>
   <string name="sim_capacity">Capaciteit:\u0020</string>
@@ -248,6 +250,7 @@
   <string name="pref_sms_store_phone">Telefoon</string>
   <string name="pref_sms_store_card">Simkaart</string>
   <string name="pref_sim_card_full_save_to_phone">Simkaart vol, nieuwe berichten worden op telefoon opgeslagen.</string>
+  <string name="mms_size_indicator"><xliff:g id="mms_size">%1$s</xliff:g> KB/<xliff:g id="all_size">%2$s</xliff:g> KB</string>
   <string name="selected_all">Alles selecteren</string>
   <string name="deselected_all">Alles deselecteren</string>
   <string name="selected_count"><xliff:g id="COUNT">%d</xliff:g> geselecteerd</string>

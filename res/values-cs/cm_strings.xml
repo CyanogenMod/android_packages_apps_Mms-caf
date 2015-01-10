@@ -159,6 +159,8 @@
   <string name="pending_mms_title">Čekající MMS na jiné SIM kartě</string>
   <string name="pending_mms">Zprávy: neodesláno jedna nebo více MMS</string>
   <string name="pending_mms_text">Dotykem přepnout SIM kartu</string>
+  <string name="switch_data_subscription_success">Přepnutí datových SIM bylo úspěšné.</string>
+  <string name="switch_data_subscription_failed">Přepnutí datových SIM se nepodařilo.</string>
   <string name="abort_mms">Zprávy: zrušit MMS</string>
   <string name="abort_mms_text">Dotykem přerušit</string>
   <string name="progress_mms_title">Na jiné SIM kartě probíhá MMS transakce</string>
@@ -248,6 +250,7 @@
   <string name="pref_sms_store_phone">Telefon</string>
   <string name="pref_sms_store_card">SIM karta</string>
   <string name="pref_sim_card_full_save_to_phone">SIM karta je plná, nové zprávy se budou ukládat do telefonu.</string>
+  <string name="mms_size_indicator"><xliff:g id="mms_size">%1$s</xliff:g>KB/<xliff:g id="all_size">%2$s</xliff:g>KB</string>
   <string name="selected_all">Vybrat vše</string>
   <string name="deselected_all">Zrušit výběr všech</string>
   <string name="selected_count">Počet vybraných: <xliff:g id="COUNT">%d</xliff:g></string>
