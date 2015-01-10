@@ -50,7 +50,7 @@ public class RecipientIdCache {
         }
     };
 
-    static void init(Context context) {
+    public static void init(Context context) {
         sInstance = new RecipientIdCache(context);
         new Thread(new Runnable() {
             public void run() {
