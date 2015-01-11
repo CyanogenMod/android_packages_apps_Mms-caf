@@ -64,7 +64,7 @@
   <string name="pref_extra_settings">Weider Astellungen</string>
   <string name="pref_title_unicode_stripping">Unicode-Behandlung</string>
   <string name="pref_unicode_stripping_leave_intact">Zeechen onverännert loossen</string>
-  <string name="pref_unicode_stripping_non_encodable">Onkodéierbar Zeeche läschen</string>
+  <string name="pref_unicode_stripping_non_encodable">Oncodéierbar Zeeche läschen</string>
   <string name="pref_unicode_stripping_all">All Unicode-Zeechen eraushuelen</string>
   <string name="pref_title_mms_full_timestamp">Voll Zäitstempelen</string>
   <string name="pref_summary_mms_full_timestamp">Datum an Zäit vun de Messagen uweisen</string>
@@ -205,9 +205,9 @@
   <string name="contact_info_text_as_email">E-Mail:</string>
   <string name="memory_status_title">Späicherstatus</string>
   <string name="sms_phone_used">SMS benotzt:</string>
-  <string name="sms_phone_capacity">SMS-Kapazitéit:</string>
+  <string name="sms_phone_capacity">SMS-Capacitéit:</string>
   <string name="mms_phone_used">MMS benotzt:</string>
-  <string name="mms_phone_capacity">MMS-Kapazitéit:</string>
+  <string name="mms_phone_capacity">MMS-Capacitéit:</string>
   <string name="pref_wap_push_title">PUSH-Service-Message</string>
   <string name="pref_title_wap_push_enabled">WAP-PUSH-Service aktivéieren</string>
   <string name="pref_summary_wap_push_enabled">Aktivéiere fir Servicemessagen z\'empfänken</string>
@@ -236,9 +236,9 @@
   <string name="search_as_subject">Sujet</string>
   <string name="invalid_name_toast">Gëff e gëltegen Numm a w.e.g.</string>
   <string name="slot_type">Plaz <xliff:g id="number">%s</xliff:g></string>
-  <string name="sim_capacity_title">SIM-Kapazitéit</string>
+  <string name="sim_capacity_title">SIM-Capacitéit</string>
   <string name="sim_capacity_used">Benotzt:\u0020</string>
-  <string name="sim_capacity">Kapazitéit:\u0020</string>
+  <string name="sim_capacity">Capacitéit:\u0020</string>
   <string name="pref_title_mms_save_time">MMS-Gëltegkeetsperiod</string>
   <string name="mms_two_days">Zwee Deeg</string>
   <string name="mms_max">Maximum</string>

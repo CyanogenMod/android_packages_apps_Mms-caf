@@ -147,7 +147,7 @@
   <string name="memory_low_title">Пам\'ять повідомлень закінчується</string>
   <string name="memory_low_body">Недостатньо пам\'яті телефону, видаліть деякі старі повідомлення, щоб звільнити місце для отримання нових повідомлень.</string>
   <string name="disk_storage_full_error">Пам\'ять вашого телефону заповнена.</string>
-  <string name="mobile_data_disable">Мобільних інтернет вимкнений. Виконати <xliff:g id="action" example="download">%1$s</xliff:g> MMS-повідомлення? Ця дія потребує передачі даних через мобільний інтернет і може призвести до додаткових витрат.</string>
+  <string name="mobile_data_disable">Мобільний інтернет вимкнений. Виконати <xliff:g id="action" example="download">%1$s</xliff:g> MMS-повідомлення? Ця дія потребує передачі даних через мобільний інтернет і може призвести до додаткових витрат.</string>
   <string name="mobile_data_send">надіслати</string>
   <string name="mobile_data_download">завантажити</string>
   <string name="mms_too_large">Повідомлення завелике для завантаження.</string>
@@ -199,7 +199,7 @@
   <string name="type_vcard">Контактні дані</string>
   <string name="import_vcard">Імпорт</string>
   <string name="attach_add_contact_as_text">Вставити контактні дані</string>
-  <string name="attach_add_contact_as_vcard">Візитну картка контакта</string>
+  <string name="attach_add_contact_as_vcard">Картка контакту</string>
   <string name="contact_info_text_as_name">Ім’я:</string>
   <string name="contact_info_text_as_phone">Тел:</string>
   <string name="contact_info_text_as_email">Email:</string>
@@ -215,7 +215,7 @@
   <string name="open_wap_push_body">Відкрити веб-сайт, що містить інформацію про WAP-PUSH?</string>
   <string name="confirm_delete_selected_messages">Вибрані повідомлення буде видалено.</string>
   <string name="menu_delete_msg">Видалити</string>
-  <string name="send_failure">Відправка не вдалась!</string>
+  <string name="send_failure">Надсилання не вдалось!</string>
   <string name="message_detail">Деталі повідомлення</string>
   <string name="no_message">Немає повідомлень</string>
   <string name="change_mode">Вибрати режим</string>
@@ -244,7 +244,7 @@
   <string name="mms_max">Максимум</string>
   <string name="save_description">Період, протягом якого повідомлення зберігаються на сервері</string>
   <string name="status_expired">Закінчився термін дії MMS</string>
-  <string name="pref_title_sms_store">Переважна память</string>
+  <string name="pref_title_sms_store">Сховище повідомлень</string>
   <string name="pref_title_sms_store_card1">Пам\'ять SIM-картки 1</string>
   <string name="pref_title_sms_store_card2">Пам\'ять SIM-картки 2</string>
   <string name="pref_sms_store_phone">Телефон</string>

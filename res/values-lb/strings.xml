@@ -130,7 +130,7 @@
   <string name="duration_zero">D\'Dauer muss méi grouss si wéi 0 Sekonnen.</string>
   <string name="secs">Sek.</string>
   <string-array name="select_dialog_items">
-    <item>1 second</item>
+    <item>1 Sekonn</item>
     <item>2 Sekonnen</item>
     <item>3 Sekonnen</item>
     <item>4 Sekonnen</item>

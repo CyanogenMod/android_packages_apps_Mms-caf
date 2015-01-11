@@ -42,7 +42,6 @@
   <string name="view_delivery_report">دوكلات كۆرسەت</string>
   <string name="delete_message">ئۆچۈر</string>
   <string name="expire_on">"ۋاقتى ئۆتىدۇ: <xliff:g id="DATE">%s</xliff:g>"</string>
-  <string name="kilobyte">KB</string>
   <string name="undelivered_msg_dialog_title">يوللانمىغان ئۇچۇر</string>
   <string name="undelivered_msg_dialog_body">بۇ ئۇچۇرنى يوللىيالمايدۇ.\nسىناش ۋاقتى: <xliff:g id="MESSAGE">%s</xliff:g>.</string>
   <string name="undelivered_sms_dialog_body">بۇ ئۇچۇرنى يوللىيالمايدۇ</string>
@@ -80,7 +79,6 @@
   <string name="replace">ئالماشتۇر</string>
   <string name="remove">چىقىرىۋەت</string>
   <string name="send">يوللا</string>
-  <string name="mms">MMS</string>
   <string name="send_mms">MMS يوللا</string>
   <string name="all_threads">ھەممە سۆزلىشىش</string>
   <string name="type_to_compose_text_enter_to_send">ئۇچۇر كىرگۈزۈڭ</string>

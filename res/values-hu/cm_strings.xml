@@ -159,6 +159,8 @@
   <string name="pending_mms_title">Függőben lévő MMS a másik SIM kártyán</string>
   <string name="pending_mms">Üzenetkezelés: Egy vagy több MMS folyamatban van</string>
   <string name="pending_mms_text">Érintse meg a SIM kártya váltásához</string>
+  <string name="switch_data_subscription_success">Adat SIM-kártya váltása sikeres volt.</string>
+  <string name="switch_data_subscription_failed">Adat SIM-kártya váltása sikertelen.</string>
   <string name="abort_mms">Üzenetkezelés: MMS elvetése</string>
   <string name="abort_mms_text">Érintse meg a megszakításhoz</string>
   <string name="progress_mms_title">MMS tranzakció folyamatban a másik SIM-kártyán</string>
