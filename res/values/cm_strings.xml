@@ -362,4 +362,5 @@
 
     <!-- Sharing vcs files from Calendar -->
     <string name="type_vcal">vCal</string>
+
 </resources>
