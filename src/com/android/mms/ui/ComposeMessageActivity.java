@@ -329,6 +329,9 @@ public class ComposeMessageActivity extends Activity
     // The number of buttons in two send button mode
     private static final int NUMBER_OF_BUTTONS = 2;
 
+    // Preferred CDMA subscription mode is NV.
+    private static final int CDMA_SUBSCRIPTION_NV = 1;
+
     private ContentResolver mContentResolver;
 
     private BackgroundQueryHandler mBackgroundQueryHandler;
@@ -4563,11 +4566,28 @@ public class ComposeMessageActivity extends Activity
     private boolean isPreparedForSending() {
         int recipientCount = recipientCount();
 
-        return MessageUtils.getActivatedIccCardCount() > 0 && recipientCount > 0 &&
-                recipientCount <= MmsConfig.getRecipientLimit() &&
+        return (MessageUtils.getActivatedIccCardCount() > 0 || isCdmaNVMode()) &&
+                recipientCount > 0 && recipientCount <= MmsConfig.getRecipientLimit() &&
                 mIsSmsEnabled &&
                 (mWorkingMessage.hasAttachment() || mWorkingMessage.hasText() ||
                     mWorkingMessage.hasSubject());
+    }
+
+    private boolean isCdmaNVMode() {
+        if (TelephonyManager.getDefault().isMultiSimEnabled()) {
+            Log.d(TAG, "isCdmaNVMode: CDMA NV mode just for single SIM");
+            return false;
+        }
+        int activePhoneType = TelephonyManager.getDefault().getCurrentPhoneType();
+        int cdmaSubscriptionMode = Settings.Global.getInt(getContentResolver(),
+                Settings.Global.CDMA_SUBSCRIPTION_MODE, CDMA_SUBSCRIPTION_NV);
+        Log.d(TAG, "isCdmaNVMode: activePhoneType=" + activePhoneType + " cdmaSubscriptionMode="
+                + cdmaSubscriptionMode);
+        if ((activePhoneType == TelephonyManager.PHONE_TYPE_CDMA) &&
+                cdmaSubscriptionMode == CDMA_SUBSCRIPTION_NV) {
+            return true;
+        }
+        return false;
     }
 
     private int recipientCount() {
