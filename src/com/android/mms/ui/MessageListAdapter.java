@@ -20,6 +20,7 @@
 package com.android.mms.ui;
 
 import java.util.regex.Pattern;
+import java.util.HashMap;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -190,6 +191,8 @@ public class MessageListAdapter extends CursorAdapter {
     private int mMultiManageMode = MessageUtils.INVALID_MODE;
     private int mAccentColor = 0;
 
+    private HashMap<Integer, String> mBodyCache;
+
     public MessageListAdapter(
             Context context, Cursor c, ListView listView,
             boolean useDefaultColumnsMap, Pattern highlight) {
@@ -218,6 +221,7 @@ public class MessageListAdapter extends CursorAdapter {
                 }
             }
         });
+        mBodyCache = new HashMap<Integer, String>();
     }
 
     @Override
@@ -249,6 +253,8 @@ public class MessageListAdapter extends CursorAdapter {
                 mli.bind(msgItem, accentColor, mIsGroupConversation, position,
                         mListView.isItemChecked(position));
                 mli.setMsgListItemHandler(mMsgListItemHandler);
+
+                mBodyCache.put(position, msgItem.mBody);
             }
         }
     }
@@ -430,6 +436,10 @@ public class MessageListAdapter extends CursorAdapter {
             }
         }
         return null;
+    }
+
+    public String getCachedBodyForPosition(int position) {
+        return mBodyCache.get(position);
     }
 
     public static class ColumnsMap {

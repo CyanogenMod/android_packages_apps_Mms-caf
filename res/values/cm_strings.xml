@@ -369,4 +369,7 @@
     <string name="qm_wear_messaged_failed">Your text message to <xliff:g id="name">%s</xliff:g> has failed to send please try again.</string>
     <string name="qm_wear_voice_reply">What\'s your reply?</string>
     <string name="qm_wear_reply_by_voice">Reply using voice</string>
+
+    <!-- Copy message text-->
+    <string name="copy_empty_string">No text to copy</string>
 </resources>
