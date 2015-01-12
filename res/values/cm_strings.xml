@@ -92,4 +92,7 @@
 
     <!-- Sharing vcs files from Calendar -->
     <string name="type_vcal">vCal</string>
+
+    <!-- Copy message text-->
+    <string name="copy_empty_string">No text to copy</string>
 </resources>
