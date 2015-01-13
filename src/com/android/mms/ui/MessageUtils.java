@@ -40,6 +40,7 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -297,6 +298,14 @@ public class MessageUtils {
 
     // Save the thread id for same recipient forward mms
     public static ArrayList<Long> sSameRecipientList = new ArrayList<Long>();
+
+    private static final String PREF_SHOW_URL_WARNING = "pref_should_show_url_warning";
+    private static final boolean PREF_SHOULD_SHOW_URL_WARNING = true;
+
+    private static final String CELL_BROADCAST_PACKAGE_NAME =
+            "com.android.cellbroadcastreceiver";
+    private static final String CELL_BROADCAST_ACTIVITY_NAME =
+            "com.android.cellbroadcastreceiver.CellBroadcastListActivity";
 
     static {
         for (int i = 0; i < NUMERIC_CHARS_SUGAR.length; i++) {
@@ -2634,6 +2643,15 @@ public class MessageUtils {
             }
         });
         builder.show();
+    }
+
+    public static Intent getCellBroadcastIntent() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setComponent(new ComponentName(
+                CELL_BROADCAST_PACKAGE_NAME,
+                CELL_BROADCAST_ACTIVITY_NAME));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        return intent;
     }
 
     public static String convertIdp(Context context, String number) {
