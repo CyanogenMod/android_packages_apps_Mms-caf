@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2014 pci-suntektech Technologies, Inc.  All Rights Reserved.
+ * pci-suntektech Technologies Proprietary and Confidential.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
+-->
+
+<resources>
+
+    <string name="rcs_service_is_not_available">RCS服务不可用。</string>
+    <string name="creating_group_chat">正在创建群聊</string>
+    <string name="create_group_chat_successfully">成功创建群聊</string>
+    <string name="create_group_chat_failed">创建群聊失败。</string>
+    <string name="rcs_group_chat_detail">群聊详情</string>
+    <string name="send_message_failed">发送消息失败</string>
+    <string name="public_account">公众账号</string>
+    <string name="notifications">通知</string>
+    <string name="group_chat_status_invalid">群聊状态无效。</string>
+    <string name="group_chat_status_ok">群聊状态良好。</string>
+    <string name="switch_to_group_chatSwitch to group chat">切换到群聊</string>
+
+    <!-- 发送群聊消息失败 -->
+    <string name="group_chat_not_exist">找不到群聊。</string>
+    <string name="group_chat_not_active">群聊未激活。</string>
+    <string name="group_chat_deleted">群聊已删除。</string>
+
+    <!-- 群聊状态 -->
+    <string name="group_chat_status_active">(Active)</string>
+    <string name="group_chat_status_inactive">(Inactive)</string>
+    <string name="group_chat_status_deleted">(Deleted)</string>
+
+    <!-- 群聊通知 -->
+    <string name="group_chat_created">新群聊已创建。</string>
+    <string name="group_chat_active">群聊已激活。</string>
+    <string name="group_chat_update_chairman">%1$s 已成为群主。</string>
+    <string name="group_chat_join">%1$s 已加入群聊。</string>
+    <string name="group_chat_subject">群聊主题已更新为%1$s 。</string>
+    <string name="group_chat_remark">群聊备注已更新为%1$s。</string>
+    <string name="group_chat_alias">群聊别名从%1$s改为%2$s。</string>
+    <string name="group_chat_kick">%1$s已被踢出群聊。</string>
+    <string name="group_chat_quit">%1$s已离开群聊。</string>
+    <string name="group_chat_disbanded">群聊已经解散。</string>
+    <string name="group_chat_policy">已经修改消息接收策略。</string>
+
+    <string name="attach_map">位置</string>
+    <string name="message_received">送达</string>
+    <string name="message_send_fail">发送失败</string>
+    <string name="message_adapter_has_send">已发送</string>
+    <string name="message_adapte_sening">发送中</string>
+    <string name="message_has_been_burned">消息已焚</string>
+    <string name="message_download">点击下载</string>
+    <string name="message_downloaded">下载完毕</string>
+    <string name="message_send_fail_resend">发送失败，点击重发</string>
+    <!-- RCS -->
+    <string name="image_downloading">下载中：%1$d %%</string>
+    <string name="audio_length">音频时长:</string>
+    <string name="message_is_play_over">消息播放完了</string>
+    <string name="video_length">视频长度:</string>
+    <string name="image_msg_load_fail_tip">加载失败</string>
+    <string name="open_file_fail">打开文件失败</string>
+    <string name="message_is_burnd">消息已焚</string>
+    <string name="downloading_percent">下载中：%1$d %%</string>
+    <string name="uploading_percent">发送中：%1$d %%</string>
+    <string name="downloading_finish">下载完成</string>
+    <string name="burn_message_flag">阅后即焚</string>
+    <!--
+         Command name to open a Compose screen; displays in conversation list.
+         Also used as accessibility text for widget's new group chat button
+    -->
+    <string name="group_chat">群聊</string>
+    <string name="my_favorited">我的收藏</string>
+    <string name="favorited">收藏</string>
+    <string name="unfavorited">取消收藏</string>
+
+    <string name="file_suffix_vaild_tip">文件格式无效！</string>
+    <string name="file_size_over">文件大小超过系统限制,不能发送！</string>
+    <string name="not_intent">没有应用程序可执行此操作。</string>
+    <string name="please_input_1_100_int">请输入一个1~100的整数</string>
+    <string name="video_record_out_time">视频录制超出了限制时长，限制最大时长为%1$s秒</string>
+    <string name="audio_record_out_time">语音录制超出了限制时长，限制最大时长为%1$s秒</string>
+    <string name="cannot_send_video">不能发送时长小于1秒的视频。</string>
+    <string name="cannot_send_audio">不能发送时长小于1秒的语音。</string>
+
+    <string name="del_image_action">Image manipulation</string>
+    <string name="input_quality">Please enter the scaling quality</string>
+    <string name="input_no_fit">Input is not legal</string>
+    <string name="send_comfirm_ok">determine</string>
+    <string name="send_comfirm_cancel">cancel</string>
+    <string name="top_conversation">置顶</string>
+    <string name="cancel_top_conversation">取消置顶</string>
+    <string name="im_only">只发即时消息</string>
+    <string name="sms_only">只发短消息</string>
+    <string name="im_sms">自动选择</string>
+    <string name="im_sms_send">消息发送方式</string>
+    <string name="cannot_send_im">无法发送即时消息,请切换发送模式</string>
+    <string name="forward_message_success">已转发</string>
+    <string name="forward_message_fail">转发失败</string>
+    <string name="conversation_forward">转发</string>
+    <string name="forward_contact">联系人</string>
+    <string name="forward_conversation">会话</string>
+    <string name="forward_contact_group">群组</string>
+    <string name="my_vcard">我的名片</string>
+    <string name="select_contact_conversation">选择联系人或会话</string>
+    <string name="file_share">彩云文件分享</string>
+    <string name="save_back_message">消息备份/恢复</string>
+    <string name="message_save">消息备份</string>
+    <string name="message_back">消息恢复</string>
+    <string name="not_online_message_too_big">非在线状态，文本过大</string>
+    <string name="on_airplain_mode">飞行模式无法转发</string>
+    <string name="rcs_mcloud_share_file">彩云文件分享</string>
+    <string name="please_set_my_profile">请先设置我的信息</string>
+    <string name="send_manage_fail">消息发送失败</string>
+    <string name="send_manage_fail_count">您有%1$s条消息发送失败</string>
+
+    <string name="confirm_complain_selected_messages">选中的信息将被举报</string>
+    <string name="message_complain">信息举报</string>
+    <!-- Firewall string resources 
+    <string name="firewall_number_len_not_valid">Number is wrong</string>
+    <string name="firewall_number_in_black">"Number already in blacklist"</string>
+    <string name="firewall_number_in_white">"Number already in whitelist"</string>
+    <string name="firewall_save_success">Saved successfully</string>
+    <string name="firewall_add_blacklist_wring">if you add this number to blacklsit you will not receive the message and call from it</string>
+    -->
+    <string name="menuid_add_to_black_list">加入黑名单</string>
+    <string name="menuid_add_to_white_list">加入白名单</string>
+    <string name="firewall_number_len_not_valid">号码错误</string>
+    <string name="firewall_number_in_black">"该号码已在黑名单中"</string>
+    <string name="firewall_number_in_white">"该号码已在白名单中"</string>
+    <string name="firewall_save_success">保存成功</string>
+    <string name="firewall_add_blacklist_wring">加入黑名单你将不会再收到对方的消息和来电</string>
+    <string name="toast_install_map">未安装地图软件</string>
+    <string name="rcs_downloading">正在下载</string>
+    <string name="please_install_rcs_map">Please install RCS_MAP</string>
+
+    <string name="rcs_text_message">RCS消息</string>
+    <string name="message_content_type">内容类型：</string>
+    <string name="message_content_text">文本</string>
+    <string name="message_content_audio">语音</string>
+    <string name="message_content_video">视频</string>
+    <string name="message_content_image">图片</string>
+    <string name="message_content_map">位置</string>
+    <string name="message_content_vcard">vCard</string>
+    <string name="not_download_image">图片未下载，请先下载图片！</string>
+    <string name="not_download_video">视频未下载，请先下载视频！</string>
+    <string name="file_path_null">文件路径为空！</string>
+    <string name="create_groupchat_name_toast">只能输入三十个字节，超出部分将被丢弃。</string>
+    <string name="mcloud_share_file_befor">彩云文件地址 \n</string>
+    <string name="mcloud_share_file_after"> \n 请点击下载。</string>
+    <string name="confirm_cancel_selected_fav_messages">确认取消选中收藏吗？</string>
+    <string name="stop_down_load">暂停下载</string>
+
+</resources>
