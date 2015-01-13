@@ -4646,6 +4646,14 @@ public class ComposeMessageActivity extends Activity
             }
         }
 
+        // Make the recipients editor lost focus, recipients editor will shrink
+        // and filter useless char in recipients to avoid send sms failed.
+        if (isRecipientsEditorVisible()
+                && mRecipientsEditor.isFocused()
+                && !mWorkingMessage.requiresMms()) {
+            mTextEditor.requestFocus();
+        }
+
         if (!mSendingMessage) {
             if (LogTag.SEVERE_WARNING) {
                 String sendingRecipients = mConversation.getRecipients().serialize();
