@@ -23,11 +23,13 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.app.DialogFragment;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -53,6 +55,7 @@ import android.preference.RingtonePreference;
 import android.preference.SwitchPreference;
 import android.provider.SearchRecentSuggestions;
 import android.provider.Settings;
+import android.provider.Telephony;
 import android.telephony.SmsManager;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
@@ -1077,22 +1080,50 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
     private static final String BACKUP_FOLDER_NAME = "BackupSms";
     private static final int SMS_IMPORT = 0;
-    private static final int SMS_EXPORT = 1;
-    private static final int SMS_DELETE = 2;
+    private static final int SMS_DELETE = 1;
+    private static final int SMS_EXPORT = 2;
+
+    private boolean foundEntriesToExport() {
+        ContentResolver cr = getContentResolver();
+        Cursor c = null;
+        boolean foundEntries = false;
+
+        c = cr.query(Telephony.Sms.Inbox.CONTENT_URI, null, null, null, null);
+        if (c.getCount() > 0) {
+            foundEntries = true;
+        }
+        if (!foundEntries) {
+            c = cr.query(Telephony.Sms.Sent.CONTENT_URI, null, null, null, null);
+            if (c.getCount() > 0) {
+                foundEntries = true;
+            }
+        }
+        if (!foundEntries) {
+            c = cr.query(Telephony.Sms.Draft.CONTENT_URI, null, null, null, null);
+            if (c.getCount() > 0) {
+                foundEntries = true;
+            }
+        }
+        return foundEntries;
+    }
 
     private void manageSMS() {
+        final boolean smsExport = foundEntriesToExport();
+
+        int arrayRes = smsExport ? R.array.manage_sms_entries :
+                R.array.manage_sms_import_entries;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setItems(R.array.manage_sms_entries, new DialogInterface.OnClickListener() {
+        builder.setItems(arrayRes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case SMS_IMPORT:
                         new RestoreDeleteListFilesTask(false).execute();
                         break;
-                    case SMS_EXPORT:
-                        new BackupRestoreSMSTask(null).execute();
-                        break;
                     case SMS_DELETE:
                         new RestoreDeleteListFilesTask(true).execute();
+                        break;
+                    case SMS_EXPORT:
+                        new BackupRestoreSMSTask(null).execute();
                         break;
                 }
         }});
