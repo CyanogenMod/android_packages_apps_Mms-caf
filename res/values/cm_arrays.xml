@@ -134,7 +134,12 @@
 
     <string-array name="manage_sms_entries" translatable="false">
         <item>@string/import_sms_title</item>
+        <item>@string/delete_sms_title</item>
         <item>@string/export_sms_title</item>
+    </string-array>
+
+    <string-array name="manage_sms_import_entries" translatable="false">
+        <item>@string/import_sms_title</item>
         <item>@string/delete_sms_title</item>
     </string-array>
 
