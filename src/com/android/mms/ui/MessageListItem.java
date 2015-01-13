@@ -369,8 +369,12 @@ public class MessageListItem extends ZoomMessageListItem implements
                 break;
         }
 
-        // Hide the indicators.
-        mLockedIndicator.setVisibility(View.GONE);
+        if (mMessageItem.mLocked) {
+            mLockedIndicator.setImageResource(R.drawable.ic_lock_message_sms);
+            mLockedIndicator.setVisibility(View.VISIBLE);
+        } else {
+            mLockedIndicator.setVisibility(View.GONE); // Hide the indicators.
+        }
         mDeliveredIndicator.setVisibility(View.GONE);
         mDetailsIndicator.setVisibility(View.GONE);
         updateAvatarView(mMessageItem.mAddress, false);
