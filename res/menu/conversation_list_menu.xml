@@ -46,6 +46,10 @@
         android:title="@string/menu_all_as_unread"
         android:showAsAction="never" />
 
+    <item android:id="@+id/action_mark_all_as_read"
+        android:title="@string/menu_all_as_read"
+        android:showAsAction="never" />
+
     <item android:id="@+id/action_cell_broadcasts"
         android:title="@string/menu_cell_broadcasts"
         android:showAsAction="never" />

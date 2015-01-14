@@ -17,6 +17,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/markAsUnread"
           android:title="@string/menu_as_unread"
+          android:icon="@drawable/ic_mark_unread_holo_light"
+          android:showAsAction="always|withText" />
+    <item android:id="@+id/markAsRead"
+          android:title="@string/menu_as_read"
           android:icon="@drawable/ic_mark_read_holo_light"
           android:showAsAction="always|withText" />
     <item android:id="@+id/delete"

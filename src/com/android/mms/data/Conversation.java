@@ -49,8 +49,8 @@ import com.google.android.mms.pdu.PduHeaders;
 public class Conversation {
     private static final String TAG = "Mms/conv";
     private static final boolean DEBUG = false;
-    private static final boolean DELETEDEBUG = false;
-    private static final boolean UNMARKDEBUG = false;
+    private static final boolean DELETEDEBUG = true;
+    private static final boolean UNMARKDEBUG = true;
 
     public static final Uri sAllThreadsUri =
         Threads.CONTENT_URI.buildUpon().appendQueryParameter("simple", "true").build();
@@ -839,6 +839,30 @@ public class Conversation {
 
 
     /**
+     * Start mark as read of the conversation with the specified thread ID.
+     *
+     * @param handler An AsyncQueryHandler that will receive onMarkAsReadComplete
+     *                upon completion of the conversation being marked as read
+     * @param threadIds Collection of thread IDs of the conversations to be marked as read
+     */
+    public static void startMarkAsRead(Context context, ConversationQueryHandler handler,
+                                         Collection<Long> threadIds) {
+        synchronized(sDeletingThreadsLock) {
+            if (UNMARKDEBUG) {
+                Log.v(TAG,"Conversation startMarkAsRead marking as read:" + threadIds.size());
+            }
+            for (long threadId : threadIds) {
+                Conversation c = Conversation.get(context, threadId, true);
+                if (c != null) {
+                    c.markAsRead(true);
+                }
+            }
+        }
+    }
+
+
+
+    /**
      * Start mark as unread of the conversation with the specified thread ID.
      *
      * @param handler An AsyncQueryHandler that will receive onMarkAsUnreadComplete
@@ -870,6 +894,42 @@ public class Conversation {
             }
         }
     }
+
+
+    /**
+     * Start mark as read of the conversation with the specified thread ID.
+     *
+     * @param handler An AsyncQueryHandler that will receive onMarkAsReadComplete
+     *                upon completion of the conversation being marked as read
+     * @param threadIds Collection of thread IDs of the conversations to be marked as read
+     */
+    public static void startMarkAsReadAll(Context context,  ConversationQueryHandler handler) {
+        synchronized(sDeletingThreadsLock) {
+            if (UNMARKDEBUG) {
+                Log.v(TAG,"Conversation startMarkAsRead marking all as read");
+            }
+
+            Cursor c = context.getContentResolver().query(sAllThreadsUri,
+                    ALL_THREADS_PROJECTION, null, null, null);
+            try {
+                if (c != null) {
+                    while (c.moveToNext()) {
+                        long threadId = c.getLong(ID);
+                        Conversation con = Conversation.get(context,threadId,true);
+                        if (con != null) {
+                            con.markAsRead(true);
+                        }
+                    }
+                }
+            } finally {
+                if (c != null) {
+                    c.close();
+                }
+            }
+        }
+    }
+
+
 
     /**
      * Start a delete of the conversation with the specified thread ID.
