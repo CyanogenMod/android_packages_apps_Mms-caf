@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2008 Esmertec AG.
  * Copyright (C) 2008 The Android Open Source Project
+ * Copyright (C) 2015 The CyanogenMod Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -605,6 +606,10 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         if (item != null) {
             item.setVisible((mListAdapter.getCount() > 0) && mIsSmsEnabled);
         }
+        item = menu.findItem(R.id.action_mark_all_as_read);
+        if (item != null) {
+            item.setVisible((mListAdapter.getCount() > 0) && mIsSmsEnabled);
+        }
         item = menu.findItem(R.id.action_compose_new);
         if (item != null ){
             // Dim compose if SMS is disabled because it will not work (will show a toast)
@@ -674,6 +679,11 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                 final MarkAsUnreadThreadListener listener = new MarkAsUnreadThreadListener(
                         null, mQueryHandler, this);
                 confirmMarkAsUnreadDialog(listener, null, this);
+                break;
+            case R.id.action_mark_all_as_read:
+                final MarkAsReadThreadListener r_listener = new MarkAsReadThreadListener(
+                        null, mQueryHandler, this);
+                confirmMarkAsReadDialog(r_listener, null, this);
                 break;
             case R.id.action_settings:
                 Intent intent = new Intent(this, MessagingPreferenceActivity.class);
@@ -913,9 +923,9 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
 
  /**
      * Build and show the proper mark as unread thread dialog. The UI is slightly different
-     * depending on whether we're deleting single/multiple threads or all threads.
-     * @param listener gets called when the delete button is pressed
-     * @param threadIds the thread IDs to be deleted (pass null for all threads)
+     * depending on whether we're unreading single/multiple threads or all threads.
+     * @param listener gets called when the unread button is pressed
+     * @param threadIds the thread IDs to be unread (pass null for all threads)
      * @param context used to load the various UI elements
      */
     private static void confirmMarkAsUnreadDialog(final MarkAsUnreadThreadListener listener,
@@ -939,6 +949,36 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             .setNegativeButton(R.string.no,null)
             .setView(contents)
             .show();
+    }
+
+ /**
+     * Build and show the proper mark as read thread dialog. The UI is slightly different
+     * depending on whether we're reading single/multiple threads or all threads.
+     * @param listener gets called when the read button is pressed
+     * @param threadIds the thread IDs to be read (pass null for all threads)
+     * @param context used to load the various UI elements
+     */
+    private static void confirmMarkAsReadDialog(final MarkAsReadThreadListener listener,
+            Collection<Long> threadIds,
+            Context context) {
+        View contents = View.inflate(context,R.layout.mark_read_thread_dialog_view,null);
+        TextView msg = (TextView)contents.findViewById(R.id.message);
+        if (threadIds == null) {
+            msg.setText(R.string.confirm_mark_read_all_conversations);
+        } else {
+            // Show the number of threads getting marked as read in the confirmation dialog.
+            int cnt = threadIds.size();
+            msg.setText(context.getResources().getQuantityString(
+                    R.plurals.confirm_mark_read_conversation,cnt,cnt));
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.confirm_mark_read_dialog_title)
+                .setIconAttribute(android.R.attr.alertDialogIcon)
+                .setCancelable(true)
+                .setPositiveButton(R.string.menu_as_read,listener)
+                .setNegativeButton(R.string.no,null)
+                .setView(contents)
+                .show();
     }
 
     private final OnKeyListener mThreadListKeyListener = new OnKeyListener() {
@@ -993,6 +1033,37 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                     }
                 }
             });
+            dialog.dismiss();
+        }
+    }
+
+    public static class MarkAsReadThreadListener implements OnClickListener {
+        private final Collection<Long> mThreadIds;
+        private final ConversationQueryHandler mHandler;
+        private final Context mContext;
+
+        public MarkAsReadThreadListener(Collection<Long> threadIds,
+                ConversationQueryHandler handler,
+                Context context) {
+            mThreadIds = threadIds;
+            mHandler = handler;
+            mContext = context;
+        }
+
+        @Override
+        public void onClick(DialogInterface dialog, final int whichButton) {
+            MessageUtils.handleReadReport(mContext, mThreadIds,
+                    PduHeaders.READ_STATUS__DELETED_WITHOUT_BEING_READ, new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mThreadIds == null) {
+                                Conversation.startMarkAsReadAll(mContext, mHandler);
+                                DraftCache.getInstance().refresh();
+                            } else {
+                                Conversation.startMarkAsRead(mContext, mHandler, mThreadIds);
+                            }
+                        }
+                    });
             dialog.dismiss();
         }
     }
@@ -1293,6 +1364,16 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                         final MarkAsUnreadThreadListener listener = new MarkAsUnreadThreadListener(
                                 mSelectedThreadIds, mQueryHandler,ConversationList.this);
                         confirmMarkAsUnreadDialog(listener, mSelectedThreadIds,
+                                ConversationList.this);
+                    }
+                    mode.finish();
+                    break;
+
+                case R.id.markAsRead:
+                    if (mSelectedThreadIds.size() > 0) {
+                        final MarkAsReadThreadListener listener = new MarkAsReadThreadListener(
+                                mSelectedThreadIds, mQueryHandler,ConversationList.this);
+                        confirmMarkAsReadDialog(listener, mSelectedThreadIds,
                                 ConversationList.this);
                     }
                     mode.finish();
