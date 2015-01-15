@@ -496,12 +496,14 @@ public class SlideModel extends Model implements List<MediaModel>, EventListener
 
     // EventListener Interface
     public void handleEvent(Event evt) {
-        if (evt.getType().equals(SmilParElementImpl.SMIL_SLIDE_START_EVENT)) {
+        String eventType = evt.getType();
+        if (eventType.equals(SmilParElementImpl.SMIL_SLIDE_START_EVENT)) {
             if (LOCAL_LOGV) {
                 Log.v(TAG, "Start to play slide: " + this);
             }
             mVisible = true;
-        } else if (mFill != ElementTime.FILL_FREEZE) {
+        } else if (eventType.equals(SmilParElementImpl.SMIL_SLIDE_END_EVENT) ||
+                mFill != ElementTime.FILL_FREEZE) {
             if (LOCAL_LOGV) {
                 Log.v(TAG, "Stop playing slide: " + this);
             }
