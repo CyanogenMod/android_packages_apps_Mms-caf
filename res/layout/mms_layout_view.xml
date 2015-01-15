@@ -43,7 +43,7 @@
         android:layout_marginEnd="10dp"
         android:layout_gravity="center"
         android:background="@null"
-        android:src="@drawable/mms_play_btn"
+        android:src="@drawable/mms_play_image_btn"
         android:visibility="gone" />
 
 </FrameLayout>
