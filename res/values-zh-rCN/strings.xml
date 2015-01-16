@@ -59,7 +59,7 @@
     <string name="downloading" msgid="1779557575565350637">"正在下载"</string>
     <string name="cancel_downloading">"取消下载"</string>
     <string name="confirm_cancel_downloading">"确定取消彩信下载？"</string>
-    <string name="inline_subject" msgid="4057621785274119260">"&lt;主题：<xliff:g id="SUBJECT">%s</xliff:g>&gt;"</string>
+    <string name="inline_subject" msgid="4057621785274119260">"&lt;主题: <xliff:g id="SUBJECT">%s</xliff:g>&gt;"</string>
     <string name="drm_protected_text" msgid="1396394157870730742">"* 受 DRM 保护的文本 *"</string>
     <string name="insufficient_drm_rights" msgid="6989074725969164383">"检测到 DRM 权限不足。"</string>
     <string name="copy_message_text" msgid="4296252229544252834">"复制文字"</string>
