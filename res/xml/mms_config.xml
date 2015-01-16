@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2009 The Android Open Source Project
+<!-- Copyright (C) 2015 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -19,20 +19,21 @@
         version 2 - added recipientLimit.
         version 3 - added min/max recycler values.
         version 4 - added sms to mms text threshold.
+        version 5 - raise mms limit, raise size limit
 -->
 
-<mms_config version="4">
+<mms_config version="5">
     <!-- Flag indicating whether MMS should be enabled -->
     <bool name="enabledMMS">true</bool>
 
     <!-- Maximum message size in bytes for a MMS message -->
-    <int name="maxMessageSize">307200</int>
+    <int name="maxMessageSize">1228800</int>
 
     <!-- Maximum height for an attached image -->
-    <int name="maxImageHeight">480</int>
+    <int name="maxImageHeight">720</int>
 
     <!-- Maximum width for an attached image -->
-    <int name="maxImageWidth">640</int>
+    <int name="maxImageWidth">1080</int>
 
     <!-- Maximum number of SMS message to save per thread before auto-delete kicks in.
          This is the default value. -->
