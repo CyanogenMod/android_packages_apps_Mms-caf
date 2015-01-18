@@ -114,6 +114,11 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     public static final String GROUP_MMS_MODE           = "pref_key_mms_group_mms";
     public static final String SMS_CDMA_PRIORITY        = "pref_key_sms_cdma_priority";
 
+    // Unicode
+    public static final String UNICODE_STRIPPING            = "pref_key_unicode_stripping_value";
+    public static final int UNICODE_STRIPPING_LEAVE_INTACT  = 0;
+    public static final int UNICODE_STRIPPING_NON_DECODABLE = 1;
+
     // Expiry of MMS
     private final static String EXPIRY_ONE_WEEK = "604800"; // 7 * 24 * 60 * 60
     private final static String EXPIRY_TWO_DAYS = "172800"; // 2 * 24 * 60 * 60
@@ -181,6 +186,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private EditTextPreference mSmsSignatureEditPref;
     private ArrayList<Preference> mSmscPrefList = new ArrayList<Preference>();
     private static final int CONFIRM_CLEAR_SEARCH_HISTORY_DIALOG = 3;
+    private ListPreference mUnicodeStripping;
 
     // Whether or not we are currently enabled for SMS. This field is updated in onResume to make
     // sure we notice if the user has changed the default SMS app.
@@ -336,6 +342,9 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mEnableQmLockscreenPref = (SwitchPreference) findPreference(QM_LOCKSCREEN_ENABLED);
         mEnableQmCloseAllPref = (SwitchPreference) findPreference(QM_CLOSE_ALL_ENABLED);
         mEnableQmDarkThemePref = (SwitchPreference) findPreference(QM_DARK_THEME_ENABLED);
+
+        // Unicode Stripping
+        mUnicodeStripping = (ListPreference) findPreference(UNICODE_STRIPPING);
 
         // SMS Sending Delay
         mMessageSendDelayPref = (ListPreference) findPreference(SEND_DELAY_DURATION);
