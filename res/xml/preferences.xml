@@ -264,6 +264,12 @@
                     android:targetPackage="com.android.settings"
                     android:targetClass="com.android.settings.Settings$BlacklistSettingsActivity" />
         </PreferenceScreen>
+
+        <ListPreference
+            android:key="pref_key_unicode_stripping"
+            android:title="@string/pref_title_unicode_stripping"
+            android:entries="@array/pref_unicode_stripping_entries"
+            android:entryValues="@array/pref_unicode_stripping_values" />
     </PreferenceCategory>
 
 </PreferenceScreen>
