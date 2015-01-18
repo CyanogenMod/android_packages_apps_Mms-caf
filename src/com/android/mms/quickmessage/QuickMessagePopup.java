@@ -90,6 +90,7 @@ import com.android.mms.transaction.SmsMessageSender;
 import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.MessagingPreferenceActivity;
 import com.android.mms.ui.MsimDialog;
+import com.android.mms.util.UnicodeFilter;
 import com.google.android.mms.MmsException;
 
 import java.nio.charset.Charset;
@@ -147,6 +148,8 @@ public class QuickMessagePopup extends Activity {
     private boolean mCloseClosesAll = false;
     private boolean mWakeAndUnlock = false;
     private boolean mDarkTheme = false;
+    private int mUnicodeStripping = MessagingPreferenceActivity.UNICODE_STRIPPING_LEAVE_INTACT;
+    private UnicodeFilter mUnicodeFilter = null;
 
     // Message pager
     private ViewPager mMessagePager;
@@ -171,6 +174,8 @@ public class QuickMessagePopup extends Activity {
         mCloseClosesAll = prefs.getBoolean(MessagingPreferenceActivity.QM_CLOSE_ALL_ENABLED, false);
         mWakeAndUnlock = prefs.getBoolean(MessagingPreferenceActivity.QM_LOCKSCREEN_ENABLED, false);
         mDarkTheme = prefs.getBoolean(MessagingPreferenceActivity.QM_DARK_THEME_ENABLED, false);
+        mUnicodeStripping = prefs.getInt(MessagingPreferenceActivity.UNICODE_STRIPPING,
+                MessagingPreferenceActivity.UNICODE_STRIPPING_LEAVE_INTACT);
 
         // Set the window features and layout
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -690,116 +695,6 @@ public class QuickMessagePopup extends Activity {
     //==========================================================
 
     /**
-     * Class copied from ComposeMessageActivity.java
-     * InputFilter which attempts to substitute characters that cannot be
-     * encoded in the limited GSM 03.38 character set. In many cases this will
-     * prevent the keyboards auto-correction feature from inserting characters
-     * that would switch the message from 7-bit GSM encoding (160 char limit)
-     * to 16-bit Unicode encoding (70 char limit).
-     */
-    private class StripUnicode implements InputFilter {
-
-        private CharsetEncoder gsm =
-            Charset.forName("gsm-03.38-2000").newEncoder();
-
-        private Pattern diacritics =
-            Pattern.compile("\\p{InCombiningDiacriticalMarks}");
-
-        public CharSequence filter(CharSequence source, int start, int end,
-                                   Spanned dest, int dstart, int dend) {
-
-            Boolean unfiltered = true;
-            StringBuilder output = new StringBuilder(end - start);
-
-            for (int i = start; i < end; i++) {
-                char c = source.charAt(i);
-
-                // Character is encodable by GSM, skip filtering
-                if (gsm.canEncode(c)) {
-                    output.append(c);
-                }
-                // Character requires Unicode, try to replace it
-                else {
-                    unfiltered = false;
-                    String s = String.valueOf(c);
-
-                    // Try normalizing the character into Unicode NFKD form and
-                    // stripping out diacritic mark characters.
-                    s = Normalizer.normalize(s, Normalizer.Form.NFKD);
-                    s = diacritics.matcher(s).replaceAll("");
-
-                    // Special case characters that don't get stripped by the
-                    // above technique.
-                    s = s.replace("Œ", "OE");
-                    s = s.replace("œ", "oe");
-                    s = s.replace("Ł", "L");
-                    s = s.replace("ł", "l");
-                    s = s.replace("Đ", "DJ");
-                    s = s.replace("đ", "dj");
-                    s = s.replace("Α", "A");
-                    s = s.replace("Β", "B");
-                    s = s.replace("Ε", "E");
-                    s = s.replace("Ζ", "Z");
-                    s = s.replace("Η", "H");
-                    s = s.replace("Ι", "I");
-                    s = s.replace("Κ", "K");
-                    s = s.replace("Μ", "M");
-                    s = s.replace("Ν", "N");
-                    s = s.replace("Ο", "O");
-                    s = s.replace("Ρ", "P");
-                    s = s.replace("Τ", "T");
-                    s = s.replace("Υ", "Y");
-                    s = s.replace("Χ", "X");
-                    s = s.replace("α", "A");
-                    s = s.replace("β", "B");
-                    s = s.replace("γ", "Γ");
-                    s = s.replace("δ", "Δ");
-                    s = s.replace("ε", "E");
-                    s = s.replace("ζ", "Z");
-                    s = s.replace("η", "H");
-                    s = s.replace("θ", "Θ");
-                    s = s.replace("ι", "I");
-                    s = s.replace("κ", "K");
-                    s = s.replace("λ", "Λ");
-                    s = s.replace("μ", "M");
-                    s = s.replace("ν", "N");
-                    s = s.replace("ξ", "Ξ");
-                    s = s.replace("ο", "O");
-                    s = s.replace("π", "Π");
-                    s = s.replace("ρ", "P");
-                    s = s.replace("σ", "Σ");
-                    s = s.replace("τ", "T");
-                    s = s.replace("υ", "Y");
-                    s = s.replace("φ", "Φ");
-                    s = s.replace("χ", "X");
-                    s = s.replace("ψ", "Ψ");
-                    s = s.replace("ω", "Ω");
-                    s = s.replace("ς", "Σ");
-
-                    output.append(s);
-                }
-            }
-
-            // No changes were attempted, so don't return anything
-            if (unfiltered) {
-                return null;
-            }
-            // Source is a spanned string, so copy the spans from it
-            else if (source instanceof Spanned) {
-                SpannableString spannedoutput = new SpannableString(output);
-                TextUtils.copySpansFrom(
-                    (Spanned) source, start, end, null, spannedoutput, 0);
-
-                return spannedoutput;
-            }
-            // Source is a vanilla charsequence, so return output as-is
-            else {
-                return output;
-            }
-        }
-    }
-
-    /**
      * Message Pager class, used to display and navigate through the ViewPager pages
      */
     private class MessagePagerAdapter extends PagerAdapter
@@ -865,8 +760,16 @@ public class QuickMessagePopup extends Activity {
                         | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
                 qmReplyText.setText(qm.getReplyText());
                 qmReplyText.setSelection(qm.getReplyText().length());
+
+                if (mUnicodeStripping !=
+                        MessagingPreferenceActivity.UNICODE_STRIPPING_LEAVE_INTACT) {
+                    boolean stripNonDecodableOnly = mUnicodeStripping
+                            == MessagingPreferenceActivity.UNICODE_STRIPPING_NON_DECODABLE;
+                    mUnicodeFilter = new UnicodeFilter(stripNonDecodableOnly);
+                }
+
                 qmReplyText.addTextChangedListener(new QmTextWatcher(mContext, qmTextCounter,
-                        qmSendButton));
+                        qmSendButton, mUnicodeFilter));
                 qmReplyText.setOnEditorActionListener(new OnEditorActionListener() {
                     @Override
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -938,6 +841,9 @@ public class QuickMessagePopup extends Activity {
          * @param qm - qm we are replying to (for sender details)
          */
         private void sendMessageAndMoveOn(String message, QuickMessage qm) {
+            if (mUnicodeFilter != null) {
+                message = mUnicodeFilter.filter(message).toString();
+            }
             sendQuickMessage(message, qm);
             if (mMsimDialog == null || !mMsimDialog.isShowing()) {
                 moveOn(qm);

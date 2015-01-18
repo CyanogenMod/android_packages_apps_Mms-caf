@@ -75,6 +75,12 @@
     <string name="alert_dialog_yes">Yes</string>
     <string name="alert_dialog_no">No</string>
 
+    <!-- Strip unicode -->
+    <string name="pref_title_unicode_stripping">Strip unicode</string>
+    <string name="pref_unicode_stripping_leave_intact">Leave characters intact</string>
+    <string name="pref_unicode_stripping_non_encodable">Strip non-encodable characters</string>
+    <string name="pref_unicode_stripping_all">Strip all unicode characters</string>
+
     <!-- Context menu item on a message for marking as unread / read -->
     <string name="menu_as_unread">Mark as unread</string>
     <string name="menu_as_read">Mark as read</string>

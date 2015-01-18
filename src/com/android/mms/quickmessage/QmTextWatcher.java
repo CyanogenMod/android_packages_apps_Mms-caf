@@ -25,16 +25,21 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.android.mms.util.UnicodeFilter;
+
 public class QmTextWatcher implements TextWatcher {
     private TextView mTextView;
     private ImageButton mSendButton;
+    private UnicodeFilter mUnicodeFilter;
     private Context mContext;
     private static final int CHARS_REMAINING_BEFORE_COUNTER_SHOWN = 30;
 
-    public QmTextWatcher(Context context, TextView updateTextView, ImageButton sendButton) {
+    public QmTextWatcher(Context context, TextView updateTextView,
+            ImageButton sendButton, UnicodeFilter unicodeFilter) {
         mContext = context;
         mTextView = updateTextView;
         mSendButton = sendButton;
+        mUnicodeFilter = unicodeFilter;
     }
 
     public QmTextWatcher(Context context, TextView updateTextView) {
@@ -51,6 +56,10 @@ public class QmTextWatcher implements TextWatcher {
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
+        // strip unicode for message length counting
+        if (mUnicodeFilter != null) {
+            s = mUnicodeFilter.filter(s);
+        }
         getQuickReplyCounterText(s, mTextView, mSendButton);
 
         // For performance, we will only poke the wakelock on the 1st and every 20th keystroke
