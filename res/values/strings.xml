@@ -886,6 +886,7 @@
     <string name="copy_to_phone_success">Message saved</string>
     <string name="copy_to_phone_fail">Unable to save message</string>
 
+    <string name="audio_picker_app_not_found">Can not find app to pick audio</string>
     <string name="contact_app_not_found">Can not find Contact application</string>
     <!-- Gray hint displayed in the search field in Contacts when empty -->
     <string name="search_bar_hint">Search contacts</string>

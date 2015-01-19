@@ -738,7 +738,13 @@ public class MessageUtils {
                                 audioIntent.setData(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
                                 break;
                         }
-                        activity.startActivityForResult(audioIntent, requestCode);
+                        // Add try here is to avoid monkey test failure.
+                        try {
+                            activity.startActivityForResult(audioIntent, requestCode);
+                        } catch (ActivityNotFoundException ex) {
+                            Toast.makeText(activity, R.string.audio_picker_app_not_found,
+                                    Toast.LENGTH_SHORT).show();
+                        }
                     }
                 })
                 .create();
