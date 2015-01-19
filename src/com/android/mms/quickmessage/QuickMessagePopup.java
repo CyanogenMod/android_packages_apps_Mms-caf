@@ -129,6 +129,7 @@ public class QuickMessagePopup extends Activity {
     private TextView mQmMessageCounter;
     private Button mCloseButton;
     private Button mViewButton;
+    private MsimDialog mMsimDialog;
 
     // General items
     private Drawable mDefaultContactImage;
@@ -634,18 +635,20 @@ public class QuickMessagePopup extends Activity {
                 List<String> fromNumbers = Arrays.asList(qm.getFromNumber());
                 ContactList recipients = ContactList.getByNumbers(fromNumbers,
                                                                   true);
-                MsimDialog dialog = new MsimDialog(this,
-                                         new MsimDialog.OnSimButtonClickListener() {
-                                             @Override
-                                             public void onSimButtonClick(int phoneId) {
-                                                 sendQuickMessageBackground(phoneId,
-                                                                            threadId,
-                                                                            message,
-                                                                            qm);
-                                             }
-                                         },
-                                         recipients);
-                dialog.show();
+                mMsimDialog = new MsimDialog(this,
+                                             new MsimDialog.OnSimButtonClickListener() {
+                                                 @Override
+                                                 public void onSimButtonClick(int phoneId) {
+                                                     sendQuickMessageBackground(phoneId,
+                                                                                threadId,
+                                                                                message,
+                                                                                qm);
+                                                     mPagerAdapter.moveOn(qm);
+                                                     mMsimDialog.dismiss();
+                                                 }
+                                             },
+                                             recipients);
+                mMsimDialog.show();
             } else {
                 long subId = SubscriptionManager.getDefaultSmsSubId();
                 int phoneId = SubscriptionManager.getPhoneId(subId);
@@ -920,14 +923,25 @@ public class QuickMessagePopup extends Activity {
 
         /**
          * This method sends the supplied message in reply to the supplied qm and then
-         * moves to the next or previous message as appropriate. If this is the last qm
-         * in the MessageList, we end by clearing the notification and calling finish()
+         * moves to the next or previous message as appropriate.
          *
          * @param message - message to send
          * @param qm - qm we are replying to (for sender details)
          */
         private void sendMessageAndMoveOn(String message, QuickMessage qm) {
             sendQuickMessage(message, qm);
+            if (mMsimDialog == null || !mMsimDialog.isShowing()) {
+                moveOn(qm);
+            }
+        }
+
+        /**
+         * Sends the supplied message in reply to the supplied qm and then
+         * moves to the next or previous message as appropriate. If this is the last qm
+         * in the MessageList, we end by clearing the notification and calling finish()
+         * @param qm - qm we are replying to (for sender details)
+         */
+        public void moveOn(QuickMessage qm) {
             // Close the current QM and move on
             int numMessages = mMessageList.size();
             if (numMessages == 1) {
