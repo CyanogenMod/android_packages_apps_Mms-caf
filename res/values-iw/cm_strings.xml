@@ -125,6 +125,9 @@
   <string name="sub_no_sim">אין SIM</string>
   <string name="pref_manage_subs_title">נהל כרטיסי SIM</string>
   <string name="cell_broadcast_sender">ערוץ שידורים סלולאריים</string>
+  <string name="sent_on">"נשלח: <xliff:g id="date">%s </xliff:g>"</string>
+  <string name="received_on">"התקבל: <xliff:g id="date">%s </xliff:g>"</string>
+  <string name="menu_forward_conversation">העבר את השיחה הלאה</string>
   <string name="menu_resend">שלח מחדש</string>
   <string name="cancel_downloading">בטל</string>
   <string name="confirm_cancel_downloading">האם ברצונך לבטל את הורדת ה-MMS?</string>
@@ -134,15 +137,26 @@
   <string name="media_size_limit">ההודעה הגיעה למגבלת גודל, אין באפשרותך לשלוח הודעה זו.</string>
   <string name="discard_message">בטל</string>
   <string name="cannot_send_attach_reason">לא ניתן לגשת לקובץ המצורף, לא ניתן לשלוח את ההודעה.</string>
+  <string name="converting_to_text_message">ממיר להודעת טקסט\u2026</string>
   <string name="cannot_add_text_anymore">לא ניתן להוסיף טקסט נוסף.</string>
   <string name="title_send_message">שלח הודעה</string>
+  <string name="status_deleted_unread">יימחק מבלי שנקרא</string>
+  <string name="sms_full_body_cm">זיכרון הטלפון מלא, אין אפשרות לשלוח ולקבל הודעות חדשות. מחק הודעות ישנות.</string>
+  <string name="memory_low_title">זיכרון הודעות הטקסט נמוך</string>
+  <string name="disk_storage_full_error">זיכרון המכשיר שלך מלא.</string>
   <string name="mobile_data_send">שלח</string>
   <string name="mobile_data_download">הורדה</string>
+  <string name="mms_too_large">ההודעה גדולה מדי להורדה.</string>
+  <string name="send_failed_retry">ההודעה לא נשלחה, מנסה שנית\u2026</string>
+  <string name="download_failed_retry">ההודעה לא הורדה, מנסה שנית\u2026</string>
   <string name="download_canceled">ההורדה בוטלה.</string>
   <string name="system_audio_item">שמע מערכת</string>
   <string name="external_audio_item">שמע חיצוני</string>
   <string name="pending_mms">הודעת MMS אחת או יותר נמצאת בתהליך שליחה</string>
+  <string name="pending_mms_text">גע כדי להחליף את כרטיס ה-SIM</string>
+  <string name="switch_data_subscription_success">החלפת נתוני כרטיס SIM עברה בהצלחה.</string>
   <string name="abort_mms">בטל MMS</string>
+  <string name="abort_mms_text">גע כדי לבטל</string>
   <string name="progress_mms">הודעת MMS נמצאת בתהליך</string>
   <string name="progress_mms_text">גע כדי לנסות שוב</string>
   <string name="menu_connect_url">התחבר</string>

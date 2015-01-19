@@ -29,7 +29,7 @@
   <string name="pref_summary_notification_privacy_mode_enabled">Absender und Nachrichteninhalt nicht in der Statusleiste anzeigen (deaktiviert \"Schnell antworten\")</string>
   <string name="notification_single_title_privacy_mode">Neue Nachricht</string>
   <string name="notification_single_text_privacy_mode">1 ungelesene Nachricht</string>
-  <string name="notification_multiple_title_privacy_mode">Neue Nachricht</string>
+  <string name="notification_multiple_title_privacy_mode">Neue Nachrichten</string>
   <string name="notification_multiple_text_privacy_mode"><xliff:g id="number">%1$s</xliff:g> ungelesene Nachrichten</string>
   <string name="notification_ticker_privacy_mode">Neue Nachricht empfangen</string>
   <string name="pref_quickmessage">Schnell antworten</string>

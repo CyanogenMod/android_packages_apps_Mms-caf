@@ -19,7 +19,65 @@
 <resources>
   <string-array name="empty_subject_strings">
     <item>بابەت نیە</item>
-    <item>NoSubject</item>
+    <item>بێ سەردێڕ</item>
+  </string-array>
+  <string-array name="box_type">
+    <item>@string/type_inbox</item>
+    <item>@string/type_sent</item>
+    <item>@string/type_draft</item>
+    <item>@string/type_outbox</item>
+  </string-array>
+  <string-array name="slot_type">
+    <item>@string/type_all</item>
+    <item>@string/type_slot1</item>
+    <item>@string/type_slot2</item>
+  </string-array>
+  <string-array name="save_time">
+    <item>@string/mms_max</item>
+    <item>@string/mms_two_days</item>
+  </string-array>
+  <string-array name="save_time_values">
+    <item>٠</item>
+    <item>١٧٢٨٠٠</item>
+  </string-array>
+  <string-array name="number_options">
+    <item>@string/menu_call</item>
+    <item>@string/title_send_message</item>
+    <item>@string/menu_add_to_contacts</item>
+  </string-array>
+  <string-array name="entries_sms_store_value">
+    <item>٠</item>
+    <item>١</item>
+  </string-array>
+  <string-array name="entries_sms_store">
+    <item>@string/pref_sms_store_phone</item>
+    <item>@string/pref_sms_store_card</item>
+  </string-array>
+  <string-array name="entries_list_search_type">
+    <item>@string/search_as_content</item>
+    <item>@string/search_as_name</item>
+    <item>@string/search_as_number</item>
+    <item>@string/search_as_subject</item>
+  </string-array>
+  <string-array name="entries_sms_validity_period">
+    <item>@string/sms_validity_period_not_set</item>
+    <item>@string/sms_validity_period_one_hour</item>
+    <item>@string/sms_validity_period_six_hours</item>
+    <item>@string/sms_validity_period_twelve_hours</item>
+    <item>@string/sms_validity_period_one_day</item>
+    <item>@string/sms_validity_period_maximum</item>
+  </string-array>
+  <string-array name="original_message_class_names">
+    <item>کەسی</item>
+    <item>بانگەشە</item>
+    <item>زانیارییانە</item>
+    <item>خۆکارانه‌</item>
+  </string-array>
+  <string-array name="local_message_class_names">
+    <item>local_message_class_personal</item>
+    <item>local_message_class_advertisement</item>
+    <item>local_message_class_informational</item>
+    <item>local_message_class_auto</item>
   </string-array>
   <array name="sim_icons">
     <item>@drawable/ic_sim_icon_1</item>

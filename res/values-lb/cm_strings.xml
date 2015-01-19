@@ -20,7 +20,7 @@
   <string name="button_close">Zoumaachen</string>
   <string name="button_view">Ukucken</string>
   <string name="button_templates">Virlagen</string>
-  <string name="type_to_reply_text_enter_to_send">Tippe fir z\'äntweren</string>
+  <string name="type_to_reply_text_enter_to_send">Message aginn</string>
   <string name="toast_sending_message">Message gëtt geschéckt</string>
   <string name="qm_quick_reply">Äntweren</string>
   <string name="qm_mark_read">Gelies</string>

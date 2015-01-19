@@ -159,6 +159,8 @@
   <string name="pending_mms_title">Oczekujący MMS na innej karcie SIM</string>
   <string name="pending_mms">Wiadomość: Jeden lub więcej MMS-ów oczekuje</string>
   <string name="pending_mms_text">Dotknij, aby przełączyć karty SIM</string>
+  <string name="switch_data_subscription_success">Zamiana karty SIM do transmisji danych komórkowych zakończona powodzeniem.</string>
+  <string name="switch_data_subscription_failed">Zamiana karty SIM do transmisji danych komórkowych zakończona niepowodzeniem.</string>
   <string name="abort_mms">Wiadomość: MMS anulowany</string>
   <string name="abort_mms_text">Dotknij, aby przerwać</string>
   <string name="progress_mms_title">Transakcja MMS na innej karcie SIM w toku</string>
