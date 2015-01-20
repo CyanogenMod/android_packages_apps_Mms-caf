@@ -50,12 +50,17 @@ public class MmsConfig {
     private static final int MAX_IMAGE_WIDTH = 640;
     private static final int MAX_TEXT_LENGTH = 2000;
 
+    public static final int CREATIONMODE_RESTRICTED = 1;
+    public static final int CREATIONMODE_WARNING = 2;
+    public static final int CREATIONMODE_FREE = 3;
+
     /**
      * Whether to hide MMS functionality from the user (i.e. SMS only).
      */
     private static boolean mTransIdEnabled = false;
     private static int mMmsEnabled = 1;                         // default to true
     private static int mMaxMessageSize = 300 * 1024;            // default to 300k max size
+    private static int mMaxRestrictedMessageSize = 600 * 1024;// restricted mode message size 600k
     private static String mUserAgent = DEFAULT_USER_AGENT;
     private static String mUaProfTagName = DEFAULT_HTTP_KEY_X_WAP_PROFILE;
     private static String mUaProfUrl = null;
@@ -113,6 +118,8 @@ public class MmsConfig {
     private static boolean mEnableGroupMms = true;
 
     private static int MAX_SLIDE_NUM = 10;
+
+    private static boolean mIsEnabledCreationmode  = false;
 
     public static void init(Context context) {
         if (LOCAL_LOGV) {
@@ -303,6 +310,18 @@ public class MmsConfig {
         return mEnableGroupMms;
     }
 
+    public static boolean isCreationModeEnabled() {
+        return mIsEnabledCreationmode;
+    }
+
+    public static int getMaxRestrictedMessageSize() {
+        if (LOCAL_LOGV) {
+            Log.v(TAG, "MmsConfig.mMaxRestrictedMessageSize(): "
+                    + mMaxRestrictedMessageSize);
+        }
+        return mMaxRestrictedMessageSize;
+    }
+
     public static final void beginDocument(XmlPullParser parser, String firstElementName) throws XmlPullParserException, IOException
     {
         int type;
@@ -378,6 +397,8 @@ public class MmsConfig {
                             mEnableMMSDeliveryReports = "true".equalsIgnoreCase(text);
                         } else if ("enableGroupMms".equalsIgnoreCase(value)) {
                             mEnableGroupMms = "true".equalsIgnoreCase(text);
+                        } else if("enableCreationMode".equalsIgnoreCase(value)) {
+                            mIsEnabledCreationmode = "true".equalsIgnoreCase(text);
                         }
                     } else if ("int".equals(tag)) {
                         // int config tags go here
@@ -419,7 +440,10 @@ public class MmsConfig {
                             mMaxTextLength = Integer.parseInt(text);
                         } else if ("maxSubjectLength".equalsIgnoreCase(value)) {
                             mMaxSubjectLength = Integer.parseInt(text);
+                        } else if ("maxRestrictedMessageSize".equalsIgnoreCase(value)) {
+                            mMaxRestrictedMessageSize = Integer.parseInt(text);
                         }
+
                     } else if ("string".equals(tag)) {
                         // string config tags go here
                         if ("userAgent".equalsIgnoreCase(value)) {

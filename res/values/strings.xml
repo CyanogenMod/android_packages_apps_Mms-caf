@@ -1031,4 +1031,11 @@
     <string name="pref_sms_store_card_unknown_fail">Failure to receive new messages, the SIM card can\'t be read correctly</string>
     <string name="mms_size_indicator"><xliff:g id="mms_size">%1$s</xliff:g>K/<xliff:g id="all_size">%2$s</xliff:g>K</string>
     <string name="forward_size_over">Forbid forwarding, new message size over 300K.</string>
-</resources>
+    <string name="pref_title_notification_creation_mode">Creation mode</string>
+
+    <string name="pref_dialog_title_creation_mode">Select creation mode</string>
+    <string name="pref_summary_creation_mode">MMS creation mode for compose message</string>
+    <string name="restricted_format">Restricted format</string>
+    <string name="attach_anyway">Attach anyway?</string>
+
+  </resources>

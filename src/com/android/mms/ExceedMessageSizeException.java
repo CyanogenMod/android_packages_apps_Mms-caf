@@ -23,11 +23,22 @@ package com.android.mms;
 public final class ExceedMessageSizeException extends ContentRestrictionException {
     private static final long serialVersionUID = 6647713416796190850L;
 
+    private int mMmsSize = -1;
+
     public ExceedMessageSizeException() {
         super();
     }
 
     public ExceedMessageSizeException(String msg) {
         super(msg);
+    }
+
+    public ExceedMessageSizeException putMmsSize(int size) {
+        mMmsSize = size;
+        return this;
+    }
+
+    public int getMmsSize() {
+        return mMmsSize;
     }
 }
