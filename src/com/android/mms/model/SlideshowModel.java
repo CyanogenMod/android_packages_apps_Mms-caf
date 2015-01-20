@@ -52,6 +52,7 @@ import com.android.mms.LogTag;
 import com.android.mms.MmsConfig;
 import com.android.mms.dom.smil.parser.SmilXmlSerializer;
 import com.android.mms.layout.LayoutManager;
+import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.UriImage;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
@@ -148,6 +149,7 @@ public class SlideshowModel extends Model
         int slidesNum = slideNodes.getLength();
         ArrayList<SlideModel> slides = new ArrayList<SlideModel>(slidesNum);
         int totalMessageSize = 0;
+        boolean isClassCastFailed = false;
 
         for (int i = 0; i < slidesNum; i++) {
             // FIXME: This is NOT compatible with the SMILDocument which is
@@ -160,7 +162,16 @@ public class SlideshowModel extends Model
             ArrayList<MediaModel> mediaSet = new ArrayList<MediaModel>(mediaNum);
 
             for (int j = 0; j < mediaNum; j++) {
-                SMILMediaElement sme = (SMILMediaElement) mediaNodes.item(j);
+                SMILMediaElement sme = null;
+                try {
+                    sme = (SMILMediaElement) mediaNodes.item(j);
+                } catch (ClassCastException e) {
+                    // The node may not be a SMILMediaElement but a SMILElement or else
+                    // in other mobile phones. So catch the exception and handle it later.
+                    isClassCastFailed = true;
+                    Log.e(TAG, e.getMessage());
+                    continue;
+                }
                 try {
                     MediaModel media = MediaModelFactory.getMediaModel(
                             context, sme, layouts, pb);
@@ -222,6 +233,38 @@ public class SlideshowModel extends Model
                 }
             }
 
+            // Add vcard when receive from other products without ref target in smil.
+            int partsNum = pb.getPartsNum();
+            if (needAddUnrecognizedPart(slidesNum,
+                    mediaNum, partsNum, isClassCastFailed)) {
+                for (int k = 0; k < partsNum; k++) {
+                    PduPart part = pb.getPart(k);
+                    String contentType = (new String(part.getContentType())).toLowerCase();
+                    if (MessageUtils.OCT_STREAM.equals(contentType)) {
+                        byte[] name = part.getName();
+                        if (name == null) {
+                            name = part.getContentLocation();
+                        }
+                        if (name != null) {
+                            // Convert content type application/oct-stream (which is a vcard) to
+                            // application/X-vcard so that this mms can be recognized.
+                            contentType = MessageUtils.convertToVcardType(new String(name));
+                        }
+                    }
+                    if (ContentType.TEXT_VCARD.toLowerCase().equals(contentType)) {
+                        byte[] data = part.getContentLocation();
+                        if (data == null) {
+                            data = part.getName();
+                        }
+                        MediaModel vMedia = new VcardModel(context, ContentType.TEXT_VCARD,
+                                new String(data), part.getDataUri());
+                        mediaSet.add(vMedia);
+                        totalMessageSize += vMedia.getMediaSize();
+                        break;
+                    }
+                }
+            }
+
             SlideModel slide = new SlideModel((int) (par.getDur() * 1000), mediaSet);
             slide.setFill(par.getFill());
             SmilHelper.addParElementEventListeners((EventTarget) par, slide);
@@ -234,6 +277,19 @@ public class SlideshowModel extends Model
         return slideshow;
     }
 
+     private static boolean needAddUnrecognizedPart(
+             int slidesNum, int mediaNum, int partsNum, boolean castFailed) {
+         if (slidesNum != 1) {
+             return false;
+         }
+
+         if (mediaNum != partsNum || castFailed) {
+             // Some part is not recognized as a media, need add.
+             return true;
+         } else {
+             return false;
+         }
+    }
     public PduBody toPduBody() {
         if (mPduBodyCache == null) {
             mDocumentCache = SmilHelper.getDocument(this);
