@@ -197,6 +197,10 @@ public class MessageUtils {
     public static final int PREFER_SMS_STORE_CARD = 1;
     private static final Uri BOOKMARKS_URI = Uri.parse("content://browser/bookmarks");
 
+    // Consider oct-strean as the content type of vCard
+    public static final String OCT_STREAM = "application/oct-stream";
+    public static final String VCARD = "vcf";
+
     // distinguish view vcard from mms but not from contacts.
     public static final String VIEW_VCARD = "VIEW_VCARD_FROM_MMS";
     // add for obtain mms data path
@@ -634,6 +638,19 @@ public class MessageUtils {
             default:
                 return res.getString(R.string.priority_normal);
         }
+    }
+
+    public static String convertToVcardType(String src) {
+        if (!TextUtils.isEmpty(src)) {
+            int index = src.lastIndexOf('.');
+            if (index > 0) {
+                String extension = src.substring(index + 1, src.length());
+                if (extension.toLowerCase().equals(VCARD)) {
+                    return ContentType.TEXT_VCARD.toLowerCase();
+                }
+            }
+        }
+        return null;
     }
 
     public static int getAttachmentType(SlideshowModel model, MultimediaMessagePdu mmp) {
