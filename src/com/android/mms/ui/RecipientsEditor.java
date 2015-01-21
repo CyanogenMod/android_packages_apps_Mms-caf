@@ -417,6 +417,9 @@ public class RecipientsEditor extends RecipientEditTextView {
         String number = getFieldAt("number", sp, start, end, context);
         number = PhoneNumberUtils.replaceUnicodeDigits(number);
         if (!TextUtils.isEmpty(number)) {
+            if (!Mms.isPhoneNumber(number)) {
+                number = number.replaceAll(" ", "");
+            }
             int pos = number.indexOf('<');
             if (pos >= 0 && pos < number.indexOf('>')) {
                 // The number looks like an Rfc882 address, i.e. <fred flinstone> 891-7823
