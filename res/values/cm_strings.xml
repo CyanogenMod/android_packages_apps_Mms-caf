@@ -92,4 +92,9 @@
 
     <!-- Sharing vcs files from Calendar -->
     <string name="type_vcal">vCal</string>
+
+    <string name="attach_add_calendar_events">Calendar Event</string>
+
+    <!-- friendlier text for an activity not found exception for calendar attachments -->
+    <string name="calendar_attachment_activity_not_found">Unable to find a supporting Calendar app</string>
 </resources>
