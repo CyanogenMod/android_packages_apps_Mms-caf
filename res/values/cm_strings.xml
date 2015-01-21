@@ -212,6 +212,8 @@
     <string name="attach_add_contact_as_text">Insert contact info</string>
     <string name="attach_add_contact_as_vcard">Contact vCard</string>
 
+    <string name="attach_add_calendar_events">Calendard Event</string>
+
     <string name="contact_info_text_as_name">Name:</string>
     <string name="contact_info_text_as_phone">Tel:</string>
     <string name="contact_info_text_as_email">Email:</string>
@@ -383,4 +385,7 @@
 
     <!-- Copy message text-->
     <string name="copy_empty_string">No text to copy</string>
+
+    <!-- friendlier text for an activity not found exception for calendar attachments -->
+    <string name="calendar_attachment_activity_not_found">Unable to find a supporting Calendar app</string>
 </resources>

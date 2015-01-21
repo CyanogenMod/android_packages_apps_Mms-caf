@@ -53,20 +53,15 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.ContentResolver;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
-import android.content.SharedPreferences;
-import android.content.res.TypedArray;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SqliteWrapper;
 import android.graphics.drawable.Drawable;
 import android.media.CamcorderProfile;
 import android.media.RingtoneManager;
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
@@ -76,12 +71,9 @@ import android.os.Messenger;
 import android.os.StatFs;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
-import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.CommonDataKinds.StructuredName;
-import android.provider.ContactsContract.Data;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Sms;
 import android.provider.Telephony.Threads;
@@ -122,7 +114,6 @@ import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.TempFileProvider;
 import com.android.mms.data.WorkingMessage;
-import com.android.mms.model.VCalModel;
 import com.android.mms.model.MediaModel;
 import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
@@ -145,11 +136,9 @@ import com.google.android.mms.pdu.RetrieveConf;
 import com.google.android.mms.pdu.SendReq;
 
 import static android.telephony.SmsMessage.ENCODING_7BIT;
-import static android.telephony.SmsMessage.ENCODING_8BIT;
 import static android.telephony.SmsMessage.ENCODING_16BIT;
 import static android.telephony.SmsMessage.ENCODING_UNKNOWN;
 import static android.telephony.SmsMessage.MAX_USER_DATA_BYTES;
-import static android.telephony.SmsMessage.MAX_USER_DATA_BYTES_WITH_HEADER;
 import static android.telephony.SmsMessage.MAX_USER_DATA_SEPTETS;
 
 /**
@@ -828,6 +817,21 @@ public class MessageUtils {
             Intent wrapperIntent = Intent.createChooser(innerIntent, null);
 
             ((Activity) context).startActivityForResult(wrapperIntent, requestCode);
+        }
+    }
+
+    public static void selectCalendarEvents(Context context, int requestCode) {
+        if (context instanceof Activity) {
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("text/x-vcalendar");
+            intent.setPackage("com.android.calendar");
+
+            try {
+                ((Activity) context).startActivityForResult(intent, requestCode);
+            } catch (ActivityNotFoundException e) {
+                Toast.makeText(context, context.getResources().getString(
+                        R.string.calendar_attachment_activity_not_found), Toast.LENGTH_SHORT);
+            }
         }
     }
 
