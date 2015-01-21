@@ -410,6 +410,7 @@
     <string name="mail_to">发送邮件至:</string>
     <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
     <string name="menu_connect_url">连接</string>
+    <string name="do_not_show_connect_warning">不要再显示这个警告</string>
     <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
     <string name="menu_add_to_label">保存到书签</string>
     <string name="loadurlinfo_str">加载此URL?</string>
@@ -552,4 +553,6 @@
     <string name="sms_phone_capacity">"短信容量:"</string>
     <string name="mms_phone_used">"已用彩信:"</string>
     <string name="mms_phone_capacity">"彩信容量:"</string>
+
+    <string name="manage_sdcard_messages">管理sd卡上消息</string>
 </resources>
