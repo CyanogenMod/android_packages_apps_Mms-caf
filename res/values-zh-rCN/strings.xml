@@ -410,6 +410,7 @@
     <string name="mail_to">发送邮件至:</string>
     <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
     <string name="menu_connect_url">连接</string>
+    <string name="do_not_show_connect_warning">不要再显示这个警告</string>
     <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
     <string name="menu_add_to_label">保存到书签</string>
     <string name="loadurlinfo_str">加载此URL?</string>
@@ -552,4 +553,25 @@
     <string name="sms_phone_capacity">"短信容量:"</string>
     <string name="mms_phone_used">"已用彩信:"</string>
     <string name="mms_phone_capacity">"彩信容量:"</string>
+
+    <string name="manage_sdcard_messages">管理sd卡上消息</string>
+    <string name="perform_backup_title">备份</string>
+    <string name="prefs_title_export_sms_messages">导出SMS</string>
+    <string name="import_sms_toast">SMS导入成功</string>
+    <string name="backup_file_name_message">文件路径</string>
+    <string name="delete_sms_title">删除SMS</string>
+    <string name="perform_restore_title">恢复</string>
+    <string name="export_sms_title">导出SMS</string>
+    <string name="remove_subject">删除主题</string>
+    <string name="disk_storage_full_error">错误：存储卡满了</string>
+    <string name="copy_empty_string">没有选择内容复制</string>
+    <string name="pick_sms_backup_title">选择SMS备份</string>
+    <string name="wait_progress_message">请等待</string>
+    <string name="import_sms_title">导入SMS</string>
+    <string name="delete_sms_toast">SMS 删除成功</string>
+    <string name="prefs_title_import_sms_messages">导入SMS</string>
+    <string name="export_sms_toast">SMS导出成功</string>
+    <string name="no_backups_found">没有发现备份的短信</string>
+    <string name="forward_size_over">禁止转寄</string>
+    <string name="export_sms_failed_toast">不能导出SMS</string>
 </resources>
