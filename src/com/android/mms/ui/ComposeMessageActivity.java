@@ -71,11 +71,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SqliteWrapper;
 import android.drm.DrmStore;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.VectorDrawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -117,11 +113,9 @@ import android.view.ActionMode;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.view.View;
 import android.view.View.OnCreateContextMenuListener;
 import android.view.View.OnKeyListener;
@@ -138,7 +132,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
-import android.widget.Button;
 
 import com.android.contacts.common.util.MaterialColorMapUtils;
 import com.android.contacts.common.util.MaterialColorMapUtils.MaterialPalette;
@@ -198,20 +191,21 @@ import com.google.android.mms.pdu.SendReq;
 public class ComposeMessageActivity extends Activity
         implements View.OnClickListener, TextView.OnEditorActionListener,
         MessageStatusListener, Contact.UpdateListener, IZoomListener {
-    public static final int REQUEST_CODE_ATTACH_IMAGE     = 100;
-    public static final int REQUEST_CODE_TAKE_PICTURE     = 101;
-    public static final int REQUEST_CODE_ATTACH_VIDEO     = 102;
-    public static final int REQUEST_CODE_TAKE_VIDEO       = 103;
-    public static final int REQUEST_CODE_ATTACH_SOUND     = 104;
-    public static final int REQUEST_CODE_RECORD_SOUND     = 105;
-    public static final int REQUEST_CODE_CREATE_SLIDESHOW = 106;
-    public static final int REQUEST_CODE_ECM_EXIT_DIALOG  = 107;
-    public static final int REQUEST_CODE_ADD_CONTACT      = 108;
-    public static final int REQUEST_CODE_PICK             = 109;
-    public static final int REQUEST_CODE_ATTACH_ADD_CONTACT_INFO     = 110;
-    public static final int REQUEST_CODE_ATTACH_ADD_CONTACT_VCARD    = 111;
-    public static final int REQUEST_CODE_ATTACH_REPLACE_CONTACT_INFO = 112;
-    public static final int REQUEST_CODE_ADD_RECIPIENTS   = 113;
+    public static final int REQUEST_CODE_ATTACH_IMAGE                   = 100;
+    public static final int REQUEST_CODE_TAKE_PICTURE                   = 101;
+    public static final int REQUEST_CODE_ATTACH_VIDEO                   = 102;
+    public static final int REQUEST_CODE_TAKE_VIDEO                     = 103;
+    public static final int REQUEST_CODE_ATTACH_SOUND                   = 104;
+    public static final int REQUEST_CODE_RECORD_SOUND                   = 105;
+    public static final int REQUEST_CODE_CREATE_SLIDESHOW               = 106;
+    public static final int REQUEST_CODE_ECM_EXIT_DIALOG                = 107;
+    public static final int REQUEST_CODE_ADD_CONTACT                    = 108;
+    public static final int REQUEST_CODE_PICK                           = 109;
+    public static final int REQUEST_CODE_ATTACH_ADD_CONTACT_INFO        = 110;
+    public static final int REQUEST_CODE_ATTACH_ADD_CONTACT_VCARD       = 111;
+    public static final int REQUEST_CODE_ATTACH_REPLACE_CONTACT_INFO    = 112;
+    public static final int REQUEST_CODE_ADD_RECIPIENTS                 = 113;
+    public static final int REQUEST_CODE_ADD_CALENDAR_EVENTS            = 114;
 
     private static final String TAG = LogTag.TAG;
 
@@ -474,7 +468,7 @@ public class ComposeMessageActivity extends Activity
     private final static String MSG_SUBJECT_SIZE = "subject_size";
 
     private boolean mShowAttachIcon = false;
-    private final static int REPLACE_ATTACHMEN_MASK = 1 << 16;
+    private final static int REPLACE_ATTACHMENT_MASK = 1 << 16;
 
     private boolean mShowTwoButtons = false;
 
@@ -3321,16 +3315,16 @@ public class ComposeMessageActivity extends Activity
     }
 
     private boolean isAppendRequest(int requestCode) {
-        return (requestCode & REPLACE_ATTACHMEN_MASK) == 0;
+        return (requestCode & REPLACE_ATTACHMENT_MASK) == 0;
     }
 
     private int getRequestCode(int requestCode) {
-        return requestCode & ~REPLACE_ATTACHMEN_MASK;
+        return requestCode & ~REPLACE_ATTACHMENT_MASK;
     }
 
     private int getMakRequestCode(boolean replace, int requestCode) {
         if (replace) {
-            return requestCode | REPLACE_ATTACHMEN_MASK;
+            return requestCode | REPLACE_ATTACHMENT_MASK;
         }
         return requestCode;
     }
@@ -3399,6 +3393,10 @@ public class ComposeMessageActivity extends Activity
                 pickContacts(SelectRecipientsList.MODE_VCARD,
                         REQUEST_CODE_ATTACH_ADD_CONTACT_VCARD);
                 break;
+
+            case AttachmentTypeSelectorAdapter.ADD_CALENDAR_EVENTS:
+                MessageUtils.selectCalendarEvents(this,
+                        getMakRequestCode(replace, REQUEST_CODE_ADD_CALENDAR_EVENTS));
 
             default:
                 break;
@@ -3586,6 +3584,7 @@ public class ComposeMessageActivity extends Activity
                 if (data != null) {
                     mWorkingMessage.removeAttachment(true);
                 }
+
             case REQUEST_CODE_ATTACH_ADD_CONTACT_INFO:
                 if (data != null) {
                     String newText = mWorkingMessage.getText() +
@@ -3608,6 +3607,17 @@ public class ComposeMessageActivity extends Activity
                 insertNumbersIntoRecipientsEditor(
                         data.getStringArrayListExtra(SelectRecipientsList.EXTRA_RECIPIENTS));
                 break;
+
+            case REQUEST_CODE_ADD_CALENDAR_EVENTS:
+                if (data != null) {
+                    // get shared event files (.vcs)
+                    ArrayList<Uri> uris = data.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+                    // since mms is lacking the ability to add multiple attachments, add the first
+                    // and only event requested
+                    if (uris.size() > 0) {
+                        addVCal(uris.get(0));
+                    }
+                }
 
             default:
                 if (LogTag.VERBOSE) log("bail due to unknown requestCode=" + requestCode);
