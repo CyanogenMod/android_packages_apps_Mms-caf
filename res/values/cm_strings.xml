@@ -327,4 +327,9 @@
 
     <!-- Copy message text-->
     <string name="copy_empty_string">No text to copy</string>
+
+    <string name="attach_add_calendar_events">Calendar Event</string>
+    <!-- friendlier text for an activity not found exception for calendar attachments -->
+    <string name="calendar_attachment_activity_not_found">Unable to find a supporting Calendar app</string>
+
 </resources>

@@ -41,6 +41,7 @@ public class AttachmentTypeSelectorAdapter extends IconListAdapter {
     public final static int ADD_SLIDESHOW           = 6;
     public final static int ADD_CONTACT_AS_VCARD    = 7;
     public final static int ADD_CONTACT_AS_TEXT     = 8;
+    public final static int ADD_CALENDAR_EVENTS     = 9;
 
     private boolean mShowMediaOnly = false;
     private static int mMediaCount;
@@ -94,6 +95,11 @@ public class AttachmentTypeSelectorAdapter extends IconListAdapter {
             addItem(data, context.getString(R.string.attach_add_contact_as_text),
                     R.drawable.ic_attach_contact_info, ADD_CONTACT_AS_TEXT);
         }
+
+        // calendar event support
+        addItem(data, context.getResources().getString(R.string.attach_add_calendar_events),
+                R.drawable.ic_attach_vcard, ADD_CALENDAR_EVENTS);
+
         return data;
     }
 
