@@ -75,15 +75,20 @@
     <string name="alert_dialog_yes">Yes</string>
     <string name="alert_dialog_no">No</string>
 
-    <!-- Context menu item on a message for marking as unread -->
+    <!-- Context menu item on a message for marking as unread / read -->
     <string name="menu_as_unread">Mark as unread</string>
-    <!-- Context menu item on a message for marking all threads as unread -->
+    <string name="menu_as_read">Mark as read</string>
+    <!-- Context menu item on a message for marking all threads as unread / read -->
     <string name="menu_all_as_unread">Mark all as unread</string>
-    <!-- Confirm Mark as unread -->
+    <string name="menu_all_as_read">Mark all as read</string>
+    <!-- Confirm Mark as unread / read -->
     <string name="confirm_mark_unread_dialog_title">Mark as unread?</string>
     <string name="confirm_mark_unread_conversation">The conversation will be marked as unread.</string>
+    <string name="confirm_mark_read_dialog_title">Mark as read?</string>
+    <string name="confirm_mark_read_conversation">The conversation will be marked as read.</string>
     <!-- Mark all threads confirmation dialog message -->
     <string name="confirm_mark_unread_all_conversations">All threads will be marked as unread.</string>
+    <string name="confirm_mark_read_all_conversations">All threads will be marked as read.</string>
 
     <!-- Multi recipients -->
     <string name="loading">Loading\u2026</string>

@@ -104,6 +104,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
     public static final int HAVE_LOCKED_MESSAGES_TOKEN      = 1802;
     private static final int DELETE_OBSOLETE_THREADS_TOKEN  = 1803;
     private static final int MARK_CONVERSATION_UNREAD_TOKEN = 1804;
+    private static final int MARK_CONVERSATION_READ_TOKEN = 1805;
 
     // IDs of the context menu items for the list of conversations.
     public static final int MENU_DELETE               = 0;
@@ -692,6 +693,11 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             item.setVisible((mListAdapter.getCount() > 0) && mIsSmsEnabled);
         }
 
+        item = menu.findItem(R.id.action_mark_all_as_read);
+        if (item != null) {
+            item.setVisible((mListAdapter.getCount() > 0) && mIsSmsEnabled);
+        }
+
         if (!LogTag.DEBUG_DUMP) {
             item = menu.findItem(R.id.action_debug_dump);
             if (item != null) {
@@ -732,6 +738,11 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                 final MarkAsUnreadThreadListener listener = new MarkAsUnreadThreadListener(
                         null, mQueryHandler, this);
                 confirmMarkAsUnreadDialog(listener, null, this);
+                break;
+            case R.id.action_mark_all_as_read:
+                final MarkAsReadThreadListener r_listener = new MarkAsReadThreadListener(
+                        null, mQueryHandler, this);
+                confirmMarkAsReadDialog(r_listener, null, this);
                 break;
             case R.id.action_settings:
                 Intent intent = new Intent(this, MessagingPreferenceActivity.class);
@@ -1007,6 +1018,36 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             .show();
     }
 
+    /**
+     * Build and show the proper mark as read thread dialog. The UI is slightly different
+     * depending on whether we're reading single/multiple threads or all threads.
+     * @param listener gets called when the markAsRead button is pressed
+     * @param threadIds the thread IDs to be read (pass null for all threads)
+     * @param context used to load the various UI elements
+     */
+    private static void confirmMarkAsReadDialog(final MarkAsReadThreadListener listener,
+            Collection<Long> threadIds,
+            Context context) {
+        View contents = View.inflate(context,R.layout.mark_read_thread_dialog_view,null);
+        TextView msg = (TextView)contents.findViewById(R.id.message);
+        if (threadIds == null) {
+            msg.setText(R.string.confirm_mark_read_all_conversations);
+        } else {
+            // Show the number of threads getting marked as unread in the confirmation dialog.
+            int cnt = threadIds.size();
+            msg.setText(context.getResources().getQuantityString(
+                    R.plurals.confirm_mark_read_conversation,cnt,cnt));
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.confirm_mark_read_dialog_title)
+                .setIconAttribute(android.R.attr.alertDialogIcon)
+                .setCancelable(true)
+                .setPositiveButton(R.string.menu_as_read,listener)
+                .setNegativeButton(R.string.no,null)
+                .setView(contents)
+                .show();
+    }
+
     private final OnKeyListener mThreadListKeyListener = new OnKeyListener() {
         @Override
         public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -1053,6 +1094,37 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                     }
                 }
             });
+            dialog.dismiss();
+        }
+    }
+
+    public static class MarkAsReadThreadListener implements OnClickListener {
+        private final Collection<Long> mThreadIds;
+        private final ConversationQueryHandler mHandler;
+        private final Context mContext;
+
+        public MarkAsReadThreadListener(Collection<Long> threadIds,
+                                          ConversationQueryHandler handler, Context context) {
+            mThreadIds = threadIds;
+            mHandler = handler;
+            mContext = context;
+        }
+
+        @Override
+        public void onClick(DialogInterface dialog, final int whichButton) {
+            MessageUtils.handleReadReport(mContext, mThreadIds,
+                    PduHeaders.READ_STATUS__DELETED_WITHOUT_BEING_READ, new Runnable() {
+                        @Override
+                        public void run() {
+                            int token = MARK_CONVERSATION_READ_TOKEN;
+                            if (mThreadIds == null) {
+                                Conversation.startMarkAsReadAll(mContext, mHandler, token);
+                                DraftCache.getInstance().refresh();
+                            } else {
+                                Conversation.startMarkAsRead(mContext, mHandler, token, mThreadIds);
+                            }
+                        }
+                    });
             dialog.dismiss();
         }
     }
@@ -1362,6 +1434,15 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                                 new MarkAsUnreadThreadListener(
                                         mSelectedThreadIds, mQueryHandler, ConversationList.this),
                                         mSelectedThreadIds, ConversationList.this);
+                    }
+                    mode.finish();
+                    break;
+                case R.id.markAsRead:
+                    if (mSelectedThreadIds.size() > 0) {
+                        confirmMarkAsReadDialog(
+                                new MarkAsReadThreadListener(
+                                        mSelectedThreadIds, mQueryHandler, ConversationList.this),
+                                mSelectedThreadIds, ConversationList.this);
                     }
                     mode.finish();
                     break;
