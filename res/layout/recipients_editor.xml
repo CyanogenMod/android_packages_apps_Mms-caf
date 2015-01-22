@@ -23,15 +23,20 @@
     android:layout_height="fill_parent"
     android:orientation="horizontal">
 
-    <com.android.mms.ui.RecipientsEditor
-        android:id="@+id/recipients_editor"
-        android:hint="@string/to_hint"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textFilter"
-        android:layout_weight="1"
-        android:textColor="#000000"
-    />
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fillViewport="true"
+            android:scrollbars="none">
+
+            <com.android.mms.ui.RecipientsEditor
+                android:id="@+id/recipients_editor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textFilter"
+                android:nextFocusRight="@+id/recipients_selector" />
+        </HorizontalScrollView>
 
     <ImageButton android:id="@+id/recipients_picker"
         style="?android:attr/borderlessButtonStyle"
