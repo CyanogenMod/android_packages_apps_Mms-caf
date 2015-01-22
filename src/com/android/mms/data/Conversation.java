@@ -859,6 +859,30 @@ public class Conversation {
     }
 
     /**
+     * Start mark as read of the conversation with the specified thread ID.
+     *
+     * @param handler An AsyncQueryHandler that will receive onMarkAsReadComplete
+     *                upon completion of the conversation being marked as read
+     * @param token   The token that will be passed to onMarkAsReadComplete
+     * @param threadIds Collection of thread IDs of the conversations to be marked as read
+     */
+    public static void startMarkAsRead(Context context, ConversationQueryHandler handler,
+                                         int token, Collection<Long> threadIds) {
+        synchronized(sDeletingThreadsLock) {
+            if (UNMARKDEBUG) {
+                Log.v(TAG,"Conversation startMarkAsRead marking as read:" +
+                        threadIds.size());
+            }
+            for (long threadId : threadIds) {
+                Conversation c = Conversation.get(context,threadId,true);
+                if (c!=null) {
+                    c.markAsRead(true);
+                }
+            }
+        }
+    }
+
+    /**
      * Start mark as unread of the conversation with the specified thread ID.
      *
      * @param handler An AsyncQueryHandler that will receive onMarkAsUnreadComplete
@@ -884,6 +908,41 @@ public class Conversation {
                             con.markAsUnread();
                         }
                    }
+                }
+            } finally {
+                if (c != null) {
+                    c.close();
+                }
+            }
+        }
+    }
+
+    /**
+     * Start mark as read of the conversation with the specified thread ID.
+     *
+     * @param handler An AsyncQueryHandler that will receive onMarkAsReadComplete
+     *                upon completion of the conversation being marked as read
+     * @param token   The token that will be passed to onMarkAsReadComplete
+     */
+    public static void startMarkAsReadAll(Context context,  ConversationQueryHandler handler,
+                                            int token) {
+        synchronized(sDeletingThreadsLock) {
+            if (UNMARKDEBUG) {
+                Log.v(TAG,"Conversation startMarkAsRead marking all as read");
+            }
+
+            Cursor c = context.getContentResolver().query(sAllThreadsUri,
+                    ALL_THREADS_PROJECTION, null, null, null);
+            try {
+                if (c != null) {
+                    ContentResolver resolver = context.getContentResolver();
+                    while (c.moveToNext()) {
+                        long threadId = c.getLong(ID);
+                        Conversation con = Conversation.get(context,threadId,true);
+                        if (con!=null) {
+                            con.markAsRead(true);
+                        }
+                    }
                 }
             } finally {
                 if (c != null) {
