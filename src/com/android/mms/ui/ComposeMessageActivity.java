@@ -310,6 +310,11 @@ public class ComposeMessageActivity extends Activity
 
     private static final String INTENT_MULTI_PICK = "com.android.contacts.action.MULTI_PICK";
 
+    private static String FILE_PATH_COLUMN = "_data";
+    private static String BROADCAST_DATA_SCHEME = "file";
+    private static String URI_SCHEME_CONTENT = "content";
+    private static String URI_HOST_MEDIA = "media";
+
     // When the conversation has a lot of messages and a new message is sent, the list is scrolled
     // so the user sees the just sent message. If we have to scroll the list more than 20 items,
     // then a scroll shortcut is invoked to move the list near the end before scrolling.
@@ -1795,6 +1800,14 @@ public class ComposeMessageActivity extends Activity
         }
     };
 
+    private final BroadcastReceiver mMediaStateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i(TAG, "mMediaStateReceiver action = " + intent.getAction());
+            checkAttachFileState(context);
+        }
+    };
+
     private static ContactList sEmptyContactList;
 
     private ContactList getRecipients() {
@@ -2387,6 +2400,9 @@ public class ComposeMessageActivity extends Activity
         // Register a BroadcastReceiver to listen on HTTP I/O process.
         registerReceiver(mHttpProgressReceiver, mHttpProgressFilter);
 
+        // Register a BroadcastReceiver to listen on SD card state.
+        registerReceiver(mMediaStateReceiver, getMediaStateFilter());
+
         registerReceiver(mDelayedSendProgressReceiver, DELAYED_SEND_COUNTDOWN_FILTER);
 
         // figure out whether we need to show the keyboard or not.
@@ -2638,6 +2654,7 @@ public class ComposeMessageActivity extends Activity
         if (mAttachmentSelector.getVisibility() == View.VISIBLE) {
             mAttachmentSelector.setVisibility(View.GONE);
         }
+        unregisterReceiver(mMediaStateReceiver);
     }
 
     @Override
@@ -5643,6 +5660,58 @@ public class ComposeMessageActivity extends Activity
             }
         }
         return ret;
+    }
+
+    private IntentFilter getMediaStateFilter() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_MEDIA_BAD_REMOVAL);
+        filter.addAction(Intent.ACTION_MEDIA_REMOVED);
+        filter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
+        filter.addDataScheme(BROADCAST_DATA_SCHEME);
+        return filter;
+    }
+
+    private String getAttachFilePath(Context context, Uri uri){
+        if (URI_SCHEME_CONTENT.equals(uri.getScheme())
+                && URI_HOST_MEDIA.equals(uri.getHost())) {
+            Cursor c = context.getContentResolver().query(uri, null,
+                    null, null, null);
+            if (c != null) {
+                try {
+                    if (c.moveToFirst()) {
+                        return c.getString(c.getColumnIndex(FILE_PATH_COLUMN));
+                    }
+                } finally {
+                    c.close();
+                }
+            }
+            return null;
+        } else {
+            return uri.getPath().toString();
+        }
+    }
+
+    private void checkAttachFileState(Context context) {
+        if (mWorkingMessage.hasAttachment() && !mWorkingMessage.hasSlideshow()) {
+            ArrayList<Uri> attachFileUris = mWorkingMessage.getSlideshow().getAttachFileUri();
+            for (Uri uri : attachFileUris) {
+                Log.i(TAG, "Attach file uri is " + uri);
+                if (uri == null) {
+                    continue;
+                }
+                String path = getAttachFilePath(context, uri);
+                Log.i(TAG, "File path is " + path);
+                File f = new File(path);
+                if (f == null || !f.exists()) {
+                    Log.i(TAG, "set attachment null");
+                    Toast.makeText(ComposeMessageActivity.this,
+                            R.string.cannot_send_attach_reason,
+                            Toast.LENGTH_SHORT).show();
+                    mWorkingMessage.setAttachment(WorkingMessage.TEXT, null, false);
+                    break;
+                }
+            }
+        }
     }
 
     // Get the path of uri and compare it to ".vcf" to judge whether it is a

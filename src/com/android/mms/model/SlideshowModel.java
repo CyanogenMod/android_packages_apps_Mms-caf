@@ -735,6 +735,16 @@ public class SlideshowModel extends Model
         }
     }
 
+    public ArrayList<Uri> getAttachFileUri() {
+        ArrayList<Uri> uris = new ArrayList<Uri>();
+        for (SlideModel slide : mSlides) {
+            for (MediaModel media : slide) {
+                uris.add(media.getUri());
+            }
+        }
+        return uris;
+    }
+
     public void checkMessageSize(int increaseSize) throws ContentRestrictionException {
         ContentRestriction cr = ContentRestrictionFactory.getContentRestriction();
         cr.checkMessageSize(mCurrentMessageSize, increaseSize, mContext.getContentResolver());
