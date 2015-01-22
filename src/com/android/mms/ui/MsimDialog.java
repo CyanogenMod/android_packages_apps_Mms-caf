@@ -18,6 +18,7 @@ package com.android.mms.ui;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.telephony.SubInfoRecord;
 import android.telephony.SubscriptionManager;
@@ -46,13 +47,15 @@ public class MsimDialog extends AlertDialog {
         super(context);
         mOnSimClickListener = onSimClickListener;
         mRecipients = recipients;
+    }
 
-        LayoutInflater inflater =
-                (LayoutInflater) getContext()
-                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mLayout = inflater.inflate(R.layout.multi_sim_sms_sender,
-                                       (ViewGroup) findViewById(R.id.layout_root));
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        mLayout = getLayoutInflater().inflate(R.layout.multi_sim_sms_sender, null);
         setView(mLayout);
+
+        super.onCreate(savedInstanceState);
+
         initDialog();
     }
 
