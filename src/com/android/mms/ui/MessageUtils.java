@@ -329,6 +329,9 @@ public class MessageUtils {
         }
     }
 
+    private static final int OFFSET_ADDRESS_LENGTH = 0;
+    private static final int OFFSET_TOA = 1;
+    private static final int OFFSET_ADDRESS_VALUE = 2;
 
     private MessageUtils() {
         // Forbidden being instantiated.
@@ -2158,10 +2161,34 @@ public class MessageUtils {
         byte[] daBytes;
         daBytes = PhoneNumberUtils.networkPortionToCalledPartyBCD(destinationAddress);
 
-        // destination address length in BCD digits, ignoring TON byte and pad
-        // TODO Should be better.
-        bo.write((daBytes.length - 1) * 2
-                - ((daBytes[daBytes.length - 1] & 0xf0) == 0xf0 ? 1 : 0));
+        if (daBytes == null) {
+            Log.d(TAG, "The number can not convert to BCD, it's an An alphanumeric address, " +
+                    "destinationAddress = " + destinationAddress);
+            // Convert address to GSM 7 bit packed bytes.
+            try {
+                byte[] numberdata = GsmAlphabet
+                        .stringToGsm7BitPacked(destinationAddress);
+                // Get the real address data
+                byte[] addressData = new byte[numberdata.length - 1];
+                System.arraycopy(numberdata, 1, addressData, 0, addressData.length);
+
+                daBytes = new byte[addressData.length + OFFSET_ADDRESS_VALUE];
+                // Get the address length
+                int addressLen = numberdata[0];
+                daBytes[OFFSET_ADDRESS_LENGTH] = (byte) ((addressLen * 7 % 4 != 0 ?
+                        addressLen * 7 / 4 + 1 : addressLen * 7 / 4));
+                // Set address type to Alphanumeric according to 3GPP TS 23.040 [9.1.2.5]
+                daBytes[OFFSET_TOA] = (byte) 0xd0;
+                System.arraycopy(addressData, 0, daBytes, OFFSET_ADDRESS_VALUE, addressData.length);
+            } catch (Exception e) {
+                Log.e(TAG, "Exception when encoding to 7 bit data.");
+            }
+        } else {
+            // destination address length in BCD digits, ignoring TON byte and pad
+            // TODO Should be better.
+            bo.write((daBytes.length - 1) * 2
+                    - ((daBytes[daBytes.length - 1] & 0xf0) == 0xf0 ? 1 : 0));
+        }
 
         // destination address
         bo.write(daBytes, 0, daBytes.length);
