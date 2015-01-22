@@ -3468,8 +3468,8 @@ public class ComposeMessageActivity extends Activity
             }
         });
         setAttachmentSelectorHeight();
-        mAttachmentPager.setCurrentItem(0);
         mAttachmentPager.setAdapter(mAttachmentPagerAdapter);
+        mAttachmentPager.setCurrentItem(0);
         mAttachmentPager.setOnPageChangeListener(mAttachmentPagerChangeListener);
         mAttachmentSelector.setVisibility(View.VISIBLE);
         // Delay 200ms for drawing view completed.
