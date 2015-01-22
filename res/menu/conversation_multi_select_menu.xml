@@ -25,4 +25,7 @@
     <item android:id="@+id/markAsUnread"
           android:title="@string/menu_as_unread"
           android:showAsAction="never|withText" />
+    <item android:id="@+id/markAsRead"
+          android:title="@string/menu_as_read"
+          android:showAsAction="never|withText" />
 </menu>
