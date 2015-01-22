@@ -19,11 +19,16 @@
         <item quantity="one">Sending in 1 second, touch to cancel.</item>
         <item quantity="other">Sending in %1$d seconds, touch to cancel.</item>
     </plurals>
-
     <plurals name="confirm_delete_messages">
         <!-- Case of 1 result. -->
         <item quantity="one">One message will be deleted.</item>
         <!-- Case of 0 or 2 or more results. -->
         <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> messages will be deleted.</item>
+    </plurals>
+    <plurals name="confirm_mark_read_conversation">
+        <!-- Case of 1 result. -->
+        <item quantity="one">One conversation will be marked as read.</item>
+        <!-- Case of 0 or 2 or more results. -->
+        <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> conversations will be marked as read.</item>
     </plurals>
 </resources>
