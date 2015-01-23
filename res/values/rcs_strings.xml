@@ -58,112 +58,123 @@
     <string name="group_chat_disbanded">Group chat is disbanded.</string>
     <string name="group_chat_policy">Message receiving policy has been changed.</string>
 
-    <string name="attach_map">位置</string>
-    <string name="message_received">送达</string>
-    <string name="message_send_fail">发送失败</string>
-    <string name="message_adapter_has_send">已发送</string>
-    <string name="message_adapte_sening">发送中</string>
-    <string name="message_has_been_burned">消息已焚</string>
-    <string name="message_download">点击下载</string>
-    <string name="message_downloaded">下载完毕</string>
-    <string name="message_send_fail_resend">发送失败，点击重发</string>
-    <!-- RCS -->
-    <string name="image_downloading">下载中：%1$d %%</string>
-    <string name="audio_length">音频时长:</string>
-    <string name="message_is_play_over">消息播放完了</string>
-    <string name="video_length">视频长度:</string>
-    <string name="image_msg_load_fail_tip">加载失败</string>
-    <string name="open_file_fail">打开文件失败</string>
-    <string name="message_is_burnd">消息已焚</string>
-    <string name="downloading_percent">下载中：%1$d %%</string>
-    <string name="uploading_percent">发送中：%1$d %%</string>
-    <string name="downloading_finish">下载完成</string>
-    <string name="burn_message_flag">阅后即焚</string>
-    <!--
-         Command name to open a Compose screen; displays in conversation list.
-         Also used as accessibility text for widget's new group chat button
-    -->
     <string name="new_group_chat">New group chat</string>
     <string name="group_chat">Group Chat</string>
-    <string name="my_favorited">我的收藏</string>
-    <string name="favorited">收藏</string>
-    <string name="unfavorited">取消收藏</string>
 
-    <string name="file_suffix_vaild_tip">文件格式无效！</string>
-    <string name="file_size_over">文件大小超过系统限制,不能发送！</string>
-    <string name="not_intent">没有应用程序可执行此操作。</string>
-    <string name="please_input_1_100_int">请输入一个1~100的整数</string>
-    <string name="video_record_out_time">视频录制超出了限制时长，限制最大时长为%1$s秒</string>
-    <string name="audio_record_out_time">语音录制超出了限制时长，限制最大时长为%1$s秒</string>
-    <string name="cannot_send_video">不能发送时长小于1秒的视频。</string>
-    <string name="cannot_send_audio">不能发送时长小于1秒的语音。</string>
+    <string name="install_emoj_store">Please install emoticon store</string>
+    <string name="confirm_complain_dialog_title">"Confirm to complain this message？"</string>
+    <string name="imagebutton">ImageButton</string>
 
     <string name="del_image_action">Image manipulation</string>
     <string name="input_quality">Please enter the scaling quality</string>
     <string name="input_no_fit">Input is not legal</string>
     <string name="send_comfirm_ok">determine</string>
     <string name="send_comfirm_cancel">cancel</string>
-    <string name="top_conversation">置顶</string>
-    <string name="cancel_top_conversation">取消置顶</string>
-    <string name="im_only">只发即时消息</string>
-    <string name="sms_only">只发短消息</string>
-    <string name="im_sms">自动选择</string>
-    <string name="im_sms_send">消息发送方式</string>
-    <string name="cannot_send_im">无法发送即时消息,请切换发送模式</string>
-    <string name="forward_message_success">已转发</string>
-    <string name="forward_message_fail">转发失败</string>
-    <string name="conversation_forward">转发</string>
-    <string name="forward_contact">联系人</string>
-    <string name="forward_conversation">会话</string>
-    <string name="forward_contact_group">群组</string>
-    <string name="my_vcard">我的名片</string>
-    <string name="select_contact_conversation">选择联系人或会话</string>
-    <string name="file_share">彩云文件分享</string>
-    <string name="save_back_message">消息备份/恢复</string>
-    <string name="message_save">消息备份</string>
-    <string name="message_back">消息恢复</string>
-    <string name="not_online_message_too_big">非在线状态，文本过大</string>
-    <string name="on_airplain_mode">飞行模式无法转发</string>
-    <string name="rcs_mcloud_share_file">彩云文件分享</string>
-    <string name="please_set_my_profile">请先设置我的信息</string>
-    <string name="send_manage_fail">消息发送失败</string>
-    <string name="send_manage_fail_count">您有%1$s条消息发送失败</string>
 
-    <string name="confirm_complain_dialog_title">"要举报该信息吗？"</string>
-    <string name="confirm_complain_selected_messages">选中的信息将被举报</string>
-    <string name="message_complain">信息举报</string>
-    <!-- Firewall string resources 
-    <string name="firewall_number_len_not_valid">Number is wrong</string>
-    <string name="firewall_number_in_black">"Number already in blacklist"</string>
-    <string name="firewall_number_in_white">"Number already in whitelist"</string>
-    <string name="firewall_save_success">Saved successfully</string>
-    <string name="firewall_add_blacklist_wring">if you add this number to blacklsit you will not receive the message and call from it</string>
+    <string name="attach_map">Geolocation</string>
+    <string name="message_received">Delivered</string>
+    <string name="message_send_fail">Sent failure</string>
+    <string name="message_adapter_has_send">Sent</string>
+    <string name="message_adapte_sening">Sending</string>
+    <string name="message_has_been_burned">Burnt</string>
+    <string name="message_download">Click to download</string>
+    <string name="message_downloaded">Download complete</string>
+    <string name="message_send_fail_resend">Failed to be sent, click to resend</string>
+    <!-- RCS -->
+    <string name="image_downloading">Downloading: %1$d %%</string>
+    <string name="audio_length">Audio duration: </string>
+    <string name="message_is_play_over">All messages are played</string>
+    <string name="video_length">Video duration: </string>
+    <string name="image_msg_load_fail_tip">Load fail</string>
+    <string name="open_file_fail">Failed to open the file</string>
+    <string name="message_is_burnd">Burnt</string>
+    <string name="downloading_percent">Downloading: %1$d %%</string>
+    <string name="uploading_percent">Sending: %1$d %%</string>
+    <string name="downloading_finish">Download complete</string>
+    <string name="burn_message_flag">Burn after Reading</string>
+    <!--
+         Command name to open a Compose screen; displays in conversation list.
+         Also used as accessibility text for widget's new group chat button
     -->
-    <string name="menuid_add_to_black_list">加入黑名单</string>
-    <string name="menuid_add_to_white_list">加入白名单</string>
-    <string name="firewall_number_len_not_valid">号码错误</string>
-    <string name="firewall_number_in_black">"该号码已在黑名单中"</string>
-    <string name="firewall_number_in_white">"该号码已在白名单中"</string>
-    <string name="firewall_save_success">保存成功</string>
-    <string name="firewall_add_blacklist_wring">加入黑名单你将不会再收到对方的消息和来电</string>
-    <string name="toast_install_map">未安装地图软件</string>
-    <string name="rcs_downloading">正在下载</string>
+
+    <string name="my_favorited">My Favourites</string>
+    <string name="favorited">Add to Favourites</string>
+    <string name="unfavorited">Delete from Favourites</string>
+
+    <string name="file_suffix_vaild_tip">Invalid file format! </string>
+    <string name="file_size_over">The file size has exceeded the limit, which is unable to be sent! </string>
+    <string name="not_intent">No app is available to perform this operation. </string>
+    <string name="please_input_1_100_int">Please input an integer which is between1~100</string>
+    <string name="video_record_out_time">The recorded video has exceeded the max limit, the max duration is %1$s s</string>
+    <string name="audio_record_out_time">The recorded voice message has exceeded the max limit, the max duration is %1$s s</string>
+    <string name="cannot_send_video">Video with the duration less than 1s can not be sent. </string>
+    <string name="cannot_send_audio">Voice message with the duration less than 1s can not be sent. </string>
+
+    <string name="top_conversation">Sticky on Top</string>
+    <string name="cancel_top_conversation">Remove from Top</string>
+    <string name="im_only">IM only</string>
+    <string name="sms_only">SMS only</string>
+    <string name="im_sms">Autoselect</string>
+    <string name="im_sms_send">Send by IM/SMS</string>
+    <string name="cannot_send_im">Unable to send IM, please switch the sending mode</string>
+    <string name="forward_message_success">Successfully forwarded</string>
+    <string name="forward_message_fail">Failed to be forwarded</string>
+    <string name="conversation_forward">Forward</string>
+    <string name="forward_contact">Contact</string>
+    <string name="forward_conversation">Conversation</string>
+    <string name="forward_contact_group">Contact group</string>
+    <string name="my_vcard">My vCard</string>
+    <string name="select_contact_conversation">Select contact or conversation</string>
+    <string name="file_share">mCloud file share</string>
+    <string name="save_back_message">Message backup/restore</string>
+    <string name="message_save">Message backup</string>
+    <string name="message_back">Message restore</string>
+    <string name="not_online_message_too_big">Off-line, the text is oversized</string>
+    <string name="on_airplain_mode">Unable to be forwarded in airplane mode</string>
+    <string name="rcs_mcloud_share_file">mClould file share</string>
+    <string name="please_set_my_profile">Please define My Profile first</string>
+    <string name="send_manage_fail">Message sent failed</string>
+    <string name="send_manage_fail_count">%1$s messages are failed to be sent</string>
+
+    <string name="confirm_complain_selected_messages">Confirm to complain the selected messages</string>
+    <string name="message_complain">Message complain</string>
+    <string name="menuid_add_to_black_list">Add to Blacklist</string>
+    <string name="menuid_add_to_white_list">Add to Whitelist</string>
+    <string name="firewall_number_len_not_valid">Number error</string>
+    <string name="firewall_number_in_black">"This number has been in Blacklist"</string>
+    <string name="firewall_number_in_white">"This number has been in Whitelist"</string>
+    <string name="firewall_save_success">Successfully saved</string>
+    <string name="firewall_add_blacklist_wring">If add this number to Blacklist, no messages and calls from it will be received</string>
+    <string name="toast_install_map">No map has been installed</string>
+    <string name="rcs_downloading">Downloading</string>
     <string name="please_install_rcs_map">Please install RCS_MAP</string>
 
-    <string name="rcs_text_message">RCS消息</string>
-    <string name="message_content_type">内容类型：</string>
-    <string name="message_content_text">文本</string>
-    <string name="message_content_audio">语音</string>
-    <string name="message_content_video">视频</string>
-    <string name="message_content_image">图片</string>
-    <string name="message_content_map">位置</string>
+    <string name="rcs_text_message">RCS message</string>
+    <string name="message_content_type">Message type: </string>
+    <string name="message_content_text">Text</string>
+    <string name="message_content_audio">Voice message</string>
+    <string name="message_content_video">Video</string>
+    <string name="message_content_image">Image</string>
+    <string name="message_content_map">Geolocation</string>
     <string name="message_content_vcard">vCard</string>
-    <string name="not_download_image">图片未下载，请先下载图片！</string>
-    <string name="not_download_video">视频未下载，请先下载视频！</string>
-    <string name="file_path_null">文件路径为空！</string>
-    <string name="create_groupchat_name_toast">只能输入三十个字节，超出部分将被丢弃。</string>
-    <string name="mcloud_share_file_befor">彩云文件地址 \n</string>
-    <string name="mcloud_share_file_after"> \n 请点击下载。</string>
-    <string name="confirm_cancel_selected_fav_messages">确认取消选中收藏吗？</string>
-    <string name="stop_down_load">暂停下载</string>
+    <string name="not_download_image">Please download the image first since it has not been downloaded yet! </string>
+    <string name="not_download_video">Please download the video first since it has not been downloaded yet! </string>
+    <string name="file_path_null">The file path is null! </string>
+    <string name="create_groupchat_name_toast">Only 30 bytes is allowed, any further input will be discarded. </string>
+    <string name="mcloud_share_file_befor">mCloud file location \n</string>
+    <string name="mcloud_share_file_after"> \n Please click to download. </string>
+    <string name="confirm_cancel_selected_fav_messages">Confirm to delete the selected items from the Favourites? </string>
+    <string name="stop_down_load">Pause download</string>
+
+    <string name="vcard_name">NAME:</string>
+    <string name="vcard_number">NUMBER:</string>
+    <string name="vcard_other_number">OTHER NUMBER</string>
+    <string name="vcard_compony_info">COMPONY INFO</string>
+    <string name="vcard_compony_addre">ADDRESS</string>
+    <string name="vcard_compony_position">POSITION</string>
+    <string name="vcard_number_null">NO VALUE</string>
+    <string name="vcard_compony_name">COMPONY NAME</string>
+    <string name="vcard_detail_info">VCARD DETAIL INFO</string>
+    <string name="vcard_import">IMPORT VCARD</string>
+
 </resources>

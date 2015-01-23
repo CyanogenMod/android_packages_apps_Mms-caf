@@ -135,9 +135,12 @@ import static android.telephony.SmsMessage.ENCODING_UNKNOWN;
 import static android.telephony.SmsMessage.MAX_USER_DATA_BYTES;
 import static android.telephony.SmsMessage.MAX_USER_DATA_BYTES_WITH_HEADER;
 import static android.telephony.SmsMessage.MAX_USER_DATA_SEPTETS;
+
+import com.android.mms.rcs.RcsApiManager;
 import com.android.mms.rcs.RcsUtils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+
 /**
  * An utility class for managing messages.
  */
@@ -539,7 +542,8 @@ public class MessageUtils {
         return details.toString();
     }
 
-    public static String getTextMessageDetails(Context context, Cursor cursor, boolean isAppendContentType) {
+    public static String getTextMessageDetails(Context context, Cursor cursor,
+            boolean isAppendContentType) {
         Log.d(TAG, "getTextMessageDetails");
 
         StringBuilder details = new StringBuilder();
@@ -803,12 +807,27 @@ public class MessageUtils {
         intent.setType(ContentType.AUDIO_AMR);
         intent.setClassName("com.android.soundrecorder",
                 "com.android.soundrecorder.SoundRecorder");
-        intent.putExtra(android.provider.MediaStore.Audio.Media.EXTRA_MAX_BYTES, sizeLimit);
+        // add RCS recordSound time add size limit
+        if (RcsUtils.isSupportRcs() && RcsApiManager.isRcsOnline()) {
+            intent.putExtra(android.provider.MediaStore.Audio.Media.EXTRA_MAX_BYTES, sizeLimit*1024);
+        } else {
+            intent.putExtra(android.provider.MediaStore.Audio.Media.EXTRA_MAX_BYTES, sizeLimit);
+        }
         intent.putExtra(EXIT_AFTER_RECORD, true);
         activity.startActivityForResult(intent, requestCode);
     }
 
     public static void recordVideo(Activity activity, int requestCode, long sizeLimit) {
+        // add RCS recordVideo time add size limit
+        if(RcsUtils.isSupportRcs() && RcsApiManager.isRcsOnline()){
+            Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+            intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 10.0);
+            intent.putExtra("android.intent.extra.sizeLimit", sizeLimit*1024);
+            intent.putExtra("android.intent.extra.durationLimit", (int)RcsUtils.getVideoMaxTime());
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, TempFileProvider.SCRAP_CONTENT_URI);
+            activity.startActivityForResult(intent, requestCode);
+            return;
+        }
         // The video recorder can sometimes return a file that's larger than the max we
         // say we can handle. Try to handle that overshoot by specifying an 85% limit.
         sizeLimit *= .85F;

@@ -24,114 +24,139 @@
 package com.android.mms.rcs;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Movie;
+import android.os.Build;
 import android.os.SystemClock;
-import android.util.AttributeSet;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ImageView;
+
 import java.io.ByteArrayInputStream;
 
-public class RcsEmojiGifView extends ImageView implements OnClickListener {
+public class RcsEmojiGifView extends ImageView {
 
     private Movie mGifMovie;
 
-    private long mStartPlayTime;
+    private long mMovieStart;
 
-    private int mGifWidth;
+    private int mCurrentMovieTime = 0;
 
-    private int mGifHeight;
+    private float mMovieLeft;
 
-    private boolean isGifPlaying;
+    private float mMovieTop;
 
-    private boolean isAutoPlay = true;
+    private float mMovieScale;
+
+    private int mMovieWidth;
+
+    private int mMovieHeight;
+
+    private boolean mIsVisible = true;
 
     public RcsEmojiGifView(Context context) {
-        super(context);
-        setOnClickListener(this);
+        super(context, null, 0);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
     }
 
-    public RcsEmojiGifView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
-        setOnClickListener(this);
-    }
-
-    public RcsEmojiGifView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        setOnClickListener(this);
-    }
-
-    public void setGifData(byte[] data) {
+    public void setMonieByteData(byte[] data) {
         ByteArrayInputStream is = new ByteArrayInputStream(data);
-        mGifMovie = Movie.decodeStream(is);
-        Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-        mGifWidth = bitmap.getWidth();
-        mGifHeight = bitmap.getHeight();
-        bitmap.recycle();
-        setMeasuredDimension(mGifWidth, mGifHeight);
-    }
-
-    public void setAutoPlay(boolean isAutoPlay) {
-        this.isAutoPlay = isAutoPlay;
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == getId()) {
-            isGifPlaying = true;
-            invalidate();
-        }
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        if (mGifMovie == null) {
-            super.onDraw(canvas);
-        } else {
-            if (isAutoPlay) {
-                playGifMovie(canvas);
-                invalidate();
-            } else {
-                if (isGifPlaying) {
-                    if (playGifMovie(canvas)) {
-                        isGifPlaying = false;
-                    }
-                    invalidate();
-                } else {
-                    mGifMovie.setTime(0);
-                }
-            }
-        }
+        this.mGifMovie = Movie.decodeStream(is);
+        requestLayout();
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         if (mGifMovie != null) {
-            setMeasuredDimension(mGifWidth, mGifHeight);
+            int movieWidth = mGifMovie.width();
+            int movieHeight = mGifMovie.height();
+            float scaleH = 1f;
+            int measureModeWidth = MeasureSpec.getMode(widthMeasureSpec);
+            if (measureModeWidth != MeasureSpec.UNSPECIFIED) {
+                int maximumWidth = MeasureSpec.getSize(widthMeasureSpec);
+                if (movieWidth > maximumWidth)
+                    scaleH = (float)movieWidth / (float)maximumWidth;
+            }
+            float scaleW = 1f;
+            int measureModeHeight = MeasureSpec.getMode(heightMeasureSpec);
+            if (measureModeHeight != MeasureSpec.UNSPECIFIED) {
+                int maximumHeight = MeasureSpec.getSize(heightMeasureSpec);
+                if (movieHeight > maximumHeight)
+                    scaleW = (float)movieHeight / (float)maximumHeight;
+            }
+            mMovieScale = 1f / Math.max(scaleH, scaleW);
+            mMovieWidth = (int)(movieWidth * mMovieScale);
+            mMovieHeight = (int)(movieHeight * mMovieScale);
+            setMeasuredDimension(mMovieWidth, mMovieHeight);
+        } else {
+            setMeasuredDimension(getSuggestedMinimumWidth(), getSuggestedMinimumHeight());
         }
     }
 
-    private boolean playGifMovie(Canvas canvas) {
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        mMovieLeft = (getWidth() - mMovieWidth) / 2f;
+        mMovieTop = (getHeight() - mMovieHeight) / 2f;
+        mIsVisible = getVisibility() == View.VISIBLE;
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        if (mGifMovie != null) {
+            updateMovieTime();
+            drawMovieFraming(canvas);
+            disableMovieView();
+        }
+    }
+
+    @Override
+    public void onScreenStateChanged(int screenState) {
+        super.onScreenStateChanged(screenState);
+        mIsVisible = screenState == SCREEN_STATE_ON;
+        disableMovieView();
+    }
+
+    @Override
+    protected void onVisibilityChanged(View changedView, int visibility) {
+        super.onVisibilityChanged(changedView, visibility);
+        mIsVisible = visibility == View.VISIBLE;
+        disableMovieView();
+    }
+
+    @Override
+    protected void onWindowVisibilityChanged(int visibility) {
+        super.onWindowVisibilityChanged(visibility);
+        mIsVisible = visibility == View.VISIBLE;
+        disableMovieView();
+    }
+
+    private void disableMovieView() {
+        if (mIsVisible) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                postInvalidateOnAnimation();
+            else
+                invalidate();
+        }
+    }
+
+    private void updateMovieTime() {
         long now = SystemClock.uptimeMillis();
-        if (mStartPlayTime == 0) {
-            mStartPlayTime = now;
-        }
-        int duration = mGifMovie.duration();
-        if (duration == 0) {
-            duration = 1000;
-        }
-        int relTime = (int) ((now - mStartPlayTime) % duration);
-        mGifMovie.setTime(relTime);
-        mGifMovie.draw(canvas, 0, 0);
-        if ((now - mStartPlayTime) >= duration) {
-            mStartPlayTime = 0;
-            return true;
-        }
-        return false;
+        if (mMovieStart == 0)
+            mMovieStart = now;
+        int dur = mGifMovie.duration();
+        if (dur == 0)
+            dur = 1000;
+        mCurrentMovieTime = (int)((now - mMovieStart) % dur);
+    }
+
+    private void drawMovieFraming(Canvas canvas) {
+        mGifMovie.setTime(mCurrentMovieTime);
+        canvas.save(Canvas.MATRIX_SAVE_FLAG);
+        canvas.scale(mMovieScale, mMovieScale);
+        mGifMovie.draw(canvas, mMovieLeft / mMovieScale, mMovieTop / mMovieScale);
+        canvas.restore();
     }
 
 }

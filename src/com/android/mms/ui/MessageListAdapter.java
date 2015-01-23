@@ -48,7 +48,7 @@ import com.android.mms.LogTag;
 import com.android.mms.R;
 import com.android.mms.rcs.RcsNotificationMessageListItem;
 import com.google.android.mms.MmsException;
-import com.suntek.mway.rcs.client.api.provider.SuntekMessageData;
+import com.suntek.mway.rcs.client.aidl.provider.SuntekMessageData;
 
 /**
  * The back-end data adapter of a message list.
@@ -100,7 +100,8 @@ public class MessageListAdapter extends CursorAdapter {
         PendingMessages.ERROR_TYPE,
         Mms.LOCKED,
         Mms.STATUS,
-        Mms.TEXT_ONLY
+        Mms.TEXT_ONLY,
+        "rcs_top_time"
     };
 
     public static final String[] MAILBOX_PROJECTION = new String[] {
@@ -198,36 +199,36 @@ public class MessageListAdapter extends CursorAdapter {
     static final int COLUMN_RCS_IS_BURN         = 11;
     static final int COLUMN_RCS_IS_DOWNLOAD     = 12;
     static final int COLUMN_RCS_MSG_STATE       = 13;
-    static final int COLUMN_RCS_MIME_TYPE      = 14;
+    static final int COLUMN_RCS_MIME_TYPE       = 14;
     static final int COLUMN_FAVOURITE           = 15 ;
     static final int COLUMN_RCS_FILESIZE        = 16 ;
     static final int COLUMN_RCS_PLAY_TIME       = 17 ;
     static final int COLUMN_RCS_MESSAGE_ID = 18;
     static final int COLUMN_CHAT_TYPE = 19;
 
-    public static final int COLUMN_SMS_DATE = 20;
+    public static final int COLUMN_SMS_DATE     = 20;
     public static final int COLUMN_SMS_DATE_SENT = 21;
-    public static final int COLUMN_SMS_READ = 22;
-    public static final int COLUMN_SMS_TYPE = 23;
-    public static final int COLUMN_SMS_STATUS = 24;
-    public static final int COLUMN_SMS_LOCKED = 25;
-    static final int COLUMN_SMS_ERROR_CODE = 26;
-    public static final int COLUMN_MMS_SUBJECT = 27;
+    public static final int COLUMN_SMS_READ     = 22;
+    public static final int COLUMN_SMS_TYPE     = 23;
+    public static final int COLUMN_SMS_STATUS   = 24;
+    public static final int COLUMN_SMS_LOCKED   = 25;
+    static final int COLUMN_SMS_ERROR_CODE      = 26;
+    public static final int COLUMN_MMS_SUBJECT  = 27;
     public static final int COLUMN_MMS_SUBJECT_CHARSET = 28;
-    static final int COLUMN_MMS_DATE = 29;
-    static final int COLUMN_MMS_DATE_SENT = 30;
-    public static final int COLUMN_MMS_READ = 31;
+    static final int COLUMN_MMS_DATE            = 29;
+    static final int COLUMN_MMS_DATE_SENT       = 30;
+    public static final int COLUMN_MMS_READ     = 31;
     public static final int COLUMN_MMS_MESSAGE_TYPE = 32;
     public static final int COLUMN_MMS_MESSAGE_BOX = 33;
     public static final int COLUMN_MMS_DELIVERY_REPORT = 34;
-    static final int COLUMN_MMS_READ_REPORT = 35;
+    static final int COLUMN_MMS_READ_REPORT     = 35;
     public static final int COLUMN_MMS_ERROR_TYPE = 36;
-    public static final int COLUMN_MMS_LOCKED = 37;
-    public static final int COLUMN_MMS_STATUS = 38;
-    static final int COLUMN_MMS_TEXT_ONLY = 39;
-    static final int COLUMN_MMS_SUB_ID = 40;
-    static final int COLUMN_RECIPIENT_IDS = 41;
-    //static final int COLUMN_FAVOURITE           = 36 ;
+    public static final int COLUMN_MMS_LOCKED   = 37;
+    public static final int COLUMN_MMS_STATUS   = 38;
+    static final int COLUMN_MMS_TEXT_ONLY       = 39;
+    static final int COLUMN_MMS_SUB_ID          = 40;
+    static final int COLUMN_RECIPIENT_IDS       = 41;
+    public static final int COLUMN_TOP_TIME     = 42;
 
     private static final int CACHE_SIZE         = 50;
 
@@ -460,7 +461,8 @@ public class MessageListAdapter extends CursorAdapter {
      */
     @Override
     public int getViewTypeCount() {
-        return 5;   // Incoming and outgoing messages, both sms and mms, and Rcs Group Chat notification.
+        return 5;   // Incoming and outgoing messages, both sms and mms,
+                    // and Rcs Group Chat notification.
     }
 
     @Override
@@ -571,6 +573,7 @@ public class MessageListAdapter extends CursorAdapter {
         public int mColumnRcsPlayTime;
         public int mColumnRcsChatType;
         public int mColumnRcsMessageId;
+        public int mColumnTopTime;
         public ColumnsMap() {
             mColumnMsgType            = COLUMN_MSG_TYPE;
             mColumnMsgId              = COLUMN_ID;
@@ -597,18 +600,19 @@ public class MessageListAdapter extends CursorAdapter {
             mColumnRecipientIds       = COLUMN_RECIPIENT_IDS;
             mColumnRcsPath            = COLUMN_RCS_PATH;
             mColumnRcsThumbPath       = COLUMN_RCS_THUMB_PATH;
-            mColumnRcsId             = COLUMN_RCS_ID;
-            mColumnRcsBurnFlag      = COLUMN_RCS_BURN_FLAG;
-            mColumnRcsIsBurn        = COLUMN_RCS_IS_BURN;
-            mColumnRcsIsDownload    = COLUMN_RCS_IS_DOWNLOAD;
-            mColumnRcsMsgState      = COLUMN_RCS_MSG_STATE;
-            mColumnRcsMimeType      = COLUMN_RCS_MIME_TYPE;
-            mColumnRcsMsgType       = COLUMN_RCS_MSG_TYPE;
-            mColumnFavoutite          =COLUMN_FAVOURITE;
-            mColumnRcsFileSize        =COLUMN_RCS_FILESIZE;
-            mColumnRcsPlayTime        =COLUMN_RCS_PLAY_TIME;
-            mColumnRcsChatType = COLUMN_CHAT_TYPE;
-            mColumnRcsMessageId = COLUMN_RCS_MESSAGE_ID;
+            mColumnRcsId              = COLUMN_RCS_ID;
+            mColumnRcsBurnFlag        = COLUMN_RCS_BURN_FLAG;
+            mColumnRcsIsBurn          = COLUMN_RCS_IS_BURN;
+            mColumnRcsIsDownload      = COLUMN_RCS_IS_DOWNLOAD;
+            mColumnRcsMsgState        = COLUMN_RCS_MSG_STATE;
+            mColumnRcsMimeType        = COLUMN_RCS_MIME_TYPE;
+            mColumnRcsMsgType         = COLUMN_RCS_MSG_TYPE;
+            mColumnFavoutite          = COLUMN_FAVOURITE;
+            mColumnRcsFileSize        = COLUMN_RCS_FILESIZE;
+            mColumnRcsPlayTime        = COLUMN_RCS_PLAY_TIME;
+            mColumnRcsChatType        = COLUMN_CHAT_TYPE;
+            mColumnRcsMessageId       = COLUMN_RCS_MESSAGE_ID;
+            mColumnTopTime            = COLUMN_TOP_TIME;
         }
 
         public ColumnsMap(Cursor cursor) {
@@ -729,6 +733,12 @@ public class MessageListAdapter extends CursorAdapter {
 
             try {
                 mColumnRcsMsgState = cursor.getColumnIndexOrThrow("rcs_msg_state");
+            } catch (IllegalArgumentException e) {
+                Log.w("colsMap", e.getMessage());
+            }
+
+            try {
+                mColumnTopTime = cursor.getColumnIndexOrThrow("rcs_top_time");
             } catch (IllegalArgumentException e) {
                 Log.w("colsMap", e.getMessage());
             }

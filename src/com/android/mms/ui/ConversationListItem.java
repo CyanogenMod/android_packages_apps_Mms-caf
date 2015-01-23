@@ -47,7 +47,7 @@ import com.android.mms.data.Contact;
 import com.android.mms.data.ContactList;
 import com.android.mms.data.Conversation;
 import com.android.mms.rcs.RcsUtils;
-import com.suntek.mway.rcs.client.api.provider.model.GroupChatModel;
+import com.suntek.mway.rcs.client.aidl.provider.model.GroupChatModel;
 
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -93,9 +93,6 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
             sDefaultContactImage.setCornerRadius(
                     Math.max(defaultImage.getWidth() / 2, defaultImage.getHeight() / 2));
         }
-        if (sDefaultGroupChatImage == null) {
-            sDefaultGroupChatImage = context.getResources().getDrawable(R.drawable.rcs_ic_group_chat_photo);
-        }
     }
 
     @Override
@@ -130,7 +127,7 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         if (mConversation.isGroupChat()) {
             GroupChatModel groupChat = mConversation.getGroupChat();
             if (groupChat != null) {
-                from = RcsUtils.getDisplayName(groupChat); // TODO change to gorupChat.getDisplayName();
+                from = RcsUtils.getDisplayName(groupChat);
             } else {
                 from = mConversation.getRecipients().formatNames(", ");
             }
@@ -226,13 +223,14 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
     }
 
     private void updateAvatarView() {
-        Drawable avatarDrawable;
         if (mConversation.isGroupChat()) { // RCS Group Chat
-            avatarDrawable = sDefaultGroupChatImage;
             mAvatarView.assignContactUri(null);
-            Log.w("huangyx", "avatarDrawable = " + avatarDrawable);
-            mAvatarView.setImageDrawable(avatarDrawable);
-        } else if (mConversation.getRecipients().size() == 1) {
+            mAvatarView.setImageDrawable(sDefaultGroupChatImage);
+            mAvatarView.setVisibility(View.VISIBLE);
+            return;
+        }
+        Drawable avatarDrawable;
+        if (mConversation.getRecipients().size() == 1) {
             Contact contact = mConversation.getRecipients().get(0);
             contact.bindAvatar(mAvatarView);
             avatarDrawable = new BitmapDrawable(contact.getAvatar(mContext));
@@ -248,7 +246,6 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         } else {
             // TODO get a multiple recipients asset (or do something else)
             avatarDrawable = sDefaultContactImage;
-            Log.w("huangyx", "avatarDrawable = " + avatarDrawable);
             mAvatarView.setImageDrawable(avatarDrawable);
             mAvatarView.assignContactUri(null);
         }
@@ -369,5 +366,9 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
     @Override
     public void toggle() {
         mConversation.setIsChecked(!mConversation.isChecked());
+    }
+
+    public void setGroupChatImage(Drawable drawable){
+        this.sDefaultGroupChatImage = drawable;
     }
 }

@@ -406,7 +406,6 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             getPreferenceScreen().removePreference(mSmscPrefCate);
         }
         setMessagePriorityPref();
-
         // Set SIM card SMS management preference
         updateSIMSMSPref();
 

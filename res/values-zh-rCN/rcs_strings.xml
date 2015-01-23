@@ -33,7 +33,7 @@
     <string name="notifications">通知</string>
     <string name="group_chat_status_invalid">群聊状态无效。</string>
     <string name="group_chat_status_ok">群聊状态良好。</string>
-    <string name="switch_to_group_chatSwitch to group chat">切换到群聊</string>
+    <string name="switch_to_group_chat">切换到群聊</string>
 
     <!-- 发送群聊消息失败 -->
     <string name="group_chat_not_exist">找不到群聊。</string>
@@ -164,5 +164,15 @@
     <string name="mcloud_share_file_after"> \n 请点击下载。</string>
     <string name="confirm_cancel_selected_fav_messages">确认取消选中收藏吗？</string>
     <string name="stop_down_load">暂停下载</string>
-
+    <string name="install_emoj_store">请安装表情商店</string>
+    <string name="vcard_name">姓名：</string>
+    <string name="vcard_number">手机号：</string>
+    <string name="vcard_other_number">其他号码</string>
+    <string name="vcard_compony_info">公司信息</string>
+    <string name="vcard_compony_addre">地址</string>
+    <string name="vcard_compony_position">职位</string>
+    <string name="vcard_number_null">无设置</string>
+    <string name="vcard_compony_name">名称</string>
+    <string name="vcard_detail_info">联系人详情</string>
+    <string name="vcard_import">导入联系人</string>
 </resources>

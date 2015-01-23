@@ -26,7 +26,7 @@ package com.android.mms.rcs;
 import com.android.mms.ui.MessageItem;
 import com.android.mms.ui.MessageListAdapter;
 import com.android.mms.ui.MessageListItem;
-import com.suntek.mway.rcs.client.api.constant.BroadcastConstants;
+import com.suntek.mway.rcs.client.aidl.constant.BroadcastConstants;
 import com.suntek.mway.rcs.client.api.util.log.LogHelper;
 
 import android.content.BroadcastReceiver;
@@ -39,6 +39,7 @@ import android.util.Log;
 import java.util.HashMap;
 
 public class ComposeMessageFileTransferReceiver extends BroadcastReceiver {
+    private static final String LOG_TAG = "RCS_UI";
     private MessageListAdapter mMsgListAdapter;
 
     public ComposeMessageFileTransferReceiver(MessageListAdapter msgListAdapter) {
@@ -77,7 +78,7 @@ public class ComposeMessageFileTransferReceiver extends BroadcastReceiver {
             if (temp == 100) {
                 fileProgressHashMap.remove(notifyMessageId);
                 MessageItem.setRcsIsDownload(RcsUtils.RCS_IS_DOWNLOAD_OK);
-                Log.i("RCS_UI", "100");
+                Log.i(LOG_TAG, "100");
                 return;
             }
             if (lastProgress != null) {

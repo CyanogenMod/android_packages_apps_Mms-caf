@@ -86,7 +86,7 @@ public class MessageItem {
     String mTimestamp;
     String mAddress;
     String mContact;
-    String mBody; // Body of SMS, first text of MMS.
+    public String mBody; // Body of SMS, first text of MMS.
     int mPhoneId;   // Holds current mms/sms phone Id value.
     String mTextContentType; // ContentType of text of MMS.
     Pattern mHighlight; // portion of message to highlight (from search)

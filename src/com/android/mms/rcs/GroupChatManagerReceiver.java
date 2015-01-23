@@ -23,7 +23,7 @@
 
 package com.android.mms.rcs;
 
-import com.suntek.mway.rcs.client.api.constant.BroadcastConstants;
+import com.suntek.mway.rcs.client.aidl.constant.BroadcastConstants;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -38,7 +38,7 @@ public class GroupChatManagerReceiver extends BroadcastReceiver {
     }
 
     @Override
-    public void onReceive(Context arg0, Intent intent) {
+    public void onReceive(Context context, Intent intent) {
         if (BroadcastConstants.UI_GROUP_MANAGE_NOTIFY.equals(intent.getAction())) {
             String groupId = intent
                     .getStringExtra(BroadcastConstants.BC_VAR_MSG_GROUP_ID);

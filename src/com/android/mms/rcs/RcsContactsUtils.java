@@ -37,14 +37,13 @@ import android.text.TextUtils;
 import android.util.Base64;
 
 import com.android.mms.data.Conversation;
-import com.suntek.mway.rcs.client.api.contacts.RCSContact;
-import com.suntek.mway.rcs.client.api.plugin.entity.profile.Profile;
-import com.suntek.mway.rcs.client.api.plugin.entity.profile.TelephoneModel;
-import com.suntek.mway.rcs.client.api.provider.SuntekMessageData;
-import com.suntek.mway.rcs.client.api.provider.model.GroupChatModel;
-import com.suntek.mway.rcs.client.api.provider.model.GroupChatUser;
+import com.suntek.mway.rcs.client.aidl.contacts.RCSContact;
+import com.suntek.mway.rcs.client.aidl.plugin.entity.profile.Profile;
+import com.suntek.mway.rcs.client.aidl.plugin.entity.profile.TelephoneModel;
+import com.suntek.mway.rcs.client.aidl.provider.model.GroupChatModel;
+import com.suntek.mway.rcs.client.aidl.provider.model.GroupChatUser;
+import com.suntek.mway.rcs.client.aidl.provider.SuntekMessageData;
 import com.suntek.mway.rcs.client.api.util.ServiceDisconnectedException;
-import com.suntek.mway.rcs.client.api.contacts.RCSContact;
 
 public class RcsContactsUtils {
     public static final String MIMETYPE_RCS = "vnd.android.cursor.item/rcs";
@@ -66,7 +65,7 @@ public class RcsContactsUtils {
        return rawContactId;
     }
 
-	public static String getRawContactId(Context context,String contactId) {
+    public static String getRawContactId(Context context,String contactId) {
         String rawContactId = null;
         Cursor cursor = context.getContentResolver()
                 .query(RawContacts.CONTENT_URI,
@@ -114,15 +113,13 @@ public class RcsContactsUtils {
                             rcsContact.setCompanyFax(data1);
                         } else if ("17".equals(numberType)) {
                             rcsContact.setCompanyTel(data1);
-                        }  else if ("2".equals(numberType)) {
+                        } else if ("2".equals(numberType)) {
                             rcsContact.setAccount(data1);
-                        }else {
-
+                        } else {
                             TelephoneModel model = new TelephoneModel();
                             model.setTelephone(data1);
                             model.setType(Integer.parseInt(numberType));
                             teleList.add(model);
-
                         }
                     } else if ("vnd.android.cursor.item/postal-address_v2"
                             .equals(mimetype)) {
@@ -172,8 +169,9 @@ public class RcsContactsUtils {
 
     public  static RCSContact getContactProfileOnDbByRawContactId(Context context,
             String rawContactId) {
-        if(TextUtils.isEmpty(rawContactId))
+        if (TextUtils.isEmpty(rawContactId)) {
             return null;
+        }
         RCSContact rcsContact = null;
         ArrayList<TelephoneModel> teleList = null;
         Uri uri = Uri.parse("content://com.android.contacts/data/");
@@ -203,15 +201,13 @@ public class RcsContactsUtils {
                             rcsContact.setCompanyFax(data1);
                         } else if ("17".equals(numberType)) {
                             rcsContact.setCompanyTel(data1);
-                        }  else if ("2".equals(numberType)) {
+                        } else if ("2".equals(numberType)) {
                             rcsContact.setAccount(data1);
-                        }else {
-
+                        } else {
                             TelephoneModel model = new TelephoneModel();
                             model.setTelephone(data1);
                             model.setType(Integer.parseInt(numberType));
                             teleList.add(model);
-
                         }
                     } else if ("vnd.android.cursor.item/postal-address_v2"
                             .equals(mimetype)) {
@@ -308,14 +304,13 @@ public class RcsContactsUtils {
                 }, null);
         try {
             if (pCur != null && pCur.moveToFirst()) {
-                contactName = pCur
-                        .getString(pCur
-                                .getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-
+                contactName = pCur.getString(pCur
+                        .getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             }
         } finally {
-            if (pCur != null)
+            if (pCur != null) {
                 pCur.close();
+            }
         }
         return contactName;
     }

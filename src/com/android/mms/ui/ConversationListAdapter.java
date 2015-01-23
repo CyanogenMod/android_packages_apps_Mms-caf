@@ -19,6 +19,7 @@ package com.android.mms.ui;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,11 @@ public class ConversationListAdapter extends CursorAdapter implements AbsListVie
     private static final String TAG = LogTag.TAG;
     private static final boolean LOCAL_LOGV = false;
 
+    private final int[] mGroupChatIconRes = new int[] {
+            R.drawable.group_icon_1, R.drawable.group_icon_2, R.drawable.group_icon_3,
+            R.drawable.group_icon_4, R.drawable.group_icon_5, R.drawable.group_icon_6
+    };
+
     private final LayoutInflater mFactory;
     private OnContentChangedListener mOnContentChangedListener;
 
@@ -52,9 +58,11 @@ public class ConversationListAdapter extends CursorAdapter implements AbsListVie
             Log.e(TAG, "Unexpected bound view: " + view);
             return;
         }
-
         ConversationListItem headerView = (ConversationListItem) view;
         Conversation conv = Conversation.from(context, cursor);
+        if (conv.isGroupChat())
+            headerView
+                    .setGroupChatImage(getGroupChatIcon(context, headerView, cursor.getPosition()));
         headerView.bind(context, conv);
     }
 
@@ -93,5 +101,11 @@ public class ConversationListAdapter extends CursorAdapter implements AbsListVie
             Conversation conv = Conversation.from(mContext, cursor);
             conv.setIsChecked(false);
         }
+    }
+
+    private Drawable getGroupChatIcon(Context context, ConversationListItem listItem, int position) {
+        int resId = position % 6;
+        Drawable drawable = context.getResources().getDrawable(mGroupChatIconRes[resId]);
+        return drawable;
     }
 }

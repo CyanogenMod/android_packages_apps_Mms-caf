@@ -56,7 +56,6 @@
     <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
     <uses-permission android:name="com.android.firewall.READ_GRAVITY"/>
     <uses-permission android:name="com.android.firewall.WRITE_GRAVITY"/>
-    <uses-permission android:name="com.android.firewall.WRITE_GRAVITY"/>
     <!-- Needed for QuickMessage -->
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
 
@@ -82,6 +81,10 @@
                   android:theme="@style/MmsTheme"
                   android:uiOptions="splitActionBarWhenNarrow"
                   android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="com.android.mms.ui.ConversationList" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -482,25 +485,13 @@
 
         <receiver android:name=".rcs.RcsMessageStatusReceiver" >
             <intent-filter>
-                <action android:name="com.suntek.mway.rcs.ACTION_UI_MESSAGE_TRANSFER_SMS" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="com.suntek.mway.rcs.ACTION_UI_MESSAGE_ADD_TO_DATABASE" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="com.suntek.mway.rcs.ACTION_UI_MESSAGE_STATUS_CHANGE_NOTIFY" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="com.suntek.mway.rcs.UI_DOWNLOADING_FILE_CHANGE" />
-            </intent-filter>
-            <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-             <intent-filter>
+                <action android:name="com.suntek.mway.rcs.ACTION_UI_MESSAGE_TRANSFER_SMS" />
+                <action android:name="com.suntek.mway.rcs.ACTION_UI_MESSAGE_ADD_TO_DATABASE" />
+                <action android:name="com.suntek.mway.rcs.ACTION_UI_MESSAGE_STATUS_CHANGE_NOTIFY" />
                 <action android:name="com.suntek.mway.rcs.ACTION_UI_SHOW_RECV_REPORT_INFO" />
-            </intent-filter>
-            <intent-filter>
                 <action android:name="com.suntek.mway.rcs.ACTION_UI_SHOW_GROUP_MESSAGE_NOTIFY" />
+                <action android:name="com.suntek.mway.rcs.UI_DOWNLOADING_FILE_CHANGE" />
             </intent-filter>
         </receiver>
 

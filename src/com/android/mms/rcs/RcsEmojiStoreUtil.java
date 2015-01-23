@@ -23,135 +23,144 @@
 
 package com.android.mms.rcs;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.lang.ref.SoftReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import com.android.mms.rcs.RcsEmojiPackageObject.EmojiObject;
-import com.suntek.mway.rcs.client.api.plugin.entity.emoticon.EmojiPackageBO;
-import com.suntek.mway.rcs.client.api.plugin.entity.emoticon.EmoticonBO;
-import com.suntek.mway.rcs.client.api.plugin.entity.emoticon.EmoticonConstant;
+import java.util.Map;
+import com.suntek.mway.rcs.client.aidl.plugin.entity.emoticon.EmoticonConstant;
 import com.suntek.mway.rcs.client.api.util.ServiceDisconnectedException;
-import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.view.inputmethod.InputMethodManager;
+import android.os.Handler;
+import android.os.Message;
+import android.widget.ImageView;
 
 public class RcsEmojiStoreUtil {
 
-    public static ArrayList<RcsEmojiPackageObject> getStorePackageList() {
-        List<EmojiPackageBO> storelist = null;
-        ArrayList<RcsEmojiPackageObject> packageList = new ArrayList<RcsEmojiPackageObject>();
-        try {
-            storelist = RcsApiManager.getEmoticonApi().queryEmojiPackages();
-        } catch (ServiceDisconnectedException e) {
-            e.printStackTrace();
+    public static final int EMO_STATIC_FILE = EmoticonConstant.EMO_STATIC_FILE;
+
+    public static final int EMO_DYNAMIC_FILE = EmoticonConstant.EMO_DYNAMIC_FILE;
+
+    public static final int EMO_PACKAGE_FILE = EmoticonConstant.EMO_PACKAGE_FILE;
+
+    private Map<String, SoftReference<Bitmap>> mCaches;
+
+    private List<LoaderImageTask> mTaskQueue;
+
+    private boolean mIsRuning = false;
+
+    private static RcsEmojiStoreUtil mInstance;
+
+    public static RcsEmojiStoreUtil getInstance() {
+        if (mInstance == null) {
+            mInstance = new RcsEmojiStoreUtil();
         }
-        if (storelist != null)
-            for (EmojiPackageBO emojiPackageBO : storelist) {
-                packageList.add(initEmojiPackageBean(emojiPackageBO));
+        return mInstance;
+    }
+
+    private RcsEmojiStoreUtil() {
+        mCaches = new HashMap<String, SoftReference<Bitmap>>();
+        mTaskQueue = new ArrayList<RcsEmojiStoreUtil.LoaderImageTask>();
+        mIsRuning = true;
+        new Thread(runnable).start();
+    }
+
+    public void loadImageAsynById(ImageView imageView, String imageId, int loaderType) {
+        if (mCaches.containsKey(imageId)) {
+            SoftReference<Bitmap> rf = mCaches.get(imageId);
+            Bitmap bitmap = rf.get();
+            if (bitmap == null) {
+                mCaches.remove(imageId);
+            } else {
+                imageView.setImageBitmap(bitmap);
+                return;
             }
-        return packageList;
-    }
-
-    private static RcsEmojiPackageObject initEmojiPackageBean(EmojiPackageBO emojiPackageBO) {
-        RcsEmojiPackageObject emojiPackageObject = new RcsEmojiPackageObject();
-        emojiPackageObject.setPackageId(emojiPackageBO.getPackageId());
-
-        emojiPackageObject.setPackageBitmap(getEmojiStorePackageBitmap(emojiPackageBO
-                .getPackageId()));
-        emojiPackageObject.setHorizontalLineSize(RcsEmojiPackageObject.BIG_HORIZONTAL_LINE_SIZE);
-        emojiPackageObject.setCarryDeleteSign(false);
-        emojiPackageObject.setEmojiList(getStoreEmojiListByPackageId(emojiPackageBO
-                .getPackageId()));
-        emojiPackageObject.setEmojiType(RcsEmojiPackageObject.BIG_EMOJI_TYPE);
-        emojiPackageObject.setEmojiCount(emojiPackageObject.getEmojiList().size());
-        return emojiPackageObject;
-    }
-
-    private static ArrayList<EmojiObject> getStoreEmojiListByPackageId(String packageId) {
-        List<EmoticonBO> list = null;
-        ArrayList<EmojiObject> emojiList = new ArrayList<EmojiObject>();
-        try {
-            list = RcsApiManager.getEmoticonApi()
-                    .queryEmoticons(packageId);
-        } catch (ServiceDisconnectedException e) {
-            e.printStackTrace();
         }
-        if (list != null)
-            for (EmoticonBO emoticonBO : list) {
-                emojiList.add(initEmojiBean(packageId, emoticonBO));
+        LoaderImageTask loaderImageTask = new LoaderImageTask(imageId, imageView, loaderType);
+        if (!mTaskQueue.contains(loaderImageTask)) {
+            mTaskQueue.add(loaderImageTask);
+            synchronized (runnable) {
+                runnable.notify();
             }
-        return emojiList;
+        }
     }
 
-    private static EmojiObject initEmojiBean(String packageId, EmoticonBO emoticonBO) {
-        EmojiObject emojiObject = new EmojiObject();
-        emojiObject.setEmojiId(emoticonBO.getEmoticonId());
-        emojiObject.setPackageId(packageId);
-        emojiObject.setEmojiName(emoticonBO.getEmoticonName());
-        emojiObject.setEmojiType(RcsEmojiPackageObject.BIG_EMOJI_TYPE);
-        return emojiObject;
-    }
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            LoaderImageTask task = (LoaderImageTask)msg.obj;
+            task.imageView.setImageBitmap(task.bitmap);
+        }
+    };
 
-    private static Bitmap getEmojiStorePackageBitmap(String packageId) {
-        Bitmap bitmap = null;
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            while (mIsRuning) {
+                while (mTaskQueue.size() > 0) {
+                    LoaderImageTask task = mTaskQueue.remove(0);
+                    task.bitmap = getbitmap(task.loaderType, task.imageId);
+                    if (mHandler != null) {
+                        Message msg = mHandler.obtainMessage();
+                        msg.obj = task;
+                        mHandler.sendMessage(msg);
+                    }
+                }
+                synchronized (this) {
+                    try {
+                        this.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    };
+
+    private Bitmap getbitmap(int loaderType, String emoticonId) {
         byte[] imageByte = null;
+        Bitmap bitmap = null;
         try {
-            imageByte = RcsApiManager
-                    .getEmoticonApi()
-                    .decrypt2Bytes(packageId,
-                            EmoticonConstant.EMO_PACKAGE_FILE);
+            if (loaderType == EMO_STATIC_FILE) {
+                imageByte = RcsApiManager.getEmoticonApi().decrypt2Bytes(emoticonId,
+                        EMO_STATIC_FILE);
+            } else if (loaderType == EMO_PACKAGE_FILE) {
+                imageByte = RcsApiManager.getEmoticonApi().decrypt2Bytes(emoticonId,
+                        EMO_PACKAGE_FILE);
+            }
         } catch (ServiceDisconnectedException e) {
             e.printStackTrace();
         }
-        if (imageByte != null)
-            bitmap = BitmapFactory.decodeByteArray(imageByte, 0,
-                    imageByte.length);
+        if (imageByte != null) {
+            bitmap = BitmapFactory.decodeByteArray(imageByte, 0, imageByte.length);
+        }
+        if (bitmap != null) {
+            mCaches.put(emoticonId, new SoftReference<Bitmap>(bitmap));
+        }
         return bitmap;
     }
 
-    @SuppressWarnings("static-access")
-    public static void closeKB(Activity activity) {
-        if (activity.getCurrentFocus() != null) {
-            ((InputMethodManager)activity.getSystemService(activity.INPUT_METHOD_SERVICE))
-                    .hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(),
-                            InputMethodManager.HIDE_NOT_ALWAYS);
+    public class LoaderImageTask {
+        String imageId;
+
+        ImageView imageView;
+
+        Bitmap bitmap;
+
+        int loaderType;
+
+        public LoaderImageTask(String imageId, ImageView imageView, int loaderType) {
+            this.imageId = imageId;
+            this.imageView = imageView;
+            this.loaderType = loaderType;
         }
-    }
 
-    public static void openKB(Context context) {
-        InputMethodManager inputMethodManager = (InputMethodManager)context
-                .getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
-    }
-
-    public static int dip2px(Context context, float dipValue) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int)(dipValue * scale + 0.5f);
-    }
-
-    public static int px2dip(Context context, float pxValue) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int)(pxValue / scale + 0.5f);
-    }
-
-    public static final byte[] inputToByte(InputStream inStream) {
-        try {
-            ByteArrayOutputStream swapStream = new ByteArrayOutputStream();
-            byte[] buff = new byte[100];
-            int rc = 0;
-            while ((rc = inStream.read(buff, 0, 100)) > 0) {
-                swapStream.write(buff, 0, rc);
-            }
-            byte[] in2b = swapStream.toByteArray();
-            return in2b;
-        } catch (IOException e) {
-            e.printStackTrace();
+        @Override
+        public boolean equals(Object o) {
+            LoaderImageTask task = (LoaderImageTask)o;
+            return task.imageId.equals(imageId);
         }
-        return null;
     }
 
 }

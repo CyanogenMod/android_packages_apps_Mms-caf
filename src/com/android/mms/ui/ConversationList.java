@@ -90,7 +90,7 @@ import com.android.mms.rcs.RcsUtils;
 import com.android.mms.rcs.GroupChatManagerReceiver;
 import com.android.mms.rcs.RcsSelectionMenu;
 import com.android.mms.rcs.GroupChatManagerReceiver.GroupChatNotifyCallback;
-import com.suntek.mway.rcs.client.api.constant.BroadcastConstants;
+import com.suntek.mway.rcs.client.aidl.constant.BroadcastConstants;
 import com.android.mms.transaction.MessagingNotification;
 import com.android.mms.transaction.SmsRejectedReceiver;
 import com.android.mms.ui.PopupList;
@@ -296,11 +296,12 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         View actionButton = findViewById(R.id.floating_action_button);
         actionButton.setOnClickListener(mComposeClickHandler);
 
-        registerReceiver(groupReceiver, new IntentFilter(BroadcastConstants.UI_GROUP_MANAGE_NOTIFY));
-
-        registerReceiver(backAllMessageReceiver, new IntentFilter("com.suntek.mway.rcs.BACKUP_ALL_MESSAGE"));
-
-        registerReceiver(restoreAllMessageReceiver,new IntentFilter("com.suntek.mway.rcs. RESTORE_ALL_MESSAGE"));
+        registerReceiver(groupReceiver,
+                new IntentFilter(BroadcastConstants.UI_GROUP_MANAGE_NOTIFY));
+        registerReceiver(backAllMessageReceiver,
+                new IntentFilter("com.suntek.mway.rcs.BACKUP_ALL_MESSAGE"));
+        registerReceiver(restoreAllMessageReceiver,
+                new IntentFilter("com.suntek.mway.rcs. RESTORE_ALL_MESSAGE"));
     }
 
     @Override
@@ -361,11 +362,13 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
 
     private void addPublicAccountEntranceIfAvailable() {
         View mPublicAccountItemView = findViewById(R.id.public_account_item);
-        if(!RcsUtils.isPackageInstalled(ConversationList.this, "com.suntek.mway.rcs.publicaccount")){
+        if (!RcsUtils.isPackageInstalled(ConversationList.this,
+                    "com.suntek.mway.rcs.publicaccount")) {
             mPublicAccountItemView.setVisibility(View.GONE);
             return;
         }
-        QuickContactBadge publicAccountPhotoView = (QuickContactBadge) mPublicAccountItemView.findViewById(R.id.avatar);
+        QuickContactBadge publicAccountPhotoView = (QuickContactBadge) mPublicAccountItemView.
+                findViewById(R.id.avatar);
         publicAccountPhotoView.assignContactUri(null);
         mPublicAccountItemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -382,7 +385,8 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             return;
         }
         View mNotificationListItemView = findViewById(R.id.notification_list_item);
-        QuickContactBadge notificationListPhotoView = (QuickContactBadge) mNotificationListItemView.findViewById(R.id.avatar);
+        QuickContactBadge notificationListPhotoView =
+                (QuickContactBadge) mNotificationListItemView.findViewById(R.id.avatar);
         notificationListPhotoView.assignContactUri(null);
         mNotificationListItemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -887,8 +891,12 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         }
         return false;
     }
+
     private void showSaveOrBackDialog(final Context context){
-        String[] items = new String[]{context.getString(R.string.message_save),context.getString(R.string.message_back)};
+        String[] items = new String[] {
+                context.getString(R.string.message_save),
+                context.getString(R.string.message_back)
+        };
         AlertDialog.Builder builder = new Builder(context);
         builder.setTitle(getString(R.string.save_back_message));
         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -898,21 +906,21 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                 switch (arg1) {
 
                     case 0:
-                        try{
+                        try {
                         RcsApiManager.getMessageApi().backupAllMessage();
-                        Toast.makeText(context, context.getString(R.string.message_save), 0).show();
-                      //  showProgressDialog(context,0,context.getString(R.string.message_save));
-                        }catch(ServiceDisconnectedException e){
+                        Toast.makeText(context, R.string.message_save, 0).show();
+                        // showProgressDialog(context,0,context.getString(R.string.message_save));
+                        } catch (ServiceDisconnectedException e) {
                             e.printStackTrace();
                             Log.i("RCS_UI","BEIFEN exception");
                         }
                         break;
                     case 1:
-                        try{
-                        RcsApiManager.getMessageApi().restoreAllMessage();
-//                        Toast.makeText(context, context.getString(R.string.message_back), 0).show();
+                        try {
+                            RcsApiManager.getMessageApi().restoreAllMessage();
+//                        Toast.makeText(context, R.string.message_back, 0).show();
 //                        showProgressDialog(context,1,context.getString(R.string.message_back));
-                        }catch(ServiceDisconnectedException e){
+                        } catch(ServiceDisconnectedException e) {
                             e.printStackTrace();
                         }
                         break;
@@ -924,6 +932,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         });
         builder.create().show();
     }
+
     private void showProgressDialog(Context context,int progress,String title) {
         if (mSaveOrBackProgressDialog == null) {
             mSaveOrBackProgressDialog = new ProgressDialog(context);
@@ -1579,7 +1588,8 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         @Override
         public void onDestroyActionMode(ActionMode mode) {
             if (getListView().getAdapter() instanceof ConversationListAdapter) {
-                 ConversationListAdapter adapter = (ConversationListAdapter)getListView().getAdapter();
+                 ConversationListAdapter adapter =
+                         (ConversationListAdapter)getListView().getAdapter();
                  adapter.uncheckAll();
                  mSelectedThreadIds = null;
                  mSelectionMenu.dismiss();

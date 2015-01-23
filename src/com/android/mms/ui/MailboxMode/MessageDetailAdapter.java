@@ -66,7 +66,7 @@ import com.android.mms.rcs.GeoLocation;
 import com.android.mms.rcs.RcsApiManager;
 import com.android.mms.rcs.RcsUtils;
 import com.android.mms.ui.MessageUtils;
-import com.suntek.mway.rcs.client.api.provider.model.ChatMessage;
+import com.suntek.mway.rcs.client.aidl.provider.model.ChatMessage;
 
 public class MessageDetailAdapter extends PagerAdapter {
 
@@ -139,6 +139,7 @@ public class MessageDetailAdapter extends PagerAdapter {
 
         return content;
     }
+
     private void showContentFileSize(TextView textView){
         long fileSize = mCursor.getLong(mCursor.getColumnIndex("rcs_file_size"));
         if(fileSize > 1024){

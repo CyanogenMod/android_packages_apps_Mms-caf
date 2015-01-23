@@ -201,9 +201,8 @@
 
                 <ImageButton
                     android:id="@+id/send_emoj"
-                    android:layout_width="40dp"
+                    android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_centerVertical="true"
                     android:drawablePadding="0dip"
                     android:background="@drawable/rcs_emoji_button_bg"
                     android:src="@drawable/emotion_false" />
@@ -289,9 +288,8 @@
 
                  <ImageButton
                     android:id="@+id/send_emoj_btnstyle"
-                    android:layout_width="40dp"
+                    android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_centerVertical="true"
                     android:drawablePadding="0dip"
                     android:background="@drawable/rcs_emoji_button_bg"
                     android:src="@drawable/emotion_false" />
@@ -515,7 +513,7 @@
             <ViewStub
                 android:id="@+id/view_stub"
                 android:layout_width="fill_parent"
-                android:layout_height="200dp"
+                android:layout_height="230dp"
                 android:background="@android:color/darker_gray"
                 android:inflatedId="@+id/pic_view_id_after_inflate"
                 android:layout="@layout/rcs_emoji_root_viewstub"

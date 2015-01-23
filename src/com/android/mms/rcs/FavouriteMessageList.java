@@ -24,7 +24,6 @@
 package com.android.mms.rcs;
 
 import java.util.ArrayList;
-import com.android.mms.ui.AsyncDialog;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -53,8 +52,6 @@ import android.provider.Telephony.Sms;
 import android.telephony.SubscriptionManager;
 import android.text.TextUtils;
 import android.util.Log;
-import com.android.mms.ui.MessagingPreferenceActivity;
-import com.android.mms.ui.ConversationList;
 import android.util.SparseBooleanArray;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView;
@@ -76,23 +73,27 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import com.android.mms.ui.SearchActivity;
 import com.android.mms.data.Contact;
 import com.android.mms.LogTag;
+import com.android.mms.MmsApp;
 import com.android.mms.R;
-import com.android.mms.ui.MessageListAdapter;
-import com.android.mms.ui.MessageUtils;
 import com.android.mms.transaction.MessagingNotification;
 import com.android.mms.transaction.Transaction;
 import com.android.mms.transaction.TransactionBundle;
 import com.android.mms.transaction.TransactionService;
-import com.android.mms.ui.PopupList;
-import com.android.mms.ui.SearchActivityExtend;
+import com.android.mms.ui.AsyncDialog;
+import com.android.mms.ui.ComposeMessageActivity;
+import com.android.mms.ui.ConversationList;
 import com.android.mms.ui.MailBoxMessageListAdapter;
 import com.android.mms.ui.MailBoxMessageListAdapter.OnListContentChangedListener;
+import com.android.mms.ui.MessageListAdapter;
+import com.android.mms.ui.MessagingPreferenceActivity;
+import com.android.mms.ui.MessageUtils;
+import com.android.mms.ui.PopupList;
+import com.android.mms.ui.SearchActivityExtend;
+import com.android.mms.ui.SearchActivity;
 import com.android.mms.util.DownloadManager;
 import com.google.android.mms.pdu.PduHeaders;
-import com.android.mms.ui.ComposeMessageActivity;
 import static com.android.mms.ui.MessageListAdapter.MAILBOX_PROJECTION;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_MSG_TYPE;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_ID;
@@ -137,6 +138,10 @@ public class FavouriteMessageList extends ListActivity implements
     private static final int TYPE_SLOT_ONE = 1;
     private static final int TYPE_SLOT_TWO = 2;
 
+    // MailboxMode
+    private static final int FOLDER_MODE = 1;
+    private static final int CONVERSATION_MODE = 0;
+
     private static final String ORIGIN_SUB_ID = "origin_sub_id";
     private static final String NONE_SELECTED = "0";
     private static final String BOX_SPINNER_TYPE = "box_spinner_type";
@@ -152,6 +157,7 @@ public class FavouriteMessageList extends ListActivity implements
     private final static int MAIL_BOX_ID_INVALID = -1;
     private final static String COUNT_TEXT_DECOLLATOR_1 = "";
     private final static String COUNT_TEXT_DECOLLATOR_2 = "/";
+    private final static String VIEW_MODE_STATE = "current_view_state";
 
     private boolean mIsPause = false;
     private boolean mQueryDone = true;
@@ -309,7 +315,7 @@ public class FavouriteMessageList extends ListActivity implements
                     switch (downloadStatus) {
                         case DownloadManager.STATE_PRE_DOWNLOADING:
                         case DownloadManager.STATE_DOWNLOADING:
-                            Toast.makeText(FavouriteMessageList.this, getString(R.string.downloading),
+                            Toast.makeText(FavouriteMessageList.this, R.string.downloading,
                                     Toast.LENGTH_LONG).show();
                             break;
                         case DownloadManager.STATE_UNKNOWN:
@@ -413,9 +419,20 @@ public class FavouriteMessageList extends ListActivity implements
         MessageUtils.cancelFailedDownloadNotification(intent, this);
     }
 
+    public void recordMailboxMode() {
+        // 1 current mode is MailboxMode
+        // 0 current mode is not MailboxMode
+        int mode = MessageUtils.isMailboxMode()?1:0;
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(MmsApp
+                .getApplication());
+        sp.edit().putInt(VIEW_MODE_STATE, mode).commit();
+    }
+
     @Override
     public void onResume() {
         super.onResume();
+        recordMailboxMode();
+        MessageUtils.setMailboxMode(true);
         mIsPause = false;
         startAsyncQuery();
         if (!mIsInSearchMode) {
@@ -578,6 +595,7 @@ public class FavouriteMessageList extends ListActivity implements
                     }
                     mCursor = cursor;
                     TextView emptyView = (TextView) findViewById(R.id.emptyview);
+                    mListView.setEmptyView(emptyView);
                     if (mListAdapter == null) {
                         mListAdapter = new MailBoxMessageListAdapter(FavouriteMessageList.this,
                                 FavouriteMessageList.this, cursor);
@@ -760,6 +778,11 @@ public class FavouriteMessageList extends ListActivity implements
             mListAdapter.changeCursor(null);
         }
         MessageUtils.removeDialogs();
+        if(FOLDER_MODE == getMailboxMode()) {
+            MessageUtils.setMailboxMode(true);
+        } else {
+            MessageUtils.setMailboxMode(false);
+        }
     }
 
     private void confirmDeleteMessages() {
@@ -813,10 +836,10 @@ public class FavouriteMessageList extends ListActivity implements
         String smsWhereDelete = mSmsWhereDelete;
         String mmsWhereDelete = mMmsWhereDelete;
         String msgId = smsWhereDelete + mmsWhereDelete;
-        Log.i("RCS_UI", "msgId=" + msgId);
+        Log.i(TAG, "msgId=" + msgId);
         String[] msgIdArr = msgId.split(",");
         for (int i = 0; i < msgIdArr.length; i++) {
-            Log.i("RCS_UI", "msgId=" + msgIdArr[i]);
+            Log.i(TAG, "msgId=" + msgIdArr[i]);
             if (!TextUtils.isEmpty(msgIdArr[i])) {
                 RcsChatMessageUtils.unFavoritedMessage(getApplicationContext(),
                         Long.parseLong(msgIdArr[i]));
@@ -1046,5 +1069,11 @@ public class FavouriteMessageList extends ListActivity implements
             mSelectionMenu.updateSelectAllMode(mHasSelectAll);
             mListAdapter.updateItemBackgroud(position);
         }
+    }
+
+    private int getMailboxMode(){
+        return PreferenceManager.getDefaultSharedPreferences(MmsApp
+                .getApplication()).getInt(VIEW_MODE_STATE, 0);
+
     }
 }

@@ -31,21 +31,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SqliteWrapper;
-import com.android.mms.ui.ComposeMessageActivity;
-import com.android.mms.ui.ConversationList;
 import android.net.Uri;
 import android.provider.Telephony.Sms;
-import android.util.Log;
 import android.text.SpannableString;
 import android.text.TextUtils;
+import android.util.Log;
+
 import com.android.mms.R;
 import com.android.mms.transaction.MessagingNotification;
 import com.android.mms.ui.MessagingPreferenceActivity;
-import com.suntek.mway.rcs.client.api.provider.SuntekMessageData;
-import com.suntek.mway.rcs.client.api.provider.model.GroupChatModel;
+import com.android.mms.ui.ComposeMessageActivity;
+import com.android.mms.ui.ConversationList;
+import com.suntek.mway.rcs.client.aidl.provider.SuntekMessageData;
+import com.suntek.mway.rcs.client.aidl.provider.model.GroupChatModel;
 import com.suntek.mway.rcs.client.api.util.ServiceDisconnectedException;
 
 public class RcsNotifyManager {
+    private static final String LOG_TAG = "RCS_UI";
     public static final int RCS_MESSAGE_FAILED_NOTIFICATION_ID = 789;
 
     private final static String RCS_UNDELIVERED_FLAG = "undelivered_flag";
@@ -159,11 +161,9 @@ public class RcsNotifyManager {
         long firstThreadId = getRcsUndeliveredMessageThreadId(cursor);
 
         boolean isSame = true;
+        int threadIdIndex = cursor.getColumnIndexOrThrow("thread_id");
         while (cursor.moveToNext()) {
-            Log.d("RCS_UI",
-                    "ThreadId: "
-                            + cursor.getLong(cursor
-                                    .getColumnIndexOrThrow("thread_id")));
+            Log.d(LOG_TAG, "ThreadId: " + cursor.getLong(threadIdIndex));
             if (cursor.getLong(cursor.getColumnIndexOrThrow("thread_id")) != firstThreadId) {
                 isSame = false;
                 break;

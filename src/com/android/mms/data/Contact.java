@@ -1316,6 +1316,7 @@ public class Contact {
     public synchronized long getPersonId() {
        return mPersonId;
     }
+
     public synchronized String getName(boolean bname) {
         if (TextUtils.isEmpty(mName)) {
             return null;

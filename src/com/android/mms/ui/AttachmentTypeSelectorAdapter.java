@@ -31,7 +31,7 @@ import com.android.mms.R;
 public class AttachmentTypeSelectorAdapter extends IconListAdapter {
     public final static int MODE_WITH_SLIDESHOW    = 0;
     public final static int MODE_WITHOUT_SLIDESHOW = 1;
-    public final static int MODE_RCS = 2;
+    public final static int MODE_RCS               = 2;
 
     public final static int ADD_IMAGE               = 0;
     public final static int TAKE_PICTURE            = 1;
@@ -91,7 +91,7 @@ public class AttachmentTypeSelectorAdapter extends IconListAdapter {
         }
         boolean config_vcard = context.getResources().getBoolean(R.bool.config_vcard);
         if (config_vcard) {
-                        addItem(data, context.getString(R.string.attach_add_contact_as_text),
+            addItem(data, context.getString(R.string.attach_add_contact_as_text),
                     R.drawable.ic_attach_contact_info, ADD_CONTACT_AS_TEXT);
 
             addItem(data, context.getString(R.string.attach_add_contact_as_vcard),

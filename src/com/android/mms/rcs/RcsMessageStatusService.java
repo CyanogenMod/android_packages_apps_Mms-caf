@@ -24,11 +24,11 @@
 package com.android.mms.rcs;
 
 import com.android.mms.transaction.MessagingNotification;
-import com.suntek.mway.rcs.client.api.constant.BroadcastConstants;
+import com.suntek.mway.rcs.client.aidl.constant.BroadcastConstants;
+import com.suntek.mway.rcs.client.aidl.provider.model.ChatMessage;
+import com.suntek.mway.rcs.client.aidl.provider.model.GroupChatModel;
+import com.suntek.mway.rcs.client.aidl.provider.SuntekMessageData;
 import com.suntek.mway.rcs.client.api.im.impl.MessageApi;
-import com.suntek.mway.rcs.client.api.provider.SuntekMessageData;
-import com.suntek.mway.rcs.client.api.provider.model.ChatMessage;
-import com.suntek.mway.rcs.client.api.provider.model.GroupChatModel;
 import com.suntek.mway.rcs.client.api.util.ServiceDisconnectedException;
 
 import android.app.IntentService;
@@ -41,6 +41,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class RcsMessageStatusService extends IntentService {
+    private static String LOG_TAG = "RCS_UI";
     private static ThreadPoolExecutor pool;
     private static final int NUMBER_OF_CORES; // Number of cores.
     private static final int MAXIMUM_POOL_SIZE; // Max size of the thread pool.
@@ -74,7 +75,7 @@ public class RcsMessageStatusService extends IntentService {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         taskCount++;
-        Log.w("RCS_UI", "onStartCommand: taskCount=" + taskCount);
+        Log.w(LOG_TAG, "onStartCommand: taskCount=" + taskCount);
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -85,8 +86,8 @@ public class RcsMessageStatusService extends IntentService {
         pool.execute(new Runnable() {
             public void run() {
                 runningCount++;
-                Log.w("RCS_UI", "runningId=" + currentRunningId + ", countOfRunning="
-                        + runningCount + ", taskCount=" + taskCount + ", Begin");
+                Log.w(LOG_TAG, "runningId=" + currentRunningId + ", countOfRunning=" + runningCount
+                        + ", taskCount=" + taskCount + ", Begin");
 
                 String action = intent.getAction();
                 RcsUtils.dumpIntent(intent);
@@ -106,37 +107,42 @@ public class RcsMessageStatusService extends IntentService {
                     } else if (chatType == SuntekMessageData.CHAT_TYPE_PUBLIC) {
                         notify = false;
                     } else {
-                        notify = ((chatType != SuntekMessageData.CHAT_TYPE_GROUP) && (sendReceive == SuntekMessageData.MSG_RECEIVE));
+                        notify = ((chatType != SuntekMessageData.CHAT_TYPE_GROUP) 
+                                && (sendReceive == SuntekMessageData.MSG_RECEIVE));
                     }
                     if (notify) {
                         MessagingNotification.blockingUpdateNewMessageIndicator(
                                 RcsMessageStatusService.this, threadId, true);
                     }
-                } else if ("com.suntek.mway.rcs.ACTION_UI_SHOW_GROUP_MESSAGE_NOTIFY".equals(action)) {
-                    long id = intent.getLongExtra("id", 0);
+                } else if (BroadcastConstants.UI_SHOW_GROUP_MESSAGE_NOTIFY.equals(action)) {
                     long rcsThreadId = intent.getLongExtra("threadId", -1);
                     MessageApi messageApi = RcsApiManager.getMessageApi();
-                    long threadId = RcsUtils.getThreadIdByRcsMesssageId(
-                            RcsMessageStatusService.this, id);
                     try {
                         GroupChatModel model = messageApi.getGroupChatByThreadId(rcsThreadId);
                         if (model != null) {
                             int msgNotifyType = model.getRemindPolicy();
+                            int rcsId = model.getId();
+                            long threadId = RcsUtils.getThreadIdByGroupId(
+                                    RcsMessageStatusService.this, String.valueOf(rcsId));
                             if (msgNotifyType == 0) {
-                                MessagingNotification.blockingUpdateNewMessageIndicator(
-                                        RcsMessageStatusService.this, threadId, true);
+                                // not in group chat
+                                if (threadId != MessagingNotification
+                                        .getCurrentlyDisplayedThreadId()) {
+                                    MessagingNotification.blockingUpdateNewMessageIndicator(
+                                            RcsMessageStatusService.this, threadId, true);
+                                }
                             } else {
                                 MessagingNotification.blockingUpdateNewMessageIndicator(
                                         RcsMessageStatusService.this, threadId, false);
                             }
                         }
                     } catch (ServiceDisconnectedException e) {
-                        Log.i("RCS_UI", "GroupChatMessage" + e);
+                        Log.i(LOG_TAG, "GroupChatMessage" + e);
                     }
                 } else if (BroadcastConstants.UI_MESSAGE_STATUS_CHANGE_NOTIFY.equals(action)) {
                     String id = intent.getStringExtra("id");
                     int status = intent.getIntExtra("status", -11);
-                    Log.i("RCS_UI", "com.suntek.mway.rcs.ACTION_UI_MESSAGE_STATUS_CHANGE_NOTIFY"
+                    Log.i(LOG_TAG, BroadcastConstants.UI_MESSAGE_STATUS_CHANGE_NOTIFY
                             + id + status);
                     RcsUtils.updateState(RcsMessageStatusService.this, id, status);
                     RcsNotifyManager.sendMessageFailNotif(RcsMessageStatusService.this,
@@ -163,12 +169,12 @@ public class RcsMessageStatusService extends IntentService {
                     String number = intent.getStringExtra("original-recipient");
                     RcsUtils.updateManyState(RcsMessageStatusService.this, id, number, status);
                 } else if("com.suntek.mway.rcs.ACTION_UI_MESSAGE_TRANSFER_SMS".equals(action)){
-                    Log.i("RCS_UI","rcs message to sms="+action);
+                    Log.i(LOG_TAG,"rcs message to sms="+action);
                     long messageId = intent.getLongExtra("id",-1);
                     RcsUtils.deleteMessageById(RcsMessageStatusService.this, messageId);
                 }
 
-                Log.w("RCS_UI", "runningId=" + currentRunningId + ", countOfRunning="
+                Log.w(LOG_TAG, "runningId=" + currentRunningId + ", countOfRunning="
                         + runningCount + ", taskCount=" + taskCount + ", End");
                 runningCount--;
                 taskCount--;
@@ -180,7 +186,7 @@ public class RcsMessageStatusService extends IntentService {
         try {
             return RcsUtils.rcsInsert(context, chatMessage);
         } catch (ServiceDisconnectedException e) {
-            Log.w("RCS_UI", e);
+            Log.w(LOG_TAG, e);
             return 0;
         }
     }

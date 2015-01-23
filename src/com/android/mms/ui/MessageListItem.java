@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -91,6 +92,7 @@ import com.android.mms.data.WorkingMessage;
 import com.android.mms.model.LayoutModel;
 import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
+import com.android.mms.rcs.PropertyNode;
 import com.android.mms.transaction.SmsReceiverService;
 import com.android.mms.transaction.Transaction;
 import com.android.mms.transaction.TransactionBundle;
@@ -106,8 +108,8 @@ import com.google.android.mms.pdu.NotificationInd;
 import com.google.android.mms.pdu.PduHeaders;
 import com.google.android.mms.pdu.PduPersister;
 import com.suntek.mway.rcs.client.api.im.impl.MessageApi;
-import com.suntek.mway.rcs.client.api.provider.SuntekMessageData;
-import com.suntek.mway.rcs.client.api.provider.model.ChatMessage;
+import com.suntek.mway.rcs.client.aidl.provider.SuntekMessageData;
+import com.suntek.mway.rcs.client.aidl.provider.model.ChatMessage;
 import com.suntek.mway.rcs.client.api.util.ServiceDisconnectedException;
 
 import java.io.File;
@@ -399,8 +401,32 @@ public class MessageListItem extends ZoomMessageListItem implements
             case RcsUtils.RCS_MSG_TYPE_AUDIO: {
                 mBodyTextView.setVisibility(View.VISIBLE);
                 mBodyTextView.setText(mMessageItem.mRcsPlayTime + "''");
-                mMessageItem.mBody = mMessageItem.mRcsPlayTime + "''";
+                mMessageItem.mBody = RcsUtils.getAudioBodyText(mMessageItem);
                 break;
+            }
+            case RcsUtils.RCS_MSG_TYPE_PAID_EMO: {
+                mBodyTextView.setVisibility(View.GONE);
+                break;
+            }
+            case RcsUtils.RCS_MSG_TYPE_VCARD:{
+                String name = "";
+                String number = "";
+                String vcardFilePath = RcsUtils.getFilePath(mMessageItem.mRcsId, mMessageItem.mRcsPath);
+                ArrayList<PropertyNode> propList = RcsMessageOpenUtils.openRcsVcardDetail(getContext(), vcardFilePath);
+                for (PropertyNode propertyNode : propList)  {
+                    if ("FN".equals(propertyNode.propName)) {
+                        if(!TextUtils.isEmpty(propertyNode.propValue)){
+                            name = propertyNode.propValue;
+                        }
+                    } else if ("TEL".equals(propertyNode.propName)) {
+                        if(!TextUtils.isEmpty(propertyNode.propValue)){
+                            number = propertyNode.propValue;
+                        }
+                    } 
+                }
+                mBodyTextView.setVisibility(View.VISIBLE);
+                mBodyTextView.setText("[Vcard]\n" + mContext.getString(R.string.vcard_name)
+                        + name + "\n" + mContext.getString(R.string.vcard_number) + number);
             }
         }
 
@@ -426,12 +452,8 @@ public class MessageListItem extends ZoomMessageListItem implements
                     RcsMessageOpenUtils.openRcsSlideShowMessage(MessageListItem.this);
                 }
             });
-            Bitmap bitmap = RcsUtils.getThumbnailForMessageItem(getContext(), mMessageItem);
-            if (bitmap != null) {
-                mImageView.setImageBitmap(bitmap);
-            }
+            RcsUtils.setThumbnailForMessageItem(getContext(), mImageView, mMessageItem);
             mImageView.setOnClickListener(new OnClickListener() {
-
                 @Override
                 public void onClick(View v) {
                     RcsMessageOpenUtils.resendOrOpenRcsMessage(MessageListItem.this);
@@ -439,6 +461,10 @@ public class MessageListItem extends ZoomMessageListItem implements
             });
             mRcsShowMmsView = true;
         }
+    }
+
+    public ImageView getImageView(){
+        return mImageView;
     }
 
     public boolean isDownloading() {
@@ -708,7 +734,9 @@ public class MessageListItem extends ZoomMessageListItem implements
             mMessageItem.setCachedFormattedMessage(formattedMessage);
         }
         if (!sameItem || haveLoadedPdu) {
-            mBodyTextView.setText(formattedMessage);
+            if (mMessageItem.mRcsType != RcsUtils.RCS_MSG_TYPE_VCARD) {
+                mBodyTextView.setText(formattedMessage);
+            }
         }
         updateSimIndicatorView(mMessageItem.mPhoneId);
         // Debugging code to put the URI of the image attachment in the body of the list item.

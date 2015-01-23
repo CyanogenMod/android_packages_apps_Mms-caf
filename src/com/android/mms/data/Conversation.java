@@ -28,7 +28,6 @@ import android.provider.Telephony.Threads;
 import android.provider.Telephony.ThreadsColumns;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.SubscriptionManager;
-import android.telephony.Rlog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -45,9 +44,11 @@ import com.android.mms.ui.ComposeMessageActivity;
 import com.android.mms.ui.MessageUtils;
 import com.android.mms.util.AddressUtils;
 import com.android.mms.util.DraftCache;
+
 import com.google.android.mms.pdu.PduHeaders;
+
 import com.suntek.mway.rcs.client.api.im.impl.MessageApi;
-import com.suntek.mway.rcs.client.api.provider.model.GroupChatModel;
+import com.suntek.mway.rcs.client.aidl.provider.model.GroupChatModel;
 /**
  * An interface for finding information about conversations and/or creating new ones.
  */
@@ -70,6 +71,8 @@ public class Conversation {
         Threads._ID,
         Threads.READ
     };
+
+    public static final String DEFAULT_SORT_ORDER = "top_time DESC,top DESC, date DESC";
 
     private static final String UNREAD_SELECTION = "(read=0 OR seen=0)";
     private static final String READ_SELECTION = "(read=1 OR seen=1)";
@@ -467,7 +470,6 @@ public class Conversation {
                             Log.e(TAG, "Database is full");
                             e.printStackTrace();
                             showStorageFullToast(mContext);
-
                             return null;
                         }
                         MessagingNotification.blockingUpdateAllNotifications(mContext,
@@ -696,7 +698,8 @@ public class Conversation {
         mIsChecked = isChecked;
     }
 
-    private static long getOrCreateThreadId(Context context, ContactList list, boolean isGroupChat) {
+    private static long getOrCreateThreadId(Context context, ContactList list,
+            boolean isGroupChat) {
         HashSet<String> recipients = new HashSet<String>();
         Contact cacheContact = null;
         for (Contact c : list) {
@@ -729,7 +732,9 @@ public class Conversation {
             }
             long retVal;
             if (isGroupChat) {
-                retVal = RcsUtils.getOrCreateThreadId(context, recipients); // This method is temporally copied from /framework/opt/telephone for RCS group chat debug purpose.
+                 // The RcsUtils.getOrCreateThreadId(context, recipients) was temporally copied from
+                 // /framework/opt/telephone for RCS group chat debug purpose.
+                retVal = RcsUtils.getOrCreateThreadId(context, recipients);
             } else {
                 retVal = Threads.getOrCreateThreadId(context, recipients);
             }
@@ -862,7 +867,7 @@ public class Conversation {
         handler.startQuery(token, null, uri,
                 ALL_THREADS_PROJECTION, selection, null, DEFAULT_SORT_ORDER);
     }
-    public static final String DEFAULT_SORT_ORDER = "top_time DESC,top DESC, date DESC";
+
     /**
      * Start mark as unread of the conversation with the specified thread ID.
      *

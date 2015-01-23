@@ -35,4 +35,8 @@
         <item>@string/new_group_chat</item>
     </string-array>
 
+    <string-array name="special_prefix_number">
+        <item>12520</item>
+    </string-array>
+
 </resources>

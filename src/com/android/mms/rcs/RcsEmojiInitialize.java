@@ -23,9 +23,13 @@
 
 package com.android.mms.rcs;
 
-import com.android.mms.rcs.RcsEmojiPackageObject.EmojiObject;
-import com.suntek.mway.rcs.client.api.plugin.entity.emoticon.EmoticonConstant;
+import com.suntek.mway.rcs.client.aidl.plugin.entity.emoticon.EmojiPackageBO;
+import com.suntek.mway.rcs.client.aidl.plugin.entity.emoticon.EmoticonBO;
+import com.suntek.mway.rcs.client.aidl.plugin.entity.emoticon.EmoticonConstant;
+import com.suntek.mway.rcs.client.aidl.provider.SuntekMessageData;
+import com.suntek.mway.rcs.client.aidl.provider.model.MessageSessionModel;
 import com.suntek.mway.rcs.client.api.util.ServiceDisconnectedException;
+import com.android.mms.R;
 
 import android.app.Activity;
 import android.content.Context;
@@ -33,7 +37,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -52,11 +58,13 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.android.mms.R;
+
 import java.io.InputStream;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class RcsEmojiInitialize {
 
@@ -76,19 +84,23 @@ public class RcsEmojiInitialize {
 
     private String mSelectPackageId = "";
 
-    private ArrayList<RcsEmojiPackageObject> mEmojiPackages = new ArrayList<RcsEmojiPackageObject>();
+    private String mDefaultPackageId = "-1";
+
+    private ArrayList<EmojiPackageBO> mEmojiPackages = new ArrayList<EmojiPackageBO>();
 
     private ViewOnClickListener mViewOnClickListener;
 
-    private int mSmallEmojiHigth = 0;
+    private LinearLayout.LayoutParams mLayoutParams;
 
-    private int mBigEmojiHigth = 0;
+    private ArrayList<View> packageListButton = new ArrayList<View>();
 
     public interface ViewOnClickListener {
 
         public void viewOpenOrCloseListener(boolean isOpen);
 
-        public void emojiSelectListener(EmojiObject emojiObject);
+        public void emojiSelectListener(EmoticonBO emojiObject);
+
+        public void faceTextSelectListener(String faceText);
 
         public void onEmojiDeleteListener();
 
@@ -100,19 +112,21 @@ public class RcsEmojiInitialize {
         this.mContext = context;
         this.mViewStub = viewStub;
         this.mViewOnClickListener = viewOnClickListener;
-        mSmallEmojiHigth = RcsEmojiStoreUtil.dip2px(mContext, 40);
-        mBigEmojiHigth = RcsEmojiStoreUtil.dip2px(mContext, 80);
+        mLayoutParams = new LinearLayout.LayoutParams(RcsUtils.dip2px(mContext, 45),
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        mLayoutParams.leftMargin = RcsUtils.dip2px(mContext, 1);
+        new LoadSessionTask().execute();
     }
 
     public void closeOrOpenView() {
         if (mEmojiView == null) {
-            RcsEmojiStoreUtil.closeKB((Activity) mContext);
+            RcsUtils.closeKB((Activity)mContext);
             initEmojiView();
             mViewOnClickListener.viewOpenOrCloseListener(true);
             return;
         }
         if (mEmojiView != null && mEmojiView.getVisibility() == View.GONE) {
-            RcsEmojiStoreUtil.closeKB((Activity) mContext);
+            RcsUtils.closeKB((Activity)mContext);
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -122,7 +136,7 @@ public class RcsEmojiInitialize {
             }, 200);
         } else {
             mEmojiView.setVisibility(View.GONE);
-            RcsEmojiStoreUtil.openKB(mContext);
+            RcsUtils.openKB(mContext);
             mViewOnClickListener.viewOpenOrCloseListener(false);
         }
     }
@@ -134,159 +148,199 @@ public class RcsEmojiInitialize {
 
     private void initEmojiView() {
         mEmojiView = mViewStub.inflate();
-        mEmojiGridView = (GridView) mEmojiView.findViewById(R.id.emoji_grid_view);
-        mLinearLayout = (LinearLayout) mEmojiView
-                .findViewById(R.id.content_linear_layout);
-        mDeleteBtn = (ImageButton) mEmojiView.findViewById(R.id.delete_emoji_btn);
+        mEmojiGridView = (GridView)mEmojiView.findViewById(R.id.emoji_grid_view);
+        mLinearLayout = (LinearLayout)mEmojiView.findViewById(R.id.content_linear_layout);
+        mDeleteBtn = (ImageButton)mEmojiView.findViewById(R.id.delete_emoji_btn);
         mDeleteBtn.setVisibility(View.GONE);
-        mEmojiView.findViewById(R.id.add_emoji_btn).setOnClickListener(
-                mClickListener);
-        mEmojiPackages.clear();
-        mEmojiPackages.addAll(RcsEmojiStoreUtil.getStorePackageList());
-        if (mEmojiPackages.size() == 0)
-            return;
+        mEmojiView.findViewById(R.id.add_emoji_btn).setOnClickListener(mClickListener);
         mDeleteBtn.setOnClickListener(mClickListener);
-        RcsEmojiPackageObject selectPackageBean = mEmojiPackages.get(0);
-        mSelectPackageId = selectPackageBean.getPackageId();
-        initPackageView(selectPackageBean);
-        mEmojiGridView.setNumColumns(selectPackageBean.getHorizontalLineSize());
         mGirdViewAdapter = new GirdViewAdapter(mContext, mViewOnClickListener);
         mEmojiGridView.setAdapter(mGirdViewAdapter);
-        if (selectPackageBean.getCarryDeleteSign()) {
-            mGirdViewAdapter.setEmojiData(selectPackageBean.getEmojiList(),
-                    mSmallEmojiHigth);
-            mDeleteBtn.setVisibility(View.VISIBLE);
-        } else {
-            mGirdViewAdapter.setEmojiData(selectPackageBean.getEmojiList(),
-                    mBigEmojiHigth);
-            mDeleteBtn.setVisibility(View.GONE);
-        }
+        mDeleteBtn.setVisibility(View.GONE);
     }
 
-    private void initPackageView(RcsEmojiPackageObject emojiPackageObject) {
-        mLinearLayout.removeAllViews();
-        for (int i = 0; i < mEmojiPackages.size(); i++) {
-            RcsEmojiPackageObject emojiPackage = mEmojiPackages.get(i);
-            if (emojiPackage.getPackageId() == emojiPackageObject
-                    .getPackageId()) {
-                ImageButton imageButton = createImageView(
-                        emojiPackageObject.getPackageId(), emojiPackage);
-                mLinearLayout.addView(imageButton);
-            } else {
-                ImageButton imageButton = createImageView(null, emojiPackage);
-                mLinearLayout.addView(imageButton);
+    class LoadSessionTask extends AsyncTask<Void, Void, List<EmojiPackageBO>> {
+        @Override
+        protected List<EmojiPackageBO> doInBackground(Void... params) {
+            List<EmojiPackageBO> packageList = new ArrayList<EmojiPackageBO>();
+            List<EmojiPackageBO> list = getStorePackageList();
+            if (list != null) {
+                packageList.addAll(list);
             }
+            return packageList;
+        }
+
+        @Override
+        protected void onPostExecute(List<EmojiPackageBO> result) {
+            super.onPostExecute(result);
+            mEmojiPackages.clear();
+            mEmojiPackages.addAll(result);
+            mSelectPackageId = mDefaultPackageId;
+            initPackageView(result);
+            setImageButtonCheck(mSelectPackageId);
+            mGirdViewAdapter.setEmojiData(mSelectPackageId);
+        }
+
+        private ArrayList<EmojiPackageBO> getStorePackageList() {
+            ArrayList<EmojiPackageBO> storelist = new ArrayList<EmojiPackageBO>();
+            try {
+                List<EmojiPackageBO> list = RcsApiManager.getEmoticonApi().queryEmojiPackages();
+                if (list != null && list.size() > 0) {
+                    storelist.addAll(list);
+                }
+            } catch (ServiceDisconnectedException e) {
+                e.printStackTrace();
+            }
+            return storelist;
         }
     }
 
-    private ImageButton createImageView(String checkId,
-            RcsEmojiPackageObject emojiPackageObject) {
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                RcsEmojiStoreUtil.dip2px(mContext, 45),
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        param.leftMargin = RcsEmojiStoreUtil.dip2px(mContext, 1);
+    private void initPackageView(List<EmojiPackageBO> packageList) {
+        TextView textView = createTextView();
+        mLinearLayout.addView(textView);
+        packageListButton.add(textView);
+        for (int i = 0; i < packageList.size(); i++) {
+            EmojiPackageBO emojiPackageBO = packageList.get(i);
+            ImageButton imageButton = createImageView(emojiPackageBO);
+            mLinearLayout.addView(imageButton);
+            packageListButton.add(imageButton);
+        }
+    }
+
+    private TextView createTextView() {
+        TextView textView = new TextView(mContext);
+        textView.setLayoutParams(mLayoutParams);
+        textView.setPadding(2, 2, 2, 2);
+        textView.setTag(mDefaultPackageId);
+        textView.setTextSize(25);
+        String text = new String(new int[] {
+            0x1f601
+        }, 0, 1);
+        textView.setGravity(Gravity.CENTER);
+        textView.setText(text);
+        textView.setOnClickListener(mImageOnClickListener);
+        return textView;
+    }
+
+    private ImageButton createImageView(EmojiPackageBO emojiPackageBO) {
         ImageButton imageButton = new ImageButton(mContext);
-        imageButton.setLayoutParams(param);
+        imageButton.setLayoutParams(mLayoutParams);
         imageButton.setScaleType(ScaleType.CENTER_INSIDE);
         imageButton.setPadding(2, 2, 2, 2);
-        if (emojiPackageObject.getEmojiType() == RcsEmojiPackageObject.BIG_EMOJI_TYPE) {
-            imageButton.setImageBitmap(emojiPackageObject.getPackageBitmap());
-        } else {
-            imageButton.setImageResource(emojiPackageObject.getPackageResId());
-        }
-        if (TextUtils.isEmpty(checkId))
-            imageButton.setBackgroundResource(R.color.gray5);
-        else
-            imageButton.setBackgroundResource(R.color.white);
-        imageButton.setTag(emojiPackageObject);
-        imageButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RcsEmojiPackageObject emojiPackageObject = (RcsEmojiPackageObject) view
-                        .getTag();
-                if (emojiPackageObject == null)
-                    return;
-                if (mSelectPackageId == emojiPackageObject.getPackageId())
-                    return;
-                mSelectPackageId = emojiPackageObject.getPackageId();
-                initPackageView(emojiPackageObject);
-                mEmojiGridView.setNumColumns(emojiPackageObject
-                        .getHorizontalLineSize());
-                if (emojiPackageObject.getCarryDeleteSign()) {
-                    mGirdViewAdapter.setEmojiData(
-                            emojiPackageObject.getEmojiList(), mSmallEmojiHigth);
-                    mDeleteBtn.setVisibility(View.VISIBLE);
-                } else {
-                    mGirdViewAdapter.setEmojiData(
-                            emojiPackageObject.getEmojiList(), mBigEmojiHigth);
-                    mDeleteBtn.setVisibility(View.GONE);
-                }
-            }
-        });
+        RcsEmojiStoreUtil.getInstance().loadImageAsynById(imageButton,
+                emojiPackageBO.getPackageId(), RcsEmojiStoreUtil.EMO_PACKAGE_FILE);
+        imageButton.setTag(emojiPackageBO.getPackageId());
+        imageButton.setOnClickListener(mImageOnClickListener);
         return imageButton;
+    }
+
+    private OnClickListener mImageOnClickListener = new OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            String packageId = (String)view.getTag();
+            if (TextUtils.isEmpty(packageId))
+                return;
+            if (mSelectPackageId.equals(packageId))
+                return;
+            mSelectPackageId = packageId;
+            setImageButtonCheck(mSelectPackageId);
+            mGirdViewAdapter.setEmojiData(mSelectPackageId);
+        }
+    };
+
+    private void setImageButtonCheck(String checkId) {
+        if (checkId.equals(mDefaultPackageId)) {
+            mDeleteBtn.setVisibility(View.VISIBLE);
+            mEmojiGridView.setNumColumns(7);
+            mGirdViewAdapter.setItemHeight(RcsUtils.dip2px(mContext, 45));
+        } else {
+            mDeleteBtn.setVisibility(View.GONE);
+            mEmojiGridView.setNumColumns(4);
+            mGirdViewAdapter.setItemHeight(RcsUtils.dip2px(mContext, 80));
+        }
+        for (View view : packageListButton) {
+            String packageId = (String)view.getTag();
+            if (!packageId.equals(checkId))
+                view.setBackgroundResource(R.color.gray5);
+            else
+                view.setBackgroundResource(R.color.white);
+        }
     }
 
     private OnClickListener mClickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-            case R.id.delete_emoji_btn:
-                mViewOnClickListener.onEmojiDeleteListener();
-                break;
-            case R.id.add_emoji_btn:
-                mViewOnClickListener.addEmojiPackageListener();
-                break;
-            default:
-                break;
+                case R.id.delete_emoji_btn:
+                    mViewOnClickListener.onEmojiDeleteListener();
+                    break;
+                case R.id.add_emoji_btn:
+                    mViewOnClickListener.addEmojiPackageListener();
+                    break;
+                default:
+                    break;
             }
-
         }
     };
 
-    private HashMap<String, SoftReference<Bitmap>> mImageCache = new HashMap<String, SoftReference<Bitmap>>();
-
     public class GirdViewAdapter extends BaseAdapter {
 
-        private LinearLayout.LayoutParams mGifParam = new LinearLayout.LayoutParams(
-                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-
-        private ArrayList<EmojiObject> mEmojiObjects = new ArrayList<EmojiObject>();
+        private ArrayList<EmoticonBO> mEmojiObjects = new ArrayList<EmoticonBO>();
 
         private Context mContext;
 
-        private int mItemHeight = 0;
+        private int mItemHeight;
+
+        private String mPackageId = "";
 
         private ViewOnClickListener mViewOnClickListener;
 
-        public GirdViewAdapter(Context context,
-                ViewOnClickListener viewOnClickListener) {
+        public GirdViewAdapter(Context context, ViewOnClickListener viewOnClickListener) {
             this.mContext = context;
             this.mViewOnClickListener = viewOnClickListener;
         }
 
-        public void setEmojiData(ArrayList<EmojiObject> emojiObjects,
-                int itemHeight) {
-            this.mEmojiObjects.clear();
-            this.mEmojiObjects.addAll(emojiObjects);
-            this.mItemHeight = itemHeight;
-            this.notifyDataSetChanged();
+        private void setItemHeight(int height) {
+            this.mItemHeight = height;
+        }
+
+        public void setEmojiData(String packageId) {
+            this.mPackageId = packageId;
+            if (mPackageId.equals(mDefaultPackageId)) {
+                this.notifyDataSetChanged();
+                return;
+            }
+            try {
+                List<EmoticonBO> list = RcsApiManager.getEmoticonApi().queryEmoticons(packageId);
+                if (list != null && list.size() > 0) {
+                    this.mEmojiObjects.clear();
+                    this.mEmojiObjects.addAll(list);
+                    this.notifyDataSetChanged();
+                }
+            } catch (ServiceDisconnectedException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
         public int getCount() {
+            if (mPackageId.equals(mDefaultPackageId)) {
+                return mFaceTexts.length;
+            }
             return mEmojiObjects.size();
         }
 
         @Override
         public Object getItem(int position) {
-            if (position < mEmojiObjects.size())
-                return mEmojiObjects.get(position);
-            return null;
+            if (mPackageId.equals(mDefaultPackageId)) {
+                return mFaceTexts[position];
+            }
+            return mEmojiObjects.get(position);
         }
 
         @Override
         public long getItemId(int position) {
-            return 0;
+            return position;
         }
 
         @Override
@@ -298,76 +352,69 @@ public class RcsEmojiInitialize {
                 holder = new ViewHolder(convertView);
                 convertView.setTag(holder);
             } else {
-                holder = (ViewHolder) convertView.getTag();
+                holder = (ViewHolder)convertView.getTag();
             }
-            RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams) holder.mItemView
-                    .getLayoutParams();
-            param.height = mItemHeight;
-            EmojiObject bean = mEmojiObjects.get(position);
-            if (TextUtils.isEmpty(bean.getEmojiName()))
+            holder.setItemHeight(mItemHeight);
+            if (mPackageId.equals(mDefaultPackageId)) {
+                int faceInt = (int)getItem(position);
                 holder.title.setVisibility(View.GONE);
-            else {
-                holder.title.setVisibility(View.VISIBLE);
-            }
-            holder.title.setText(bean.getEmojiName());
-            if (bean.getEmojiType() == RcsEmojiPackageObject.BIG_EMOJI_TYPE) {
-                holder.icon.setImageBitmap(loadEmojiBitmap(bean.getEmojiId()));
+                holder.icon.setVisibility(View.GONE);
+                holder.textFace.setVisibility(View.VISIBLE);
+                String faceText = new String(new int[] {
+                        faceInt }, 0, 1);
+                holder.textFace.setText(faceText);
+                holder.mItemView.setTag(faceText);
+                holder.mItemView.setOnClickListener(mClickListener);
             } else {
-                holder.icon.setImageResource(bean.getEmojiResId());
+                holder.textFace.setVisibility(View.GONE);
+                EmoticonBO bean = (EmoticonBO)getItem(position);
+                holder.title.setText(bean.getEmoticonName());
+                RcsEmojiStoreUtil.getInstance().loadImageAsynById(holder.icon,
+                        bean.getEmoticonId(), RcsEmojiStoreUtil.EMO_STATIC_FILE);
+                holder.mItemView.setTag(bean);
+                holder.mItemView.setOnClickListener(mClickListener);
+                holder.mItemView.setOnLongClickListener(onLongClickListener);
             }
-            holder.mItemView.setTag(bean);
-            holder.mItemView.setOnClickListener(mClickListener);
-            holder.mItemView.setOnLongClickListener(new OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View arg0) {
-                    EmojiObject bean = (EmojiObject) arg0.getTag();
-                    if (bean.getEmojiType() == RcsEmojiPackageObject.BIG_HORIZONTAL_LINE_SIZE) {
-                        byte[] data = null;
-                        try {
-                            data = RcsApiManager
-                                    .getEmoticonApi()
-                                    .decrypt2Bytes(bean.getEmojiId(),
-                                            EmoticonConstant.EMO_DYNAMIC_FILE);
-                        } catch (ServiceDisconnectedException e) {
-                            e.printStackTrace();
-                        }
-                        openPopupwin(arg0, data);
-                    } else {
-                        InputStream is = mContext.getResources()
-                                .openRawResource(bean.getEmojiResId());
-                        byte[] data = RcsEmojiStoreUtil.inputToByte(is);
-                        openPopupwin(arg0, data);
-                    }
-                    return false;
-                }
-            });
             return convertView;
         }
 
-        private void openPopupwin(View root, byte[] data) {
-            RcsEmojiGifView gifImageView = new RcsEmojiGifView(mContext);
-            gifImageView.setLayoutParams(mGifParam);
-            gifImageView.setBackgroundResource(R.drawable.rcs_emoji_popup_bg);
-            gifImageView.setAutoPlay(true);
-            gifImageView.setGifData(data);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-            PopupWindow popupWindow = new PopupWindow(root,
-                    bitmap.getWidth() + 10, bitmap.getHeight() + 10);
-            popupWindow.setBackgroundDrawable(new ColorDrawable(
-                    Color.TRANSPARENT));
-            popupWindow.setFocusable(true);
-            popupWindow.setOutsideTouchable(true);
-            popupWindow.setContentView(gifImageView);
-            popupWindow.showAtLocation(root, Gravity.CENTER, 0, 0);
-            popupWindow.update();
-        }
+        private OnLongClickListener onLongClickListener = new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View arg0) {
+                try {
+                    EmoticonBO bean = (EmoticonBO)arg0.getTag();
+                    byte[] data = RcsApiManager.getEmoticonApi().decrypt2Bytes(
+                            bean.getEmoticonId(), EmoticonConstant.EMO_DYNAMIC_FILE);
+                    RcsUtils.openPopupWindow(mContext, arg0, data);
+                } catch (ServiceDisconnectedException e) {
+                    e.printStackTrace();
+                }
+                return false;
+            }
+        };
 
         private OnClickListener mClickListener = new OnClickListener() {
             @Override
-            public void onClick(View v) {
-                EmojiObject bean = (EmojiObject) v.getTag();
-                mViewOnClickListener.emojiSelectListener(bean);
+            public void onClick(View view) {
+                if (mPackageId.equals(mDefaultPackageId)) {
+                    String faceText = (String)view.getTag();
+                    mViewOnClickListener.faceTextSelectListener(faceText);
+                } else {
+                    EmoticonBO bean = (EmoticonBO)view.getTag();
+                    mViewOnClickListener.emojiSelectListener(bean);
+                }
             }
+        };
+
+        private final int[] mFaceTexts = new int[] {
+                0x1f600, 0x1f601, 0x1f602, 0x1f603, 0x1f604, 0x1f605, 0x1f606, 0x1f607, 0x1f608,
+                0x1f609, 0x1f60A, 0x1f60B, 0x1f60C, 0x1f60D, 0x1f60E, 0x1f60F, 0x1f610, 0x1f611,
+                0x1f612, 0x1f613, 0x1f614, 0x1f615, 0x1f616, 0x1f617, 0x1f618, 0x1f619, 0x1f61A,
+                0x1f61B, 0x1f61C, 0x1f61D, 0x1f61F, 0x1f620, 0x1f621, 0x1f622, 0x1f623, 0x1f624,
+                0x1f625, 0x1f626, 0x1f627, 0x1f628, 0x1f629, 0x1f62A, 0x1f62B, 0x1f62C, 0x1f62D,
+                0x1f62F, 0x1f630, 0x1f631, 0x1f632, 0x1f633, 0x1f634, 0x1f635, 0x1f636, 0x1f637,
+                0x1f638, 0x1f639, 0x1f63A, 0x1f63B, 0x1f63C, 0x1f63D, 0x1f63F, 0x1f640, 0x1f645,
+                0x1f646, 0x1f647, 0x1f648, 0x1f649, 0x1f64A, 0x1f64B, 0x1f64C, 0x1f64D, 0x1f64F
         };
 
         private class ViewHolder {
@@ -375,50 +422,24 @@ public class RcsEmojiInitialize {
 
             TextView title;
 
+            TextView textFace;
+
             ImageView icon;
 
+            public void setItemHeight(int height) {
+                RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams)this.mItemView
+                        .getLayoutParams();
+                param.height = height;
+            }
+
             public ViewHolder(View convertView) {
-                this.title = (TextView) convertView.findViewById(R.id.title);
-                this.icon = (ImageView) convertView.findViewById(R.id.icon);
-                this.mItemView = (RelativeLayout) convertView
-                        .findViewById(R.id.item);
+                this.title = (TextView)convertView.findViewById(R.id.title);
+                this.icon = (ImageView)convertView.findViewById(R.id.icon);
+                this.textFace = (TextView)convertView.findViewById(R.id.text_face);
+                this.mItemView = (RelativeLayout)convertView.findViewById(R.id.item);
                 this.mItemView.setBackgroundResource(R.drawable.rcs_emoji_button_bg);
             }
         }
-
-        public Bitmap loadEmojiBitmap(String emoticonId) {
-            if (TextUtils.isEmpty(emoticonId)) {
-                return null;
-            }
-            if (mImageCache.containsKey(emoticonId)) {
-                SoftReference<Bitmap> softReference = mImageCache
-                        .get(emoticonId);
-                Bitmap bitmap = softReference.get();
-                if (bitmap != null) {
-                    return bitmap;
-                } else {
-                    mImageCache.remove(emoticonId);
-                }
-            }
-            byte[] imageByte = null;
-            Bitmap bitmap = null;
-            try {
-                imageByte = RcsApiManager
-                        .getEmoticonApi()
-                        .decrypt2Bytes(emoticonId,
-                                EmoticonConstant.EMO_STATIC_FILE);
-            } catch (ServiceDisconnectedException e) {
-                e.printStackTrace();
-            }
-            if (imageByte != null)
-                bitmap = BitmapFactory.decodeByteArray(imageByte, 0,
-                        imageByte.length);
-            if (bitmap != null) {
-                mImageCache.put(emoticonId, new SoftReference<Bitmap>(bitmap));
-            }
-            return bitmap;
-        }
-
     }
 
 }

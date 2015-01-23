@@ -63,7 +63,7 @@ public class AttachmentPagerAdapter extends PagerAdapter {
     public static final int ADD_SLIDESHOW        = 6;
     public static final int ADD_CONTACT_AS_TEXT  = 7;
     public static final int ADD_CONTACT_AS_VCARD = 8;
-    public static final int ADD_MAP              = 9;
+    public static final int ADD_MAP              = 10;
 
     private static final String GRID_ITEM_IMAGE = "grid_item_image";
     private static final String GRID_ITEM_TEXT  = "grid_item_text";

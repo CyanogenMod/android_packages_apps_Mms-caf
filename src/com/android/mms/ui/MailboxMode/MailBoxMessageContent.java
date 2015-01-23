@@ -85,12 +85,12 @@ import com.android.mms.ui.ConversationList;
 import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.SelectRecipientsList;
 import com.google.android.mms.MmsException;
-import com.suntek.mway.rcs.client.api.provider.model.ChatMessage;
+import com.suntek.mway.rcs.client.aidl.provider.model.ChatMessage;
 import com.suntek.mway.rcs.client.api.util.ServiceDisconnectedException;
 
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 
-import com.suntek.mway.rcs.client.api.provider.model.GroupChatModel;
+import com.suntek.mway.rcs.client.aidl.provider.model.GroupChatModel;
 import com.suntek.mway.rcs.client.api.util.FileSuffixException;
 import com.suntek.mway.rcs.client.api.util.FileTransferException;
 import com.suntek.mway.rcs.client.api.util.FileDurationException;
@@ -323,7 +323,8 @@ public class MailBoxMessageContent extends Activity {
             case MENU_FORWARD:
                 if (mIsRcs != RcsUtils.SMS_DEFAULT_RCS_ID) {
                     Log.i("RCS_UI", "IS RCS MESSAGE");
-                    RcsChatMessageUtils.forwardContactOrConversation(this, new ForwardClickListener());
+                    RcsChatMessageUtils.forwardContactOrConversation(this,
+                            new ForwardClickListener());
                 } else {
                     Intent intentForward = new Intent(this, ComposeMessageActivity.class);
                     intentForward.putExtra("sms_body", mMsgText);
@@ -397,7 +398,8 @@ public class MailBoxMessageContent extends Activity {
                 RcsChatMessageUtils.sendForwardRcsMessage(data, mRcsId, MailBoxMessageContent.this);
                 break;
             case REQUEST_SELECT_CONV:
-                RcsChatMessageUtils.sendForwardRcsMessageToConv(data, mRcsId, MailBoxMessageContent.this);
+                RcsChatMessageUtils.sendRcsFavoritedMessage(MailBoxMessageContent.this, data,
+                        mRcsId);
                 break;
             case REQUEST_SELECT_GROUP:
                 RcsChatMessageUtils.sendForwardRcsMessage(data, mRcsId, MailBoxMessageContent.this);
