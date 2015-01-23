@@ -57,6 +57,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
+import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.LineHeightSpan;
 import android.text.style.StyleSpan;
@@ -736,6 +737,9 @@ public class MessageListItem extends ZoomMessageListItem implements
                     buf.append(" - ");
                 }
                 buf.append(body);
+
+                // Set the correct text size based on the current zoom level.
+                buf.setSpan(new AbsoluteSizeSpan(mZoomFontSize, true), 0, buf.length(), 0);
             }
         }
 
