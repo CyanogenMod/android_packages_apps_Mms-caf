@@ -46,6 +46,8 @@ import android.widget.ListView;
 
 import com.android.mms.LogTag;
 import com.android.mms.R;
+import com.android.mms.ui.zoom.ZoomMessageListItem;
+import com.android.mms.ui.zoom.ZoomMessageListView;
 import com.google.android.mms.MmsException;
 
 /**
@@ -255,6 +257,13 @@ public class MessageListAdapter extends CursorAdapter {
                 mli.setMsgListItemHandler(mMsgListItemHandler);
 
                 mBodyCache.put(position, msgItem.mBody);
+            }
+
+            // Handle zoom for zoomable list items.
+            if (mListView instanceof ZoomMessageListView
+                    && view instanceof ZoomMessageListItem) {
+                float scale = ((ZoomMessageListView) mListView).getZoomScale();
+                ((ZoomMessageListView) view).handleZoomWithScale(scale);
             }
         }
     }

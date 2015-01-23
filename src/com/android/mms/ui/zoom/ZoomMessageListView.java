@@ -32,6 +32,8 @@ import com.android.mms.ui.MessageListItem;
  */
 public class ZoomMessageListView extends ListView {
 
+    private float mZoomScale = 1.0f;
+
     public ZoomMessageListView(Context context) {
         super(context);
     }
@@ -56,6 +58,7 @@ public class ZoomMessageListView extends ListView {
      * @param scale {@link java.lang.Float}
      */
     public void handleZoomWithScale(float scale) {
+        mZoomScale = scale;
         int viewCount = getChildCount();
         for (int i = 0; i < viewCount; i++) {
             View view = getChildAt(i);
@@ -65,4 +68,7 @@ public class ZoomMessageListView extends ListView {
         }
     }
 
+    public float getZoomScale() {
+        return mZoomScale;
+    }
 }
