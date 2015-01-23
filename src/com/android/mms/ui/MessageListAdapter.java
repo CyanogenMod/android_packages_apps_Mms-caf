@@ -46,6 +46,8 @@ import android.widget.ListView;
 
 import com.android.mms.LogTag;
 import com.android.mms.R;
+import com.android.mms.ui.zoom.ZoomMessageListItem;
+import com.android.mms.ui.zoom.ZoomMessageListView;
 import com.google.android.mms.MmsException;
 
 /**
@@ -256,6 +258,8 @@ public class MessageListAdapter extends CursorAdapter {
 
                 mBodyCache.put(position, msgItem.mBody);
             }
+
+            handleZoomForItem(view);
         }
     }
 
@@ -330,6 +334,7 @@ public class MessageListAdapter extends CursorAdapter {
             // We've got an mms item, pre-inflate the mms portion of the view
             view.findViewById(R.id.mms_layout_view_stub).setVisibility(View.VISIBLE);
         }
+        handleZoomForItem(view);
         return view;
     }
 
@@ -344,6 +349,19 @@ public class MessageListAdapter extends CursorAdapter {
             }
         }
         return item;
+    }
+
+    /**
+     * Handle zoom for zoomable list items.
+     * @param view A view that should be zoomed, if it is a ZoomMessageListItem
+     */
+    private void handleZoomForItem(View view) {
+        if (mListView != null
+                && mListView instanceof ZoomMessageListView
+                && view instanceof ZoomMessageListItem) {
+            int zoomFontSize = ((ZoomMessageListView) mListView).getZoomFontSize();
+            ((ZoomMessageListItem) view).setZoomFontSize(zoomFontSize);
+        }
     }
 
     private boolean isCursorValid(Cursor cursor) {
