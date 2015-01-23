@@ -1038,4 +1038,10 @@
     <string name="restricted_format">Restricted format</string>
     <string name="attach_anyway">Attach anyway?</string>
 
-  </resources>
+    <string name="plugger">Plugger</string>
+    <string name="file_not_found">File not found</string>
+    <string name="type_attachment">attachment</string>
+    <string name="bad_file">The file is corrupted and can not be inserted!</string>
+    <string name="indication_send_message_successfully">"Message has been sent out."</string>
+    <string name="indication_send_message_failed">"Failed to send message."</string>
+</resources>

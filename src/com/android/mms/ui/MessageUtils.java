@@ -23,6 +23,7 @@ package com.android.mms.ui;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
@@ -55,6 +56,8 @@ import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.database.sqlite.SqliteWrapper;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
 import android.graphics.drawable.Drawable;
 import android.media.CamcorderProfile;
 import android.media.RingtoneManager;
@@ -73,8 +76,10 @@ import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.CommonDataKinds.StructuredName;
 import android.provider.ContactsContract.Data;
 import android.provider.MediaStore;
+import android.provider.MediaStore.Audio;
 import android.provider.Settings;
 import android.provider.Telephony.Mms;
+import android.provider.Telephony.Mms.Part;
 import android.provider.Telephony.Sms;
 import android.provider.Telephony.Threads;
 import android.telecom.PhoneAccount;
@@ -105,7 +110,6 @@ import com.android.internal.telephony.cdma.sms.CdmaSmsAddress;
 import com.android.internal.telephony.cdma.sms.SmsEnvelope;
 import com.android.internal.telephony.cdma.sms.UserData;
 import com.android.internal.telephony.uicc.IccUtils;
-
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
@@ -114,6 +118,7 @@ import com.android.mms.TempFileProvider;
 import com.android.mms.data.WorkingMessage;
 import com.android.mms.model.ContentRestriction;
 import com.android.mms.model.ContentRestrictionFactory;
+import com.android.mms.model.ImageModel;
 import com.android.mms.model.MediaModel;
 import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
@@ -312,6 +317,7 @@ public class MessageUtils {
             "com.android.cellbroadcastreceiver";
     private static final String CELL_BROADCAST_ACTIVITY_NAME =
             "com.android.cellbroadcastreceiver.CellBroadcastListActivity";
+    private static final long COMPRESSION_FACTOR = 3;
 
     static {
         for (int i = 0; i < NUMERIC_CHARS_SUGAR.length; i++) {
@@ -2736,5 +2742,60 @@ public class MessageUtils {
             }
         }
         return number;
+    }
+
+    public static boolean isTooLargeFile(final Context ctx, final Uri uri) {
+        boolean isTooLarge = false;
+        InputStream input = null;
+
+        try {
+            input = ctx.getContentResolver().openInputStream(uri);
+            if (input.available() / COMPRESSION_FACTOR > MmsConfig
+                    .getMaxMessageSize() * KILOBYTE_SIZE) {
+                isTooLarge = true;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
+        } finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    Log.e(TAG, e.getMessage(), e);
+                }
+            }
+        }
+        return isTooLarge;
+    }
+
+    public static String getFilePath(final Context context, final Uri uri) {
+        String path = null;
+        if (uri.toString().contains("content://")) {
+            Cursor c = SqliteWrapper.query(context, context
+                    .getContentResolver(), uri, null, null, null, null);
+            try {
+                if (c != null && c.moveToFirst()) {
+                    if (ImageModel.isMmsUri(uri)) {
+                        path = c.getString(c.getColumnIndexOrThrow(Part._DATA));
+
+                    } else if ("media".equals(uri.getAuthority())) {
+                        path = c.getString(c
+                                .getColumnIndexOrThrow(Audio.Media.DATA));
+                    }
+                } else {
+                    return null;
+                }
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage());
+            } finally {
+                if (c != null) {
+                    c.close();
+                }
+            }
+        } else if (uri.getScheme().equals("file")) {
+            path = uri.getSchemeSpecificPart();
+        }
+
+        return path;
     }
 }
