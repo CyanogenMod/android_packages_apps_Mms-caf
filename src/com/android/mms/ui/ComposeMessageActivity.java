@@ -2028,10 +2028,12 @@ public class ComposeMessageActivity extends Activity
     public void onZoomWithScale(float scale) {
         if (mMsgListView != null) {
             mMsgListView.handleZoomWithScale(scale);
+            int fontSize = mMsgListView.getZoomFontSize();
+            if (mTextEditor != null) {
+                mTextEditor.setTextSize(fontSize);
+            }
         }
-        if (mTextEditor != null) {
-            ZoomMessageListItem.zoomViewByScale(this, mTextEditor, scale);
-        }
+
     }
 
     private void showSubjectEditor(boolean show) {
