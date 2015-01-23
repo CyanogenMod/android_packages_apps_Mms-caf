@@ -17,6 +17,9 @@
 package com.android.mms.ui.zoom;
 
 import android.content.Context;
+import android.os.Handler;
+import android.text.SpannableStringBuilder;
+import android.text.style.AbsoluteSizeSpan;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.LinearLayout;
@@ -39,12 +42,10 @@ public class ZoomMessageListItem extends LinearLayout {
     // Log tag
     private static final String TAG = ZoomMessageListItem.class.getSimpleName();
 
-    // "Zooming" constants
-    private static final int MIN_FONT_SIZE = 14;  //sp
-    private static final int MAX_FONT_SIZE = 72;  //sp
-
     // Members
     private final List<TextView> mZoomableTextViewList = new ArrayList<TextView>();
+
+    protected int mZoomFontSize = ZoomMessageListView.MIN_FONT_SIZE;
 
     /**
      * Constructor
@@ -77,66 +78,34 @@ public class ZoomMessageListItem extends LinearLayout {
         if (!mZoomableTextViewList.contains(textView)) {
             mZoomableTextViewList.add(textView);
         }
+
+
     }
 
     /**
-     * Accept the scale to use and handle "zooming" the text to the given scale
+     * Accept the font size to use and handle "zooming" the text to the given scale
      *
-     * @param scale {@link java.lang.Float}
+     * @param fontSize {@link java.lang.Integer}
      */
-    public void handleZoomWithScale(final float scale) {
-        getHandler().post(new Runnable() {
-            @Override
-            public void run() {
-                for (TextView textView : mZoomableTextViewList) {
-                    zoomViewByScale(getContext(), textView, scale);
+    public void setZoomFontSize(final int fontSize) {
+        mZoomFontSize = fontSize;
+        handleZoomFontSize();
+    }
+
+    /**
+     * "Zoom" the font size to mZoomFontSize, if a handler is attached to this view.
+     */
+    private void handleZoomFontSize() {
+        Handler handler = getHandler();
+        if (handler != null) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    for (TextView textView : mZoomableTextViewList) {
+                        textView.setTextSize(mZoomFontSize);
+                    }
                 }
-            }
-        });
-    }
-
-    /**
-     * This will "zoom" the text by changing the font size based ont he given scale for the given
-     * view
-     *
-     * @param context {@link android.content.Context}
-     * @param view    {@link android.widget.TextView}
-     * @param scale   {@link java.lang.Float}
-     */
-    public static void zoomViewByScale(Context context, TextView view, float scale) {
-        if (view == null) {
-            Log.w(TAG, "'view' is null!");
-            return;
+            });
         }
-        // getTextSize() returns absolute pixels
-        // convert to scaled for proper math flow
-        float currentTextSize = pixelsToSp(context, view.getTextSize());
-        // Calculate based on the scale (1.1 and 0.95 in this case)
-        float calculatedSize = currentTextSize * scale;
-        // Limit max and min
-        if (calculatedSize > MAX_FONT_SIZE) {
-            currentTextSize = MAX_FONT_SIZE;
-        } else if (calculatedSize < MIN_FONT_SIZE) {
-            currentTextSize = MIN_FONT_SIZE;
-        } else {
-            // Specify the calculated if we are within the reasonable bounds
-            currentTextSize = calculatedSize;
-        }
-        // Cast to int in order to normalize it
-        // setTextSize takes a Scaled Pixel value
-        view.setTextSize((int) currentTextSize);
-
-    }
-
-    /**
-     * Convert absolute pixels to scaled pixels based on density
-     *
-     * @param px {@link java.lang.Float}
-     *
-     * @return {@link java.lang.Float}
-     */
-    private static float pixelsToSp(Context context, float px) {
-        float scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
-        return px / scaledDensity;
     }
 }
