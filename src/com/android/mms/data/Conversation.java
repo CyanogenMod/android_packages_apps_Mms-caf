@@ -928,7 +928,7 @@ public class Conversation {
                                             int token) {
         synchronized(sDeletingThreadsLock) {
             if (UNMARKDEBUG) {
-                Log.v(TAG,"Conversation startMarkAsRead marking all as read");
+                Log.v(TAG,"Conversation startMarkAsReadAll  marking all as read");
             }
 
             Cursor c = context.getContentResolver().query(sAllThreadsUri,
