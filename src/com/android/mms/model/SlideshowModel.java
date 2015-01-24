@@ -251,13 +251,20 @@ public class SlideshowModel extends Model
                             contentType = MessageUtils.convertToVcardType(new String(name));
                         }
                     }
-                    if (ContentType.TEXT_VCARD.toLowerCase().equals(contentType)) {
+                    if (ContentType.TEXT_VCARD.toLowerCase().equals(contentType) ||
+                            ContentType.TEXT_VCALENDAR.toLowerCase().equals(contentType)) {
                         byte[] data = part.getContentLocation();
                         if (data == null) {
                             data = part.getName();
                         }
-                        MediaModel vMedia = new VcardModel(context, ContentType.TEXT_VCARD,
-                                new String(data), part.getDataUri());
+                        MediaModel vMedia = null;
+                        if (ContentType.TEXT_VCARD.toLowerCase().equals(contentType)) {
+                            vMedia = new VcardModel(context, contentType,
+                                    new String(data), part.getDataUri());
+                        } else {
+                            vMedia = new VCalModel(context, contentType,
+                                    new String(data), part.getDataUri());
+                        }
                         mediaSet.add(vMedia);
                         totalMessageSize += vMedia.getMediaSize();
                         break;
