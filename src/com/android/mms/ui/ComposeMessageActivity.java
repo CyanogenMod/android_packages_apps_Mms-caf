@@ -5962,10 +5962,20 @@ public class ComposeMessageActivity extends Activity
             StringBuilder sBuilder = new StringBuilder();
             for (Integer pos : mSelectedPos) {
                 Cursor c = (Cursor) getListView().getAdapter().getItem(pos);
-                sBuilder.append(c.getString(COLUMN_SMS_BODY));
+                String type = c.getString(COLUMN_MSG_TYPE);
+                if (type.equals("mms")) {
+                    sBuilder.append(mMsgListAdapter.getCachedBodyForPosition(pos));
+                } else {
+                    sBuilder.append(c.getString(COLUMN_SMS_BODY));
+                }
                 sBuilder.append(LINE_BREAK);
             }
-            copyToClipboard(sBuilder.toString());
+            if (!TextUtils.isEmpty(sBuilder.toString())) {
+                copyToClipboard(sBuilder.toString());
+            } else {
+                Toast.makeText(ComposeMessageActivity.this, R.string.copy_empty_string,
+                        Toast.LENGTH_SHORT).show();
+            }
         }
 
         private void resendCheckedMessage() {
@@ -6224,7 +6234,6 @@ public class ComposeMessageActivity extends Activity
 
             boolean noMmsSelected = mMmsSelected == 0;
             menu.findItem(R.id.copy_to_sim).setVisible(noMmsSelected);
-            menu.findItem(R.id.copy).setVisible(noMmsSelected);
 
             if (checkedCount > 1) {
                 // no detail
@@ -6232,9 +6241,30 @@ public class ComposeMessageActivity extends Activity
                 // no share
                 menu.findItem(R.id.share).setVisible(false);
                 // no save attachment
-                menu.findItem(R.id.save_attachment).setVisible(false);
-
-                menu.findItem(R.id.forward).setVisible(noMmsSelected);
+                mode.getMenu().findItem(R.id.save_attachment).setVisible(false);
+                // all locked show unlock, other wise show lock.
+                if (mUnlockedCount == 0) {
+                    mode.getMenu()
+                            .findItem(R.id.lock)
+                            .setTitle(
+                                    getContext()
+                                            .getString(R.string.menu_unlock));
+                } else {
+                    mode.getMenu()
+                            .findItem(R.id.lock)
+                            .setTitle(
+                                    getContext().getString(R.string.menu_lock));
+                }
+                if (mMmsSelected > 0) {
+                    mode.getMenu().findItem(R.id.forward).setVisible(false);
+                    mode.getMenu().findItem(R.id.copy_to_sim).setVisible(false);
+                } else {
+                    if (getResources().getBoolean(R.bool.config_forwardconv)) {
+                        mode.getMenu().findItem(R.id.forward).setVisible(true);
+                    }
+                    mode.getMenu().findItem(R.id.copy_to_sim).setVisible(true);
+                    mode.getMenu().findItem(R.id.copy).setVisible(true);
+                }
             } else {
                 int pos = checked ? position : mMsgListView.getCheckedPosition();
 
@@ -6247,7 +6277,31 @@ public class ComposeMessageActivity extends Activity
                         shareIntent, getPackageName());
                 menu.findItem(R.id.share).setVisible(noMmsSelected && numShareTargets > 0);
 
-                menu.findItem(R.id.forward).setVisible(true);
+                if (mUnlockedCount == 0) {
+                    mode.getMenu()
+                            .findItem(R.id.lock)
+                            .setTitle(
+                                    getContext()
+                                            .getString(R.string.menu_unlock));
+                } else {
+                    mode.getMenu()
+                            .findItem(R.id.lock)
+                            .setTitle(
+                                    getContext().getString(R.string.menu_lock));
+                }
+
+                mode.getMenu().findItem(R.id.forward).setVisible(isMessageForwardable(position));
+
+                if (mMmsSelected > 0) {
+                    mode.getMenu().findItem(R.id.copy_to_sim).setVisible(false);
+                    mode.getMenu().findItem(R.id.save_attachment)
+                            .setVisible(isAttachmentSaveable(pos));
+                } else {
+                    mode.getMenu().findItem(R.id.copy_to_sim).setVisible(true);
+                    mode.getMenu().findItem(R.id.copy).setVisible(true);
+                }
+
+                mode.getMenu().findItem(R.id.report).setVisible(isDeliveryReportMsg(position));
             }
         }
 
