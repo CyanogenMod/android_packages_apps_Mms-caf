@@ -73,7 +73,7 @@
                 android:id="@+id/play_slideshow_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/mms_play_btn" />
+                android:src="@drawable/mms_play_image_btn" />
 
             </LinearLayout>
         </FrameLayout>
