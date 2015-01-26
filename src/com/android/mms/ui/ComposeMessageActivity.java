@@ -1674,7 +1674,8 @@ public class ComposeMessageActivity extends Activity
         if (!ContentType.isImageType(type)
                 && !ContentType.isVideoType(type)
                 && !ContentType.isAudioType(type)
-                && !(ContentType.TEXT_VCARD.toLowerCase().equals(type.toLowerCase()))) {
+                && !(ContentType.TEXT_VCARD.toLowerCase().equals(type.toLowerCase()))
+                && !(ContentType.AUDIO_OGG.toLowerCase().equals(type.toLowerCase()))) {
             return true;    // we only save pictures, videos, and sounds. Skip the text parts,
                             // the app (smil) parts, and other type that we can't handle.
                             // Return true to pretend that we successfully saved the part so
@@ -5870,12 +5871,11 @@ public class ComposeMessageActivity extends Activity
             }
         }
 
-        private void saveAttachment() {
-            Cursor c = (Cursor) getListView().getAdapter().getItem(
-                    mSelectedPos.get(0));
-            int resId = copyMedia(c.getLong(COLUMN_ID)) ? R.string.copy_to_sdcard_success :
-                R.string.copy_to_sdcard_fail;
-            Toast.makeText(ComposeMessageActivity.this, resId, Toast.LENGTH_SHORT).show();
+        private void saveAttachment(long msgId) {
+            int resId = copyMedia(msgId) ? R.string.copy_to_sdcard_success
+                    : R.string.copy_to_sdcard_fail;
+            Toast.makeText(ComposeMessageActivity.this, resId,
+                    Toast.LENGTH_SHORT).show();
         }
 
         private void showReport() {
@@ -5968,7 +5968,14 @@ public class ComposeMessageActivity extends Activity
                 showMessageDetail();
                 break;
             case R.id.save_attachment:
-                saveAttachment();
+                Cursor cursor = (Cursor) mMsgListAdapter.getItem(mSelectedPos.get(0));
+                if (cursor != null && isAttachmentSaveable(cursor)) {
+                    saveAttachment(cursor.getLong(COLUMN_ID));
+                } else {
+                    Toast.makeText(ComposeMessageActivity.this,
+                            R.string.copy_to_sdcard_fail, Toast.LENGTH_SHORT)
+                            .show();
+                }
                 break;
             case R.id.report:
                 showReport();
@@ -6129,10 +6136,11 @@ public class ComposeMessageActivity extends Activity
             }
         }
 
-        private boolean isAttachmentSaveable(int pos) {
-            MessageListItem msglistItem = (MessageListItem) mMsgListView.getChildAt(pos);
-            return msglistItem != null && msglistItem.getMessageItem() != null
-                    && msglistItem.getMessageItem().hasAttachemntToSave();
+        private boolean isAttachmentSaveable(Cursor cursor) {
+            MessageItem messageItem = mMsgListAdapter.getCachedMessageItem(
+                    cursor.getString(COLUMN_MSG_TYPE),
+                    cursor.getLong(COLUMN_ID), cursor);
+            return messageItem != null && messageItem.hasAttachemntToSave();
         }
 
         private void customMenuVisibility(ActionMode mode, int checkedCount,
@@ -6173,8 +6181,9 @@ public class ComposeMessageActivity extends Activity
                     mode.getMenu().findItem(R.id.copy).setVisible(true);
                 }
             } else {
-                mode.getMenu().findItem(R.id.detail).setVisible(true);
-                mode.getMenu().findItem(R.id.save_attachment).setVisible(false);
+                menu.findItem(R.id.detail).setVisible(true);
+                menu.findItem(R.id.save_attachment).setVisible(!noMmsSelected);
+
                 if (mUnlockedCount == 0) {
                     mode.getMenu()
                             .findItem(R.id.lock)
@@ -6194,9 +6203,6 @@ public class ComposeMessageActivity extends Activity
                 if (mMmsSelected > 0) {
                     mode.getMenu().findItem(R.id.copy_to_sim).setVisible(false);
                     mode.getMenu().findItem(R.id.copy).setVisible(false);
-                    int pos = checked ? position : mMsgListView.getCheckedPosition();
-                    mode.getMenu().findItem(R.id.save_attachment)
-                            .setVisible(isAttachmentSaveable(pos));
                 } else {
                     mode.getMenu().findItem(R.id.copy_to_sim).setVisible(true);
                     mode.getMenu().findItem(R.id.copy).setVisible(true);
