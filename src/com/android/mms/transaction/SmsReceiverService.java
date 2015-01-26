@@ -692,6 +692,7 @@ public class SmsReceiverService extends Service {
         builder.setSmallIcon(R.drawable.ic_block_message_holo_dark)
                 .setContentIntent(blSettingsIntent)
                 .setContentTitle(context.getString(R.string.blacklist_title))
+                .setColor(context.getResources().getColor(R.color.mms_theme_color))
                 .setWhen(date);
 
         // Add the 'Remove block' notification action only for MATCH_LIST items since
