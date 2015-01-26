@@ -780,13 +780,16 @@ public class SmsReceiverService extends Service {
         boolean result = true;
         long subscription = sms.getSubId();
         String address = MessageUtils.convertIdp(this, sms.getOriginatingAddress());
-        byte pdu[] = MessageUtils.getDeliveryPdu(null, address,
-                sms.getMessageBody(), sms.getTimestampMillis(), subscription);
-        result &= TelephonyManager.getDefault().isMultiSimEnabled()
-                ? SmsManager.getSmsManagerForSubscriber(subscription)
-                    .copyMessageToIcc(null, pdu, SmsManager.STATUS_ON_ICC_READ)
-                : SmsManager.getDefault()
-                    .copyMessageToIcc(null, pdu, SmsManager.STATUS_ON_ICC_READ);
+        ContentValues values = new ContentValues();
+        values.put(PhoneConstants.SUBSCRIPTION_KEY, subscription);
+        values.put(Sms.ADDRESS, address);
+        values.put(Sms.BODY, sms.getMessageBody());
+        values.put(MessageUtils.SMS_BOX_ID, Sms.MESSAGE_TYPE_INBOX);
+        values.put(Sms.DATE, sms.getTimestampMillis());
+        Uri uri = getContentResolver().insert(MessageUtils.ICC_URI, values);
+        if (uri != null) {
+            result = MessageUtils.COPY_SMS_INTO_SIM_SUCCESS.equals(uri.getLastPathSegment());
+        }
         return result;
     }
 }
