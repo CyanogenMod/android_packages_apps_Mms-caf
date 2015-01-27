@@ -139,15 +139,6 @@ public class RecipientsEditor extends RecipientEditTextView {
             protected int getItemLayoutResId(AdapterType type) {
                 return R.layout.mms_chips_recipient_dropdown_item;
             }
-            @Override
-            protected void bindIconToView(boolean showImage, RecipientEntry entry,
-                    ImageView view, AdapterType type) {
-                if (view != null && !showImage) {
-                    view.setVisibility(View.INVISIBLE);
-                } else {
-                    super.bindIconToView(showImage, entry, view, type);
-                }
-            }
         });
     }
 
