@@ -121,6 +121,8 @@ import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.TempFileProvider;
 import com.android.mms.data.WorkingMessage;
+import com.android.mms.model.ContentRestriction;
+import com.android.mms.model.ContentRestrictionFactory;
 import com.android.mms.model.VCalModel;
 import com.android.mms.model.MediaModel;
 import com.android.mms.model.SlideModel;
@@ -1005,6 +1007,19 @@ public class MessageUtils {
                         heightLimit = temp;
                     }
 
+                   int maxSize = MmsConfig.getMaxRestrictedMessageSize();
+                   ContentRestriction cr = ContentRestrictionFactory.getContentRestriction();
+                   int creationMode = ContentRestrictionFactory.getUsedCreationMode();
+                   switch (creationMode) {
+                   case MmsConfig.CREATIONMODE_RESTRICTED:
+                   case MmsConfig.CREATIONMODE_WARNING:
+                        maxSize = MmsConfig.getMaxRestrictedMessageSize();
+                        break;
+                   case MmsConfig.CREATIONMODE_FREE:
+                   default:
+                        maxSize = MmsConfig.getMaxMessageSize();
+                        break;
+                    }
                     part = image.getResizedImageAsPart(
                         widthLimit,
                         heightLimit,

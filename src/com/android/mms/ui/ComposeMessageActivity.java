@@ -185,6 +185,8 @@ import com.android.mms.data.Conversation.ConversationQueryHandler;
 import com.android.mms.data.WorkingMessage;
 import com.android.mms.data.WorkingMessage.MessageStatusListener;
 import com.android.mms.drm.DrmUtils;
+import com.android.mms.model.ContentRestriction;
+import com.android.mms.model.ContentRestrictionFactory;
 import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
 import com.android.mms.transaction.MessagingNotification;
@@ -3596,6 +3598,10 @@ public class ComposeMessageActivity extends Activity
             return;
         }
 
+        if (MmsConfig.isCreationModeEnabled()) {
+            ContentRestrictionFactory.reset();
+        }
+
         switch (requestCode) {
             case REQUEST_CODE_CREATE_SLIDESHOW:
                 if (data != null) {
@@ -3969,7 +3975,7 @@ public class ComposeMessageActivity extends Activity
         }, null, R.string.adding_attachments_title);
     }
 
-    private void addImage(Uri uri, boolean append) {
+    private void addImage(final Uri uri, final boolean append) {
         if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
             log("addImage: append=" + append + ", uri=" + uri);
         }
@@ -3987,6 +3993,22 @@ public class ComposeMessageActivity extends Activity
             return;
         }
 
+        if ((MmsConfig.isCreationModeEnabled())
+                && (result == WorkingMessage.UNSUPPORTED_TYPE_WARNING)) {
+            final Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    addImage(uri, append);
+                }
+            };
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    handleUnsupportedTypeWarning(runnable);
+                }
+            });
+            return;
+        }
         updateMmsSizeIndicator();
         handleAddAttachmentError(result, R.string.type_picture);
     }
@@ -4000,17 +4022,84 @@ public class ComposeMessageActivity extends Activity
         }, null, R.string.adding_attachments_title);
     }
 
-    private void addVideo(Uri uri, boolean append) {
+    private void addVideo(final Uri uri, final boolean append) {
         if (uri != null) {
             int result = mWorkingMessage.setAttachment(WorkingMessage.VIDEO, uri, append);
+            if (MmsConfig.isCreationModeEnabled()) {
+                if (result == WorkingMessage.UNSUPPORTED_TYPE_WARNING) {
+                    final Runnable runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            addVideo(uri, append);
+                        }
+                    };
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            handleUnsupportedTypeWarning(runnable);
+                        }
+                    });
+                    return;
+                }
+
+                if (result == WorkingMessage.MESSAGE_SIZE_EXCEEDED_WARNING) {
+                    final Runnable runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            addVideo(uri, append);
+                        }
+                    };
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                               handleMessageSizeExceededWarning(runnable);
+                        }
+                    });
+                    return;
+                }
+            }
             updateMmsSizeIndicator();
             handleAddAttachmentError(result, R.string.type_video);
         }
     }
 
-    private void addAudio(Uri uri, boolean append) {
+    private void addAudio(final Uri uri, final boolean append) {
         if (uri != null) {
             int result = mWorkingMessage.setAttachment(WorkingMessage.AUDIO, uri, append);
+            if (MmsConfig.isCreationModeEnabled()) {
+                if (result == WorkingMessage.UNSUPPORTED_TYPE_WARNING) {
+                    final Runnable runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            addAudio(uri, append);
+                        }
+                    };
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            handleUnsupportedTypeWarning(runnable);
+                        }
+                    });
+                    return;
+                }
+
+                if (result == WorkingMessage.MESSAGE_SIZE_EXCEEDED_WARNING) {
+                    final Runnable runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            addAudio(uri, append);
+                        }
+                    };
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            handleMessageSizeExceededWarning(runnable);
+                        }
+                    });
+                    return;
+                }
+            }
+
             updateMmsSizeIndicator();
             handleAddAttachmentError(result, R.string.type_audio);
         }
@@ -4219,6 +4308,11 @@ public class ComposeMessageActivity extends Activity
             // a single attachment is "shared" the type will specify an image or video. When
             // there are multiple types, the type passed in is "*/*". In that case, we've got
             // to look at the uri to figure out if it is an image or video.
+
+            if (MmsConfig.isCreationModeEnabled()) {
+                ContentRestrictionFactory.reset();
+            }
+
             boolean wildcard = "*/*".equals(type);
             if (type.startsWith("image/")
                     || (wildcard && uri.toString().startsWith(mImageUri))
@@ -6422,5 +6516,47 @@ public class ComposeMessageActivity extends Activity
             }
         }
     };
+
+    private void handleUnsupportedTypeWarning(final Runnable runnable) {
+        if (runnable != null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(getString(R.string.restricted_format));
+            builder.setMessage(R.string.attach_anyway);
+            builder.setIcon(R.drawable.ic_sms_mms_not_delivered);
+            builder.setPositiveButton(R.string.yes,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            ContentRestrictionFactory
+                                    .initContentRestriction(
+                                    MessagingPreferenceActivity.CREATION_MODE_FREE);
+                            runnable.run();
+                        }
+                    });
+            builder.setNegativeButton(R.string.no, null);
+            builder.create().show();
+        }
+    }
+
+    private void handleMessageSizeExceededWarning(final Runnable runnable) {
+        if (runnable != null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(getString(R.string.exceed_message_size_limitation));
+            builder.setMessage(R.string.attach_anyway);
+            builder.setIcon(R.drawable.ic_sms_mms_not_delivered);
+            builder.setPositiveButton(R.string.yes,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            ContentRestrictionFactory
+                                    .initContentRestriction(
+                                    MessagingPreferenceActivity.CREATION_MODE_FREE);
+                            runnable.run();
+                        }
+                    });
+            builder.setNegativeButton(R.string.no, null);
+            builder.create().show();
+        }
+    }
 
 }

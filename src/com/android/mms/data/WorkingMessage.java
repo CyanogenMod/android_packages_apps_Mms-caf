@@ -58,6 +58,7 @@ import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
 import com.android.mms.ResolutionException;
 import com.android.mms.UnsupportContentTypeException;
+import com.android.mms.model.ContentRestrictionFactory;
 import com.android.mms.model.ImageModel;
 import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
@@ -88,6 +89,7 @@ public class WorkingMessage {
     private static final String TAG = LogTag.TAG;
     private static final boolean DEBUG = false;
 
+    private static final int INVALID_MMS_SIZE = -1;
     // Public intents
     public static final String ACTION_SENDING_SMS = "android.intent.action.SENDING_SMS";
 
@@ -119,6 +121,9 @@ public class WorkingMessage {
     public static final int UNSUPPORTED_TYPE = -3;
     public static final int IMAGE_TOO_LARGE = -4;
     public static final int NEGATIVE_MESSAGE_OR_INCREASE_SIZE = -5;
+
+    public static final int UNSUPPORTED_TYPE_WARNING = -6;
+    public static final int MESSAGE_SIZE_EXCEEDED_WARNING = -7;
 
     // Attachment types
     public static final int TEXT = 0;
@@ -684,9 +689,35 @@ public class WorkingMessage {
         } catch (UnsupportContentTypeException e) {
             Log.e(TAG, "internalChangeMedia:", e);
             result = UNSUPPORTED_TYPE;
+            if (MmsConfig.isCreationModeEnabled()) {
+                String contentType = e.getContentType();
+                if (!TextUtils.isEmpty(contentType)) {
+                    int creationMode = ContentRestrictionFactory
+                            .getUsedCreationMode();
+                    if ((creationMode == MessagingPreferenceActivity.CREATION_MODE_WARNING)
+                            && (ContentType.getSupportedTypes()
+                                    .contains(contentType))
+                            && (mActivity != null && !mActivity.isFinishing())) {
+                        result = UNSUPPORTED_TYPE_WARNING;
+                    }
+                }
+            }
         } catch (ExceedMessageSizeException e) {
             Log.e(TAG, "internalChangeMedia:", e);
             result = MESSAGE_SIZE_EXCEEDED;
+            if (MmsConfig.isCreationModeEnabled()) {
+                int messageSize = e.getMmsSize();
+                if (messageSize != INVALID_MMS_SIZE) {
+                    int creationMode = ContentRestrictionFactory
+                            .getUsedCreationMode();
+                    if ((creationMode == MessagingPreferenceActivity.CREATION_MODE_WARNING)
+                            && (messageSize > 0 && messageSize < MmsConfig
+                                    .getMaxMessageSize())
+                            && (mActivity != null && !mActivity.isFinishing())) {
+                        result = MESSAGE_SIZE_EXCEEDED_WARNING;
+                    }
+                }
+            }
         } catch (ResolutionException e) {
             Log.e(TAG, "internalChangeMedia:", e);
             result = IMAGE_TOO_LARGE;
