@@ -5745,21 +5745,16 @@ public class ComposeMessageActivity extends Activity
 
         boolean ret = true;
         for (String message : messages) {
-            byte pdu[] = null;
-            int status;
-            if (Sms.isOutgoingFolder(boxId)) {
-                pdu = SmsMessage.getSubmitPdu(null, address, message,
-                        false, subId).encodedMessage;
-                status = SmsManager.STATUS_ON_ICC_SENT;
-            } else {
-                pdu = MessageUtils.getDeliveryPdu(null, address,
-                        message, timestamp, subId);
-                status = SmsManager.STATUS_ON_ICC_READ;
+            ContentValues values = new ContentValues();
+            values.put(PhoneConstants.SUBSCRIPTION_KEY, subId);
+            values.put(Sms.ADDRESS, address);
+            values.put(Sms.BODY, message);
+            values.put(MessageUtils.SMS_BOX_ID, boxId);
+            values.put(Sms.DATE, timestamp);
+            Uri uri = getContentResolver().insert(MessageUtils.ICC_URI, values);
+            if (uri != null) {
+                ret = MessageUtils.COPY_SMS_INTO_SIM_SUCCESS.equals(uri.getLastPathSegment());
             }
-            ret &= TelephonyManager.getDefault().isMultiSimEnabled()
-                    ? SmsManager.getSmsManagerForSubscriber(subId)
-                            .copyMessageToIcc(null, pdu, status)
-                    : sm.copyMessageToIcc(null, pdu, status);
             if (!ret) {
                 break;
             }
