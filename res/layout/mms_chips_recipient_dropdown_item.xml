@@ -78,4 +78,6 @@
 
     </RelativeLayout>
 
+    <ImageView style="@style/ChipDeleteIconStyle" />
+
 </LinearLayout>
