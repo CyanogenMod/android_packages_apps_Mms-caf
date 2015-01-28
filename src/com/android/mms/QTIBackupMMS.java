@@ -46,6 +46,7 @@ import com.google.android.mms.pdu.RetrieveConf;
 import com.google.android.mms.pdu.SendReq;
 import com.google.android.mms.pdu.PduParser;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -67,7 +68,7 @@ class QMMSBackup implements Serializable{
 
 public class QTIBackupMMS {
     Cursor cursor;
-    String vfile;
+    File vfile;
     Context mContext;
     private final boolean DEBUG = false;
     private final String TAG = "QTIBackupMMS";
@@ -92,7 +93,7 @@ public class QTIBackupMMS {
             "sub_id",
     };
 
-    public QTIBackupMMS(Context context, String _vfile) {
+    public QTIBackupMMS(Context context, File _vfile) {
         mContext = context;
         vfile = _vfile;
         mmsBackupSent = new QMMSBackup();
@@ -111,7 +112,7 @@ public class QTIBackupMMS {
         QMMSBackup mmsbk;
 
         try {
-            mFileInputStream = mContext.openFileInput(vfile);
+            mFileInputStream = new FileInputStream(vfile);
             ObjectInputStream ois = new ObjectInputStream(mFileInputStream);
 
             //For sent messages
@@ -160,6 +161,10 @@ public class QTIBackupMMS {
         for(QTIMMSObject mmsObj : mmsbk.MMSList){
 
             byte[] Data = mmsObj.getMmData();
+            if (Data == null) {
+                continue;
+            }
+
             Uri msgUri = null;
             try {
                 if (uri.equals(Mms.Inbox.CONTENT_URI)) {
@@ -193,7 +198,7 @@ public class QTIBackupMMS {
     /* Serializes mmsBackup object. Writes it to mmsBackup file */
     private void writeMmsList(int numSent, int numInbox, int numDraft) {
         try {
-            mFileOutputStream =  mContext.openFileOutput(vfile, Context.MODE_PRIVATE);
+            mFileOutputStream =  new FileOutputStream(vfile);
             ObjectOutputStream oos = new ObjectOutputStream(mFileOutputStream);
             oos.writeInt(numSent);
             oos.writeObject( mmsBackupSent );

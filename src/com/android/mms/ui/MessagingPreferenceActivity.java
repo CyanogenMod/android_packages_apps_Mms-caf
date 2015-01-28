@@ -77,10 +77,12 @@ import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.transaction.TransactionService;
 import com.android.mms.util.Recycler;
+import com.android.mms.QTIBackupMMS;
 import com.android.mms.QTIBackupSMS;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Path;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -910,26 +912,49 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                 folder.mkdir();
             }
             File operationFile;
+            File operationFileSMS;
+            File operationFileMMS;
             if (mShouldBackup) {
-                operationFile = new File(folder, String.valueOf(System.currentTimeMillis()));
+                String sysTime = String.valueOf(System.currentTimeMillis());
+                operationFileSMS = new File(folder, sysTime + "_SMS");
+                operationFileMMS = new File(folder, sysTime + "_MMS");
             } else {
                 try {
-                    operationFile = MessageUtils.unzipBackupFile(mRestoreFile,
+                    ArrayList<File> backupFiles = MessageUtils.unzipBackupFile(mRestoreFile,
                             folder.getAbsolutePath());
+
+                    if (backupFiles != null && backupFiles.size() >= 2) {
+                        // Find SMS file and MMS file
+                        for (File f : backupFiles) {
+                            if (f.getName().contains("SMS") {
+                                operationFileSMS = f;
+                            }
+                            if (f.getName().contains("MMS") {
+                                operationFileMMS = f;
+                            }
+                        }
+                    }
+
+                    if (operationFileSMS == null && operationFileMMS == null) {
+                        return null;
+                    }
+
                 } catch (IOException e) {
                     e.printStackTrace();
                     return null;
                 }
             }
-            QTIBackupSMS smsBackup = new QTIBackupSMS(getApplicationContext(), operationFile);
+            QTIBackupMMS mmsBackup = new QTIBackupMMS(getApplicationContext(), operationFileMMS);
+            QTIBackupSMS smsBackup = new QTIBackupSMS(getApplicationContext(), operationFileSMS);
             if (mShouldBackup) {
+                mmsBackup.performBackup();
                 smsBackup.performBackup();
 
                 // compress and return zip file
-                String zipFileName = operationFile.getAbsolutePath() + ".zip";
+                String zipFileName = Path.getDirectoryName(operationFileSMS.getAbsolutePath()) + ".zip";
 
                 try {
-                    MessageUtils.zipFile(operationFile, zipFileName);
+                    MessageUtils.zipFile(new File[] {operationFileSMS, operationFileMMS}, zipFileName);
                 } catch (IOException e) {
                     e.printStackTrace();
                     return null;
@@ -938,6 +963,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                 operationFile.delete();
                 operationFile = new File(zipFileName);
             } else {
+                mmsBackup.performRestore();
                 smsBackup.performRestore();
             }
             return operationFile;
