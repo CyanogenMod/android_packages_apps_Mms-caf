@@ -139,6 +139,11 @@ public class RecipientsEditor extends RecipientEditTextView {
             protected int getItemLayoutResId(AdapterType type) {
                 return R.layout.mms_chips_recipient_dropdown_item;
             }
+
+            @Override
+            protected int getAlternateItemLayoutResId(AdapterType type) {
+                return R.layout.mms_chips_recipient_dropdown_item;
+            }
         });
     }
 
