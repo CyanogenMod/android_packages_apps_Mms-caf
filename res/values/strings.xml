@@ -125,7 +125,7 @@
     <!-- Menu item in slideshow edit screen for moving the selected slide down in the order -->
     <string name="move_down">Move down</string>
     <!-- Menu item in slideshow edit screen for removing the selected slide from the slideshow -->
-    <string name="remove_slide">Remove slide</string> 
+    <string name="remove_slide">Remove slide</string>
     <!-- Menu item in slideshow edit screen for adding a new slide to the slideshow -->
     <string name="add_slide">Add slide</string>
     <!-- Text displayed below "Add slide" item in slideshow edit screen -->
@@ -1049,21 +1049,21 @@
     <string name="prefs_title_export_sms_messages">Export SMS messages</string>
     <string name="prefs_title_import_sms_messages">Import SMS messages</string>
 
-    <string name="import_sms_title">Import SMS</string>
-    <string name="export_sms_title">Export SMS</string>
-    <string name="delete_sms_title">Delete SMS</string>
-    <string name="pick_sms_backup_title">Pick SMS backup</string>
-    <string name="delete_sms_toast">SMS message deleted successfully</string>
-    <string name="import_sms_toast">SMS imported successfully</string>
-    <string name="export_sms_toast">SMS exported successfully</string>
-    <string name="export_sms_failed_toast">Unable to export SMS</string>
-    <string name="import_sms_failed_toast">Unable to import SMS</string>
-    <string name="perform_backup_title">Performing backup</string>
-    <string name="perform_restore_title">Performing restore</string>
-    <string name="wait_progress_message">Please wait...</string>
-    <string name="backup_file_name_message">File path : %1s</string>
-    <string name="manage_sdcard_messages">Manage sdcard messages</string>
-    <string name="no_backups_found">No backed up messages found</string>
+    <string name="import_sms_title">Import from storage</string>
+    <string name="export_sms_title">Export to storage</string>
+    <string name="delete_sms_title">Delete existing backup</string>
+    <string name="pick_sms_backup_title">Select backup</string>
+    <string name="delete_sms_toast">Backup deleted.</string>
+    <string name="import_sms_toast">Messages imported.</string>
+    <string name="export_sms_toast">Messages exported.</string>
+    <string name="export_sms_failed_toast">Unable to export messages</string>
+    <string name="import_sms_failed_toast">Unable to import messages</string>
+    <string name="perform_backup_title">Exporting</string>
+    <string name="perform_restore_title">Importing</string>
+    <string name="wait_progress_message">Please wait\2026</string>
+    <string name="backup_file_name_message">Messages exported to \'%1$s\'</string>
+    <string name="manage_sdcard_messages">Import/export messages</string>
+    <string name="no_backups_found">No backups found</string>
     <string name="remove_subject">Remove subject</string>
     <string name="pref_title_notification_creation_mode">Creation mode</string>
 
