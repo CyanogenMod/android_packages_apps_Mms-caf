@@ -676,10 +676,12 @@ public class SlideEditorActivity extends Activity {
                             getResourcesString(R.string.unsupported_media_format, getPictureString()),
                             getResourcesString(R.string.select_different_media, getPictureString()));
                 } catch (ResolutionException e) {
-                    MessageUtils.resizeImageAsync(this, pictureUri, new Handler(),
+                    MessageUtils.resizeImageAsync(this, pictureUri,
+                            mSlideshowModel.getCurrentMessageSize(), new Handler(),
                             mResizeImageCallback, false);
                 } catch (ExceedMessageSizeException e) {
-                    MessageUtils.resizeImageAsync(this, pictureUri, new Handler(),
+                    MessageUtils.resizeImageAsync(this, pictureUri,
+                            mSlideshowModel.getCurrentMessageSize(), new Handler(),
                             mResizeImageCallback, false);
                 }
                 if (showError) {
@@ -705,10 +707,12 @@ public class SlideEditorActivity extends Activity {
                             getResourcesString(R.string.unsupported_media_format, getPictureString()),
                             getResourcesString(R.string.select_different_media, getPictureString()));
                 } catch (ResolutionException e) {
-                    MessageUtils.resizeImageAsync(this, data.getData(), new Handler(),
+                    MessageUtils.resizeImageAsync(this, data.getData(),
+                            mSlideshowModel.getCurrentMessageSize(), new Handler(),
                             mResizeImageCallback, false);
                 } catch (ExceedMessageSizeException e) {
-                    MessageUtils.resizeImageAsync(this, data.getData(), new Handler(),
+                    MessageUtils.resizeImageAsync(this, data.getData(),
+                            mSlideshowModel.getCurrentMessageSize(), new Handler(),
                             mResizeImageCallback, false);
                 }
                 break;
