@@ -2532,15 +2532,8 @@ public class ComposeMessageActivity extends Activity
         mMsgListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 
         if (mMsgListAdapter != null) {
-            // Close the cursor in the ListAdapter if the activity stopped.
-            Cursor cursor = mMsgListAdapter.getCursor();
-
-            if (cursor != null && !cursor.isClosed()) {
-                cursor.close();
-            }
-
-            mMsgListAdapter.changeCursor(null);
-            mMsgListAdapter.cancelBackgroundLoading();
+            // resets multi select mode
+            getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         }
 
         if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
@@ -2566,6 +2559,11 @@ public class ComposeMessageActivity extends Activity
     protected void onDestroy() {
         if (TRACE) {
             android.os.Debug.stopMethodTracing();
+        }
+
+        if (mMsgListAdapter != null) {
+            mMsgListAdapter.changeCursor(null);
+            mMsgListAdapter.cancelBackgroundLoading();
         }
 
         super.onDestroy();

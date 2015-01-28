@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -259,6 +258,12 @@ public class MessageListItem extends LinearLayout implements
         if (mPresenter != null) {
             mPresenter.cancelBackgroundLoading();
         }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        unbind();
+        super.onDetachedFromWindow();
     }
 
     public MessageItem getMessageItem() {
