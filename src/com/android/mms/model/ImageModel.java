@@ -141,8 +141,8 @@ public class ImageModel extends RegionMediaModel {
                 Log.v(TAG, "cancelThumbnailLoading for: " + this);
             }
             mItemLoadedFuture.cancel(getUri());
-            mItemLoadedFuture = null;
         }
+        mItemLoadedFuture = null;
     }
 
     private Bitmap createBitmap(int thumbnailBoundsLimit, Uri uri) {

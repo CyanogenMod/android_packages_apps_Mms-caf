@@ -239,7 +239,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Cache recipients information in a background thread in advance.
-        RecipientIdCache.init(this);
+        RecipientIdCache.init(getApplication());
 
         setContentView(R.layout.conversation_list_screen);
         if (MessageUtils.isMailboxMode()) {
@@ -621,20 +621,15 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         // Simply setting the choice mode causes the previous choice mode to finish and we exit
         // multi-select mode (if we're in it) and remove all the selections.
         getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-
-        // Close the cursor in the ListAdapter if the activity stopped.
-        Cursor cursor = mListAdapter.getCursor();
-
-        if (cursor != null && !cursor.isClosed()) {
-            cursor.close();
-        }
-
-        mListAdapter.changeCursor(null);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        if (mListAdapter != null) {
+            mListAdapter.changeCursor(null);
+        }
 
         MessageUtils.removeDialogs();
         try {
@@ -644,6 +639,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         } catch (Exception e) {
             e.printStackTrace();
         }
+        Contact.clearListener();
     }
 
     private void unbindListeners(final Collection<Long> threadIds) {
@@ -1424,7 +1420,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                 if (threadId == -1) {
                     // Rebuild the contacts cache now that all threads and their associated unique
                     // recipients have been deleted.
-                    Contact.init(ConversationList.this);
+                    Contact.init(getApplication());
                 } else {
                     // Remove any recipients referenced by this single thread from the
                     // contacts cache. It's possible for two or more threads to reference

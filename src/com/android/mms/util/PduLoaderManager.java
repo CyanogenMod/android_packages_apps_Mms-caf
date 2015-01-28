@@ -119,6 +119,7 @@ public class PduLoaderManager extends BackgroundLoaderManager {
             }
 
             public void setIsDone(boolean done) {
+                cancelCallback(callback);
                 mIsDone = done;
             }
 
