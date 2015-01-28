@@ -48,9 +48,10 @@ public class QTIBackupAgent extends BackupAgentHelper {
     @Override
         public void onFullBackup(FullBackupDataOutput data) throws IOException {
             File sms = new File(getBaseContext().getFilesDir(), SMS);
+            File mms = new File(getBaseContext().getFilesDir(), MMS);
             QTIBackupSMS smsBackup = new QTIBackupSMS(this, sms);
             smsBackup.performBackup();
-            QTIBackupMMS mmsBackup = new QTIBackupMMS(this, MMS);
+            QTIBackupMMS mmsBackup = new QTIBackupMMS(this, mms);
             mmsBackup.performBackup();
             super.onFullBackup(data);
         }
@@ -61,7 +62,8 @@ public class QTIBackupAgent extends BackupAgentHelper {
         throws IOException {
             super.onRestoreFile(data, size, destination, type, mode, mtime);
             if(destination.getName().equalsIgnoreCase(MMS)){
-                QTIBackupMMS mmsBackup = new QTIBackupMMS(this, MMS);
+                File mms = new File(getBaseContext().getFilesDir(), MMS);
+                QTIBackupMMS mmsBackup = new QTIBackupMMS(this, mms);
                 mmsBackup.performRestore();
             }
             if(destination.getName().equalsIgnoreCase(SMS)){
