@@ -23,6 +23,8 @@ package com.android.mms;
 public final class UnsupportContentTypeException extends ContentRestrictionException {
     private static final long serialVersionUID = 2684128059358484321L;
 
+    private String mContentType;
+
     public UnsupportContentTypeException() {
         super();
     }
@@ -30,4 +32,14 @@ public final class UnsupportContentTypeException extends ContentRestrictionExcep
     public UnsupportContentTypeException(String msg) {
         super(msg);
     }
+
+    public UnsupportContentTypeException putContentType(String contentType) {
+        mContentType = contentType;
+        return this;
+    }
+
+    public String getContentType() {
+        return mContentType;
+    }
+
 }
