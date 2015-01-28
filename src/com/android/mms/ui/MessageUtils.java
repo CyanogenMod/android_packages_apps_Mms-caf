@@ -2803,7 +2803,7 @@ public class MessageUtils {
         return number;
     }
 
-    public static void zipFile(File inputFile, String zipFilePath) throws IOException {
+    public static void zipFile(ArrayList<File> inputFiles, String zipFilePath) throws IOException {
         FileOutputStream fileOutputStream = null;
         ZipOutputStream zipOutputStream = null;
         FileInputStream fileInputStream = null;
@@ -2812,18 +2812,20 @@ public class MessageUtils {
             fileOutputStream = new FileOutputStream(zipFilePath);
             zipOutputStream = new ZipOutputStream(fileOutputStream);
 
-            ZipEntry zipEntry = new ZipEntry(inputFile.getName());
-            zipOutputStream.putNextEntry(zipEntry);
+            for (File inputFile : inputFiles) {
+                ZipEntry zipEntry = new ZipEntry(inputFile.getName());
+                zipOutputStream.putNextEntry(zipEntry);
 
-            fileInputStream = new FileInputStream(inputFile);
-            byte[] buf = new byte[1024];
-            int bytesRead;
+                fileInputStream = new FileInputStream(inputFile);
+                byte[] buf = new byte[1024];
+                int bytesRead;
 
-            while ((bytesRead = fileInputStream.read(buf)) > 0) {
-                zipOutputStream.write(buf, 0, bytesRead);
+                while ((bytesRead = fileInputStream.read(buf)) > 0) {
+                    zipOutputStream.write(buf, 0, bytesRead);
+                }
+
+                zipOutputStream.closeEntry();
             }
-
-            zipOutputStream.closeEntry();
 
             zipOutputStream.close();
             fileOutputStream.close();
@@ -2840,13 +2842,15 @@ public class MessageUtils {
         }
     }
 
-    public static File unzipBackupFile(File zipFilePath, String destDirectory) throws IOException {
+    public static ArrayList<File> unzipBackupFile(File zipFilePath, String destDirectory)
+            throws IOException {
         File destDir = new File(destDirectory);
         if (!destDir.exists()) {
             destDir.mkdir();
         }
 
         ZipInputStream zipIn = null;
+        ArrayList<File> files = new ArrayList<File>();
 
         try {
             zipIn = new ZipInputStream(new FileInputStream(zipFilePath));
@@ -2854,14 +2858,13 @@ public class MessageUtils {
             while (entry != null) {
                 String filePath = destDirectory + File.separator + entry.getName();
                 if (!entry.isDirectory()) {
-                    return extractFile(zipIn, filePath);
-                } else {
-                    // No backup file found in zip
-                    return null;
+                    files.add(extractFile(zipIn, filePath));
                 }
+
+                entry = zipIn.getNextEntry();
             }
 
-            return null;
+            return files;
         } finally {
             if (zipIn != null) {
                 zipIn.close();
