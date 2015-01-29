@@ -1282,7 +1282,7 @@ public class MessagingNotification {
             // Add the Call action
             CharSequence callText = context.getText(R.string.menu_call);
             Intent callIntent = new Intent(Intent.ACTION_CALL);
-            callIntent.setData(mostRecentNotification.mSender.getPhoneUri());
+            callIntent.setData(Uri.parse("tel:" + mostRecentNotification.mSender.getNumber()));
             PendingIntent callPendingIntent = PendingIntent.getActivity(context, 0, callIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT);
             noti.addAction(R.drawable.ic_menu_call, callText, callPendingIntent);
