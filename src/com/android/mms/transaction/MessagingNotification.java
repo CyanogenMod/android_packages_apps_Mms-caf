@@ -58,10 +58,6 @@ import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Sms;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationCompat.WearableExtender;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.app.RemoteInput;
 import android.telephony.MSimSmsManager;
 import android.telephony.MSimTelephonyManager;
 import android.telephony.PhoneStateListener;
@@ -86,7 +82,6 @@ import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
 import com.android.mms.quickmessage.QmMarkRead;
 import com.android.mms.quickmessage.QuickMessagePopup;
-import com.android.mms.quickmessage.QuickMessageWear;
 import com.android.mms.ui.ComposeMessageActivity;
 import com.android.mms.ui.ConversationList;
 import com.android.mms.ui.ManageSimMessages;
@@ -1068,7 +1063,7 @@ public class MessagingNotification {
         final int messageCount = notificationSet.size();
         NotificationInfo mostRecentNotification = notificationSet.first();
 
-        final NotificationCompat.Builder noti = new NotificationCompat.Builder(context)
+        final Notification.Builder noti = new Notification.Builder(context)
                 .setWhen(mostRecentNotification.mTimeMillis).setAutoCancel(true);
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
@@ -1153,7 +1148,8 @@ public class MessagingNotification {
         // Always have to set the small icon or the notification is ignored
         noti.setSmallIcon(R.drawable.stat_notify_sms);
 
-        NotificationManagerCompat nm = NotificationMangerCompat.from(context);
+        NotificationManager nm = (NotificationManager)
+                context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         // Update the notification.
         noti.setContentTitle(title)
@@ -1212,9 +1208,6 @@ public class MessagingNotification {
         // Start getting the notification ready
         final Notification notification;
 
-        //Create a WearableExtender to add actions too
-        WearableExtender wearableExtender = new WearableExtender();
-
         if (!privacyMode) {
             if (messageCount == 1 || uniqueThreadCount == 1) {
                 // Add the Quick Reply action only if the pop-up won't be shown already
@@ -1228,10 +1221,6 @@ public class MessagingNotification {
                     PendingIntent qmPendingIntent = PendingIntent.getActivity(context, 0, qmIntent,
                             PendingIntent.FLAG_UPDATE_CURRENT);
                     noti.addAction(R.drawable.ic_reply, qmText, qmPendingIntent);
-
-                   //Wearable
-                   noti.extend(wearableExtender.addAction(new NotificationCompat.Action.Builder(
-                   R.drawable.ic_reply, qmText, qmPendingIntent).build()));
                 }
 
                 // Add the 'Mark as read' action
@@ -1243,11 +1232,6 @@ public class MessagingNotification {
                         PendingIntent.FLAG_UPDATE_CURRENT);
                 noti.addAction(R.drawable.ic_mark_read_holo_dark, markReadText, mrPendingIntent);
 
-                //Wearable
-                noti.extend(wearableExtender.addAction(new NotificationCompat.Action.Builder(
-                        R.drawable.ic_mark_read_holo_dark, markReadText, mrPendingIntent).build()));
-
-
                 // Add the Call action
                 CharSequence callText = context.getText(R.string.menu_call);
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
@@ -1255,37 +1239,6 @@ public class MessagingNotification {
                 PendingIntent callPendingIntent = PendingIntent.getActivity(context, 0, callIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT);
                 noti.addAction(R.drawable.ic_menu_call_holo_dark, callText, callPendingIntent);
-
-                //Wearable
-                noti.extend(wearableExtender.addAction( new NotificationCompat.Action.Builder(
-                        R.drawable.ic_menu_call, callText, callPendingIntent).build()));
-
-                //Set up remote input
-                String replyLabel = context.getString(R.string.qm_wear_voice_reply);
-                RemoteInput remoteInput = new RemoteInput.Builder(
-                        QuickMessageWear.EXTRA_VOICE_REPLY).setLabel(replyLabel).build();
-
-                //Set up pending intent for voice reply
-                Intent voiceReplyIntent = new Intent(context, QuickMessageWear.class);
-                voiceReplyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                            Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                            Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                voiceReplyIntent.putExtra(QuickMessageWear.SMS_CONATCT,
-                            mostRecentNotification.mSender.getName());
-                voiceReplyIntent.putExtra(QuickMessageWear.SMS_SENDER,
-                            mostRecentNotification.mSender.getNumber());
-                voiceReplyIntent.putExtra(QuickMessageWear.SMS_THEAD_ID,
-                            mostRecentNotification.mThreadId);
-                PendingIntent voiceReplyPendingIntent =
-                            PendingIntent.getActivity(context, 0, voiceReplyIntent,
-                            PendingIntent.FLAG_UPDATE_CURRENT);
-
-                //Wearable voice reply action
-                NotificationCompat.Action action =
-                            new NotificationCompat.Action.Builder(R.drawable.ic_reply,
-                                   context.getString(R.string.qm_wear_reply_by_voice),
-                                   voiceReplyPendingIntent).addRemoteInput(remoteInput).build();
-                noti.extend(wearableExtender.addAction(action));
 
             }
 
@@ -1298,21 +1251,16 @@ public class MessagingNotification {
                 if (mostRecentNotification.mAttachmentBitmap != null) {
                     // The message has a picture, show that
 
-                   NotificationCompat.BigPictureStyle bigPictureStyle =
-                                        new NotificationCompat.BigPictureStyle(noti)
-                                                .bigPicture(mostRecentNotification.mAttachmentBitmap)
-                                                .setSummaryText(
-                                                   mostRecentNotification.formatPictureMessage(context));
-
-                                notification = noti.setStyle(bigPictureStyle)
-                                        .build();
-                    } else {
+                    notification = new Notification.BigPictureStyle(noti)
+                        .bigPicture(mostRecentNotification.mAttachmentBitmap)
+                        // This sets the text for the expanded picture form:
+                        .setSummaryText(mostRecentNotification.formatPictureMessage(context))
+                        .build();
+                } else {
                     // Show a single notification -- big style with the text of the whole message
-                    NotificationCompat.BigTextStyle bigTextStyle1 =
-                           new NotificationCompat.BigTextStyle(noti)
-                                   .bigText(mostRecentNotification.formatBigMessage(context));
-
-                   notification = noti.setStyle(bigTextStyle1)
+                    notification = new Notification.BigTextStyle(noti)
+                        .bigText(mostRecentNotification.formatBigMessage(context))
+                        .build();
                 }
                 if (DEBUG) {
                     Log.d(TAG, "updateNotification: single message notification");
@@ -1341,15 +1289,12 @@ public class MessagingNotification {
                             messageCount));
 
                     // Show a single notification -- big style with the text of all the messages
-                    NotificationCompat.BigTextStyle bigTextStyle =
-                            new NotificationCompat.BigTextStyle();
-                    bigTextStyle.bigText(buf)
-                            // Forcibly show the last line, with the app's smallIcon in it, if we
-                            // kicked the smallIcon out with an avatar bitmap
-                            .setSummaryText((avatar == null) ? null : " ");
-                    notification =
-                            noti.setStyle(bigTextStyle)
-                                    .build();
+                    notification = new Notification.BigTextStyle(noti)
+                        .bigText(buf)
+                        // Forcibly show the last line, with the app's smallIcon in it, if we
+                        // kicked the smallIcon out with an avatar bitmap
+                        .setSummaryText((avatar == null) ? null : " ")
+                        .build();
                     if (DEBUG) {
                         Log.d(TAG, "updateNotification: multi messages for single thread");
                     }
@@ -1369,8 +1314,7 @@ public class MessagingNotification {
                     // When collapsed, show all the senders like this:
                     //     Fred Flinstone, Barry Manilow, Pete...
                     noti.setContentText(formatSenders(context, mostRecentNotifPerThread));
-                    NotificationCompat.InboxStyle inboxStyle =
-                           new NotificationCompat.InboxStyle(noti);
+                    Notification.InboxStyle inboxStyle = new Notification.InboxStyle(noti);
 
                     // We have to set the summary text to non-empty so the content text doesn't show
                     // up when expanded.
