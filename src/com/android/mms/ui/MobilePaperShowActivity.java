@@ -278,55 +278,7 @@ public class MobilePaperShowActivity extends Activity {
         setDetailsView();
 
         if (mScrollViewPort == null) {
-            mScrollViewPort = new ScrollView(this) {
-                private int currentX;
-                private int currentY;
-
-                @Override
-                public boolean onTouchEvent(MotionEvent ev) {
-                    mScaleDetector.onTouchEvent(ev);
-                    final int action = ev.getAction();
-                    switch (action) {
-                        case MotionEvent.ACTION_DOWN: {
-                            currentX = (int) ev.getRawX();
-                            currentY = (int) ev.getRawY();
-                            break;
-                        }
-                        case MotionEvent.ACTION_MOVE: {
-                            int x2 = (int) ev.getRawX();
-                            int y2 = (int) ev.getRawY();
-                            currentX = x2;
-                            currentY = y2;
-                            break;
-                        }
-                    }
-                    super.onTouchEvent(ev);
-                    return true;
-                }
-
-                @Override
-                public boolean onInterceptTouchEvent(MotionEvent ev) {
-                    mScaleDetector.onTouchEvent(ev);
-                    final int action = ev.getAction();
-                    switch (action) {
-                        case MotionEvent.ACTION_DOWN: {
-                            currentX = (int) ev.getRawX();
-                            currentY = (int) ev.getRawY();
-                            break;
-                        }
-                        case MotionEvent.ACTION_MOVE: {
-                            int x2 = (int) ev.getRawX();
-                            int y2 = (int) ev.getRawY();
-                            currentX = x2;
-                            currentY = y2;
-                            break;
-                        }
-                    }
-                    super.onInterceptTouchEvent(ev);
-                    return false;
-                }
-            };
-
+            mScrollViewPort = new ScrollView(this);
             mSlideView.removeAllViews();
             mScrollViewPort.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
             mScrollViewPort.addView(mRootView, new FrameLayout.LayoutParams(
