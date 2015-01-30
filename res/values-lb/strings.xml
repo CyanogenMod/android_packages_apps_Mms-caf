@@ -212,7 +212,7 @@
   <string name="to_address_label">Un:\u0020</string>
   <string name="bcc_label">Bcc:\u0020</string>
   <string name="sent_label">Geschéckt:\u0020</string>
-  <string name="received_label">Empfaang:\u0020</string>
+  <string name="received_label">Empfaangen:\u0020</string>
   <string name="saved_label">Gespäichert:\u0020</string>
   <string name="subject_label">Sujet:\u0020</string>
   <string name="message_size_label">Gréisst vum Message:\u0020</string>

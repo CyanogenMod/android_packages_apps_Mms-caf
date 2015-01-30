@@ -130,9 +130,11 @@
   <string name="menu_forward_conversation">Vidarebefordra samtal</string>
   <string name="menu_resend">Skicka igen</string>
   <string name="cancel_downloading">Avbryt</string>
+  <string name="confirm_cancel_downloading">Vill du avbryta MMS hämtningen?</string>
   <string name="select_copy_message_text">Välj text att kopiera</string>
   <string name="slide_done">Färdig</string>
   <string name="unsupported_format">Formatet stöds inte.</string>
+  <string name="media_size_limit">Max medelandestorlek nådd, kan inte skicka meddelande.</string>
   <string name="discard_message">Ignorera</string>
   <string name="converting_to_text_message">Konvertera till text meddelande\u2026</string>
   <string name="cannot_add_text_anymore">Kan inte lägga till mer text.</string>
@@ -141,6 +143,7 @@
   <string name="status_deleted_unread">Ta bort utan att läsa</string>
   <string name="sms_full_body_cm">Telefonens minne är fullt. Det går inte att skicka och ta emot nya meddelanden. Försök med att ta bort några gamla meddelanden.</string>
   <string name="memory_low_title">Minnet för textmeddelande är lågt</string>
+  <string name="memory_low_body">Telefonminnet är lågt, ta bort gammal data för att se till att du har tillräckligt med ledigt utrymme för att ta emot nya meddelanden.</string>
   <string name="disk_storage_full_error">Telefonens minne är fullt.</string>
   <string name="mobile_data_disable">Mobildata är avstängd. Vill du fortfarande <xliff:g id="action" example="download">%1$s</xliff:g> detta MMS? Detta kan leda till höga kostnader.</string>
   <string name="mobile_data_send">Skicka</string>
@@ -183,15 +186,19 @@
   <string name="copy_to_sim_success">Meddelandet sparades</string>
   <string name="copy_to_sim_fail">Det gick inte att spara meddelandet</string>
   <string name="pref_smsc_title">SMSC-inställningar</string>
+  <string name="pref_smsc_number">SMSC-nummer</string>
+  <string name="menu_copy_url">Kopiera URL: <xliff:g id="extractedurl">%s</xliff:g></string>
   <string name="menu_reply">Svara</string>
   <string name="slot1">SIM 1</string>
   <string name="slot2">SIM 2</string>
+  <string name="type_vcard">vCard</string>
   <string name="import_vcard">Importera</string>
   <string name="contact_info_text_as_name">Namn:</string>
   <string name="contact_info_text_as_phone">Tel:</string>
   <string name="contact_info_text_as_email">E-post:</string>
   <string name="sms_phone_capacity">SMS-kapacitet:</string>
   <string name="mms_phone_capacity">MMS kapacitet:</string>
+  <string name="open_wap_push_title">Mer information</string>
   <string name="menu_delete_msg">Ta bort</string>
   <string name="no_message">Inga meddelanden</string>
   <string name="type_inbox">Inkorg</string>
