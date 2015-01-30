@@ -35,6 +35,7 @@ import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
 import com.android.mms.dom.events.EventImpl;
 import com.android.mms.dom.smil.SmilMediaElementImpl;
+import com.android.mms.drm.DrmUtils;
 import com.android.mms.util.ItemLoadedCallback;
 import com.android.mms.util.ItemLoadedFuture;
 import com.android.mms.util.ThumbnailManager;
@@ -86,6 +87,13 @@ public class VideoModel extends RegionMediaModel {
         mContentType = mimeTypeMap.getMimeTypeFromExtension(extension);
         // It's ok if mContentType is null. Eventually we'll show a toast telling the
         // user the video couldn't be attached.
+
+        // DRM CHANGE START
+        if (mContentType == null && DrmUtils.isDrmVideoFile(uri)) {
+            mContentType = MmsApp.getApplication().getDrmManagerClient()
+                    .getOriginalMimeType(uri);
+        }
+        // DRM CHANGE END
 
         if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
             Log.v(TAG, "New VideoModel initFromFile created:"

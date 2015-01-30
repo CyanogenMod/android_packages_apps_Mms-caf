@@ -26,6 +26,7 @@ import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
+import android.content.ActivityNotFoundException;
 import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -158,6 +159,7 @@ public class MailBoxMessageList extends ListActivity implements
     private String mSmsWhereDelete = "";
     private String mMmsWhereDelete = "";
     private boolean mHasLockedMessage = false;
+    private ArrayList<Long> mThreadIds = new ArrayList<Long>();
 
     private MailBoxMessageListAdapter mListAdapter = null;
     private Cursor mCursor;
@@ -749,6 +751,12 @@ public class MailBoxMessageList extends ListActivity implements
             case R.id.action_memory_status:
                 MessageUtils.showMemoryStatusDialog(this);
                 break;
+            case R.id.action_cell_broadcasts:
+                try {
+                    startActivity(MessageUtils.getCellBroadcastIntent());
+                } catch (ActivityNotFoundException e) {
+                    Log.e(TAG, "ActivityNotFoundException for CellBroadcastListActivity");
+                }
             default:
                 return true;
         }
@@ -866,6 +874,11 @@ public class MailBoxMessageList extends ListActivity implements
                 }
             }
         }
+
+        if (mThreadIds.size() > 0) {
+            Conversation.updateThreads(mThreadIds);
+            mThreadIds.clear();
+        }
     }
 
     private void calcuteSelect() {
@@ -878,6 +891,7 @@ public class MailBoxMessageList extends ListActivity implements
         }
         String smsWhereDelete = "";
         String mmsWhereDelete = "";
+        mThreadIds.clear();
         boolean hasLocked = false;
 
         for (int j = 0; j < size; j++) {
@@ -904,6 +918,7 @@ public class MailBoxMessageList extends ListActivity implements
                     hasLocked = true;
                 }
                 smsWhereDelete += msgId + ",";
+                mThreadIds.add(c.getLong(COLUMN_THREAD_ID));
             } else if (msgtype.equals("mms")) {
                 int lockValue = c.getInt(COLUMN_MMS_LOCKED);
                 if (lockValue == 1) {

@@ -312,7 +312,6 @@ public class MessageListItem extends ZoomMessageListItem implements
                 mDownloadButton.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mDownloading.setVisibility(View.VISIBLE);
                         try {
                             NotificationInd nInd = (NotificationInd) PduPersister.getPduPersister(
                                     mContext).load(mMessageItem.mMessageUri);
@@ -343,11 +342,18 @@ public class MessageListItem extends ZoomMessageListItem implements
                                 builder.show();
                                 return;
                             }
+                            // If mobile data is turned off, inform user start data and try again.
+                            else if (MessageUtils.isMobileDataDisabled(mContext)) {
+                                builder.setMessage(mContext.getString(R.string.inform_data_off));
+                                builder.show();
+                                return;
+                            }
                         } catch (MmsException e) {
                             Log.e(TAG, e.getMessage(), e);
                             return;
                         }
                         mDownloadButton.setVisibility(View.GONE);
+                        mDownloading.setVisibility(View.VISIBLE);
                         Intent intent = new Intent(mContext, TransactionService.class);
                         intent.putExtra(TransactionBundle.URI, mMessageItem.mMessageUri.toString());
                         intent.putExtra(TransactionBundle.TRANSACTION_TYPE,
@@ -363,8 +369,12 @@ public class MessageListItem extends ZoomMessageListItem implements
                 break;
         }
 
-        // Hide the indicators.
-        mLockedIndicator.setVisibility(View.GONE);
+        if (mMessageItem.mLocked) {
+            mLockedIndicator.setImageResource(R.drawable.ic_lock_message_sms);
+            mLockedIndicator.setVisibility(View.VISIBLE);
+        } else {
+            mLockedIndicator.setVisibility(View.GONE); // Hide the indicators.
+        }
         mDeliveredIndicator.setVisibility(View.GONE);
         mDetailsIndicator.setVisibility(View.GONE);
         updateAvatarView(mMessageItem.mAddress, false);

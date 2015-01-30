@@ -27,6 +27,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SqliteWrapper;
 import android.net.Uri;
+import android.provider.DocumentsContract.Document;
 import android.provider.MediaStore.Audio;
 import android.provider.Telephony.Mms.Part;
 import android.text.TextUtils;
@@ -34,8 +35,10 @@ import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import com.android.mms.ContentRestrictionException;
+import com.android.mms.MmsApp;
 import com.android.mms.dom.events.EventImpl;
 import com.android.mms.dom.smil.SmilMediaElementImpl;
+import com.android.mms.drm.DrmUtils;
 import com.google.android.mms.MmsException;
 
 public class AudioModel extends MediaModel {
@@ -60,6 +63,7 @@ public class AudioModel extends MediaModel {
         ContentResolver cr = mContext.getContentResolver();
         Cursor c = null;
         boolean initFromFile = false;
+        Log.d(TAG, "Audio uri:" + uri);
         if (uri.getScheme().equals("file")) {
             initFromFile = true;
             c = cr.query(Audio.Media.EXTERNAL_CONTENT_URI, null,
@@ -79,24 +83,28 @@ public class AudioModel extends MediaModel {
                     if (isFromMms) {
                         path = c.getString(c.getColumnIndexOrThrow(Part._DATA));
                         mContentType = c.getString(c.getColumnIndexOrThrow(Part.CONTENT_TYPE));
+                        mSrc = path.substring(path.lastIndexOf('/') + 1);
                     } else {
-                        path = c.getString(c.getColumnIndexOrThrow(Audio.Media.DATA));
+                        mSrc = c.getString(c.getColumnIndexOrThrow(Document.COLUMN_DISPLAY_NAME));
                         mContentType = c.getString(c.getColumnIndexOrThrow(
-                                Audio.Media.MIME_TYPE));
+                                Document.COLUMN_MIME_TYPE));
                         // Get more extras information which would be useful
                         // to the user.
-                        String album = c.getString(c.getColumnIndexOrThrow("album"));
-                        if (!TextUtils.isEmpty(album)) {
-                            mExtras.put("album", album);
-                        }
+                        if (initFromFile) {
+                            try {
+                                String album = c.getString(c.getColumnIndexOrThrow("album"));
+                                if (!TextUtils.isEmpty(album)) {
+                                    mExtras.put("album", album);
+                                }
 
-                        String artist = c.getString(c.getColumnIndexOrThrow("artist"));
-                        if (!TextUtils.isEmpty(artist)) {
-                            mExtras.put("artist", artist);
+                                String artist = c.getString(c.getColumnIndexOrThrow("artist"));
+                                if (!TextUtils.isEmpty(artist)) {
+                                    mExtras.put("artist", artist);
+                                }
+                            }  catch (IllegalArgumentException e) {
+                            }
                         }
                     }
-                    mSrc = path.substring(path.lastIndexOf('/') + 1);
-
                     if (TextUtils.isEmpty(mContentType)) {
                         throw new MmsException("Type of media is unknown.");
                     }
@@ -143,6 +151,22 @@ public class AudioModel extends MediaModel {
         }
 
         initMediaDuration();
+    }
+
+    private String getExtension(Uri uri) {
+        String path = uri.getPath();
+        mSrc = path.substring(path.lastIndexOf('/') + 1);
+        String extension = MimeTypeMap.getFileExtensionFromUrl(mSrc);
+        if (TextUtils.isEmpty(extension)) {
+            // getMimeTypeFromExtension() doesn't handle spaces in filenames
+            // nor can it handle urlEncoded strings. Let's try one last time
+            // at finding the extension.
+            int dotPos = mSrc.lastIndexOf('.');
+            if (0 <= dotPos) {
+                extension = mSrc.substring(dotPos + 1);
+            }
+        }
+        return extension;
     }
 
     public void stop() {

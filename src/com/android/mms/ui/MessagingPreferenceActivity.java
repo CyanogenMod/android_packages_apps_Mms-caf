@@ -22,6 +22,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
+import android.content.ActivityNotFoundException;
 import android.app.DialogFragment;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -112,6 +113,11 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     public static final String AUTO_DELETE              = "pref_key_auto_delete";
     public static final String GROUP_MMS_MODE           = "pref_key_mms_group_mms";
     public static final String SMS_CDMA_PRIORITY        = "pref_key_sms_cdma_priority";
+    // ConfigurationClient
+    public static final String OMACP_CONFIGURATION_CATEGORY =
+            "pref_key_sms_omacp_configuration";
+    public static final String CONFIGURATION_MESSAGE    = "pref_key_configuration_message";
+
 
     // Expiry of MMS
     private final static String EXPIRY_ONE_WEEK = "604800"; // 7 * 24 * 60 * 60
@@ -156,6 +162,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private Preference mManageSim2Pref;
     private Preference mManageSdcardSMSPref;
     private Preference mClearHistoryPref;
+    private Preference mConfigurationmessage;
     private CheckBoxPreference mVibratePref;
     private CheckBoxPreference mEnableNotificationsPref;
     private CheckBoxPreference mMmsAutoRetrievialPref;
@@ -189,6 +196,11 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private static final int EVENT_GET_SMSC_DONE = 1;
     private static final String EXTRA_EXCEPTION = "exception";
     private static SmscHandler mHandler = null;
+
+    // ConfigurationClient
+    private static final String ACTION_CONFIGURE_MESSAGE =
+            "org.codeaurora.CONFIGURE_MESSAGE";
+
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -331,6 +343,15 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             = (ListPreference) findPreference("pref_key_sms_validity_period_slot1");
         mSmsValidityCard2Pref
             = (ListPreference) findPreference("pref_key_sms_validity_period_slot2");
+        // ConfigurationClient
+        if((MmsConfig.isOMACPEnabled())){
+            mConfigurationmessage = findPreference(CONFIGURATION_MESSAGE);
+        }else {
+            PreferenceScreen prefRoot = (PreferenceScreen) findPreference("pref_key_root");
+            PreferenceCategory OMACPConCategory =
+                    (PreferenceCategory) findPreference(OMACP_CONFIGURATION_CATEGORY);
+            prefRoot.removePreference(OMACPConCategory);
+        }
 
         // QuickMessage
         mEnableQuickMessagePref = (CheckBoxPreference) findPreference(QUICKMESSAGE_ENABLED);
@@ -559,20 +580,22 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             final Preference pref = new Preference(this);
             pref.setKey(String.valueOf(i));
             pref.setTitle(getSMSCDialogTitle(count, i));
-
-            pref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    MyEditDialogFragment dialog = MyEditDialogFragment.newInstance(
+            if (getResources().getBoolean(R.bool.show_edit_smsc)) {
+                pref.setOnPreferenceClickListener(null);
+            } else {
+                pref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        MyEditDialogFragment dialog = MyEditDialogFragment.newInstance(
                             MessagingPreferenceActivity.this,
                             preference.getTitle(),
                             preference.getSummary(),
                             Integer.valueOf(preference.getKey()));
-                    dialog.show(getFragmentManager(), "dialog");
-                    return true;
-                }
-            });
-
+                        dialog.show(getFragmentManager(), "dialog");
+                        return true;
+                    }
+                });
+            }
             mSmscPrefCate.addPreference(pref);
             mSmscPrefList.add(pref);
         }
@@ -894,6 +917,14 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         } else if (preference == mMmsAutoRetrievialPref) {
             if (mMmsAutoRetrievialPref.isChecked()) {
                 startMmsDownload();
+            }
+        // ConfigurationClient
+        } else if (preference == mConfigurationmessage) {
+            try {
+                Intent intent = new Intent(ACTION_CONFIGURE_MESSAGE);
+                startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                Log.e(TAG,"Activity not found : "+e);
             }
         }
 

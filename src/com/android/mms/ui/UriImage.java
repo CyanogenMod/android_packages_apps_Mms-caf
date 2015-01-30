@@ -27,6 +27,7 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.media.MediaFile;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
@@ -36,6 +37,8 @@ import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import com.android.mms.LogTag;
+import com.android.mms.MmsApp;
+import com.android.mms.drm.DrmUtils;
 import com.android.mms.exif.ExifInterface;
 import com.android.mms.model.ImageModel;
 import com.google.android.mms.ContentType;
@@ -102,6 +105,13 @@ public class UriImage {
         mContentType = mimeTypeMap.getMimeTypeFromExtension(extension);
         // It's ok if mContentType is null. Eventually we'll show a toast telling the
         // user the picture couldn't be attached.
+
+        // DRM CHANGE START
+        if (mContentType == null && DrmUtils.isDrmImageFile(uri)) {
+            mContentType = MmsApp.getApplication().getDrmManagerClient()
+                    .getOriginalMimeType(uri);
+        }
+        // DRM CHANGE END
 
         buildSrcFromPath();
     }
@@ -192,7 +202,7 @@ public class UriImage {
             input = mContext.getContentResolver().openInputStream(mUri);
             BitmapFactory.Options opt = new BitmapFactory.Options();
             opt.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(input, null, opt);
+            BitmapFactory.decodeStream(input, null, opt, false); // DRM Change
             mWidth = opt.outWidth;
             mHeight = opt.outHeight;
         } catch (FileNotFoundException e) {
@@ -306,7 +316,7 @@ public class UriImage {
                 input = context.getContentResolver().openInputStream(uri);
                 options.inSampleSize = sampleSize;
                 try {
-                    b = BitmapFactory.decodeStream(input, null, options);
+                    b = BitmapFactory.decodeStream(input, null, options, false); // DRM Change
                     if (b == null) {
                         return null;    // Couldn't decode and it wasn't because of an exception,
                                         // bail.

@@ -113,7 +113,9 @@ public class RecipientsEditor extends RecipientEditTextView {
             @Override
             public void onTextChanged(CharSequence s, int start,
                     int before, int after) {
-                if (before == 0 && after == 1) {    // inserting a character
+                // inserting a character
+                if (before == 0 && after == 1 &&
+                        start >= 0 && start < s.length()) {
                     char c = s.charAt(start);
                     if (c == ',' || c == ';') {
                         // Remember the delimiter the user typed to end this recipient. We'll
@@ -422,6 +424,9 @@ public class RecipientsEditor extends RecipientEditTextView {
         String number = getFieldAt("number", sp, start, end, context);
         number = PhoneNumberUtils.replaceUnicodeDigits(number);
         if (!TextUtils.isEmpty(number)) {
+            if (!Mms.isPhoneNumber(number)) {
+                number = number.replaceAll(" ", "");
+            }
             int pos = number.indexOf('<');
             if (pos >= 0 && pos < number.indexOf('>')) {
                 // The number looks like an Rfc882 address, i.e. <fred flinstone> 891-7823

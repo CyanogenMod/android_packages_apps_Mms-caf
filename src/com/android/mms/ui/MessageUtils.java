@@ -46,6 +46,7 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -63,6 +64,7 @@ import android.graphics.drawable.Drawable;
 import android.media.CamcorderProfile;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.net.ConnectivityManager;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Bundle;
@@ -189,6 +191,10 @@ public class MessageUtils {
     public static final int PREFER_SMS_STORE_CARD = 1;
     private static final Uri BOOKMARKS_URI = Uri.parse("content://browser/bookmarks");
 
+    // Consider oct-strean as the content type of vCard
+    public static final String OCT_STREAM = "application/oct-stream";
+    public static final String VCARD = "vcf";
+
     // distinguish view vcard from mms but not from contacts.
     public static final String VIEW_VCARD = "VIEW_VCARD_FROM_MMS";
     // add for obtain mms data path
@@ -263,6 +269,8 @@ public class MessageUtils {
 
     public static final String EXTRA_KEY_NEW_MESSAGE_NEED_RELOAD = "reload";
 
+    public static final String EXTRA_KEY_NEW_MESSAGE_UNREAD = "unread";
+
     public static final String KEY_SMS_FONTSIZE = "smsfontsize";
     public static final int DELAY_TIME = 200;
     public static final float FONT_SIZE_DEFAULT = 30f;
@@ -304,12 +312,20 @@ public class MessageUtils {
     private static final String PREF_SHOW_URL_WARNING = "pref_should_show_url_warning";
     private static final boolean PREF_SHOULD_SHOW_URL_WARNING = true;
 
+    private static final String CELL_BROADCAST_PACKAGE_NAME =
+            "com.android.cellbroadcastreceiver";
+    private static final String CELL_BROADCAST_ACTIVITY_NAME =
+            "com.android.cellbroadcastreceiver.CellBroadcastListActivity";
+
     static {
         for (int i = 0; i < NUMERIC_CHARS_SUGAR.length; i++) {
             numericSugarMap.put(NUMERIC_CHARS_SUGAR[i], NUMERIC_CHARS_SUGAR[i]);
         }
     }
 
+    private static final int OFFSET_ADDRESS_LENGTH = 0;
+    private static final int OFFSET_TOA = 1;
+    private static final int OFFSET_ADDRESS_VALUE = 2;
 
     private MessageUtils() {
         // Forbidden being instantiated.
@@ -621,6 +637,19 @@ public class MessageUtils {
         }
     }
 
+    public static String convertToVcardType(String src) {
+        if (!TextUtils.isEmpty(src)) {
+            int index = src.lastIndexOf('.');
+            if (index > 0) {
+                String extension = src.substring(index + 1, src.length());
+                if (extension.toLowerCase().equals(VCARD)) {
+                    return ContentType.TEXT_VCARD.toLowerCase();
+                }
+            }
+        }
+        return null;
+    }
+
     public static int getAttachmentType(SlideshowModel model, MultimediaMessagePdu mmp) {
         if (model == null || mmp == null) {
             return MessageItem.ATTACHMENT_TYPE_NOT_LOADED;
@@ -739,7 +768,13 @@ public class MessageUtils {
                                 audioIntent.setData(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
                                 break;
                         }
-                        activity.startActivityForResult(audioIntent, requestCode);
+                        // Add try here is to avoid monkey test failure.
+                        try {
+                            activity.startActivityForResult(audioIntent, requestCode);
+                        } catch (ActivityNotFoundException ex) {
+                            Toast.makeText(activity, R.string.audio_picker_app_not_found,
+                                    Toast.LENGTH_SHORT).show();
+                        }
                     }
                 })
                 .create();
@@ -1801,6 +1836,12 @@ public class MessageUtils {
         return false;
     }
 
+    public static boolean isMobileDataDisabled(Context context) {
+        ConnectivityManager mConnService = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        return !mConnService.getMobileDataEnabled();
+    }
+
     public static float onFontSizeScale(ArrayList<TextView> list, float scale,
             float mFontSizeForSave) {
         float mCurrentSize = 0;
@@ -2128,10 +2169,34 @@ public class MessageUtils {
         byte[] daBytes;
         daBytes = PhoneNumberUtils.networkPortionToCalledPartyBCD(destinationAddress);
 
-        // destination address length in BCD digits, ignoring TON byte and pad
-        // TODO Should be better.
-        bo.write((daBytes.length - 1) * 2
-                - ((daBytes[daBytes.length - 1] & 0xf0) == 0xf0 ? 1 : 0));
+        if (daBytes == null) {
+            Log.d(TAG, "The number can not convert to BCD, it's an An alphanumeric address, " +
+                    "destinationAddress = " + destinationAddress);
+            // Convert address to GSM 7 bit packed bytes.
+            try {
+                byte[] numberdata = GsmAlphabet
+                        .stringToGsm7BitPacked(destinationAddress);
+                // Get the real address data
+                byte[] addressData = new byte[numberdata.length - 1];
+                System.arraycopy(numberdata, 1, addressData, 0, addressData.length);
+
+                daBytes = new byte[addressData.length + OFFSET_ADDRESS_VALUE];
+                // Get the address length
+                int addressLen = numberdata[0];
+                daBytes[OFFSET_ADDRESS_LENGTH] = (byte) ((addressLen * 7 % 4 != 0 ?
+                        addressLen * 7 / 4 + 1 : addressLen * 7 / 4));
+                // Set address type to Alphanumeric according to 3GPP TS 23.040 [9.1.2.5]
+                daBytes[OFFSET_TOA] = (byte) 0xd0;
+                System.arraycopy(addressData, 0, daBytes, OFFSET_ADDRESS_VALUE, addressData.length);
+            } catch (Exception e) {
+                Log.e(TAG, "Exception when encoding to 7 bit data.");
+            }
+        } else {
+            // destination address length in BCD digits, ignoring TON byte and pad
+            // TODO Should be better.
+            bo.write((daBytes.length - 1) * 2
+                    - ((daBytes[daBytes.length - 1] & 0xf0) == 0xf0 ? 1 : 0));
+        }
 
         // destination address
         bo.write(daBytes, 0, daBytes.length);
@@ -2708,6 +2773,15 @@ public class MessageUtils {
             }
         });
         builder.show();
+    }
+
+    public static Intent getCellBroadcastIntent() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setComponent(new ComponentName(
+                CELL_BROADCAST_PACKAGE_NAME,
+                CELL_BROADCAST_ACTIVITY_NAME));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        return intent;
     }
 
     public static String convertIdp(Context context, String number) {
