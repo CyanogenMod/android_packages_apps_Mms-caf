@@ -967,7 +967,7 @@ public class MessageUtils {
     public static final int MESSAGE_OVERHEAD = 5000;
 
     public static void resizeImageAsync(final Context context,
-            final Uri imageUri, final Handler handler,
+            final Uri imageUri, final int currentMsgSize, final Handler handler,
             final ResizeImageResultCallback cb,
             final boolean append) {
 
@@ -1017,7 +1017,7 @@ public class MessageUtils {
                     part = image.getResizedImageAsPart(
                         widthLimit,
                         heightLimit,
-                        MmsConfig.getMaxMessageSize() - MESSAGE_OVERHEAD);
+                        MmsConfig.getMaxMessageSize() - currentMsgSize - MESSAGE_OVERHEAD);
                 } finally {
                     // Cancel pending show of the progress toast if necessary.
                     handler.removeCallbacks(showProgress);
