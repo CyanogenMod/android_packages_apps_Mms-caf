@@ -5475,8 +5475,13 @@ public class ComposeMessageActivity extends Activity
                     }
 
                     // FIXME: freshing layout changes the focused view to an unexpected
-                    // one, set it back to TextEditor forcely.
-                    mTextEditor.requestFocus();
+                    // one. In this situation, mRecipientsEditor has higher priority to
+                    // get the focus.
+                    if (isRecipientsEditorVisible()) {
+                        mRecipientsEditor.requestFocus();
+                    } else {
+                        mTextEditor.requestFocus();
+                    }
 
                     invalidateOptionsMenu();    // some menu items depend on the adapter's count
                     return;
