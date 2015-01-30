@@ -55,6 +55,8 @@ public class MmsConfig {
     public static final int CREATIONMODE_WARNING = 2;
     public static final int CREATIONMODE_FREE = 3;
 
+    public static final String EXTRA_URI = "uri";
+
     /**
      * Whether to hide MMS functionality from the user (i.e. SMS only).
      */
@@ -126,6 +128,8 @@ public class MmsConfig {
     private static boolean mIsEnabledCreationmode  = false;
 
     private static float sMmsCornerRadius = 5;
+
+    private static final String MMS_DESTINATION = "9798";
 
     public static void init(Context context) {
         if (LOCAL_LOGV) {
@@ -502,6 +506,10 @@ public class MmsConfig {
                         errorStr);
             Log.e(TAG, err);
         }
+    }
+
+    public static String getMmsDestination() {
+        return MMS_DESTINATION;
     }
 
 }

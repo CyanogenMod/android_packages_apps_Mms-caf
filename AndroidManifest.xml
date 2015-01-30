@@ -472,5 +472,24 @@
         <provider android:name="MessageTemplateProvider"
                 android:authorities="com.android.mms.MessageTemplateProvider" />
 
+       <activity android:name=".transaction.MmsNoConfirmationSendActivity"
+           android:label="@string/plugger"
+           android:enabled="@bool/enablePlugger"
+           android:icon="@drawable/icon_of_plugger">
+           <intent-filter>
+              <action android:name="android.intent.action.SEND" />
+              <category android:name="android.intent.category.DEFAULT" />
+              <data android:mimeType="image/*" />
+              <data android:mimeType="video/*" />
+              <data android:mimeType="vnd.android/mms" />
+            </intent-filter>
+        </activity>
+
+        <service android:name="com.android.mms.transaction.MmsNoConfirmationSendService">
+            <intent-filter>
+                <action android:name="com.android.mms.transaction.MmsNoConfirmationSendService"/>
+            </intent-filter>
+        </service>
+
     </application>
 </manifest>
