@@ -23,7 +23,7 @@
 
 package com.android.mms.rcs;
 
-import com.suntek.mway.rcs.client.api.constant.BroadcastConstants;
+import com.suntek.mway.rcs.client.aidl.constant.BroadcastConstants;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -31,30 +31,30 @@ import android.content.Intent;
 
 public class GroupChatManagerReceiver extends BroadcastReceiver {
 
-    private GroupChatNotifyCallback callback;
+    private GroupChatNotifyCallback mCallback;
 
     public GroupChatManagerReceiver(GroupChatNotifyCallback callback) {
-        this.callback = callback;
+        this.mCallback = callback;
     }
 
     @Override
-    public void onReceive(Context arg0, Intent intent) {
+    public void onReceive(Context context, Intent intent) {
         if (BroadcastConstants.UI_GROUP_MANAGE_NOTIFY.equals(intent.getAction())) {
             String groupId = intent
                     .getStringExtra(BroadcastConstants.BC_VAR_MSG_GROUP_ID);
             String actionType = intent.getStringExtra(BroadcastConstants.BC_VAR_MSG_ACTION_TYPE);
             if (BroadcastConstants.ACTION_TYPE_CREATE.equals(actionType)) {
                 String newSubject = intent.getStringExtra(BroadcastConstants.BC_VAR_GROUP_SUBJECT);
-                if (callback != null) {
-                    callback.onNewSubject(groupId, newSubject);
+                if (mCallback != null) {
+                    mCallback.onNewSubject(groupId, newSubject);
                 }
             } else if (BroadcastConstants.ACTION_TYPE_UPDATE_ALIAS.equals(actionType)) {
-                if (callback != null) {
-                    callback.onMemberAliasChange(groupId);
+                if (mCallback != null) {
+                    mCallback.onMemberAliasChange(groupId);
                 }
             } else if (BroadcastConstants.ACTION_TYPE_DELETED.equals(actionType)) {
-                if (callback != null) {
-                    callback.onDisband(groupId);
+                if (mCallback != null) {
+                    mCallback.onDisband(groupId);
                 }
             }
         }

@@ -20,8 +20,8 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
- 
-package com.android.mms;
+
+package com.android.mms.rcs;
 
 import com.suntek.mway.rcs.client.api.RCSServiceListener;
 import com.suntek.mway.rcs.client.api.autoconfig.RcsAccountApi;
@@ -31,12 +31,14 @@ import com.suntek.mway.rcs.client.api.mcloud.McloudFileApi;
 import com.suntek.mway.rcs.client.api.support.RcsSupportApi;
 import com.suntek.mway.rcs.client.api.util.ServiceDisconnectedException;
 import com.suntek.mway.rcs.client.api.capability.impl.CapabilityApi;
-
+import com.suntek.mway.rcs.client.api.emoticon.EmoticonApi;
+import com.suntek.mway.rcs.client.api.specialnumber.impl.SpecialServiceNumApi;
 import android.content.Context;
 import android.os.RemoteException;
 import android.util.Log;
 
 public class RcsApiManager {
+    private static final String TAG = "RCS_UI";
     private static boolean mIsRcsServiceInstalled;
 
     private static ConfApi mConfApi = new ConfApi();
@@ -44,6 +46,8 @@ public class RcsApiManager {
     private static RcsAccountApi mRcsAccountApi = new RcsAccountApi();
     private static CapabilityApi mCapabilityApi = new CapabilityApi();
     private static McloudFileApi mMcloudFileApi = new McloudFileApi();
+    private static EmoticonApi mEmoticonApi = new EmoticonApi();
+    private static SpecialServiceNumApi mSpecialServiceNumApi = new SpecialServiceNumApi();
 
     public static void init(Context context) {
         mIsRcsServiceInstalled = RcsSupportApi.isRcsServiceInstalled(context);
@@ -54,43 +58,82 @@ public class RcsApiManager {
         mMessageApi.init(context, new RCSServiceListener() {
             @Override
             public void onServiceDisconnected() throws RemoteException {
-                Log.d("RCS_UI", "MessageApi disconnected");
+                Log.d(TAG, "MessageApi disconnected");
             }
 
             @Override
             public void onServiceConnected() throws RemoteException {
-                Log.d("RCS_UI", "MessageApi connected");
+                Log.d(TAG, "MessageApi connected");
             }
         });
 
         mRcsAccountApi.init(context, new RCSServiceListener() {
             @Override
             public void onServiceDisconnected() throws RemoteException {
-                Log.d("RCS_UI", "RcsAccountApi disconnected");
+                Log.d(TAG, "RcsAccountApi disconnected");
             }
 
             @Override
             public void onServiceConnected() throws RemoteException {
-                Log.d("RCS_UI", "RcsAccountApi connected");
+                Log.d(TAG, "RcsAccountApi connected");
             }
         });
 
         mConfApi.init(context, new RCSServiceListener() {
             public void onServiceDisconnected() throws RemoteException {
-                Log.d("RCS_UI", "ConfApi connected");
+                Log.d(TAG, "ConfApi disconnected");
             }
 
             public void onServiceConnected() throws RemoteException {
-                Log.d("RCS_UI", "ConfApi connected");
+                Log.d(TAG, "ConfApi connected");
             }
         });
 
-        mCapabilityApi.init(context, null);
-        mMcloudFileApi.init(context,null);
+        mCapabilityApi.init(context, new RCSServiceListener() {
+            public void onServiceDisconnected() throws RemoteException {
+                Log.d(TAG, "CapabilityApi disconnected");
+            }
+
+            public void onServiceConnected() throws RemoteException {
+                Log.d(TAG, "CapabilityApi connected");
+            }
+        });
+
+        mMcloudFileApi.init(context,new RCSServiceListener() {
+            public void onServiceDisconnected() throws RemoteException {
+                Log.d(TAG, "McloudFileApi disconnected");
+            }
+
+            public void onServiceConnected() throws RemoteException {
+                Log.d(TAG, "McloudFileApi connected");
+            }
+        });
+
+        mEmoticonApi.init(context,new RCSServiceListener() {
+            public void onServiceDisconnected() throws RemoteException {
+                Log.d(TAG, "EmoticonApi disconnected");
+            }
+
+            public void onServiceConnected() throws RemoteException {
+                Log.d(TAG, "EmoticonApi connected");
+            }
+        });
+
+        mSpecialServiceNumApi.init(context,new RCSServiceListener() {
+            public void onServiceDisconnected() throws RemoteException {
+                Log.d(TAG, "mSpecialServiceNumApi disconnected");
+            }
+
+            public void onServiceConnected() throws RemoteException {
+                Log.d(TAG, "mSpecialServiceNumApi connected");
+            }
+        });
     }
+
     public static McloudFileApi getMcloudFileApi(){
         return mMcloudFileApi;
     }
+
     public static MessageApi getMessageApi() {
         return mMessageApi;
     }
@@ -117,5 +160,13 @@ public class RcsApiManager {
 
     public static CapabilityApi getCapabilityApi() {
         return mCapabilityApi;
+    }
+
+    public static EmoticonApi getEmoticonApi() {
+        return mEmoticonApi;
+    }
+
+    public static SpecialServiceNumApi getSpecialServiceNumApi() {
+        return mSpecialServiceNumApi;
     }
 }

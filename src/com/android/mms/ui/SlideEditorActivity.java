@@ -107,7 +107,8 @@ public class SlideEditorActivity extends Activity implements
     private final static int REQUEST_CODE_CHANGE_MUSIC       = 3;
     private final static int REQUEST_CODE_RECORD_SOUND       = 4;
     private final static int REQUEST_CODE_CHANGE_VIDEO       = 5;
-    private final static int REQUEST_CODE_TAKE_VIDEO         = 6;
+    private final static int REQUEST_CODE_CHANGE_DURATION    = 6;
+    private final static int REQUEST_CODE_TAKE_VIDEO         = 7;
 
     // number of items in the duration selector dialog that directly map from
     // item index to duration in seconds (duration = index + 1)
@@ -469,8 +470,10 @@ public class SlideEditorActivity extends Activity implements
                 R.drawable.ic_menu_add_slide);
 
         // Slide duration
-        String duration = getString(R.string.duration_sec, slide.getDuration() / 1000);
-        menu.add(0, MENU_DURATION, 0, duration).setIcon(R.drawable.ic_menu_duration);
+        String duration = getResources().getString(R.string.duration_sec);
+        menu.add(0, MENU_DURATION, 0,
+                duration.replace("%s", String.valueOf(slide.getDuration() / 1000))).setIcon(
+                        R.drawable.ic_menu_duration);
 
         // Slide layout
         int resId;
@@ -518,8 +521,10 @@ public class SlideEditorActivity extends Activity implements
                 break;
 
             case MENU_RECORD_SOUND:
+                slide = mSlideshowModel.get(mPosition);
+                int currentSlideSize = slide.getSlideSize();
                 long sizeLimit = ComposeMessageActivity.computeAttachmentSizeLimit(mSlideshowModel,
-                        0);
+                        currentSlideSize);
                 MessageUtils.recordSound(this, REQUEST_CODE_RECORD_SOUND, sizeLimit);
                 break;
 
@@ -535,8 +540,10 @@ public class SlideEditorActivity extends Activity implements
                 break;
 
             case MENU_TAKE_VIDEO:
+                slide = mSlideshowModel.get(mPosition);
+                currentSlideSize = slide.getSlideSize();
                 sizeLimit = ComposeMessageActivity.computeAttachmentSizeLimit(mSlideshowModel,
-                        0);
+                        currentSlideSize);
                 if (sizeLimit > 0) {
                     MessageUtils.recordVideo(this, REQUEST_CODE_TAKE_VIDEO, sizeLimit);
                 } else {
@@ -773,6 +780,10 @@ public class SlideEditorActivity extends Activity implements
                 }
                 break;
 
+            case REQUEST_CODE_CHANGE_DURATION:
+                mSlideshowEditor.changeDuration(mPosition,
+                    Integer.valueOf(data.getAction()) * 1000);
+                break;
         }
     }
 

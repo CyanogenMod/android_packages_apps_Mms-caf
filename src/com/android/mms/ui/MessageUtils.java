@@ -127,8 +127,19 @@ import com.google.android.mms.pdu.PduPart;
 import com.google.android.mms.pdu.PduPersister;
 import com.google.android.mms.pdu.RetrieveConf;
 import com.google.android.mms.pdu.SendReq;
-
 import static com.google.android.mms.ContentType.TEXT_VCALENDAR;
+import static android.telephony.SmsMessage.ENCODING_7BIT;
+import static android.telephony.SmsMessage.ENCODING_8BIT;
+import static android.telephony.SmsMessage.ENCODING_16BIT;
+import static android.telephony.SmsMessage.ENCODING_UNKNOWN;
+import static android.telephony.SmsMessage.MAX_USER_DATA_BYTES;
+import static android.telephony.SmsMessage.MAX_USER_DATA_BYTES_WITH_HEADER;
+import static android.telephony.SmsMessage.MAX_USER_DATA_SEPTETS;
+
+import com.android.mms.rcs.RcsApiManager;
+import com.android.mms.rcs.RcsUtils;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 /**
  * An utility class for managing messages.
@@ -364,7 +375,7 @@ public class MessageUtils {
                     return "";
             }
         } else {
-            return getTextMessageDetails(context, cursor);
+            return getTextMessageDetails(context, cursor, false);
         }
     }
 
@@ -531,7 +542,8 @@ public class MessageUtils {
         return details.toString();
     }
 
-    public static String getTextMessageDetails(Context context, Cursor cursor) {
+    public static String getTextMessageDetails(Context context, Cursor cursor,
+            boolean isAppendContentType) {
         Log.d(TAG, "getTextMessageDetails");
 
         StringBuilder details = new StringBuilder();
@@ -539,8 +551,29 @@ public class MessageUtils {
 
         // Message Type: Text message.
         details.append(res.getString(R.string.message_type_label));
-        details.append(res.getString(R.string.text_message));
+        int rcsId = cursor.getInt(cursor.getColumnIndexOrThrow("rcs_id"));
+        if (rcsId != 0)
+            details.append(res.getString(R.string.rcs_text_message));
+        else
+            details.append(res.getString(R.string.text_message));
 
+        if (isAppendContentType) {
+            details.append('\n');
+            details.append(res.getString(R.string.message_content_type));
+            int msgType = cursor.getInt(cursor.getColumnIndex("rcs_msg_type"));
+            if (msgType == RcsUtils.RCS_MSG_TYPE_IMAGE)
+                details.append(res.getString(R.string.message_content_image));
+            else if (msgType == RcsUtils.RCS_MSG_TYPE_AUDIO)
+                details.append(res.getString(R.string.message_content_audio));
+            else if (msgType == RcsUtils.RCS_MSG_TYPE_VIDEO)
+                details.append(res.getString(R.string.message_content_video));
+            else if (msgType == RcsUtils.RCS_MSG_TYPE_MAP)
+                details.append(res.getString(R.string.message_content_map));
+            else if (msgType == RcsUtils.RCS_MSG_TYPE_VCARD)
+                details.append(res.getString(R.string.message_content_vcard));
+            else
+                details.append(res.getString(R.string.message_content_text));
+        }
         // Address: ***
         details.append('\n');
         int smsType = cursor.getInt(cursor.getColumnIndexOrThrow(Sms.TYPE));
@@ -774,12 +807,27 @@ public class MessageUtils {
         intent.setType(ContentType.AUDIO_AMR);
         intent.setClassName("com.android.soundrecorder",
                 "com.android.soundrecorder.SoundRecorder");
-        intent.putExtra(android.provider.MediaStore.Audio.Media.EXTRA_MAX_BYTES, sizeLimit);
+        // add RCS recordSound time add size limit
+        if (RcsUtils.isSupportRcs() && RcsApiManager.isRcsOnline()) {
+            intent.putExtra(android.provider.MediaStore.Audio.Media.EXTRA_MAX_BYTES, sizeLimit*1024);
+        } else {
+            intent.putExtra(android.provider.MediaStore.Audio.Media.EXTRA_MAX_BYTES, sizeLimit);
+        }
         intent.putExtra(EXIT_AFTER_RECORD, true);
         activity.startActivityForResult(intent, requestCode);
     }
 
     public static void recordVideo(Activity activity, int requestCode, long sizeLimit) {
+        // add RCS recordVideo time add size limit
+        if(RcsUtils.isSupportRcs() && RcsApiManager.isRcsOnline()){
+            Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+            intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 10.0);
+            intent.putExtra("android.intent.extra.sizeLimit", sizeLimit*1024);
+            intent.putExtra("android.intent.extra.durationLimit", (int)RcsUtils.getVideoMaxTime());
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, TempFileProvider.SCRAP_CONTENT_URI);
+            activity.startActivityForResult(intent, requestCode);
+            return;
+        }
         // The video recorder can sometimes return a file that's larger than the max we
         // say we can handle. Try to handle that overshoot by specifying an 85% limit.
         sizeLimit *= .85F;
@@ -792,7 +840,11 @@ public class MessageUtils {
         }
 
         Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
+        if(RcsUtils.isSupportRcs()){
+            intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 10.0);
+        }else{
+            intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
+        }
         intent.putExtra("android.intent.extra.sizeLimit", sizeLimit);
         intent.putExtra("android.intent.extra.durationLimit", durationLimit);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, TempFileProvider.SCRAP_CONTENT_URI);

@@ -14,6 +14,7 @@ All Rights Reserved. -->
     <dimen name="input_text_height">48dip</dimen>
     <dimen name="input_text_height_adjusted">8dip</dimen>
 
+    <dimen name="mms_inline_attachment_size">178dip</dimen>
     <dimen name="mms_inline_attachment_min_width">100dip</dimen>
     <dimen name="mms_inline_attachment_min_height">60dip</dimen>
     <dimen name="mms_image_corner_radius">1dip</dimen>

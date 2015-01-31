@@ -21,7 +21,7 @@
  * IN THE SOFTWARE.
  */
 
-package com.android.mms.ui;
+package com.android.mms.rcs;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -30,7 +30,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.mms.R;
-import com.android.mms.rcs.RcsUtils;
+import com.android.mms.ui.MessageListAdapter;
 import com.android.mms.ui.MessageListAdapter.ColumnsMap;
 
 public class RcsNotificationMessageListItem extends RelativeLayout {

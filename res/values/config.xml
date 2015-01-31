@@ -105,4 +105,6 @@
     <!-- configuration for error toast during retry -->
     <bool name="config_mms_retry_toast">false</bool>
     <bool name="enable_filter_threads_by_sim">true</bool>
+    <!-- configuration for prefix special Number delete -->
+    <bool name="config_mms_delete_prefix_special_number">true</bool>
 </resources>

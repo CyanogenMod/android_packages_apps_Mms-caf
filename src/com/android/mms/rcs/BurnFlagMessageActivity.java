@@ -23,17 +23,14 @@
 
 package com.android.mms.rcs;
 
-import com.suntek.mway.rcs.client.api.ClientInterfaceIntents;
-import com.suntek.mway.rcs.client.api.constant.BroadcastConstants;
+import com.suntek.mway.rcs.client.aidl.ClientInterfaceIntents;
+import com.suntek.mway.rcs.client.aidl.constant.BroadcastConstants;
 import com.suntek.mway.rcs.client.api.exception.OperatorException;
-import com.suntek.mway.rcs.client.api.provider.SuntekMessageData;
-import com.suntek.mway.rcs.client.api.provider.model.ChatMessage;
+import com.suntek.mway.rcs.client.aidl.provider.model.ChatMessage;
+import com.suntek.mway.rcs.client.aidl.provider.SuntekMessageData;
 import com.suntek.mway.rcs.client.api.util.ServiceDisconnectedException;
 import com.suntek.mway.rcs.client.api.util.log.LogHelper;
-
 import com.android.mms.R;
-import com.android.mms.RcsApiManager;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
@@ -60,22 +57,25 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import java.util.HashMap;
+
 import android.util.Log;
 
 public class BurnFlagMessageActivity extends Activity {
-
-    public static final String ACTION_REGISTER_STATUS_CHANGED = "com.suntek.mway.rcs.ACTION_REGISTER_STATUS_CHANGED";
+    public static final String ACTION_REGISTER_STATUS_CHANGED =
+            "com.suntek.mway.rcs.ACTION_REGISTER_STATUS_CHANGED";
 
     public static final String ALARM_ALERT_ACTION = "com.android.deskclock.ALARM_ALERT";
 
-    public static final String MESSAGE_STATE_CHANGED="com.suntek.mway.rcs.ACTION_UI_MESSAGE_STATUS_CHANGE_NOTIFY";
+    public static final String MESSAGE_STATE_CHANGED =
+            "com.suntek.mway.rcs.ACTION_UI_MESSAGE_STATUS_CHANGE_NOTIFY";
 
     public static String ACTION_SIM_STATE_CHANGED ="android.intent.action.SIM_STATE_CHANGED";
 
+    private static final String EXTRA_STATUS = "status";
+    private static final String EXTRA_SMS_ID = "smsId";
+
     private static final int BURN_TIME_REFRESH = 1;
-
     private static final int AUDIO_TIME_REFRESH = 2;
-
     private static final int VIDEO_TIME_REFRESH = 3;
 
     public static final String VIDEO_HEAD = "[video]";
@@ -164,20 +164,19 @@ public class BurnFlagMessageActivity extends Activity {
                         + "% ; lastprogress = " + mLastProgress + "% .");
                 if (mLastProgress == 0 || temp - mLastProgress >= 5) {
                     mLastProgress = temp;
-                    mProgressText.setText(String
-                            .format(getString(R.string.image_downloading),
-                                    mLastProgress));
+                    mProgressText.setText(String.format(getString(R.string.image_downloading),
+                            mLastProgress));
                 }
             }
 
             String action = intent.getAction();
             if (action.equals(ACTION_REGISTER_STATUS_CHANGED)) {
-                int status = intent.getIntExtra("status", -1);
+                int status = intent.getIntExtra(EXTRA_STATUS, -1);
                 if (ClientInterfaceIntents.REGISTER_FAILED == status) {
                     finish();
                 }
             } else if (action.equals(MESSAGE_STATE_CHANGED)) {
-                int status = intent.getIntExtra("status", -11);
+                int status = intent.getIntExtra(EXTRA_STATUS, -11);
                 if (SuntekMessageData.MSG_BURN_HAS_BEEN_BURNED == status
                         && mMsg.getSendReceive() == SuntekMessageData.MSG_SEND) {
                     Toast.makeText(getBaseContext(), R.string.message_is_burnd, Toast.LENGTH_SHORT)

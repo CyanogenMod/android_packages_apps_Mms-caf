@@ -199,6 +199,14 @@
                     android:imeOptions="actionSend|flagNoEnterAction"
                 />
 
+                <ImageButton
+                    android:id="@+id/send_emoj"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:drawablePadding="0dip"
+                    android:background="@drawable/rcs_emoji_button_bg"
+                    android:src="@drawable/emotion_false" />
+
                 <LinearLayout
                     android:id="@+id/button_with_counter"
                     android:orientation="vertical"
@@ -278,6 +286,13 @@
                     android:imeOptions="actionSend|flagNoEnterAction"
                 />
 
+                 <ImageButton
+                    android:id="@+id/send_emoj_btnstyle"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:drawablePadding="0dip"
+                    android:background="@drawable/rcs_emoji_button_bg"
+                    android:src="@drawable/emotion_false" />
                 <LinearLayout
                     android:id="@+id/two_send_button"
                     android:layout_width="match_parent"
@@ -494,6 +509,15 @@
                         android:layout_marginStart="10dp" />
                 </LinearLayout>
             </LinearLayout>
+
+            <ViewStub
+                android:id="@+id/view_stub"
+                android:layout_width="fill_parent"
+                android:layout_height="230dp"
+                android:background="@android:color/darker_gray"
+                android:inflatedId="@+id/pic_view_id_after_inflate"
+                android:layout="@layout/rcs_emoji_root_viewstub"
+                android:visibility="gone"/>
 
         </LinearLayout>
     </LinearLayout>

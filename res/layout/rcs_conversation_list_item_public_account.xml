@@ -26,6 +26,7 @@
     android:layout_width="match_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
     android:background="?android:attr/activatedBackgroundIndicator"
+    android:layout_below="@+id/banner_sms_promo"
     android:paddingEnd="10dip" >
 
     <android.widget.QuickContactBadge

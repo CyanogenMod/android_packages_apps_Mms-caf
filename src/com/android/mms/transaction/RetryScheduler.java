@@ -302,7 +302,7 @@ public class RetryScheduler implements Observer {
                             context, 0, service, PendingIntent.FLAG_ONE_SHOT);
                     AlarmManager am = (AlarmManager) context.getSystemService(
                             Context.ALARM_SERVICE);
-                    am.setExact(AlarmManager.RTC, retryAt, operation);
+                    am.set(AlarmManager.RTC, retryAt, operation);
 
                     if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
                         Log.v(TAG, "Next retry is scheduled at"

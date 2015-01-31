@@ -28,9 +28,11 @@ import android.content.Context;
 import android.content.Intent;
 
 public class RcsMessageStatusReceiver extends BroadcastReceiver {
-    public static final String MESSAGE_STATUS_RECEIVED_ACTION = "com.suntek.mway.rcs.ACTION_UI_MESSAGE_ADD_TO_DATABASE";
+    public static final String MESSAGE_STATUS_RECEIVED_ACTION =
+            "com.suntek.mway.rcs.ACTION_UI_MESSAGE_ADD_TO_DATABASE";
 
-    public static final String UI_MESSAGE_STATUS_CHANGE_NOTIFY = "com.suntek.mway.rcs.ACTION_UI_MESSAGE_STATUS_CHANGE_NOTIFY";
+    public static final String UI_MESSAGE_STATUS_CHANGE_NOTIFY =
+            "com.suntek.mway.rcs.ACTION_UI_MESSAGE_STATUS_CHANGE_NOTIFY";
 
     @Override
     public void onReceive(Context context, Intent intent) {
