@@ -26,6 +26,8 @@ import android.drm.DrmManagerClient;
 import android.location.Country;
 import android.location.CountryDetector;
 import android.location.CountryListener;
+import android.content.pm.PackageManager;
+import android.content.ComponentName;
 import android.net.Uri;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
@@ -40,9 +42,11 @@ import com.android.mms.data.Conversation;
 import com.android.mms.layout.LayoutManager;
 import com.android.mms.rcs.RcsApiManager;
 import com.android.mms.transaction.MessagingNotification;
+import com.android.mms.transaction.MmsNoConfirmationSendActivity;
 import com.android.mms.transaction.MmsSystemEventReceiver;
 import com.android.mms.transaction.SmsReceiver;
 import com.android.mms.transaction.SmsReceiverService;
+import com.android.mms.ui.MessageUtils;
 import com.android.mms.util.DownloadManager;
 import com.android.mms.util.DraftCache;
 import com.android.mms.util.PduLoaderManager;
@@ -105,6 +109,14 @@ public class MmsApp extends Application {
         activePendingMessages();
         RcsApiManager.init(this);
         registerMobileDataObserver();
+
+        int enablePlugger = getResources().getBoolean(R.bool.enablePlugger) ?
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+                : PackageManager.COMPONENT_ENABLED_STATE_DEFAULT;
+        PackageManager pm_plugger = getPackageManager();
+        pm_plugger.setComponentEnabledSetting(new ComponentName(this,
+                MmsNoConfirmationSendActivity.class), enablePlugger,
+                PackageManager.DONT_KILL_APP);
     }
 
     private void registerMobileDataObserver() {
