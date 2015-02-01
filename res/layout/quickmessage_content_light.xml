@@ -32,11 +32,10 @@
             android:id="@+id/contactBadge"
             android:layout_width="40dip"
             android:layout_height="40dip"
+            android:layout_marginLeft="4dp"
             android:layout_gravity="center"
-            android:background="@drawable/ic_contact_picture"
             android:clickable="false"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_contact_picture" />
+            android:scaleType="fitCenter" />
 
         <LinearLayout
             android:layout_width="wrap_content"
