@@ -848,6 +848,7 @@ public class QuickMessagePopup extends Activity {
                 qmFromName.setText(qm.getFromName());
                 qmTimestamp.setText(MessageUtils.formatTimeStampString(mContext, qm.getTimestamp(),
                         false));
+                qmContactBadge.setOverlay(null);
                 updateContactBadge(qmContactBadge, qm.getFromNumber()[0], false);
                 qmMessageText.setText(qm.getMessageBody());
 
