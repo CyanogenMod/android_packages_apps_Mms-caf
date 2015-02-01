@@ -50,7 +50,7 @@ public class QuickMessageWear extends Activity {
         mContext = this;
         Intent i = getIntent();
         parseIntent(i);
-        //Get partial Wakelock so that we can send the message even if phone is locked
+        // Get partial Wakelock so that we can send the message even if phone is locked
         final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
         mWakeLock.acquire();
@@ -82,13 +82,13 @@ public class QuickMessageWear extends Activity {
         if (i == null) {
             return;
         }
-        //parse the remote input into a message that can be sent
+        // Parse the remote input into a message that can be sent
         Bundle remoteInput = RemoteInput.getResultsFromIntent(i);
         CharSequence message = remoteInput.getCharSequence(EXTRA_VOICE_REPLY);
         String sender = i.getStringExtra(SMS_SENDER);
         String contactName = i.getStringExtra(SMS_CONATCT);
         long tId = i.getLongExtra(SMS_THEAD_ID, -1);
-        //Only send if we have a valid thread id
+        // Only send if we have a valid thread id
         if (tId != -1) {
             String[] dest = new String[]{
                     sender
@@ -111,7 +111,7 @@ public class QuickMessageWear extends Activity {
             Toast.makeText(mContext, getString(R.string.qm_wear_messaged_failed, contactName),
                     Toast.LENGTH_LONG).show();
         }
-        //gotta mark as read even if it doesn't send since we read
+        // Mark as read even if it doesn't send since we read
         // the message and tried to respond to it
         Conversation con = Conversation.get(mContext, tId, true);
         if (con != null) {
@@ -122,5 +122,3 @@ public class QuickMessageWear extends Activity {
         finish();
     }
 }
-
-

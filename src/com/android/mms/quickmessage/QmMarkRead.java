@@ -54,8 +54,10 @@ public class QmMarkRead extends BroadcastReceiver {
                 if (MessagingPreferenceActivity.getQuickMessageEnabled(context)) {
                     Intent qmIntent = new Intent();
                     qmIntent.setClass(context, QuickMessagePopup.class);
-                    qmIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP |
-                            Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                    qmIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                            | Intent.FLAG_ACTIVITY_SINGLE_TOP
+                            | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                            | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
                     qmIntent.putExtra(QuickMessagePopup.QR_REMOVE_MESSAGES_EXTRA, true);
                     qmIntent.putExtra(QuickMessagePopup.QR_THREAD_ID_EXTRA, threadId);
                     context.startActivity(qmIntent);
