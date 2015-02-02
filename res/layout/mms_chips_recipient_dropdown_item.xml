@@ -23,7 +23,7 @@
     android:paddingStart="8dp"
     android:paddingEnd="8dp"
     android:gravity="center_vertical"
-    android:background="?android:attr/activatedBackgroundIndicator">
+    android:background="@drawable/chips_dropdown_background">
 
     <com.android.ex.chips.CircularImageView
         android:id="@android:id/icon"
