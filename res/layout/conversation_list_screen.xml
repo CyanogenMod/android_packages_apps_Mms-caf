@@ -56,21 +56,12 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
 
-    <TextView android:id="@+id/empty"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:background="@android:color/white"
-        android:text="@string/loading_conversations"
-        android:layout_below="@+id/notification_list_item"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+    <include layout="@layout/banner_sms_promo" />
 
-     <include layout="@layout/banner_sms_promo" />
+    <include layout="@layout/floating_action_button" />
 
-     <include layout="@layout/floating_action_button" />
+    <include layout="@layout/rcs_conversation_list_item_public_account" />
 
-     <include layout="@layout/rcs_conversation_list_item_public_account" />
-
-     <include layout="@layout/rcs_conversation_list_item_notification_list" />
+    <include layout="@layout/rcs_conversation_list_item_notification_list" />
 
 </RelativeLayout>
