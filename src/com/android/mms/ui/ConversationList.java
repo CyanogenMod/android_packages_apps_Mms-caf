@@ -219,7 +219,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         @Override
         public void onClick(View view) {
             if (mIsSmsEnabled) {
-                if (RcsUtils.isSupportRcs()) {
+                if (mIsRcsEnabled) {
                     selectComposeAction();
                 } else {
                     createNewMessage();
@@ -381,10 +381,11 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
     }
 
     private void addNotificationListEntranceIfAvailable() {
+        View mNotificationListItemView = findViewById(R.id.notification_list_item);
         if (!RcsApiManager.isRcsServiceInstalled()) {
+            mNotificationListItemView.setVisibility(View.GONE);
             return;
         }
-        View mNotificationListItemView = findViewById(R.id.notification_list_item);
         QuickContactBadge notificationListPhotoView =
                 (QuickContactBadge) mNotificationListItemView.findViewById(R.id.avatar);
         notificationListPhotoView.assignContactUri(null);
@@ -736,6 +737,13 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         MenuItem item = menu.findItem(R.id.action_change_to_conversation_mode);
         if (item != null) {
             item.setVisible(false);
+        }
+
+        MenuItem saveOrBackItem = menu.findItem(R.id.saveorbackmessage);
+        if (saveOrBackItem != null) {
+            if (!mIsRcsEnabled || (mIsRcsEnabled && !RcsApiManager.isRcsOnline())) {
+                saveOrBackItem.setVisible(false);
+            }
         }
 
         MenuItem cellBroadcastItem = menu.findItem(R.id.action_cell_broadcasts);
