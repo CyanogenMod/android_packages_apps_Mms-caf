@@ -51,7 +51,7 @@ public class AsyncDialog {
     public void runAsync(final Runnable backgroundTask,
             final Runnable postExecuteTask, final int dialogStringId) {
         new ModalDialogAsyncTask(dialogStringId, postExecuteTask)
-            .execute(new Runnable[] {backgroundTask});
+            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Runnable[] {backgroundTask});
     }
 
     // Shows the activity's progress spinner. Should be canceled if exiting the activity.
@@ -65,6 +65,9 @@ public class AsyncDialog {
     };
 
     public void clearPendingProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
         // remove any callback to display a progress spinner
         mHandler.removeCallbacks(mShowProgressDialogRunnable);
         // clear the dialog so any pending dialog.dismiss() call can be avoided
