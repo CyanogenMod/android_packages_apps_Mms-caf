@@ -27,7 +27,7 @@
     <string name="pref_close_all_summary">Close button closes all messages</string>
     <string name="pref_dark_theme_title">Use dark theme</string>
     <string name="pref_dark_theme_summary">If not selected, the default \'light\' theme will be used</string>
-    <string name="message_counter_separator">of</string>
+    <string name="message_counter">%1$d of %2$d</string>
 
     <!-- QM Dialog box buttons -->
     <string name="button_close">Close</string>
@@ -127,7 +127,7 @@
     <string name="illegal_message_or_increase_size">Incorrect message size.</string>
 
     <!-- Dialog box title that appears when a draft message will not be saved due to invalid recipients -->
-    <string name="discard_message_reason_some_invalid">Your message will be discarded because it has some invalid recipients.</string>
+    <string name="discard_message_reason_some_invalid">Your message will be discarded because some of the recipients are invalid.</string>
 
     <!-- Brief message that appears when the maximum size of slides has been reached -->
     <string name="cannot_add_text_anymore">Can\'t add more text.</string>
@@ -274,7 +274,7 @@
     <string name="sim_capacity_title">SIM capacity</string>
     <string name="sim_capacity"><xliff:g id="used">%1$d</xliff:g> of <xliff:g id="total">%2$d</xliff:g> SIM card entries are used</string>
 
-    <string name="pref_sim_card_full_save_to_phone">SIM card full, saving new message to phone.</string>
+    <string name="pref_sim_card_full_save_to_phone">SIM card is full, saving new messages to phone.</string>
 
     <!-- batch delete message in ConversationList and MailBoxMessageList -->
     <string name="selected_all">Select all</string>
@@ -287,9 +287,9 @@
     <string name="cdma_priority_urgent">Urgent</string>
     <string name="cdma_priority_emergency">Emergency</string>
     <string name="pref_title_cdma_priority">Message priority</string>
-    <string name="pref_summary_cdma_priority">Priority of CDMA message</string>
+    <string name="pref_summary_cdma_priority">Priority of CDMA messages</string>
     <string name="download_dialog_title">Download this MMS?</string>
-    <string name="menu_email">Send Email</string>
+    <string name="menu_email">Send email</string>
 
     <!-- Settings item description for Preferred storage -->
     <string name="pref_title_sms_store">Preferred storage</string>
@@ -318,7 +318,7 @@
     <string name="import_sms_failed_toast">Unable to import messages</string>
     <string name="perform_backup_title">Exporting</string>
     <string name="perform_restore_title">Importing</string>
-    <string name="wait_progress_message">Please wait\2026</string>
+    <string name="wait_progress_message">Please wait\u2026</string>
     <string name="backup_file_name_message">Messages exported to \'%1$s\'</string>
     <string name="manage_sdcard_messages">Import/export messages</string>
     <string name="no_backups_found">No backups found</string>
@@ -333,7 +333,7 @@
     <!-- Copy message text-->
     <string name="copy_empty_string">No text to copy</string>
 
-    <string name="attach_add_calendar_events">Calendar Event</string>
+    <string name="attach_add_calendar_events">Calendar event</string>
     <!-- friendlier text for an activity not found exception for calendar attachments -->
     <string name="calendar_attachment_activity_not_found">Unable to find a supporting Calendar app</string>
 
