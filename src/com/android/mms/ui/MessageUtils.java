@@ -1568,9 +1568,10 @@ public class MessageUtils {
      */
     public static boolean isIccCardActivated(int subscription) {
         TelephonyManager tm = TelephonyManager.getDefault();
-        log("isIccCardActivated subscription " + tm.getSimState(subscription));
-        return (tm.getSimState(subscription) != TelephonyManager.SIM_STATE_ABSENT)
-                    && (tm.getSimState(subscription) != TelephonyManager.SIM_STATE_UNKNOWN);
+        final int simState = tm.getSimState(subscription);
+        log("isIccCardActivated subscription " + simState);
+        return (simState != TelephonyManager.SIM_STATE_ABSENT)
+                    && (simState != TelephonyManager.SIM_STATE_UNKNOWN);
     }
 
     public static Drawable getMultiSimIcon(Context context, int subscription) {
