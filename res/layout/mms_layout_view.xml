@@ -25,7 +25,7 @@
     android:minWidth="@dimen/mms_inline_attachment_min_width"
     android:minHeight="@dimen/mms_inline_attachment_min_height"
     android:layout_gravity="center_horizontal"
-    android:paddingTop="5dp">
+    android:paddingTop="5dp" >
 
     <ImageView
         android:id="@+id/image_view"
@@ -42,7 +42,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:layout_gravity="center"
-        android:background="@null"
+        android:background="@android:drawable/picture_frame"
         android:src="@drawable/mms_play_image_btn"
         android:visibility="gone" />
 
