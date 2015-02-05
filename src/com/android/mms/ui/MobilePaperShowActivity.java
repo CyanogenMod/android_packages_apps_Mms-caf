@@ -242,6 +242,7 @@ public class MobilePaperShowActivity extends Activity {
                 mSlideModel.getTotalMessageSize());
         if (!TextUtils.isEmpty(messageDetails)) {
             mDetailsText.setText(messageDetails);
+            mDetailsText.setTextIsSelectable(true);
         }
     }
 
