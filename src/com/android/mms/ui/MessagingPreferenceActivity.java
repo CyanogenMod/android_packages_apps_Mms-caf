@@ -366,6 +366,17 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
         // Blacklist screen - Needed for setting summary
         mBlacklist = (PreferenceScreen) findPreference(BLACKLIST);
+        if (!BlacklistUtils.isBlacklistFeaturePresent(this)) {
+            PreferenceCategory parent =
+                    (PreferenceCategory)findPreference("pref_key_extra_settings");
+            parent.removePreference(mBlacklist);
+            mBlacklist = null;
+
+            if (parent.getPreferenceCount() == 0) {
+                PreferenceScreen root = (PreferenceScreen)findPreference("pref_key_root");
+                root.removePreference(parent);
+            }
+        }
 
         setMessagePreferences();
     }
