@@ -24,7 +24,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -491,6 +490,12 @@ public class MessageListItem extends ZoomMessageListItem implements
         if (mPresenter != null) {
             mPresenter.cancelBackgroundLoading();
         }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        unbind();
+        super.onDetachedFromWindow();
     }
 
     public MessageItem getMessageItem() {

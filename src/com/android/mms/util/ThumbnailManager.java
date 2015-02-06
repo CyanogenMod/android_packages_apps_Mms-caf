@@ -169,6 +169,7 @@ public class ThumbnailManager extends BackgroundLoaderManager {
 
             @Override
             public void setIsDone(boolean done) {
+                cancelCallback(callback);
                 mIsDone = done;
             }
 

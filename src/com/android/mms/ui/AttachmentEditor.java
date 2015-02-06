@@ -278,6 +278,14 @@ public class AttachmentEditor extends LinearLayout {
         }
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        if (mPresenter != null) {
+            mPresenter.cancelBackgroundLoading();
+        }
+        super.onDetachedFromWindow();
+    }
+
     public boolean canAddTextForMms(CharSequence s) {
         int totalSize = 0;
         int textSize = s.toString().getBytes().length;
