@@ -32,6 +32,10 @@ import com.android.mms.ui.MessageListItem;
  */
 public class ZoomMessageListView extends ListView {
 
+    public static final int MIN_FONT_SIZE = 14;  //sp
+    public static final int MAX_FONT_SIZE = 72;  //sp.0f;
+    private int mCurrentFontSize = MIN_FONT_SIZE;
+
     public ZoomMessageListView(Context context) {
         super(context);
     }
@@ -56,13 +60,45 @@ public class ZoomMessageListView extends ListView {
      * @param scale {@link java.lang.Float}
      */
     public void handleZoomWithScale(float scale) {
+        updateZoomViewByScale(scale);
         int viewCount = getChildCount();
         for (int i = 0; i < viewCount; i++) {
             View view = getChildAt(i);
             if (view instanceof ZoomMessageListItem) {
-                ((ZoomMessageListItem) view).handleZoomWithScale(scale);
+                ((ZoomMessageListItem) view).setZoomFontSize(mCurrentFontSize);
             }
         }
     }
 
+    /**
+     * This will "zoom" the text by changing the font size based ont he given scale for the given
+     * view
+     *
+     * @param scale   {@link java.lang.Float}
+     */
+    public void updateZoomViewByScale(float scale) {
+        // getTextSize() returns absolute pixels
+        // convert to scaled for proper math flow
+        //float currentTextSize = pixelsToSp(context, view.getTextSize());
+
+        // Calculate based on the scale (1.1 and 0.95 in this case)
+        float calculatedSize = mCurrentFontSize * scale;
+        // Limit max and min
+        if (calculatedSize > MAX_FONT_SIZE) {
+            mCurrentFontSize = MAX_FONT_SIZE;
+        } else if (calculatedSize < MIN_FONT_SIZE) {
+            mCurrentFontSize = MIN_FONT_SIZE;
+        } else {
+            // Specify the calculated if we are within the reasonable bounds
+            mCurrentFontSize = (int)calculatedSize;
+        }
+    }
+
+    /**
+     * Get the currently set font size for the current zoom level.
+     * @return The currently set font size.
+     */
+    public int getZoomFontSize() {
+        return mCurrentFontSize;
+    }
 }

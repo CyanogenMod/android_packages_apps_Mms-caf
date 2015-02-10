@@ -47,6 +47,8 @@ import android.widget.ListView;
 import com.android.mms.LogTag;
 import com.android.mms.R;
 import com.android.mms.rcs.RcsNotificationMessageListItem;
+import com.android.mms.ui.zoom.ZoomMessageListItem;
+import com.android.mms.ui.zoom.ZoomMessageListView;
 import com.google.android.mms.MmsException;
 import com.suntek.mway.rcs.client.aidl.provider.SuntekMessageData;
 
@@ -318,6 +320,7 @@ public class MessageListAdapter extends CursorAdapter {
 
                 mBodyCache.put(position, msgItem.mBody);
             }
+            handleZoomForItem(view);
         } else if (view instanceof RcsNotificationMessageListItem) {
             ((RcsNotificationMessageListItem) view).bind(cursor, mColumnsMap);
         }
@@ -413,6 +416,7 @@ public class MessageListAdapter extends CursorAdapter {
                 view.findViewById(R.id.mms_layout_view_stub).setVisibility(View.VISIBLE);
             }
         }
+        handleZoomForItem(view);
         return view;
     }
 
@@ -427,6 +431,19 @@ public class MessageListAdapter extends CursorAdapter {
             }
         }
         return item;
+    }
+
+    /**
+     * Handle zoom for zoomable list items.
+     * @param view A view that should be zoomed, if it is a ZoomMessageListItem
+     */
+    private void handleZoomForItem(View view) {
+        if (mListView != null
+                && mListView instanceof ZoomMessageListView
+                && view instanceof ZoomMessageListItem) {
+            int zoomFontSize = ((ZoomMessageListView) mListView).getZoomFontSize();
+            ((ZoomMessageListItem) view).setZoomFontSize(zoomFontSize);
+        }
     }
 
     private boolean isCursorValid(Cursor cursor) {
