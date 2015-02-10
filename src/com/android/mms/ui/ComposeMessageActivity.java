@@ -6023,6 +6023,10 @@ public class ComposeMessageActivity extends Activity
             }
 
             final MessageItem msgItem = mMessageItems.get(0);
+            if (mIsRcsEnabled && msgItem.mRcsId != 0) {
+                mRcsForwardId = msgItem.mRcsId;
+                return;
+            }
             getAsyncDialog().runAsync(new Runnable() {
                 @Override
                 public void run() {
