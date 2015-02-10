@@ -421,7 +421,7 @@
     <string name="do_not_show_connect_warning">不要再显示这个警告</string>
     <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
     <string name="menu_add_to_label">保存到书签</string>
-    <string name="loadurlinfo_str">加载此URL?</string>
+    <string name="loadurlinfo_str">警告：打开未知链接可能导致感染病毒</string>
     <string name="normal_show">普通模式查看</string>
     <string name="cannot_play">无法播放该幻灯片</string>
     <string name="operate_success">"操作成功！"</string>
