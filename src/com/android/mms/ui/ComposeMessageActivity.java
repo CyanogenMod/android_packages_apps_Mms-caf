@@ -7769,7 +7769,8 @@ public class ComposeMessageActivity extends Activity
                 mRcsForwardId = msgItem.mRcsId;
                 return;
             }
-            if (msgItem.mRcsId != 0 && msgItem.mRcsType != RcsUtils.RCS_MSG_TYPE_TEXT) {
+            if (mIsRcsEnabled && msgItem.mRcsId != 0 &&
+                    msgItem.mRcsType != RcsUtils.RCS_MSG_TYPE_TEXT) {
                 return;
             }
             getAsyncDialog().runAsync(new Runnable() {
