@@ -351,11 +351,14 @@ public class SelectRecipientsList extends Activity implements
             String[] initialRecipients = getIntent().getStringArrayExtra(EXTRA_RECIPIENTS);
             if (initialRecipients != null && mMode == MODE_DEFAULT) {
                 for (String recipient : initialRecipients) {
-                    for (PhoneNumber number : data.phoneNumbers) {
-                        if (number.equals(recipient)) {
-                            checkPhoneNumber(number, true);
-                            updateGroupCheckStateForNumber(number, null);
-                            break;
+                    // if statement to check if there are any contacts with phone numbers first
+                    if (data.phoneNumbers != null) {
+                        for (PhoneNumber number : data.phoneNumbers) {
+                            if (number.equals(recipient)) {
+                                checkPhoneNumber(number, true);
+                                updateGroupCheckStateForNumber(number, null);
+                                break;
+                            }
                         }
                     }
                 }
