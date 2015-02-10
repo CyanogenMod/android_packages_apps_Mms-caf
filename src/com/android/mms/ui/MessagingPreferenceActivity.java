@@ -85,6 +85,7 @@ import android.widget.SimpleAdapter;
 import android.widget.SimpleAdapter.ViewBinder;
 import android.widget.Toast;
 import android.util.Log;
+import android.os.SystemProperties;
 
 import com.android.internal.telephony.IccCardConstants;
 import com.android.internal.telephony.TelephonyIntents;
@@ -388,7 +389,9 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mSmsValidityCard2Pref
             = (ListPreference) findPreference("pref_key_sms_validity_period_slot2");
         // ConfigurationClient
-        if((MmsConfig.isOMACPEnabled())){
+        if((MmsConfig.isOMACPEnabled())
+                || SystemProperties.getBoolean("persist.mmssupportcp.enable",
+                        false)) {
             mConfigurationmessage = findPreference(CONFIGURATION_MESSAGE);
         }else {
             PreferenceScreen prefRoot = (PreferenceScreen) findPreference("pref_key_root");
