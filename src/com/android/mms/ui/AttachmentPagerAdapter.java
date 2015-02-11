@@ -164,6 +164,12 @@ public class AttachmentPagerAdapter extends PagerAdapter {
                     (!mIsReplace && mHasAttachment) ? R.drawable.ic_attach_vcard_disable
                             : R.drawable.ic_attach_vcard_holo_light));
         }
+
+        // calendar event support
+        list.add(new IconListItem(mContext.getString(R.string.attach_add_calendar_events),
+                (!mIsReplace && mHasAttachment) ? R.drawable.ic_attach_vcard_disable
+                        : R.drawable.ic_attach_vcard_holo_light));
+
         return list;
     }
 
