@@ -69,6 +69,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.StatFs;
+import android.os.UserHandle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.Contacts;
@@ -1529,7 +1530,8 @@ public class MessageUtils {
     }
 
     public static boolean isPhoneFeatureEnabled(Context context) {
-        return context.getContentResolver().acquireProvider(URI_PHONE_FEATURE) != null;
+        return (UserHandle.myUserId() == UserHandle.USER_OWNER &&
+                context.getContentResolver().acquireProvider(URI_PHONE_FEATURE) != null);
     }
 
     private static Bundle callBinder(Context context, String method, Bundle extras) {
