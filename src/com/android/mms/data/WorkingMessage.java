@@ -1118,7 +1118,7 @@ public class WorkingMessage {
         }
         int slideNum = mSlideshow.size() - 1;
         result = internalChangeMedia(type, uri, slideNum, slideShowEditor);
-        if (result != OK) {
+        if (result != OK && addNewSlide) {
             // We added a new slide and what we attempted to insert on the slide failed.
             // Delete that slide, otherwise we could end up with a bunch of blank slides.
             // It's ok that we're removing the slide even if we didn't add it (because it was
