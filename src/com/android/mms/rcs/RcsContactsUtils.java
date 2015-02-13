@@ -23,29 +23,50 @@
 
 package com.android.mms.rcs;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.RemoteException;
 import android.provider.ContactsContract;
+import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.RawContacts;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.text.TextUtils;
 import android.util.Base64;
 
 import com.android.mms.data.Conversation;
 import com.suntek.mway.rcs.client.aidl.contacts.RCSContact;
+import com.suntek.mway.rcs.client.aidl.plugin.entity.profile.QRCardImg;
+import com.suntek.mway.rcs.client.aidl.plugin.entity.profile.QRCardInfo;
+import com.suntek.mway.rcs.client.api.profile.callback.QRImgListener;
+import com.suntek.mway.rcs.client.aidl.plugin.entity.profile.Avatar;
+import com.suntek.mway.rcs.client.aidl.plugin.entity.profile.Avatar.IMAGE_TYPE;
+import com.suntek.mway.rcs.client.aidl.plugin.entity.profile.TelephoneModel;
+import com.suntek.mway.rcs.client.api.profile.callback.ProfileListener;
+import com.suntek.mway.rcs.client.api.profile.impl.ProfileApi;
 import com.suntek.mway.rcs.client.aidl.plugin.entity.profile.Profile;
 import com.suntek.mway.rcs.client.aidl.plugin.entity.profile.TelephoneModel;
+import com.suntek.mway.rcs.client.aidl.provider.SuntekMessageData;
 import com.suntek.mway.rcs.client.aidl.provider.model.GroupChatModel;
 import com.suntek.mway.rcs.client.aidl.provider.model.GroupChatUser;
-import com.suntek.mway.rcs.client.aidl.provider.SuntekMessageData;
 import com.suntek.mway.rcs.client.api.util.ServiceDisconnectedException;
+import com.suntek.mway.rcs.client.aidl.contacts.RCSContact;
 
 public class RcsContactsUtils {
+    public static final String NOTIFY_CONTACT_PHOTO_CHANGE = "com.suntek.mway.rcs.NOTIFY_CONTACT_PHOTO_CHANGE";
+    public static final String LOCAL_PHOTO_SETTED = "local_photo_setted";
     public static final String MIMETYPE_RCS = "vnd.android.cursor.item/rcs";
     public static final String PHONE_PRE_CODE = "+86";
 
@@ -340,4 +361,173 @@ public class RcsContactsUtils {
         return builder.toString();
     }
 
+    private static class UpdatePhotosTask extends AsyncTask<Void, Void, Void> {
+
+        private Context mContext;
+        private String mNumber;
+
+        private Handler mHandler = new Handler();
+
+        UpdatePhotosTask(Context context, String number) {
+            mContext = context;
+            mNumber = number;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            long aContactId =getContactIdByNumber(mContext, mNumber);
+            ContentResolver resolver= mContext.getContentResolver();
+            Cursor c = resolver.query(RawContacts.CONTENT_URI, new String[] {
+                    RawContacts._ID
+            }, RawContacts.CONTACT_ID + "=" + String.valueOf(aContactId), null, null);
+            final ArrayList<Long> rawContactIdList = new ArrayList<Long>();
+            if(c != null){
+                try {
+                    if (c.moveToFirst()) {
+                        // boolean hasTryToGet = false;
+                        do {
+                            long rawContactId = c.getLong(0);
+                            if (!hasLocalSetted(resolver, rawContactId)) {
+                                rawContactIdList.add(rawContactId);
+                            }
+                        } while (c.moveToNext());
+                    }
+                } finally {
+                    if(c != null)
+                        c.close();
+                }
+            }
+            if (rawContactIdList.size() > 0) {
+                try {
+                    RcsApiManager.getProfileApi().getHeadPicByContact(aContactId,
+                            new ProfileListener() {
+
+                                @Override
+                                public void onAvatarGet(final Avatar photo,
+                                        final int resultCode, final String resultDesc)
+                                        throws RemoteException {
+                                    mHandler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (resultCode == 0) {
+                                                if (photo != null) {
+                                                    byte[] contactPhoto = Base64.decode(
+                                                            photo.getImgBase64Str(),
+                                                            android.util.Base64.DEFAULT);
+                                                    for (long rawContactId : rawContactIdList) {
+                                                        final Uri outputUri = Uri.withAppendedPath(
+                                                                ContentUris
+                                                                        .withAppendedId(
+                                                                                RawContacts.CONTENT_URI,
+                                                                                rawContactId),
+                                                                RawContacts.DisplayPhoto.CONTENT_DIRECTORY);
+                                                        setContactPhoto(mContext,
+                                                                contactPhoto, outputUri);
+                                                    }
+                                                    //notify mms list
+                                                    mContext.sendBroadcast(new Intent(NOTIFY_CONTACT_PHOTO_CHANGE));
+                                                }
+                                            } else {
+                                            }
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onAvatarUpdated(int arg0, String arg1)
+                                        throws RemoteException {
+                                }
+
+                                @Override
+                                public void onProfileGet(Profile arg0, int arg1, String arg2)
+                                        throws RemoteException {
+                                }
+
+                                @Override
+                                public void onProfileUpdated(int arg0, String arg1)
+                                        throws RemoteException {
+                                }
+
+                                @Override
+                                public void onQRImgDecode(QRCardInfo imgObj, int resultCode,
+                                        String arg2) throws RemoteException {
+                                }
+                            });
+                } catch (ServiceDisconnectedException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+    }
+
+    public static void updateContactPhotosByNumber(Context context,String number) {
+        new UpdatePhotosTask(context,number).execute();
+    }
+
+    public static void setContactPhoto(Context context, byte[] input,
+            Uri outputUri) {
+        FileOutputStream outputStream = null;
+
+        try {
+            outputStream = context.getContentResolver().openAssetFileDescriptor(outputUri, "rw")
+                    .createOutputStream();
+            outputStream.write(input);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try{
+                outputStream.close();
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static boolean hasLocalSetted(ContentResolver resolver, long rawContactId) {
+        Cursor c = resolver.query(ContactsContract.RawContacts.CONTENT_URI, new String[] {
+                LOCAL_PHOTO_SETTED
+        }, RawContacts._ID + " = ? ", new String[] {
+                String.valueOf(rawContactId)
+        }, null);
+        long localSetted = 0;
+        try {
+            if (c != null && c.moveToFirst()) {
+                localSetted = c.getLong(0);
+            }
+        } finally {
+            c.close();
+        }
+        return (localSetted == 1) ? true : false;
+    }
+
+    public static long getContactIdByNumber(Context context, String number) {
+        if (TextUtils.isEmpty(number)) {
+            return -1;
+        }
+        String numberW86 = number;
+        if (!number.startsWith("+86")) {
+            numberW86 = "+86" + number;
+        } else {
+            numberW86 = number.substring(3);
+        }
+        Cursor cursor = context.getContentResolver().query(Phone.CONTENT_URI, new String[] {
+                Phone.CONTACT_ID
+        }, Phone.NUMBER + "=? OR " + Phone.NUMBER + "=?", new String[] {
+                number, numberW86
+        }, null);
+        if (cursor != null) {
+            try{
+                if (cursor.moveToFirst()) {
+                    return cursor.getInt(0);
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        return -1;
+    }
 }

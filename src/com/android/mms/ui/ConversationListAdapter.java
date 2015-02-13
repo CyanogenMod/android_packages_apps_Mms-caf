@@ -38,7 +38,7 @@ import com.android.mms.data.Conversation;
 public class ConversationListAdapter extends CursorAdapter implements AbsListView.RecyclerListener {
     private static final String TAG = LogTag.TAG;
     private static final boolean LOCAL_LOGV = false;
-
+    private DataEmptyListener mDataEmptyListener;
     private final int[] mGroupChatIconRes = new int[] {
             R.drawable.group_icon_1, R.drawable.group_icon_2, R.drawable.group_icon_3,
             R.drawable.group_icon_4, R.drawable.group_icon_5, R.drawable.group_icon_6
@@ -94,6 +94,12 @@ public class ConversationListAdapter extends CursorAdapter implements AbsListVie
         }
     }
 
+    @Override
+    public int getCount() {
+        setDataIsEmpty(super.getCount());
+        return super.getCount();
+    }
+
     public void uncheckAll() {
         int count = getCount();
         for (int i = 0; i < count; i++) {
@@ -103,9 +109,31 @@ public class ConversationListAdapter extends CursorAdapter implements AbsListVie
         }
     }
 
-    private Drawable getGroupChatIcon(Context context, ConversationListItem listItem, int position) {
+    private Drawable getGroupChatIcon(Context context,
+            ConversationListItem listItem, int position) {
         int resId = position % 6;
-        Drawable drawable = context.getResources().getDrawable(mGroupChatIconRes[resId]);
+        Drawable drawable = context.getResources().getDrawable(
+                mGroupChatIconRes[resId]);
         return drawable;
+    }
+
+    private void setDataIsEmpty(int itemCount){
+        if (itemCount == 0) {
+            if(mDataEmptyListener != null){
+                mDataEmptyListener.onDataEmpty(true);
+            }
+        } else {
+            if(mDataEmptyListener != null){
+                mDataEmptyListener.onDataEmpty(false);
+            }
+        }
+    }
+
+    public interface DataEmptyListener {
+        public void onDataEmpty(boolean isDataEmpty);
+    }
+
+    public void setDataEmptyListener(DataEmptyListener dataEmptyListener){
+        this.mDataEmptyListener = dataEmptyListener;
     }
 }

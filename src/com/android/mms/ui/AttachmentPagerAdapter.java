@@ -47,6 +47,7 @@ import android.widget.SimpleAdapter;
 
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
+import com.android.mms.rcs.RcsApiManager;
 import com.android.mms.rcs.RcsUtils;
 
 public class AttachmentPagerAdapter extends PagerAdapter {
@@ -63,7 +64,7 @@ public class AttachmentPagerAdapter extends PagerAdapter {
     public static final int ADD_SLIDESHOW        = 6;
     public static final int ADD_CONTACT_AS_TEXT  = 7;
     public static final int ADD_CONTACT_AS_VCARD = 8;
-    public static final int ADD_MAP              = 10;
+    public static final int ADD_MAP              = 9;
 
     private static final String GRID_ITEM_IMAGE = "grid_item_image";
     private static final String GRID_ITEM_TEXT  = "grid_item_text";
@@ -165,12 +166,12 @@ public class AttachmentPagerAdapter extends PagerAdapter {
             list.add(new IconListItem(mContext.getString(R.string.attach_add_contact_as_vcard),
                     (!mIsReplace && mHasAttachment) ? R.drawable.ic_attach_vcard_disable
                             : R.drawable.ic_attach_vcard_holo_light));
-        } else if (RcsUtils.isSupportRcs()) {
+        } else if (RcsApiManager.isRcsServiceInstalled() && RcsApiManager.isRcsOnline()) {
             list.add(new IconListItem(mContext.getString(R.string.attach_add_contact_as_vcard),
                     (!mIsReplace && mHasAttachment) ? R.drawable.ic_attach_vcard_disable
                             : R.drawable.ic_attach_vcard_holo_light));
         }
-        if (RcsUtils.isSupportRcs()) {
+        if (RcsApiManager.isRcsServiceInstalled() && RcsApiManager.isRcsOnline()) {
             list.add(new IconListItem(mContext.getString(R.string.attach_map),
                     R.drawable.rcs_caiyun_sharefile));
         }

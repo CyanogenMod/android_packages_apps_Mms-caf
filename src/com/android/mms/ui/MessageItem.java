@@ -83,7 +83,7 @@ public class MessageItem {
     boolean mReadReport;
     boolean mLocked;            // locked to prevent auto-deletion
 
-    String mTimestamp;
+    public String mTimestamp;
     String mAddress;
     String mContact;
     public String mBody; // Body of SMS, first text of MMS.
@@ -118,7 +118,7 @@ public class MessageItem {
     private PduLoadedCallback mPduLoadedCallback;
     private ItemLoadedFuture mItemLoadedFuture;
     int mLayoutType = LayoutModel.DEFAULT_LAYOUT_TYPE;
-    long mDate;
+    public long mDate;
     boolean mIsForwardable = true;
     boolean mHasAttachmentToSave = false;
     boolean mIsDrmRingtoneWithRights = false;
@@ -130,7 +130,7 @@ public class MessageItem {
     public int mRcsId;
     public int mRcsBurnFlag;
     public int mRcsIsBurn;
-    public static int mRcsIsDownload;
+    public int mRcsIsDownload;
     public int mRcsMsgState;
     public int mRcsPlayTime;
     public int mRcsFileSize;
@@ -349,10 +349,6 @@ public class MessageItem {
                                                     // to show "Sending..." or the sent date.
         }
         return mCachedFormattedMessage;
-    }
-
-    public static void setRcsIsDownload(int mRcsIsDownload) {
-        MessageItem.mRcsIsDownload = mRcsIsDownload;
     }
 
     public int getBoxId() {

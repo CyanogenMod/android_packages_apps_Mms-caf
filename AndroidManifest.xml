@@ -515,17 +515,29 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name="com.android.mms.rcs.RcsCreateGroupChatActivity"
+            android:theme="@style/MmsTheme.NoActionBar"
+            android:label="@string/new_group_chat"
+            android:exported="true"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.android.mms.rcs.CREATR_GROUP_CHAT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
-       <activity android:name=".transaction.MmsNoConfirmationSendActivity"
-           android:label="@string/plugger"
-           android:enabled="@bool/enablePlugger"
-           android:icon="@drawable/icon_of_plugger">
-           <intent-filter>
-              <action android:name="android.intent.action.SEND" />
-              <category android:name="android.intent.category.DEFAULT" />
-              <data android:mimeType="image/*" />
-              <data android:mimeType="video/*" />
-              <data android:mimeType="vnd.android/mms" />
+        <activity
+            android:name=".transaction.MmsNoConfirmationSendActivity"
+            android:label="@string/plugger"
+            android:enabled="@bool/enablePlugger"
+            android:icon="@drawable/icon_of_plugger">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+                <data android:mimeType="video/*" />
+                <data android:mimeType="vnd.android/mms" />
             </intent-filter>
         </activity>
 
