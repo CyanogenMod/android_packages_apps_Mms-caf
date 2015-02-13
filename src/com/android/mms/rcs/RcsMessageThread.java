@@ -1,0 +1,147 @@
+
+package com.android.mms.rcs;
+
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+import android.content.Intent;
+
+import com.android.mms.MmsApp;
+
+import com.suntek.mway.rcs.client.aidl.constant.BroadcastConstants;
+import com.suntek.mway.rcs.client.api.im.impl.MessageApi;
+import com.suntek.mway.rcs.client.aidl.provider.SuntekMessageData;
+import com.suntek.mway.rcs.client.aidl.provider.model.ChatMessage;
+import com.suntek.mway.rcs.client.aidl.provider.model.GroupChatModel;
+import com.suntek.mway.rcs.client.api.util.ServiceDisconnectedException;
+import android.content.Context;
+import com.android.mms.transaction.MessagingNotification;
+import android.util.Log;
+
+public class RcsMessageThread extends Thread {
+
+    private volatile boolean isExit = false;
+
+    private int index;
+
+    private BlockingQueue<Intent> reportQueue;
+
+    public RcsMessageThread(int index) {
+        this.setName("MessageReport-" + index);
+        this.index = index;
+
+        reportQueue = new LinkedBlockingQueue<Intent>();
+    }
+
+    public boolean addReport(Intent reportOption) {
+        return reportQueue.add(reportOption);
+    }
+
+    public void notifyExit() {
+        isExit = true;
+    }
+
+    @Override
+    public void run() {
+
+        while (!isExit) {
+            try {
+
+                Intent reportOption = reportQueue.poll(3, TimeUnit.SECONDS);
+                rcsBroadcastDeal(reportOption);
+                if (reportOption != null) {
+
+                }
+
+            } catch (Exception ex) {
+
+            }
+        }
+
+    }
+
+    public void rcsBroadcastDeal(Intent intent) {
+
+        String action = intent.getAction();
+        RcsUtils.dumpIntent(intent);
+        if (BroadcastConstants.UI_MESSAGE_ADD_DATABASE.equals(action)) {
+            final ChatMessage chatMessage = intent.getParcelableExtra("chatMessage");
+            if (chatMessage.getChatType() == SuntekMessageData.CHAT_TYPE_PUBLIC)
+                return;
+
+            long threadId = copyRcsMsgToSmsProvider(MmsApp.getApplication(), chatMessage);
+
+            boolean notify;
+            int chatType = chatMessage.getChatType();
+            int sendReceive = chatMessage.getSendReceive();
+            if (chatMessage == null) {
+                notify = false;
+            } else if (chatType == SuntekMessageData.CHAT_TYPE_PUBLIC) {
+                notify = false;
+            } else {
+                notify = ((chatType != SuntekMessageData.CHAT_TYPE_GROUP) && (sendReceive == SuntekMessageData.MSG_RECEIVE));
+            }
+            if (notify) {
+                MessagingNotification.blockingUpdateNewMessageIndicator(MmsApp.getApplication(),
+                        threadId, true);
+            }
+            if ((chatType == SuntekMessageData.CHAT_TYPE_GROUP)
+                    && (sendReceive == SuntekMessageData.MSG_RECEIVE)
+                    && chatMessage.getMsgType() != SuntekMessageData.MSG_TYPE_NOTIFICATION) {
+                Intent groupNotifyIntent = new Intent("ACTION_UI_SHOW_GROUP_MESSAGE_NOTIFY");
+                groupNotifyIntent.putExtra("id", (long)chatMessage.getId());
+                groupNotifyIntent.putExtra("threadId", chatMessage.getThreadId());
+                MmsApp.getApplication().sendBroadcast(groupNotifyIntent);
+            }
+        } else if (BroadcastConstants.UI_MESSAGE_STATUS_CHANGE_NOTIFY.equals(action)) {
+            String id = intent.getStringExtra("id");
+            int status = intent.getIntExtra("status", -11);
+            Log.i("RCS_UI", "com.suntek.mway.rcs.ACTION_UI_MESSAGE_STATUS_CHANGE_NOTIFY" + id
+                    + status);
+            RcsUtils.updateState(MmsApp.getApplication(), id, status);
+            RcsNotifyManager.sendMessageFailNotif(MmsApp.getApplication(), status, id, true);
+        } else if (BroadcastConstants.UI_SHOW_RECV_REPORT_INFO.equals(action)) {
+            String id = intent.getStringExtra("messageId");
+            String statusString = intent.getStringExtra("status");
+            int status = 99;
+            if ("delivered".equals(statusString)) {
+                status = 99;
+            } else if ("displayed".equals(statusString)) {
+                status = 100;
+            }
+            String number = intent.getStringExtra("original-recipient");
+            RcsUtils.updateManyState(MmsApp.getApplication(), id, number, status);
+        }
+
+    }
+
+    public static class MessageThreadOption {
+        public String messageId;
+
+        public String conversationId;
+
+        public String number;
+
+        private MessageThreadOption() {
+        }
+
+        public static MessageThreadOption createByMessageId(String messageId,
+                String conversationId, String number) {
+            MessageThreadOption option = new MessageThreadOption();
+            option.messageId = messageId;
+            option.conversationId = conversationId;
+            option.number = number;
+            return option;
+        }
+    }
+
+    public static long copyRcsMsgToSmsProvider(Context context, ChatMessage chatMessage) {
+        try {
+            return RcsUtils.rcsInsert(context, chatMessage);
+        } catch (ServiceDisconnectedException e) {
+            Log.w("RCS_UI", e);
+            return 0;
+        }
+    }
+
+}
