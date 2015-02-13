@@ -5534,7 +5534,7 @@ public class ComposeMessageActivity extends Activity
             if (which >= 0) {
                 slot = which;
             } else if (which == DialogInterface.BUTTON_POSITIVE) {
-                long [] subId = SubscriptionManager.getSubId(slot);
+                int [] subId = SubscriptionManager.getSubId(slot);
                 new Thread(new CopyToSimThread(msgItems, subId[0])).start();
             }
         }

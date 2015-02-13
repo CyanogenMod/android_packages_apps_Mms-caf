@@ -1582,7 +1582,7 @@ public class MessageUtils {
             return null;
         }
 
-        long subId[] = SubscriptionManager.getSubId(subscription);
+        int subId[] = SubscriptionManager.getSubId(subscription);
         final TelecomManager telecomManager = (TelecomManager) context
                 .getSystemService(Context.TELECOM_SERVICE);
         List<PhoneAccountHandle> pHandles = telecomManager.getCallCapablePhoneAccounts();
