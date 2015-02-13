@@ -342,7 +342,7 @@ public class TransactionService extends Service implements Observer {
         return Service.START_NOT_STICKY;
     }
 
-    private long[] getSubIdFromDb(Uri uri) {
+    private int[] getSubIdFromDb(Uri uri) {
         int phoneId = 0;
         Cursor c = getApplicationContext().getContentResolver().query(uri,
                 null, null, null, null);
@@ -544,7 +544,7 @@ public class TransactionService extends Service implements Observer {
                                // fall-through
                             default:
 
-                                long [] subId = getSubIdFromDb(uri);
+                                int [] subId = getSubIdFromDb(uri);
                                 // subId is null. Bail out.
                                 if (subId == null) {
                                     Log.e(TAG, "SMS subId is null. Bail out");
@@ -616,7 +616,7 @@ public class TransactionService extends Service implements Observer {
             String uriStr = intent.getStringExtra("uri");
             Uri uri = Uri.parse(uriStr);
 
-            long [] subId = getSubIdFromDb(uri);
+            int [] subId = getSubIdFromDb(uri);
             // subId is null. Bail out.
             if (subId == null) {
                 Log.e(TAG, "SMS subId is null. Bail out");
