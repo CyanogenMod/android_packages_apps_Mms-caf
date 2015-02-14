@@ -72,6 +72,7 @@ import com.android.internal.telephony.TelephonyIntents;
 import com.android.mms.LogTag;
 import com.android.mms.R;
 import com.android.mms.data.Contact;
+import com.android.mms.rcs.RcsSelectionMenu;
 import com.android.mms.transaction.MessagingNotification;
 
 import java.util.ArrayList;
@@ -499,6 +500,18 @@ public class ManageSimMessages extends Activity
         return true;
     }
 
+    private void confirmDeleteDialog(OnClickListener listener, int messageId) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.confirm_dialog_title);
+        builder.setIconAttribute(android.R.attr.alertDialogIcon);
+        builder.setCancelable(true);
+        builder.setPositiveButton(R.string.yes, listener);
+        builder.setNegativeButton(R.string.no, null);
+        builder.setMessage(messageId);
+
+        builder.show();
+    }
+
     private void showSimCapacityDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.sim_capacity_title);
@@ -571,6 +584,12 @@ public class ManageSimMessages extends Activity
     }
 
     private class ModeCallback implements ListView.MultiChoiceModeListener {
+        private View mMultiSelectActionBarView;
+        private TextView mSelectedConvCount;
+        private ImageView mSelectedAll;
+        private boolean mHasSelectAll = false;
+        // build action bar with a spinner
+        private RcsSelectionMenu mSelectionMenu;
         ArrayList<Integer> mSelectedPos = new ArrayList<Integer>();
         ArrayList<Uri> mSelectedMsg = new ArrayList<Uri>();
 
@@ -657,15 +676,39 @@ public class ManageSimMessages extends Activity
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.sim_msg_multi_select_menu, menu);
+
+            if (mMultiSelectActionBarView == null) {
+                mMultiSelectActionBarView = LayoutInflater.from(getContext()).inflate(
+                        R.layout.action_mode, null);
+            }
+            mode.setCustomView(mMultiSelectActionBarView);
+            mSelectionMenu = new RcsSelectionMenu(getContext(),
+                    (Button) mMultiSelectActionBarView.findViewById(R.id.selection_menu),
+                    new PopupList.OnPopupItemClickListener() {
+                        @Override
+                        public boolean onPopupItemClick(int itemId) {
+                            if (itemId == RcsSelectionMenu.SELECT_OR_DESELECT) {
+                                checkAll(!mHasSelectAll);
+                            }
+                            return true;
+                        }
+                    });
             return true;
         }
 
         @Override
         public void onDestroyActionMode(ActionMode arg0) {
+            mSelectionMenu.dismiss();
         }
 
         @Override
         public boolean onPrepareActionMode(ActionMode mode, Menu arg1) {
+            if (mMultiSelectActionBarView == null) {
+                ViewGroup v = (ViewGroup) LayoutInflater.from(getContext()).inflate(
+                        R.layout.conversation_list_multi_select_actionbar, null);
+                mode.setCustomView(v);
+                mSelectedConvCount = (TextView) v.findViewById(R.id.selected_conv_count);
+            }
             return true;
         }
 

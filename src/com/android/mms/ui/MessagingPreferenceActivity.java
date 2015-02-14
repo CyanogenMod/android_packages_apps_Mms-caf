@@ -40,6 +40,7 @@ import android.os.Environment;
 import android.os.Vibrator;
 import android.os.Message;
 import android.os.Handler;
+import android.os.Bundle;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Vibrator;
@@ -69,6 +70,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.util.Log;
 
+import com.android.internal.telephony.IccCardConstants;
 import com.android.internal.telephony.TelephonyIntents;
 import com.android.internal.telephony.PhoneConstants;
 
@@ -167,6 +169,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private CheckBoxPreference mVibratePref;
     private CheckBoxPreference mEnableNotificationsPref;
     private CheckBoxPreference mMmsAutoRetrievialPref;
+    private ListPreference mMmsCreationModePref;
     private ListPreference mMmsExpiryPref;
     private ListPreference mMmsExpiryCard1Pref;
     private ListPreference mMmsExpiryCard2Pref;
@@ -202,6 +205,10 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private static final String ACTION_CONFIGURE_MESSAGE =
             "org.codeaurora.CONFIGURE_MESSAGE";
 
+    public static final String MMS_CREATION_MODE = "pref_key_creation_mode";
+    public static final int CREATION_MODE_RESTRICTED = 1;
+    public static final int CREATION_MODE_WARNING = 2;
+    public static final int CREATION_MODE_FREE = 3;
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -248,7 +255,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         }
 
         // Since the enabled notifications pref can be changed outside of this activity,
-        // we have to reload it whenever we resume, including the blacklist summary
+        // we have to reload it whenever we resume.
         setEnabledNotificationsPref();
         // Initialize the sms signature
         updateSignatureStatus();
@@ -326,6 +333,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mMmsExpiryPref = (ListPreference) findPreference("pref_key_mms_expiry");
         mMmsExpiryCard1Pref = (ListPreference) findPreference("pref_key_mms_expiry_slot1");
         mMmsExpiryCard2Pref = (ListPreference) findPreference("pref_key_mms_expiry_slot2");
+        mMmsCreationModePref = (ListPreference) findPreference("pref_key_creation_mode");
         mSmsSignaturePref = (CheckBoxPreference) findPreference("pref_key_enable_signature");
         mSmsSignatureEditPref = (EditTextPreference) findPreference("pref_key_edit_signature");
         mVibratePref = (CheckBoxPreference) findPreference(NOTIFICATION_VIBRATE);
@@ -522,6 +530,9 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                     TextUtils.isEmpty(MessageUtils.getLocalNumber())) {
                 mMmsPrefCategory.removePreference(mMmsGroupMmsPref);
             }
+            if (!MmsConfig.isCreationModeEnabled()) {
+                mMmsPrefCategory.removePreference(mMmsCreationModePref);
+            }
         }
 
         if (TelephonyManager.getDefault().isMultiSimEnabled()) {
@@ -556,6 +567,16 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         if (getResources().getBoolean(R.bool.config_sms_validity)) {
             if (MessageUtils.isMultiSimEnabledMms()) {
                 storageOptions.removePreference(mSmsValidityPref);
+                if (!MessageUtils.isIccCardActivated(MessageUtils.SUB1)) {
+                    mSmsValidityCard1Pref.setEnabled(false);
+                } else {
+                    setSmsPreferValiditySummary(MessageUtils.SUB1);
+                }
+                if (!MessageUtils.isIccCardActivated(MessageUtils.SUB2)) {
+                    mSmsValidityCard2Pref.setEnabled(false);
+                } else {
+                    setSmsPreferValiditySummary(MessageUtils.SUB2);
+                }
             } else {
                 storageOptions.removePreference(mSmsValidityCard1Pref);
                 storageOptions.removePreference(mSmsValidityCard2Pref);

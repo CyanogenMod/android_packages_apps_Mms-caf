@@ -30,10 +30,13 @@ import com.android.mms.UnsupportContentTypeException;
 import com.google.android.mms.ContentType;
 
 public class CarrierContentRestriction implements ContentRestriction {
-    private static final ArrayList<String> sSupportedImageTypes;
-    private static final ArrayList<String> sSupportedAudioTypes;
-    private static final ArrayList<String> sSupportedVideoTypes;
+    private static ArrayList<String> sSupportedImageTypes;
+    private static ArrayList<String> sSupportedAudioTypes;
+    private static ArrayList<String> sSupportedVideoTypes;
     private static final String IMAGE_BMP = "image/bmp";
+
+    private static int mCreationMode;
+
     private static final boolean DEBUG = true;
 
     static {
@@ -48,6 +51,33 @@ public class CarrierContentRestriction implements ContentRestriction {
 
     public CarrierContentRestriction() {
     }
+
+    public CarrierContentRestriction(int creationMode) {
+        mCreationMode = creationMode;
+        switch (creationMode) {
+        case MmsConfig.CREATIONMODE_RESTRICTED:
+        case MmsConfig.CREATIONMODE_WARNING:
+            sSupportedImageTypes = new ArrayList<String>();
+            sSupportedImageTypes.add(ContentType.IMAGE_JPEG);
+            sSupportedImageTypes.add(ContentType.IMAGE_GIF);
+            sSupportedImageTypes.add(ContentType.IMAGE_WBMP);
+
+            sSupportedAudioTypes = new ArrayList<String>();
+            sSupportedAudioTypes.add(ContentType.AUDIO_AMR);
+
+            sSupportedVideoTypes = new ArrayList<String>();
+            sSupportedVideoTypes.add(ContentType.VIDEO_3GPP);
+            sSupportedVideoTypes.add(ContentType.VIDEO_H263);
+            break;
+        case MmsConfig.CREATIONMODE_FREE:
+        default:
+            sSupportedImageTypes = ContentType.getImageTypes();
+            sSupportedAudioTypes = ContentType.getAudioTypes();
+            sSupportedVideoTypes = ContentType.getVideoTypes();
+            break;
+        }
+    }
+
 
     public void checkMessageSize(int messageSize, int increaseSize, ContentResolver resolver)
             throws ContentRestrictionException {
@@ -66,7 +96,8 @@ public class CarrierContentRestriction implements ContentRestriction {
         // Reserve SlideshowModel.SLIDESHOW_SLOP(1k) for overhead.
         if ( (newSize < 0) || ((newSize + SlideshowModel.SLIDESHOW_SLOP)
                       > MmsConfig.getMaxMessageSize() )) {
-            throw new ExceedMessageSizeException("Exceed message size limitation");
+            throw new ExceedMessageSizeException(
+                    "Exceed message size limitation").putMmsSize(newSize);
         }
     }
 
@@ -84,7 +115,7 @@ public class CarrierContentRestriction implements ContentRestriction {
 
         if (!sSupportedImageTypes.contains(contentType)) {
             throw new UnsupportContentTypeException("Unsupported image content type : "
-                    + contentType);
+                    + contentType).putContentType(contentType);
         }
     }
 
@@ -96,7 +127,7 @@ public class CarrierContentRestriction implements ContentRestriction {
 
         if (!sSupportedAudioTypes.contains(contentType)) {
             throw new UnsupportContentTypeException("Unsupported audio content type : "
-                    + contentType);
+                    + contentType).putContentType(contentType);
         }
     }
 
@@ -108,7 +139,7 @@ public class CarrierContentRestriction implements ContentRestriction {
 
         if (!sSupportedVideoTypes.contains(contentType)) {
             throw new UnsupportContentTypeException("Unsupported video content type : "
-                    + contentType);
+                    + contentType).putContentType(contentType);
         }
     }
 }

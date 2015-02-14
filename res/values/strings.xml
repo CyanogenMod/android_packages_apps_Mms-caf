@@ -248,6 +248,7 @@
 
     <!-- Brief message that appears when converting a message from SMS to MMS. -->
     <string name="converting_to_picture_message">Converting to multimedia message\u2026</string>
+    <string name="converting_to_text_message">Converting to text message\u2026</string>
     <!-- Brief message that appears when the maximum size of slides has been reached -->
     <string name="cannot_add_text_anymore">Can\'t add more text.</string>
     <!-- Brief message that appears when the maximum number of slides has been reached -->
@@ -1064,6 +1065,7 @@
     <string name="manage_sdcard_messages">Import/export messages</string>
     <string name="no_backups_found">No backups found</string>
     <string name="remove_subject">Remove subject</string>
+    <string name="pref_title_notification_creation_mode">Creation mode</string>
 
     <!-- Copy message text-->
     <string name="copy_empty_string">No text to copy</string>
@@ -1072,4 +1074,16 @@
     <string name="omacp_configuration">OMACP Configuration</string>
     <string name="configuration_message_key">Configuration Message</string>
     <string name="configuration_message_key_activity">Touch to configure your OMACP messages</string>
+
+    <string name="pref_dialog_title_creation_mode">Select creation mode</string>
+    <string name="pref_summary_creation_mode">MMS creation mode for compose message</string>
+    <string name="restricted_format">Restricted format</string>
+    <string name="attach_anyway">Attach anyway?</string>
+
+    <string name="plugger">Plugger</string>
+    <string name="file_not_found">File not found</string>
+    <string name="type_attachment">attachment</string>
+    <string name="bad_file">The file is corrupted and can not be inserted!</string>
+    <string name="indication_send_message_successfully">"Message has been sent out."</string>
+    <string name="indication_send_message_failed">"Failed to send message."</string>
 </resources>

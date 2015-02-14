@@ -101,4 +101,11 @@
         <item name="android:singleLine">true</item>
     </style>
 
+    <style name="burn_message" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/transparent</item>
+    </style>
+
 </resources>

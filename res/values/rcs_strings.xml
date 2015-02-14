@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2014 pci-suntektech Technologies, Inc.  All Rights Reserved.
+ * pci-suntektech Technologies Proprietary and Confidential.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
+-->
+
+<resources>
+
+    <string name="rcs_service_is_not_available">RCS Service is not available.</string>
+    <string name="creating_group_chat">Creating group chat</string>
+    <string name="create_group_chat_successfully">Create group chat successfully.</string>
+    <string name="create_group_chat_failed">Create group chat failed.</string>
+    <string name="rcs_group_chat_detail">Group Chat Detail</string>
+    <string name="send_message_failed">Send message failed.</string>
+    <string name="public_account">Public Account</string>
+    <string name="notifications">Notifications</string>
+    <string name="group_chat_status_invalid">Invalide group chat status.</string>
+    <string name="group_chat_status_ok">Group chat status is OK.</string>
+    <string name="switch_to_group_chat">Switch to group chat</string>
+
+    <!-- Failed sending Group chat message. -->
+    <string name="group_chat_not_exist">Cannot found group chat.</string>
+    <string name="group_chat_not_active">The group chat is not active.</string>
+    <string name="group_chat_deleted">The group chat is deleted.</string>
+
+    <!-- Group chat status -->
+    <string name="group_chat_status_active">(Active)</string>
+    <string name="group_chat_status_inactive">(Inactive)</string>
+    <string name="group_chat_status_deleted">(Deleted)</string>
+
+    <!-- Group chat notification. -->
+    <string name="group_chat_created">New group chat created.</string>
+    <string name="group_chat_active">Group chat became active.</string>
+    <string name="group_chat_update_chairman">%1$s has became the chairman of the group.</string>
+    <string name="group_chat_join">%1$s has joined the group.</string>
+    <string name="group_chat_subject">Subject has been updated to %1$s.</string>
+    <string name="group_chat_remark">Remark has been updated to %1$s.</string>
+    <string name="group_chat_alias">%1$s changed alias to %2$s.</string>
+    <string name="group_chat_kick">%1$s has been kicked out.</string>
+    <string name="group_chat_quit">%1$s left the group chat.</string>
+    <string name="group_chat_disbanded">Group chat is disbanded.</string>
+    <string name="group_chat_policy">Message receiving policy has been changed.</string>
+
+    <string name="new_group_chat">New group chat</string>
+    <string name="group_chat">Group Chat</string>
+
+    <string name="install_emoj_store">Please install emoticon store</string>
+    <string name="confirm_complain_dialog_title">"Confirm to complain this message？"</string>
+    <string name="imagebutton">ImageButton</string>
+
+    <string name="del_image_action">Image manipulation</string>
+    <string name="input_quality">Please enter the scaling quality</string>
+    <string name="input_no_fit">Input is not legal</string>
+    <string name="send_comfirm_ok">determine</string>
+    <string name="send_comfirm_cancel">cancel</string>
+
+    <string name="attach_map">Geolocation</string>
+    <string name="message_received">Delivered</string>
+    <string name="message_send_fail">Sent failure</string>
+    <string name="message_adapter_has_send">Sent</string>
+    <string name="message_adapte_sening">Sending</string>
+    <string name="message_has_been_burned">Burnt</string>
+    <string name="message_download">Click to download</string>
+    <string name="message_downloaded">Download complete</string>
+    <string name="message_send_fail_resend">Failed to be sent, click to resend</string>
+    <!-- RCS -->
+    <string name="image_downloading">Downloading: %1$d %%</string>
+    <string name="audio_length">Audio duration: </string>
+    <string name="message_is_play_over">All messages are played</string>
+    <string name="video_length">Video duration: </string>
+    <string name="image_msg_load_fail_tip">Load fail</string>
+    <string name="open_file_fail">Failed to open the file</string>
+    <string name="message_is_burnd">Burnt</string>
+    <string name="downloading_percent">Downloading: %1$d %%</string>
+    <string name="uploading_percent">Sending: %1$d %%</string>
+    <string name="downloading_finish">Download complete</string>
+    <string name="burn_message_flag">Burn after Reading</string>
+    <!--
+         Command name to open a Compose screen; displays in conversation list.
+         Also used as accessibility text for widget's new group chat button
+    -->
+
+    <string name="my_favorited">My Favourites</string>
+    <string name="favorited">Add to Favourites</string>
+    <string name="unfavorited">Delete from Favourites</string>
+
+    <string name="file_suffix_vaild_tip">Invalid file format! </string>
+    <string name="file_size_over">The file size has exceeded the limit, which is unable to be sent! </string>
+    <string name="not_intent">No app is available to perform this operation. </string>
+    <string name="please_input_1_100_int">Please input an integer which is between1~100</string>
+    <string name="video_record_out_time">The recorded video has exceeded the max limit, the max duration is %1$s s</string>
+    <string name="audio_record_out_time">The recorded voice message has exceeded the max limit, the max duration is %1$s s</string>
+    <string name="cannot_send_video">Video with the duration less than 1s can not be sent. </string>
+    <string name="cannot_send_audio">Voice message with the duration less than 1s can not be sent. </string>
+
+    <string name="top_conversation">Sticky on Top</string>
+    <string name="cancel_top_conversation">Remove from Top</string>
+    <string name="im_only">IM only</string>
+    <string name="sms_only">SMS only</string>
+    <string name="im_sms">Autoselect</string>
+    <string name="im_sms_send">Send by IM/SMS</string>
+    <string name="cannot_send_im">Unable to send IM, please switch the sending mode</string>
+    <string name="forward_message_success">Successfully forwarded</string>
+    <string name="forward_message_fail">Failed to be forwarded</string>
+    <string name="conversation_forward">Forward</string>
+    <string name="forward_contact">Contact</string>
+    <string name="forward_conversation">Conversation</string>
+    <string name="forward_contact_group">Contact group</string>
+    <string name="my_vcard">My vCard</string>
+    <string name="select_contact_conversation">Select contact or conversation</string>
+    <string name="file_share">mCloud file share</string>
+    <string name="save_back_message">Message backup/restore</string>
+    <string name="message_save">Message backup</string>
+    <string name="message_back">Message restore</string>
+    <string name="not_online_message_too_big">Off-line, the text is oversized</string>
+    <string name="on_airplain_mode">Unable to be forwarded in airplane mode</string>
+    <string name="rcs_mcloud_share_file">mClould file share</string>
+    <string name="please_set_my_profile">Please define My Profile first</string>
+    <string name="send_manage_fail">Message sent failed</string>
+    <string name="send_manage_fail_count">%1$s messages are failed to be sent</string>
+
+    <string name="confirm_complain_selected_messages">Confirm to complain the selected messages</string>
+    <string name="message_complain">Message complain</string>
+    <string name="menuid_add_to_black_list">Add to Blacklist</string>
+    <string name="menuid_add_to_white_list">Add to Whitelist</string>
+    <string name="firewall_number_len_not_valid">Number error</string>
+    <string name="firewall_number_in_black">"This number has been in Blacklist"</string>
+    <string name="firewall_number_in_white">"This number has been in Whitelist"</string>
+    <string name="firewall_save_success">Successfully saved</string>
+    <string name="firewall_add_blacklist_wring">If add this number to Blacklist, no messages and calls from it will be received</string>
+    <string name="toast_install_map">No map has been installed</string>
+    <string name="rcs_downloading">Downloading</string>
+    <string name="please_install_rcs_map">Please install RCS_MAP</string>
+
+    <string name="rcs_text_message">RCS message</string>
+    <string name="message_content_type">Message type: </string>
+    <string name="message_content_text">Text</string>
+    <string name="message_content_audio">Voice message</string>
+    <string name="message_content_video">Video</string>
+    <string name="message_content_image">Image</string>
+    <string name="message_content_map">Geolocation</string>
+    <string name="message_content_vcard">vCard</string>
+    <string name="not_download_image">Please download the image first since it has not been downloaded yet! </string>
+    <string name="not_download_video">Please download the video first since it has not been downloaded yet! </string>
+    <string name="file_path_null">The file path is null! </string>
+    <string name="create_groupchat_name_toast">Only 30 bytes is allowed, any further input will be discarded. </string>
+    <string name="mcloud_share_file_befor">mCloud file location \n</string>
+    <string name="mcloud_share_file_after"> \n Please click to download. </string>
+    <string name="confirm_cancel_selected_fav_messages">Confirm to delete the selected items from the Favourites? </string>
+    <string name="stop_down_load">Pause download</string>
+
+    <string name="vcard_name">NAME:</string>
+    <string name="vcard_number">NUMBER:</string>
+    <string name="vcard_other_number">OTHER NUMBER</string>
+    <string name="vcard_compony_info">COMPONY INFO</string>
+    <string name="vcard_compony_addre">ADDRESS</string>
+    <string name="vcard_compony_position">POSITION</string>
+    <string name="vcard_number_null">NO VALUE</string>
+    <string name="vcard_compony_name">COMPONY NAME</string>
+    <string name="vcard_detail_info">VCARD DETAIL INFO</string>
+    <string name="vcard_import">IMPORT VCARD</string>
+
+</resources>

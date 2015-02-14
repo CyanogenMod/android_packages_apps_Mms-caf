@@ -198,6 +198,15 @@
                     android:entries="@array/save_time"
                     android:entryValues="@array/save_time_values"
                     android:defaultValue="0" />
+
+    <ListPreference android:key="pref_key_creation_mode"
+                    android:defaultValue="3"
+                    android:title="@string/pref_title_notification_creation_mode"
+                    android:entries="@array/pref_entries_creation_mode"
+                    android:entryValues="@array/pref_entries_creation_mode"
+                    android:dialogTitle="@string/pref_dialog_title_creation_mode"
+                    android:summary="@string/pref_summary_creation_mode" />
+
   </PreferenceCategory>
   <PreferenceCategory android:title="@string/pref_notification_settings_title"
                       android:key="pref_key_notification_settings">

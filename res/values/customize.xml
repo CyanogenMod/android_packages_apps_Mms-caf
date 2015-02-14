@@ -80,4 +80,7 @@
     <bool name="show_edit_smsc">false</bool>
 
     <bool name="auto_delete_message">true</bool>
+
+    <bool name="enablePlugger">false</bool>
+
 </resources>

@@ -54,7 +54,8 @@
     <uses-permission android:name="android.permission.GET_TASKS"/>
     <uses-permission android:name="android.permission.RECEIVE_WAP_PUSH" />
     <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
-
+    <uses-permission android:name="com.android.firewall.READ_GRAVITY"/>
+    <uses-permission android:name="com.android.firewall.WRITE_GRAVITY"/>
     <!-- Needed for QuickMessage -->
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
 
@@ -66,6 +67,7 @@
             android:allowTaskReparenting="true"
             android:supportsRtl="true">
         <uses-library android:name="com.qrd.wappush" android:required="false" />
+        <uses-library android:name="com.suntek.mway.rcs.client.api" android:required="false" />
 
         <service android:name=".transaction.TransactionService"
                  android:exported="false" />
@@ -79,6 +81,10 @@
                   android:theme="@style/MmsTheme"
                   android:uiOptions="splitActionBarWhenNarrow"
                   android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="com.android.mms.ui.ConversationList" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -213,6 +219,10 @@
             android:theme="@style/MmsTheme.NoActionBar"
             android:label="@string/select_recipients"
             android:parentActivityName=".ui.ComposeMessageActivity">
+            <intent-filter>
+                <action android:name="com.android.mms.ui.SelectRecipientsList" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
 
         <activity android:name=".ui.RecipientListActivity"
@@ -464,7 +474,60 @@
 
         <!-- Message Template Content Provider -->
         <provider android:name="MessageTemplateProvider"
-                android:authorities="com.android.mms.MessageTemplateProvider" />
+                android:authorities="com.android.mms.MessageTemplateProvider" >
+        </provider>
+
+        <receiver android:name=".rcs.RcsMessageStatusReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="com.suntek.mway.rcs.ACTION_UI_MESSAGE_TRANSFER_SMS" />
+                <action android:name="com.suntek.mway.rcs.ACTION_UI_MESSAGE_ADD_TO_DATABASE" />
+                <action android:name="com.suntek.mway.rcs.ACTION_UI_MESSAGE_STATUS_CHANGE_NOTIFY" />
+                <action android:name="com.suntek.mway.rcs.ACTION_UI_SHOW_RECV_REPORT_INFO" />
+                <action android:name="com.suntek.mway.rcs.ACTION_UI_SHOW_GROUP_MESSAGE_NOTIFY" />
+                <action android:name="com.suntek.mway.rcs.UI_DOWNLOADING_FILE_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".rcs.RcsMessageStatusService"/>
+
+        <activity
+            android:name=".rcs.BurnFlagMessageActivity"
+            android:exported="true"
+            android:theme="@style/burn_message" >
+        </activity>
+
+       <activity android:name=".rcs.FavouriteMessageList"
+            android:label="@string/app_label"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:theme="@style/MmsTheme"
+            android:uiOptions="splitActionBarWhenNarrow"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+
+       <activity android:name=".transaction.MmsNoConfirmationSendActivity"
+           android:label="@string/plugger"
+           android:enabled="@bool/enablePlugger"
+           android:icon="@drawable/icon_of_plugger">
+           <intent-filter>
+              <action android:name="android.intent.action.SEND" />
+              <category android:name="android.intent.category.DEFAULT" />
+              <data android:mimeType="image/*" />
+              <data android:mimeType="video/*" />
+              <data android:mimeType="vnd.android/mms" />
+            </intent-filter>
+        </activity>
+
+        <service android:name="com.android.mms.transaction.MmsNoConfirmationSendService">
+            <intent-filter>
+                <action android:name="com.android.mms.transaction.MmsNoConfirmationSendService"/>
+            </intent-filter>
+        </service>
 
     </application>
 </manifest>

@@ -16,6 +16,8 @@ import android.database.Cursor;
 import android.database.sqlite.SqliteWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
@@ -840,8 +842,11 @@ public class Contact {
                     if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
                         log("updateContact: contact changed for " + entry.mName);
                     }
-
-                    c.mNumber = entry.mNumber;
+                    // If the number is a wap push number, keep it as original form.
+                    // We will get the number through MessageUtils.getWapPushNumber.
+                    if (!MessageUtils.isWapPushNumber(c.mNumber)) {
+                        c.mNumber = entry.mNumber;
+                    }
                     c.mLabel = entry.mLabel;
                     c.mPersonId = entry.mPersonId;
                     c.mPhotoId = entry.mPhotoId;
@@ -1310,4 +1315,17 @@ public class Contact {
     private static void log(String msg) {
         Log.d(TAG, msg);
     }
+
+    public synchronized long getPersonId() {
+       return mPersonId;
+    }
+
+    public synchronized String getName(boolean bname) {
+        if (TextUtils.isEmpty(mName)) {
+            return null;
+        } else {
+            return mName;
+        }
+    }
+
 }

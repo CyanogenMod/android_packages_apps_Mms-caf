@@ -51,6 +51,9 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
             throw new MmsException("Null message body or have multiple destinations.");
         }
         long [] subId = SubscriptionManager.getSubId(mPhoneId);
+        if (subId == null || subId.length == 0) {
+            return false;
+        }
         Log.e(TAG, "send SMS phone Id = " + mPhoneId + " subId : = " + subId[0]);
         SmsManager smsManager = SmsManager.getSmsManagerForSubscriber(subId[0]);
         ArrayList<String> messages = null;

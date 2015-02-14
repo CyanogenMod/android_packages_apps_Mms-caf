@@ -31,6 +31,7 @@ import com.android.mms.R;
 public class AttachmentTypeSelectorAdapter extends IconListAdapter {
     public final static int MODE_WITH_SLIDESHOW    = 0;
     public final static int MODE_WITHOUT_SLIDESHOW = 1;
+    public final static int MODE_RCS               = 2;
 
     public final static int ADD_IMAGE               = 0;
     public final static int TAKE_PICTURE            = 1;
@@ -42,6 +43,7 @@ public class AttachmentTypeSelectorAdapter extends IconListAdapter {
     public final static int ADD_CONTACT_AS_TEXT     = 7;
     public final static int ADD_CONTACT_AS_VCARD    = 8;
     public final static int ADD_CALENDAR_EVENTS     = 9;
+    public final static int ADD_MAP                 = 10;
 
     private boolean mShowMediaOnly = false;
     private static int mMediaCount;
@@ -88,7 +90,8 @@ public class AttachmentTypeSelectorAdapter extends IconListAdapter {
             addItem(data, context.getString(R.string.attach_slideshow),
                     R.drawable.ic_attach_slideshow, ADD_SLIDESHOW);
         }
-        if (context.getResources().getBoolean(R.bool.config_vcard)) {
+        boolean config_vcard = context.getResources().getBoolean(R.bool.config_vcard);
+        if (config_vcard) {
             addItem(data, context.getString(R.string.attach_add_contact_as_text),
                     R.drawable.ic_attach_contact_info, ADD_CONTACT_AS_TEXT);
 
@@ -100,6 +103,10 @@ public class AttachmentTypeSelectorAdapter extends IconListAdapter {
         addItem(data, context.getResources().getString(R.string.attach_add_calendar_events),
                 R.drawable.ic_attach_vcard, ADD_CALENDAR_EVENTS);
 
+        if (mode == MODE_RCS) {
+            addItem(data, context.getString(R.string.attach_map),
+                    R.drawable.rcs_caiyun_sharefile, ADD_MAP);
+        }
         return data;
     }
 

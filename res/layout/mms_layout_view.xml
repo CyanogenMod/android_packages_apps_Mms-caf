@@ -32,7 +32,9 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_gravity="center"
-        android:scaleType="centerInside"
+        android:scaleType="centerCrop"
+        android:minHeight="60dp"
+        android:minWidth="60dp"
         android:visibility="visible" />
 
     <ImageButton

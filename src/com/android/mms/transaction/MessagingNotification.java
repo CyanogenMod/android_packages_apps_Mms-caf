@@ -1984,6 +1984,10 @@ public class MessagingNotification {
         return intent;
     }
 
+    public static long getCurrentlyDisplayedThreadId() {
+        return sCurrentlyDisplayedThreadId;
+    }
+
     /**
      * This method check whether phone is in call status
      */
