@@ -84,9 +84,13 @@
   <string name="alert_dialog_yes">Kyllä</string>
   <string name="alert_dialog_no">Ei</string>
   <string name="menu_as_unread">Merkitse lukemattomaksi</string>
+  <string name="menu_as_read">Merkitse luetuksi</string>
   <string name="menu_all_as_unread">Merkitse kaikki lukemattomiksi</string>
+  <string name="menu_all_as_read">Merkitse kaikki viestit luetuiksi</string>
   <string name="confirm_mark_unread_dialog_title">Merkitse lukemattomaksi?</string>
+  <string name="confirm_mark_read_dialog_title">Merkitse luetuksi?</string>
   <string name="confirm_mark_unread_all_conversations">Kaikki viestiketjut merkitään lukemattomiksi.</string>
+  <string name="confirm_mark_read_all_conversations">Kaikki viestiketjut merkitään luetuiksi.</string>
   <string name="select_recipients">Valitse vastaanottajat</string>
   <string name="groups_header">Ryhmät</string>
   <string name="no_recipients">Yhteystietoja ei löytynyt</string>

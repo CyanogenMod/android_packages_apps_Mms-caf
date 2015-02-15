@@ -76,17 +76,21 @@
   <string name="pref_keyboard_unknown">Bilinmeyen, lütfen tekrar seçin</string>
   <string name="pref_title_sms_split_counter">Ayırma sayacı</string>
   <string name="pref_summary_sms_split_counter">Mesaja sayaç ekler. Örn: (1/2)</string>
-  <string name="blacklist_title">Karaliste</string>
+  <string name="blacklist_title">Kara liste</string>
   <string name="blacklist_summary_disabled">Devre dışı</string>
-  <string name="blacklist_summary">Karalistedeki telefon numaralardan gelen mesajlar engellenecek</string>
+  <string name="blacklist_summary">Kara listedeki telefon numaralardan gelen mesajlar engellenecek</string>
   <string name="add_to_blacklist">Karalisteye ekle</string>
   <string name="add_to_blacklist_message">%s kişisinden ilerde gelecek mesajlar engellenecek</string>
   <string name="alert_dialog_yes">Evet</string>
   <string name="alert_dialog_no">Hayır</string>
   <string name="menu_as_unread">Okunmadı olarak işaretle</string>
+  <string name="menu_as_read">Okundu olarak işaretle</string>
   <string name="menu_all_as_unread">Tümünü okunmadı olarak işaretle</string>
+  <string name="menu_all_as_read">Tümünü okundu olarak işaretle</string>
   <string name="confirm_mark_unread_dialog_title">Okunmadı olarak işaretlensin mi?</string>
+  <string name="confirm_mark_read_dialog_title">Okundu olarak işaretlensin mi?</string>
   <string name="confirm_mark_unread_all_conversations">Tüm sohbetler okunmadı olarak işaretlenecek.</string>
+  <string name="confirm_mark_read_all_conversations">Tüm sohbetler okundu olarak işaretlenecek.</string>
   <string name="select_recipients">Alıcıları seçin</string>
   <string name="groups_header">Gruplar</string>
   <string name="no_recipients">Kişi bulunmadı</string>
@@ -123,7 +127,7 @@
   <string name="subscription2_title">SIM 2</string>
   <string name="subscription_settings_title">SIM kart ayarları</string>
   <string name="sub_no_sim">SIM yok</string>
-  <string name="pref_manage_subs_title">SIM kartlarını yönetin</string>
+  <string name="pref_manage_subs_title">SIM kartları yönet</string>
   <string name="deleting_threads">Sohbetler siliniyor\u2026</string>
   <string name="cell_broadcast_sender">Hücre yayın kanalı</string>
   <string name="sent_on">"Gönderildi: <xliff:g id="date">%s</xliff:g>"</string>

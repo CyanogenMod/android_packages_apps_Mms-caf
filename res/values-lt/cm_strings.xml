@@ -84,9 +84,13 @@
   <string name="alert_dialog_yes">Taip</string>
   <string name="alert_dialog_no">Ne</string>
   <string name="menu_as_unread">Pažymėti kaip neperskaitytą</string>
+  <string name="menu_as_read">Pažymėti kaip perskaitytą</string>
   <string name="menu_all_as_unread">Pažymėti visus kaip neperskaitytus</string>
+  <string name="menu_all_as_read">Pažymėti visus kaip perskaitytus</string>
   <string name="confirm_mark_unread_dialog_title">Pažymėti kaip neperskaitytą?</string>
+  <string name="confirm_mark_read_dialog_title">Pažymėti kaip perskaitytą?</string>
   <string name="confirm_mark_unread_all_conversations">Visi pokalbiai bus pažymėti kaip neperskaityti.</string>
+  <string name="confirm_mark_read_all_conversations">Visos gijos bus pažymėtos kaip perskaitytos.</string>
   <string name="select_recipients">Pasirinkti gavėjus</string>
   <string name="groups_header">Grupės</string>
   <string name="no_recipients">Kontaktų nerasta</string>

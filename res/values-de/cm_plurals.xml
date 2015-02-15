@@ -25,7 +25,11 @@
     <item quantity="other">Versand in %1$d Sekunden - zum Abbrechen berühren.</item>
   </plurals>
   <plurals name="confirm_mark_unread_conversation">
-    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> Konversation wird als gelesen markiert.</item>
-    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> Konversationen werden als gelesen markiert.</item>
+    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> Unterhaltung wird als gelesen markiert.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> Unterhaltungen werden als gelesen markiert.</item>
+  </plurals>
+  <plurals name="confirm_mark_read_conversation">
+    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> Unterhaltung wird als gelesen markiert.</item>
+    <item quantity="other"><xliff:g id="number">%1$s</xliff:g> Unterhaltungen werden als gelesen markiert.</item>
   </plurals>
 </resources>

@@ -84,9 +84,13 @@
   <string name="alert_dialog_yes">Ja</string>
   <string name="alert_dialog_no">Nei</string>
   <string name="menu_as_unread">Merk som ulest</string>
+  <string name="menu_as_read">Marker som lest</string>
   <string name="menu_all_as_unread">Merk alle som ulest</string>
+  <string name="menu_all_as_read">Marker alle som lest</string>
   <string name="confirm_mark_unread_dialog_title">Merk som ulest?</string>
+  <string name="confirm_mark_read_dialog_title">Marker som lest?</string>
   <string name="confirm_mark_unread_all_conversations">Alle emner vil bli merket som ulest.</string>
+  <string name="confirm_mark_read_all_conversations">Alle emner vil bli merket som lest.</string>
   <string name="select_recipients">Velg mottakere</string>
   <string name="groups_header">Grupper</string>
   <string name="no_recipients">Finner ingen kontakter</string>

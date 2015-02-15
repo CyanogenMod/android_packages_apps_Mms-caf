@@ -84,9 +84,13 @@
   <string name="alert_dialog_yes">예</string>
   <string name="alert_dialog_no">아니오</string>
   <string name="menu_as_unread">읽지 않은 상태로 표시</string>
+  <string name="menu_as_read">읽음으로 표시</string>
   <string name="menu_all_as_unread">모두 읽지 않은 상태로 표시</string>
+  <string name="menu_all_as_read">모두 읽음으로 표시</string>
   <string name="confirm_mark_unread_dialog_title">읽지 않은 상태로 표시할까요?</string>
+  <string name="confirm_mark_read_dialog_title">읽음으로 표시합니까?</string>
   <string name="confirm_mark_unread_all_conversations">모든 스레드가 읽지 않은 것으로 표시됩니다.</string>
+  <string name="confirm_mark_read_all_conversations">모든 대화가 읽음으로 표시됩니다.</string>
   <string name="select_recipients">받는 사람 선택</string>
   <string name="groups_header">그룹</string>
   <string name="no_recipients">연락처 없음</string>

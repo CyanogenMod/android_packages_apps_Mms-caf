@@ -84,9 +84,13 @@
   <string name="alert_dialog_yes">Sí</string>
   <string name="alert_dialog_no">No</string>
   <string name="menu_as_unread">Marca\'l com a sense llegir</string>
+  <string name="menu_as_read">Marcar-ho com a llegit</string>
   <string name="menu_all_as_unread">Marcal\'s tots com sense llegir</string>
+  <string name="menu_all_as_read">Marca-ho tot com a llegit</string>
   <string name="confirm_mark_unread_dialog_title">Marcar com a sense llegir?</string>
+  <string name="confirm_mark_read_dialog_title">Marcar-ho com a llegit?</string>
   <string name="confirm_mark_unread_all_conversations">Tots els fils seran marcats com a no llegits.</string>
+  <string name="confirm_mark_read_all_conversations">Tots els fils seran marcats com a llegits.</string>
   <string name="select_recipients">Selecciona recipients</string>
   <string name="groups_header">Grups</string>
   <string name="no_recipients">No s\'han trobat contactes</string>

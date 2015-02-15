@@ -84,9 +84,13 @@
   <string name="alert_dialog_yes">Sí</string>
   <string name="alert_dialog_no">Non</string>
   <string name="menu_as_unread">Marcar como non lleío</string>
+  <string name="menu_as_read">Marcar como lleío</string>
   <string name="menu_all_as_unread">Marcar toos como ensin lleer</string>
+  <string name="menu_all_as_read">Marcalo too como lleío</string>
   <string name="confirm_mark_unread_dialog_title">Marcar como non lleío?</string>
+  <string name="confirm_mark_read_dialog_title">Marcar como lleío?</string>
   <string name="confirm_mark_unread_all_conversations">Van marcase tolos filos como non lleíos.</string>
+  <string name="confirm_mark_read_all_conversations">Van marcase tolos filos como lleíos.</string>
   <string name="select_recipients">Esbillar destinatarios</string>
   <string name="groups_header">Grupos</string>
   <string name="no_recipients">Nun s\'atoparon contautos</string>

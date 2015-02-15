@@ -84,9 +84,13 @@
   <string name="alert_dialog_yes">Ja</string>
   <string name="alert_dialog_no">Nein</string>
   <string name="menu_as_unread">Als ungelesen markieren</string>
+  <string name="menu_as_read">Als gelesen markieren</string>
   <string name="menu_all_as_unread">Alle als ungelesen markieren</string>
+  <string name="menu_all_as_read">Alle als gelesen markieren</string>
   <string name="confirm_mark_unread_dialog_title">Als ungelesen markieren?</string>
+  <string name="confirm_mark_read_dialog_title">Als gelesen markieren?</string>
   <string name="confirm_mark_unread_all_conversations">Alle Konversationen werden als ungelesen markiert.</string>
+  <string name="confirm_mark_read_all_conversations">Alle Konversationen werden als gelesen markiert.</string>
   <string name="select_recipients">Empfänger auswählen</string>
   <string name="groups_header">Gruppen</string>
   <string name="no_recipients">Keine Kontakte gefunden</string>
@@ -207,7 +211,7 @@
   <string name="sms_phone_used">SMS verwendet:</string>
   <string name="sms_phone_capacity">SMS-Kapazität:</string>
   <string name="mms_phone_used">MMS verwendet:</string>
-  <string name="mms_phone_capacity">SMS-Kapazität:</string>
+  <string name="mms_phone_capacity">MMS-Kapazität:</string>
   <string name="pref_wap_push_title">PUSH-Dienst-Nachrichten</string>
   <string name="pref_title_wap_push_enabled">WAP-PUSH-Dienst aktivieren</string>
   <string name="pref_summary_wap_push_enabled">Dienstmitteilungsempfang aktivieren</string>

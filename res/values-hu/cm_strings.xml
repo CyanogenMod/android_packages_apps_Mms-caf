@@ -84,9 +84,13 @@
   <string name="alert_dialog_yes">Igen</string>
   <string name="alert_dialog_no">Nem</string>
   <string name="menu_as_unread">Megjelölés olvasatlanként</string>
+  <string name="menu_as_read">Megjelölés olvasottként</string>
   <string name="menu_all_as_unread">Mindet olvasatlanként jelöl</string>
+  <string name="menu_all_as_read">Összes megjelölése olvasottként</string>
   <string name="confirm_mark_unread_dialog_title">Megjelölés olvasatlanként?</string>
+  <string name="confirm_mark_read_dialog_title">Megjelölés olvasottként?</string>
   <string name="confirm_mark_unread_all_conversations">Minden téma meg lesz jelölve olvasatlanként.</string>
+  <string name="confirm_mark_read_all_conversations">Minden beszélgetés meg lesz jelölve olvasottként.</string>
   <string name="select_recipients">Válasszon címzetteket</string>
   <string name="groups_header">Csoportok</string>
   <string name="no_recipients">Nincs találat</string>
@@ -158,7 +162,7 @@
   <string name="external_audio_item">Külső hang</string>
   <string name="pending_mms_title">Függőben lévő MMS a másik SIM kártyán</string>
   <string name="pending_mms">Üzenetkezelés: Egy vagy több MMS folyamatban van</string>
-  <string name="pending_mms_text">Érintse meg a SIM kártya váltásához</string>
+  <string name="pending_mms_text">Érintse meg a SIM-kártya váltásához</string>
   <string name="switch_data_subscription_success">Adat SIM-kártya váltása sikeres volt.</string>
   <string name="switch_data_subscription_failed">Adat SIM-kártya váltása sikertelen.</string>
   <string name="abort_mms">Üzenetkezelés: MMS elvetése</string>
@@ -223,7 +227,7 @@
   <string name="type_sent">Elküldött</string>
   <string name="type_outbox">Kimenő</string>
   <string name="type_draft">Piszkozatok</string>
-  <string name="slot_type_select">SIM kártya kiválasztása</string>
+  <string name="slot_type_select">SIM-kártya kiválasztása</string>
   <string name="type_all">Mind</string>
   <string name="type_slot1">SIM 1</string>
   <string name="type_slot2">SIM 2</string>

@@ -84,9 +84,13 @@
   <string name="alert_dialog_yes">Да</string>
   <string name="alert_dialog_no">Не</string>
   <string name="menu_as_unread">Означи као непрочитано</string>
+  <string name="menu_as_read">Означи као прочитано</string>
   <string name="menu_all_as_unread">Означи све као непрочитано</string>
+  <string name="menu_all_as_read">Означи све као прочитано</string>
   <string name="confirm_mark_unread_dialog_title">Означи као непрочитано?</string>
+  <string name="confirm_mark_read_dialog_title">Означи као прочитано?</string>
   <string name="confirm_mark_unread_all_conversations">Сви низови ће бити означени као непрочитани.</string>
+  <string name="confirm_mark_read_all_conversations">Сви низови ће бити означени као прочитани.</string>
   <string name="select_recipients">Изабери примаоце</string>
   <string name="groups_header">Групе</string>
   <string name="no_recipients">Нема пронађених контаката</string>

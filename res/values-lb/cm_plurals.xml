@@ -25,7 +25,11 @@
     <item quantity="other">Gëtt a(n) %1$d Sekonne geschéckt, drécke fir ofzebriechen.</item>
   </plurals>
   <plurals name="confirm_mark_unread_conversation">
-    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> Diskussioun gëtt als ongelies markéiert.</item>
-    <item quantity="other"><xliff:g id="number">%1$s</xliff:g> Diskussioune ginn als ongelies markéiert.</item>
+    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> Konversatioun gëtt als ongelies markéiert.</item>
+    <item quantity="other"><xliff:g id="number">%1$s</xliff:g> Konversatioune ginn als ongelies markéiert.</item>
+  </plurals>
+  <plurals name="confirm_mark_read_conversation">
+    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> Konversatioun gëtt als gelies markéiert.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> Konversatioune ginn als gelies markéiert.</item>
   </plurals>
 </resources>

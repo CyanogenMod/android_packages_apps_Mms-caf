@@ -19,5 +19,12 @@
   <string name="menu_add_to_calendar">বর্ষপঞ্জিতে যুক্ত করুন</string>
   <string name="button_close">বন্ধ করুন</string>
   <string name="button_view">দেখুন</string>
+  <string name="button_templates">টেম্পলেট সমূহ</string>
   <string name="type_to_reply_text_enter_to_send">উত্তর দিতে লিখুন</string>
+  <string name="toast_sending_message">বার্তা প্রেরণ করা হচ্ছে</string>
+  <string name="qm_quick_reply">উত্তর দিন</string>
+  <string name="qm_mark_read">পড়ুন</string>
+  <string name="message_counter">%2$d এর %1$d</string>
+  <string name="notification_single_title_privacy_mode">নতুন বার্তা</string>
+  <string name="pref_title_reset_convopt_to_default">পূর্ব-নির্ধারিত অবস্থায় পুন:স্থাপন</string>
 </resources>

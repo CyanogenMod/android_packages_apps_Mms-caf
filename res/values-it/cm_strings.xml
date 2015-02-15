@@ -32,11 +32,11 @@
   <string name="notification_multiple_title_privacy_mode">Nuovi messaggi</string>
   <string name="notification_multiple_text_privacy_mode"><xliff:g id="number" example="3">%1$s</xliff:g> messaggi non letti</string>
   <string name="notification_ticker_privacy_mode">Nuovo messaggio ricevuto</string>
-  <string name="pref_quickmessage">Messaggi e risposte rapidi</string>
+  <string name="pref_quickmessage">Risposta veloce</string>
   <string name="pref_dark_theme_title">Usa tema scuro</string>
   <string name="pref_dark_theme_summary">Se non selezionato, verrà utilizzato il classico tema chiaro</string>
-  <string name="pref_quickmessage_title">Mostra messaggi rapidi</string>
-  <string name="pref_quickmessage_summary">Mostra il pop-up di messaggio rapido per gli sms in arrivo</string>
+  <string name="pref_quickmessage_title">Mostra finestra</string>
+  <string name="pref_quickmessage_summary">Mostra la finestra \"Messaggi rapidi\" per gli sms in arrivo</string>
   <string name="pref_wake_unlock_title">Accendi e sblocca</string>
   <string name="pref_wake_unlock_summary">Accendi e sblocca il dispositivo all\'arrivo di un messaggio (solo con bloccaschermo senza sicurezza)</string>
   <string name="pref_close_all_title">Chiudi tutto</string>

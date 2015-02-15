@@ -84,9 +84,13 @@
   <string name="alert_dialog_yes">はい</string>
   <string name="alert_dialog_no">いいえ</string>
   <string name="menu_as_unread">未読にする</string>
+  <string name="menu_as_read">既読にする</string>
   <string name="menu_all_as_unread">すべて未読にする</string>
+  <string name="menu_all_as_read">すべて既読にする</string>
   <string name="confirm_mark_unread_dialog_title">未読にしますか？</string>
+  <string name="confirm_mark_read_dialog_title">既読にしますか？</string>
   <string name="confirm_mark_unread_all_conversations">すべてのスレッドが未読になります。</string>
+  <string name="confirm_mark_read_all_conversations">すべてのスレッドが既読になります。</string>
   <string name="select_recipients">宛先を選択</string>
   <string name="groups_header">グループ</string>
   <string name="no_recipients">連絡先が見つかりません</string>
@@ -143,9 +147,9 @@
   <string name="title_send_message">メッセージを送信</string>
   <string name="subject_full">件名がいっぱいです</string>
   <string name="status_deleted_unread">未読のまま削除</string>
-  <string name="sms_full_body_cm">携帯電話のメモリがいっぱいなので、新しいメッセージを送信または受信することができません。古いメッセージをいくつか削除してください。</string>
+  <string name="sms_full_body_cm">携帯電話のメモリがいっぱいであるため、新しいメッセージを送信または受信することができません。古いメッセージをいくつか削除してください。</string>
   <string name="memory_low_title">SMSメッセージのメモリ残量低下</string>
-  <string name="memory_low_body">携帯電話のメモリが少なくなってきていますので、新しいメッセージを受信するための十分な空き容量を余裕を持って確保するために、古いデータをいくつか削除してください。</string>
+  <string name="memory_low_body">携帯電話のメモリが少なくなってきているため、新しいメッセージを受信するための十分な空き容量を余裕を持って確保するために、古いデータをいくつか削除してください。</string>
   <string name="disk_storage_full_error">携帯電話のストレージがいっぱいです。</string>
   <string name="mobile_data_disable">データ通信がOFFになっていますが、MMSを<xliff:g id="action" example="download">%1$s</xliff:g>しますか？この動作はモバイルデータ通信を行います。</string>
   <string name="mobile_data_send">送信</string>

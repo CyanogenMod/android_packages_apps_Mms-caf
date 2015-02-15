@@ -84,9 +84,13 @@
   <string name="alert_dialog_yes">Áno</string>
   <string name="alert_dialog_no">Nie</string>
   <string name="menu_as_unread">Označiť ako neprečítané</string>
+  <string name="menu_as_read">Označiť ako prečítané</string>
   <string name="menu_all_as_unread">Označiť všetko ako neprečítané</string>
+  <string name="menu_all_as_read">Označiť všetko ako prečítané</string>
   <string name="confirm_mark_unread_dialog_title">Označiť ako neprečítané?</string>
+  <string name="confirm_mark_read_dialog_title">Označiť ako prečítané?</string>
   <string name="confirm_mark_unread_all_conversations">Všetky vlákna budú označené ako neprečítané.</string>
+  <string name="confirm_mark_read_all_conversations">Všetky vlákna budú označené ako prečítané.</string>
   <string name="select_recipients">Vyberte príjemcov</string>
   <string name="groups_header">Skupiny</string>
   <string name="no_recipients">Žiadne kontakty neboli nájdené</string>
