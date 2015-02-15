@@ -137,6 +137,7 @@ public class MessageItem {
     public String mRcsMimeType;
     public int mRcsChatType;
     public String mRcsMessageId;
+    public int mIsRcs;
 
     public int getCountDown() {
         return mCountDown;
@@ -203,6 +204,7 @@ public class MessageItem {
             mRcsFileSize= cursor.getInt(columnsMap.mColumnRcsFileSize);
             mRcsChatType = cursor.getInt(columnsMap.mColumnRcsChatType);
             mRcsMessageId = cursor.getString(columnsMap.mColumnRcsMessageId);
+            mIsRcs = cursor.getInt(columnsMap.mColumnIsRcs);
             mBody = cursor.getString(columnsMap.mColumnSmsBody);
 
             mPhoneId = cursor.getInt(columnsMap.mColumnPhoneId);
