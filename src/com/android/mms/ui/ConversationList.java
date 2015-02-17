@@ -623,7 +623,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
 
         if (!getResources().getBoolean(R.bool.config_classify_search)) {
             mSearchItem = menu.findItem(R.id.search);
-            mSearchItem.setActionView(new SearchView(getApplicationContext()));
+            mSearchItem.setActionView(new SearchView(this));
             mSearchView = (SearchView) mSearchItem.getActionView();
             mSearchView.setOnQueryTextListener(mQueryTextListener);
             mSearchView.setQueryHint(getString(R.string.search_hint));
