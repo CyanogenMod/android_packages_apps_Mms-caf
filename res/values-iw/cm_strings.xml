@@ -43,6 +43,8 @@
   <string name="blacklist_summary">הודעות נכנסות ממספרי טלפון שברשימה השחורה ייחסמו</string>
   <string name="blacklist_notification">חסם הודעה מ-%s</string>
   <string name="blacklist_notification_list_private">פרטי</string>
+  <string name="blacklist_notification_unknown_number">חסם הודעה ממספר לא ידוע %s</string>
+  <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> הודעות נחסמו</string>
   <string name="unblock_number">הורד חסימה</string>
   <string name="add_to_blacklist">הוסף לרשימה שחורה</string>
   <string name="add_to_blacklist_message">הודעות עתידיות מ-%s ייחסמו</string>
@@ -53,8 +55,11 @@
   <string name="menu_all_as_unread">סמן את כולם כנקראו</string>
   <string name="menu_all_as_read">סמן הכל כנקרא</string>
   <string name="confirm_mark_unread_dialog_title">סמן כלא נקרא?</string>
+  <string name="confirm_mark_unread_conversation">השיחה תסומן כלא נקראה.</string>
   <string name="confirm_mark_read_dialog_title">לסמן כנקרא?</string>
+  <string name="confirm_mark_read_conversation">השיחה תסומן כנקראה.</string>
   <string name="confirm_mark_unread_all_conversations">כל השיחות יסומנו כלא נקראו.</string>
+  <string name="confirm_mark_read_all_conversations">כל השיחות יסומנו כנקראו.</string>
   <string name="loading">טוען\u2026</string>
   <string name="select_recipients">בחר נמענים</string>
   <string name="no_recipients">לא נמצאו אנשי קשר</string>
@@ -71,6 +76,7 @@
   <string name="deleting_threads">מוחק שיחות\u2026</string>
   <string name="menu_resend">שלח מחדש</string>
   <string name="cancel_downloading">בטל</string>
+  <string name="confirm_cancel_downloading">הורדת הודעת MMS תבוטל.</string>
   <string name="send_by_slot1">שלח דרך SIM 1</string>
   <string name="send_by_slot2">שלח דרך SIM 2</string>
   <string name="media_size_limit">ההודעה הגיעה למגבלת גודל, אין באפשרותך לשלוח הודעה זו.</string>
@@ -78,6 +84,9 @@
   <string name="discard_message_reason_some_invalid">ההודעה שלך תבוטל מכיוון שחלק מהנמענים אינם חוקיים.</string>
   <string name="cannot_add_text_anymore">לא ניתן להוסיף טקסט נוסף.</string>
   <string name="title_send_message">שלח הודעה</string>
+  <string name="subject_full">הנושא חייב להיות באורך של לא יותר מ-<xliff:g id="length">%d</xliff:g> תווים.</string>
+  <string name="prefs_title_export_sms_messages">ייצא הודעות SMS</string>
+  <string name="prefs_title_import_sms_messages">ייבא הודעות SMS</string>
   <string name="pref_title_sms_delivery_reports_slot1">דוחות מסירה עבור SIM 1</string>
   <string name="pref_title_sms_delivery_reports_slot2">דוחות מסירה עבור SIM 2</string>
   <string name="status_deleted_unread">יימחק מבלי שנקרא</string>
@@ -90,9 +99,13 @@
   <string name="menu_connect_url">פתח כתובת קישור</string>
   <string name="menu_add_to_label">הוסף למועדפים</string>
   <string name="loadurlinfo_str">כתובות אינטרנט ממקור לא ידוע עלולים להוות נסיונות דיוג (פישינג). אם אינך בטוח, אל תפתח כתובת זו.</string>
+  <string name="pref_title_message_template">תבניות הודעה</string>
+  <string name="title_new_message_template">תבנית חדשה</string>
   <string name="dialog_editSMSTemplate_title">ערוך תבנית</string>
   <string name="import_message_template">הוסף תבנית</string>
   <string name="pref_sms_signature_title">חתימת SMS</string>
+  <string name="menu_copy_to">העתק</string>
+  <string name="operation_to_card_memory">העתק הודעה לכרטיס SIM</string>
   <string name="pref_one_smcs">מספר SMSC</string>
   <string name="pref_more_smcs">מספר ה-SMSC של SIM <xliff:g id="slot_number">%d</xliff:g></string>
   <string name="set_smsc_error">אין אפשרות להגדיר את מספר SMSC</string>
@@ -144,6 +157,8 @@
   <string name="search_as_content">תוכן</string>
   <string name="search_as_subject">נושא</string>
   <string name="sim_capacity_title">קיבולת SIM</string>
+  <string name="sim_capacity"><xliff:g id="used">%1$d</xliff:g> מתוך <xliff:g id="total">%2$d</xliff:g> מקומות בשימוש בכרטיס ה-SIM</string>
+  <string name="pref_sim_card_full_save_to_phone">כרטיס ה-SIM מלא, הודעות חדשות תשמרנה למכשיר עצמו.</string>
   <string name="selected_all">בחר הכול</string>
   <string name="deselected_all">בטל את כל הבחירות</string>
   <string name="selected_count"><xliff:g id="COUNT">%d </xliff:g> נבחרו</string>
@@ -166,6 +181,11 @@
   <string name="menu_delete_all_entries">מחק הכל</string>
   <string name="menu_delete_sms">מחק SMS</string>
   <string name="menu_delete_mms">מחק MMS</string>
+  <string name="delete_sms_title">מחק גיבוי קיים</string>
+  <string name="pick_sms_backup_title">בחר גיבוי SMS</string>
+  <string name="delete_sms_toast">הגיבוי נמחק.</string>
+  <string name="import_sms_toast">ההודעות יובאו בהצלחה.</string>
+  <string name="export_sms_toast">ההודעות יוצאו בהצלחה.</string>
   <string name="perform_backup_title">מייצא</string>
   <string name="perform_restore_title">מייבא</string>
   <string name="wait_progress_message">אנא המתן\u2026</string>

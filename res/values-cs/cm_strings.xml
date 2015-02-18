@@ -25,6 +25,7 @@
   <string name="pref_close_all_summary">Tlačítko \u201aZavřít\u2018 zavře všechny zprávy</string>
   <string name="pref_dark_theme_title">Použít tmavý motiv</string>
   <string name="pref_dark_theme_summary">Pokud není vybráno, použije se výchozí \u201asvětlý\u2018 motiv</string>
+  <string name="message_counter">%1$d z %2$d</string>
   <string name="button_close">Zavřít</string>
   <string name="button_view">Zobrazit</string>
   <string name="button_templates">Šablony</string>
@@ -43,6 +44,12 @@
   <string name="blacklist_title">Černá listina</string>
   <string name="blacklist_summary_disabled">Zakázána</string>
   <string name="blacklist_summary">Příchozí zprávy z čísel na černé listině budou blokovány</string>
+  <string name="blacklist_notification">Zablokována zpráva od %s</string>
+  <string name="blacklist_notification_private_number">Zablokována zpráva ze skrytého čísla</string>
+  <string name="blacklist_notification_list_private">Soukromý</string>
+  <string name="blacklist_notification_unknown_number">Zablokována zpráva z neznámého čísla %s</string>
+  <string name="blacklist_notification_multiple">Blokovaných zpráv: <xliff:g id="count">%d</xliff:g></string>
+  <string name="unblock_number">Odblokovat</string>
   <string name="add_to_blacklist">Přidat na černou listinu</string>
   <string name="add_to_blacklist_message">Příští zprávy z čísla %s budou blokovány</string>
   <string name="alert_dialog_yes">Ano</string>
@@ -57,6 +64,7 @@
   <string name="confirm_mark_read_conversation">Konverzace bude označena jako přečtená.</string>
   <string name="confirm_mark_unread_all_conversations">Všechny vlákna budou označena jako nepřečtená.</string>
   <string name="confirm_mark_read_all_conversations">Všechna vlákna budou označena jako přečtená.</string>
+  <string name="loading">Načítání\u2026</string>
   <string name="select_recipients">Zvolte příjemce</string>
   <string name="no_recipients">Nenalezen žádný kontakt</string>
   <string name="no_recipients_mobile_only">Kontakty nenalezeny. Zkuste vypnout filtr \u201aPouze mobilní čísla\u2018</string>
@@ -64,7 +72,10 @@
   <string name="menu_mobile">Pouze mobilní čísla</string>
   <string name="menu_order_by_given_name">Seřadit podle křestního jména</string>
   <string name="menu_order_by_last_name">Seřadit podle příjmení</string>
+  <string name="message_share">Sdílet</string>
   <string name="message_share_intent_title">Sdílet zprávu</string>
+  <string name="start_new_message_button">Nová zpráva</string>
+  <string name="all_spinner_option">Vše</string>
   <string name="menu_copy_url">Kopírovat odkaz <xliff:g id="extractedurl">%s</xliff:g></string>
   <string name="deleting_threads">Mazání konverzací\u2026</string>
   <string name="menu_resend">Odeslat znovu</string>
@@ -74,6 +85,7 @@
   <string name="send_by_slot2">Odeslat přes SIM 2</string>
   <string name="media_size_limit">Dosažen limit velikosti zprávy, zprávu nelze odeslat.</string>
   <string name="illegal_message_or_increase_size">Nesprávná velikost zprávy.</string>
+  <string name="discard_message_reason_some_invalid">Zpráva bude zahozena, protože někteří z příjemců jsou neplatní.</string>
   <string name="cannot_add_text_anymore">Nelze přidat další text.</string>
   <string name="title_send_message">Poslat zprávu</string>
   <string name="subject_full">Předmět nesmí být delší než <xliff:g id="length">%d</xliff:g> znaků.</string>
@@ -88,18 +100,25 @@
   <string name="mms_too_large">Zpráva je pro stáhnutí příliš veliká.</string>
   <string name="send_failed_retry">Nepodařilo se odeslat zprávu, opakování\u2026</string>
   <string name="download_failed_retry">Nepodařilo se načíst zprávu, opakování\u2026</string>
+  <string name="system_audio_item">Vyzvánění</string>
+  <string name="external_audio_item">Hudba</string>
   <string name="menu_connect_url">Otevřít odkaz</string>
   <string name="do_not_show_connect_warning">Příště toto varování nezobrazovat</string>
+  <string name="menu_add_to_label">Přidat do záložek</string>
   <string name="loadurlinfo_str">Odkazy od neznámých odesílatelů můžou být pokusy o „phishing“. Jestli si nejste jisti, neotevírejte tyto adresy.</string>
   <string name="pref_title_message_template">Šablona zprávy</string>
+  <string name="title_new_message_template">Nová šablona</string>
   <string name="summary_new_message_template">Vytvořit novou šablonu zprávy</string>
   <string name="dialog_editSMSTemplate_title">Úprava šablony</string>
+  <string name="import_message_template">Vložit šablonu</string>
   <string name="template_full">Text šablony dosáhl maximální délky.</string>
   <string name="pref_sms_signature_title">Podpis SMS</string>
   <string name="pref_title_enable_signature">Přidání podpisu do zpráv</string>
   <string name="pref_title_edit_signature">Upravit text podpisu</string>
   <string name="menu_copy_to">Kopírovat</string>
+  <string name="operation_to_card_memory">Kopírovat zprávu na SIM kartu</string>
   <string name="pref_smsc_title">Centrum služeb SMS</string>
+  <string name="pref_one_smcs">Číslo SMSC</string>
   <string name="pref_more_smcs">Číslo SMSC <xliff:g id="slot_number">%d</xliff:g> SIM</string>
   <string name="set_smsc_error">Nepodařilo se nastavit číslo SMSC</string>
   <string name="set_smsc_success">Číslo SMSC úspěšně nastaveno</string>
@@ -107,7 +126,10 @@
   <string name="copy_to_sim">Kopírovat zprávu na SIM karty</string>
   <string name="copy_to_sim_success">Uloženo zpráv na SIM kartu: <xliff:g id="count">%1$d</xliff:g> z <xliff:g id="total">%2$d</xliff:g>.</string>
   <string name="copy_to_sim_fail">Nelze uložit zprávu</string>
+  <string name="copy_to_phone_success">Zpráva uložena</string>
+  <string name="copy_to_phone_fail">Zprávu nelze uložit</string>
   <string name="contact_app_not_found">Nelze otevřít aplikaci kontaktů</string>
+  <string name="search_bar_hint">Vyhledat kontakty</string>
   <string name="type_vcard">vCard</string>
   <string name="import_vcard">Importovat</string>
   <string name="attach_add_contact_as_vcard">vCard kontaktu</string>
@@ -130,6 +152,9 @@
   <string name="sms_validity_period_six_hours">6 hodin</string>
   <string name="sms_validity_period_twelve_hours">12 hodin</string>
   <string name="sms_validity_period_one_day">1 den</string>
+  <string name="mms_validity_period_two_days">2 dny</string>
+  <string name="mms_validity_period_one_week">1 týden</string>
+  <string name="validity_period_maximum">Maximální</string>
   <string name="status_expired">MMS vypršela platnost</string>
   <string name="operate_success">Operace byla úspěšně dokončena</string>
   <string name="operate_failure">Operace se nezdařila</string>
@@ -158,6 +183,7 @@
   <string name="invalid_name_toast">Zadejte, prosím, platné jméno</string>
   <string name="sim_capacity_title">Kapacita SIM karty</string>
   <string name="sim_capacity">Využívá se <xliff:g id="used">%1$d</xliff:g> z <xliff:g id="total">%2$d</xliff:g> položek SIM karty</string>
+  <string name="pref_sim_card_full_save_to_phone">SIM karta je plná, nové zprávy se budou ukládat do telefonu.</string>
   <string name="selected_all">Vybrat vše</string>
   <string name="deselected_all">Zrušit výběr všech</string>
   <string name="selected_count">Počet vybraných: <xliff:g id="COUNT">%d</xliff:g></string>
@@ -166,6 +192,7 @@
   <string name="cdma_priority_urgent">Naléhavé</string>
   <string name="cdma_priority_emergency">Pohotovost</string>
   <string name="pref_title_cdma_priority">Priorita zprávy</string>
+  <string name="pref_summary_cdma_priority">Priorita CDMA zpráv</string>
   <string name="download_dialog_title">Stáhnout tuto MMS?</string>
   <string name="menu_email">Poslat e-mail</string>
   <string name="pref_title_sms_store">Upřednostňované úložiště</string>
@@ -178,6 +205,7 @@
   <string name="pre_define_message_template_2">Mám jednání. Zavolám Vám později.</string>
   <string name="pre_define_message_template_3">Prosím zavolejte později.</string>
   <string name="pre_define_message_template_4">Zavoláte mi prosím zpět?</string>
+  <string name="menu_delete_all_entries">Odstranit vše</string>
   <string name="menu_delete_sms">Odstranit SMS</string>
   <string name="menu_delete_mms">Odstranit MMS</string>
   <string name="import_sms_title">Importovat z úložiště</string>
@@ -191,6 +219,7 @@
   <string name="import_sms_failed_toast">Nelze importovat zprávy</string>
   <string name="perform_backup_title">Exportování</string>
   <string name="perform_restore_title">Importuje se</string>
+  <string name="wait_progress_message">Prosím čekejte\u2026</string>
   <string name="backup_file_name_message">Zprávy exportovány do „%1$s“</string>
   <string name="manage_sdcard_messages">Import a export zpráv</string>
   <string name="no_backups_found">Nebyly nalezeny žádné zálohy</string>
@@ -200,5 +229,6 @@
   <string name="qm_wear_voice_reply">Jaká je vaše odpověď?</string>
   <string name="qm_wear_reply_by_voice">Odpovědět pomocí hlasu</string>
   <string name="copy_empty_string">Žádný text ke kopírování</string>
+  <string name="attach_add_calendar_events">Událost z kalendáře</string>
   <string name="calendar_attachment_activity_not_found">Nelze najít podpůrné aplikace Kalendáře</string>
 </resources>

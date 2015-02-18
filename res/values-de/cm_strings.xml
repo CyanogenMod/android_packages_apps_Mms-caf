@@ -18,6 +18,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="pref_quickmessage">Schnellnachricht und Antwort</string>
   <string name="pref_quickmessage_title">Schnellnachricht anzeigen</string>
+  <string name="pref_quickmessage_summary">Pop-Up für eingehende SMS automatisch öffnen</string>
   <string name="pref_wake_unlock_title">Wecken und entsperren</string>
   <string name="pref_wake_unlock_summary">Gerät bei Nachrichteneingang aufwecken und entsperren (Nicht bei Sicherheits-Bildschirmsperre möglich)</string>
   <string name="pref_close_all_title">Alle schließen</string>
@@ -127,13 +128,16 @@
   <string name="copy_to_sim_fail">Nachricht konnte nicht gespeichert werden</string>
   <string name="copy_to_phone_success">Nachricht gespeichert</string>
   <string name="copy_to_phone_fail">Nachricht konnte nicht gespeichert werden</string>
+  <string name="contact_app_not_found">Kontakte-App konnte nicht geöffnet werden</string>
   <string name="search_bar_hint">Kontakte suchen</string>
   <string name="type_vcard">vCard</string>
   <string name="import_vcard">Importieren</string>
   <string name="attach_add_contact_as_vcard">Kontakt-vCard</string>
+  <string name="attach_add_contact_as_text">Kontaktinformation als Text</string>
   <string name="contact_info_text_as_name">Name:</string>
   <string name="contact_info_text_as_phone">Tel:</string>
   <string name="contact_info_text_as_email">E-Mail:</string>
+  <string name="type_vcal">Kalenderetermin</string>
   <string name="pref_wap_push_title">Push-Service-Benachrichtigungen</string>
   <string name="pref_title_wap_push_enabled">WAP-Push-Dienst</string>
   <string name="pref_summary_wap_push_enabled">Netzbetreiber-Nachrichten erhalten</string>
@@ -192,11 +196,15 @@
   <string name="download_dialog_title">Diese MMS herunterladen?</string>
   <string name="menu_email">E-Mail senden</string>
   <string name="pref_title_sms_store">Bevorzugter Speicher</string>
+  <string name="pref_title_sms_store_card1">Bevorzugter Speicher für SIM 1</string>
+  <string name="pref_title_sms_store_card2">Bevorzugter Speicher für SIM 2</string>
   <string name="pref_sms_store_phone">Telefon</string>
   <string name="pref_sms_store_card">SIM-Karte</string>
   <string name="mms_size_indicator"><xliff:g id="mms_size">%1$d</xliff:g>/<xliff:g id="all_size">%2$d</xliff:g> kB</string>
   <string name="pre_define_message_template_1">Ich rufe später zurück.</string>
   <string name="pre_define_message_template_2">Ich bin in einer Konferenz. Ich melde mich später.</string>
+  <string name="pre_define_message_template_3">Bitte rufen Sie mich später an.</string>
+  <string name="pre_define_message_template_4">Könnten Sie mich bitte zurückrufen?</string>
   <string name="menu_delete_all_entries">Alle löschen</string>
   <string name="menu_delete_sms">SMS löschen</string>
   <string name="menu_delete_mms">MMS löschen</string>
@@ -219,5 +227,7 @@
   <string name="qm_wear_sending_message">Sende Antwort an <xliff:g id="name">%s</xliff:g>\u2026</string>
   <string name="qm_wear_messaged_failed">Textnachricht an <xliff:g id="name">%s</xliff:g> wurde nicht gesendet. Versuchen Sie es noch einmal.</string>
   <string name="qm_wear_voice_reply">Was ist Ihre Antwort?</string>
+  <string name="qm_wear_reply_by_voice">Per Sprache antworten</string>
   <string name="copy_empty_string">Kein Text zum Kopieren</string>
+  <string name="attach_add_calendar_events">Kalendertermin</string>
 </resources>
