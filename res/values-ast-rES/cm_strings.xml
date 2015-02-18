@@ -16,17 +16,22 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="pref_quickmessage">Mensaxe rápidu</string>
+  <string name="pref_quickmessage_title">Amosar mensaxe rápidu</string>
+  <string name="pref_quickmessage_summary">Abrir automáticamente la rempuestá rápida pa los mensaxes SMS entrantes</string>
   <string name="pref_wake_unlock_title">Espertar y desbloquiar</string>
   <string name="pref_wake_unlock_summary">Esconsoña y desbloquia\'l preséu al recibir un mensaxe (namái con bloquéu de pantalla)</string>
   <string name="pref_close_all_title">Zarrar too</string>
   <string name="pref_close_all_summary">Al pulsar Zarrar, van zarrase tolos mensaxes</string>
   <string name="pref_dark_theme_title">Usar tema escuru</string>
   <string name="pref_dark_theme_summary">Si nun ta seleicionáu, va usase\'l tema claru</string>
+  <string name="message_counter">%1$d de %2$d</string>
   <string name="button_close">Zarrar</string>
   <string name="button_view">Ver</string>
   <string name="button_templates">Plantíes</string>
   <string name="type_to_reply_text_enter_to_send">Escribir mensaxe</string>
   <string name="qm_mark_read">Lleíu</string>
+  <string name="toast_sending_message">Unviando mensaxe\u2026</string>
   <string name="pref_title_send_delay">Retrasar l\'unviu</string>
   <string name="send_delay_immediate">Ensin retrasu</string>
   <string name="send_delay_3seconds">3 segundos</string>
@@ -39,43 +44,117 @@
   <string name="blacklist_title">Llista prieta</string>
   <string name="blacklist_summary_disabled">Deshabilitada</string>
   <string name="blacklist_summary">Los mensaxes entrantes de los númberos na llista prieta van bloquiase</string>
+  <string name="blacklist_notification">Bloquióse un mensaxe de %s</string>
+  <string name="blacklist_notification_private_number">Bloquióse un mensaxe d\'un númberu priváu</string>
+  <string name="blacklist_notification_list_private">Priváu</string>
+  <string name="blacklist_notification_unknown_number">Bloquióse un mensaxe d\'un númberu desconocíu %s</string>
+  <string name="blacklist_notification_multiple">Bloquiáronse <xliff:g id="count">%d</xliff:g> mensaxes</string>
+  <string name="unblock_number">Desbloquiar</string>
   <string name="add_to_blacklist">Amestar a la llista prieta</string>
   <string name="add_to_blacklist_message">Los mensaxes de %s van bloquiase</string>
   <string name="alert_dialog_yes">Sí</string>
   <string name="alert_dialog_no">Non</string>
   <string name="menu_as_unread">Marcar como non lleío</string>
+  <string name="menu_as_read">Marcar como lleío</string>
   <string name="menu_all_as_unread">Marcar toos como ensin lleer</string>
+  <string name="menu_all_as_read">Marcalo too como lleío</string>
   <string name="confirm_mark_unread_dialog_title">Marcar como non lleío?</string>
+  <string name="confirm_mark_unread_conversation">La conversación va marcase como non lleída.</string>
+  <string name="confirm_mark_read_dialog_title">Marcar como lleío?</string>
+  <string name="confirm_mark_read_conversation">La conversación va marcase como lleída.</string>
   <string name="confirm_mark_unread_all_conversations">Van marcase tolos filos como non lleíos.</string>
+  <string name="confirm_mark_read_all_conversations">Van marcase tolos filos como lleíos.</string>
+  <string name="loading">Cargando\u2026</string>
   <string name="select_recipients">Esbillar destinatarios</string>
   <string name="no_recipients">Nun s\'atoparon contautos</string>
   <string name="no_recipients_mobile_only">Nun hai contautos coincidentes. Prueba ensin el filtru \u00ABNamái númberos de teléfonu\u00BB</string>
   <string name="menu_done">Fecho</string>
   <string name="menu_mobile">Namái númberos de teléfonu</string>
+  <string name="menu_order_by_given_name">Ordenar per nome</string>
+  <string name="menu_order_by_last_name">Ordenar per apellíu</string>
+  <string name="message_share">Compartir</string>
+  <string name="message_share_intent_title">Compartir mensaxe</string>
+  <string name="start_new_message_button">Mensaxe nuevu</string>
+  <string name="all_spinner_option">Too</string>
+  <string name="menu_copy_url">Copiar URL <xliff:g id="extractedurl">%s</xliff:g></string>
   <string name="deleting_threads">Desaniciando conversaciones\u2026</string>
   <string name="menu_resend">Reunviar</string>
   <string name="cancel_downloading">Encaboxar</string>
+  <string name="confirm_cancel_downloading">La descarga de MMS va encaboxase.</string>
+  <string name="send_by_slot1">Unviar al traviés de SIM 1</string>
+  <string name="send_by_slot2">Unviar al traviés de SIM 2</string>
   <string name="media_size_limit">Algamóse\'l tamañu máximu. El mensaxe nun pue unviase.</string>
+  <string name="illegal_message_or_increase_size">Tamañu de mensaxe incorreutu.</string>
+  <string name="discard_message_reason_some_invalid">El mensaxe va descartase porque dalgunos de los destinatarios nun son válidos.</string>
   <string name="cannot_add_text_anymore">Nun pue amestase más testu.</string>
   <string name="title_send_message">Unviar mensaxe</string>
+  <string name="subject_full">L\'asuntu nun pue tener más de <xliff:g id="length">%d</xliff:g> caráuteres.</string>
+  <string name="pref_title_manage_sim_messages_slot1">Alministrar mensaxes de SIM 1</string>
+  <string name="pref_title_manage_sim_messages_slot2">Alministrar mensaxes de SIM 2</string>
+  <string name="prefs_title_export_sms_messages">Esportar mensaxes SMS</string>
+  <string name="prefs_title_import_sms_messages">Importar mensaxes SMS</string>
+  <string name="pref_title_sms_delivery_reports_slot1">Informes d\'entrega pa SIM 1</string>
+  <string name="pref_title_sms_delivery_reports_slot2">Informes d\'entrega pa 2 SIM</string>
   <string name="status_deleted_unread">Desaniciaos ensin lleer</string>
+  <string name="disk_storage_full_error">Fallu. L\'almacenamientu ta llenu.</string>
   <string name="mms_too_large">El mensaxe ye enforma grande pa descargalu.</string>
+  <string name="send_failed_retry">Fallu al unviar mensaxe, reintentando\u2026</string>
+  <string name="download_failed_retry">Fallu al descargar el mensaxe, reintentando\u2026</string>
+  <string name="system_audio_item">Tonu de llamada</string>
+  <string name="external_audio_item">Música</string>
+  <string name="menu_connect_url">Abrir URL</string>
+  <string name="do_not_show_connect_warning">Nun amosar esti avisu más</string>
+  <string name="menu_add_to_label">A marcadores</string>
+  <string name="loadurlinfo_str">Les direiciones URL de remitentes desconocíos podríen ser intentos de phishing. Nun abras estes direiciones si nun tas seguru.</string>
+  <string name="pref_title_message_template">Plantíes de mensaxes</string>
+  <string name="title_new_message_template">Plantía nueva</string>
+  <string name="summary_new_message_template">Componer una plantía de mensaxe nueva</string>
+  <string name="dialog_editSMSTemplate_title">Editar plantía</string>
+  <string name="import_message_template">Inxertar plantía</string>
+  <string name="template_full">El testu de la plantía algamó la llonxitú máxima.</string>
   <string name="pref_sms_signature_title">Robla SMS</string>
+  <string name="pref_title_enable_signature">Amestar robla a los mensaxes</string>
+  <string name="pref_title_edit_signature">Editar el testu de la robla</string>
+  <string name="menu_copy_to">Copiar</string>
+  <string name="operation_to_card_memory">Copiar el mensaxe a la tarxeta SIM</string>
+  <string name="pref_smsc_title">Centru de servicios SMS</string>
+  <string name="pref_one_smcs">Númberu de SMSC</string>
+  <string name="pref_more_smcs">Númberu de SMSC SIM <xliff:g id="slot_number">%d</xliff:g></string>
   <string name="set_smsc_error">Nun pue afitase\'l númberu SMSC</string>
+  <string name="set_smsc_success">Númberu de SMSC configuráu correchamente</string>
+  <string name="set_smsc_confirm_message">Cambiar el númberu SMSC pue causar fallos nos unvios de SMS. ¿Tas seguru de que quies siguir?</string>
   <string name="copy_to_sim">Copiar el mensaxe a la tarxeta SIM</string>
+  <string name="copy_to_sim_success"><xliff:g id="count">%1$d</xliff:g> de <xliff:g id="total">%2$d</xliff:g> mensaxes guardaos na tarxeta SIM.</string>
   <string name="copy_to_sim_fail">Nun pudo guardase\'l mensaxe</string>
+  <string name="copy_to_phone_success">Mensaxe guardáu</string>
+  <string name="copy_to_phone_fail">Nun pudo guardase\'l mensaxe</string>
+  <string name="contact_app_not_found">Nun pue abrise la app de contautos</string>
+  <string name="search_bar_hint">Guetar contautos</string>
   <string name="type_vcard">vCard</string>
   <string name="import_vcard">Importar</string>
   <string name="attach_add_contact_as_vcard">Contautu vCard</string>
+  <string name="attach_add_contact_as_text">Información del contautu como testu</string>
   <string name="contact_info_text_as_name">Nome:</string>
   <string name="contact_info_text_as_phone">Tel:</string>
   <string name="contact_info_text_as_email">Corréu-e:</string>
+  <string name="type_vcal">Eventu del calendariu</string>
+  <string name="pref_wap_push_title">Serviciu de mensaxes Push</string>
+  <string name="pref_title_wap_push_enabled">Serviciu WAP Push</string>
+  <string name="pref_summary_wap_push_enabled">Recibir mensaxes de serviciu de la rede</string>
   <string name="memory_status_title">Estáu de la memoria</string>
+  <string name="sms_phone_memory_usage">SMS: <xliff:g id="used">%1$d</xliff:g> de <xliff:g id="total">%2$d</xliff:g> usao</string>
+  <string name="mms_phone_memory_usage">MMS: <xliff:g id="used">%1$d</xliff:g> de <xliff:g id="total">%2$d</xliff:g> usao</string>
+  <string name="pref_title_validity_period">Periodu de validez</string>
+  <string name="pref_title_validity_period_slot1">Periodu de validez pa la SIM 1</string>
+  <string name="pref_title_validity_period_slot2">Periodu de validez pa la SIM 2</string>
   <string name="sms_validity_period_not_set">Non afitáu</string>
   <string name="sms_validity_period_one_hour">1 hora</string>
   <string name="sms_validity_period_six_hours">6 hores</string>
   <string name="sms_validity_period_twelve_hours">12 hores</string>
   <string name="sms_validity_period_one_day">1 día</string>
+  <string name="mms_validity_period_two_days">2 díes</string>
+  <string name="mms_validity_period_one_week">1 selmana</string>
+  <string name="validity_period_maximum">Máximu</string>
   <string name="status_expired">MMS caducáu</string>
   <string name="operate_success">Operación completada correutamente</string>
   <string name="operate_failure">Fallu na operación</string>
@@ -83,7 +162,12 @@
   <string name="slot1">SIM 1</string>
   <string name="slot2">SIM 2</string>
   <string name="cannot_play">Nun pue amosase la presentación.</string>
+  <string name="confirm_delete_selected_messages">Van desaniciase los mensaxes esbillaos.</string>
+  <string name="send_failure">Imposible unviar el mensaxe.</string>
   <string name="message_detail">Detalles del mensaxe</string>
+  <string name="no_message">Nun hai nengún mensaxe.</string>
+  <string name="change_to_folder_mode">Vista de carpeta</string>
+  <string name="change_to_conversation_mode">Vista de conversación</string>
   <string name="type_inbox">Recibíos</string>
   <string name="type_sent">Unviaos</string>
   <string name="type_outbox">Por Unviar</string>
@@ -98,6 +182,8 @@
   <string name="search_as_subject">Asuntu</string>
   <string name="invalid_name_toast">Introduz un nome válidu</string>
   <string name="sim_capacity_title">Capacidá SIM</string>
+  <string name="sim_capacity"><xliff:g id="used">%1$d</xliff:g> de <xliff:g id="total">%2$d</xliff:g> entraes de la tarxeta SIM n\'usu</string>
+  <string name="pref_sim_card_full_save_to_phone">La tarxeta SIM ta enllena. Guardando los mensaxes nuevos nel teléfonu.</string>
   <string name="selected_all">Marcalo too</string>
   <string name="deselected_all">Desmarcalo too</string>
   <string name="selected_count"><xliff:g id="COUNT">%d</xliff:g> esbillaos</string>
@@ -106,7 +192,43 @@
   <string name="cdma_priority_urgent">Urxente</string>
   <string name="cdma_priority_emergency">Emerxencia</string>
   <string name="pref_title_cdma_priority">Prioridá del mensaxe</string>
+  <string name="pref_summary_cdma_priority">Prioridá de los mensaxes CDMA</string>
+  <string name="download_dialog_title">¿Descargar esti MMS?</string>
+  <string name="menu_email">Unviar corréu</string>
   <string name="pref_title_sms_store">Almacenamientu preferíu</string>
+  <string name="pref_title_sms_store_card1">Almacenamientu por defeutu pa la SIM 1</string>
+  <string name="pref_title_sms_store_card2">Almacenamientu por defeutu pa la SIM 2</string>
   <string name="pref_sms_store_phone">Teléfonu</string>
   <string name="pref_sms_store_card">Tarxeta SIM</string>
+  <string name="mms_size_indicator"><xliff:g id="mms_size">%1$d</xliff:g>/<xliff:g id="all_size">%2$d</xliff:g> KB</string>
+  <string name="pre_define_message_template_1">Llámote dempués.</string>
+  <string name="pre_define_message_template_2">Toi aconceyáu. Llámote dempués.</string>
+  <string name="pre_define_message_template_3">Por favor, llámame dempués.</string>
+  <string name="pre_define_message_template_4">¿Por favor, pues llamame dempués?</string>
+  <string name="menu_delete_all_entries">Desanicialo too</string>
+  <string name="menu_delete_sms">Desaniciar SMS</string>
+  <string name="menu_delete_mms">Desaniciar MMS</string>
+  <string name="import_sms_title">Importar d\'almacenamientu</string>
+  <string name="export_sms_title">Esportar a almacenamientu</string>
+  <string name="delete_sms_title">Desaniciar copia de seguranza esistente</string>
+  <string name="pick_sms_backup_title">Seleicionar copia de seguranza de SMS</string>
+  <string name="delete_sms_toast">Copia de seguranza desaniciada.</string>
+  <string name="import_sms_toast">Mensaxes importaos.</string>
+  <string name="export_sms_toast">Mensaxes esportaos.</string>
+  <string name="export_sms_failed_toast">Nun puen esportase los mensaxes</string>
+  <string name="import_sms_failed_toast">Nun puen importase los mensaxes</string>
+  <string name="perform_backup_title">Esportando</string>
+  <string name="perform_restore_title">Importando</string>
+  <string name="wait_progress_message">Por favor, espera\u2026</string>
+  <string name="backup_file_name_message">Mensaxes esportaos a \u00AB%1$s\u00BB</string>
+  <string name="manage_sdcard_messages">Importar/esportar mensaxes</string>
+  <string name="no_backups_found">Nun s\'atoparon copies de seguranza</string>
+  <string name="remove_subject">Desaniciar asuntu</string>
+  <string name="qm_wear_sending_message">Unviando rempuesta a <xliff:g id="name">%s</xliff:g>\u2026</string>
+  <string name="qm_wear_messaged_failed">Mensaxe de testu a <xliff:g id="name">%s</xliff:g> no enviado. Por favor, inténtalo de nueves.</string>
+  <string name="qm_wear_voice_reply">¿Cuál ye la to rempuesta?</string>
+  <string name="qm_wear_reply_by_voice">Rempuesta per aciu de voz</string>
+  <string name="copy_empty_string">Nun hai testu que copiar</string>
+  <string name="attach_add_calendar_events">Eventu del calendariu</string>
+  <string name="calendar_attachment_activity_not_found">Imposible atopar una aplicación de calendariu</string>
 </resources>
