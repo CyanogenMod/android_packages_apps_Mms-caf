@@ -417,8 +417,6 @@ public class ComposeMessageActivity extends Activity
 
     private boolean mEnableEmoticons;
 
-    private int mInputMethod;
-
     private int mLastSmoothScrollPosition;
     private boolean mScrollOnSend;      // Flag that we need to scroll the list to the end.
 
@@ -2402,9 +2400,6 @@ public class ComposeMessageActivity extends Activity
         boolean showGesture = prefs.getBoolean(MessagingPreferenceActivity.SHOW_GESTURE, false);
         int unicodeStripping = prefs.getInt(MessagingPreferenceActivity.UNICODE_STRIPPING_VALUE,
                 MessagingPreferenceActivity.UNICODE_STRIPPING_LEAVE_INTACT);
-        mInputMethod = Integer.parseInt(prefs.getString(MessagingPreferenceActivity.INPUT_TYPE,
-                Integer.toString(InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE)));
-
         mLibrary = TemplateGesturesLibrary.getStore(this);
 
         int layout = R.layout.compose_message_activity;
@@ -2878,24 +2873,16 @@ public class ComposeMessageActivity extends Activity
             }
         }, 100);
 
-        // Load the selected input type
-        SharedPreferences prefs = PreferenceManager
-                .getDefaultSharedPreferences((Context) ComposeMessageActivity.this);
-        mInputMethod = Integer.parseInt(prefs.getString(MessagingPreferenceActivity.INPUT_TYPE,
-                Integer.toString(InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE)));
-        mTextEditor.setInputType(InputType.TYPE_CLASS_TEXT | mInputMethod
-                | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
-                | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
-                | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-
         mIsRunning = true;
 
         // refresh autotext state after adding word to dictionary
-        if (mTextEditor.isCursorVisible()) {
-            mTextEditor.setText(mTextEditor.getText());
+        CharSequence text = mWorkingMessage.getText();
+        if (text != null && mTextEditor.isCursorVisible()) {
+            mTextEditor.setTextKeepState(mTextEditor.getText());
         }
+
         if (mSubjectTextEditor != null && mSubjectTextEditor.isCursorVisible()) {
-            mSubjectTextEditor.setText(mSubjectTextEditor.getText());
+            mSubjectTextEditor.setTextKeepState(mSubjectTextEditor.getText());
         }
         updateThreadIdIfRunning();
         mConversation.markAsRead(true);
