@@ -264,6 +264,14 @@ public class MessageListItem extends ZoomMessageListItem implements
         downloadTextView = (TextView) findViewById(R.id.label_downloading);
         mNameView = (TextView) findViewById(R.id.name_view);
         mAvatar.setOverlay(null);
+
+        // Add the views to be managed by the zoom control
+        addZoomableTextView(mBodyTextView);
+        addZoomableTextView(mBodyButtomTextView);
+        addZoomableTextView(mBodyTopTextView);
+        addZoomableTextView(mDateView);
+        addZoomableTextView(mSimMessageAddress);
+        addZoomableTextView(mNameView);
     }
 
     private void updateBodyTextView() {
@@ -520,8 +528,6 @@ public class MessageListItem extends ZoomMessageListItem implements
                                             mMessageItem.mSubject,
                                             mMessageItem.mHighlight,
                                             mMessageItem.mTextContentType));
-
-        mBodyTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, mZoomFontSize);
         mDateView.setText(buildTimestampLine(msgSizeText + " " + mMessageItem.mTimestamp));
 
         updateSimIndicatorView(mMessageItem.mPhoneId);
@@ -835,7 +841,7 @@ public class MessageListItem extends ZoomMessageListItem implements
             }
         }
         drawRightStatusIndicator(mMessageItem);
-        mBodyTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, mZoomFontSize);
+        handleZoomFontSizeImmediately();
         requestLayout();
     }
 
