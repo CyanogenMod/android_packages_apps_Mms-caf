@@ -4070,14 +4070,7 @@ public class ComposeMessageActivity extends Activity
 
     private void insertNumbersIntoRecipientsEditor(final ArrayList<String> numbers) {
         ContactList list = ContactList.getByNumbers(numbers, true);
-        ContactList existing = mRecipientsEditor.constructContactsFromInput(true);
-        for (Contact contact : existing) {
-            if (!contact.existsInDatabase()) {
-                list.add(contact);
-            }
-        }
-        mRecipientsEditor.setText(null);
-        mRecipientsEditor.populate(list);
+        insertContacts(list);
     }
 
     /**
@@ -4183,21 +4176,7 @@ public class ComposeMessageActivity extends Activity
                 final Runnable populateWorker = new Runnable() {
                     @Override
                     public void run() {
-                        // We must remove this listener before dealing with the contact list.
-                        // Because the listener will take a lot of time, this will cause an ANR.
-                        mRecipientsEditor.removeTextChangedListener(mRecipientsWatcher);
-                        mRecipientsEditor.populate(list);
-                        // Set value for mRecipientsPickList and
-                        // mRecipientsWatcher will update the UI.
-                        mRecipientsPickList = list;
-                        updateTitle(list);
-                        // When we finish dealing with the conatct list, the
-                        // RecipientsEditor will post the runnable "postHandlePendingChips"
-                        // to the message queue, then we add the TextChangedListener.
-                        // The mRecipientsWatcher will be call while UI thread deal
-                        // with the "postHandlePendingChips" runnable.
-                        mRecipientsEditor.addTextChangedListener(mRecipientsWatcher);
-
+                        insertContacts(list);
                         // if process finished, then dismiss the progress dialog
                         progressDialog.dismiss();
 
@@ -4245,6 +4224,23 @@ public class ComposeMessageActivity extends Activity
             handleAddAttachmentError(result, R.string.type_picture);
         }
     };
+
+    private void insertContacts(ContactList list) {
+        // We must remove this listener before dealing with the contact list.
+        // Because the listener will take a lot of time, this will cause an ANR.
+        mRecipientsEditor.removeTextChangedListener(mRecipientsWatcher);
+        mRecipientsEditor.populate(list);
+        // Set value for mRecipientsPickList and
+        // mRecipientsWatcher will update the UI.
+        mRecipientsPickList = list;
+        updateTitle(list);
+        // When we finish dealing with the conatct list, the
+        // RecipientsEditor will post the runnable "postHandlePendingChips"
+        // to the message queue, then we add the TextChangedListener.
+        // The mRecipientsWatcher will be call while UI thread deal
+        // with the "postHandlePendingChips" runnable.
+        mRecipientsEditor.addTextChangedListener(mRecipientsWatcher);
+    }
 
     private void handleAddAttachmentError(final int error, final int mediaTypeStringId) {
         if (error == WorkingMessage.OK) {
