@@ -148,7 +148,7 @@ public class QuickMessagePopup extends Activity {
     private boolean mCloseClosesAll = false;
     private boolean mWakeAndUnlock = false;
     private boolean mDarkTheme = false;
-    private int mUnicodeStripping = MessagingPreferenceActivity.UNICODE_STRIPPING_LEAVE_INTACT;
+    private String mUnicodeStripping = MessagingPreferenceActivity.UNICODE_STRIPPING_LEAVE_INTACT;
     private UnicodeFilter mUnicodeFilter = null;
 
     // Message pager
@@ -174,7 +174,7 @@ public class QuickMessagePopup extends Activity {
         mCloseClosesAll = prefs.getBoolean(MessagingPreferenceActivity.QM_CLOSE_ALL_ENABLED, false);
         mWakeAndUnlock = prefs.getBoolean(MessagingPreferenceActivity.QM_LOCKSCREEN_ENABLED, false);
         mDarkTheme = prefs.getBoolean(MessagingPreferenceActivity.QM_DARK_THEME_ENABLED, false);
-        mUnicodeStripping = prefs.getInt(MessagingPreferenceActivity.UNICODE_STRIPPING,
+        mUnicodeStripping = prefs.getString(MessagingPreferenceActivity.UNICODE_STRIPPING,
                 MessagingPreferenceActivity.UNICODE_STRIPPING_LEAVE_INTACT);
 
         // Set the window features and layout
@@ -761,10 +761,10 @@ public class QuickMessagePopup extends Activity {
                 qmReplyText.setText(qm.getReplyText());
                 qmReplyText.setSelection(qm.getReplyText().length());
 
-                if (mUnicodeStripping !=
-                        MessagingPreferenceActivity.UNICODE_STRIPPING_LEAVE_INTACT) {
-                    boolean stripNonDecodableOnly = mUnicodeStripping
-                            == MessagingPreferenceActivity.UNICODE_STRIPPING_NON_DECODABLE;
+                if (!TextUtils.equals(mUnicodeStripping,
+                        MessagingPreferenceActivity.UNICODE_STRIPPING_LEAVE_INTACT)) {
+                    boolean stripNonDecodableOnly = TextUtils.equals(mUnicodeStripping,
+                            MessagingPreferenceActivity.UNICODE_STRIPPING_NON_DECODABLE);
                     mUnicodeFilter = new UnicodeFilter(stripNonDecodableOnly);
                 }
 
