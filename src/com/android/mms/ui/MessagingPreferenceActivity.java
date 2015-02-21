@@ -116,8 +116,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
     // Unicode
     public static final String UNICODE_STRIPPING            = "pref_key_unicode_stripping_value";
-    public static final int UNICODE_STRIPPING_LEAVE_INTACT  = 0;
-    public static final int UNICODE_STRIPPING_NON_DECODABLE = 1;
+    public static final String UNICODE_STRIPPING_LEAVE_INTACT  = "0";
+    public static final String UNICODE_STRIPPING_NON_DECODABLE = "1";
 
     // Expiry of MMS
     private final static String EXPIRY_ONE_WEEK = "604800"; // 7 * 24 * 60 * 60
