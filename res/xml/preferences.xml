@@ -278,7 +278,8 @@
             android:title="@string/pref_title_unicode_stripping"
             android:summary="%s"
             android:entries="@array/pref_unicode_stripping_entries"
-            android:entryValues="@array/pref_unicode_stripping_values" />
+            android:entryValues="@array/pref_unicode_stripping_values"
+            android:defaultValue="0" />
     </PreferenceCategory>
 
 </PreferenceScreen>
