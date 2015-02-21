@@ -2004,7 +2004,7 @@ public class ComposeMessageActivity extends Activity
         resetConfiguration(getResources().getConfiguration());
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        int unicodeStripping = prefs.getInt(MessagingPreferenceActivity.UNICODE_STRIPPING,
+        String unicodeStripping = prefs.getString(MessagingPreferenceActivity.UNICODE_STRIPPING,
                 MessagingPreferenceActivity.UNICODE_STRIPPING_LEAVE_INTACT);
 
         if (unicodeStripping != MessagingPreferenceActivity.UNICODE_STRIPPING_LEAVE_INTACT) {
