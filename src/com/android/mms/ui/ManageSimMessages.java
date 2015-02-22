@@ -134,11 +134,11 @@ public class ManageSimMessages extends Activity
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (TelephonyIntents.ACTION_SIM_STATE_CHANGED.equals(action)) {
-                int subscription = intent.getIntExtra(MessageUtils.SUBSCRIPTION_KEY,
+                long subscription = intent.getLongExtra(MessageUtils.SUBSCRIPTION_KEY,
                         MessageUtils.SUB_INVALID);
                 Log.d(TAG, "receive sim state change, subscription: " + subscription);
                 if (!MessageUtils.isMultiSimEnabledMms() ||
-                        subscription == mSubscription) {
+                        subscription == (long)mSubscription) {
                     refreshMessageList();
                 }
             }
