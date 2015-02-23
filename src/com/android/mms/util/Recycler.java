@@ -36,6 +36,8 @@ import com.android.mms.MmsConfig;
 import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.MessagingPreferenceActivity;
 
+import com.google.android.mms.pdu.PduHeaders;
+
 /**
  * The recycler is responsible for deleting old messages.
  */
@@ -294,6 +296,15 @@ public abstract class Recycler {
             Mms.DATE,
         };
 
+        // When looking in the pdu table for all messages in threads, only
+        // query and delete unlock messages that are displayed to the user.
+        private static final String MMS_MESSAGE_CONSTRAINT =
+               " AND locked=0 AND " + "(" +
+                Mms.MESSAGE_BOX + " != " + Mms.MESSAGE_BOX_DRAFTS + " AND (" +
+                Mms.MESSAGE_TYPE + " = " + PduHeaders.MESSAGE_TYPE_SEND_REQ + " OR " +
+                Mms.MESSAGE_TYPE + " = " + PduHeaders.MESSAGE_TYPE_RETRIEVE_CONF + " OR " +
+                Mms.MESSAGE_TYPE + " = " + PduHeaders.MESSAGE_TYPE_NOTIFICATION_IND + "))";
+
         // The indexes of the default columns which must be consistent
         // with above PROJECTION.
         static private final int COLUMN_ID                  = 0;
@@ -342,11 +353,12 @@ public abstract class Recycler {
             try {
                 String msgId = uri.getLastPathSegment();
                 ContentResolver resolver = context.getContentResolver();
+                String selection =  "thread_id in (select thread_id from pdu where _id="
+                        + msgId + ")" + MMS_MESSAGE_CONSTRAINT;
                 cursor = SqliteWrapper.query(context, resolver,
                         Telephony.Mms.CONTENT_URI,
                         MMS_MESSAGE_PROJECTION,
-                        "thread_id in (select thread_id from pdu where _id=" + msgId +
-                            ") AND locked=0",
+                        selection,
                         null, "date DESC");     // get in newest to oldest order
                 if (cursor == null) {
                     Log.e(TAG, "MMS: deleteOldMessagesInSameThreadAsMessage got back null cursor");
@@ -389,10 +401,11 @@ public abstract class Recycler {
             long latestDate = 0;
             try {
                 ContentResolver resolver = context.getContentResolver();
+                String selection = "thread_id=" + threadId + MMS_MESSAGE_CONSTRAINT;
                 cursor = SqliteWrapper.query(context, resolver,
                         Telephony.Mms.CONTENT_URI,
                         MMS_MESSAGE_PROJECTION,
-                        "thread_id=" + threadId + " AND locked=0",
+                        selection,
                         null, "date DESC");     // get in newest to oldest order
                 if (cursor == null) {
                     Log.e(TAG, "MMS: deleteMessagesForThread got back null cursor");
@@ -422,9 +435,11 @@ public abstract class Recycler {
 
         private void deleteMessagesOlderThanDate(Context context, long threadId,
                 long latestDate) {
+            String selection = "thread_id=" + threadId + MMS_MESSAGE_CONSTRAINT
+                    +  " AND date<" + latestDate;
             long cntDeleted = SqliteWrapper.delete(context, context.getContentResolver(),
                     Telephony.Mms.CONTENT_URI,
-                    "thread_id=" + threadId + " AND locked=0 AND date<" + latestDate,
+                    selection,
                     null);
             if (LOCAL_DEBUG) {
                 Log.v(TAG, "MMS: deleteMessagesOlderThanDate cntDeleted: " + cntDeleted);
@@ -451,10 +466,11 @@ public abstract class Recycler {
                 while (cursor.moveToNext()) {
                     long threadId = getThreadId(cursor);
                     ContentResolver resolver = context.getContentResolver();
+                    String selection = "thread_id=" + threadId + MMS_MESSAGE_CONSTRAINT;
                     Cursor msgs = SqliteWrapper.query(context, resolver,
                             Telephony.Mms.CONTENT_URI,
                             MMS_MESSAGE_PROJECTION,
-                            "thread_id=" + threadId + " AND locked=0",
+                            selection,
                             null, "date DESC");     // get in newest to oldest order
 
                     if (msgs == null) {

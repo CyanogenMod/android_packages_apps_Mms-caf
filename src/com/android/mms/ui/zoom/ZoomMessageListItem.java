@@ -78,8 +78,6 @@ public class ZoomMessageListItem extends LinearLayout {
         if (!mZoomableTextViewList.contains(textView)) {
             mZoomableTextViewList.add(textView);
         }
-
-
     }
 
     /**

@@ -49,6 +49,8 @@ import com.android.mms.R;
 import com.android.mms.ui.zoom.ZoomMessageListItem;
 import com.android.mms.ui.zoom.ZoomMessageListView;
 import com.android.mms.rcs.RcsNotificationMessageListItem;
+import com.android.mms.ui.zoom.ZoomMessageListItem;
+import com.android.mms.ui.zoom.ZoomMessageListView;
 import com.google.android.mms.MmsException;
 import com.suntek.mway.rcs.client.aidl.provider.SuntekMessageData;
 

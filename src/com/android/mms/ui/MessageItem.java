@@ -588,8 +588,8 @@ public class MessageItem {
                 Log.v(TAG, "cancelPduLoading for: " + this);
             }
             mItemLoadedFuture.cancel(mMessageUri);
-            mItemLoadedFuture = null;
         }
+        mItemLoadedFuture = null;
     }
 
     public interface PduLoadedCallback {

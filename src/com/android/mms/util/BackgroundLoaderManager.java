@@ -85,6 +85,17 @@ abstract class BackgroundLoaderManager {
     }
 
     public void clear() {
+        clearCallback();
+    }
+
+    public void clearCallback() {
+        if (Log.isLoggable(TAG, Log.DEBUG)) {
+            Log.d(TAG, "clear image callback ");
+        }
+        for (final Uri uri : mCallbacks.keySet()) {
+            final Set<ItemLoadedCallback> callbacks = mCallbacks.get(uri);
+                    callbacks.clear();
+        }
     }
 
     /**

@@ -243,6 +243,12 @@ public class MailBoxMessageContent extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         mUiHandler.removeCallbacksAndMessages(null);
+        if (mContentPager != null) {
+            mContentPager.setAdapter(null);
+        }
+        if (mCursor != null) {
+            mCursor.close();
+        }
     }
 
     public boolean dispatchTouchEvent(MotionEvent ev) {

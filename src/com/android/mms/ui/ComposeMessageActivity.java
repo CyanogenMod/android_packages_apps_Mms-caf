@@ -2903,15 +2903,6 @@ public class ComposeMessageActivity extends Activity
         mMsgListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 
         if (mMsgListAdapter != null) {
-            // Close the cursor in the ListAdapter if the activity stopped.
-            Cursor cursor = mMsgListAdapter.getCursor();
-
-            if (cursor != null && !cursor.isClosed()) {
-                cursor.close();
-            }
-
-            mMsgListAdapter.changeCursor(null);
-            mMsgListAdapter.cancelBackgroundLoading();
             // resets multi select mode
             getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         }
@@ -2948,6 +2939,11 @@ public class ComposeMessageActivity extends Activity
         }
 
         unregisterReceiver(mRcsServiceCallbackReceiver);
+        if (mMsgListAdapter != null) {
+            mMsgListAdapter.changeCursor(null);
+            mMsgListAdapter.cancelBackgroundLoading();
+        }
+
         super.onDestroy();
     }
 
@@ -4914,8 +4910,9 @@ public class ComposeMessageActivity extends Activity
             }
             mResizeImageCount ++;
             MessageUtils.resizeImageAsync(ComposeMessageActivity.this,
-                    uri, mWorkingMessage.getSlideshow().getCurrentMessageSize(),
-                    mAttachmentEditorHandler, mResizeImageCallback, append);
+                    uri, mWorkingMessage.hasSlideshow() ? mWorkingMessage.getSlideshow()
+                            .getCurrentMessageSize() : 0, mAttachmentEditorHandler,
+                    mResizeImageCallback, append);
             return;
         }
 
@@ -7776,7 +7773,8 @@ public class ComposeMessageActivity extends Activity
                 mRcsForwardId = msgItem.mRcsId;
                 return;
             }
-            if (msgItem.mRcsId != 0 && msgItem.mRcsType != RcsUtils.RCS_MSG_TYPE_TEXT) {
+            if (mIsRcsEnabled && msgItem.mRcsId != 0 &&
+                    msgItem.mRcsType != RcsUtils.RCS_MSG_TYPE_TEXT) {
                 return;
             }
             getAsyncDialog().runAsync(new Runnable() {
