@@ -108,7 +108,6 @@ import android.provider.Telephony.Sms;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.telephony.PhoneNumberUtils;
-import android.telephony.SubInfoRecord;
 import android.telephony.SubscriptionManager;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
@@ -1003,7 +1002,7 @@ public class ComposeMessageActivity extends Activity
         if (SubscriptionManager.isSMSPromptEnabled()) {
             LaunchMsimDialog(bCheckEcmMode);
         } else {
-            long subId = SubscriptionManager.getDefaultSmsSubId();
+            int subId = SubscriptionManager.getDefaultSmsSubId();
             int phoneId = SubscriptionManager.getPhoneId(subId);
             mWorkingMessage.setWorkingMessageSub(phoneId);
             sendMessage(bCheckEcmMode);
@@ -1065,7 +1064,7 @@ public class ComposeMessageActivity extends Activity
     }
 
     private void confirmSendMessageIfNeeded() {
-        int slot = SubscriptionManager.getSlotId(SmsManager.getDefault().getDefaultSmsSubId());
+        int slot = SubscriptionManager.getSlotId(SmsManager.getDefault().getDefaultSmsSubscriptionId());
         if ((TelephonyManager.getDefault().isMultiSimEnabled() &&
                 isLTEOnlyMode(slot))
                 || (!TelephonyManager.getDefault().isMultiSimEnabled()
@@ -5542,14 +5541,14 @@ public class ComposeMessageActivity extends Activity
 
     private class CopyToSimThread extends Thread {
         private ArrayList<MessageItem> msgItems;
-        private long subscription;
+        private int subscription;
 
         public CopyToSimThread(ArrayList<MessageItem> msgItems) {
             this.msgItems = msgItems;
-            this.subscription = SmsManager.getDefault().getDefaultSmsSubId();
+            this.subscription = SmsManager.getDefault().getDefaultSmsSubscriptionId();
         }
 
-        public CopyToSimThread(ArrayList<MessageItem> msgItems, long subscription) {
+        public CopyToSimThread(ArrayList<MessageItem> msgItems, int subscription) {
             this.msgItems = msgItems;
             this.subscription = subscription;
         }
@@ -5573,10 +5572,10 @@ public class ComposeMessageActivity extends Activity
     }
 
     private boolean copyToSim(MessageItem msgItem) {
-        return copyToSim(msgItem, SmsManager.getDefault().getDefaultSmsSubId());
+        return copyToSim(msgItem, SmsManager.getDefault().getDefaultSmsSubscriptionId());
     }
 
-    private boolean copyToSim(MessageItem msgItem, long subId) {
+    private boolean copyToSim(MessageItem msgItem, int subId) {
         int boxId = msgItem.mBoxId;
         String address = msgItem.mAddress;
         if (MessageUtils.isWapPushNumber(address)) {

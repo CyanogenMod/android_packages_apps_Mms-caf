@@ -43,7 +43,7 @@ import android.provider.Telephony.Sms;
 import android.provider.Telephony.Mms;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.SubscriptionManager;
-import android.telephony.SubInfoRecord;
+import android.telephony.SubscriptionInfo;
 import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
@@ -735,9 +735,10 @@ public class MessageListItem extends LinearLayout implements
         if (TelephonyManager.getDefault().getPhoneCount() > 1) {
             //SMS/MMS is operating on PhoneId which is 0, 1..
             //Sub ID will be 1, 2, ...
-            List<SubInfoRecord> sir = SubscriptionManager.getSubInfoUsingSlotId(phoneId);
+            SubscriptionInfo sir = SubscriptionManager.from(mContext)
+                    .getActiveSubscriptionInfoForSimSlotIndex(phoneId);
             String displayName =
-                    ((sir != null) && (sir.size() > 0)) ? sir.get(0).displayName : "";
+                    (sir != null) ? sir.getDisplayName().toString() : "";
 
             Log.d(TAG, "PhoneID: " + phoneId + " displayName " + displayName);
             buf.append(displayName);

@@ -153,8 +153,8 @@ public class RetrieveTransaction extends Transaction implements Runnable {
             }
 
             // Parse M-Retrieve.conf
-            RetrieveConf retrieveConf = (RetrieveConf) new PduParser(
-                    resp, PduParserUtil.shouldParseContentDisposition()).parse();
+            RetrieveConf retrieveConf = (RetrieveConf) new PduParser(resp,
+                    PduParserUtil.shouldParseContentDisposition()).parse();
             if (null == retrieveConf) {
                 throw new MmsException("Invalid M-Retrieve.conf PDU.");
             }

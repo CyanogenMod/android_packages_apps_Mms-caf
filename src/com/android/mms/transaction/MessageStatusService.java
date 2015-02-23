@@ -52,7 +52,7 @@ public class MessageStatusService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        if (!MmsConfig.isSmsEnabled()) {
+        if (!MmsConfig.isSmsEnabled(this)) {
             Log.d(LOG_TAG, "MessageStatusService: is not the default sms app");
             return;
         }

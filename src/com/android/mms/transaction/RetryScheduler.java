@@ -64,7 +64,7 @@ public class RetryScheduler implements Observer {
         return sInstance;
     }
 
-    private boolean isMmsDataConnectivityPossible(long subId) {
+    private boolean isMmsDataConnectivityPossible(int subId) {
         boolean flag = false;
         TelephonyManager telephonyManager = (TelephonyManager)mContext
             .getSystemService(Context.TELEPHONY_SERVICE);

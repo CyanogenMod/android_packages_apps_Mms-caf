@@ -39,6 +39,8 @@ import android.provider.Telephony;
 import android.provider.Telephony.Mms;
 import android.util.Log;
 
+import com.android.mms.transaction.PduParserUtil;
+
 import com.google.android.mms.MmsException;
 import com.google.android.mms.pdu.PduComposer;
 import com.google.android.mms.pdu.PduPersister;
@@ -164,10 +166,11 @@ public class QTIBackupMMS {
             try {
                 if (uri.equals(Mms.Inbox.CONTENT_URI)) {
                     RetrieveConf retrieveConf = (RetrieveConf) new PduParser(
-                            Data).parse();
+                            Data, PduParserUtil.shouldParseContentDisposition()).parse();
                     msgUri = pdup.persist(retrieveConf, uri,true ,false ,null);
                 } else {
-                    SendReq retrieveConf = (SendReq) new PduParser(Data).parse();
+                    SendReq retrieveConf = (SendReq) new PduParser(Data,
+                            PduParserUtil.shouldParseContentDisposition()).parse();
                     msgUri = pdup.persist(retrieveConf, uri,true ,false ,null);
                 }
             } catch (MmsException e) {

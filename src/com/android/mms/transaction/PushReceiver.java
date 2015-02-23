@@ -160,8 +160,8 @@ public class PushReceiver extends BroadcastReceiver {
 
                 return null;
             }
-            PduParser parser = new PduParser(
-                    pushData, PduParserUtil.shouldParseContentDisposition());
+            PduParser parser = new PduParser(pushData,
+                    PduParserUtil.shouldParseContentDisposition());
             GenericPdu pdu = parser.parse();
 
             if (null == pdu) {
@@ -212,7 +212,7 @@ public class PushReceiver extends BroadcastReceiver {
 
                         if (!isDuplicateNotification(mContext, nInd)) {
                             int phoneId = intent.getIntExtra(PhoneConstants.SLOT_KEY, 0);
-                            long subId = intent.getLongExtra(PhoneConstants.SUBSCRIPTION_KEY, 0);
+                            int subId = intent.getIntExtra(PhoneConstants.SUBSCRIPTION_KEY, 0);
                             //Phone ID will be updated in data base
                             Log.d(TAG, "phoneId : " + phoneId + " subId : " + subId);
                             ContentValues values = new ContentValues(1);
