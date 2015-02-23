@@ -101,11 +101,18 @@ public class ZoomMessageListItem extends LinearLayout {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    for (TextView textView : mZoomableTextViewList) {
-                        textView.setTextSize(mZoomFontSize);
-                    }
+                    handleZoomFontSizeImmediately();
                 }
             });
+        }
+    }
+
+    /**
+     * Zoom the text size of all TextViews in mZoomableTextViewList immediately.
+     */
+    protected void handleZoomFontSizeImmediately() {
+        for (TextView textView : mZoomableTextViewList) {
+            textView.setTextSize(mZoomFontSize);
         }
     }
 }

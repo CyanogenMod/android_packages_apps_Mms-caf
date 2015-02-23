@@ -68,7 +68,7 @@ import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_MESSAGE_TYPE;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_MESSAGE_BOX;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_ERROR_TYPE;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_SUBJECT_CHARSET;
-import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_SUB_ID;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_PHONE_ID;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_RECIPIENT_IDS;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_READ;
 
@@ -262,7 +262,7 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
             nameContact = item.mName;
         } else if (type.equals("mms")) {
             final int mmsRead = cursor.getInt(COLUMN_MMS_READ);
-            mSubscription = cursor.getInt(COLUMN_MMS_SUB_ID);
+            mSubscription = cursor.getInt(COLUMN_PHONE_ID);
             int messageType = cursor.getInt(COLUMN_MMS_MESSAGE_TYPE);
             mMsgBox = cursor.getInt(COLUMN_MMS_MESSAGE_BOX);
             isError = cursor.getInt(COLUMN_MMS_ERROR_TYPE)
