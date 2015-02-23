@@ -1133,7 +1133,7 @@ public class MessageUtils {
         return getLocalNumber(SubscriptionManager.getDefaultDataSubId());
     }
 
-    public static String getLocalNumber(long subId) {
+    public static String getLocalNumber(int subId) {
         sLocalNumber = MmsApp.getApplication().getTelephonyManager()
             .getLine1NumberForSubscriber(subId);
         return sLocalNumber;
@@ -1707,7 +1707,7 @@ public class MessageUtils {
         }
         final PhoneAccount account = telecomManager
                 .getPhoneAccount(phoneAccountHandle);
-        return account.getIcon(context);
+        return account.createIconDrawable(context);
     }
 
     private static void log(String msg) {
@@ -1730,7 +1730,7 @@ public class MessageUtils {
     /**
      * Return the sim name of subscription.
      */
-    public static String getMultiSimName(Context context, long subscription) {
+    public static String getMultiSimName(Context context, int subscription) {
         if (subscription >= TelephonyManager.getDefault().getPhoneCount() || subscription < 0) {
             return null;
         }
@@ -2014,7 +2014,7 @@ public class MessageUtils {
     /**
      * Return the icc uri according to subscription
      */
-    public static Uri getIccUriBySubscription(long subscription) {
+    public static Uri getIccUriBySubscription(int subscription) {
         switch ((int)subscription) {
             case (int)SUB1:
                 return ICC1_URI;

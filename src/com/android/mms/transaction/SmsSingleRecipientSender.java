@@ -56,7 +56,7 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
             return false;
         }
         Log.e(TAG, "send SMS phone Id = " + mPhoneId + " subId : = " + subId[0]);
-        SmsManager smsManager = SmsManager.getSmsManagerForSubscriber(subId[0]);
+        SmsManager smsManager = SmsManager.getSmsManagerForSubscriptionId(subId[0]);
         ArrayList<String> messages = null;
         if ((MmsConfig.getEmailGateway() != null) &&
                 (Mms.isEmailAddress(mDest) || MessageUtils.isAlias(mDest))) {

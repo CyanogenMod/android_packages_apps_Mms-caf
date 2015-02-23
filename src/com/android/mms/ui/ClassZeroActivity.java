@@ -93,7 +93,7 @@ public class ClassZeroActivity extends Activity {
         byte[] pdu = msgIntent.getByteArrayExtra("pdu");
         String format = msgIntent.getStringExtra("format");
         mPhoneId = msgIntent.getIntExtra(PhoneConstants.PHONE_KEY,
-                SubscriptionManager.INVALID_PHONE_ID);
+                SubscriptionManager.INVALID_PHONE_INDEX);
         SmsMessage rawMessage = SmsMessage.createFromPdu(pdu, format);
         String message = rawMessage.getMessageBody();
         if (TextUtils.isEmpty(message)) {
