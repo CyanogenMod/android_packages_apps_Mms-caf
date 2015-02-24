@@ -122,6 +122,9 @@ public class MessageItem {
     boolean mHasAttachmentToSave = false;
     boolean mIsDrmRingtoneWithRights = false;
 
+    boolean mFullTimestamp;
+    boolean mSentTimestamp;
+
     int mCountDown = 0;
 
     public int getCountDown() {
@@ -133,13 +136,15 @@ public class MessageItem {
     }
 
     MessageItem(Context context, String type, final Cursor cursor,
-            final ColumnsMap columnsMap, Pattern highlight) throws MmsException {
+            final ColumnsMap columnsMap, Pattern highlight, boolean fullTimestamp, boolean sentTimestamp) throws MmsException {
         mContext = context;
         mMsgId = cursor.getLong(columnsMap.mColumnMsgId);
         mHighlight = highlight;
         mType = type;
         mCursor = cursor;
         mColumnsMap = columnsMap;
+        mFullTimestamp = fullTimestamp;
+        mSentTimestamp = sentTimestamp;
 
         if ("sms".equals(type)) {
             mReadReport = false; // No read reports in sms
@@ -182,12 +187,17 @@ public class MessageItem {
             // Unless the message is currently in the progress of being sent, it gets a time stamp.
             if (!isOutgoingMessage()) {
                 // Set "received" or "sent" time stamp
-                mDate = cursor.getLong(columnsMap.mColumnSmsDate);
+                if (mSentTimestamp && (mBoxId == Sms.MESSAGE_TYPE_INBOX)) {
+                    mDate = cursor.getLong(columnsMap.mColumnSmsDateSent);
+                }
+                else {
+                    mDate = cursor.getLong(columnsMap.mColumnSmsDate);
+                }
                 // CDMA SMS stored in UIM card don't have timestamps
                 if (0 == mDate) {
                     mDate = System.currentTimeMillis();
                 }
-                mTimestamp = MessageUtils.formatTimeStampString(context, mDate);
+                mTimestamp = MessageUtils.formatTimeStampString(context, mDate, mFullTimestamp);
             }
 
             mLocked = cursor.getInt(columnsMap.mColumnSmsLocked) != 0;
@@ -483,9 +493,9 @@ public class MessageItem {
             if (!isOutgoingMessage()) {
                 if (PduHeaders.MESSAGE_TYPE_NOTIFICATION_IND == mMessageType) {
                     mTimestamp = mContext.getString(R.string.expire_on,
-                            MessageUtils.formatTimeStampString(mContext, timestamp));
+                            MessageUtils.formatTimeStampString(mContext, timestamp, mFullTimestamp));
                 } else {
-                    mTimestamp = MessageUtils.formatTimeStampString(mContext, timestamp);
+                    mTimestamp = MessageUtils.formatTimeStampString(mContext, timestamp, mFullTimestamp);
                 }
             }
             if (mPduLoadedCallback != null) {
