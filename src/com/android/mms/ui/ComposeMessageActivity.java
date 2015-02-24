@@ -3681,14 +3681,7 @@ public class ComposeMessageActivity extends Activity
 
     private void insertNumbersIntoRecipientsEditor(final ArrayList<String> numbers) {
         ContactList list = ContactList.getByNumbers(numbers, true);
-        ContactList existing = mRecipientsEditor.constructContactsFromInput(true);
-        for (Contact contact : existing) {
-            if (!contact.existsInDatabase()) {
-                list.add(contact);
-            }
-        }
-        mRecipientsEditor.setText(null);
-        mRecipientsEditor.populate(list);
+        insertContacts(list);
     }
 
     private void processPickResult(final Intent data) {
@@ -3787,12 +3780,7 @@ public class ComposeMessageActivity extends Activity
                 final Runnable populateWorker = new Runnable() {
                     @Override
                     public void run() {
-                        mRecipientsEditor.populate(list);
-                        // Set value for mRecipientsPickList and
-                        // mRecipientsWatcher will update the UI.
-                        mRecipientsPickList = list;
-                        updateTitle(list);
-                        // if process finished, then dismiss the progress dialog
+                        insertContacts(list);
                         progressDialog.dismiss();
 
                         // if populate finished, then recipients pick process
@@ -3838,6 +3826,14 @@ public class ComposeMessageActivity extends Activity
             handleAddAttachmentError(result, R.string.type_picture);
         }
     };
+
+    private void insertContacts(ContactList list) {
+        mRecipientsEditor.populate(list);
+        // Set value for mRecipientsPickList and
+        // mRecipientsWatcher will update the UI.
+        mRecipientsPickList = list;
+        updateTitle(list);
+    }
 
     private void handleAddAttachmentError(final int error, final int mediaTypeStringId) {
         if (error == WorkingMessage.OK) {
