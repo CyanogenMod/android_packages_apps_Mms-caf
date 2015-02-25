@@ -630,7 +630,7 @@ public class QuickMessagePopup extends Activity {
     private void clearNotification(boolean markAsRead) {
         // Dismiss the notification that brought us here.
         NotificationManager notificationManager =
-            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.cancel(MessagingNotification.NOTIFICATION_ID);
 
         // Mark all contained conversations as seen
