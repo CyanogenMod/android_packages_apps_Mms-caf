@@ -84,9 +84,13 @@
   <string name="alert_dialog_yes">Jo</string>
   <string name="alert_dialog_no">Nee</string>
   <string name="menu_as_unread">Als ongelies markéieren</string>
+  <string name="menu_as_read">Als gelies markéieren</string>
   <string name="menu_all_as_unread">All als ongelies markéieren</string>
+  <string name="menu_all_as_read">All als gelies markéieren</string>
   <string name="confirm_mark_unread_dialog_title">Als ongelies markéieren?</string>
+  <string name="confirm_mark_read_dialog_title">Als gelies markéieren?</string>
   <string name="confirm_mark_unread_all_conversations">All d\'Konversatioune ginn als ongelies markéiert.</string>
+  <string name="confirm_mark_read_all_conversations">All d\'Konversatioune ginn als gelies markéiert.</string>
   <string name="select_recipients">Empfänger auswielen</string>
   <string name="groups_header">Gruppen</string>
   <string name="no_recipients">Keng Kontakter fonnt</string>

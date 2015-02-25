@@ -84,7 +84,9 @@
   <string name="alert_dialog_yes">Ja</string>
   <string name="alert_dialog_no">Nej</string>
   <string name="menu_as_unread">Markera som oläst</string>
+  <string name="menu_as_read">Markera som läst</string>
   <string name="menu_all_as_unread">Markera alla som olästa</string>
+  <string name="menu_all_as_read">Markera alla som lästa</string>
   <string name="confirm_mark_unread_dialog_title">Markera som oläst?</string>
   <string name="confirm_mark_unread_all_conversations">Alla trådar kommer att markeras som oläst.</string>
   <string name="select_recipients">Välj mottagare</string>

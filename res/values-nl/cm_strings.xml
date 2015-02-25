@@ -195,7 +195,7 @@
   <string name="pref_smsc_number">SMSC-nummer</string>
   <string name="set_smsc_error">Kan SMSC-nummer niet instellen</string>
   <string name="set_smsc_success">SMSC-nummer succesvol ingesteld</string>
-  <string name="set_smsc_confirm_message">Veranderen van SMSC-nummer kan leiden tot mislukte sms-berichten. Weet u zeker dat u wilt doorgaan?</string>
+  <string name="set_smsc_confirm_message">Berichtencentrale wijzigen kan leiden tot mislukte sms-berichten. Weet u zeker dat u wilt doorgaan?</string>
   <string name="menu_copy_url">URL kopiëren <xliff:g id="extractedurl">%s</xliff:g></string>
   <string name="menu_reply">Beantwoorden</string>
   <string name="slot1">SIM 1</string>

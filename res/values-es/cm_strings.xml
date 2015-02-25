@@ -84,9 +84,13 @@
   <string name="alert_dialog_yes">Sí</string>
   <string name="alert_dialog_no">No</string>
   <string name="menu_as_unread">Marcar como no leído</string>
+  <string name="menu_as_read">Marcar como leído</string>
   <string name="menu_all_as_unread">Marcar todos como no leídos</string>
+  <string name="menu_all_as_read">Marcar todo como leído</string>
   <string name="confirm_mark_unread_dialog_title">¿Marcar como no leído?</string>
+  <string name="confirm_mark_read_dialog_title">¿Marcar como leído?</string>
   <string name="confirm_mark_unread_all_conversations">Todas las conversaciones serán marcadas como no leídas.</string>
+  <string name="confirm_mark_read_all_conversations">Todas las conversaciones se marcarán como leídas.</string>
   <string name="select_recipients">Seleccionar destinatarios</string>
   <string name="groups_header">Grupos</string>
   <string name="no_recipients">No se han encontrado contactos</string>

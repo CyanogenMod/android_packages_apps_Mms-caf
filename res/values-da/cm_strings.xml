@@ -84,9 +84,13 @@
   <string name="alert_dialog_yes">Ja</string>
   <string name="alert_dialog_no">Nej</string>
   <string name="menu_as_unread">Markér som ulæst</string>
+  <string name="menu_as_read">Markér som læst</string>
   <string name="menu_all_as_unread">Markér alle som ulæst</string>
+  <string name="menu_all_as_read">Markér alle som læst</string>
   <string name="confirm_mark_unread_dialog_title">Markér som ulæst?</string>
+  <string name="confirm_mark_read_dialog_title">Markér som læst?</string>
   <string name="confirm_mark_unread_all_conversations">Alle emner vil blive markeret som ulæst.</string>
+  <string name="confirm_mark_read_all_conversations">Alle emner vil blive markeret som læste.</string>
   <string name="select_recipients">Vælg modtagere</string>
   <string name="groups_header">Grupper</string>
   <string name="no_recipients">Ingen kontakter fundet</string>

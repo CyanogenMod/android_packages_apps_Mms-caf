@@ -31,4 +31,9 @@
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> konwersacje zostaną oznaczone jako nieprzeczytane.</item>
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> konwersacji zostanie oznaczone jako nieprzeczytane.</item>
   </plurals>
+  <plurals name="confirm_mark_read_conversation">
+    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> konwersacja zostanie oznaczona jako przeczytana.</item>
+    <item quantity="few"><xliff:g id="number">%1$s</xliff:g> konwersacje zostaną oznaczone jako przeczytane.</item>
+    <item quantity="other"><xliff:g id="number">%1$s</xliff:g> konwersacji zostanie oznaczone jako przeczytane.</item>
+  </plurals>
 </resources>

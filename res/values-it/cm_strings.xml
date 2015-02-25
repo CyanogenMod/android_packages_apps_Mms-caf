@@ -84,9 +84,13 @@
   <string name="alert_dialog_yes">Si</string>
   <string name="alert_dialog_no">No</string>
   <string name="menu_as_unread">Segna come non letto</string>
+  <string name="menu_as_read">Segna come letto</string>
   <string name="menu_all_as_unread">Contrassegna tutti come non letti</string>
+  <string name="menu_all_as_read">Segna tutti come letti</string>
   <string name="confirm_mark_unread_dialog_title">Segnare come non letto?</string>
+  <string name="confirm_mark_read_dialog_title">Segnare come letto?</string>
   <string name="confirm_mark_unread_all_conversations">Tutte le discussioni saranno contrassegnate come non lette.</string>
+  <string name="confirm_mark_read_all_conversations">Tutte le discussioni saranno contrassegnate come lette.</string>
   <string name="select_recipients">Seleziona destinatari</string>
   <string name="groups_header">Gruppi</string>
   <string name="no_recipients">Nessun contatto trovato</string>

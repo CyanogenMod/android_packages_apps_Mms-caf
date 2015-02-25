@@ -31,4 +31,9 @@
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> conversații vor fi marcate ca necitite.</item>
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> de conversații vor fi marcate ca necitite.</item>
   </plurals>
+  <plurals name="confirm_mark_read_conversation">
+    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> conversație va fi marcată ca fiind citită.</item>
+    <item quantity="few"><xliff:g id="number" example="15">%1$s </xliff:g> conversații vor fi marcate ca fiind citite.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s </xliff:g> de conversații vor fi marcate ca fiind citite.</item>
+  </plurals>
 </resources>
