@@ -30,55 +30,48 @@ import com.android.mms.rcs.RcsMessageThread;
 
 public class RcsMessageThreadMng {
 
-    public static final int handlerSize = 30;
+    public static final int HANDLER_SIZE = 30;
 
     private List<RcsMessageThread> mRcsMessageThreadList;
 
-    private static RcsMessageThreadMng instance;
-
-    private boolean isHandlerStarted = false;
+    private static RcsMessageThreadMng sInstance;
 
     private RcsMessageThreadMng() {
         init();
     }
 
     public static RcsMessageThreadMng getInstance() {
-        if (instance == null)
-            instance = new RcsMessageThreadMng();
-
-        return instance;
+        if (sInstance == null) {
+            sInstance = new RcsMessageThreadMng();
+        }
+        return sInstance;
     }
 
     private void init() {
 
-        mRcsMessageThreadList = new ArrayList<RcsMessageThread>(handlerSize);
+        mRcsMessageThreadList = new ArrayList<RcsMessageThread>(HANDLER_SIZE);
 
-        for (int i = 1; i <= handlerSize; i++) {
-
+        for (int i = 0; i < HANDLER_SIZE; i++) {
             mRcsMessageThreadList.add(new RcsMessageThread(i));
         }
-
     }
 
     public void start() {
 
-        isHandlerStarted = true;
-
         for (RcsMessageThread reportHandler : mRcsMessageThreadList) {
-            if (reportHandler != null)
+            if (reportHandler != null) {
                 reportHandler.start();
+            }
         }
-
     }
 
     public void stop() {
 
         for (RcsMessageThread reportHandler : mRcsMessageThreadList) {
-            if (reportHandler != null)
+            if (reportHandler != null) {
                 reportHandler.notifyExit();
+            }
         }
-
-        isHandlerStarted = false;
     }
 
     public RcsMessageThread getRcsMessageThread(int index) {

@@ -213,4 +213,6 @@
     <string name="file_is_too_larger">文件太大</string>
     <string name="please_install_application">请安装相关应用</string>
     <string name="emotion_download_fail">表情下载失败。</string>
+    <string name="cloud_file_name">文件名:</string>
+    <string name="cloud_file_size">,文件大小:</string>
 </resources>

@@ -118,14 +118,8 @@ public class ConversationListAdapter extends CursorAdapter implements AbsListVie
     }
 
     private void setDataIsEmpty(int itemCount){
-        if (itemCount == 0) {
-            if(mDataEmptyListener != null){
-                mDataEmptyListener.onDataEmpty(true);
-            }
-        } else {
-            if(mDataEmptyListener != null){
-                mDataEmptyListener.onDataEmpty(false);
-            }
+        if(mDataEmptyListener != null){
+            mDataEmptyListener.onDataEmpty(itemCount == 0);
         }
     }
 

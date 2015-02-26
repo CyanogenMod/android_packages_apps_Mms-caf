@@ -79,8 +79,6 @@ public class ComposeMessageCloudFileReceiver extends BroadcastReceiver {
 
         if (!TextUtils.isEmpty(eventType) && eventType.
                 equals(BroadcastConstants.BC_V_MC_EVENTTYPE_ERROR)) {
-            String message = intent
-                    .getStringExtra(BroadcastConstants.BC_VAR_MC_MESSAGE);
             Toast.makeText(context, R.string.download_mcloud_file_fail,
                     Toast.LENGTH_SHORT).show();
             fileProgressHashMap.remove(String.valueOf(messageId));
@@ -110,11 +108,11 @@ public class ComposeMessageCloudFileReceiver extends BroadcastReceiver {
             }
         } else if(!TextUtils.isEmpty(eventType) && eventType
                 .equals(BroadcastConstants.BC_V_MC_EVENTTYPE_FILE_TOO_LARGE)){
-          Toast.makeText(context,R.string.file_is_too_larger,                    
+          Toast.makeText(context,R.string.file_is_too_larger,
                   Toast.LENGTH_LONG).show();
         } else if(!TextUtils.isEmpty(eventType) && eventType.
                 equals(BroadcastConstants.BC_V_MC_EVENTTYPE_SUFFIX_NOT_ALLOWED)){
-            Toast.makeText(context,R.string.name_not_fix,                    
+            Toast.makeText(context,R.string.name_not_fix,
                     Toast.LENGTH_LONG).show();
         }
     }

@@ -91,7 +91,7 @@ public class RcsCreateGroupChatActivity extends Activity implements
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        findView();
+        initView();
         registerReceiver(mRcsGroupChatReceiver,
                 new IntentFilter(BroadcastConstants.UI_GROUP_MANAGE_NOTIFY));
     }
@@ -106,7 +106,7 @@ public class RcsCreateGroupChatActivity extends Activity implements
         }
     }
 
-    private void findView() {
+    private void initView() {
         mSubjectEdit = (EditText) findViewById(R.id.group_chat_subject);
         InputFilter[] filters = { new RcsEditTextInputFilter(30) };
         mSubjectEdit.setFilters(filters);
@@ -128,7 +128,7 @@ public class RcsCreateGroupChatActivity extends Activity implements
             ArrayList<String> numbers = data
                     .getStringArrayListExtra(SelectRecipientsList.EXTRA_RECIPIENTS);
             numbers.addAll(mRecipientsEditor.getNumbers());
-            ArrayList<String> recipientsNumbers = 
+            ArrayList<String> recipientsNumbers =
                     RcsUtils.removeDuplicateNumber(numbers);
             insertNumbersIntoRecipientsEditor(recipientsNumbers);
             break;
@@ -198,7 +198,7 @@ public class RcsCreateGroupChatActivity extends Activity implements
             }
         }
     }
-    
+
     private GroupChatManagerReceiver mRcsGroupChatReceiver = new GroupChatManagerReceiver(
             new GroupChatNotifyCallback() {
 

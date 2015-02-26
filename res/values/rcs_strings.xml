@@ -220,4 +220,6 @@
     <string name="please_install_application">Please install the application</string>
     <string name="emotion_download_fail">download fail emotion.</string>
     <string name="message_restore_fail">Restore fail</string>
+    <string name="cloud_file_name">Name:</string>
+    <string name="cloud_file_size">,Size:</string>
 </resources>

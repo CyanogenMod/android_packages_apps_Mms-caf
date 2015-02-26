@@ -42,44 +42,46 @@ import android.util.Log;
 
 public class RcsMessageThread extends Thread {
 
-    private volatile boolean isExit = false;
+    private static final int WAITING_TIME_TO_GET_FIRST_RECORD = 3;
+    private static final int MESSAGE_STATUS_DELIVERED = 99;
+    private static final int MESSAGE_STATUS_DISPLAYED = 100;
+    private static final long COPY_RCS_MESSAGE_FAIL = 0;
 
-    private int index;
+    private volatile boolean mIsExit = false;
 
-    private BlockingQueue<Intent> reportQueue;
+    private int mIndex;
+
+    private BlockingQueue<Intent> mReportQueue;
 
     public RcsMessageThread(int index) {
         this.setName("MessageReport-" + index);
-        this.index = index;
+        this.mIndex = index;
 
-        reportQueue = new LinkedBlockingQueue<Intent>();
+        mReportQueue = new LinkedBlockingQueue<Intent>();
     }
 
     public boolean addReport(Intent reportOption) {
-        return reportQueue.add(reportOption);
+        return mReportQueue.add(reportOption);
     }
 
     public void notifyExit() {
-        isExit = true;
+        mIsExit = true;
     }
 
     @Override
     public void run() {
 
-        while (!isExit) {
+        while (!mIsExit) {
             try {
-
-                Intent reportOption = reportQueue.poll(3, TimeUnit.SECONDS);
-                rcsBroadcastDeal(reportOption);
+                Intent reportOption = mReportQueue.poll(WAITING_TIME_TO_GET_FIRST_RECORD,
+                        TimeUnit.SECONDS);
                 if (reportOption != null) {
-
+                    rcsBroadcastDeal(reportOption);
                 }
-
             } catch (Exception ex) {
 
             }
         }
-
     }
 
     public void rcsBroadcastDeal(Intent intent) {
@@ -88,8 +90,14 @@ public class RcsMessageThread extends Thread {
         RcsUtils.dumpIntent(intent);
         if (BroadcastConstants.UI_MESSAGE_ADD_DATABASE.equals(action)) {
             final ChatMessage chatMessage = intent.getParcelableExtra("chatMessage");
-            if (chatMessage.getChatType() == SuntekMessageData.CHAT_TYPE_PUBLIC)
+            if (chatMessage == null) {
                 return;
+            }
+            if (chatMessage.getChatType() == SuntekMessageData.CHAT_TYPE_PUBLIC) {
+                // if chat type is public, it means it is a publicAccount message and does
+                // not need to notify.
+                return;
+            }
 
             long threadId = copyRcsMsgToSmsProvider(MmsApp.getApplication(), chatMessage);
 
@@ -101,7 +109,8 @@ public class RcsMessageThread extends Thread {
             } else if (chatType == SuntekMessageData.CHAT_TYPE_PUBLIC) {
                 notify = false;
             } else {
-                notify = ((chatType != SuntekMessageData.CHAT_TYPE_GROUP) && (sendReceive == SuntekMessageData.MSG_RECEIVE));
+                notify = ((chatType != SuntekMessageData.CHAT_TYPE_GROUP)
+                        && (sendReceive == SuntekMessageData.MSG_RECEIVE));
             }
             if (notify) {
                 MessagingNotification.blockingUpdateNewMessageIndicator(MmsApp.getApplication(),
@@ -125,11 +134,11 @@ public class RcsMessageThread extends Thread {
         } else if (BroadcastConstants.UI_SHOW_RECV_REPORT_INFO.equals(action)) {
             String id = intent.getStringExtra("messageId");
             String statusString = intent.getStringExtra("status");
-            int status = 99;
+            int status = MESSAGE_STATUS_DELIVERED;
             if ("delivered".equals(statusString)) {
-                status = 99;
+                status = MESSAGE_STATUS_DELIVERED;
             } else if ("displayed".equals(statusString)) {
-                status = 100;
+                status = MESSAGE_STATUS_DISPLAYED;
             }
             String number = intent.getStringExtra("original-recipient");
             RcsUtils.updateManyState(MmsApp.getApplication(), id, number, status);
@@ -161,8 +170,8 @@ public class RcsMessageThread extends Thread {
         try {
             return RcsUtils.rcsInsert(context, chatMessage);
         } catch (ServiceDisconnectedException e) {
-            Log.w("RCS_UI", e);
-            return 0;
+            Log.e("RCS_UI", e.toString());
+            return COPY_RCS_MESSAGE_FAIL;
         }
     }
 

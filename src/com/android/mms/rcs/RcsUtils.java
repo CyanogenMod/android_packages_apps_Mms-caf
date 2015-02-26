@@ -161,6 +161,13 @@ public class RcsUtils {
     public static final String GROUP_CHAT_NOTIFICATION_KEY_WORDS_POLICY = "policy";
     public static final String GROUP_CHAT_NOTIFICATION_KEY_WORDS_GONE = "gone";
 
+    public static final String RCS_NATIVE_UI_ACTION_GROUP_CHAT_DETAIL =
+            "com.suntek.mway.rcs.nativeui.ACTION_LUNCH_RCS_GROUPCHATDETAIL";
+    public static final String RCS_NATIVE_UI_ACTION_NOTIFICATION_LIST =
+            "com.suntek.mway.rcs.nativeui.ACTION_LUNCHER_RCS_NOTIFICATIONLIST";
+    public static final String RCS_NATIVE_UI_ACTION_CONVERSATION_LIST =
+            "com.suntek.mway.rcs.publicaccount.ACTION_LUNCHER_RCS_CONVERSATION_LIST";
+
     private static final String PUBLIC_ACCOUNT_PACKAGE_NAME = "com.suntek.mway.rcs.publicaccount";
     private static final String NATIVE_UI_PACKAGE_NAME = "com.suntek.mway.rcs.nativeui";
 
@@ -956,7 +963,7 @@ public class RcsUtils {
      * Launch the RCS group chat detail activity.
      */
     public static void startGroupChatDetailActivity(Context context, String groupId) {
-        Intent intent = new Intent("com.suntek.mway.rcs.nativeui.ui.RcsGroupChatDetailActivity");
+        Intent intent = new Intent(RCS_NATIVE_UI_ACTION_GROUP_CHAT_DETAIL);
         intent.putExtra("groupId", groupId);
         if (isActivityIntentAvailable(context, intent)) {
             context.startActivity(intent);
@@ -2156,16 +2163,14 @@ public class RcsUtils {
      * Launch the RCS notify list activity.
      */
     private static void startNotificationListActivity(Context context) {
-        Intent intent = new Intent(
-                "com.suntek.mway.rcs.nativeui.ui.RcsNotificationListActivity");
+        Intent intent = new Intent(RCS_NATIVE_UI_ACTION_NOTIFICATION_LIST);
         if (isActivityIntentAvailable(context, intent)) {
             context.startActivity(intent);
         }
     }
 
     private static void startPublicAccountActivity(Context context) {
-        Intent intent = new Intent(
-                "com.suntek.mway.rcs.publicaccount.ui.ConversationListActivity");
+        Intent intent = new Intent(RCS_NATIVE_UI_ACTION_CONVERSATION_LIST);
         if (isActivityIntentAvailable(context, intent)) {
             context.startActivity(intent);
         }

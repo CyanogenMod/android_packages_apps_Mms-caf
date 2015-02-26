@@ -36,31 +36,35 @@ public class RcsEditTextInputFilter implements InputFilter {
     @Override
     public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart,
             int dend) {
+        if (source == null) {
+            return "";
+        }
         CharSequence result = null;
-        int source_count = getWordCount(source.toString());
-        int dest_count = getWordCount(dest.toString());
-        int keep = unicodeLength - dest_count;
-        int count = dest_count + source_count;
-        if (keep <= 0) {
+        int sourceCount = getWordCount(source.toString());
+        int destCount = getWordCount(dest.toString());
+        int keepCount = unicodeLength - destCount;
+        int count = destCount + sourceCount;
+        if (keepCount <= 0) {
             result= "";
         } else if (count <= unicodeLength) {
             result = source;
         } else {
-            char[] ch = source.toString().toCharArray();
-            int k = keep;
-            keep = 0;
-            for (int i = 0; i < ch.length; i++) {
-                if (getWordCount(ch[i]) == 3) {
-                    k = k - 3;
+            char[] sourceString = source.toString().toCharArray();
+            int sourceStringLenght = sourceString.length;
+            int charCount = keepCount;
+            keepCount = 0;
+            for (int i = 0; i < sourceStringLenght; i++) {
+                if (getWordCount(sourceString[i]) == 3) {
+                    charCount = charCount - 3;
                 } else {
-                    k--;
+                    charCount--;
                 }
-                if (k <= 0) {
+                if (charCount <= 0) {
                     break;
                 }
-                keep++;
+                keepCount++;
             }
-            result = source.subSequence(start, start + keep);
+            result = source.subSequence(start, start + keepCount);
         }
         return result;
 
@@ -70,7 +74,7 @@ public class RcsEditTextInputFilter implements InputFilter {
         int length = 0;
         for (int i = 0; i < s.length(); i++) {
             int ascii = Character.codePointAt(s, i);
-            if (ascii >= 0 && ascii <= 255)
+            if (isAsciiCode(ascii))
                 length++;
             else
                 length += 3;
@@ -86,4 +90,7 @@ public class RcsEditTextInputFilter implements InputFilter {
             return 3;
     }
 
+    private boolean isAsciiCode(int ascii) {
+        return ascii >= 0 && ascii < 0x80;
+    }
 }

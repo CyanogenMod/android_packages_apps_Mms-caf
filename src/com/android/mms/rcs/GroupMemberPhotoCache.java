@@ -48,10 +48,12 @@ public class GroupMemberPhotoCache {
     private GroupMemberPhotoCache() {
         mImageCache = new HashMap<String, SoftReference<Bitmap>>();
     }
-    
-    public static void loadGroupMemberPhoto(String rcsGroupId,String addr,final CheckableQuickContactBadge mAvatar,final Drawable sDefaultContactImage){
-        getInstance().loadGroupMemberPhoto(rcsGroupId, addr, new GroupMemberPhotoCache.ImageCallback() {
-            
+
+    public static void loadGroupMemberPhoto(String rcsGroupId,String addr,
+            final CheckableQuickContactBadge mAvatar,final Drawable sDefaultContactImage) {
+        getInstance().loadGroupMemberPhoto(rcsGroupId,
+                addr, new GroupMemberPhotoCache.ImageCallback() {
+
             @Override
             public void loadImageCallback(Bitmap bitmap) {
                 if( bitmap != null){
