@@ -6634,6 +6634,16 @@ public class ComposeMessageActivity extends Activity
         protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
             switch(token) {
                 case MESSAGE_LIST_QUERY_TOKEN:
+                    if (cursor != null && !cursor.isClosed()) {
+                        try {
+                            cursor.moveToLast();
+                        } catch(IllegalStateException e) {
+                            cursor.close();
+                            Log.e(TAG, "Bad cursor.", e);
+                            return;
+                        }
+                    }
+
                     mConversation.blockMarkAsRead(false);
 
                     // check consistency between the query result and 'mConversation'
