@@ -16,6 +16,9 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="pref_quickmessage">Snelbericht en -beantwoorden</string>
+  <string name="pref_quickmessage_title">Snelbericht weergeven</string>
+  <string name="pref_quickmessage_summary">Automatisch een Snelbericht-venster weergeven bij inkomende sms-berichten</string>
   <string name="pref_wake_unlock_title">Ontwaken en ontgrendelen</string>
   <string name="pref_wake_unlock_summary">Bij inkomend bericht apparaat ontwaken en ontgrendelen (onbeveiligd vergrendelingsscherm vereist)</string>
   <string name="pref_close_all_title">Alles sluiten</string>
@@ -51,6 +54,10 @@
   <string name="add_to_blacklist_message">Berichten van %s worden geblokkeerd</string>
   <string name="alert_dialog_yes">Ja</string>
   <string name="alert_dialog_no">Nee</string>
+  <string name="pref_title_unicode_stripping">Unicode-tekens omzetten</string>
+  <string name="pref_unicode_stripping_leave_intact">Tekens intact laten</string>
+  <string name="pref_unicode_stripping_non_encodable">Niet-encodeerbare tekens omzetten</string>
+  <string name="pref_unicode_stripping_all">Alle Unicode-tekens omzetten</string>
   <string name="menu_as_unread">Markeren als ongelezen</string>
   <string name="menu_as_read">Markeren als gelezen</string>
   <string name="menu_all_as_unread">Alles markeren als ongelezen</string>
@@ -85,26 +92,63 @@
   <string name="discard_message_reason_some_invalid">Bericht wordt verwijderd, omdat sommige geadresseerden ongeldig zijn.</string>
   <string name="cannot_add_text_anymore">Kan geen tekst meer toevoegen.</string>
   <string name="title_send_message">Bericht verzenden</string>
+  <string name="subject_full">Onderwerp mag niet langer zijn dan <xliff:g id="length">%d</xliff:g> tekens.</string>
   <string name="pref_title_manage_sim_messages_slot1">Berichten op SIM 1 beheren</string>
   <string name="pref_title_manage_sim_messages_slot2">Berichten op SIM 2 beheren</string>
   <string name="prefs_title_export_sms_messages">Sms-berichten exporteren</string>
+  <string name="prefs_title_import_sms_messages">Sms-berichten importeren</string>
   <string name="pref_title_sms_delivery_reports_slot1">Afleverrapporten voor SIM 1</string>
   <string name="pref_title_sms_delivery_reports_slot2">Afleverrapporten voor SIM 2</string>
   <string name="status_deleted_unread">Ongelezen verwijderd</string>
+  <string name="disk_storage_full_error">Fout: opslag is vol.</string>
   <string name="mms_too_large">Bericht is te groot om te downloaden.</string>
+  <string name="send_failed_retry">Kan bericht niet verzenden, opnieuw proberen\u2026</string>
+  <string name="download_failed_retry">Kan bericht niet downloaden, opnieuw proberen\u2026</string>
+  <string name="system_audio_item">Beltoon</string>
+  <string name="external_audio_item">Muziek</string>
+  <string name="menu_connect_url">URL openen</string>
   <string name="do_not_show_connect_warning">Deze waarschuwing niet opnieuw weergeven</string>
+  <string name="menu_add_to_label">Favoriet maken</string>
+  <string name="loadurlinfo_str">URL\'s van onbekende afzenders kunnen phishing-berichten zijn. Indien u het niet zeker weet, kunt u deze link beter niet openen.</string>
+  <string name="pref_title_message_template">Berichtsjablonen</string>
+  <string name="title_new_message_template">Nieuw sjabloon</string>
+  <string name="summary_new_message_template">Nieuw berichtsjabloon samenstellen</string>
+  <string name="dialog_editSMSTemplate_title">Sjabloon bewerken</string>
+  <string name="import_message_template">Sjabloon invoegen</string>
+  <string name="template_full">Sjabloontekst heeft maximale lengte bereikt.</string>
   <string name="pref_sms_signature_title">SMS-handtekening</string>
+  <string name="pref_title_enable_signature">Handtekening toevoegen aan berichten</string>
+  <string name="pref_title_edit_signature">Handtekening bewerken</string>
+  <string name="menu_copy_to">Kopiëren</string>
+  <string name="operation_to_card_memory">Bericht kopiëren naar simkaart</string>
+  <string name="pref_smsc_title">SMS-berichtencentrale</string>
+  <string name="pref_one_smcs">SMSC-nummer</string>
   <string name="pref_more_smcs">SMSC-nr. SIM <xliff:g id="slot_number">%d </xliff:g></string>
   <string name="set_smsc_error">Kan SMSC-nummer niet instellen</string>
+  <string name="set_smsc_success">SMSC-nummer instellen gelukt</string>
+  <string name="set_smsc_confirm_message">Berichtencentrale wijzigen kan leiden tot mislukte sms-berichten. Weet u zeker dat u wilt doorgaan?</string>
   <string name="copy_to_sim">Bericht kopiëren naar simkaart</string>
+  <string name="copy_to_sim_success"><xliff:g id="count">%1$d</xliff:g> van <xliff:g id="total">%2$d</xliff:g> berichten opgeslagen op simkaart.</string>
   <string name="copy_to_sim_fail">Kan bericht niet opslaan</string>
+  <string name="copy_to_phone_success">Bericht opgeslagen</string>
+  <string name="copy_to_phone_fail">Kan bericht niet opslaan</string>
+  <string name="contact_app_not_found">Kan Contacten-app niet openen</string>
+  <string name="search_bar_hint">Contacten vinden</string>
   <string name="type_vcard">vCard</string>
   <string name="import_vcard">Importeren</string>
   <string name="attach_add_contact_as_vcard">Contact vCard</string>
+  <string name="attach_add_contact_as_text">Contactinfo als sms</string>
   <string name="contact_info_text_as_name">Naam:</string>
   <string name="contact_info_text_as_phone">Telefoon:</string>
   <string name="contact_info_text_as_email">E-mail:</string>
+  <string name="type_vcal">Agenda-afspraken</string>
+  <string name="pref_wap_push_title">Push-serviceberichten</string>
+  <string name="pref_title_wap_push_enabled">WAP push-service</string>
+  <string name="pref_summary_wap_push_enabled">Serviceberichten van netwerk ontvangen</string>
   <string name="memory_status_title">Geheugenstatus</string>
+  <string name="sms_phone_memory_usage">Sms: <xliff:g id="used">%1$d</xliff:g> van <xliff:g id="total">%2$d</xliff:g> gebruikt</string>
+  <string name="mms_phone_memory_usage">Mms: <xliff:g id="used">%1$d</xliff:g> van <xliff:g id="total">%2$d</xliff:g> gebruikt</string>
+  <string name="pref_title_validity_period">Geldigheidsduur</string>
   <string name="pref_title_validity_period_slot1">Geldigheidsduur voor SIM 1</string>
   <string name="pref_title_validity_period_slot2">Geldigheidsduur voor SIM 2</string>
   <string name="sms_validity_period_not_set">Niet ingesteld</string>
@@ -112,6 +156,9 @@
   <string name="sms_validity_period_six_hours">6 uur</string>
   <string name="sms_validity_period_twelve_hours">12 uur</string>
   <string name="sms_validity_period_one_day">1 dag</string>
+  <string name="mms_validity_period_two_days">2 dagen</string>
+  <string name="mms_validity_period_one_week">1 week</string>
+  <string name="validity_period_maximum">Maximaal</string>
   <string name="status_expired">Mms verlopen</string>
   <string name="operate_success">Bewerking is voltooid</string>
   <string name="operate_failure">Bewerking mislukt</string>
@@ -119,7 +166,12 @@
   <string name="slot1">SIM 1</string>
   <string name="slot2">SIM 2</string>
   <string name="cannot_play">Kan diavoorstelling niet tonen.</string>
+  <string name="confirm_delete_selected_messages">Geselecteerde berichten worden verwijderd.</string>
+  <string name="send_failure">Kan bericht niet verzenden.</string>
   <string name="message_detail">Berichtdetails</string>
+  <string name="no_message">Geen berichten.</string>
+  <string name="change_to_folder_mode">Mappenweergave</string>
+  <string name="change_to_conversation_mode">Gesprekkenweergave</string>
   <string name="type_inbox">Postvak IN</string>
   <string name="type_sent">Verzonden</string>
   <string name="type_outbox">Postvak UIT</string>
@@ -134,6 +186,8 @@
   <string name="search_as_subject">Onderwerp</string>
   <string name="invalid_name_toast">Voer een geldige naam in</string>
   <string name="sim_capacity_title">SIM-capaciteit</string>
+  <string name="sim_capacity"><xliff:g id="used">%1$d</xliff:g> van <xliff:g id="total">%2$d</xliff:g> plekken op simkaart in gebruik</string>
+  <string name="pref_sim_card_full_save_to_phone">Simkaart vol, nieuwe berichten worden op telefoon opgeslagen.</string>
   <string name="selected_all">Alles selecteren</string>
   <string name="deselected_all">Alles deselecteren</string>
   <string name="selected_count"><xliff:g id="COUNT">%d</xliff:g> geselecteerd</string>
@@ -142,9 +196,24 @@
   <string name="cdma_priority_urgent">Dringend</string>
   <string name="cdma_priority_emergency">Noodgeval</string>
   <string name="pref_title_cdma_priority">Berichtprioriteit</string>
+  <string name="pref_summary_cdma_priority">Prioriteit CDMA-berichten</string>
+  <string name="download_dialog_title">Deze mms downloaden?</string>
+  <string name="menu_email">E-mail verzenden</string>
   <string name="pref_title_sms_store">Voorkeursopslag</string>
+  <string name="pref_title_sms_store_card1">Voorkeursopslag SIM 1</string>
+  <string name="pref_title_sms_store_card2">Voorkeursopslag SIM 2</string>
   <string name="pref_sms_store_phone">Telefoon</string>
   <string name="pref_sms_store_card">Simkaart</string>
+  <string name="mms_size_indicator"><xliff:g id="mms_size">%1$d</xliff:g>/<xliff:g id="all_size">%2$d</xliff:g> KB</string>
+  <string name="pre_define_message_template_1">Ik bel je later terug.</string>
+  <string name="pre_define_message_template_2">Ik ben in vergadering. Ik bel je later terug.</string>
+  <string name="pre_define_message_template_3">Bel me later terug.</string>
+  <string name="pre_define_message_template_4">Kun je me terugbellen?</string>
+  <string name="menu_delete_all_entries">Alles verwijderen</string>
+  <string name="menu_delete_sms">Sms verwijderen</string>
+  <string name="menu_delete_mms">Mms verwijderen</string>
+  <string name="import_sms_title">Importeren uit opslag</string>
+  <string name="export_sms_title">Exporteren naar opslag</string>
   <string name="delete_sms_title">Bestaande back-up verwijderen</string>
   <string name="pick_sms_backup_title">Sms-back-up selecteren</string>
   <string name="delete_sms_toast">Back-up verwijderd.</string>
@@ -156,7 +225,27 @@
   <string name="perform_restore_title">Importeren</string>
   <string name="wait_progress_message">Een ogenblik geduld\u2026</string>
   <string name="backup_file_name_message">Berichten geëxporteerd naar \'%1$s\'</string>
-  <string name="manage_sdcard_messages">Berichten im-/exporteren</string>
+  <string name="manage_sdcard_messages">Berichten importeren/exporteren</string>
   <string name="no_backups_found">Geen back-ups gevonden</string>
   <string name="remove_subject">Onderwerp verwijderen</string>
+  <string name="qm_wear_sending_message">Antwoord verzenden naar <xliff:g id="name">%s</xliff:g>\u2026</string>
+  <string name="qm_wear_messaged_failed">Sms-bericht naar <xliff:g id="name">%s</xliff:g> niet verzonden, probeer het opnieuw.</string>
+  <string name="qm_wear_voice_reply">Wat is uw antwoord?</string>
+  <string name="qm_wear_reply_by_voice">Beantwoorden via spraak</string>
+  <string name="copy_empty_string">Geen tekst om te kopiëren</string>
+  <string name="attach_add_calendar_events">Agenda-afspraken</string>
+  <string name="calendar_attachment_activity_not_found">Kan geen ondersteunde Agenda-app vinden</string>
+  <string name="pref_title_mms_notification_vibrate_pattern">Trilpatroon</string>
+  <string name="pref_summary_mms_notification_vibrate_pattern">Trilpatroon wijzigen</string>
+  <string name="pref_mms_notification_vibrate_normal">Normaal</string>
+  <string name="pref_mms_notification_vibrate_med_vib">Middellang</string>
+  <string name="pref_mms_notification_vibrate_long_vib">Lang</string>
+  <string name="pref_mms_notification_vibrate_mult_short">Meerdere keren kort</string>
+  <string name="pref_mms_notification_vibrate_mult_long">Meerdere keren lang</string>
+  <string name="menu_insert_smiley">Smiley invoegen</string>
+  <string name="pref_title_enable_emoticons">Emoticons</string>
+  <string name="pref_summary_enable_emoticons">Tekst-emoticons omzetten naar plaatjes</string>
+  <string name="menu_conversation_options">Gespreksopties</string>
+  <string name="pref_title_reset_convopt_to_default">Standaardwaarden</string>
+  <string name="pref_summary_reset_convopt_to_default">Gespreksinstelling terugzetten naar instelling van de app</string>
 </resources>

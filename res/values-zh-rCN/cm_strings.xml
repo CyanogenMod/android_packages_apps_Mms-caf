@@ -54,6 +54,10 @@
   <string name="add_to_blacklist_message">未来来自于 %s 的信息将会被阻止</string>
   <string name="alert_dialog_yes">是</string>
   <string name="alert_dialog_no">否</string>
+  <string name="pref_title_unicode_stripping">除去 Unicode</string>
+  <string name="pref_unicode_stripping_leave_intact">保留所有字符</string>
+  <string name="pref_unicode_stripping_non_encodable">除去非可编码字符</string>
+  <string name="pref_unicode_stripping_all">除去所有 Unicode 字符</string>
   <string name="menu_as_unread">标记为未读</string>
   <string name="menu_as_read">标记为已读</string>
   <string name="menu_all_as_unread">全部标记为未读</string>
@@ -231,4 +235,17 @@
   <string name="copy_empty_string">没有可以复制的文本</string>
   <string name="attach_add_calendar_events">日历事件</string>
   <string name="calendar_attachment_activity_not_found">无法找到支持的日历应用</string>
+  <string name="pref_title_mms_notification_vibrate_pattern">振动模式</string>
+  <string name="pref_summary_mms_notification_vibrate_pattern">更改振动模式</string>
+  <string name="pref_mms_notification_vibrate_normal">正常</string>
+  <string name="pref_mms_notification_vibrate_med_vib">中等振动</string>
+  <string name="pref_mms_notification_vibrate_long_vib">长振动</string>
+  <string name="pref_mms_notification_vibrate_mult_short">多个短振动</string>
+  <string name="pref_mms_notification_vibrate_mult_long">多个长振动</string>
+  <string name="menu_insert_smiley">插入表情符号</string>
+  <string name="pref_title_enable_emoticons">表情符号支持</string>
+  <string name="pref_summary_enable_emoticons">用等同的图形替代文字表情符号</string>
+  <string name="menu_conversation_options">对话选项</string>
+  <string name="pref_title_reset_convopt_to_default">重置默认设置</string>
+  <string name="pref_summary_reset_convopt_to_default">将对话设置重置为应用级别设置</string>
 </resources>

@@ -54,6 +54,10 @@
   <string name="add_to_blacklist_message">Zuküfteg Messagë vum %s gi blockéiert</string>
   <string name="alert_dialog_yes">Jo</string>
   <string name="alert_dialog_no">Nee</string>
+  <string name="pref_title_unicode_stripping">Unicode-Behandlung</string>
+  <string name="pref_unicode_stripping_leave_intact">Zeechen onverännert loossen</string>
+  <string name="pref_unicode_stripping_non_encodable">Onkodéierbar Zeeche läschen</string>
+  <string name="pref_unicode_stripping_all">All Unicode-Zeeche läschen</string>
   <string name="menu_as_unread">Als ongelies markéieren</string>
   <string name="menu_as_read">Als gelies markéieren</string>
   <string name="menu_all_as_unread">All als ongelies markéieren</string>
@@ -231,4 +235,17 @@
   <string name="copy_empty_string">Keen Text fir ze kopéieren</string>
   <string name="attach_add_calendar_events">Kalenner-Rendezvous</string>
   <string name="calendar_attachment_activity_not_found">Konnt keng ënnerstëtzend Kalenner-App fannen</string>
+  <string name="pref_title_mms_notification_vibrate_pattern">Vibratiounsmuster</string>
+  <string name="pref_summary_mms_notification_vibrate_pattern">Vibratiounsmuster changéieren</string>
+  <string name="pref_mms_notification_vibrate_normal">Normal</string>
+  <string name="pref_mms_notification_vibrate_med_vib">Mëttel Vibratioun</string>
+  <string name="pref_mms_notification_vibrate_long_vib">Laang Vibratioun</string>
+  <string name="pref_mms_notification_vibrate_mult_short">E puermol kuerz</string>
+  <string name="pref_mms_notification_vibrate_mult_long">E puermol laang</string>
+  <string name="menu_insert_smiley">Smiley drasetzen</string>
+  <string name="pref_title_enable_emoticons">Smiley-Ënnerstëtzung</string>
+  <string name="pref_summary_enable_emoticons">Text-Smileyen duerch Biller ersetzen</string>
+  <string name="menu_conversation_options">Konversatiounsoptiounen</string>
+  <string name="pref_title_reset_convopt_to_default">Op de Standard zrécksetzen</string>
+  <string name="pref_summary_reset_convopt_to_default">Astellung vun der Konversatioun zrécksetzen op déi global Applikatiounsastellung</string>
 </resources>

@@ -24,7 +24,7 @@
   <string name="pref_close_all_title">전부 닫기</string>
   <string name="pref_close_all_summary">닫기 버튼으로 모든 메시지를 닫습니다</string>
   <string name="pref_dark_theme_title">어두운 테마 사용</string>
-  <string name="pref_dark_theme_summary">선택하지 않으면 \'밝은\' 기본 테마가 사용됩니다</string>
+  <string name="pref_dark_theme_summary">선택하지 않으면 \'밝음\' 기본 테마가 사용됩니다</string>
   <string name="message_counter">%2$d건 중 %1$d건</string>
   <string name="button_close">닫기</string>
   <string name="button_view">표시</string>
@@ -54,6 +54,10 @@
   <string name="add_to_blacklist_message">%s에서 오는 메시지가 차단됩니다</string>
   <string name="alert_dialog_yes">예</string>
   <string name="alert_dialog_no">아니오</string>
+  <string name="pref_title_unicode_stripping">유니코드 제거</string>
+  <string name="pref_unicode_stripping_leave_intact">문자 인코딩 유지</string>
+  <string name="pref_unicode_stripping_non_encodable">인코딩할 수 없는 문자 제거</string>
+  <string name="pref_unicode_stripping_all">모든 유니코드 문자 제거</string>
   <string name="menu_as_unread">읽지 않은 상태로 표시</string>
   <string name="menu_as_read">읽음으로 표시</string>
   <string name="menu_all_as_unread">모두 읽지 않은 상태로 표시</string>
@@ -90,11 +94,11 @@
   <string name="title_send_message">메시지 전송</string>
   <string name="subject_full">제목은 <xliff:g id="length">%d </xliff:g>자 이내로 작성해야 합니다.</string>
   <string name="pref_title_manage_sim_messages_slot1">SIM 1 메시지 관리</string>
-  <string name="pref_title_manage_sim_messages_slot2">SIM카드2 메시지 관리</string>
+  <string name="pref_title_manage_sim_messages_slot2">SIM 카드 2 메시지 관리</string>
   <string name="prefs_title_export_sms_messages">SMS메시지 내보내기</string>
   <string name="prefs_title_import_sms_messages">SMS메시지 가져오기</string>
-  <string name="pref_title_sms_delivery_reports_slot1">SIM카드1의 메시지 전송기록</string>
-  <string name="pref_title_sms_delivery_reports_slot2">SIM카드2의 메시지 전송기록</string>
+  <string name="pref_title_sms_delivery_reports_slot1">SIM 카드 1의 메시지 전송기록</string>
+  <string name="pref_title_sms_delivery_reports_slot2">SIM 카드 2의 메시지 전송기록</string>
   <string name="status_deleted_unread">읽지 않고 삭제됨</string>
   <string name="disk_storage_full_error">오류: 저장소가 가득 찼습니다.</string>
   <string name="mms_too_large">메시지가 너무 커서 다운로드할 수 없습니다.</string>
@@ -119,12 +123,12 @@
   <string name="operation_to_card_memory">메시지를 SIM 카드에 복사</string>
   <string name="pref_smsc_title">SMS 서비스 센터</string>
   <string name="pref_one_smcs">SMSC번호</string>
-  <string name="pref_more_smcs">SIM카드 <xliff:g id="slot_number">%d </xliff:g> SMSC번호</string>
+  <string name="pref_more_smcs">SIM 카드 <xliff:g id="slot_number">%d </xliff:g> SMSC번호</string>
   <string name="set_smsc_error">SMSC 번호를 설정할 수 없습니다.</string>
   <string name="set_smsc_success">SMSC 번호 설정에 성공함</string>
   <string name="set_smsc_confirm_message">SMSC변경시 SMS전송에 오류가 발생할 수 있습니다. 계속하시겠습니까?</string>
   <string name="copy_to_sim">메시지를 SIM 카드에 복사</string>
-  <string name="copy_to_sim_success"><xliff:g id="total">%2$d</xliff:g>건 중 <xliff:g id="count">%1$d</xliff:g>건의 메시지가 SIM카드에 저장되었습니다.</string>
+  <string name="copy_to_sim_success"><xliff:g id="total">%2$d</xliff:g>건 중 <xliff:g id="count">%1$d</xliff:g>건의 메시지가 SIM 카드에 저장되었습니다.</string>
   <string name="copy_to_sim_fail">메시지를 저장할 수 없습니다.</string>
   <string name="copy_to_phone_success">메시지가 저장됨</string>
   <string name="copy_to_phone_fail">메시지를 저장할 수 없음</string>
@@ -145,8 +149,8 @@
   <string name="sms_phone_memory_usage">SMS: <xliff:g id="total">%2$d</xliff:g> 중 <xliff:g id="used">%1$d</xliff:g> 사용됨</string>
   <string name="mms_phone_memory_usage">MMS: <xliff:g id="total">%2$d</xliff:g> 중 <xliff:g id="used">%1$d</xliff:g> 사용됨</string>
   <string name="pref_title_validity_period">유효 기간</string>
-  <string name="pref_title_validity_period_slot1">SIM카드1의 유효 기간</string>
-  <string name="pref_title_validity_period_slot2">SIM카드2의 유효 기간</string>
+  <string name="pref_title_validity_period_slot1">SIM 카드 1의 유효 기간</string>
+  <string name="pref_title_validity_period_slot2">SIM 카드 2의 유효 기간</string>
   <string name="sms_validity_period_not_set">설정되지 않음</string>
   <string name="sms_validity_period_one_hour">1시간</string>
   <string name="sms_validity_period_six_hours">6시간</string>
@@ -182,8 +186,8 @@
   <string name="search_as_subject">제목</string>
   <string name="invalid_name_toast">올바른 이름을 입력하십시오</string>
   <string name="sim_capacity_title">SIM 용량</string>
-  <string name="sim_capacity"><xliff:g id="total">%2$d</xliff:g> 중 <xliff:g id="used">%1$d</xliff:g>의 SIM카드 저장소가 사용됨</string>
-  <string name="pref_sim_card_full_save_to_phone">SIM카드 저장소 공간이 부족하여 새 메시지를 전화기에 저장합니다.</string>
+  <string name="sim_capacity"><xliff:g id="total">%2$d</xliff:g> 중 <xliff:g id="used">%1$d</xliff:g>의 SIM 카드 저장소가 사용됨</string>
+  <string name="pref_sim_card_full_save_to_phone">SIM 카드 저장소 공간이 부족하여 새 메시지를 전화기에 저장합니다.</string>
   <string name="selected_all">모두 선택</string>
   <string name="deselected_all">모두 선택 취소</string>
   <string name="selected_count"><xliff:g id="COUNT">%d</xliff:g> 선택됨</string>
@@ -196,8 +200,8 @@
   <string name="download_dialog_title">이 MMS를 내려받습니까?</string>
   <string name="menu_email">이메일 보내기</string>
   <string name="pref_title_sms_store">선호되는 저장 공간</string>
-  <string name="pref_title_sms_store_card1">SIM카드1 기본 저장소</string>
-  <string name="pref_title_sms_store_card2">SIM카드2 기본 저장소</string>
+  <string name="pref_title_sms_store_card1">SIM 카드 1 기본 저장소</string>
+  <string name="pref_title_sms_store_card2">SIM 카드 2 기본 저장소</string>
   <string name="pref_sms_store_phone">전화</string>
   <string name="pref_sms_store_card">SIM 카드</string>
   <string name="mms_size_indicator"><xliff:g id="mms_size">%1$d</xliff:g>/<xliff:g id="all_size">%2$d</xliff:g> KB</string>
@@ -231,4 +235,17 @@
   <string name="copy_empty_string">복사할 내용 없음</string>
   <string name="attach_add_calendar_events">일정</string>
   <string name="calendar_attachment_activity_not_found">지원하는 일정 앱을 찾을 수 없음</string>
+  <string name="pref_title_mms_notification_vibrate_pattern">진동 패턴</string>
+  <string name="pref_summary_mms_notification_vibrate_pattern">진동 패턴 변경</string>
+  <string name="pref_mms_notification_vibrate_normal">보통</string>
+  <string name="pref_mms_notification_vibrate_med_vib">중간 진동</string>
+  <string name="pref_mms_notification_vibrate_long_vib">길게 진동</string>
+  <string name="pref_mms_notification_vibrate_mult_short">여러번 짧게</string>
+  <string name="pref_mms_notification_vibrate_mult_long">여러번 길게</string>
+  <string name="menu_insert_smiley">이모티콘 삽입</string>
+  <string name="pref_title_enable_emoticons">이모티콘 지원</string>
+  <string name="pref_summary_enable_emoticons">텍스트 이모티콘을 그림으로 대체</string>
+  <string name="menu_conversation_options">대화 옵션</string>
+  <string name="pref_title_reset_convopt_to_default">기본값으로 재설정</string>
+  <string name="pref_summary_reset_convopt_to_default">대화 설정을 앱 수준 설정으로 재설정</string>
 </resources>

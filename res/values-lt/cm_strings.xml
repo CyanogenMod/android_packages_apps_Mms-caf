@@ -42,7 +42,7 @@
   <string name="sent_countdown">Pranešimo siuntimo laikmatis</string>
   <string name="pref_extra_settings">Papildomi nustatymai</string>
   <string name="blacklist_title">Juodasis sąrašas</string>
-  <string name="blacklist_summary_disabled">Išjungtas</string>
+  <string name="blacklist_summary_disabled">Neleidžiamas</string>
   <string name="blacklist_summary">Gaunami pranešimai iš telefonų numerių kurie yra juodajame sąraše bus blokuojami</string>
   <string name="blacklist_notification">Užblokuotas pranešimas iš %s</string>
   <string name="blacklist_notification_private_number">Užblokuotas pranešimas iš privataus numerio</string>
@@ -54,6 +54,10 @@
   <string name="add_to_blacklist_message">Būsimi pranešimai iš %s bus blokuojami</string>
   <string name="alert_dialog_yes">Taip</string>
   <string name="alert_dialog_no">Ne</string>
+  <string name="pref_title_unicode_stripping">Pašalinti unikodą</string>
+  <string name="pref_unicode_stripping_leave_intact">Palikti simbolius nepaliestus</string>
+  <string name="pref_unicode_stripping_non_encodable">Pašalinti nekoduojamus simbolius</string>
+  <string name="pref_unicode_stripping_all">Pašalinti visus unikodo simbolius</string>
   <string name="menu_as_unread">Pažymėti kaip neperskaitytą</string>
   <string name="menu_as_read">Pažymėti kaip perskaitytą</string>
   <string name="menu_all_as_unread">Pažymėti visus kaip neperskaitytus</string>
@@ -62,7 +66,7 @@
   <string name="confirm_mark_unread_conversation">Pokalbis bus pažymėtas kaip neperskaitytas.</string>
   <string name="confirm_mark_read_dialog_title">Pažymėti kaip perskaitytą?</string>
   <string name="confirm_mark_read_conversation">Pokalbis bus pažymėtas kaip perskaitytas.</string>
-  <string name="confirm_mark_unread_all_conversations">Visi pokalbiai bus pažymėti kaip neperskaityti.</string>
+  <string name="confirm_mark_unread_all_conversations">Visos gijos bus pažymėtos kaip neperskaitytos.</string>
   <string name="confirm_mark_read_all_conversations">Visos gijos bus pažymėtos kaip perskaitytos.</string>
   <string name="loading">Įkeliama\u2026</string>
   <string name="select_recipients">Pasirinkti gavėjus</string>
@@ -231,4 +235,17 @@
   <string name="copy_empty_string">Nėra teksto kopijavimui</string>
   <string name="attach_add_calendar_events">Kalendoriaus įvykis</string>
   <string name="calendar_attachment_activity_not_found">Nepavyko rasti palaikančios kalendorių programos</string>
+  <string name="pref_title_mms_notification_vibrate_pattern">Vibravimo modelis</string>
+  <string name="pref_summary_mms_notification_vibrate_pattern">Pakeisti vibravimo modelį</string>
+  <string name="pref_mms_notification_vibrate_normal">Normalus</string>
+  <string name="pref_mms_notification_vibrate_med_vib">Vidutinis vibravimas</string>
+  <string name="pref_mms_notification_vibrate_long_vib">Ilgas vibravimas</string>
+  <string name="pref_mms_notification_vibrate_mult_short">Kartotinis trumpas</string>
+  <string name="pref_mms_notification_vibrate_mult_long">Kartotinis ilgas</string>
+  <string name="menu_insert_smiley">Įterpti šypsenėlę</string>
+  <string name="pref_title_enable_emoticons">Emocijų palaikymas</string>
+  <string name="pref_summary_enable_emoticons">Pakeisti tekstines emocijas į grafinius atitikmenis</string>
+  <string name="menu_conversation_options">Pokalbio parinktys</string>
+  <string name="pref_title_reset_convopt_to_default">Nustatyti iš naujo į numatytuosius</string>
+  <string name="pref_summary_reset_convopt_to_default">Nustato iš naujo pokalbio parametrą į programos lygio nustatymą</string>
 </resources>

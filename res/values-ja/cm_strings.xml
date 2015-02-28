@@ -54,6 +54,10 @@
   <string name="add_to_blacklist_message">%sからのメッセージは今後ブロックされます</string>
   <string name="alert_dialog_yes">はい</string>
   <string name="alert_dialog_no">いいえ</string>
+  <string name="pref_title_unicode_stripping">Unicodeを削除</string>
+  <string name="pref_unicode_stripping_leave_intact">文字をそのままにしておく</string>
+  <string name="pref_unicode_stripping_non_encodable">エンコードできない文字を削除</string>
+  <string name="pref_unicode_stripping_all">すべてのUnicode文字を削除</string>
   <string name="menu_as_unread">未読にする</string>
   <string name="menu_as_read">既読にする</string>
   <string name="menu_all_as_unread">すべて未読にする</string>
@@ -231,4 +235,17 @@
   <string name="copy_empty_string">コピーするテキストがありません</string>
   <string name="attach_add_calendar_events">カレンダーの予定</string>
   <string name="calendar_attachment_activity_not_found">サポートしているカレンダーアプリが見つかりませんでした</string>
+  <string name="pref_title_mms_notification_vibrate_pattern">バイブレーションのパターン</string>
+  <string name="pref_summary_mms_notification_vibrate_pattern">バイブレーションのパターンを変更する</string>
+  <string name="pref_mms_notification_vibrate_normal">標準</string>
+  <string name="pref_mms_notification_vibrate_med_vib">中くらいの振動</string>
+  <string name="pref_mms_notification_vibrate_long_vib">長い振動</string>
+  <string name="pref_mms_notification_vibrate_mult_short">複数の短い振動</string>
+  <string name="pref_mms_notification_vibrate_mult_long">複数の長い振動</string>
+  <string name="menu_insert_smiley">絵文字を挿入</string>
+  <string name="pref_title_enable_emoticons">絵文字サポート</string>
+  <string name="pref_summary_enable_emoticons">テキストの顔文字をそれに対応する絵文字で置き換える</string>
+  <string name="menu_conversation_options">会話のオプション</string>
+  <string name="pref_title_reset_convopt_to_default">デフォルトに戻す</string>
+  <string name="pref_summary_reset_convopt_to_default">会話の設定をアプリケーションレベルの設定にリセットする</string>
 </resources>

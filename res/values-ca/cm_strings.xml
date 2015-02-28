@@ -54,6 +54,10 @@
   <string name="add_to_blacklist_message">Els missatges futurs de %s seran bloquejats</string>
   <string name="alert_dialog_yes">Sí</string>
   <string name="alert_dialog_no">No</string>
+  <string name="pref_title_unicode_stripping">Esquinça unicode</string>
+  <string name="pref_unicode_stripping_leave_intact">Deixa els caràcters intactes</string>
+  <string name="pref_unicode_stripping_non_encodable">Esquinça els caràcters no codificables</string>
+  <string name="pref_unicode_stripping_all">Esquinça tots el caràcters unicode</string>
   <string name="menu_as_unread">Marca\'l com a sense llegir</string>
   <string name="menu_as_read">Marca com a llegit</string>
   <string name="menu_all_as_unread">Marcal\'s tots com sense llegir</string>
@@ -231,4 +235,17 @@
   <string name="copy_empty_string">No hi ha text a copiar</string>
   <string name="attach_add_calendar_events">Esdeveniment del calendari</string>
   <string name="calendar_attachment_activity_not_found">No s\'ha pogut trobar una app de calendari suportada</string>
+  <string name="pref_title_mms_notification_vibrate_pattern">Patró de vibració</string>
+  <string name="pref_summary_mms_notification_vibrate_pattern">Canvia el patró de vibració</string>
+  <string name="pref_mms_notification_vibrate_normal">Normal</string>
+  <string name="pref_mms_notification_vibrate_med_vib">Vibració mitjana</string>
+  <string name="pref_mms_notification_vibrate_long_vib">Vibració llarga</string>
+  <string name="pref_mms_notification_vibrate_mult_short">Múltiples curtes</string>
+  <string name="pref_mms_notification_vibrate_mult_long">Múltiples llargues</string>
+  <string name="menu_insert_smiley">Insereix una emoticona</string>
+  <string name="pref_title_enable_emoticons">Suport d\'emoticones</string>
+  <string name="pref_summary_enable_emoticons">Substitueix les emoticones de text amb els seus equivalents gràfics</string>
+  <string name="menu_conversation_options">Opcions de conversa</string>
+  <string name="pref_title_reset_convopt_to_default">Restableix els valors per defecte</string>
+  <string name="pref_summary_reset_convopt_to_default">Restableix la configuració de conversa a la configuració a nivell d\'aplicació</string>
 </resources>

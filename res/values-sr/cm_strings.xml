@@ -54,6 +54,10 @@
   <string name="add_to_blacklist_message">Будуће поруке од %s ће бити блокиране</string>
   <string name="alert_dialog_yes">Да</string>
   <string name="alert_dialog_no">Не</string>
+  <string name="pref_title_unicode_stripping">Нацртај уникод</string>
+  <string name="pref_unicode_stripping_leave_intact">Остави знакове нетакнуте</string>
+  <string name="pref_unicode_stripping_non_encodable">Монтирај не-кодиране знакове</string>
+  <string name="pref_unicode_stripping_all">Монтирај све уникод знакове</string>
   <string name="menu_as_unread">Означи као непрочитано</string>
   <string name="menu_as_read">Означи као прочитано</string>
   <string name="menu_all_as_unread">Означи све као непрочитано</string>
@@ -231,4 +235,17 @@
   <string name="copy_empty_string">Нема текста за копирање</string>
   <string name="attach_add_calendar_events">Догађаји у календару</string>
   <string name="calendar_attachment_activity_not_found">Не могу пронаћи подржану Календар апликацију</string>
+  <string name="pref_title_mms_notification_vibrate_pattern">Шаблон вибрације</string>
+  <string name="pref_summary_mms_notification_vibrate_pattern">Промени шаблон вибрације</string>
+  <string name="pref_mms_notification_vibrate_normal">Нормално</string>
+  <string name="pref_mms_notification_vibrate_med_vib">Средња вибрација</string>
+  <string name="pref_mms_notification_vibrate_long_vib">Дуга вибрација</string>
+  <string name="pref_mms_notification_vibrate_mult_short">Више кратких</string>
+  <string name="pref_mms_notification_vibrate_mult_long">Више дугих</string>
+  <string name="menu_insert_smiley">Убаци смајли</string>
+  <string name="pref_title_enable_emoticons">Подршка смајлија</string>
+  <string name="pref_summary_enable_emoticons">Замени текстуалне смајлије са графичким еквивалентима</string>
+  <string name="menu_conversation_options">Опције преписке</string>
+  <string name="pref_title_reset_convopt_to_default">Ресетуј на подразумевано</string>
+  <string name="pref_summary_reset_convopt_to_default">Ресетуј подешавање преписке на ниво подешавања апликације</string>
 </resources>

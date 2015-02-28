@@ -54,6 +54,10 @@
   <string name="add_to_blacklist_message">Μελλοντικά μηνύματα από το %s θα απορρίπτονται</string>
   <string name="alert_dialog_yes">Ναι</string>
   <string name="alert_dialog_no">Όχι</string>
+  <string name="pref_title_unicode_stripping">Αφαίρεση unicode</string>
+  <string name="pref_unicode_stripping_leave_intact">Καμία αλλαγή στους χαρακτήρες</string>
+  <string name="pref_unicode_stripping_non_encodable">Αφαίρεση χαρακτήρων που δεν μπορούν να κωδικοποιηθούν</string>
+  <string name="pref_unicode_stripping_all">Αφαίρεση όλων των χαρακτήρων</string>
   <string name="menu_as_unread">Επισήμανση ως μη αναγνωσμένο</string>
   <string name="menu_as_read">Επισήμανση ως αναγνωσμένο</string>
   <string name="menu_all_as_unread">Επισήμανση όλων ως μη αναγνωσμένα</string>
@@ -231,4 +235,17 @@
   <string name="copy_empty_string">Δεν υπάρχει κείμενο για αντιγραφή</string>
   <string name="attach_add_calendar_events">Συμβάν ημερολογίου</string>
   <string name="calendar_attachment_activity_not_found">Δεν βρέθηκε υποστηριζόμενη εφαρμογή Ημερολογίου</string>
+  <string name="pref_title_mms_notification_vibrate_pattern">Μοτίβο δόνησης</string>
+  <string name="pref_summary_mms_notification_vibrate_pattern">Αλλαγή μοτίβου δόνησης</string>
+  <string name="pref_mms_notification_vibrate_normal">Κανονική</string>
+  <string name="pref_mms_notification_vibrate_med_vib">Μεσαία δόνηση</string>
+  <string name="pref_mms_notification_vibrate_long_vib">Εκτενής δόνηση</string>
+  <string name="pref_mms_notification_vibrate_mult_short">Πολλαπλές μικρές</string>
+  <string name="pref_mms_notification_vibrate_mult_long">Πολλαπλές εκτενείς</string>
+  <string name="menu_insert_smiley">Εισαγωγή smiley</string>
+  <string name="pref_title_enable_emoticons">Υποστήριξη emoticon</string>
+  <string name="pref_summary_enable_emoticons">Αντικατάσταση emoticon κειμένου με τα αντίστοιχα εικονίδια</string>
+  <string name="menu_conversation_options">Επιλογές συνομιλίας</string>
+  <string name="pref_title_reset_convopt_to_default">Επαναφορά στις προεπιλογές</string>
+  <string name="pref_summary_reset_convopt_to_default">Επαναφορά της ρύθμισης συνομιλίας στην προεπιλεγμένη ρύθμιση της εφαρμογής</string>
 </resources>

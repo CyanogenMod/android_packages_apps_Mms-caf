@@ -54,6 +54,8 @@
   <string name="add_to_blacklist_message">Zukünftige Nachrichten von %s werden abgewiesen</string>
   <string name="alert_dialog_yes">Ja</string>
   <string name="alert_dialog_no">Nein</string>
+  <string name="pref_unicode_stripping_non_encodable">Unkodierbare Zeichen entfernen</string>
+  <string name="pref_unicode_stripping_all">Unicode komplett entfernen</string>
   <string name="menu_as_unread">Als ungelesen markieren</string>
   <string name="menu_as_read">Als gelesen markieren</string>
   <string name="menu_all_as_unread">Alle als ungelesen markieren</string>
@@ -230,4 +232,15 @@
   <string name="qm_wear_reply_by_voice">Per Sprache antworten</string>
   <string name="copy_empty_string">Kein Text zum Kopieren</string>
   <string name="attach_add_calendar_events">Kalendertermin</string>
+  <string name="pref_title_mms_notification_vibrate_pattern">Vibrationsmuster</string>
+  <string name="pref_summary_mms_notification_vibrate_pattern">Vibrationsmuster ändern</string>
+  <string name="pref_mms_notification_vibrate_normal">Normal</string>
+  <string name="pref_mms_notification_vibrate_med_vib">Mittel</string>
+  <string name="pref_mms_notification_vibrate_long_vib">Lang</string>
+  <string name="pref_mms_notification_vibrate_mult_short">Mehrmals kurz</string>
+  <string name="pref_mms_notification_vibrate_mult_long">Mehrmals lang</string>
+  <string name="menu_insert_smiley">Smiley einfügen</string>
+  <string name="pref_summary_enable_emoticons">Text-Smileys durch entsprechende Bild-Smileys ersetzen</string>
+  <string name="menu_conversation_options">Konversations-Optionen</string>
+  <string name="pref_title_reset_convopt_to_default">Auf Standard zurücksetzen</string>
 </resources>

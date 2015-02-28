@@ -54,6 +54,10 @@
   <string name="add_to_blacklist_message">Fremtidige meldinger fra %s blokkeres</string>
   <string name="alert_dialog_yes">Ja</string>
   <string name="alert_dialog_no">Nei</string>
+  <string name="pref_title_unicode_stripping">Fjern unicode</string>
+  <string name="pref_unicode_stripping_leave_intact">Forlat tegn intakt</string>
+  <string name="pref_unicode_stripping_non_encodable">Fjern ikke-kodbare tegn</string>
+  <string name="pref_unicode_stripping_all">Fjern alle unicode-tegn</string>
   <string name="menu_as_unread">Merk som ulest</string>
   <string name="menu_as_read">Marker som lest</string>
   <string name="menu_all_as_unread">Merk alle som ulest</string>
@@ -231,4 +235,17 @@
   <string name="copy_empty_string">Ingen tekst å kopiere</string>
   <string name="attach_add_calendar_events">Kalenderoppføringer</string>
   <string name="calendar_attachment_activity_not_found">Finner ikke en støttet kalender app</string>
+  <string name="pref_title_mms_notification_vibrate_pattern">Vibreringsmønster</string>
+  <string name="pref_summary_mms_notification_vibrate_pattern">Endre vibreringsmønster</string>
+  <string name="pref_mms_notification_vibrate_normal">Normal</string>
+  <string name="pref_mms_notification_vibrate_med_vib">Mediumvibrasjon</string>
+  <string name="pref_mms_notification_vibrate_long_vib">Lang vibrasjon</string>
+  <string name="pref_mms_notification_vibrate_mult_short">Flere korte</string>
+  <string name="pref_mms_notification_vibrate_mult_long">Flere lange</string>
+  <string name="menu_insert_smiley">Sett inn smilefjes</string>
+  <string name="pref_title_enable_emoticons">Støtte for uttrykksikoner</string>
+  <string name="pref_summary_enable_emoticons">Erstatte tekst-uttrykksikoner med grafiske ekvivalenter</string>
+  <string name="menu_conversation_options">samtaleinnstillinger</string>
+  <string name="pref_title_reset_convopt_to_default">Tilbakestill til standard</string>
+  <string name="pref_summary_reset_convopt_to_default">Tilbakestiller samtaleinnstillingene til applikasjonens standardinnstillinger</string>
 </resources>

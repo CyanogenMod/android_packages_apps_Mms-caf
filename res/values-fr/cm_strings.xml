@@ -54,6 +54,10 @@
   <string name="add_to_blacklist_message">Les futurs messages de %s seront bloqués</string>
   <string name="alert_dialog_yes">Oui</string>
   <string name="alert_dialog_no">Non</string>
+  <string name="pref_title_unicode_stripping">Gestion Unicode</string>
+  <string name="pref_unicode_stripping_leave_intact">Conserver les caractères</string>
+  <string name="pref_unicode_stripping_non_encodable">Enlever les caractères non encodables</string>
+  <string name="pref_unicode_stripping_all">Enlever tous les caractères Unicode</string>
   <string name="menu_as_unread">Marquer comme non lu</string>
   <string name="menu_as_read">Marquer comme lu</string>
   <string name="menu_all_as_unread">Marquer tout comme non lus</string>
@@ -231,4 +235,17 @@
   <string name="copy_empty_string">Aucun texte à copier</string>
   <string name="attach_add_calendar_events">Événement de l\'agenda</string>
   <string name="calendar_attachment_activity_not_found">Impossible de trouver une application d\'agenda compatible</string>
+  <string name="pref_title_mms_notification_vibrate_pattern">Style de vibration</string>
+  <string name="pref_summary_mms_notification_vibrate_pattern">Modifier le style de vibration</string>
+  <string name="pref_mms_notification_vibrate_normal">Normal</string>
+  <string name="pref_mms_notification_vibrate_med_vib">Vibration moyenne</string>
+  <string name="pref_mms_notification_vibrate_long_vib">Vibration longue</string>
+  <string name="pref_mms_notification_vibrate_mult_short">Plusieurs courtes</string>
+  <string name="pref_mms_notification_vibrate_mult_long">Plusieurs longues</string>
+  <string name="menu_insert_smiley">Insérer une émoticône</string>
+  <string name="pref_title_enable_emoticons">Support des émoticônes</string>
+  <string name="pref_summary_enable_emoticons">Substituer les émoticônes avec des équivalents graphiques</string>
+  <string name="menu_conversation_options">Options de conversation</string>
+  <string name="pref_title_reset_convopt_to_default">Rétablir par défaut</string>
+  <string name="pref_summary_reset_convopt_to_default">Réinitialise les paramètres de la conversation avec ceux de l\'application</string>
 </resources>

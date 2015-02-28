@@ -54,6 +54,10 @@
   <string name="add_to_blacklist_message">Futuras mensagens de %s serão bloqueadas</string>
   <string name="alert_dialog_yes">Sim</string>
   <string name="alert_dialog_no">Não</string>
+  <string name="pref_title_unicode_stripping">Retirar unicode</string>
+  <string name="pref_unicode_stripping_leave_intact">Manter caracteres intactos</string>
+  <string name="pref_unicode_stripping_non_encodable">Retirar caracteres não codificáveis</string>
+  <string name="pref_unicode_stripping_all">Retirar todos os caracteres unicode</string>
   <string name="menu_as_unread">Marcar como não lida</string>
   <string name="menu_as_read">Marcar como lida</string>
   <string name="menu_all_as_unread">Marcar todas como não lidas</string>
@@ -231,4 +235,17 @@
   <string name="copy_empty_string">Nenhum texto para copiar</string>
   <string name="attach_add_calendar_events">Evento do calendário</string>
   <string name="calendar_attachment_activity_not_found">Não foi possível encontrar uma aplicação de calendário</string>
+  <string name="pref_title_mms_notification_vibrate_pattern">Padrão de vibração</string>
+  <string name="pref_summary_mms_notification_vibrate_pattern">Trocar o padrão de vibração</string>
+  <string name="pref_mms_notification_vibrate_normal">Normal</string>
+  <string name="pref_mms_notification_vibrate_med_vib">Vibração média</string>
+  <string name="pref_mms_notification_vibrate_long_vib">Vibração longa</string>
+  <string name="pref_mms_notification_vibrate_mult_short">Múltiplas e curtas</string>
+  <string name="pref_mms_notification_vibrate_mult_long">Múltiplas e longas</string>
+  <string name="menu_insert_smiley">Inserir emoticon</string>
+  <string name="pref_title_enable_emoticons">Suporte a emoticons</string>
+  <string name="pref_summary_enable_emoticons">Substituir emticons de texto pela imagem equivalente</string>
+  <string name="menu_conversation_options">Opções de conversa</string>
+  <string name="pref_title_reset_convopt_to_default">Restaurar ao padrão</string>
+  <string name="pref_summary_reset_convopt_to_default">Redefine a configuração de conversa para a configuração padrão do aplicativo</string>
 </resources>

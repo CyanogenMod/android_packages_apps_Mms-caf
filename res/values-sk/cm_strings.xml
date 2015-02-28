@@ -54,6 +54,10 @@
   <string name="add_to_blacklist_message">Ďalšie správy od %s budú blokované</string>
   <string name="alert_dialog_yes">Áno</string>
   <string name="alert_dialog_no">Nie</string>
+  <string name="pref_title_unicode_stripping">Odstrániť znaky Unicode</string>
+  <string name="pref_unicode_stripping_leave_intact">Ponechať znaky bezo zmeny</string>
+  <string name="pref_unicode_stripping_non_encodable">Odstrániť nekódovateľné znaky</string>
+  <string name="pref_unicode_stripping_all">Odstrániť všetky znaky Unicode</string>
   <string name="menu_as_unread">Označiť ako neprečítané</string>
   <string name="menu_as_read">Označiť ako prečítané</string>
   <string name="menu_all_as_unread">Označiť všetko ako neprečítané</string>
@@ -231,4 +235,17 @@
   <string name="copy_empty_string">Žiaden text na kopírovanie</string>
   <string name="attach_add_calendar_events">Udalosť z kalendára</string>
   <string name="calendar_attachment_activity_not_found">Nepodarilo sa nájsť aplikáciu Kalendár</string>
+  <string name="pref_title_mms_notification_vibrate_pattern">Vzor vibrácií</string>
+  <string name="pref_summary_mms_notification_vibrate_pattern">Zmeniť vzor vibrácií</string>
+  <string name="pref_mms_notification_vibrate_normal">Normálny</string>
+  <string name="pref_mms_notification_vibrate_med_vib">Stredné vibrovanie</string>
+  <string name="pref_mms_notification_vibrate_long_vib">Dlhé vibrovanie</string>
+  <string name="pref_mms_notification_vibrate_mult_short">Viacnásobné krátke vibrovanie</string>
+  <string name="pref_mms_notification_vibrate_mult_long">Viacnásobné dlhé vibrovanie</string>
+  <string name="menu_insert_smiley">Vložiť smajlíka</string>
+  <string name="pref_title_enable_emoticons">Podpora emotikonov</string>
+  <string name="pref_summary_enable_emoticons">Nahradiť textové emotikony s grafickými ekvivalentami</string>
+  <string name="menu_conversation_options">Možnosti konverzácie</string>
+  <string name="pref_title_reset_convopt_to_default">Obnoviť na predvolené</string>
+  <string name="pref_summary_reset_convopt_to_default">Obnoviť nastavenie konverzácie na úroveň nastavenia aplikácie</string>
 </resources>

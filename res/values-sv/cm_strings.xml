@@ -46,6 +46,7 @@
   <string name="menu_as_unread">Markera som oläst</string>
   <string name="menu_all_as_unread">Markera alla som olästa</string>
   <string name="confirm_mark_unread_dialog_title">Markera som oläst?</string>
+  <string name="confirm_mark_read_dialog_title">Markera som läst?</string>
   <string name="confirm_mark_unread_all_conversations">Alla trådar kommer att markeras som oläst.</string>
   <string name="select_recipients">Välj mottagare</string>
   <string name="no_recipients">Hittade inga kontakter</string>
@@ -70,6 +71,7 @@
   <string name="contact_info_text_as_name">Namn:</string>
   <string name="contact_info_text_as_phone">Tel:</string>
   <string name="contact_info_text_as_email">E-post:</string>
+  <string name="memory_status_title">Minnesstatus</string>
   <string name="sms_validity_period_not_set">Inte anget</string>
   <string name="sms_validity_period_one_hour">1 timme</string>
   <string name="sms_validity_period_six_hours">6 timmar</string>
@@ -100,4 +102,7 @@
   <string name="pref_title_cdma_priority">Prioritet för meddelande</string>
   <string name="pref_sms_store_phone">Telefon</string>
   <string name="pref_sms_store_card">SIM-kort</string>
+  <string name="menu_delete_all_entries">Ta bort alla</string>
+  <string name="perform_backup_title">Exporterar</string>
+  <string name="perform_restore_title">Importerar</string>
 </resources>

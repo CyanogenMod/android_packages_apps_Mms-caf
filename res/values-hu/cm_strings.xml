@@ -54,6 +54,10 @@
   <string name="add_to_blacklist_message">%s számról érkező üzenetek blokkolva lesznek</string>
   <string name="alert_dialog_yes">Igen</string>
   <string name="alert_dialog_no">Nem</string>
+  <string name="pref_title_unicode_stripping">Unicode beállítások</string>
+  <string name="pref_unicode_stripping_leave_intact">Ne módosítsa a karaktereket</string>
+  <string name="pref_unicode_stripping_non_encodable">Helyettesítse a nem kódolható karaktereket</string>
+  <string name="pref_unicode_stripping_all">Helyettesítse az összes unicode karaktert</string>
   <string name="menu_as_unread">Megjelölés olvasatlanként</string>
   <string name="menu_as_read">Megjelölés olvasottként</string>
   <string name="menu_all_as_unread">Mindet olvasatlanként jelöl</string>
@@ -231,4 +235,17 @@
   <string name="copy_empty_string">Nincs másolható szöveg</string>
   <string name="attach_add_calendar_events">Naptár esemény</string>
   <string name="calendar_attachment_activity_not_found">Nem található támogatott Naptár alklamzás</string>
+  <string name="pref_title_mms_notification_vibrate_pattern">Rezgésminta</string>
+  <string name="pref_summary_mms_notification_vibrate_pattern">Rezgésminta beállítása</string>
+  <string name="pref_mms_notification_vibrate_normal">Normál</string>
+  <string name="pref_mms_notification_vibrate_med_vib">Közepes</string>
+  <string name="pref_mms_notification_vibrate_long_vib">Hosszú</string>
+  <string name="pref_mms_notification_vibrate_mult_short">Többszöri rövid</string>
+  <string name="pref_mms_notification_vibrate_mult_long">Többszöri hosszú</string>
+  <string name="menu_insert_smiley">Hangulatjel beszúrása</string>
+  <string name="pref_title_enable_emoticons">Hangulatjel támogatás</string>
+  <string name="pref_summary_enable_emoticons">Helyettesítse a szövegbeli hangulatát grafikus megfelelőjével</string>
+  <string name="menu_conversation_options">Beszélgetés beállítások</string>
+  <string name="pref_title_reset_convopt_to_default">Beállítások visszaállítása alaphelyzetbe</string>
+  <string name="pref_summary_reset_convopt_to_default">Visszaállítja a beszélgetés beállításokat az alkalmazáson belüli alapbeállításokra</string>
 </resources>
