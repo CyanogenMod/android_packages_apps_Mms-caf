@@ -85,15 +85,24 @@
                         android:id="@+id/sim_indicator_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingEnd="3dip"
+                        android:paddingEnd="4dip"
                         android:tint="?android:attr/textColorSecondary"
                         android:visibility="gone"
                         android:layout_gravity="center_vertical"/>
 
+                    <TextView
+                        android:id="@+id/sim_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:paddingEnd="16dip"
+                        android:visibility="gone"
+                        android:textAppearance="@android:style/TextAppearance.Material.Caption" />
+
                     <TextView android:id="@+id/date_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingEnd="3dip"
+                        android:paddingEnd="4dip"
                         android:textAppearance="@android:style/TextAppearance.Material.Caption" />
 
                     <ImageView
@@ -101,7 +110,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_lock_message_sms"
-                        android:paddingEnd="3dip"
+                        android:paddingEnd="4dip"
                         android:visibility="gone" />
 
                     <ImageView
@@ -109,7 +118,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_sms_mms_delivered"
-                        android:paddingEnd="3dip"
+                        android:paddingEnd="4dip"
                         android:visibility="gone" />
 
                     <ImageView

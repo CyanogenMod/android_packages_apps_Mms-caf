@@ -142,6 +142,7 @@ public class MessageListItem extends ZoomMessageListItem implements
     private MessageItem mMessageItem;
     private String mDefaultCountryIso;
     private TextView mDateView;
+    private TextView mSimNameView;
     public View mMessageBlock;
     private CheckableQuickContactBadge mAvatar;
     static private RoundedBitmapDrawable sDefaultContactImage;
@@ -182,6 +183,7 @@ public class MessageListItem extends ZoomMessageListItem implements
         mDetailsIndicator = (ImageView) findViewById(R.id.details_indicator);
         mAvatar = (CheckableQuickContactBadge) findViewById(R.id.avatar);
         mSimIndicatorView = (ImageView) findViewById(R.id.sim_indicator_icon);
+        mSimNameView = (TextView) findViewById(R.id.sim_name);
         mMessageBlock = findViewById(R.id.message_block);
         mSimMessageAddress = (TextView) findViewById(R.id.sim_message_address);
         mMmsLayout = (LinearLayout) findViewById(R.id.mms_layout_view_parent);
@@ -276,7 +278,6 @@ public class MessageListItem extends ZoomMessageListItem implements
                                 + mContext.getString(R.string.kilobyte);
 
         mBodyTextView.setText(formatMessage(mMessageItem, null,
-                                            mMessageItem.mPhoneId,
                                             mMessageItem.mSubject,
                                             mMessageItem.mHighlight,
                                             mMessageItem.mTextContentType));
@@ -373,12 +374,19 @@ public class MessageListItem extends ZoomMessageListItem implements
         updateAvatarView(mMessageItem.mAddress, false);
     }
 
-    private void updateSimIndicatorView(int subscription) {
-        if (MessageUtils.isMsimIccCardActive() && subscription >= 0) {
-            Drawable mSimIndicatorIcon = MessageUtils.getMultiSimIcon(mContext,
-                    subscription);
+    private void updateSimIndicatorView(int phoneId) {
+        if (MessageUtils.isMsimIccCardActive() && phoneId >= 0) {
+            Drawable mSimIndicatorIcon = MessageUtils.getMultiSimIcon(mContext, phoneId);
             mSimIndicatorView.setImageDrawable(mSimIndicatorIcon);
             mSimIndicatorView.setVisibility(View.VISIBLE);
+
+            List<SubInfoRecord> sir = SubscriptionManager.getSubInfoUsingSlotId(phoneId);
+            if (sir != null && !sir.isEmpty()) {
+                mSimNameView.setText(sir.get(0).displayName);
+                mSimNameView.setVisibility(View.VISIBLE);
+            } else {
+                mSimNameView.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -472,7 +480,6 @@ public class MessageListItem extends ZoomMessageListItem implements
         if (formattedMessage == null) {
             formattedMessage = formatMessage(mMessageItem,
                                              mMessageItem.mBody,
-                                             mMessageItem.mPhoneId,
                                              mMessageItem.mSubject,
                                              mMessageItem.mHighlight,
                                              mMessageItem.mTextContentType);
@@ -708,21 +715,9 @@ public class MessageListItem extends ZoomMessageListItem implements
     ForegroundColorSpan mColorSpan = null;  // set in ctor
 
     private CharSequence formatMessage(MessageItem msgItem, String body,
-                                       int phoneId, String subject, Pattern highlight,
+                                       String subject, Pattern highlight,
                                        String contentType) {
         SpannableStringBuilder buf = new SpannableStringBuilder();
-
-        if (TelephonyManager.getDefault().getPhoneCount() > 1) {
-            //SMS/MMS is operating on PhoneId which is 0, 1..
-            //Sub ID will be 1, 2, ...
-            List<SubInfoRecord> sir = SubscriptionManager.getSubInfoUsingSlotId(phoneId);
-            String displayName =
-                    ((sir != null) && (sir.size() > 0)) ? sir.get(0).displayName : "";
-
-            Log.d(TAG, "PhoneID: " + phoneId + " displayName " + displayName);
-            buf.append(displayName);
-            buf.append("\n");
-        }
 
         boolean hasSubject = !TextUtils.isEmpty(subject);
         if (hasSubject) {

@@ -537,6 +537,7 @@ public class MessagingNotification {
     public static final class NotificationInfo implements Parcelable {
         public final Intent mClickIntent;
         public final String mMessage;
+        public final String mSimName;
         public final CharSequence mTicker;
         public final long mTimeMillis;
         public final String mTitle;
@@ -554,6 +555,7 @@ public class MessagingNotification {
          * @param subject text of mms subject
          * @param ticker text displayed ticker-style across the notification, typically formatted
          * as sender: message
+         * @param simName name of receiving SIM or null if single-SIM
          * @param timeMillis date the message was received
          * @param title for a single message, this is the sender
          * @param attachmentBitmap a bitmap of an attachment, such as a picture or video
@@ -562,7 +564,7 @@ public class MessagingNotification {
          * @param threadId thread this message belongs to
          */
         public NotificationInfo(boolean isSms,
-                Intent clickIntent, String message, String subject,
+                Intent clickIntent, String message, String subject, String simName,
                 CharSequence ticker, long timeMillis, String title,
                 Bitmap attachmentBitmap, Contact sender,
                 int attachmentType, long threadId) {
@@ -570,6 +572,7 @@ public class MessagingNotification {
             mClickIntent = clickIntent;
             mMessage = message;
             mSubject = subject;
+            mSimName = simName;
             mTicker = ticker;
             mTimeMillis = timeMillis;
             mTitle = title;
@@ -693,6 +696,7 @@ public class MessagingNotification {
             arg0.writeParcelable(mClickIntent, 0);
             arg0.writeString(mMessage);
             arg0.writeString(mSubject);
+            arg0.writeString(mSimName);
             arg0.writeCharSequence(mTicker);
             arg0.writeLong(mTimeMillis);
             arg0.writeString(mTitle);
@@ -706,6 +710,7 @@ public class MessagingNotification {
             mClickIntent = in.readParcelable(Intent.class.getClassLoader());
             mMessage = in.readString();
             mSubject = in.readString();
+            mSimName = in.readString();
             mTicker = in.readCharSequence();
             mTimeMillis = in.readLong();
             mTitle = in.readString();
@@ -1000,14 +1005,15 @@ public class MessagingNotification {
         Intent clickIntent = getClickIntent(context, isSms, threadId);
 
         String senderInfo = buildTickerMessage(
-                context, address, null, null, phoneId).toString();
+                context, address, null, null).toString();
         String senderInfoName = senderInfo.substring(
                 0, senderInfo.length());
+        String simName = determineSimName(phoneId);
         CharSequence ticker = buildTickerMessage(
-                context, address, subject, message, phoneId);
+                context, address, subject, message);
 
         return new NotificationInfo(isSms,
-                clickIntent, message, subject, ticker, timeMillis,
+                clickIntent, message, subject, simName, ticker, timeMillis,
                 senderInfoName, attachmentBitmap, contact, attachmentType, threadId);
     }
 
@@ -1055,14 +1061,15 @@ public class MessagingNotification {
 
         clickIntent.putExtra(MessageUtils.SUBSCRIPTION_KEY, phoneId);
         String senderInfo = buildTickerMessage(
-                context, address, null, null, phoneId).toString();
+                context, address, null, null).toString();
         String senderInfoName = senderInfo.substring(
                 0, senderInfo.length());
+        String simName = determineSimName(phoneId);
         CharSequence ticker = buildTickerMessage(
-                context, address, subject, message, phoneId);
+                context, address, subject, message);
 
         return new NotificationInfo(isSms,
-                clickIntent, message, subject, ticker, timeMillis,
+                clickIntent, message, subject, simName, ticker, timeMillis,
                 senderInfoName, attachmentBitmap, contact, attachmentType, 0);
     }
 
@@ -1156,6 +1163,7 @@ public class MessagingNotification {
         } else {    // same thread, single or multiple messages
             title = mostRecentNotification.mTitle;
             avatar = mostRecentNotification.mSender.getAvatar(context);
+            noti.setSubText(mostRecentNotification.mSimName); // no-op in single SIM case
             if (avatar != null) {
                 // Show the sender's avatar as the big icon. Contact bitmaps are 96x96 so we
                 // have to scale 'em up to 128x128 to fill the whole notification large icon.
@@ -1453,25 +1461,30 @@ public class MessagingNotification {
         return result;
     }
 
+    private static String determineSimName(int phoneId) {
+        if (TelephonyManager.getDefault().getPhoneCount() <= 1) {
+            return null;
+        }
+
+        //SMS/MMS is operating based of PhoneId which is 0, 1..
+        List<SubInfoRecord> sir = SubscriptionManager.getSubInfoUsingSlotId(phoneId);
+        if (sir == null || sir.isEmpty()) {
+            return null;
+        }
+
+        return sir.get(0).displayName;
+    }
+
     protected static CharSequence buildTickerMessage(
-            Context context, String address, String subject, String body, int phoneId) {
+            Context context, String address, String subject, String body) {
         String displayAddress = Contact.get(address, true).getName();
 
         StringBuilder buf = new StringBuilder(
                 displayAddress == null
                 ? ""
                 : displayAddress.replace('\n', ' ').replace('\r', ' '));
-        buf.append(':').append(' ');
-
-        if ((TelephonyManager.getDefault().getPhoneCount()) > 1) {
-            //SMS/MMS is operating based of PhoneId which is 0, 1..
-            List<SubInfoRecord> sir = SubscriptionManager.getSubInfoUsingSlotId(phoneId);
-
-            String displayName = ((sir != null) && (sir.size() > 0)) ? sir.get(0).displayName : "";
-
-            Log.e(TAG, "PhoneID : " + phoneId + " displayName " + displayName);
-            buf.append(displayName);
-            buf.append("-");
+        if (!TextUtils.isEmpty(subject) && !TextUtils.isEmpty(body)) {
+            buf.append(':').append(' ');
         }
 
         int offset = buf.length();
