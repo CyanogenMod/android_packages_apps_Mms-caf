@@ -204,6 +204,7 @@ public class SlideshowEditActivity extends ListActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mSlideListAdapter.cancelBackgroundLoading();
         cleanupSlideshowModel();
     }
 
@@ -361,6 +362,7 @@ public class SlideshowEditActivity extends ListActivity {
         private final int mResource;
         private final LayoutInflater mInflater;
         private final SlideshowModel mSlideshow;
+        private Presenter mPresenter;
 
         public SlideListAdapter(Context context, int resource,
                 SlideshowModel slideshow) {
@@ -393,13 +395,26 @@ public class SlideshowEditActivity extends ListActivity {
             text.setText(mContext.getResources().
                          getQuantityString(R.plurals.slide_duration, dur, dur));
 
-            Presenter presenter = PresenterFactory.getPresenter(
-                    "SlideshowPresenter", mContext, slideListItemView, mSlideshow);
-            ((SlideshowPresenter) presenter).setLocation(position);
-            presenter.present(null);
+            if (mPresenter == null) {
+                mPresenter = PresenterFactory.getPresenter(
+                        "SlideshowPresenter", mContext, slideListItemView, mSlideshow);
+            } else {
+                mPresenter.setModel(mSlideshow);
+                mPresenter.setView(slideListItemView);
+            }
+            ((SlideshowPresenter) mPresenter).setLocation(position);
+            mPresenter.present(null);
 
             return slideListItemView;
         }
+
+        public void cancelBackgroundLoading() {
+            if (mPresenter != null) {
+                mPresenter.cancelBackgroundLoading();
+                mPresenter = null;
+            }
+        }
+
     }
 
     private final IModelChangedObserver mModelChangedObserver =
