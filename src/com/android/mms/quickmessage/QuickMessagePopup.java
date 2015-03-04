@@ -450,6 +450,9 @@ public class QuickMessagePopup extends Activity implements
         if (!mWakeAndUnlock) {
             return;
         }
+        if (mScreenUnlocked) {
+            return; // already unlocked
+        }
 
         // See if the screen is locked or if no lock set and the screen is off
         // and get the wake lock to turn on the screen.
