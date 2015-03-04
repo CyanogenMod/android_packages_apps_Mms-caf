@@ -84,9 +84,13 @@
   <string name="alert_dialog_yes">ඔව්</string>
   <string name="alert_dialog_no">නැහැ</string>
   <string name="menu_as_unread">නොකියවූ ලෙස සලකුණු කරන්න</string>
+  <string name="menu_as_read">කියවූ ලෙස සලකුණු කරන්න</string>
   <string name="menu_all_as_unread">සියල්ල නොකියවූ ලෙස සලකුණු කරන්න</string>
+  <string name="menu_all_as_read">සියල්ල කියවූ ලෙස සලකුණු කරන්න</string>
   <string name="confirm_mark_unread_dialog_title">නොකියවූ ලෙස සලකුණු කරන්නද?</string>
+  <string name="confirm_mark_read_dialog_title">කියවූ ලෙස සලකුණු කරන්නද?</string>
   <string name="confirm_mark_unread_all_conversations">සියලු පොටවල් නොකියවූ ලෙස සලකුණු කෙරෙණු ඇත.</string>
+  <string name="confirm_mark_read_all_conversations">සියලු සංවාද කියවූ ලෙස සලකුණු කෙරෙණු ඇත.</string>
   <string name="select_recipients">ලබන්නන් තෝරන්න</string>
   <string name="groups_header">කණ්ඩායම්</string>
   <string name="no_recipients">කිසිඳු සබඳතාවයක් සොයාගත්තේ නැත</string>

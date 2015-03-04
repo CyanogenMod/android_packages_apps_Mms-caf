@@ -84,9 +84,13 @@
   <string name="alert_dialog_yes">Так</string>
   <string name="alert_dialog_no">Ні</string>
   <string name="menu_as_unread">Позначити як непрочитано</string>
+  <string name="menu_as_read">Позначити як прочитане</string>
   <string name="menu_all_as_unread">Помітити все як непрочитане</string>
+  <string name="menu_all_as_read">Позначити всі як прочитані</string>
   <string name="confirm_mark_unread_dialog_title">Позначити як непрочитано?</string>
+  <string name="confirm_mark_read_dialog_title">Позначити як прочитані?</string>
   <string name="confirm_mark_unread_all_conversations">Усі лацюжки будуть позначені як непрочитані.</string>
+  <string name="confirm_mark_read_all_conversations">Усі розмови будуть позначені як прочитані.</string>
   <string name="select_recipients">Оберіть отримувачів</string>
   <string name="groups_header">Групи</string>
   <string name="no_recipients">Контактів не знайдено</string>

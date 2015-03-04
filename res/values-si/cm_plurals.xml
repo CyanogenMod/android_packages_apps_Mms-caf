@@ -28,4 +28,8 @@
     <item quantity="one"><xliff:g id="number">%1$s</xliff:g> සංවාදයක් නොකියවූ ලෙස සලකුණු කෙරේ.</item>
     <item quantity="other">සංවාද <xliff:g id="number" example="15">%1$s</xliff:g> නොකියවූ ලෙස සලකුණු කෙරේ.</item>
   </plurals>
+  <plurals name="confirm_mark_read_conversation">
+    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> සංවාදයක් කියවූ ලෙස සලකුණු කෙරේ.</item>
+    <item quantity="other">සංවාද <xliff:g id="number" example="15">%1$s</xliff:g> ක් කියවූ ලෙස සලකුණු කෙරේ.</item>
+  </plurals>
 </resources>
