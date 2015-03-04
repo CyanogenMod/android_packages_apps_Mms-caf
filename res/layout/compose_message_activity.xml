@@ -157,7 +157,7 @@
             </ScrollView>
 
             <!-- Divider -->
-            <View android:background="#eeeeee"
+            <View android:background="@color/compose_message_divider_color"
                 android:layout_width="match_parent"
                 android:layout_height="1dp" />
 
@@ -167,10 +167,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                android:background="#fff" >
+                android:background="@color/compose_message_background_color" >
 
                 <EditText
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/compose_message_text_color"
                     android:id="@+id/embedded_text_editor"
                     android:layout_width="0dip"
                     android:layout_gravity="bottom"
@@ -200,7 +200,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal|bottom"
-                        android:textColor="#cc333333"
+                        android:textColor="@color/compose_message_text_counter"
                         android:textSize="12sp"
                         android:textStyle="bold"
                         android:paddingStart="3dip"
@@ -246,10 +246,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                android:background="#fff" >
+                android:background="@color/compose_message_background_color" >
 
                 <EditText
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/compose_message_text_color"
                     android:id="@+id/embedded_text_editor_btnstyle"
                     android:layout_width="match_parent"
                     android:layout_gravity="bottom"
@@ -290,7 +290,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="center_horizontal|bottom"
                             android:layout_gravity="center_horizontal"
-                            android:textColor="#cc333333"
+                            android:textColor="@color/compose_message_text_counter"
                             android:textSize="12sp"
                             android:textStyle="bold"
                             android:paddingStart="3dip"
@@ -371,7 +371,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="center_horizontal|bottom"
                             android:layout_gravity="center_horizontal"
-                            android:textColor="#cc333333"
+                            android:textColor="@color/compose_message_text_counter"
                             android:textSize="12sp"
                             android:textStyle="bold"
                             android:paddingStart="3dip"
