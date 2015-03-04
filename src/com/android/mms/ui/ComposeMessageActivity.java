@@ -5884,16 +5884,6 @@ public class ComposeMessageActivity extends Activity
             showDeliveryReport(c.getLong(COLUMN_ID), c.getString(COLUMN_MSG_TYPE));
         }
 
-        private void copyMessageText() {
-            StringBuilder sBuilder = new StringBuilder();
-            for (Integer pos : mSelectedPos) {
-                Cursor c = (Cursor) getListView().getAdapter().getItem(pos);
-                sBuilder.append(c.getString(COLUMN_SMS_BODY));
-                sBuilder.append(LINE_BREAK);
-            }
-            copyToClipboard(sBuilder.toString());
-        }
-
         private void resendCheckedMessage() {
             Cursor c = (Cursor) getListView().getAdapter().getItem(mSelectedPos.get(0));
             resendMessage(mMsgListAdapter.getCachedMessageItem(c.getString(COLUMN_MSG_TYPE),
@@ -5946,9 +5936,6 @@ public class ComposeMessageActivity extends Activity
                 break;
             case R.id.delete:
                 confirmDeleteDialog(new DeleteMessagesListener(), mCheckedCount != mUnlockedCount);
-                break;
-            case R.id.copy:
-                copyMessageText();
                 break;
             case R.id.lock:
                 if (item.getTitle().equals(
@@ -6182,7 +6169,6 @@ public class ComposeMessageActivity extends Activity
                         mode.getMenu().findItem(R.id.forward).setVisible(true);
                     }
                     mode.getMenu().findItem(R.id.copy_to_sim).setVisible(true);
-                    mode.getMenu().findItem(R.id.copy).setVisible(true);
                 }
             } else {
                 menu.findItem(R.id.detail).setVisible(true);
@@ -6209,7 +6195,6 @@ public class ComposeMessageActivity extends Activity
                     mode.getMenu().findItem(R.id.copy).setVisible(false);
                 } else {
                     mode.getMenu().findItem(R.id.copy_to_sim).setVisible(true);
-                    mode.getMenu().findItem(R.id.copy).setVisible(true);
                 }
 
                 mode.getMenu().findItem(R.id.report).setVisible(isDeliveryReportMsg(position));
