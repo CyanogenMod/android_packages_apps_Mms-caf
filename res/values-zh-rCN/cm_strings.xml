@@ -85,4 +85,5 @@
     <string name="blacklist_notification">不要收短信从这个陌生号码</string>
     <string name="start_new_message_button">新信息</string>
     <string name="no_recipients">未找到联系人</string>
+    <string name="attach_add_calendar_events">日历事件</string>
 </resources>
