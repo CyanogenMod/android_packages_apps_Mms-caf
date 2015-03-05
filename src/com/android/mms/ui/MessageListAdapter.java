@@ -105,7 +105,9 @@ public class MessageListAdapter extends CursorAdapter {
         Mms.LOCKED,
         Mms.STATUS,
         Mms.TEXT_ONLY,
-        "rcs_top_time"
+        Threads.RECIPIENT_IDS,  // add for obtaining address of MMS
+        "rcs_top_time",
+        "is_rcs",
     };
 
     public static final String[] MAILBOX_PROJECTION = new String[] {
@@ -152,7 +154,6 @@ public class MessageListAdapter extends CursorAdapter {
         Mms.LOCKED,
         Mms.STATUS,
         Mms.TEXT_ONLY,
-        Mms.PHONE_ID,   // add for DSDS
         Threads.RECIPIENT_IDS  // add for obtaining address of MMS
     };
 
@@ -230,9 +231,9 @@ public class MessageListAdapter extends CursorAdapter {
     public static final int COLUMN_MMS_LOCKED   = 37;
     public static final int COLUMN_MMS_STATUS   = 38;
     static final int COLUMN_MMS_TEXT_ONLY       = 39;
-    static final int COLUMN_MMS_SUB_ID          = 40;
-    static final int COLUMN_RECIPIENT_IDS       = 41;
-    public static final int COLUMN_TOP_TIME     = 42;
+    static final int COLUMN_RECIPIENT_IDS       = 40;
+    public static final int COLUMN_TOP_TIME     = 41;
+    public static final int COLUMN_IS_RCS       = 42;
 
     private static final int CACHE_SIZE         = 50;
 
@@ -576,7 +577,6 @@ public class MessageListAdapter extends CursorAdapter {
         public int mColumnMmsLocked;
         public int mColumnMmsStatus;
         public int mColumnMmsTextOnly;
-        public int mColumnMmsSubId;
         public int mColumnRecipientIds;
         public int mColumnRcsMsgType;
         public int mColumnRcsPath;
@@ -593,6 +593,8 @@ public class MessageListAdapter extends CursorAdapter {
         public int mColumnRcsChatType;
         public int mColumnRcsMessageId;
         public int mColumnTopTime;
+        public int mColumnIsRcs;
+
         public ColumnsMap() {
             mColumnMsgType            = COLUMN_MSG_TYPE;
             mColumnMsgId              = COLUMN_ID;
@@ -615,7 +617,6 @@ public class MessageListAdapter extends CursorAdapter {
             mColumnMmsLocked          = COLUMN_MMS_LOCKED;
             mColumnMmsStatus          = COLUMN_MMS_STATUS;
             mColumnMmsTextOnly        = COLUMN_MMS_TEXT_ONLY;
-            mColumnMmsSubId           = COLUMN_MMS_SUB_ID;
             mColumnRecipientIds       = COLUMN_RECIPIENT_IDS;
             mColumnRcsPath            = COLUMN_RCS_PATH;
             mColumnRcsThumbPath       = COLUMN_RCS_THUMB_PATH;
@@ -632,6 +633,7 @@ public class MessageListAdapter extends CursorAdapter {
             mColumnRcsChatType        = COLUMN_CHAT_TYPE;
             mColumnRcsMessageId       = COLUMN_RCS_MESSAGE_ID;
             mColumnTopTime            = COLUMN_TOP_TIME;
+            mColumnIsRcs              = COLUMN_IS_RCS;
         }
 
         public ColumnsMap(Cursor cursor) {
@@ -763,6 +765,12 @@ public class MessageListAdapter extends CursorAdapter {
             }
 
             try {
+                mColumnIsRcs= cursor.getColumnIndexOrThrow("is_rcs");
+            } catch (IllegalArgumentException e) {
+                Log.w("colsMap", e.getMessage());
+            }
+
+            try {
                 mColumnSmsDate = cursor.getColumnIndexOrThrow(Sms.DATE);
             } catch (IllegalArgumentException e) {
                 Log.w("colsMap", e.getMessage());
@@ -854,12 +862,6 @@ public class MessageListAdapter extends CursorAdapter {
 
             try {
                 mColumnMmsTextOnly = cursor.getColumnIndexOrThrow(Mms.TEXT_ONLY);
-            } catch (IllegalArgumentException e) {
-                Log.w("colsMap", e.getMessage());
-            }
-
-            try {
-                mColumnMmsSubId = cursor.getColumnIndexOrThrow(Mms.PHONE_ID);
             } catch (IllegalArgumentException e) {
                 Log.w("colsMap", e.getMessage());
             }

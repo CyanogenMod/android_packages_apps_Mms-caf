@@ -282,13 +282,13 @@ public class MessageListItem extends ZoomMessageListItem implements
             mBodyTopTextView.setVisibility(View.GONE);
             mBodyTextView = mBodyButtomTextView;
         }
-        if (mMessageItem.mRcsId == RcsUtils.SMS_DEFAULT_RCS_ID) {
+        if (!isRcsMessage()) {
             mBodyTextView.setVisibility(View.VISIBLE);
         }
     }
 
     private void updateNameTextView() {
-        if (mMessageItem.mRcsId != RcsUtils.SMS_DEFAULT_RCS_ID) {
+        if (isRcsMessage()) {
             if (mMessageItem.mRcsChatType == SuntekMessageData.CHAT_TYPE_GROUP
                     && mMessageItem.mRcsType != SuntekMessageData.MSG_TYPE_NOTIFICATION) {
                 if (mNameView != null) {
@@ -355,7 +355,7 @@ public class MessageListItem extends ZoomMessageListItem implements
     }
 
     private boolean isRcsMessage() {
-        return mMessageItem.mRcsId > 0;
+        return mMessageItem.mIsRcs == RcsUtils.IS_RCS_TRUE;
     }
 
     private void bindRcsMessage() {
@@ -770,7 +770,6 @@ public class MessageListItem extends ZoomMessageListItem implements
             }
             mBodyTextView.setText(mPosition + ": " + debugText);
         }
-
         // If we're in the process of sending a message (i.e. pending), then we show a "SENDING..."
         // string in place of the timestamp.
         if (!sameItem || haveLoadedPdu) {
@@ -1125,7 +1124,7 @@ public class MessageListItem extends ZoomMessageListItem implements
                 mMessageItem.isOutgoingMessage() &&
                 mMessageItem.isFailedMessage() ) {
             //if message is rcsMessage except text,return.
-            if( mMessageItem.mRcsId != RcsUtils.SMS_DEFAULT_RCS_ID && mMessageItem.mRcsType != RcsUtils.RCS_MSG_TYPE_TEXT ){
+            if( isRcsMessage() && mMessageItem.mRcsType != RcsUtils.RCS_MSG_TYPE_TEXT ){
                 return;
             }
             // Assuming the current message is a failed one, reload it into the compose view so
