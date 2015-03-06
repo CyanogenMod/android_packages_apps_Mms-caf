@@ -381,6 +381,5 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         mAvatarView.assignContactUri(null);
         mAvatarView.setImageDrawable(drawable);
         mAvatarView.setVisibility(View.VISIBLE);
-        return;
     }
 }
