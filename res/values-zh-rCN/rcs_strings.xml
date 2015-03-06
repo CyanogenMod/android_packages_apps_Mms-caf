@@ -98,11 +98,11 @@
     <string name="cannot_send_video">不能发送时长小于1秒的视频。</string>
     <string name="cannot_send_audio">不能发送时长小于1秒的语音。</string>
 
-    <string name="del_image_action">Image manipulation</string>
-    <string name="input_quality">Please enter the scaling quality</string>
-    <string name="input_no_fit">Input is not legal</string>
-    <string name="send_comfirm_ok">determine</string>
-    <string name="send_comfirm_cancel">cancel</string>
+    <string name="del_image_action">图片操作</string>
+    <string name="input_quality">请输入缩放质量值</string>
+    <string name="input_no_fit">输入不合法</string>
+    <string name="send_comfirm_ok">确定</string>
+    <string name="send_comfirm_cancel">取消</string>
     <string name="top_conversation">置顶</string>
     <string name="cancel_top_conversation">取消置顶</string>
     <string name="im_only">只发即时消息</string>
