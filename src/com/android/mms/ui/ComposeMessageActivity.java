@@ -7488,26 +7488,6 @@ public class ComposeMessageActivity extends Activity
             showDeliveryReport(c.getLong(COLUMN_ID), c.getString(COLUMN_MSG_TYPE));
         }
 
-        private void copyMessageText() {
-            StringBuilder sBuilder = new StringBuilder();
-            for (Integer pos : mSelectedPos) {
-                Cursor c = (Cursor) getListView().getAdapter().getItem(pos);
-                String type = c.getString(COLUMN_MSG_TYPE);
-                if (type.equals("mms")) {
-                    sBuilder.append(mMsgListAdapter.getCachedBodyForPosition(pos));
-                } else {
-                    sBuilder.append(c.getString(COLUMN_SMS_BODY));
-                }
-                sBuilder.append(LINE_BREAK);
-            }
-            if (!TextUtils.isEmpty(sBuilder.toString())) {
-                copyToClipboard(sBuilder.toString());
-            } else {
-                Toast.makeText(ComposeMessageActivity.this, R.string.copy_empty_string,
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
-
         private void resendCheckedMessage() {
             Cursor c = (Cursor) getListView().getAdapter().getItem(mSelectedPos.get(0));
             resendMessage(mMsgListAdapter.getCachedMessageItem(c.getString(COLUMN_MSG_TYPE),
@@ -7591,9 +7571,6 @@ public class ComposeMessageActivity extends Activity
                 return true;
             case R.id.delete:
                 confirmDeleteDialog(new DeleteMessagesListener(), mCheckedCount != mUnlockedCount);
-                break;
-            case R.id.copy:
-                copyMessageText();
                 break;
             case R.id.lock:
                 if (item.getTitle().equals(
@@ -7951,7 +7928,6 @@ public class ComposeMessageActivity extends Activity
                         mode.getMenu().findItem(R.id.forward).setVisible(true);
                     }
                     mode.getMenu().findItem(R.id.copy_to_sim).setVisible(true);
-                    mode.getMenu().findItem(R.id.copy).setVisible(true);
                 }
             } else {
                 menu.findItem(R.id.detail).setVisible(true);
@@ -7981,7 +7957,6 @@ public class ComposeMessageActivity extends Activity
                     mode.getMenu().findItem(R.id.copy_to_sim).setVisible(false);
                 } else {
                     mode.getMenu().findItem(R.id.copy_to_sim).setVisible(true);
-                    mode.getMenu().findItem(R.id.copy).setVisible(true);
                 }
 
                 mode.getMenu().findItem(R.id.report).setVisible(isDeliveryReportMsg(position));
