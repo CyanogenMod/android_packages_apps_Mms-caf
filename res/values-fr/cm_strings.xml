@@ -207,7 +207,6 @@
   <string name="mms_size_indicator"><xliff:g id="mms_size">%1$d</xliff:g>/<xliff:g id="all_size">%2$d</xliff:g> KB</string>
   <string name="pre_define_message_template_1">Je vous rappellerai plus tard.</string>
   <string name="pre_define_message_template_2">Je suis en réunion. Je vous rappellerai plus tard.</string>
-  <string name="pre_define_message_template_3">Merci de m\'appeler plus tard.</string>
   <string name="pre_define_message_template_4">Pouvez-vous me rappeler ?</string>
   <string name="menu_delete_all_entries">Tout supprimer</string>
   <string name="menu_delete_sms">Supprimer les SMS</string>

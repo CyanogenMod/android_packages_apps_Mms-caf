@@ -54,6 +54,10 @@
   <string name="add_to_blacklist_message">Příští zprávy z čísla %s budou blokovány</string>
   <string name="alert_dialog_yes">Ano</string>
   <string name="alert_dialog_no">Ne</string>
+  <string name="pref_title_unicode_stripping">Odstranit znaky Unicode</string>
+  <string name="pref_unicode_stripping_leave_intact">Ponechat původní znaky</string>
+  <string name="pref_unicode_stripping_non_encodable">Oříznout nekódovatelné znaky</string>
+  <string name="pref_unicode_stripping_all">Oříznout všechny znaky unicode</string>
   <string name="menu_as_unread">Označit jako nepřečtené</string>
   <string name="menu_as_read">Označit jako přečtené</string>
   <string name="menu_all_as_unread">Označit vše jako nepřečtené</string>
@@ -231,4 +235,17 @@
   <string name="copy_empty_string">Žádný text ke kopírování</string>
   <string name="attach_add_calendar_events">Událost z kalendáře</string>
   <string name="calendar_attachment_activity_not_found">Nelze najít podpůrné aplikace Kalendáře</string>
+  <string name="pref_title_mms_notification_vibrate_pattern">Vzor vibrování</string>
+  <string name="pref_summary_mms_notification_vibrate_pattern">Změnit vzor vibrování</string>
+  <string name="pref_mms_notification_vibrate_normal">Normální</string>
+  <string name="pref_mms_notification_vibrate_med_vib">Střední vibrace</string>
+  <string name="pref_mms_notification_vibrate_long_vib">Dlouhé vibrace</string>
+  <string name="pref_mms_notification_vibrate_mult_short">Více krátkých</string>
+  <string name="pref_mms_notification_vibrate_mult_long">Více dlouhých</string>
+  <string name="menu_insert_smiley">Vložit smajlík</string>
+  <string name="pref_title_enable_emoticons">Podpora smajlíků</string>
+  <string name="pref_summary_enable_emoticons">Nahradit textovou formu smajlíků jejich obrázkovým ekvivalentem</string>
+  <string name="menu_conversation_options">Možnosti konverzace</string>
+  <string name="pref_title_reset_convopt_to_default">Obnovit výchozí</string>
+  <string name="pref_summary_reset_convopt_to_default">Obnoví nastavení konverzace na úroveň nastavení aplikace</string>
 </resources>

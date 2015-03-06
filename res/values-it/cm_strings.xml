@@ -60,7 +60,7 @@
   <string name="pref_unicode_stripping_all">Rimuovi tutti i caratteri unicode</string>
   <string name="menu_as_unread">Segna come non letto</string>
   <string name="menu_as_read">Segna come gia\' letto</string>
-  <string name="menu_all_as_unread">Contrassegna tutti come non letti</string>
+  <string name="menu_all_as_unread">Segna tutti come non letti</string>
   <string name="menu_all_as_read">Segna tutti come già letti</string>
   <string name="confirm_mark_unread_dialog_title">Segnare come non letto?</string>
   <string name="confirm_mark_unread_conversation">La conversazione verrà segnata come non letta.</string>
