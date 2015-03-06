@@ -446,6 +446,9 @@ public class ComposeMessageActivity extends Activity
     // Preferred CDMA subscription mode is NV.
     private static final int CDMA_SUBSCRIPTION_NV = 1;
 
+    // The default displaying page when selecting attachments.
+    private static final int DEFAULT_ATTACHMENT_PAGER = 0;
+
     private ContentResolver mContentResolver;
 
     private BackgroundQueryHandler mBackgroundQueryHandler;
@@ -4057,6 +4060,7 @@ public class ComposeMessageActivity extends Activity
     private void showAttachmentSelector(final boolean replace) {
         mAttachmentPager = (ViewPager) findViewById(R.id.attachments_selector_pager);
         mIsReplaceAttachment = replace;
+        mCurrentAttachmentPager = DEFAULT_ATTACHMENT_PAGER;
         hideKeyboard();
         if (mAttachmentPagerAdapter == null) {
             mAttachmentPagerAdapter = new AttachmentPagerAdapter(this);
@@ -4068,7 +4072,7 @@ public class ComposeMessageActivity extends Activity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (view != null) {
-                    addAttachment((mCurrentAttachmentPager > 0 ? position
+                    addAttachment((mCurrentAttachmentPager > DEFAULT_ATTACHMENT_PAGER ? position
                             + mAttachmentPagerAdapter.PAGE_GRID_COUNT : position), replace);
                     mAttachmentSelector.setVisibility(View.GONE);
                 }
