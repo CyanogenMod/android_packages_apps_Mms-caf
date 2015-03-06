@@ -381,7 +381,7 @@ public class ComposeMessageActivity extends Activity
     private static final int BACKUP_ALL_MESSAGES_SUCCESS = 2;
 
     private static final int RECIPIENTS_MAX_LENGTH = 312;
-
+    private static final int RCS_MAX_SMS_LENGHTH = 900;
     private static final int MESSAGE_LIST_QUERY_TOKEN = 9527;
     private static final int MESSAGE_LIST_QUERY_AFTER_DELETE_TOKEN = 9528;
 
@@ -7289,7 +7289,7 @@ public class ComposeMessageActivity extends Activity
             long thread_id = mConversation.getThreadId();
             for (Integer pos : mSelectedPos) {
                 Cursor c = (Cursor) getListView().getAdapter().getItem(pos);
-                String rcsId = String.valueOf(c.getString(COLUMN_RCS_ID));
+                String rcsId = String.valueOf(getRcsId(c));
                 try {
                     mMessageApi.accuseMessage(thread_id, rcsId);
                 } catch (ServiceDisconnectedException e) {
@@ -7541,11 +7541,32 @@ public class ComposeMessageActivity extends Activity
                     Toast.LENGTH_SHORT).show();
         }
 
+        private boolean isRcsMessageAttachment(Cursor cursor) {
+            MessageItem messageItem = mMsgListAdapter.getCachedMessageItem(
+                    cursor.getString(COLUMN_MSG_TYPE),
+                    cursor.getLong(COLUMN_ID), cursor);
+                    return (messageItem != null) && (messageItem.mRcsId > 0);
+        }
+
         private void saveRcsAttachment() {
-            Cursor c = (Cursor) getListView().getAdapter().getItem(
-                    mSelectedPos.get(0));
-            final long rcs_id = c.getLong(COLUMN_RCS_ID);
-            saveRcsMassages(rcs_id);
+            if (mIsRcsEnabled) {
+                long rcsId = getSelectedRcsId();
+                if (rcsId > 0) {
+                    saveRcsMassages(rcsId);
+                }
+            }
+        }
+
+        private long getSelectedRcsId() {
+            Cursor c = (Cursor) getListView().getAdapter().getItem(mSelectedPos.get(0));
+            return getRcsId(c);
+        }
+
+        private long getRcsId(Cursor c) {
+            if (c == null) {
+                return -1;
+            }
+            return c.getLong(COLUMN_RCS_ID);
         }
 
         private void saveRcsMassages(final long rcs_id){
@@ -7553,15 +7574,11 @@ public class ComposeMessageActivity extends Activity
              new Thread() {
                  @Override
                  public void run() {
-                     int resId = R.string.copy_to_sdcard_fail;
-                    if (rcs_id != 0) {
-                       resId = RcsUtils.saveRcsMassage(ComposeMessageActivity.this, rcs_id) ?
-                            R.string.copy_to_sdcard_success :
-                            R.string.copy_to_sdcard_fail;
-                    }
-                    Looper.prepare();
-                    Toast.makeText(ComposeMessageActivity.this, resId, Toast.LENGTH_SHORT).show();
-                    Looper.loop();
+                     int resId = RcsUtils.saveRcsMassage(ComposeMessageActivity.this, rcs_id) ?
+                             R.string.copy_to_sdcard_success : R.string.copy_to_sdcard_fail;
+                     Looper.prepare();
+                     Toast.makeText(ComposeMessageActivity.this, resId, Toast.LENGTH_SHORT).show();
+                     Looper.loop();
                 }
             }.start();
         }
@@ -7574,7 +7591,7 @@ public class ComposeMessageActivity extends Activity
 
         private void resendCheckedMessage() {
             Cursor c = (Cursor) getListView().getAdapter().getItem(mSelectedPos.get(0));
-            if (c.getInt(COLUMN_RCS_ID) > 0) {
+            if (getRcsId(c) > 0) {
                 RcsMessageOpenUtils.retransmisMessage(mMsgListAdapter.getCachedMessageItem(
                         c.getString(COLUMN_MSG_TYPE), c.getLong(COLUMN_ID), c));
             } else {
@@ -7633,12 +7650,12 @@ public class ComposeMessageActivity extends Activity
                     try {
                         forwardMessage();
                         MessageItem msgItem = mMessageItems.get(0);
-                        if (msgItem.mType.equals("mms") || msgItem.mRcsId == -1) {
+                        if (msgItem.mType.equals("mms") || !(msgItem.mRcsId > 0)) {
                             return true;
                         }
                         boolean isRcsOnline = mAccountApi.isOnline();
                         if (!isRcsOnline && msgItem.mRcsType == SuntekMessageData.MSG_TYPE_TEXT) {
-                            if (msgItem.mBody.getBytes().length <= 900) {
+                            if (msgItem.mBody.getBytes().length <= RCS_MAX_SMS_LENGHTH) {
                                 Log.i(RCS_TAG, " NO  ISONLINE" + msgItem.mMessageType + "=="
                                         + SuntekMessageData.MSG_TYPE_TEXT);
                                 forwardContactOrConversation(new ForwardClickListener());
@@ -7692,18 +7709,22 @@ public class ComposeMessageActivity extends Activity
                 shareMessage();
                 break;
             case R.id.save_attachment:
-                if (!mIsRcsEnabled) {
-                    Cursor cursor = (Cursor) mMsgListAdapter.getItem(mSelectedPos.get(0));
-                    if (cursor != null && isAttachmentSaveable(cursor)) {
-                        saveAttachment(cursor.getLong(COLUMN_ID));
-                    } else {
-                        Toast.makeText(ComposeMessageActivity.this,
-                                R.string.copy_to_sdcard_fail, Toast.LENGTH_SHORT)
-                                .show();
-                    }
-                } else {
+                Cursor cursor = (Cursor) mMsgListAdapter.getItem(mSelectedPos.get(0));
+
+                if (cursor == null) break;
+
+                if (isRcsMessageAttachment(cursor)) {
                     saveRcsAttachment();
+                    break;
                 }
+
+                if (isAttachmentSaveable(cursor)) {
+                    saveAttachment(cursor.getLong(COLUMN_ID));
+                    break;
+                }
+
+                Toast.makeText(ComposeMessageActivity.this, R.string.copy_to_sdcard_fail,
+                        Toast.LENGTH_SHORT).show();
                 break;
             case R.id.report:
                 showReport();
@@ -7780,6 +7801,7 @@ public class ComposeMessageActivity extends Activity
                 }
             }
         }
+
         private void forwardMessage() {
             mMessageItems.clear();
             for (Integer pos : mSelectedPos) {
@@ -8108,7 +8130,7 @@ public class ComposeMessageActivity extends Activity
         }
     }
 
-        private static final IntentFilter DELAYED_SEND_COUNTDOWN_FILTER = new IntentFilter(
+    private static final IntentFilter DELAYED_SEND_COUNTDOWN_FILTER = new IntentFilter(
                 SmsReceiverService.ACTION_SEND_COUNTDOWN);
 
     private final BroadcastReceiver mDelayedSendProgressReceiver = new BroadcastReceiver() {
