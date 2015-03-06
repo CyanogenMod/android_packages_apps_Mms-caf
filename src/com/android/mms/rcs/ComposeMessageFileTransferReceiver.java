@@ -23,12 +23,9 @@
 
 package com.android.mms.rcs;
 
-import com.android.mms.ui.MessageItem;
 import com.android.mms.ui.MessageListAdapter;
-import com.android.mms.ui.MessageListItem;
 import com.suntek.mway.rcs.client.aidl.constant.BroadcastConstants;
 import com.suntek.mway.rcs.client.api.util.log.LogHelper;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -39,6 +36,7 @@ import android.util.Log;
 import java.util.HashMap;
 
 public class ComposeMessageFileTransferReceiver extends BroadcastReceiver {
+
     private static final String LOG_TAG = "RCS_UI";
     private MessageListAdapter mMsgListAdapter;
 
@@ -54,7 +52,7 @@ public class ComposeMessageFileTransferReceiver extends BroadcastReceiver {
         NetworkInfo wifi = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
         if (!gprs.isConnected() && !wifi.isConnected()) {
-            MessageListItem.setRcsIsStopDown(true);
+            mMsgListAdapter.setRcsIsStopDown(true);
             mMsgListAdapter.notifyDataSetChanged();
             return;
         }
@@ -65,7 +63,7 @@ public class ComposeMessageFileTransferReceiver extends BroadcastReceiver {
                 .getStringExtra(BroadcastConstants.BC_VAR_TRANSFER_PRG_MESSAGE_ID);
         LogHelper.trace("messageId =" + notifyMessageId + "start =" + start + ";end =" + end
                 + ";total =" + total);
-        HashMap<String, Long> fileProgressHashMap = MessageListItem.getFileTrasnferHashMap();
+        HashMap<String, Long> fileProgressHashMap = mMsgListAdapter.getFileTrasnferHashMap();
         if (notifyMessageId != null && start == end) {
             LogHelper.trace("download finish ");
             fileProgressHashMap.remove(notifyMessageId);
@@ -77,7 +75,6 @@ public class ComposeMessageFileTransferReceiver extends BroadcastReceiver {
             long temp = start * 100 / total;
             if (temp == 100) {
                 fileProgressHashMap.remove(notifyMessageId);
-                MessageItem.setRcsIsDownload(RcsUtils.RCS_IS_DOWNLOAD_OK);
                 Log.i(LOG_TAG, "100");
                 return;
             }
@@ -88,7 +85,7 @@ public class ComposeMessageFileTransferReceiver extends BroadcastReceiver {
             if (lastProgress == null || temp - lastProgress >= 5) {
                 lastProgress = temp;
                 fileProgressHashMap.put(notifyMessageId, Long.valueOf(temp));
-                MessageListItem.setsFileTrasnfer(fileProgressHashMap);
+                mMsgListAdapter.setsFileTrasnfer(fileProgressHashMap);
                 mMsgListAdapter.notifyDataSetChanged();
             }
         }

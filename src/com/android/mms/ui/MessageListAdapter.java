@@ -19,8 +19,8 @@
 
 package com.android.mms.ui;
 
-import java.util.regex.Pattern;
 import java.util.HashMap;
+import java.util.regex.Pattern;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -258,6 +258,21 @@ public class MessageListAdapter extends CursorAdapter {
 
     private HashMap<Integer, String> mBodyCache;
 
+    public HashMap<String, Long> sFileTrasnfer = new HashMap<String, Long>();
+    private boolean mRcsIsStopDown = false;
+
+    public void setsFileTrasnfer(HashMap<String, Long> sFileTrasnfer) {
+        this.sFileTrasnfer = sFileTrasnfer;
+    }
+
+    public HashMap<String, Long> getFileTrasnferHashMap() {
+        return sFileTrasnfer;
+    }
+
+    public void setRcsIsStopDown(boolean rcsIsStopDown){
+        this.mRcsIsStopDown = rcsIsStopDown;
+    }
+
     public MessageListAdapter(
             Context context, Cursor c, ListView listView,
             boolean useDefaultColumnsMap, Pattern highlight) {
@@ -314,7 +329,8 @@ public class MessageListAdapter extends CursorAdapter {
                 } else {
                     accentColor = res.getColor(R.color.incoming_message_bg_default);
                 }
-
+                mli.setFileTrasnfer(sFileTrasnfer);
+                mli.setRcsIsStopDown(mRcsIsStopDown);
                 mli.bind(msgItem, accentColor, mIsGroupConversation, position,
                         mListView.isItemChecked(position), mGroupId);
                 mli.setMsgListItemHandler(mMsgListItemHandler);
