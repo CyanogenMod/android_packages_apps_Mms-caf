@@ -339,7 +339,7 @@ public class WorkingMessage {
 
     private void preSendRcsSmsWorker(Conversation conv, String msgText, String recipientsInUI,
             boolean isGroupChat) throws ServiceDisconnectedException, FileSuffixException,
-            FileTransferException, FileDurationException {
+            FileTransferException, FileDurationException, NumberFormatException {
         // If user tries to send the message, it's a signal the inputted text is
         // what they wanted.
         UserHappinessSignals.userAcceptedImeText(mActivity);
@@ -391,38 +391,38 @@ public class WorkingMessage {
 
     private void sendRcsSmsWorker(String msgText, String semiSepRecipients, long threadId)
             throws ServiceDisconnectedException, FileSuffixException, FileTransferException,
-            FileDurationException {
+            FileDurationException, NumberFormatException {
         String[] dests = TextUtils.split(semiSepRecipients, ";");
         Recycler.getSmsRecycler().deleteOldMessagesByThreadId(mActivity, threadId);
         MessageApi messageApi = RcsApiManager.getMessageApi();
         switch (mRcsType) {
             case RcsUtils.RCS_MSG_TYPE_TEXT:
-                sendRcsText(msgText, dests, threadId, messageApi);
                 mStatusListener.onPreMessageSent();
+                sendRcsText(msgText, dests, threadId, messageApi);
                 break;
             case RcsUtils.RCS_MSG_TYPE_IMAGE:
-                sendRcsImage(dests, threadId, messageApi);
                 mStatusListener.onPreRcsMessageSent();
+                sendRcsImage(dests, threadId, messageApi);
                 break;
             case RcsUtils.RCS_MSG_TYPE_VIDEO:
-                sendRcsVideo(dests, threadId, messageApi);
                 mStatusListener.onPreRcsMessageSent();
+                sendRcsVideo(dests, threadId, messageApi);
                 break;
             case RcsUtils.RCS_MSG_TYPE_AUDIO:
-                sendRcsAudio(dests, threadId, messageApi);
                 mStatusListener.onPreRcsMessageSent();
+                sendRcsAudio(dests, threadId, messageApi);
                 break;
             case RcsUtils.RCS_MSG_TYPE_MAP:
+                mStatusListener.onPreMessageSent();
                 sendRcsLocation(dests, threadId, messageApi);
-                mStatusListener.onPreRcsMessageSent();
                 break;
             case RcsUtils.RCS_MSG_TYPE_VCARD:
+                mStatusListener.onPreMessageSent();
                 sendRcsVcard(dests, threadId, messageApi);
-                mStatusListener.onPreRcsMessageSent();
                 break;
             case RcsUtils.RCS_MSG_TYPE_PAID_EMO:
+                mStatusListener.onPreMessageSent();
                 sendRcsPaidEmo(dests, threadId, messageApi);
-                mStatusListener.onPreRcsMessageSent();
                 break;
             default:
                 break;
@@ -1786,7 +1786,8 @@ public class WorkingMessage {
             }, "WorkingMessage.send MMS").start();
         } else {
 
-            if (RcsUtils.isSupportRcs()) {
+            if (RcsApiManager.isRcsServiceInstalled()
+                    && RcsApiManager.isRcsOnline()) {
                 String text = mText.toString();
                 final String msgText = text;
                 new Thread(new Runnable() {
@@ -2214,6 +2215,9 @@ public class WorkingMessage {
             return null;
         } catch (IllegalStateException e) {
             Log.e(TAG,"failed to create draft mms "+ e);
+            return null;
+        } catch (NullPointerException e){
+            Log.e(TAG,"failed to create draft mms NullPointerException"+ e.toString());
             return null;
         }
     }

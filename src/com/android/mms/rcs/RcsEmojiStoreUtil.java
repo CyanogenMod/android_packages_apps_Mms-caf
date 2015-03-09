@@ -24,16 +24,17 @@
 package com.android.mms.rcs;
 
 import java.lang.ref.SoftReference;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
+
 import com.suntek.mway.rcs.client.aidl.plugin.entity.emoticon.EmoticonConstant;
 import com.suntek.mway.rcs.client.api.util.ServiceDisconnectedException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.widget.ImageView;
 
 public class RcsEmojiStoreUtil {
@@ -46,7 +47,7 @@ public class RcsEmojiStoreUtil {
 
     private Map<String, SoftReference<Bitmap>> mCaches;
 
-    private List<LoaderImageTask> mTaskQueue;
+    private LinkedBlockingQueue<LoaderImageTask> mTaskQueue;
 
     private boolean mIsRuning = false;
 
@@ -61,12 +62,17 @@ public class RcsEmojiStoreUtil {
 
     private RcsEmojiStoreUtil() {
         mCaches = new HashMap<String, SoftReference<Bitmap>>();
-        mTaskQueue = new ArrayList<RcsEmojiStoreUtil.LoaderImageTask>();
+        mTaskQueue = new LinkedBlockingQueue<RcsEmojiStoreUtil.LoaderImageTask>();
         mIsRuning = true;
         new Thread(runnable).start();
     }
 
-    public void loadImageAsynById(ImageView imageView, String imageId, int loaderType) {
+    public void loadImageAsynById(ImageView imageView, String imageId,
+            int loaderType) {
+        if(imageView == null){
+            return;
+        }
+        imageView.setTag(imageId);
         if (mCaches.containsKey(imageId)) {
             SoftReference<Bitmap> rf = mCaches.get(imageId);
             Bitmap bitmap = rf.get();
@@ -77,20 +83,17 @@ public class RcsEmojiStoreUtil {
                 return;
             }
         }
-        LoaderImageTask loaderImageTask = new LoaderImageTask(imageId, imageView, loaderType);
-        if (!mTaskQueue.contains(loaderImageTask)) {
-            mTaskQueue.add(loaderImageTask);
-            synchronized (runnable) {
-                runnable.notify();
-            }
-        }
+        mTaskQueue.add(new LoaderImageTask(imageId, imageView, loaderType));
     }
 
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            LoaderImageTask task = (LoaderImageTask)msg.obj;
-            task.imageView.setImageBitmap(task.bitmap);
+            LoaderImageTask task = (LoaderImageTask) msg.obj;
+            String imageId = (String) task.imageView.getTag();
+            if(!TextUtils.isEmpty(imageId) && imageId.equals(task.imageId)){
+                task.imageView.setImageBitmap(task.bitmap);
+            }
         }
     };
 
@@ -98,21 +101,19 @@ public class RcsEmojiStoreUtil {
         @Override
         public void run() {
             while (mIsRuning) {
-                while (mTaskQueue.size() > 0) {
-                    LoaderImageTask task = mTaskQueue.remove(0);
-                    task.bitmap = getbitmap(task.loaderType, task.imageId);
-                    if (mHandler != null) {
-                        Message msg = mHandler.obtainMessage();
-                        msg.obj = task;
-                        mHandler.sendMessage(msg);
+                try {
+                    LoaderImageTask task = mTaskQueue.take();
+                    String imageId = (String) task.imageView.getTag();
+                    if(!TextUtils.isEmpty(imageId) && imageId.equals(task.imageId)){
+                        task.bitmap = getbitmap(task.loaderType, task.imageId);
+                        if (mHandler != null) {
+                            Message msg = mHandler.obtainMessage();
+                            msg.obj = task;
+                            mHandler.sendMessage(msg);
+                        }
                     }
-                }
-                synchronized (this) {
-                    try {
-                        this.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -123,17 +124,18 @@ public class RcsEmojiStoreUtil {
         Bitmap bitmap = null;
         try {
             if (loaderType == EMO_STATIC_FILE) {
-                imageByte = RcsApiManager.getEmoticonApi().decrypt2Bytes(emoticonId,
-                        EMO_STATIC_FILE);
+                imageByte = RcsApiManager.getEmoticonApi().decrypt2Bytes(
+                        emoticonId, EMO_STATIC_FILE);
             } else if (loaderType == EMO_PACKAGE_FILE) {
-                imageByte = RcsApiManager.getEmoticonApi().decrypt2Bytes(emoticonId,
-                        EMO_PACKAGE_FILE);
+                imageByte = RcsApiManager.getEmoticonApi().decrypt2Bytes(
+                        emoticonId, EMO_PACKAGE_FILE);
             }
         } catch (ServiceDisconnectedException e) {
             e.printStackTrace();
         }
         if (imageByte != null) {
-            bitmap = BitmapFactory.decodeByteArray(imageByte, 0, imageByte.length);
+            bitmap = BitmapFactory.decodeByteArray(imageByte, 0,
+                    imageByte.length);
         }
         if (bitmap != null) {
             mCaches.put(emoticonId, new SoftReference<Bitmap>(bitmap));
@@ -150,16 +152,11 @@ public class RcsEmojiStoreUtil {
 
         int loaderType;
 
-        public LoaderImageTask(String imageId, ImageView imageView, int loaderType) {
+        public LoaderImageTask(String imageId, ImageView imageView,
+                int loaderType) {
             this.imageId = imageId;
             this.imageView = imageView;
             this.loaderType = loaderType;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            LoaderImageTask task = (LoaderImageTask)o;
-            return task.imageId.equals(imageId);
         }
     }
 

@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (c) 2014 pci-suntektech Technologies, Inc.  All Rights Reserved.
+/*
+ * Copyright (c) 2014 pci-suntektech Technologies, Inc.  All Rights Reserved.
  * pci-suntektech Technologies Proprietary and Confidential.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,24 +19,35 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
--->
+ */
 
-<com.android.mms.rcs.RcsNotificationMessageListItem xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+package com.android.mms.rcs;
 
-    <TextView
-        android:id="@+id/text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_margin="8dip"
-        android:background="#aaaa"
-        android:paddingBottom="8dip"
-        android:paddingLeft="16dip"
-        android:paddingRight="16dip"
-        android:paddingTop="8dip"
-        android:textColor="#333"
-        android:textSize="12sp" />
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import android.content.Intent;
 
-</com.android.mms.rcs.RcsNotificationMessageListItem>
+public class RecvMessageQueue {
+
+    private static RecvMessageQueue sInstance = new RecvMessageQueue();
+
+    private RecvMessageQueue() {
+
+    }
+
+    public static RecvMessageQueue getInstance() {
+        return sInstance;
+    }
+
+    public boolean addReport(int sessionId, Intent option) {
+        int mod = (int)(sessionId % RcsMessageThreadMng.HANDLER_SIZE);
+        RcsMessageThread reportHandler = RcsMessageThreadMng.getInstance().getRcsMessageThread(mod);
+
+        if (reportHandler == null) {
+            return false;
+        }
+
+        return reportHandler.addReport(option);
+    }
+
+}

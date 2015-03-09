@@ -37,7 +37,7 @@
 
     <!-- Failed sending Group chat message. -->
     <string name="group_chat_not_exist">Cannot found group chat.</string>
-    <string name="group_chat_not_active">The group chat is not active.</string>
+    <string name="group_chat_not_active">Group chat has been created, waiting for other members to join in.</string>
     <string name="group_chat_deleted">The group chat is deleted.</string>
 
     <!-- Group chat status -->
@@ -57,7 +57,9 @@
     <string name="group_chat_quit">%1$s left the group chat.</string>
     <string name="group_chat_disbanded">Group chat is disbanded.</string>
     <string name="group_chat_policy">Message receiving policy has been changed.</string>
+    <string name="group_chat_gone">You are not in the group chat.</string>
 
+    <string name="new_message">New message</string>
     <string name="new_group_chat">New group chat</string>
     <string name="group_chat">Group Chat</string>
 
@@ -126,9 +128,18 @@
     <string name="my_vcard">My vCard</string>
     <string name="select_contact_conversation">Select contact or conversation</string>
     <string name="file_share">mCloud file share</string>
+    <string name="download_mcloud_file_fail">mColud dowload fail</string>
     <string name="save_back_message">Message backup/restore</string>
+    <string name="cacel_back_message">Cancel back message</string>
     <string name="message_save">Message backup</string>
     <string name="message_back">Message restore</string>
+    <string name="message_is_begin">Begin backup</string>
+    <string name="message_is_saving">Message backuping</string>
+    <string name="message_save_ok">backup ok</string>
+    <string name="message_save_fail">backup fail</string>
+    <string name="message_is_restore_begin">Begin restore</string>
+    <string name="message_restoring">Message restoring</string>
+    <string name="message_restore_ok">restore ok</string>
     <string name="not_online_message_too_big">Off-line, the text is oversized</string>
     <string name="on_airplain_mode">Unable to be forwarded in airplane mode</string>
     <string name="rcs_mcloud_share_file">mClould file share</string>
@@ -138,6 +149,13 @@
 
     <string name="confirm_complain_selected_messages">Confirm to complain the selected messages</string>
     <string name="message_complain">Message complain</string>
+    <!-- Firewall string resources 
+    <string name="firewall_number_len_not_valid">Number is wrong</string>
+    <string name="firewall_number_in_black">"Number already in blacklist"</string>
+    <string name="firewall_number_in_white">"Number already in whitelist"</string>
+    <string name="firewall_save_success">Saved successfully</string>
+    <string name="firewall_add_blacklist_wring">if you add this number to blacklsit you will not receive the message and call from it</string>
+    -->
     <string name="menuid_add_to_black_list">Add to Blacklist</string>
     <string name="menuid_add_to_white_list">Add to Whitelist</string>
     <string name="firewall_number_len_not_valid">Number error</string>
@@ -165,9 +183,29 @@
     <string name="mcloud_share_file_after"> \n Please click to download. </string>
     <string name="confirm_cancel_selected_fav_messages">Confirm to delete the selected items from the Favourites? </string>
     <string name="stop_down_load">Pause download</string>
+    <string name="local_audio_item">Local audio file</string>
+    <string name="audio_file_error">Please select 3gp、mp3、aac、amr、m4a format the audio file.</string>
+    <string name="input_group_chat_title">Please input group chat title.</string>
+    <string name="group_chat_member">Group chat member</string>
+    <string name="create_group_chat">Create group chat</string>
 
     <string name="vcard_name">NAME:</string>
     <string name="vcard_number">NUMBER:</string>
+    <string name="vcard_number_home">HOME：</string>
+    <string name="vcard_number_work">WORK：</string>
+    <string name="vcard_number_fax_work">WORK FAX：</string>
+    <string name="vcard_number_fax_home">HOME FAX：</string>
+    <string name="vcard_number_pager">CALLBACK：</string>
+    <string name="vcard_number_other">OTHER：</string>
+    <string name="vcard_number_fax">OTHER FAX：</string>
+    <string name="vcard_number_tlx">TELEGRAM</string>
+    <string name="vcard_number_msg">MMS：</string>
+    <string name="vcard_number_isdn">ISDN：</string>
+    <string name="vcard_number_pref">MAIN：</string>
+    <string name="vcard_number_car">CAR：</string>
+    <string name="vcard_number_pref_work">WORK MAIN：</string>
+    <string name="vcard_number_call_work">WORK MOBILE：</string>
+    <string name="vcard_number_work_pager">WORK PAGER：</string>
     <string name="vcard_other_number">OTHER NUMBER</string>
     <string name="vcard_compony_info">COMPONY INFO</string>
     <string name="vcard_compony_addre">ADDRESS</string>
@@ -176,5 +214,12 @@
     <string name="vcard_compony_name">COMPONY NAME</string>
     <string name="vcard_detail_info">VCARD DETAIL INFO</string>
     <string name="vcard_import">IMPORT VCARD</string>
-
+    <string name="burn_all_message">Burn all BurnFlagMessage</string>
+    <string name="name_not_fix">File Name not Fit</string>
+    <string name="file_is_too_larger">File too large</string>
+    <string name="please_install_application">Please install the application</string>
+    <string name="emotion_download_fail">download fail emotion.</string>
+    <string name="message_restore_fail">Restore fail</string>
+    <string name="cloud_file_name">Name:</string>
+    <string name="cloud_file_size">,Size:</string>
 </resources>

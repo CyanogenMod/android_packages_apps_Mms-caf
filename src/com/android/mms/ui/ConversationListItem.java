@@ -68,8 +68,8 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
     private View mErrorIndicator;
     private CheckableQuickContactBadge mAvatarView;
 
-    static private RoundedBitmapDrawable sDefaultContactImage;
-    static private Drawable sDefaultGroupChatImage; // The RCS Group Chat photo.
+    private RoundedBitmapDrawable sDefaultContactImage;
+    private Drawable sDefaultGroupChatImage; // The RCS Group Chat photo.
 
     // For posting UI update Runnables from other threads:
     private Handler mHandler = new Handler();
@@ -331,9 +331,9 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
 
     private void updateBackground() {
         int backgroundId;
-        if (mConversation.isChecked()) {
+        if (mConversation != null && mConversation.isChecked()) {
             backgroundId = R.drawable.list_selected_holo_light;
-        } else if (mConversation.hasUnreadMessages()) {
+        } else if (mConversation != null && mConversation.hasUnreadMessages()) {
             backgroundId = R.drawable.conversation_item_background_unread;
         } else {
             backgroundId = R.drawable.conversation_item_background_read;
@@ -352,7 +352,9 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
 
     @Override
     public void setChecked(boolean checked) {
-        mConversation.setIsChecked(checked);
+        if(mConversation != null){
+            mConversation.setIsChecked(checked);
+        }
         mAvatarView.setChecked(isChecked(), true);
         setActivated(checked);
         updateBackground();
@@ -360,7 +362,10 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
 
     @Override
     public boolean isChecked() {
-        return mConversation.isChecked();
+        if(mConversation != null){
+            return mConversation.isChecked();
+        }
+        return false;
     }
 
     @Override
@@ -370,5 +375,11 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
 
     public void setGroupChatImage(Drawable drawable){
         this.sDefaultGroupChatImage = drawable;
+    }
+
+    public void bindAvatar(Drawable drawable){
+        mAvatarView.assignContactUri(null);
+        mAvatarView.setImageDrawable(drawable);
+        mAvatarView.setVisibility(View.VISIBLE);
     }
 }
