@@ -98,7 +98,7 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
     private String mAddress;
     private String mName;
     private int mMsgBox;
-    private boolean mIsUnread;
+    private int mWapPushAddressIndex;
 
     public MailBoxMessageListAdapter(Context context, OnListContentChangedListener changedListener,
             Cursor cursor) {
@@ -113,6 +113,7 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
                 return size() > CACHE_SIZE;
             }
         };
+        mWapPushAddressIndex = context.getResources().getInteger(R.integer.wap_push_address_index);
         mBgSelectedDrawable = context.getResources().getDrawable(
                 R.drawable.list_selected_holo_light);
         mBgUnReadDrawable = context.getResources().getDrawable(
@@ -246,6 +247,7 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
         Drawable sendTypeIcon = null;
         boolean isError = false;
         boolean isLocked = false;
+        boolean isUnread = false;
         mMsgBox = Sms.MESSAGE_TYPE_INBOX;
 
         if (type.equals("sms")) {
@@ -253,7 +255,7 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
             int status = item.mStatus;
             mMsgBox = item.mSmsType;
             int smsRead = item.mRead;
-            mIsUnread = (smsRead == 0 ? true : false);
+            isUnread = (smsRead == 0 ? true : false);
             mSubscription = item.mSubID;
             addr = item.mAddress;
             isError = item.mSmsType == Sms.MESSAGE_TYPE_FAILED;
@@ -272,7 +274,7 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
             recipientIds = cursor.getString(COLUMN_RECIPIENT_IDS);
 
             if (0 == mmsRead && mMsgBox == Mms.MESSAGE_BOX_INBOX) {
-                mIsUnread = true;
+                isUnread = true;
             }
 
             bodyStr = MessageUtils.extractEncStrFromCursor(cursor, COLUMN_MMS_SUBJECT,
@@ -300,7 +302,7 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
 
         if (mListView.isItemChecked(cursor.getPosition())) {
             view.setBackgroundDrawable(mBgSelectedDrawable);
-        } else if (mIsUnread) {
+        } else if (isUnread) {
             view.setBackgroundDrawable(mBgUnReadDrawable);
         } else {
             view.setBackgroundDrawable(mBgReadDrawable);
@@ -319,22 +321,19 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
             String[] mMailBoxAddresses = addr.split(":");
             String[] mMailBoxName = nameContact.split(":");
             formatNameView(
-                    mMailBoxAddresses[context.getResources().getInteger(
-                            R.integer.wap_push_address_index)],
-                    mMailBoxName[context.getResources()
-                            .getInteger(R.integer.wap_push_address_index)]);
+                    mMailBoxAddresses[mWapPushAddressIndex],
+                    mMailBoxName[mWapPushAddressIndex],
+                    isUnread);
         } else if (MessageUtils.isWapPushNumber(addr)) {
-            String[] mMailBoxAddresses = addr.split(":");
-            formatNameView(
-                    mMailBoxAddresses[context.getResources().getInteger(
-                            R.integer.wap_push_address_index)], mName);
+            String[] mailBoxAddresses = addr.split(":");
+            addr = mailBoxAddresses[mWapPushAddressIndex];
+            formatNameView(addr, mName, isUnread);
         } else if (MessageUtils.isWapPushNumber(nameContact)) {
-            String[] mMailBoxName = nameContact.split(":");
-            formatNameView(mAddress,
-                    mMailBoxName[context.getResources()
-                            .getInteger(R.integer.wap_push_address_index)]);
+            String[] mailBoxName = nameContact.split(":");
+            nameContact = mailBoxName[mWapPushAddressIndex];
+            formatNameView(mAddress, nameContact, isUnread);
         } else {
-            formatNameView(mAddress, mName);
+            formatNameView(mAddress, mName, isUnread);
         }
 
         updateAvatarView();
@@ -345,17 +344,23 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
         mErrorIndicator.setVisibility(isError ? View.VISIBLE : View.GONE);
 
         mDateView.setText(dateStr);
-        mBodyView.setText(bodyStr);
+        if (isUnread) {
+            SpannableStringBuilder buf = new SpannableStringBuilder(bodyStr);
+            buf.setSpan(STYLE_BOLD, 0, buf.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+            mBodyView.setText(buf);
+        } else {
+            mBodyView.setText(bodyStr);
+        }
     }
 
-    public void formatNameView(String address, String name) {
+    public void formatNameView(String address, String name, boolean isUnread) {
         SpannableStringBuilder buf = null;
         if (TextUtils.isEmpty(name)) {
             buf = new SpannableStringBuilder(address);
         } else {
             buf = new SpannableStringBuilder(name);
         }
-        if (mIsUnread) {
+        if (isUnread) {
             buf.setSpan(STYLE_BOLD, 0, buf.length(),
                     Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
         }
