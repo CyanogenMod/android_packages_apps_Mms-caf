@@ -28,8 +28,11 @@ import com.android.mms.data.Contact;
 import com.android.mms.data.ContactList;
 import com.android.mms.data.Conversation;
 import com.android.mms.ui.ComposeMessageActivity;
+import com.android.mms.ui.ConversationList;
+import com.android.mms.ui.ConversationListItem;
 import com.android.mms.ui.MessageItem;
 import com.android.mms.ui.MessageListItem;
+import com.android.mms.ui.MessageUtils;
 import com.android.mms.util.Recycler;
 import com.android.mms.widget.MmsWidgetProvider;
 import com.suntek.mway.rcs.client.aidl.constant.BroadcastConstants;
@@ -67,12 +70,12 @@ import android.database.sqlite.SqliteWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.NinePatch;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
-import android.graphics.Matrix;
-import android.graphics.NinePatch;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -100,6 +103,7 @@ import android.provider.Telephony.Sms.Sent;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
@@ -107,6 +111,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -131,6 +136,8 @@ public class RcsUtils {
     public static final int RCS_IS_DOWNLOAD_FALSE = 0;
     public static final int RCS_IS_DOWNLOAD_OK = 1;
     public static final int SMS_DEFAULT_RCS_ID = -1;
+    public static final int RCS_MESSAGE_ID = 1;
+    public static final int SMS_DEFAULT_RCS_GROUP_ID = 0;
     public static final int RCS_MSG_TYPE_TEXT = SuntekMessageData.MSG_TYPE_TEXT;
     public static final int RCS_MSG_TYPE_IMAGE = SuntekMessageData.MSG_TYPE_IMAGE;
     public static final int RCS_MSG_TYPE_VIDEO = SuntekMessageData.MSG_TYPE_VIDEO;
@@ -152,6 +159,17 @@ public class RcsUtils {
     public static final String GROUP_CHAT_NOTIFICATION_KEY_WORDS_QUIT = "quit";
     public static final String GROUP_CHAT_NOTIFICATION_KEY_WORDS_DISBAND = "disband";
     public static final String GROUP_CHAT_NOTIFICATION_KEY_WORDS_POLICY = "policy";
+    public static final String GROUP_CHAT_NOTIFICATION_KEY_WORDS_GONE = "gone";
+
+    public static final String RCS_NATIVE_UI_ACTION_GROUP_CHAT_DETAIL =
+            "com.suntek.mway.rcs.nativeui.ACTION_LUNCH_RCS_GROUPCHATDETAIL";
+    public static final String RCS_NATIVE_UI_ACTION_NOTIFICATION_LIST =
+            "com.suntek.mway.rcs.nativeui.ACTION_LUNCHER_RCS_NOTIFICATIONLIST";
+    public static final String RCS_NATIVE_UI_ACTION_CONVERSATION_LIST =
+            "com.suntek.mway.rcs.publicaccount.ACTION_LUNCHER_RCS_CONVERSATION_LIST";
+
+    private static final String PUBLIC_ACCOUNT_PACKAGE_NAME = "com.suntek.mway.rcs.publicaccount";
+    private static final String NATIVE_UI_PACKAGE_NAME = "com.suntek.mway.rcs.nativeui";
 
     // message status
     public static final int MESSAGE_SENDING = 64;
@@ -175,15 +193,6 @@ public class RcsUtils {
     public static final String IM_ONLY = "1";
     public static final String SMS_ONLY = "2";
     public static final String RCS_MMS_VCARD_PATH = "sdcard/rcs/" + "mms.vcf";
-    static boolean mIsSupportRcs = true; // true for test
-
-    public static boolean isSupportRcs() {
-        return mIsSupportRcs;
-    }
-
-    public static void setIsSupportRcs(boolean mIsSupportRcs) {
-        RcsUtils.mIsSupportRcs = mIsSupportRcs;
-    }
 
     public static GeoLocation readMapXml(String filepath) {
         GeoLocation geo = null;
@@ -207,10 +216,20 @@ public class RcsUtils {
                 });
     }
 
+    public static void burnAllMessageAtLocal(final Context context) {
+        ContentValues values = new ContentValues();
+        values.put("rcs_burn_body", "");
+        values.put("rcs_is_burn", 1);
+        context.getContentResolver().update(Uri.parse("content://sms/"), values, "rcs_burn_flag = ?",
+                new String[] {
+                    "1"
+                });
+    }
+
     public static void deleteMessageById(Context context, long id) {
         String smsId = String.valueOf(id);
         ContentValues values = new ContentValues();
-        context.getContentResolver().delete(Uri.parse("content://sms/"), "_id=?", new String[] {
+        context.getContentResolver().delete(Uri.parse("content://sms/"), "rcs_id=?", new String[] {
             smsId
         });
     }
@@ -418,6 +437,43 @@ public class RcsUtils {
         // Now make sure we're not over the limit in stored messages
         Recycler.getSmsRecycler().deleteOldMessagesByThreadId(context, threadId);
         MmsWidgetProvider.notifyDatasetChanged(context);
+
+    }
+
+    public static void rcsInsertMany(Context context, List<ChatMessage> cMsgList)
+            throws ServiceDisconnectedException {
+        if(cMsgList.size() == 0){
+            Log.i("RCS_UI","RETURN");
+            return;
+        }
+        for(ChatMessage cMsg:cMsgList){
+            if (cMsg != null && !isMessageExist(context, cMsg)) {
+                rcsInsert(context, cMsg);
+            }
+        }
+    }
+
+    public static boolean isMessageExist(Context context, ChatMessage chatMessage) {
+        Log.i("RCS_UI", "chatMessage.getMessageId()=" + chatMessage.getMessageId());
+        String id = chatMessage.getMessageId();
+        if (id == null) {
+            id = "";
+        }
+        ContentResolver resolver = context.getContentResolver();
+        Cursor cursor = SqliteWrapper.query(context, resolver, Sms.CONTENT_URI, null,
+                "rcs_message_id = ?", new String[] {
+                    chatMessage.getMessageId()
+                }, null);
+        try {
+            if (cursor != null && cursor.moveToNext()) {
+                dumpCursorRows(cursor);
+                return true;
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        return false;
     }
 
     public static long rcsInsert(Context context, ChatMessage chatMessage)
@@ -521,6 +577,7 @@ public class RcsUtils {
                     values.put("type", 2);
                 }
                 values.put("is_rcs", 1);
+
                 values.put("rcs_msg_type", rcs_msg_type);
                 values.put("rcs_mime_type", rcs_mime_type); // text or image
                 values.put("rcs_have_attach", rcs_have_attach);
@@ -552,6 +609,7 @@ public class RcsUtils {
             }
             values.put(Sms.ADDRESS, address);
             values.put("is_rcs", 1);
+
             values.put("rcs_msg_type", rcs_msg_type);
             values.put("rcs_mime_type", rcs_mime_type); // text or image
             values.put("rcs_have_attach", rcs_have_attach);
@@ -905,18 +963,8 @@ public class RcsUtils {
      * Launch the RCS group chat detail activity.
      */
     public static void startGroupChatDetailActivity(Context context, String groupId) {
-        Intent intent = new Intent("com.suntek.mway.rcs.nativeui.ui.RcsGroupChatDetailActivity");
+        Intent intent = new Intent(RCS_NATIVE_UI_ACTION_GROUP_CHAT_DETAIL);
         intent.putExtra("groupId", groupId);
-        if (isActivityIntentAvailable(context, intent)) {
-            context.startActivity(intent);
-        }
-    }
-
-    /**
-     * Launch the RCS notify list activity.
-     */
-    public static void startNotificationListActivity(Context context) {
-        Intent intent = new Intent("com.suntek.mway.rcs.nativeui.ui.RcsNotificationListActivity");
         if (isActivityIntentAvailable(context, intent)) {
             context.startActivity(intent);
         }
@@ -1042,27 +1090,6 @@ public class RcsUtils {
         }
     }
 
-    /**
-     * Launch the activity for creating rcs group chat.
-     *
-     * @param context
-     * @param number numbers, split by ";". For example: 13800138000;10086
-     * @param message
-     */
-    public static void startCreateGroupChatActivity(Context context, String number,
-            String message) {
-        Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-        if (!TextUtils.isEmpty(number)) {
-            sendIntent.putExtra("address", number);
-        }
-        if (!TextUtils.isEmpty(message)) {
-            sendIntent.putExtra("sms_body", message);
-        }
-        sendIntent.putExtra("isGroupChat", true);
-        sendIntent.setType("vnd.android-dir/mms-sms");
-        context.startActivity(sendIntent);
-    }
-
     public static String getStringOfNotificationBody(Context context, String body) {
         if (body != null) {
             if (body.equals(GROUP_CHAT_NOTIFICATION_KEY_WORDS_CREATED)) {
@@ -1096,6 +1123,8 @@ public class RcsUtils {
                 body = context.getString(R.string.group_chat_disbanded);
             } else if (body.startsWith(GROUP_CHAT_NOTIFICATION_KEY_WORDS_POLICY)) {
                 body = context.getString(R.string.group_chat_policy);
+            } else if (body.startsWith(GROUP_CHAT_NOTIFICATION_KEY_WORDS_GONE)) {
+                body = context.getString(R.string.group_chat_gone);
             }
         }
         return body;
@@ -1171,6 +1200,7 @@ public class RcsUtils {
                     values.put(Groups.TITLE, groupTitle);
                     values.put(Groups.SYSTEM_ID, group_id);
                     values.put(Groups.SOURCE_ID, "RCS");
+
                     resolver.insert(Groups.CONTENT_URI, values);
                     return true;
                 } catch(Exception e) {
@@ -1338,6 +1368,18 @@ public class RcsUtils {
         return bitmap;
     }
 
+    public static Bitmap decodeInSampleSizeBitmap(Bitmap bitmap) {
+        int inSampleSize = 200/bitmap.getHeight();
+        if (inSampleSize >= 0){
+            return bitmap;
+        }else{
+            Matrix matrix = new Matrix(); 
+            matrix.postScale(inSampleSize,inSampleSize);
+            Bitmap resizeBmp = Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(),matrix,true);
+            return resizeBmp;
+        }
+    }
+
     @SuppressWarnings("deprecation")
     public static Drawable createDrawable(Context context, Bitmap bitmap) {
         if (bitmap == null)
@@ -1444,12 +1486,6 @@ public class RcsUtils {
                 Toast.LENGTH_SHORT).show();
     }
 
-    public static Intent createGroupChatIntent(Context context, long threadId) {
-        Intent intent = ComposeMessageActivity.createIntent(context, threadId);
-        intent.putExtra("isGroupChat", true);
-        return intent;
-    }
-
     public static boolean isFireWallInstalled(Context context) {
         boolean installed = false;
         try {
@@ -1514,7 +1550,7 @@ public class RcsUtils {
         return numbers;
     }
 
-    public static IntentFilter createIntentFilterForComposeMessage(boolean isGroupChat) {
+    public static IntentFilter createIntentFilterForComposeMessage() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(BroadcastConstants.UI_ALERT_FILE_SUFFIX_INVALID);
         filter.addAction(BroadcastConstants.UI_ALERT_FILE_TOO_LARGE);
@@ -1524,14 +1560,6 @@ public class RcsUtils {
         filter.addAction(BroadcastConstants.UI_REFRESH_MESSAGE_LIST);
         filter.addAction(BroadcastConstants.UI_SHOW_MESSAGE_NOTIFY);
         filter.addAction(BroadcastConstants.UI_SHOW_MESSAGE_SEND_ERROR);
-        if (isGroupChat) {
-            filter.addAction(BroadcastConstants.UI_GROUP_MANAGE_NOTIFY);
-            filter.addAction(BroadcastConstants.UI_GROUP_CHAT_SUBJECT_CHANGE);
-            filter.addAction(BroadcastConstants.UI_INVITE_TO_JOIN_GROUP);
-            filter.addAction(BroadcastConstants.UI_SHOW_GROUP_MESSAGE_NOTIFY);
-            filter.addAction(BroadcastConstants.UI_SHOW_GROUP_REFER_ERROR);
-        }
-
         return filter;
     }
 
@@ -1583,8 +1611,7 @@ public class RcsUtils {
         }
     }
 
-    public static void setThumbnailForMessageItem(Context context, ImageView imageView,
-            MessageItem messageItem) {
+    public static void setThumbnailForMessageItem(Context context, ImageView imageView, MessageItem messageItem) {
         if (messageItem.mRcsType == RcsUtils.RCS_MSG_TYPE_PAID_EMO) {
             String[] body = messageItem.mBody.split(",");
             RcsEmojiStoreUtil.getInstance().loadImageAsynById(imageView, body[0],
@@ -1593,11 +1620,6 @@ public class RcsUtils {
         }
         Bitmap bitmap = null;
         switch (messageItem.mRcsType) {
-            case RcsUtils.RCS_MSG_TYPE_CAIYUNFILE: {
-                bitmap = BitmapFactory.decodeResource(context.getResources(),
-                        R.drawable.rcs_caiyun_sharefile);
-                break;
-            }
             case RcsUtils.RCS_MSG_TYPE_IMAGE: {
                 if (messageItem.mRcsThumbPath != null
                         && new File(messageItem.mRcsThumbPath).exists()) {
@@ -1618,10 +1640,17 @@ public class RcsUtils {
                 ArrayList<PropertyNode> propList = RcsMessageOpenUtils.openRcsVcardDetail(
                         context, vcardFilePath);
                 for (PropertyNode propertyNode : propList) {
-                    if (propertyNode.propValue_bytes != null) {
-                        byte[] bytes = propertyNode.propValue_bytes;
-                        bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    } else {
+                    if ("PHOTO".equals(propertyNode.propName)) {
+                        if(propertyNode.propValue_bytes != null){
+                            byte[] bytes = propertyNode.propValue_bytes;
+                            bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            bitmap = decodeInSampleSizeBitmap(bitmap);
+                        } else {
+                            bitmap = BitmapFactory.decodeResource(context.getResources(),
+                                    R.drawable.ic_attach_vcard);
+                        }
+                    }
+                    if (bitmap == null ){
                         bitmap = BitmapFactory.decodeResource(context.getResources(),
                                 R.drawable.ic_attach_vcard);
                     }
@@ -1634,6 +1663,10 @@ public class RcsUtils {
             }
             case RcsUtils.RCS_MSG_TYPE_MAP: {
                 bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.rcs_map);
+                break;
+            }
+            case RcsUtils.RCS_MSG_TYPE_CAIYUNFILE:{
+                bitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.rcs_ic_cloud);
                 break;
             }
         }
@@ -1677,20 +1710,23 @@ public class RcsUtils {
         return contentType;
     }
 
-    public static String getRcsMessageStatusText(Context context, MessageItem mMessageItem) {
+    public static String getRcsMessageStatusText(MessageListItem messageListItem, MessageItem mMessageItem) {
+        Context context = messageListItem.getContext();
         String text = "";
+        if(TextUtils.isEmpty(mMessageItem.mTimestamp)){
+            if(mMessageItem.mDate == 0){
+                mMessageItem.mDate = System.currentTimeMillis();
+            }
+            mMessageItem.mTimestamp = String.format(context.getString(R.string.sent_on),
+                    MessageUtils.formatTimeStampString(context, mMessageItem.mDate));
+        }
         switch (mMessageItem.mRcsMsgState) {
             case RcsUtils.MESSAGE_SENDING:
                 if ((mMessageItem.mRcsType == RcsUtils.RCS_MSG_TYPE_IMAGE ||
-                        mMessageItem.mRcsType == RcsUtils.RCS_MSG_TYPE_VIDEO)) {
-                    if (MessageListItem.sFileTrasnfer != null) {
-                        Long percent = MessageListItem.sFileTrasnfer
-                                .get(mMessageItem.mRcsMessageId);
-                        if (percent != null) {
-                            text = context.getString(R.string.uploading_percent,
-                                    percent.intValue());
-                        }
-                    }
+                    mMessageItem.mRcsType == RcsUtils.RCS_MSG_TYPE_VIDEO)) {
+                    Long percent = messageListItem.getSendingPercent(mMessageItem.mRcsMessageId);
+                    text = context.getString(R.string.uploading_percent,
+                            percent.intValue());
                 } else {
                     text = context.getString(R.string.message_adapte_sening);
                 }
@@ -1728,20 +1764,21 @@ public class RcsUtils {
         return text;
     }
 
-    public static void startEmojiStore(Context context) {
-        if (RcsUtils.isPackageInstalled(context, "com.temobi.dm.emoji.store")) {
-            Intent mIntent = new Intent();
+    public static void startEmojiStore(Activity activity, int requestCode) {
+        if (RcsUtils.isPackageInstalled(activity, "com.temobi.dm.emoji.store")) {
+            Intent intent = new Intent();
             ComponentName comp = new ComponentName("com.temobi.dm.emoji.store",
                     "com.temobi.dm.emoji.store.activity.EmojiActivity");
-            mIntent.setComponent(comp);
-            context.startActivity(mIntent);
+            intent.setComponent(comp);
+            activity.startActivityForResult(intent, requestCode);
         } else {
-            Toast.makeText(context, R.string.install_emoj_store, Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, R.string.install_emoj_store,
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
     public static boolean isDeletePrefixSpecailNumberAvailable(Context context){
-        boolean isDeleSpecailNumber =context.getResources()
+        boolean isDeleSpecailNumber = context.getResources()
             .getBoolean(R.bool.config_mms_delete_prefix_special_number);
             SpecialServiceNumApi specailNumApi = RcsApiManager
                  .getSpecialServiceNumApi();
@@ -1881,6 +1918,9 @@ public class RcsUtils {
         LinearLayout.LayoutParams mGifParam = new LinearLayout.LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+        if(bitmap == null){
+            return;
+        }
         int windowWidth = bitmap.getWidth() + RcsUtils.dip2px(context, 40);
         int windowHeight = bitmap.getHeight() + RcsUtils.dip2px(context, 40);
         ColorDrawable transparent = new ColorDrawable(Color.TRANSPARENT);
@@ -1903,4 +1943,257 @@ public class RcsUtils {
         popupWindow.update();
     }
 
+    public static Intent OpenFile(String filePath) {
+        File file = new File(filePath);
+        if (!file.exists())
+            return null;
+        String end = file.getName()
+                .substring(file.getName().lastIndexOf(".") + 1, file.getName().length())
+                .toLowerCase();
+        Log.i("RCS_UI", "END=" + end);
+        if (end.equals("m4a") || end.equals("mp3") || end.equals("mid") || end.equals("xmf")
+                || end.equals("ogg") || end.equals("wav") || end.equals("amr")) {
+            return getAudioFileIntent(filePath);
+        } else if (end.equals("3gp") || end.equals("mp4")) {
+            return getVideoFileIntent(filePath);
+        } else if (end.equals("jpg") || end.equals("gif") || end.equals("png")
+                || end.equals("jpeg") || end.equals("bmp")) {
+            return getImageFileIntent(filePath);
+        } else if (end.equals("apk")) {
+            return getApkFileIntent(filePath);
+        } else if (end.equals("ppt")) {
+            return getPptFileIntent(filePath);
+        } else if (end.equals("xls")) {
+            return getExcelFileIntent(filePath);
+        } else if (end.equals("doc")) {
+            return getWordFileIntent(filePath);
+        } else if (end.equals("pdf")) {
+            return getPdfFileIntent(filePath);
+        } else if (end.equals("chm")) {
+            return getChmFileIntent(filePath);
+        } else if (end.equals("txt")) {
+            return getTextFileIntent(filePath, false);
+        } else {
+            return getAllIntent(filePath);
+        }
+    }
+
+    private static Intent getVideoFileIntent(String param) {
+        Intent intent = new Intent("android.intent.action.VIEW");
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("oneshot", 0);
+        intent.putExtra("configchange", 0);
+        Uri uri = Uri.fromFile(new File(param));
+        intent.setDataAndType(uri, "video/*");
+        return intent;
+    }
+
+    private static Intent getAudioFileIntent(String param) {
+        Intent intent = new Intent("android.intent.action.VIEW");
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("oneshot", 0);
+        intent.putExtra("configchange", 0);
+        Uri uri = Uri.fromFile(new File(param));
+        intent.setDataAndType(uri, "audio/*");
+        return intent;
+    }
+
+    private static Intent getImageFileIntent(String param) {
+        Intent intent = new Intent("android.intent.action.VIEW");
+        intent.addCategory("android.intent.category.DEFAULT");
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Uri uri = Uri.fromFile(new File(param));
+        intent.setDataAndType(uri, "image/*");
+        return intent;
+    }
+
+    public static Intent getAllIntent( String param ) {
+        Intent intent = new Intent();  
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);  
+        intent.setAction(android.content.Intent.ACTION_VIEW);  
+        Uri uri = Uri.fromFile(new File(param ));
+        intent.setDataAndType(uri,"*/*"); 
+        return intent;
+    }
+
+    public static Intent getApkFileIntent( String param ) {
+
+        Intent intent = new Intent();  
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);  
+        intent.setAction(android.content.Intent.ACTION_VIEW);  
+        Uri uri = Uri.fromFile(new File(param ));
+        intent.setDataAndType(uri,"application/vnd.android.package-archive"); 
+        return intent;
+    }
+
+    public static Intent getHtmlFileIntent( String param ){
+
+        Uri uri = Uri.parse(param ).buildUpon().
+                encodedAuthority("com.android.htmlfileprovider").
+                scheme("content").encodedPath(param ).build();
+        Intent intent = new Intent("android.intent.action.VIEW");
+        intent.setDataAndType(uri, "text/html");
+        return intent;
+    }
+
+    public static Intent getPptFileIntent( String param ){  
+
+        Intent intent = new Intent("android.intent.action.VIEW");   
+        intent.addCategory("android.intent.category.DEFAULT");   
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);   
+        Uri uri = Uri.fromFile(new File(param ));   
+        intent.setDataAndType(uri, "application/vnd.ms-powerpoint");   
+        return intent;   
+    }   
+
+    public static Intent getExcelFileIntent( String param ){  
+
+        Intent intent = new Intent("android.intent.action.VIEW");   
+        intent.addCategory("android.intent.category.DEFAULT");   
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);   
+        Uri uri = Uri.fromFile(new File(param ));   
+        intent.setDataAndType(uri, "application/vnd.ms-excel");   
+        return intent;   
+    }   
+
+    public static Intent getWordFileIntent( String param ){  
+
+        Intent intent = new Intent("android.intent.action.VIEW");   
+        intent.addCategory("android.intent.category.DEFAULT");   
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);   
+        Uri uri = Uri.fromFile(new File(param ));   
+        intent.setDataAndType(uri, "application/msword");   
+        return intent;   
+    }   
+
+    public static Intent getChmFileIntent( String param ){   
+
+        Intent intent = new Intent("android.intent.action.VIEW");   
+        intent.addCategory("android.intent.category.DEFAULT");   
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);   
+        Uri uri = Uri.fromFile(new File(param ));   
+        intent.setDataAndType(uri, "application/x-chm");   
+        return intent;   
+    }   
+
+    public static Intent getTextFileIntent( String param, boolean paramBoolean){   
+
+        Intent intent = new Intent("android.intent.action.VIEW");   
+        intent.addCategory("android.intent.category.DEFAULT");   
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);   
+        if (paramBoolean){   
+            Uri uri1 = Uri.parse(param );   
+            intent.setDataAndType(uri1, "text/plain");   
+        }else{   
+            Uri uri2 = Uri.fromFile(new File(param ));   
+            intent.setDataAndType(uri2, "text/plain");   
+        }   
+        return intent;   
+    }  
+
+    public static Intent getPdfFileIntent( String param ){   
+
+        Intent intent = new Intent("android.intent.action.VIEW");   
+        intent.addCategory("android.intent.category.DEFAULT");   
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);   
+        Uri uri = Uri.fromFile(new File(param ));   
+        intent.setDataAndType(uri, "application/pdf");   
+        return intent;   
+    }
+
+    public static ArrayList<String> removeDuplicateNumber(ArrayList<String> list) {
+        HashSet<String> hashSet = new HashSet<String>(list);
+        list.clear();
+        list.addAll(hashSet);
+        return list;
+    }
+
+    public static void addPublicAccountItem(final Context context, ListView listView) {
+        if (!isPackageInstalled(context, PUBLIC_ACCOUNT_PACKAGE_NAME)) {
+            return;
+        }
+        View view = LayoutInflater.from(context).inflate(
+                R.layout.conversation_list_item, null);
+        Drawable drawable = ImageUtils.getRoundCornerDrawable(
+                context.getResources(), R.drawable.rcs_ic_public_account_photo);
+        ConversationListItem publicAccountView = (ConversationListItem) view;
+        publicAccountView.bind(context.getResources()
+                .getString(R.string.public_account), null);
+        publicAccountView.setPadding(dip2px(context, 16),
+                dip2px(context, 12), dip2px(context, 16),
+                dip2px(context, 12));
+        publicAccountView.bindAvatar(drawable);
+        listView.addHeaderView(publicAccountView);
+        publicAccountView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startPublicAccountActivity(context);
+            }
+        });
+    }
+
+    public static void addNotificationItem(final Context context, ListView listView) {
+        if (!isPackageInstalled(context, NATIVE_UI_PACKAGE_NAME)) {
+            return;
+        }
+        View view = LayoutInflater.from(context).inflate(
+                R.layout.conversation_list_item, null);
+        Drawable drawable = context.getResources().getDrawable(
+                R.drawable.rcs_ic_notification_list_photo);
+        Drawable background = context.getResources().getDrawable(
+                R.drawable.conversation_item_background_read);
+        ConversationListItem notificationView = (ConversationListItem) view;
+        notificationView.bind(context.getResources().getString(R.string.notifications),
+                null);
+        notificationView.setPadding(dip2px(context, 16),
+                dip2px(context, 12), dip2px(context, 16),
+                dip2px(context, 12));
+        notificationView.bindAvatar(drawable);
+        notificationView.setBackground(background);
+        listView.addHeaderView(notificationView);
+        notificationView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startNotificationListActivity(context);
+            }
+        });
+    }
+
+    /**
+     * Launch the RCS notify list activity.
+     */
+    private static void startNotificationListActivity(Context context) {
+        Intent intent = new Intent(RCS_NATIVE_UI_ACTION_NOTIFICATION_LIST);
+        if (isActivityIntentAvailable(context, intent)) {
+            context.startActivity(intent);
+        }
+    }
+
+    private static void startPublicAccountActivity(Context context) {
+        Intent intent = new Intent(RCS_NATIVE_UI_ACTION_CONVERSATION_LIST);
+        if (isActivityIntentAvailable(context, intent)) {
+            context.startActivity(intent);
+        }
+    }
+
+    public static boolean isFileDownLoadoK(MessageItem mMsgItem) {
+        if (mMsgItem == null ){
+            return false;
+        }
+        if (mMsgItem.mRcsType == RcsUtils.RCS_MSG_TYPE_CAIYUNFILE) {
+            return RcsMessageOpenUtils.isCaiYunFileDown(mMsgItem);
+         }
+        String filePath = RcsUtils.getFilePath(mMsgItem.mRcsId, mMsgItem.mRcsPath);
+        ChatMessage msg = null;
+        boolean isFileDownload = false;
+        try {
+            msg = RcsApiManager.getMessageApi().getMessageById(String.valueOf(mMsgItem.mRcsId));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (msg != null) {
+            isFileDownload = RcsChatMessageUtils.isFileDownload(filePath, msg.getFilesize());
+        }
+        return isFileDownload;
+    }
 }

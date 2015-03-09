@@ -174,7 +174,6 @@ public class FavouriteMessageList extends ListActivity implements
     private ListView mListView;
     private TextView mCountTextView;
     private TextView mMessageTitle;
-    private View mSpinners;
     private Spinner mSlotSpinner = null;
     private Spinner mBoxSpinner;
     private ModeCallback mModeCallback = null;
@@ -193,6 +192,7 @@ public class FavouriteMessageList extends ListActivity implements
     private String mSearchDisplayStr = "";
     private int mMatchWhole = MessageUtils.MATCH_BY_ADDRESS;
     private boolean mIsInSearchMode;
+    private boolean isChangeToConvasationMode = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -200,8 +200,11 @@ public class FavouriteMessageList extends ListActivity implements
 
         mQueryHandler = new BoxMsgListQueryHandler(getContentResolver());
         setContentView(R.layout.mailbox_list_screen);
-        mSpinners = (View) findViewById(R.id.spinners);
-        initSpinner();
+        View spinners = (View) findViewById(R.id.spinners);
+        View toolsBar = (View) findViewById(R.id.toolbar);
+        toolsBar.setVisibility(View.GONE);
+        spinners.setVisibility(View.GONE);
+        //initSpinner();
 
         mListView = getListView();
         getListView().setItemsCanFocus(true);
@@ -213,7 +216,8 @@ public class FavouriteMessageList extends ListActivity implements
        // ActionBar actionBar = getActionBar();
         actionBar.setTitle("favourite");
         mHandler = new Handler();
-        handleIntent(getIntent());
+        recordMailboxMode();
+        MessageUtils.setMailboxMode(true);
     }
 
     @Override
@@ -221,7 +225,6 @@ public class FavouriteMessageList extends ListActivity implements
         super.onNewIntent(intent);
 
         setIntent(intent);
-        handleIntent(intent);
     }
 
     @Override
@@ -409,7 +412,6 @@ public class FavouriteMessageList extends ListActivity implements
 
         if (mIsInSearchMode && mSearchTitle != null) {
             mMessageTitle.setText(mSearchTitle);
-            mSpinners.setVisibility(View.GONE);
         } else {
             mListView.setMultiChoiceModeListener(mModeCallback);
         }
@@ -431,8 +433,6 @@ public class FavouriteMessageList extends ListActivity implements
     @Override
     public void onResume() {
         super.onResume();
-        recordMailboxMode();
-        MessageUtils.setMailboxMode(true);
         mIsPause = false;
         startAsyncQuery();
         if (!mIsInSearchMode) {
@@ -596,6 +596,7 @@ public class FavouriteMessageList extends ListActivity implements
                     mCursor = cursor;
                     TextView emptyView = (TextView) findViewById(R.id.emptyview);
                     mListView.setEmptyView(emptyView);
+//                    mCountTextView.setVisibility(View.INVISIBLE);
                     if (mListAdapter == null) {
                         mListAdapter = new MailBoxMessageListAdapter(FavouriteMessageList.this,
                                 FavouriteMessageList.this, cursor);
@@ -705,9 +706,16 @@ public class FavouriteMessageList extends ListActivity implements
                 mSearchView.setSearchableInfo(info);
             }
         }
-        MenuItem item = menu.findItem(R.id.action_change_to_folder_mode);
-        if (item != null) {
-            item.setVisible(false);
+        if (FOLDER_MODE == getMailboxMode()) {
+            MenuItem item = menu.findItem(R.id.action_change_to_folder_mode);
+            if (item != null) {
+                item.setVisible(false);
+            }
+        } else {
+            MenuItem item = menu.findItem(R.id.action_change_to_conversation_mode);
+            if (item != null) {
+                item.setVisible(false);
+            }
         }
         return true;
     }
@@ -754,6 +762,14 @@ public class FavouriteMessageList extends ListActivity implements
                 Intent modeIntent = new Intent(this, ConversationList.class);
                 startActivityIfNeeded(modeIntent, -1);
                 MessageUtils.setMailboxMode(false);
+                isChangeToConvasationMode = true;
+                finish();
+                break;
+            case R.id.action_change_to_folder_mode:
+                Intent folderModeIntent = new Intent(this, ConversationList.class);
+                startActivityIfNeeded(folderModeIntent, -1);
+                MessageUtils.setMailboxMode(true);
+                isChangeToConvasationMode = false;
                 finish();
                 break;
             case R.id.action_memory_status:
@@ -768,7 +784,11 @@ public class FavouriteMessageList extends ListActivity implements
     @Override
     public void onDestroy() {
         super.onDestroy();
-
+        if(FOLDER_MODE == getMailboxMode() && !isChangeToConvasationMode) {
+            MessageUtils.setMailboxMode(true);
+        } else {
+            MessageUtils.setMailboxMode(false);
+        }
         mHasLockedMessage = false;
         mIsPause = true;
         if (mCursor != null) {
@@ -778,11 +798,6 @@ public class FavouriteMessageList extends ListActivity implements
             mListAdapter.changeCursor(null);
         }
         MessageUtils.removeDialogs();
-        if(FOLDER_MODE == getMailboxMode()) {
-            MessageUtils.setMailboxMode(true);
-        } else {
-            MessageUtils.setMailboxMode(false);
-        }
     }
 
     private void confirmDeleteMessages() {
@@ -993,7 +1008,6 @@ public class FavouriteMessageList extends ListActivity implements
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             // comes into MultiChoiceMode
             mMultiChoiceMode = true;
-            mSpinners.setVisibility(View.GONE);
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.conversation_multi_select_menu, menu);
 
@@ -1050,7 +1064,6 @@ public class FavouriteMessageList extends ListActivity implements
             mMultiChoiceMode = false;
             getListView().clearChoices();
             mListAdapter.notifyDataSetChanged();
-            mSpinners.setVisibility(View.VISIBLE);
             mSelectionMenu.dismiss();
 
         }

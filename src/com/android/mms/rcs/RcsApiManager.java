@@ -33,6 +33,7 @@ import com.suntek.mway.rcs.client.api.util.ServiceDisconnectedException;
 import com.suntek.mway.rcs.client.api.capability.impl.CapabilityApi;
 import com.suntek.mway.rcs.client.api.emoticon.EmoticonApi;
 import com.suntek.mway.rcs.client.api.specialnumber.impl.SpecialServiceNumApi;
+import com.suntek.mway.rcs.client.api.profile.impl.ProfileApi;
 import android.content.Context;
 import android.os.RemoteException;
 import android.util.Log;
@@ -48,6 +49,7 @@ public class RcsApiManager {
     private static McloudFileApi mMcloudFileApi = new McloudFileApi();
     private static EmoticonApi mEmoticonApi = new EmoticonApi();
     private static SpecialServiceNumApi mSpecialServiceNumApi = new SpecialServiceNumApi();
+    private static ProfileApi mProfileApi = new ProfileApi();
 
     public static void init(Context context) {
         mIsRcsServiceInstalled = RcsSupportApi.isRcsServiceInstalled(context);
@@ -128,6 +130,16 @@ public class RcsApiManager {
                 Log.d(TAG, "mSpecialServiceNumApi connected");
             }
         });
+
+        mProfileApi.init(context,new RCSServiceListener() {
+            public void onServiceDisconnected() throws RemoteException {
+                Log.d(TAG, "mSpecialServiceNumApi disconnected");
+            }
+
+            public void onServiceConnected() throws RemoteException {
+                Log.d(TAG, "mSpecialServiceNumApi connected");
+            }
+        });
     }
 
     public static McloudFileApi getMcloudFileApi(){
@@ -168,5 +180,9 @@ public class RcsApiManager {
 
     public static SpecialServiceNumApi getSpecialServiceNumApi() {
         return mSpecialServiceNumApi;
+    }
+
+    public static ProfileApi getProfileApi() {
+        return mProfileApi;
     }
 }
