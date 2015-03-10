@@ -780,6 +780,21 @@ public class SlideshowModel extends Model
         return true;
     }
 
+    public boolean isSimpleAudio() {
+        // There must be one (and only one) slide.
+        if (size() != 1)
+            return false;
+
+        SlideModel slide = get(0);
+
+        // Only one audio allowed.
+        if (slide.hasAudio() && !slide.hasImage() && !slide.hasVcard()) {
+            return true;
+        }
+
+        return false;
+    }
+
     private boolean isSlideValid(SlideModel slide) {
         // The slide must have either an image, video, vcard or vcal and only one of them.
         boolean hasImage = slide.hasImage();
