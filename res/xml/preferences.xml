@@ -211,7 +211,6 @@
                         android:dependency="pref_key_enable_notifications"
                         android:defaultValue="false" />
     <ListPreference   android:key="pref_key_mms_notification_vibrate_pattern"
-                        android:dependency="pref_key_vibrate"
                         android:defaultValue=""
                         android:title="@string/pref_title_mms_notification_vibrate_pattern"
                         android:summary="@string/pref_summary_mms_notification_vibrate_pattern"
