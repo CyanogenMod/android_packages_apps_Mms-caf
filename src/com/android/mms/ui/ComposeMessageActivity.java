@@ -173,6 +173,7 @@ import com.android.mms.data.WorkingMessage.MessageStatusListener;
 import com.android.mms.drm.DrmUtils;
 import com.android.mms.model.ContentRestriction;
 import com.android.mms.model.ContentRestrictionFactory;
+import com.android.mms.model.MediaModel;
 import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
 import com.android.mms.transaction.MessagingNotification;
@@ -621,6 +622,18 @@ public class ComposeMessageActivity extends Activity
                     if (mTempMmsUri == null) {
                         return;
                     }
+
+                    SlideshowModel slideshowModel = mWorkingMessage.getSlideshow();
+                    if (requestCode == AttachmentEditor.MSG_PLAY_AUDIO &&
+                            (slideshowModel != null) && slideshowModel.isSimpleAudio()) {
+                        MediaModel mm = slideshowModel.get(0).getAudio();
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        intent.setDataAndType(mm.getUri(), mm.getContentType());
+                        startActivityForResult(intent, requestCode);
+                        return;
+                     }
+
                     MessageUtils.launchSlideshowActivity(ComposeMessageActivity.this, mTempMmsUri,
                             requestCode);
                 }
