@@ -392,6 +392,7 @@ public class ComposeMessageActivity extends Activity
     private AlertDialog mInvalidRecipientDialog;
 
     private boolean mWaitingForSubActivity;
+    private boolean mInAsyncAddAttathProcess = false;
     private int mLastRecipientCount;            // Used for warning the user on too many recipients.
     private AttachmentTypeSelectorAdapter mAttachmentTypeSelectorAdapter;
 
@@ -2291,7 +2292,7 @@ public class ComposeMessageActivity extends Activity
             // draft. This activity can end up displaying the recipients of the old message with
             // the contents of the new message. Recognize that dangerous situation and bail out
             // to the ConversationList where the user can enter this in a clean manner.
-            if (mWorkingMessage.isWorthSaving()) {
+            if (mWorkingMessage.isWorthSaving() || mInAsyncAddAttathProcess) {
                 if (LogTag.VERBOSE) {
                     log("onRestart: mWorkingMessage.unDiscard()");
                 }
@@ -3823,10 +3824,12 @@ public class ComposeMessageActivity extends Activity
     }
 
     private void addImageAsync(final Uri uri, final boolean append) {
+        mInAsyncAddAttathProcess = true;
         getAsyncDialog().runAsync(new Runnable() {
             @Override
             public void run() {
                 addImage(uri, append);
+                mInAsyncAddAttathProcess = false;
             }
         }, null, R.string.adding_attachments_title);
     }
@@ -3881,6 +3884,7 @@ public class ComposeMessageActivity extends Activity
     }
 
     private void addVideo(final Uri uri, final boolean append) {
+        mInAsyncAddAttathProcess = true;
         if (uri != null) {
             int result = mWorkingMessage.setAttachment(WorkingMessage.VIDEO, uri, append);
             if (MmsConfig.isCreationModeEnabled()) {
@@ -3889,6 +3893,7 @@ public class ComposeMessageActivity extends Activity
                         @Override
                         public void run() {
                             addVideo(uri, append);
+                            mInAsyncAddAttathProcess = false;
                         }
                     };
                     runOnUiThread(new Runnable() {
@@ -4722,8 +4727,8 @@ public class ComposeMessageActivity extends Activity
         if ((!mWaitingForSubActivity &&
                 !mWorkingMessage.isWorthSaving() &&
                 (!isRecipientsEditorVisible() || recipientCount() == 0)) ||
-                // Check to see whether short message count is up to 2000 for cmcc
-                (MessageUtils.checkIsPhoneMessageFull(this))) {
+                (mWorkingMessage.requiresMms() ? MessageUtils.checkIsPhoneMemoryFull(this)
+                        : MessageUtils.checkIsPhoneMessageFull(this))) {
             if (LogTag.VERBOSE || Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
                 log("not worth saving, discard WorkingMessage and bail");
             }
