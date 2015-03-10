@@ -611,6 +611,10 @@
     <string name="sms_full_title">Text message memory full</string>
     <!-- Device Full Notification dialog text. -->
     <string name="sms_full_body">Phone memory is full, can\'t send and receive new messages, please delete some old messages.</string>
+    <!-- Device Low Notification dialog title. -->
+    <string name="memory_low_title">Phone memory low</string>
+    <!-- Device Low Notification dialog text. -->
+    <string name="memory_low_body">Phone memory is going to full, please delete some old data to make sure get new message well.</string>
     <!-- Disk Storage Full Error Notification dialog text. -->
     <string name="disk_storage_full_error">Error: Storage is full.</string>
 

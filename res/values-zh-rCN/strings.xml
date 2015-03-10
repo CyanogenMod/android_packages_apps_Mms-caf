@@ -296,6 +296,8 @@
     <string name="sim_full_body" msgid="6241664980790322925">"删除部分信息以腾出更多空间。"</string>
     <string name="sms_full_title" msgid="6041287140125011854">"短信内存已满"</string>
     <string name="sms_full_body" msgid="4885861852397651868">"存储空间已满，无法发送和接收短信，请删除部分旧短信。"</string>
+    <string name="memory_low_title">"存储空间低"</string>
+    <string name="memory_low_body">"存储空间快要满了，请删除一些旧数据以确保能接收到新信息。"</string>
     <string name="inform_data_off">"移动数据已关闭， 请在系统设定中开启后重试。"</string>
     <string name="mms_too_large">"彩信过大，无法下载。"</string>
     <string name="sms_rejected_title" msgid="8548394922491529811">"短信遭拒"</string>
