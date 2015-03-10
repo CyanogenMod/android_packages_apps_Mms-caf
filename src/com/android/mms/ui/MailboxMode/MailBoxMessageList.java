@@ -427,6 +427,8 @@ public class MailBoxMessageList extends ListActivity implements
         // Cancel failed notification.
         MessageUtils.cancelFailedToDeliverNotification(intent, this);
         MessageUtils.cancelFailedDownloadNotification(intent, this);
+
+        Conversation.markAllConversationsAsSeen(MailBoxMessageList.this);
     }
 
     @Override
@@ -643,7 +645,6 @@ public class MailBoxMessageList extends ListActivity implements
             setProgressBarIndeterminateVisibility(false);
             mQueryDone = true;
             MessagingNotification.setCurrentlyDisplayedMsgType(mQueryBoxType);
-            Conversation.markAllConversationsAsSeen(MailBoxMessageList.this);
         }
     }
 
