@@ -171,6 +171,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private Preference mManageSdcardSMSPref;
     private Preference mClearHistoryPref;
     private SwitchPreference mVibratePref;
+    private ListPreference mPatternPref;
     private SwitchPreference mEnableNotificationsPref;
     private SwitchPreference mMmsAutoRetrievialPref;
     private ListPreference mMmsExpiryPref;
@@ -325,10 +326,18 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mSmsSignaturePref = (SwitchPreference) findPreference("pref_key_enable_signature");
         mSmsSignatureEditPref = (EditTextPreference) findPreference("pref_key_edit_signature");
         mVibratePref = (SwitchPreference) findPreference(NOTIFICATION_VIBRATE);
+        mPatternPref = (ListPreference) findPreference(NOTIFICATION_VIBRATE_PATTERN);
         Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        if (mVibratePref != null && (vibrator == null || !vibrator.hasVibrator())) {
-            mNotificationPrefCategory.removePreference(mVibratePref);
-            mVibratePref = null;
+        if (vibrator == null || !vibrator.hasVibrator()) {
+            if (mVibratePref != null) {
+                mNotificationPrefCategory.removePreference(mVibratePref);
+                mVibratePref = null;
+            }
+
+            if (mPatternPref != null) {
+                mNotificationPrefCategory.removePreference(mPatternPref);
+                mPatternPref = null;
+            }
         }
         mRingtonePref = (RingtonePreference) findPreference(NOTIFICATION_RINGTONE);
         mSmsTemplate = findPreference("pref_key_message_template");
