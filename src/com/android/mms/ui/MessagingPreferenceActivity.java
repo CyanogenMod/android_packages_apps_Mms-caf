@@ -326,9 +326,16 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mSmsSignatureEditPref = (EditTextPreference) findPreference("pref_key_edit_signature");
         mVibratePref = (SwitchPreference) findPreference(NOTIFICATION_VIBRATE);
         Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        if (mVibratePref != null && (vibrator == null || !vibrator.hasVibrator())) {
-            mNotificationPrefCategory.removePreference(mVibratePref);
-            mVibratePref = null;
+        if (vibrator == null || !vibrator.hasVibrator()) {
+            if (mVibratePref != null) {
+                mNotificationPrefCategory.removePreference(mVibratePref);
+                mVibratePref = null;
+            }
+
+            Preference patternPref = findPreference(NOTIFICATION_VIBRATE_PATTERN);
+            if (patternPref != null) {
+                mNotificationPrefCategory.removePreference(patternPref);
+            }
         }
         mRingtonePref = (RingtonePreference) findPreference(NOTIFICATION_RINGTONE);
         mSmsTemplate = findPreference("pref_key_message_template");
