@@ -135,13 +135,28 @@ public class VcardModel extends MediaModel {
     }
 
     private String getExtraSrc(Uri uri, Cursor c) throws MmsException {
-        if (c != null && c.getCount() == 1 && c.moveToFirst()) {
-            String displayName = c.getString(c.getColumnIndexOrThrow(ContactsContract
-                    .Contacts.DISPLAY_NAME));
-            return displayName + ".vcf";
-        } else {
-            throw new MmsException("Type of media is unknown.");
+        // Do we have a multi-contact uri...
+        String[] contacts = uri.getLastPathSegment().split(":");
+        if (contacts.length > 1) {
+            // several contacts
+            return "contacts.vcf";
         }
+        if (c != null && c.moveToFirst()) {
+            if (c.getCount() == 1) {
+                String displayName = c.getString(c.getColumnIndexOrThrow(ContactsContract
+                    .Contacts.DISPLAY_NAME));
+                if (displayName != null) {
+                    return displayName + ".vcf";
+                } else {
+                    // Contact has no name, so we'll call it "Unknown"
+                    // TODO: make this a translateable string (like in Contacts)
+                    return "Unknown.vcf";
+                }
+            }
+            // several contacts
+            return "contacts.vcf";
+        }
+        throw new MmsException("Type of media is unknown.");
     }
 
     private void initLookupUri(Uri uri) {
