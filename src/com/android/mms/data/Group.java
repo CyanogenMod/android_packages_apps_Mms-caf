@@ -18,7 +18,11 @@ package com.android.mms.data;
 
 import java.util.ArrayList;
 
+import android.accounts.AccountManager;
+import android.accounts.AuthenticatorDescription;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.provider.ContactsContract.Groups;
 import android.provider.LocalGroups;
@@ -78,6 +82,9 @@ public class Group {
     private ArrayList<PhoneNumber> mPhoneNumbers;
     private boolean mLocal = false;
 
+    public static final String ACCOUNT_TYPE_SIM = "com.android.sim";
+    public static final String ACCOUNT_TYPE_PHONE = "com.android.localphone";
+
     private boolean mIsChecked;
 
     private Group(Context context, Cursor c, boolean local) {
@@ -85,8 +92,32 @@ public class Group {
         mId = c.getLong(COLUMN_ID);
         mTitle = c.getString(COLUMN_GROUP_TITLE);
         if (!local) {
-            mAccountName = c.getString(COLUMN_ACCOUNT_NAME);
             mAccountType = c.getString(COLUMN_ACCOUNT_TYPE);
+            mAccountName = c.getString(COLUMN_ACCOUNT_NAME);
+            // Get the Phone/SIM account's translated label
+            if (ACCOUNT_TYPE_PHONE.equals(mAccountType)
+                    || ACCOUNT_TYPE_SIM.equals(mAccountType)) {
+                AuthenticatorDescription[] authDescs = AccountManager.get(context)
+                        .getAuthenticatorTypes();
+                Context authContext = null;
+                for (AuthenticatorDescription desc : authDescs) {
+                    try {
+                        authContext = context.createPackageContext(desc.packageName, 0);
+                    } catch (PackageManager.NameNotFoundException e) {
+                        Log.e(TAG, e.getMessage());
+                    }
+                    if (authContext != null && mAccountType.equals(desc.type)) {
+                        try {
+                            mAccountName = authContext.getResources().getText(desc.labelId)
+                                    .toString();
+                            break;
+                        } catch (Resources.NotFoundException e) {
+                            Log.e(TAG, e.getMessage());
+                        }
+                    }
+                }
+            }
+
             mDataSet = c.getString(COLUMN_DATA_SET);
             mSummaryCount = c.getInt(COLUMN_SUMMARY_COUNT);
         } else {
