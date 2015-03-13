@@ -257,9 +257,6 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                 }
             } else if (Intent.ACTION_AIRPLANE_MODE_CHANGED.equals(action)) {
                 updateSMSCPref();
-                if (smsCategory != null) {
-                    updateSIMSMSPref();
-                }
             }
         }
     };
@@ -626,19 +623,19 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
     private void updateSIMSMSPref() {
         if (MessageUtils.isMultiSimEnabledMms()) {
-            if (isAirPlaneModeOn() || !MessageUtils.isIccCardActivated(MessageUtils.SUB1)) {
+            if (!MessageUtils.isIccCardActivated(MessageUtils.SUB1)) {
                 mSmsPrefCategory.removePreference(mManageSim1Pref);
             } else {
                 mSmsPrefCategory.addPreference(mManageSim1Pref);
             }
-            if (isAirPlaneModeOn() || !MessageUtils.isIccCardActivated(MessageUtils.SUB2)) {
+            if (!MessageUtils.isIccCardActivated(MessageUtils.SUB2)) {
                 mSmsPrefCategory.removePreference(mManageSim2Pref);
             } else {
                 mSmsPrefCategory.addPreference(mManageSim2Pref);
             }
             mSmsPrefCategory.removePreference(mManageSimPref);
         } else {
-            if (isAirPlaneModeOn() || !MessageUtils.hasIccCard()) {
+            if (!MessageUtils.hasIccCard()) {
                 mSmsPrefCategory.removePreference(mManageSimPref);
             } else {
                 mSmsPrefCategory.addPreference(mManageSimPref);
