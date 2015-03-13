@@ -83,4 +83,6 @@
 
     <bool name="enablePlugger">false</bool>
 
+    <bool name="def_hide_unknown_sender">false</bool>
+
 </resources>
