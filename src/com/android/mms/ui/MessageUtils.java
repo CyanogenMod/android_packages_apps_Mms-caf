@@ -2171,9 +2171,17 @@ public class MessageUtils {
         return false;
     }
 
+    // Used for check whether have memory for save SMS.
     public static boolean checkIsPhoneMessageFull(Context context) {
         boolean isFull = isPhoneMemoryFull() || isPhoneSmsCountFull(context);
-        MessagingNotification.updateSmsMessageFullIndicator(context, isFull);
+        MessagingNotification.updateMessageFullIndicator(context, true, isFull);
+        return isFull;
+    }
+
+    // Used for check whether have memory for save MMS.
+    public static boolean checkIsPhoneMemoryFull(Context context) {
+        boolean isFull = isPhoneMemoryFull();
+        MessagingNotification.updateMessageFullIndicator(context, false, isFull);
         return isFull;
     }
 
