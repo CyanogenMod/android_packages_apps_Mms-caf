@@ -248,4 +248,8 @@
   <string name="menu_conversation_options">Keskustelun asetukset</string>
   <string name="pref_title_reset_convopt_to_default">Palauta oletukset</string>
   <string name="pref_summary_reset_convopt_to_default">Palauttaa keskustelun asetukset sovelluksen oletuksiin</string>
+  <string name="pref_title_mms_full_timestamp">Näytä aikaleimat</string>
+  <string name="pref_summary_mms_full_timestamp">Näytä aika ja päivämäärä aikaleimassa</string>
+  <string name="pref_title_mms_use_sent_timestamp">Alkuperäinen aikaleima</string>
+  <string name="pref_summary_mms_use_sent_timestamp">Näytä lähetyspäivä vastaanottopäivän sijaan</string>
 </resources>
