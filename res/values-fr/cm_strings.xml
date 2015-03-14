@@ -29,7 +29,7 @@
   <string name="button_close">Fermer</string>
   <string name="button_view">Afficher</string>
   <string name="button_templates">Modèles</string>
-  <string name="type_to_reply_text_enter_to_send">Saisissez une réponse</string>
+  <string name="type_to_reply_text_enter_to_send">Entrez une réponse</string>
   <string name="qm_mark_read">Lu</string>
   <string name="toast_sending_message">Envoi du message\u2026</string>
   <string name="pref_title_send_delay">Délai d\'envoi</string>
@@ -89,7 +89,7 @@
   <string name="send_by_slot2">Envoyer via SIM 2</string>
   <string name="media_size_limit">Taille maximale du message atteinte, impossible d\'envoyer le message.</string>
   <string name="illegal_message_or_increase_size">Taille de message incorrecte.</string>
-  <string name="discard_message_reason_some_invalid">Votre message sera annulé parce que certains destinataires sont invalides.</string>
+  <string name="discard_message_reason_some_invalid">Votre message sera annulé car certains destinataires sont incorrects.</string>
   <string name="cannot_add_text_anymore">Impossible d\'ajouter plus de texte.</string>
   <string name="title_send_message">Envoyer le message</string>
   <string name="subject_full">Le sujet ne doit pas être plus long que <xliff:g id="length">%d</xliff:g> caractères.</string>
@@ -184,10 +184,10 @@
   <string name="search_as_number">Numéro</string>
   <string name="search_as_content">Contenu</string>
   <string name="search_as_subject">Objet</string>
-  <string name="invalid_name_toast">Veuillez saisir un nom valide</string>
+  <string name="invalid_name_toast">Veuillez entrer un nom correct</string>
   <string name="sim_capacity_title">Capacité de la SIM</string>
   <string name="sim_capacity"><xliff:g id="used">%1$d</xliff:g> entrées sur <xliff:g id="total">%2$d</xliff:g> de la carte SIM sont utilisées</string>
-  <string name="pref_sim_card_full_save_to_phone">La carte SIM est pleine, enregistrement des nouveaux messages dans la mémoire du téléphone.</string>
+  <string name="pref_sim_card_full_save_to_phone">La carte SIM est saturée, enregistrement des nouveaux messages dans la mémoire du téléphone.</string>
   <string name="selected_all">Tout sélectionner</string>
   <string name="deselected_all">Tout désélectionner</string>
   <string name="selected_count"><xliff:g id="COUNT">%d</xliff:g> sélectionné</string>
@@ -207,6 +207,7 @@
   <string name="mms_size_indicator"><xliff:g id="mms_size">%1$d</xliff:g>/<xliff:g id="all_size">%2$d</xliff:g> KB</string>
   <string name="pre_define_message_template_1">Je vous rappellerai plus tard.</string>
   <string name="pre_define_message_template_2">Je suis en réunion. Je vous rappellerai plus tard.</string>
+  <string name="pre_define_message_template_3">Veuillez m\'appeler plus tard.</string>
   <string name="pre_define_message_template_4">Pouvez-vous me rappeler ?</string>
   <string name="menu_delete_all_entries">Tout supprimer</string>
   <string name="menu_delete_sms">Supprimer les SMS</string>
@@ -247,4 +248,8 @@
   <string name="menu_conversation_options">Options de conversation</string>
   <string name="pref_title_reset_convopt_to_default">Rétablir par défaut</string>
   <string name="pref_summary_reset_convopt_to_default">Réinitialise les paramètres de la conversation avec ceux de l\'application</string>
+  <string name="pref_title_mms_full_timestamp">Date complète</string>
+  <string name="pref_summary_mms_full_timestamp">Afficher la date et l\'heure des messages</string>
+  <string name="pref_title_mms_use_sent_timestamp">Date originale</string>
+  <string name="pref_summary_mms_use_sent_timestamp">Afficher la date d\'envoi au lieu de la date de réception</string>
 </resources>

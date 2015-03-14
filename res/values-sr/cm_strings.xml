@@ -248,4 +248,8 @@
   <string name="menu_conversation_options">Опције преписке</string>
   <string name="pref_title_reset_convopt_to_default">Ресетуј на подразумевано</string>
   <string name="pref_summary_reset_convopt_to_default">Ресетуј подешавање преписке на ниво подешавања апликације</string>
+  <string name="pref_title_mms_full_timestamp">Пуне временске ознаке</string>
+  <string name="pref_summary_mms_full_timestamp">Прикажи оба датума и време у временским ознакама</string>
+  <string name="pref_title_mms_use_sent_timestamp">Оригиналне временске ознаке</string>
+  <string name="pref_summary_mms_use_sent_timestamp">Прикажи датум слања уместо датума пријема у временским ознакама</string>
 </resources>

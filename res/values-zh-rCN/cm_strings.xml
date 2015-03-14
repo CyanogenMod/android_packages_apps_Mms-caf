@@ -248,4 +248,8 @@
   <string name="menu_conversation_options">对话选项</string>
   <string name="pref_title_reset_convopt_to_default">重置默认设置</string>
   <string name="pref_summary_reset_convopt_to_default">将对话设置重置为应用级别设置</string>
+  <string name="pref_title_mms_full_timestamp">完整时间戳</string>
+  <string name="pref_summary_mms_full_timestamp">在时间戳中显示日期和时间</string>
+  <string name="pref_title_mms_use_sent_timestamp">原始时间戳</string>
+  <string name="pref_summary_mms_use_sent_timestamp">在时间戳中显示发送时间而不是接收时间</string>
 </resources>
