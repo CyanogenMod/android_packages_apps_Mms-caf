@@ -54,6 +54,10 @@
   <string name="add_to_blacklist_message">Toekomstige boodskappe van %s sal geblokkeer word</string>
   <string name="alert_dialog_yes">Ja</string>
   <string name="alert_dialog_no">Nee</string>
+  <string name="pref_title_unicode_stripping">Verwyder \'unicode\'</string>
+  <string name="pref_unicode_stripping_leave_intact">Laat karakters ongeskonde</string>
+  <string name="pref_unicode_stripping_non_encodable">Verwyder nie-enkodeerbare karakters</string>
+  <string name="pref_unicode_stripping_all">Verwyder al \'unicode\' karakters</string>
   <string name="menu_as_unread">Merk as ongelees</string>
   <string name="menu_as_read">Mark as gelees</string>
   <string name="menu_all_as_unread">Merk alles as ongelees</string>
@@ -231,4 +235,17 @@
   <string name="copy_empty_string">Geen teks om te kopieer</string>
   <string name="attach_add_calendar_events">Kalender afspraak</string>
   <string name="calendar_attachment_activity_not_found">Kan nie \'n ondersteunende Kalender program vind</string>
+  <string name="pref_title_mms_notification_vibrate_pattern">Vibreer patroon</string>
+  <string name="pref_summary_mms_notification_vibrate_pattern">Verander vibreer patroon</string>
+  <string name="pref_mms_notification_vibrate_normal">Normaal</string>
+  <string name="pref_mms_notification_vibrate_med_vib">Medium vibreer</string>
+  <string name="pref_mms_notification_vibrate_long_vib">Lank vibreer</string>
+  <string name="pref_mms_notification_vibrate_mult_short">Meerdere kort</string>
+  <string name="pref_mms_notification_vibrate_mult_long">Meerdere lank</string>
+  <string name="menu_insert_smiley">Voeg gesiggie by</string>
+  <string name="pref_title_enable_emoticons">Emosie-Ikone ondersteuning</string>
+  <string name="pref_summary_enable_emoticons">Vervang teks Emosie-Ikone met grafiese ekwivalente</string>
+  <string name="menu_conversation_options">Gesprek opsies</string>
+  <string name="pref_title_reset_convopt_to_default">Herstel na standaard</string>
+  <string name="pref_summary_reset_convopt_to_default">Herstel die gesprek instelling na die program vlak instelling</string>
 </resources>

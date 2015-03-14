@@ -248,4 +248,8 @@
   <string name="menu_conversation_options">Opcions de conversa</string>
   <string name="pref_title_reset_convopt_to_default">Restableix els valors per defecte</string>
   <string name="pref_summary_reset_convopt_to_default">Restableix la configuració de conversa a la configuració a nivell d\'aplicació</string>
+  <string name="pref_title_mms_full_timestamp">Data i hora sencera</string>
+  <string name="pref_summary_mms_full_timestamp">Mostra la data i l\'hora sencera</string>
+  <string name="pref_title_mms_use_sent_timestamp">Data i hora originals</string>
+  <string name="pref_summary_mms_use_sent_timestamp">Mostra la data d\'enviament enlloc de la de recepció</string>
 </resources>

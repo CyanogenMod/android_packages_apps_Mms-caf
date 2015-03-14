@@ -248,4 +248,8 @@
   <string name="menu_conversation_options">Sohbet seçenekleri</string>
   <string name="pref_title_reset_convopt_to_default">Varsayılana sıfırla</string>
   <string name="pref_summary_reset_convopt_to_default">Sohbet ayarlarını uygulama seviyesi ayarlarına sıfırlar</string>
+  <string name="pref_title_mms_full_timestamp">Tam zaman damgaları</string>
+  <string name="pref_summary_mms_full_timestamp">Zaman damgalarında hem tarih hem saati gösterir</string>
+  <string name="pref_title_mms_use_sent_timestamp">Orijinal zaman damgaları</string>
+  <string name="pref_summary_mms_use_sent_timestamp">Zaman damgalarında alış zamanı yerine gönderiliş zamanını gösterir</string>
 </resources>
