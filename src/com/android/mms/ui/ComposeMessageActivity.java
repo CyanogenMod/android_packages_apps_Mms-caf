@@ -7853,7 +7853,8 @@ public class ComposeMessageActivity extends Activity
                         intent.putExtra(THREAD_ID, mTempThreadId);
                     }
 
-                    if (msgItem.mType.equals("sms")) {
+                    if (msgItem.mType.equals("sms")
+                            || (mIsRcsEnabled && msgItem.mRcsType == RcsUtils.RCS_MSG_TYPE_TEXT)) {
                         intent.putExtra("sms_body", mBodyString);
                     } else {
                         intent.putExtra("msg_uri", mTempMmsUri);
