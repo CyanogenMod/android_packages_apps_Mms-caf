@@ -248,4 +248,8 @@
   <string name="menu_conversation_options">Opcje rozmowy</string>
   <string name="pref_title_reset_convopt_to_default">Przywróć domyślne</string>
   <string name="pref_summary_reset_convopt_to_default">Resetuje ustawienia konwersacji do ustawień poziomu aplikacji</string>
+  <string name="pref_title_mms_full_timestamp">Pełna data</string>
+  <string name="pref_summary_mms_full_timestamp">Wyświetlaj pełną datę oraz czas w wiadomościach</string>
+  <string name="pref_title_mms_use_sent_timestamp">Oryginalna data</string>
+  <string name="pref_summary_mms_use_sent_timestamp">Wyświetlaj datę wysłania zamiast daty odebrania wiadomości</string>
 </resources>

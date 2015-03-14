@@ -248,4 +248,8 @@
   <string name="menu_conversation_options">Свойства диалога</string>
   <string name="pref_title_reset_convopt_to_default">Сбросить настройки</string>
   <string name="pref_summary_reset_convopt_to_default">Восстановить настройки диалога на используемые для всех контактов</string>
+  <string name="pref_title_mms_full_timestamp">Полная метка времени</string>
+  <string name="pref_summary_mms_full_timestamp">Отображать полную дату и время в сообщениях</string>
+  <string name="pref_title_mms_use_sent_timestamp">Исходная метка времени</string>
+  <string name="pref_summary_mms_use_sent_timestamp">Отображать время отправки сообщения вместо времени приёма</string>
 </resources>
