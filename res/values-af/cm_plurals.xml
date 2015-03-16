@@ -28,4 +28,8 @@
     <item quantity="one"><xliff:g id="number">%1$s</xliff:g> gesprek sal gemerk word as ongelees.</item>
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> gesprekke sal gemerk word as ongelees.</item>
   </plurals>
+  <plurals name="confirm_mark_read_conversation">
+    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> gesprek sal gemerk word as gelees.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> gesprekke sal gemerk word as gelees.</item>
+  </plurals>
 </resources>

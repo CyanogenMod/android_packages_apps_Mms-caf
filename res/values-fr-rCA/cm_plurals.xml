@@ -17,19 +17,19 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <plurals name="template_confirm_delete_conversation">
-    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> modello sarà eliminato.</item>
-    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> modelli saranno eliminati.</item>
+    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> modèle sera supprimé.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> modèles seront supprimés.</item>
   </plurals>
   <plurals name="remaining_delay_time">
-    <item quantity="one">Invio in %1$d secondo, tocca per annullare.</item>
-    <item quantity="other">Invio in %1$d secondi, tocca per annullare.</item>
+    <item quantity="one">Envoi dans %1$d seconde, appuyez pour annuler.</item>
+    <item quantity="other">Envoi dans %1$d secondes, appuyez pour annuler.</item>
   </plurals>
   <plurals name="confirm_mark_unread_conversation">
-    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> conversazione verrà segnata come non letta.</item>
-    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> conversazione verranno contrassegnate come non lette.</item>
+    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> conversation sera marquée comme non lue.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> conversations seront marquées comme non lues.</item>
   </plurals>
   <plurals name="confirm_mark_read_conversation">
-    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> conversazione verrà segnata come letta.</item>
-    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> conversazioni verranno segnate come lette.</item>
+    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> conversation sera marquée comme lue.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> conversations seront marquées comme lues.</item>
   </plurals>
 </resources>

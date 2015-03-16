@@ -172,7 +172,7 @@
   <string name="progress_mms_text">Kosketa yrittääksesi uudelleen</string>
   <string name="menu_connect_url">Yhdistä</string>
   <string name="menu_add_to_label">Tallenna kirjanmerkki</string>
-  <string name="loadurlinfo_str">Lataa URL-osoite?</string>
+  <string name="loadurlinfo_str">Lataa linkin osoite?</string>
   <string name="discard_message_reason_all_invalid">Viesti hylätään, koska kaikki vastaanottajat ovat virheellisiä.</string>
   <string name="discard_message_reason_some_invalid">Viesti hylätään, koska osa vastaanottajista on virheellisiä.</string>
   <string name="pref_sms_signature_title">SMS-allekirjoitus</string>
