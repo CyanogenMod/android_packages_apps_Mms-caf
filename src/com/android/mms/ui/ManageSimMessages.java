@@ -45,6 +45,7 @@ import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Sms;
 import android.telephony.SmsManager;
+import android.telephony.SubscriptionManager;
 import android.text.TextUtils;
 import android.text.SpannableString;
 import android.text.style.URLSpan;
@@ -134,11 +135,11 @@ public class ManageSimMessages extends Activity
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (TelephonyIntents.ACTION_SIM_STATE_CHANGED.equals(action)) {
-                long subscription = intent.getLongExtra(MessageUtils.SUBSCRIPTION_KEY,
+                int subscription = intent.getIntExtra(MessageUtils.SUBSCRIPTION_KEY,
                         MessageUtils.SUB_INVALID);
                 Log.d(TAG, "receive sim state change, subscription: " + subscription);
                 if (!MessageUtils.isMultiSimEnabledMms() ||
-                        subscription == (long)mSubscription) {
+                        subscription == mSubscription) {
                     refreshMessageList();
                 }
             }
@@ -523,7 +524,8 @@ public class ManageSimMessages extends Activity
         capacityMessage.append(getString(R.string.sim_capacity));
         int iccCapacityAll = -1;
         if (MessageUtils.isMultiSimEnabledMms()) {
-            iccCapacityAll = SmsManager.getSmsManagerForSubscriptionId(mSubscription)
+            int[] subId = SubscriptionManager.getSubId(mSubscription);
+            iccCapacityAll = SmsManager.getSmsManagerForSubscriptionId(subId[0])
                     .getSmsCapacityOnIcc();
         } else {
             iccCapacityAll = SmsManager.getDefault().getSmsCapacityOnIcc();
