@@ -8032,13 +8032,14 @@ public class ComposeMessageActivity extends Activity
         }
 
         private MessageItem getMessageItemByPos(int position) {
-            View view = mMsgListView.getChildAt(position);
-            if(view instanceof MessageListItem){
-                MessageListItem msglistItem = (MessageListItem) view;
-                if (msglistItem == null) {
-                    return null;
+            if (mMsgListAdapter.getItemViewType(position)
+                    != MessageListAdapter.GROUP_CHAT_ITEM_TYPE) {
+                Cursor cursor = (Cursor) mMsgListAdapter.getItem(position);
+                if (cursor != null) {
+                    return mMsgListAdapter.getCachedMessageItem(
+                            cursor.getString(COLUMN_MSG_TYPE),
+                            cursor.getLong(COLUMN_ID), cursor);
                 }
-                return  msglistItem.getMessageItem();
             }
             return null;
         }
