@@ -1057,4 +1057,7 @@
     <string name="omacp_configuration">OMACP Configuration</string>
     <string name="configuration_message_key">Configuration Message</string>
     <string name="configuration_message_key_activity">Touch to configure your OMACP messages</string>
+    <!-- General settings -->
+    <string name="pref_title_general_settings">General</string>
+    <string name="pref_title_notification_settings">Notifications</string>
 </resources>
