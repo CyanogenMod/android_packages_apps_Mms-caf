@@ -32,6 +32,7 @@ package com.android.mms.transaction;
 import com.android.mms.MmsConfig;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -41,9 +42,6 @@ public class MmsNoConfirmationSendActivity extends Activity {
 
     private static final String LOG_TAG =
             MmsNoConfirmationSendActivity.class.getSimpleName();
-
-    private static final String PLUGGER_SERVICE_ACTION =
-            "com.android.mms.transaction.MmsNoConfirmationSendService";
 
     public void onCreate(final Bundle savedInstanceState) {
         // TODO Auto-generated method stub
@@ -56,7 +54,8 @@ public class MmsNoConfirmationSendActivity extends Activity {
         Bundle extras = intent.getExtras();
         Uri uri = (Uri) extras.getParcelable(Intent.EXTRA_STREAM);
         Intent serviceIntent = new Intent();
-        serviceIntent.setAction(PLUGGER_SERVICE_ACTION);
+        serviceIntent.setComponent(new ComponentName(getApplicationContext(),
+                MmsNoConfirmationSendService.class));
         if (uri != null) {
             serviceIntent.putExtra(MmsConfig.EXTRA_URI, uri.toString());
             this.startService(serviceIntent);
