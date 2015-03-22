@@ -248,4 +248,8 @@
   <string name="menu_conversation_options">Gesprek opsies</string>
   <string name="pref_title_reset_convopt_to_default">Herstel na standaard</string>
   <string name="pref_summary_reset_convopt_to_default">Herstel die gesprek instelling na die program vlak instelling</string>
+  <string name="pref_title_mms_full_timestamp">Volledige tydstempel</string>
+  <string name="pref_summary_mms_full_timestamp">Vertoon beide die datum en die tyd in die tydstempel</string>
+  <string name="pref_title_mms_use_sent_timestamp">Oorspronklike tydstempel</string>
+  <string name="pref_summary_mms_use_sent_timestamp">Vertoon die gestuurde tyd in plaas van die ontvangs tyd in die tydstempel</string>
 </resources>

@@ -80,7 +80,7 @@
   <string name="message_share_intent_title">Jaa viesti</string>
   <string name="start_new_message_button">Uusi viesti</string>
   <string name="all_spinner_option">Kaikki</string>
-  <string name="menu_copy_url">Kopioi URL <xliff:g id="extractedurl">%s</xliff:g></string>
+  <string name="menu_copy_url">Kopioi linkki <xliff:g id="extractedurl">%s</xliff:g></string>
   <string name="deleting_threads">Poistetaan keskusteluja\2026</string>
   <string name="menu_resend">Lähetä uudelleen</string>
   <string name="cancel_downloading">Peruuta</string>
@@ -106,10 +106,10 @@
   <string name="download_failed_retry">Viestin lataaminen epäonnistui, yritetään uudelleen\u2026</string>
   <string name="system_audio_item">Soittoääni</string>
   <string name="external_audio_item">Musiikki</string>
-  <string name="menu_connect_url">Avaa URL</string>
+  <string name="menu_connect_url">Avaa linkki</string>
   <string name="do_not_show_connect_warning">Älä näytä tätä varoitusta uudelleen</string>
   <string name="menu_add_to_label">Lisää kirjanmerkkeihin</string>
-  <string name="loadurlinfo_str">Tuntemattomilta lähettäjiltä saapuvat URL-osoitteet voivat olla urkintayrityksiä. Jos olet epävarma, älä avaa tätä sivustoa.</string>
+  <string name="loadurlinfo_str">Tuntemattomilta lähettäjiltä saapuvat linkit voivat olla urkintayrityksiä. Jos olet epävarma, älä avaa tätä sivustoa.</string>
   <string name="pref_title_message_template">Viestipohjat</string>
   <string name="title_new_message_template">Uusi viestipohja</string>
   <string name="summary_new_message_template">Luo uusi viestipohja</string>
