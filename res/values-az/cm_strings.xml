@@ -83,6 +83,7 @@
   <string name="pref_title_reset_convopt_to_default">Standart olaraq sıfırla</string>
   <string name="pref_summary_reset_convopt_to_default">Söhbət tənzimləmələrini tətbiqetmə səviyyə tənzimləmələrinə sıfırlayar</string>
   <string name="cell_broadcast_sender">Şəbəkə yayım kanalı</string>
+  <string name="memory_low_body">Telefonun yaddaşı azdır, yeni mesaj qəbul etmək üçün köhnə verilənləri silərək yer ayırın.</string>
   <string name="system_audio_item">Sistem səsi</string>
   <string name="external_audio_item">Xarici səs</string>
   <string name="pending_mms">Mesajlaşma: Bir və ya daha çox MMS gözləyir</string>
