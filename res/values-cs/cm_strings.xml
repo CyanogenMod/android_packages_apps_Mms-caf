@@ -248,4 +248,8 @@
   <string name="menu_conversation_options">Možnosti konverzace</string>
   <string name="pref_title_reset_convopt_to_default">Obnovit výchozí</string>
   <string name="pref_summary_reset_convopt_to_default">Obnoví nastavení konverzace na úroveň nastavení aplikace</string>
+  <string name="pref_title_mms_full_timestamp">Kompletní časový údaj</string>
+  <string name="pref_summary_mms_full_timestamp">Zobrazení času i datumu v informacích o zprávě</string>
+  <string name="pref_title_mms_use_sent_timestamp">Původní časové údaje</string>
+  <string name="pref_summary_mms_use_sent_timestamp">Zobrazí se pouze čas odeslání zprávy</string>
 </resources>

@@ -248,4 +248,8 @@
   <string name="menu_conversation_options">samtaleinnstillinger</string>
   <string name="pref_title_reset_convopt_to_default">Tilbakestill til standard</string>
   <string name="pref_summary_reset_convopt_to_default">Tilbakestiller samtaleinnstillingene til applikasjonens standardinnstillinger</string>
+  <string name="pref_title_mms_full_timestamp">Hele tidsstempler</string>
+  <string name="pref_summary_mms_full_timestamp">Vis både dato og tid i tidsstempler</string>
+  <string name="pref_title_mms_use_sent_timestamp">Originale tidsstempler</string>
+  <string name="pref_summary_mms_use_sent_timestamp">Vis dato sendt og ikke dato mottatt i tidsstempler</string>
 </resources>

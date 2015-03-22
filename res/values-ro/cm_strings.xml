@@ -23,6 +23,7 @@
   <string name="pref_close_all_summary">Butonul Închidere închide toate mesajele</string>
   <string name="pref_dark_theme_title">Utilizați tema întunecată</string>
   <string name="pref_dark_theme_summary">Dacă nu este selectat, va fi utilizată tema „deschisă”</string>
+  <string name="message_counter">%1$d din %2$d</string>
   <string name="button_close">Închide</string>
   <string name="button_view">Vizualizați</string>
   <string name="button_templates">Șabloane</string>
@@ -68,12 +69,14 @@
   <string name="cannot_add_text_anymore">Nu se poate adăuga mai mult text.</string>
   <string name="title_send_message">Trimitere mesaj</string>
   <string name="status_deleted_unread">Șters fără a fi citit</string>
+  <string name="disk_storage_full_error">Eroare: Spațiul de stocare este plin.</string>
   <string name="mms_too_large">Mesajul este prea mare pentru a fi descărcat.</string>
   <string name="system_audio_item">Ton de apel</string>
   <string name="external_audio_item">Muzică</string>
   <string name="title_new_message_template">Şablon nou</string>
   <string name="dialog_editSMSTemplate_title">Editare şablon</string>
   <string name="pref_sms_signature_title">Semnătura SMS</string>
+  <string name="pref_smsc_title">Centrul de servicii SMS</string>
   <string name="set_smsc_error">Imposibil de setat numărul SMSC</string>
   <string name="copy_to_sim">Copiază mesaj pe cartela SIM</string>
   <string name="copy_to_sim_fail">Imposibil de salvat mesajul</string>
