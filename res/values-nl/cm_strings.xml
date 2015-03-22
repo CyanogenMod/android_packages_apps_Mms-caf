@@ -248,4 +248,8 @@
   <string name="menu_conversation_options">Gespreksopties</string>
   <string name="pref_title_reset_convopt_to_default">Standaardwaarden</string>
   <string name="pref_summary_reset_convopt_to_default">Gespreksinstelling terugzetten naar instelling van de app</string>
+  <string name="pref_title_mms_full_timestamp">Volledige tijdsaanduiding</string>
+  <string name="pref_summary_mms_full_timestamp">Datum en tijd tonen in tijdsaanduidingen</string>
+  <string name="pref_title_mms_use_sent_timestamp">Oorspronkelijke tijdsaanduiding</string>
+  <string name="pref_summary_mms_use_sent_timestamp">Verzenddatum tonen i.p.v. ontvangstdatum in tijdsaanduidingen</string>
 </resources>

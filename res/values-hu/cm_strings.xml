@@ -248,4 +248,8 @@
   <string name="menu_conversation_options">Beszélgetés beállítások</string>
   <string name="pref_title_reset_convopt_to_default">Beállítások visszaállítása alaphelyzetbe</string>
   <string name="pref_summary_reset_convopt_to_default">Visszaállítja a beszélgetés beállításokat az alkalmazáson belüli alapbeállításokra</string>
+  <string name="pref_title_mms_full_timestamp">Teljes időbélyeg</string>
+  <string name="pref_summary_mms_full_timestamp">Mindkét dátum/idő megjelenítése</string>
+  <string name="pref_title_mms_use_sent_timestamp">Eredeti dátum</string>
+  <string name="pref_summary_mms_use_sent_timestamp">Küldés dátumának megjelenítése a fogadás dátuma helyett</string>
 </resources>
