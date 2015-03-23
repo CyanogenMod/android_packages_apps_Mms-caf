@@ -269,6 +269,7 @@ public class QTIBackupSMS{
         int numOfEntries = cursor.getCount();
         if( numOfEntries < 1){
             if(DEBUG) Log.d(TAG, "No messages in Your Phone");
+            cursor.close();
             return 0;
         }
 
