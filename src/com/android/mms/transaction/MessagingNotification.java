@@ -66,7 +66,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.RemoteInput;
 import android.telephony.TelephonyManager;
 import android.telephony.SubscriptionManager;
-import android.telephony.SubInfoRecord;
+import android.telephony.SubscriptionInfo;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -537,7 +537,7 @@ public class MessagingNotification {
     public static final class NotificationInfo implements Parcelable {
         public final Intent mClickIntent;
         public final String mMessage;
-        public final String mSimName;
+        public final CharSequence mSimName;
         public final CharSequence mTicker;
         public final long mTimeMillis;
         public final String mTitle;
@@ -564,7 +564,7 @@ public class MessagingNotification {
          * @param threadId thread this message belongs to
          */
         public NotificationInfo(boolean isSms,
-                Intent clickIntent, String message, String subject, String simName,
+                Intent clickIntent, String message, String subject, CharSequence simName,
                 CharSequence ticker, long timeMillis, String title,
                 Bitmap attachmentBitmap, Contact sender,
                 int attachmentType, long threadId) {
@@ -696,7 +696,7 @@ public class MessagingNotification {
             arg0.writeParcelable(mClickIntent, 0);
             arg0.writeString(mMessage);
             arg0.writeString(mSubject);
-            arg0.writeString(mSimName);
+            arg0.writeCharSequence(mSimName);
             arg0.writeCharSequence(mTicker);
             arg0.writeLong(mTimeMillis);
             arg0.writeString(mTitle);
@@ -710,7 +710,7 @@ public class MessagingNotification {
             mClickIntent = in.readParcelable(Intent.class.getClassLoader());
             mMessage = in.readString();
             mSubject = in.readString();
-            mSimName = in.readString();
+            mSimName = in.readCharSequence();
             mTicker = in.readCharSequence();
             mTimeMillis = in.readLong();
             mTitle = in.readString();
@@ -1008,7 +1008,7 @@ public class MessagingNotification {
                 context, address, null, null).toString();
         String senderInfoName = senderInfo.substring(
                 0, senderInfo.length());
-        String simName = determineSimName(phoneId);
+        CharSequence simName = MessageUtils.getSimName(context, phoneId);
         CharSequence ticker = buildTickerMessage(
                 context, address, subject, message);
 
@@ -1064,7 +1064,7 @@ public class MessagingNotification {
                 context, address, null, null).toString();
         String senderInfoName = senderInfo.substring(
                 0, senderInfo.length());
-        String simName = determineSimName(phoneId);
+        CharSequence simName = MessageUtils.getSimName(context, phoneId);
         CharSequence ticker = buildTickerMessage(
                 context, address, subject, message);
 
@@ -1459,20 +1459,6 @@ public class MessagingNotification {
         }
 
         return result;
-    }
-
-    private static String determineSimName(int phoneId) {
-        if (TelephonyManager.getDefault().getPhoneCount() <= 1) {
-            return null;
-        }
-
-        //SMS/MMS is operating based of PhoneId which is 0, 1..
-        List<SubInfoRecord> sir = SubscriptionManager.getSubInfoUsingSlotId(phoneId);
-        if (sir == null || sir.isEmpty()) {
-            return null;
-        }
-
-        return sir.get(0).displayName;
     }
 
     protected static CharSequence buildTickerMessage(

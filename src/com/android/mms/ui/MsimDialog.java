@@ -20,7 +20,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
-import android.telephony.SubInfoRecord;
+import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -99,10 +99,11 @@ public class MsimDialog extends AlertDialog {
             final int phoneId = i;
             smsBtns[i] = (Button) mLayout.findViewById(smsBtnIds[i]);
             smsBtns[i].setVisibility(View.VISIBLE);
-            List<SubInfoRecord> sir = SubscriptionManager.getSubInfoUsingSlotId(phoneId);
 
-            String displayName = ((sir != null) && (sir.size() > 0)) ?
-                    sir.get(0).displayName : "SIM " + (i + 1);
+            CharSequence displayName = MessageUtils.getSimName(getContext(), phoneId);
+            if (displayName == null) {
+                displayName = "SIM " + (i + 1);
+            }
 
             smsBtns[i].setText(displayName);
             smsBtns[i].setOnClickListener(

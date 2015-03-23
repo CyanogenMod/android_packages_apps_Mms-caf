@@ -49,8 +49,6 @@ import android.provider.Telephony.Mms;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.telephony.PhoneNumberUtils;
-import android.telephony.SubscriptionManager;
-import android.telephony.SubInfoRecord;
 import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
@@ -380,9 +378,9 @@ public class MessageListItem extends ZoomMessageListItem implements
             mSimIndicatorView.setImageDrawable(mSimIndicatorIcon);
             mSimIndicatorView.setVisibility(View.VISIBLE);
 
-            List<SubInfoRecord> sir = SubscriptionManager.getSubInfoUsingSlotId(phoneId);
-            if (sir != null && !sir.isEmpty()) {
-                mSimNameView.setText(sir.get(0).displayName);
+            CharSequence simName = MessageUtils.getSimName(mContext, phoneId);
+            if (simName != null) {
+                mSimNameView.setText(simName);
                 mSimNameView.setVisibility(View.VISIBLE);
             } else {
                 mSimNameView.setVisibility(View.GONE);

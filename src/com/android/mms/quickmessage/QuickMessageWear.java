@@ -94,7 +94,7 @@ public class QuickMessageWear extends Activity {
                     sender
             };
 
-            long subId = SubscriptionManager.getDefaultSmsSubId();
+            int subId = SubscriptionManager.getDefaultSmsSubId();
             int phoneId = SubscriptionManager.getPhoneId(subId);
             SmsMessageSender smsMessageSender = new SmsMessageSender(getBaseContext(), dest,
                     message.toString(), tId, phoneId);

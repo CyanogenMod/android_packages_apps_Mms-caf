@@ -39,11 +39,11 @@ import android.provider.Telephony;
 import android.provider.Telephony.Mms;
 import android.util.Log;
 
+import com.android.mms.transaction.PduParserUtil;
 import com.google.android.mms.MmsException;
+import com.google.android.mms.pdu.GenericPdu;
 import com.google.android.mms.pdu.PduComposer;
 import com.google.android.mms.pdu.PduPersister;
-import com.google.android.mms.pdu.RetrieveConf;
-import com.google.android.mms.pdu.SendReq;
 import com.google.android.mms.pdu.PduParser;
 
 import java.io.File;
@@ -160,21 +160,16 @@ public class QTIBackupMMS {
 
         for(QTIMMSObject mmsObj : mmsbk.MMSList){
 
-            byte[] Data = mmsObj.getMmData();
-            if (Data == null) {
+            byte[] data = mmsObj.getMmData();
+            if (data == null) {
                 continue;
             }
 
             Uri msgUri = null;
             try {
-                if (uri.equals(Mms.Inbox.CONTENT_URI)) {
-                    RetrieveConf retrieveConf = (RetrieveConf) new PduParser(
-                            Data).parse();
-                    msgUri = pdup.persist(retrieveConf, uri,true ,false ,null);
-                } else {
-                    SendReq retrieveConf = (SendReq) new PduParser(Data).parse();
-                    msgUri = pdup.persist(retrieveConf, uri,true ,false ,null);
-                }
+                GenericPdu pdu = new PduParser(data,
+                        PduParserUtil.shouldParseContentDisposition()).parse();
+                msgUri = pdup.persist(pdu, uri, true, false, null);
             } catch (MmsException e) {
                 Log.e(TAG, e.getLocalizedMessage());
             }
@@ -295,30 +290,14 @@ public class QTIBackupMMS {
         //Getting pdu content
         Uri uri = ContentUris.withAppendedId(Mms.CONTENT_URI, Long.parseLong( mms.getId() ));
         PduPersister persister = PduPersister.getPduPersister(mContext);
-        SendReq sendReq = null;
-        RetrieveConf retrieveConf = null;
         byte[] mmData = null;
-        PduComposer composer = null;
 
-        if(Telephony.Mms.MESSAGE_BOX_INBOX == Long.parseLong ( mms.getMsg_box())) {
-            try{
-                retrieveConf = (RetrieveConf) persister.load(uri);
-                composer = new PduComposer(mContext, retrieveConf);
-                mmData = composer.make();
-            } catch(MmsException e){
-                Log.e(TAG, e.getLocalizedMessage());
-            } catch(ClassCastException e){
-                Log.e(TAG, e.getLocalizedMessage());
-            } catch(Exception e){
-                Log.e(TAG, e.getLocalizedMessage());
-            }
-        } else{
-            try {
-                sendReq = (SendReq) persister.load(uri);
-                mmData = new PduComposer(mContext, sendReq).make();
-            } catch(MmsException e){
-                Log.e(TAG, e.getLocalizedMessage());
-            }
+        try {
+            GenericPdu pdu = persister.load(uri);
+            PduComposer composer = new PduComposer(mContext, pdu);
+            mmData = composer.make();
+        } catch(MmsException e) {
+            Log.e(TAG, e.getLocalizedMessage());
         }
 
         mms.setMmData(mmData);

@@ -503,7 +503,7 @@ public class ManageSimMessages extends Activity
         builder.setPositiveButton(R.string.yes, null);
         int iccCapacityAll = -1;
         if (TelephonyManager.getDefault().isMultiSimEnabled()) {
-            iccCapacityAll = SmsManager.getSmsManagerForSubscriber(mSubscription)
+            iccCapacityAll = SmsManager.getSmsManagerForSubscriptionId(mSubscription)
                     .getSmsCapacityOnIcc();
         } else {
             iccCapacityAll = SmsManager.getDefault().getSmsCapacityOnIcc();

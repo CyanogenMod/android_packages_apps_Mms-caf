@@ -120,7 +120,7 @@ public class SmsMessageSender implements MessageSender {
                     break;
                 }
                 log("updating Database with phoneId = " + mPhoneId);
-                long [] subId = SubscriptionManager.getSubId(mPhoneId);
+                int[] subId = SubscriptionManager.getSubId(mPhoneId);
                 Sms.addMessageToUri(subId[0], mContext.getContentResolver(),
                         Uri.parse("content://sms/queued"), mDests[i],
                         mMessageText, null, mTimestamp,
