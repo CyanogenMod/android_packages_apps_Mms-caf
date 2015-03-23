@@ -1091,7 +1091,24 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             if (folder.exists()) {
                 result = folder.listFiles();
             }
-            return result;
+            if (result == null) {
+                return null;
+            }
+
+            // if an import gets aborted, the zip file (backup) got extracted but the extracted
+            // files still exist. Delete these files to prevent a crash when listing backups.
+            final ArrayList<File> files = new ArrayList<File>(result.length);
+            for (final File file : result) {
+                if (file == null || TextUtils.isEmpty(file.getName())) {
+                    continue;
+                }
+                if (!file.getName().endsWith(".zip")) {
+                    file.delete();
+                    continue;
+                }
+                files.add(file);
+            }
+            return files.toArray(new File[files.size()]);
         }
 
         @Override
