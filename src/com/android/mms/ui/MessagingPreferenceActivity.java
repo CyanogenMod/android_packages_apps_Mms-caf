@@ -133,7 +133,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     public static final String QM_LOCKSCREEN_ENABLED     = "pref_key_qm_lockscreen";
     public static final String QM_CLOSE_ALL_ENABLED      = "pref_key_close_all";
     public static final String QM_DARK_THEME_ENABLED     = "pref_dark_theme";
-
+    public static final String SHOW_EMAIL_ADDRESS        = "pref_key_show_email_address";
     // Blacklist
     public static final String BLACKLIST                 = "pref_blacklist";
 
@@ -185,6 +185,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private Recycler mSmsRecycler;
     private Recycler mMmsRecycler;
     private Preference mSmsTemplate;
+    private CheckBoxPreference mShowEmailPref;
     private CheckBoxPreference mSmsSignaturePref;
     private EditTextPreference mSmsSignatureEditPref;
     private ArrayList<Preference> mSmscPrefList = new ArrayList<Preference>();
@@ -376,6 +377,9 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mEnableQmLockscreenPref = (CheckBoxPreference) findPreference(QM_LOCKSCREEN_ENABLED);
         mEnableQmCloseAllPref = (CheckBoxPreference) findPreference(QM_CLOSE_ALL_ENABLED);
         mEnableQmDarkThemePref = (CheckBoxPreference) findPreference(QM_DARK_THEME_ENABLED);
+        if(getResources().getBoolean(R.bool.def_custom_preferences_settings)) {
+            mShowEmailPref = (CheckBoxPreference) findPreference(SHOW_EMAIL_ADDRESS);
+        }
 
         // SMS Sending Delay
         mMessageSendDelayPref = (ListPreference) findPreference(SEND_DELAY_DURATION);
@@ -974,6 +978,10 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             } catch (ActivityNotFoundException e) {
                 Log.e(TAG,"Activity not found : "+e);
             }
+        } else if (getResources().getBoolean(
+                R.bool.def_custom_preferences_settings)
+                && preference == mShowEmailPref) {
+            enableEmailAddress(mShowEmailPref.isChecked(), this);
         }
 
         return super.onPreferenceTreeClick(preferenceScreen, preference);
@@ -1427,6 +1435,14 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         boolean qmDarkThemeEnabled =
             prefs.getBoolean(MessagingPreferenceActivity.QM_DARK_THEME_ENABLED, false);
         return qmDarkThemeEnabled;
+    }
+
+    public static void enableEmailAddress(boolean enabled, Context context) {
+        SharedPreferences.Editor editor =
+                PreferenceManager.getDefaultSharedPreferences(context).edit();
+        editor.putBoolean(MessagingPreferenceActivity.SHOW_EMAIL_ADDRESS,
+                enabled);
+        editor.apply();
     }
 
     private void registerListeners() {

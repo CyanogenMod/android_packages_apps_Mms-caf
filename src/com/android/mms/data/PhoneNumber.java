@@ -23,6 +23,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.InternalContactCounts;
 import android.telephony.PhoneNumberUtils;
@@ -30,11 +31,16 @@ import android.util.Log;
 
 import com.android.contacts.common.preference.ContactsPreferences;
 import com.android.mms.LogTag;
+import com.android.mms.R;
+import com.android.mms.ui.ComposeMessageActivity;
+import com.android.mms.ui.MessagingPreferenceActivity;
 import com.android.mms.ui.SelectRecipientsList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeSet;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * An interface for finding information about phone numbers
@@ -290,7 +296,117 @@ public class PhoneNumber implements Comparable<PhoneNumber> {
                 phoneNumbers.add(number);
             }
         }
+        boolean showEmailAddress = prefs.getBoolean(
+                MessagingPreferenceActivity.SHOW_EMAIL_ADDRESS, true);
+        if (context.getResources().getBoolean(
+                R.bool.def_custom_preferences_settings)
+                && showEmailAddress) {
+            ArrayList<PhoneNumber> emailAddress = new ArrayList<PhoneNumber>();
 
+            emailAddress = getEmailAddress(context, contactsPreferences,
+                    phoneNumbers);
+            for (int i = 0; i < emailAddress.size(); i++) {
+                phoneNumbers.add(emailAddress.get(i));
+            }
+            Collections.sort(phoneNumbers, PhoneNumber.PhoneNameComparator);
+        }
         return phoneNumbers;
+    }
+
+    /*Comparator for sorting the list by Name*/
+    public static Comparator<PhoneNumber> PhoneNameComparator = new Comparator<PhoneNumber>() {
+
+        public int compare(PhoneNumber s1, PhoneNumber s2) {
+            String ContactName1 = s1.getName().toUpperCase();
+            String ContactName2 = s2.getName().toUpperCase();
+            return ContactName1.compareTo(ContactName2);
+        }
+    };
+
+    private static ArrayList<PhoneNumber> getEmailAddress(Context context,
+            ContactsPreferences contactsPreferences,
+            ArrayList<PhoneNumber> phoneNumbers) {
+
+        final ContentResolver resolver = context.getContentResolver();
+        ArrayList<Long> contactIdOrder = new ArrayList<Long>();
+        HashMap<Long, TreeSet<PhoneNumber>> numbers = new HashMap<Long, TreeSet<PhoneNumber>>();
+        int section = 0, sectionPosition = 0;
+        boolean useAlternative = contactsPreferences.getSortOrder()
+                == ContactsPreferences.SORT_ORDER_ALTERNATIVE ? true : false;
+        final Uri uri = Email.CONTENT_URI
+                .buildUpon()
+                .appendQueryParameter(
+                        InternalContactCounts.EXTRA_ADDRESS_BOOK_INDEX, "true")
+                .build();
+
+        final Cursor cursor = resolver.query(uri,
+                useAlternative ? PROJECTION_ALT : PROJECTION,
+                null, null, null);
+        try {
+            if (cursor == null) {
+                return null;
+            }
+
+            if (cursor.getCount() == 0) {
+                cursor.close();
+                return null;
+            }
+
+            Bundle bundle = cursor.getExtras();
+            String[] sections = null;
+            int[] counts = null;
+
+            if (bundle
+                    .containsKey(InternalContactCounts.EXTRA_ADDRESS_BOOK_INDEX_TITLES)) {
+                sections = bundle
+                        .getStringArray(InternalContactCounts.EXTRA_ADDRESS_BOOK_INDEX_TITLES);
+                counts = bundle
+                        .getIntArray(InternalContactCounts.EXTRA_ADDRESS_BOOK_INDEX_COUNTS);
+            }
+
+            cursor.moveToPosition(-1);
+            while (cursor.moveToNext()) {
+                String sectionIndex = null;
+                if (sections != null) {
+                    sectionIndex = sections[section];
+                    sectionPosition++;
+                    if (sectionPosition >= counts[section]) {
+                        section++;
+                        sectionPosition = 0;
+                    }
+                }
+
+                PhoneNumber number = new PhoneNumber(context, cursor,
+                        sectionIndex);
+                if (!contactIdOrder.contains(number.mContactId)) {
+                    contactIdOrder.add(number.mContactId);
+                }
+                TreeSet<PhoneNumber> numbersByContact = numbers
+                        .get(number.mContactId);
+                if (numbersByContact == null) {
+                    numbersByContact = new TreeSet<PhoneNumber>();
+                    numbers.put(number.mContactId, numbersByContact);
+                }
+                numbersByContact.add(number);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        ArrayList<PhoneNumber> emailAddress = new ArrayList<PhoneNumber>();
+
+        for (Long contactId : contactIdOrder) {
+            TreeSet<PhoneNumber> numbersByContact = numbers.get(contactId);
+            numbersByContact.first().mIsDefault = true;
+            for (PhoneNumber number : numbersByContact) {
+                emailAddress.add(number);
+            }
+        }
+        return emailAddress;
     }
 }
