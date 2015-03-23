@@ -81,6 +81,7 @@ import com.android.mms.QTIBackupMMS;
 import com.android.mms.QTIBackupSMS;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1087,11 +1088,12 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         @Override
         protected File[] doInBackground(Void... params) {
             File folder = new File(Environment.getExternalStorageDirectory(), BACKUP_FOLDER_NAME);
-            File[] result = null;
-            if (folder.exists()) {
-                result = folder.listFiles();
-            }
-            return result;
+            return folder.listFiles(new FilenameFilter() {
+                @Override
+                public boolean accept(File directory, String fileName) {
+                    return fileName.toLowerCase().endsWith(".zip");
+                }
+            });
         }
 
         @Override
