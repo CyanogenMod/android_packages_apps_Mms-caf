@@ -118,7 +118,7 @@ public class Conversation {
     private boolean mMarkAsReadBlocked;
     private boolean mMarkAsReadWaiting;
     private boolean mHasMmsForward = false; // True if has forward mms
-    private String mForwardRecipientNumber; // The recipient that the forwarded Mms received from
+    private String[] mForwardRecipientNumber; // The recipient that the forwarded Mms received from
     private AsyncTask mMarkAsUnreadTask;
     private boolean mIsGroupChat;
     private GroupChatModel mGroupChat;
@@ -1688,11 +1688,11 @@ public class Conversation {
         mHasMmsForward = value;
     }
 
-    public String getForwardRecipientNumber() {
+    public String[] getForwardRecipientNumber() {
         return mForwardRecipientNumber;
     }
 
-    public void setForwardRecipientNumber(String forwardRecipientNumber) {
+    public void setForwardRecipientNumber(String[] forwardRecipientNumber) {
         mForwardRecipientNumber = forwardRecipientNumber;
     }
 
