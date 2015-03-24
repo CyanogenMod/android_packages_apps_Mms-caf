@@ -84,6 +84,7 @@
                         android:id="@+id/locked_indicator"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
                         android:src="@drawable/ic_lock_message_sms"
                         android:paddingEnd="4dip"
                         android:visibility="gone" />
@@ -92,6 +93,7 @@
                         android:id="@+id/delivered_indicator"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
                         android:paddingEnd="4dip"
                         android:src="@drawable/ic_sms_mms_delivered"
                         android:visibility="gone" />
@@ -100,6 +102,7 @@
                         android:id="@+id/details_indicator"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
                         android:paddingEnd="4dip"
                         android:src="@drawable/ic_sms_mms_details"
                         android:visibility="gone" />
@@ -109,7 +112,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingEnd="4dip"
-                        android:tint="?android:attr/textColorSecondary"
                         android:visibility="gone"
                         android:layout_gravity="center_vertical" />
 
@@ -123,7 +125,7 @@
                     <TextView android:id="@+id/date_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="end"
+                        android:layout_gravity="end|center_vertical"
                         android:textAppearance="@android:style/TextAppearance.Material.Caption" />
                 </LinearLayout>
 
