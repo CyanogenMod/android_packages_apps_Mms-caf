@@ -78,6 +78,7 @@ public class AttachmentPagerAdapter extends PagerAdapter {
     private Context mContext;
     private ArrayList<GridView> mPagerGridViewViews;
     private OnItemClickListener mGridItemClickListener;
+    private boolean mIsRTL = false;
 
     public AttachmentPagerAdapter(Context context) {
         mContext = context;
@@ -87,6 +88,7 @@ public class AttachmentPagerAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup view, int position) {
         View pagerContent = LayoutInflater.from(mContext).inflate(
                 R.layout.attachment_selector_pager, view, false);
+        mIsRTL = (view.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL);
         bindPagerView(pagerContent, position);
         view.addView(pagerContent);
         return pagerContent;
@@ -110,6 +112,27 @@ public class AttachmentPagerAdapter extends PagerAdapter {
     private ArrayList<HashMap<String, Object>> getGridData(int pagerPosition) {
         List<IconListItem> attachmentDataList = getAttachmentData();
         ArrayList<HashMap<String, Object>> gridData = new ArrayList<HashMap<String, Object>>();
+        if (mIsRTL) {
+            if (pagerPosition == 0) {
+                for (int i = PAGE_GRID_COUNT; i < attachmentDataList.size(); i++) {
+                    IconListItem item = (IconListItem) attachmentDataList.get(i);
+                       HashMap<String, Object> map = new HashMap<String, Object>();
+                    map.put(GRID_ITEM_IMAGE, item.getResource());
+                    map.put(GRID_ITEM_TEXT, item.getTitle());
+                    gridData.add(map);
+                }
+            } else {
+                for (int i = 0; i < PAGE_GRID_COUNT; i++) {
+                    IconListItem item = (IconListItem) attachmentDataList.get(i);
+                    HashMap<String, Object> map = new HashMap<String, Object>();
+                    map.put(GRID_ITEM_IMAGE, item.getResource());
+                    map.put(GRID_ITEM_TEXT, item.getTitle());
+                    gridData.add(map);
+                }
+            }
+            return gridData;
+        }
+
         if (pagerPosition == 0) {
             for (int i = 0; i < PAGE_GRID_COUNT; i++) {
                 IconListItem item = (IconListItem) attachmentDataList.get(i);
