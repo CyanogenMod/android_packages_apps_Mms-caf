@@ -610,6 +610,8 @@ public class ComposeMessageActivity extends Activity
     ArrayList<SimpleMsg> mSimpleMsgs = new ArrayList<SimpleMsg>();
     private ProgressDialog mProgressDialog;
 
+    private  boolean mIsRTL = false;
+
     // keys for extras and icicles
     public final static String THREAD_ID = "thread_id";
     private final static String RECIPIENTS = "recipients";
@@ -4090,7 +4092,7 @@ public class ComposeMessageActivity extends Activity
         });
         setAttachmentSelectorHeight();
         mAttachmentPager.setAdapter(mAttachmentPagerAdapter);
-        mAttachmentPager.setCurrentItem(0);
+        mAttachmentPager.setCurrentItem(((mIsRTL) ? 1 : 0));
         mAttachmentPager.setOnPageChangeListener(mAttachmentPagerChangeListener);
         mAttachmentSelector.setVisibility(View.VISIBLE);
         // Delay 200ms for drawing view completed.
@@ -4124,6 +4126,15 @@ public class ComposeMessageActivity extends Activity
                 R.id.pager_indicator_first);
         ImageView pagerIndicatorSecond = (ImageView) mAttachmentSelector.findViewById(
                 R.id.pager_indicator_second);
+
+        if (mIsRTL) {
+            pagerIndicatorSecond.setImageResource(pagerPosition == 0 ? R.drawable.dot_chosen
+                    : R.drawable.dot_unchosen);
+            pagerIndicatorFirst.setImageResource(pagerPosition == 0 ? R.drawable.dot_unchosen
+                    : R.drawable.dot_chosen);
+            return;
+        }
+
         pagerIndicatorFirst.setImageResource(pagerPosition == 0 ? R.drawable.dot_chosen
                 : R.drawable.dot_unchosen);
         pagerIndicatorSecond.setImageResource(pagerPosition == 0 ? R.drawable.dot_unchosen
@@ -5490,6 +5501,7 @@ public class ComposeMessageActivity extends Activity
     @Override
     public void onClick(View v) {
         mWorkingMessage.setIsBurn(mIsBurnMessage);
+        mIsRTL = (v.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL);
         if ((v == mSendButtonSms || v == mSendButtonMms) && isPreparedForSending()) {
             if (mShowTwoButtons) {
                 confirmSendMessageIfNeeded(PhoneConstants.SUB1);
