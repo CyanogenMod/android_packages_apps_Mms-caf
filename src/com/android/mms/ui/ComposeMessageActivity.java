@@ -2070,8 +2070,8 @@ public class ComposeMessageActivity extends Activity
             mSubjectRemoveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mWorkingMessage.setSubject(null, true);
                     showSubjectEditor(false);
+                    mWorkingMessage.setSubject(null, true);
                     updateSendButtonState();
                 }
             });
