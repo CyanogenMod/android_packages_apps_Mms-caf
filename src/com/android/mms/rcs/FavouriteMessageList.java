@@ -666,7 +666,7 @@ public class FavouriteMessageList extends ListActivity implements
             mMessageTitle.setText(getResources().getQuantityString(
                     R.plurals.search_results_title, 0, 0, mSearchDisplayStr));
         }
-        mMessageTitle.setText("Favourite");
+        mMessageTitle.setText(getString(R.string.my_favorited));
     }
 
     SearchView.OnQueryTextListener mQueryTextListener = new SearchView.OnQueryTextListener() {
@@ -994,7 +994,7 @@ public class FavouriteMessageList extends ListActivity implements
 
         mCountTextView = (TextView) v.findViewById(R.id.message_count);
         mMessageTitle = (TextView) v.findViewById(R.id.message_title);
-        mMessageTitle.setText("Favourite");
+        mMessageTitle.setText(getString(R.string.my_favorited));
     }
 
     private class ModeCallback implements ListView.MultiChoiceModeListener {
