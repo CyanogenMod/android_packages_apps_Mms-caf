@@ -202,7 +202,7 @@ public class UriImage {
             input = mContext.getContentResolver().openInputStream(mUri);
             BitmapFactory.Options opt = new BitmapFactory.Options();
             opt.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(input, null, opt, false); // DRM Change
+            BitmapFactory.decodeStream(input, null, opt);
             mWidth = opt.outWidth;
             mHeight = opt.outHeight;
         } catch (FileNotFoundException e) {
@@ -316,7 +316,7 @@ public class UriImage {
                 input = context.getContentResolver().openInputStream(uri);
                 options.inSampleSize = sampleSize;
                 try {
-                    b = BitmapFactory.decodeStream(input, null, options, false); // DRM Change
+                    b = BitmapFactory.decodeStream(input, null, options);
                     if (b == null) {
                         return null;    // Couldn't decode and it wasn't because of an exception,
                                         // bail.
