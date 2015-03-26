@@ -42,9 +42,8 @@ public class AttachmentTypeSelectorAdapter extends IconListAdapter {
     public final static int ADD_SLIDESHOW           = 6;
     public final static int ADD_CONTACT_AS_TEXT     = 7;
     public final static int ADD_CONTACT_AS_VCARD    = 8;
-    public final static int ADD_CALENDAR_EVENTS     = 9;
-    public final static int ADD_MAP                 = 10;
-
+    public final static int ADD_MAP                 = 9;
+    public final static int ADD_CALENDAR_EVENTS     = 10;
     private boolean mShowMediaOnly = false;
     private static int mMediaCount;
 
@@ -105,7 +104,7 @@ public class AttachmentTypeSelectorAdapter extends IconListAdapter {
 
         if (mode == MODE_RCS) {
             addItem(data, context.getString(R.string.attach_map),
-                    R.drawable.rcs_caiyun_sharefile, ADD_MAP);
+                    R.drawable.rcs_attach_map_icon, ADD_MAP);
         }
         return data;
     }

@@ -59,7 +59,7 @@ public class TransactionSettings {
      *
      * @param context The context of the MMS Client
      */
-    public TransactionSettings(Context context, String apnName, long subId) {
+    public TransactionSettings(Context context, String apnName, int subId) {
         if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
             Log.v(TAG, "TransactionSettings: apnName: " + apnName +
                     "subId: " + subId);

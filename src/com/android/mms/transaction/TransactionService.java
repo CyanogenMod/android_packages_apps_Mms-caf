@@ -67,6 +67,7 @@ import com.android.internal.telephony.PhoneConstants;
 import com.android.mms.LogTag;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
+import com.android.mms.ui.ComposeMessageActivity;
 import com.android.mms.util.DownloadManager;
 import com.android.mms.util.RateController;
 import com.google.android.mms.pdu.GenericPdu;
@@ -250,7 +251,7 @@ public class TransactionService extends Service implements Observer {
             if (mmsNetworkInfo.isConnected()) {
                 TransactionSettings settings = new TransactionSettings(
                         TransactionService.this, mmsNetworkInfo.getExtraInfo(),
-                        Long.parseLong(subId));
+                        Integer.parseInt(subId));
                 // If this APN doesn't have an MMSC, mark everything as failed and bail.
                 if (TextUtils.isEmpty(settings.getMmscUrl())) {
                     Log.v(TAG, "   empty MMSC url, bail");
@@ -341,7 +342,7 @@ public class TransactionService extends Service implements Observer {
         return Service.START_NOT_STICKY;
     }
 
-    private long[] getSubIdFromDb(Uri uri) {
+    private int[] getSubIdFromDb(Uri uri) {
         int phoneId = 0;
         Cursor c = getApplicationContext().getContentResolver().query(uri,
                 null, null, null, null);
@@ -363,7 +364,7 @@ public class TransactionService extends Service implements Observer {
         // If client does not update the DB with phoneId, use default sms
         // phoneId
         if (!SubscriptionManager.isValidSlotId(phoneId)) {
-            phoneId = SubscriptionManager.getDefaultSmsPhoneId();
+            phoneId = SubscriptionManager.from(getApplicationContext()).getDefaultSmsPhoneId();
         }
         Log.d(TAG, "Destination Phone Id = " + phoneId);
         return (SubscriptionManager.getSubId(phoneId));
@@ -398,7 +399,7 @@ public class TransactionService extends Service implements Observer {
         return flag;
     }
 
-    private boolean isMmsDataConnectivityPossible(long subId) {
+    private boolean isMmsDataConnectivityPossible(int subId) {
         boolean flag = false;
         TelephonyManager telephonyManager = (TelephonyManager)getApplicationContext()
                 .getSystemService(Context.TELEPHONY_SERVICE);
@@ -411,6 +412,11 @@ public class TransactionService extends Service implements Observer {
     }
 
     public void onNewIntent(Intent intent, int serviceId) {
+        if (!MmsConfig.isSmsEnabled(getApplicationContext())) {
+            Log.d(TAG, "TransactionService: is not the default sms app");
+            stopSelf(serviceId);
+            return;
+        }
         mConnMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (mConnMgr == null || !MmsConfig.isSmsEnabled(getApplicationContext())) {
             endMmsConnectivity();
@@ -538,7 +544,7 @@ public class TransactionService extends Service implements Observer {
                                // fall-through
                             default:
 
-                                long [] subId = getSubIdFromDb(uri);
+                                int [] subId = getSubIdFromDb(uri);
                                 // subId is null. Bail out.
                                 if (subId == null) {
                                     Log.e(TAG, "SMS subId is null. Bail out");
@@ -548,7 +554,7 @@ public class TransactionService extends Service implements Observer {
                                 Log.d(TAG, "destination Sub Id = " + subId[0]);
                                 if (subId[0] < 0) {
                                     Log.d(TAG, "Subscriptions are not yet ready.");
-                                    long defSmsSubId = getDefaultSmsSubId();
+                                    int defSmsSubId = getDefaultSmsSubId();
                                     // We dont have enough info about subId. We dont know if the
                                     // phoneId as persent in DB actually would match the subId of
                                     // defaultSmsSubId. We can not also ignore this transaction
@@ -610,7 +616,7 @@ public class TransactionService extends Service implements Observer {
             String uriStr = intent.getStringExtra("uri");
             Uri uri = Uri.parse(uriStr);
 
-            long [] subId = getSubIdFromDb(uri);
+            int [] subId = getSubIdFromDb(uri);
             // subId is null. Bail out.
             if (subId == null) {
                 Log.e(TAG, "SMS subId is null. Bail out");
@@ -619,7 +625,7 @@ public class TransactionService extends Service implements Observer {
 
             Log.d(TAG, "destination Sub Id = " + subId[0]);
             if (subId[0] < 0) {
-               long defSmsSubId = getDefaultSmsSubId();
+               int defSmsSubId = getDefaultSmsSubId();
                 Log.d(TAG, "Override with default Sms subId = " + defSmsSubId);
                 subId[0] = defSmsSubId;
             }
@@ -633,14 +639,14 @@ public class TransactionService extends Service implements Observer {
             }
 
             Bundle bundle = intent.getExtras();
-            bundle.putLong(PhoneConstants.SUBSCRIPTION_KEY, subId[0]);
+            bundle.putInt(PhoneConstants.SUBSCRIPTION_KEY, subId[0]);
             // For launching NotificationTransaction and test purpose.
             TransactionBundle args = new TransactionBundle(bundle);
             launchTransaction(serviceId, args, noNetwork);
         }
     }
 
-    private long getDefaultSmsSubId() {
+    private int getDefaultSmsSubId() {
         return SubscriptionManager.getDefaultSmsSubId();
     }
 
@@ -983,8 +989,8 @@ public class TransactionService extends Service implements Observer {
     }
 
     protected void endMmsConnectivity() {
-        long subId = SubscriptionManager.getOnDemandDataSubId();
-        endMmsConnectivity(Long.toString(subId));
+        int subId = SubscriptionManager.getOnDemandDataSubId();
+        endMmsConnectivity(Integer.toString(subId));
     }
 
     protected void endMmsConnectivity(String subId) {
@@ -1076,11 +1082,11 @@ public class TransactionService extends Service implements Observer {
                     }
 
                     try {
-                        long subId = SubscriptionManager.getOnDemandDataSubId();
+                        int subId = SubscriptionManager.getOnDemandDataSubId();
                         if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
                             Log.v(TAG, "renew PDP connection for subscription: " + subId);
                         }
-                        int result = beginMmsConnectivity(Long.toString(subId));
+                        int result = beginMmsConnectivity(Integer.toString(subId));
                         if (result != PhoneConstants.APN_ALREADY_ACTIVE) {
                             Log.v(TAG, "Extending MMS connectivity returned " + result +
                                     " instead of APN_ALREADY_ACTIVE");
@@ -1138,7 +1144,8 @@ public class TransactionService extends Service implements Observer {
                                 } else {
                                     // Now it's only used for test purpose.
                                     byte[] pushData = args.getPushData();
-                                    PduParser parser = new PduParser(pushData);
+                                    PduParser parser = new PduParser(pushData,
+                                            PduParserUtil.shouldParseContentDisposition());
                                     GenericPdu ind = parser.parse();
 
                                     int type = PduHeaders.MESSAGE_TYPE_NOTIFICATION_IND;
@@ -1227,7 +1234,7 @@ public class TransactionService extends Service implements Observer {
 
                     if (!mPending.isEmpty()) {
                         try {
-                            beginMmsConnectivity(Long.toString(SubscriptionManager.getDefaultDataSubId()));
+                            beginMmsConnectivity(Integer.toString(SubscriptionManager.getDefaultDataSubId()));
                         } catch (IOException e) {
                             Log.w(TAG, "Attempt to use of MMS connectivity failed");
                             return;
@@ -1366,7 +1373,7 @@ public class TransactionService extends Service implements Observer {
                     }
                 }
 
-                long subId = transaction.getSubId();
+                int subId = transaction.getSubId();
                 /*
                 * Make sure that the network connectivity necessary
                 * for MMS traffic is enabled. If it is not, we need
@@ -1376,7 +1383,7 @@ public class TransactionService extends Service implements Observer {
                 if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
                     Log.v(TAG, "processTransaction: call beginMmsConnectivity on subId = " + subId);
                 }
-                int connectivityResult = beginMmsConnectivity(Long.toString(subId));
+                int connectivityResult = beginMmsConnectivity(Integer.toString(subId));
                 if (connectivityResult == PhoneConstants.APN_REQUEST_STARTED) {
                     mPending.add(transaction);
                     if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {

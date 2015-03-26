@@ -17,6 +17,7 @@ import android.util.Log;
 
 import com.android.mms.LogTag;
 import com.android.mms.MmsConfig;
+import com.android.mms.R;
 import com.android.mms.data.Conversation;
 import com.android.mms.ui.MessageUtils;
 import com.google.android.mms.MmsException;
@@ -50,12 +51,12 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
             // one.
             throw new MmsException("Null message body or have multiple destinations.");
         }
-        long [] subId = SubscriptionManager.getSubId(mPhoneId);
+        int [] subId = SubscriptionManager.getSubId(mPhoneId);
         if (subId == null || subId.length == 0) {
             return false;
         }
         Log.e(TAG, "send SMS phone Id = " + mPhoneId + " subId : = " + subId[0]);
-        SmsManager smsManager = SmsManager.getSmsManagerForSubscriber(subId[0]);
+        SmsManager smsManager = SmsManager.getSmsManagerForSubscriptionId(subId[0]);
         ArrayList<String> messages = null;
         if ((MmsConfig.getEmailGateway() != null) &&
                 (Mms.isEmailAddress(mDest) || MessageUtils.isAlias(mDest))) {
@@ -130,7 +131,8 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
         int validityPeriod = getValidityPeriod(mPhoneId);
         Log.d(TAG, "sendMessage validityPeriod = "+validityPeriod);
         // Remove all attributes for CDMA international roaming.
-        if (MessageUtils.isCDMAInternationalRoaming(mPhoneId)) {
+        if (mContext.getResources().getBoolean(R.bool.config_ignore_sms_attributes) &&
+                MessageUtils.isCDMAInternationalRoaming(mPhoneId)) {
             Log.v(TAG, "sendMessage during CDMA international roaming.");
             mPriority = -1;
             deliveryIntents = null;

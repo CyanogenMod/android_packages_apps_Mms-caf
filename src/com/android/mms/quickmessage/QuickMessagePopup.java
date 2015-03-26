@@ -605,7 +605,7 @@ public class QuickMessagePopup extends Activity {
                                              recipients);
                 mMsimDialog.show();
             } else {
-                long subId = SubscriptionManager.getDefaultSmsSubId();
+                int subId = SubscriptionManager.getDefaultSmsSubId();
                 int phoneId = SubscriptionManager.getPhoneId(subId);
                 sendQuickMessageBackground(phoneId, threadId, message, qm);
             }

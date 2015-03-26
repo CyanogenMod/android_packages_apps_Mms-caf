@@ -322,6 +322,14 @@
             </intent-filter>
         </receiver>
 
+        <!-- Require the sender to have this permission to prevent third party spoofing -->
+        <receiver android:name=".transaction.PrivilegedCbReceiver"
+            android:permission="android.permission.RECEIVE_EMERGENCY_BROADCAST">
+            <intent-filter>
+                <action android:name="android.cellbroadcastreceiver.CB_AREA_INFO_RECEIVED" />
+            </intent-filter>
+        </receiver>
+
         <!-- Catch-all receiver for broadcasts that don't have associated security -->
         <receiver android:name=".transaction.SmsReceiver"
              android:permission="android.permission.SEND_SMS">
@@ -509,17 +517,29 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name="com.android.mms.rcs.RcsCreateGroupChatActivity"
+            android:theme="@style/MmsTheme.NoActionBar"
+            android:label="@string/new_group_chat"
+            android:exported="true"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.android.mms.rcs.CREATR_GROUP_CHAT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
-       <activity android:name=".transaction.MmsNoConfirmationSendActivity"
-           android:label="@string/plugger"
-           android:enabled="@bool/enablePlugger"
-           android:icon="@drawable/icon_of_plugger">
-           <intent-filter>
-              <action android:name="android.intent.action.SEND" />
-              <category android:name="android.intent.category.DEFAULT" />
-              <data android:mimeType="image/*" />
-              <data android:mimeType="video/*" />
-              <data android:mimeType="vnd.android/mms" />
+        <activity
+            android:name=".transaction.MmsNoConfirmationSendActivity"
+            android:label="@string/plugger"
+            android:enabled="@bool/enablePlugger"
+            android:icon="@drawable/icon_of_plugger">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+                <data android:mimeType="video/*" />
+                <data android:mimeType="vnd.android/mms" />
             </intent-filter>
         </activity>
 

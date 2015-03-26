@@ -40,6 +40,7 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SqliteWrapper;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -51,7 +52,9 @@ import android.provider.Telephony.Sms;
 import android.provider.Telephony.Sms.Inbox;
 import android.provider.Telephony.Sms.Intents;
 import android.provider.Telephony.Sms.Outbox;
+import android.telephony.CellBroadcastMessage;
 import android.telephony.ServiceState;
+import android.telephony.SmsCbMessage;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.telephony.SubscriptionManager;
@@ -115,6 +118,15 @@ public class SmsReceiverService extends Service {
         SMS_PRIORITY,   //6
     };
 
+    static final String CB_AREA_INFO_RECEIVED_ACTION =
+            "android.cellbroadcastreceiver.CB_AREA_INFO_RECEIVED";
+
+    /* Cell Broadcast for channel 50 */
+    static final int CB_CHANNEL_50 = 50;
+
+    /* Cell Broadcast for channel 60 */
+    static final int CB_CHANNEL_60 = 60;
+
     public Handler mToastHandler = new Handler();
 
     // This must match SEND_PROJECTION.
@@ -173,6 +185,13 @@ public class SmsReceiverService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (!MmsConfig.isSmsEnabled(this)) {
+            Log.d(TAG, "SmsReceiverService: is not the default sms app");
+            // NOTE: We MUST not call stopSelf() directly, since we need to
+            // make sure the wake lock acquired by AlertReceiver is released.
+            SmsReceiver.finishStartingService(SmsReceiverService.this, startId);
+            return Service.START_NOT_STICKY;
+        }
         // Temporarily removed for this duplicate message track down.
 
         int resultCode = intent != null ? intent.getIntExtra("result", 0) : 0;
@@ -253,6 +272,8 @@ public class SmsReceiverService extends Service {
                     handleSmsSent(intent, error);
                 } else if (SMS_DELIVER_ACTION.equals(action)) {
                     handleSmsReceived(intent, error);
+                } else if (CB_AREA_INFO_RECEIVED_ACTION.equals(action)) {
+                    handleCbSmsReceived(intent, error);
                 } else if (ACTION_BOOT_COMPLETED.equals(action)) {
                     handleBootCompleted();
                 } else if (TelephonyIntents.ACTION_SERVICE_STATE_CHANGED.equals(action)) {
@@ -288,8 +309,8 @@ public class SmsReceiverService extends Service {
     private void handleServiceStateChanged(Intent intent) {
         // If service just returned, start sending out the queued messages
         ServiceState serviceState = ServiceState.newFromBundle(intent.getExtras());
-        long subId = intent.getLongExtra(PhoneConstants.SUBSCRIPTION_KEY, 0);
-        long prefSubId = SubscriptionManager.getDefaultSmsSubId();
+        int subId = intent.getIntExtra(PhoneConstants.SUBSCRIPTION_KEY, 0);
+        int prefSubId = SubscriptionManager.getDefaultSmsSubId();
         // if service state is IN_SERVICE & current subscription is same as
         // preferred SMS subscription.i.e.as set under SIM Settings, then
         // sendFirstQueuedMessage.
@@ -512,8 +533,8 @@ public class SmsReceiverService extends Service {
                 SmsMessage sms = msgs[i];
                 boolean saveSuccess = saveMessageToIcc(sms);
                 if (saveSuccess) {
-                    long subId = TelephonyManager.getDefault().isMultiSimEnabled()
-                            ? sms.getSubId() : (long)MessageUtils.SUB_INVALID;
+                    int subId = TelephonyManager.getDefault().isMultiSimEnabled()
+                            ? sms.getSubId() : (int)MessageUtils.SUB_INVALID;
                     String address = MessageUtils.convertIdp(this,
                             sms.getDisplayOriginatingAddress());
                     MessagingNotification.blockingUpdateNewIccMessageIndicator(
@@ -558,6 +579,34 @@ public class SmsReceiverService extends Service {
             // Called off of the UI thread so ok to block.
             Log.d(TAG, "handleSmsReceived messageUri: " + messageUri + " threadId: " + threadId);
             MessagingNotification.blockingUpdateNewMessageIndicator(this, threadId, false);
+        }
+    }
+
+    private void handleCbSmsReceived(Intent intent, int error) {
+        Bundle extras = intent.getExtras();
+        if (extras == null) {
+            return;
+        }
+        CellBroadcastMessage cbMessage = (CellBroadcastMessage) extras.get("message");
+        if (cbMessage == null) {
+            return;
+        }
+        boolean isMSim = TelephonyManager.getDefault().isMultiSimEnabled();
+        String country = "";
+        if (isMSim) {
+            country = TelephonyManager.getDefault().getSimCountryIso(cbMessage.getSubId());
+        } else {
+            country = TelephonyManager.getDefault().getSimCountryIso();
+        }
+        int serviceCategory = cbMessage.getServiceCategory();
+        if ("in".equals(country) && (serviceCategory == CB_CHANNEL_50 ||
+                serviceCategory == CB_CHANNEL_60)) {
+            Uri cbMessageUri = storeCbMessage(this, cbMessage, error);
+            if (cbMessageUri != null) {
+                long threadId = MessagingNotification.getSmsThreadId(this, cbMessageUri);
+                // Called off of the UI thread so ok to block.
+                MessagingNotification.blockingUpdateNewMessageIndicator(this, threadId, false);
+            }
         }
 
     }
@@ -935,6 +984,36 @@ public class SmsReceiverService extends Service {
         return insertedUri;
     }
 
+    private Uri storeCbMessage(Context context, CellBroadcastMessage sms, int error) {
+        // Store the broadcast message in the content provider.
+        ContentValues values = new ContentValues();
+        values.put(Sms.ERROR_CODE, error);
+        values.put(Sms.PHONE_ID, SubscriptionManager.getPhoneId(sms.getSubId()));
+
+        // CB messages are concatenated by telephony framework into a single
+        // message in intent, so grab the body directly.
+        values.put(Inbox.BODY, sms.getMessageBody());
+
+        // Make sure we've got a thread id so after the insert we'll be able to
+        // delete excess messages.
+        String address = getString(R.string.cell_broadcast_sender)
+                + Integer.toString(sms.getServiceCategory());
+        values.put(Sms.ADDRESS, address);
+        Long threadId = Conversation.getOrCreateThreadId(context, address);
+        values.put(Sms.THREAD_ID, threadId);
+        values.put(Inbox.READ, 0);
+        values.put(Inbox.SEEN, 0);
+
+        ContentResolver resolver = context.getContentResolver();
+        Uri insertedUri = SqliteWrapper.insert(context, resolver, Inbox.CONTENT_URI, values);
+
+        // Now make sure we're not over the limit in stored messages
+        Recycler.getSmsRecycler().deleteOldMessagesByThreadId(context, threadId);
+        MmsWidgetProvider.notifyDatasetChanged(context);
+
+        return insertedUri;
+    }
+
     /**
      * Extract all the content values except the body from an SMS
      * message.
@@ -980,7 +1059,7 @@ public class SmsReceiverService extends Service {
      *
      */
     private void displayClassZeroMessage(Context context, SmsMessage sms, String format) {
-        long subId = sms.getSubId();
+        int subId = sms.getSubId();
         int phoneId = SubscriptionManager.getPhoneId(subId);
 
         // Using NEW_TASK here is necessary because we're calling
@@ -1022,7 +1101,7 @@ public class SmsReceiverService extends Service {
 
     private boolean saveMessageToIcc(SmsMessage sms) {
         boolean result = true;
-        long subscription = sms.getSubId();
+        int subscription = sms.getSubId();
         String address = MessageUtils.convertIdp(this, sms.getOriginatingAddress());
         ContentValues values = new ContentValues();
         values.put(PhoneConstants.SUBSCRIPTION_KEY, subscription);

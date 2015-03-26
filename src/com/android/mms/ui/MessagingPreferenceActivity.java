@@ -78,6 +78,7 @@ import com.android.internal.telephony.util.BlacklistUtils;
 import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
+import com.android.mms.rcs.RcsApiManager;
 import com.android.mms.transaction.TransactionService;
 import com.android.mms.util.Recycler;
 import com.android.mms.QTIBackupMMS;
@@ -214,14 +215,17 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
+            PreferenceCategory smsCategory =
+                    (PreferenceCategory) findPreference("pref_key_sms_settings");
             if (TelephonyIntents.ACTION_SIM_STATE_CHANGED.equals(action)) {
-                    PreferenceCategory smsCategory =
-                            (PreferenceCategory)findPreference("pref_key_sms_settings");
-                    if (smsCategory != null) {
-                        updateSIMSMSPref();
-                    }
+                if (smsCategory != null) {
+                    updateSIMSMSPref();
+                }
             } else if (Intent.ACTION_AIRPLANE_MODE_CHANGED.equals(action)) {
-                    updateSMSCPref();
+                updateSMSCPref();
+                if (smsCategory != null) {
+                    updateSIMSMSPref();
+                }
             }
         }
     };
@@ -538,7 +542,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
         if (TelephonyManager.getDefault().isMultiSimEnabled()) {
             if(MessageUtils.getActivatedIccCardCount() < PhoneConstants.MAX_PHONE_COUNT_DUAL_SIM) {
-                long subId = SmsManager.getDefault().getDefaultSmsSubId();
+                int subId = SmsManager.getDefault().getDefaultSmsSubscriptionId();
                 int phoneId = SubscriptionManager.getPhoneId(subId);
                 mManageSimPref.setSummary(
                         getString(R.string.pref_summary_manage_sim_messages_slot,
@@ -638,16 +642,22 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
     private void updateSIMSMSPref() {
         if (MessageUtils.isMultiSimEnabledMms()) {
-            if (!MessageUtils.isIccCardActivated(MessageUtils.SUB1)) {
-                mManageSim1Pref.setEnabled(false);
+            if (isAirPlaneModeOn() || !MessageUtils.isIccCardActivated(MessageUtils.SUB1)) {
+                mSmsPrefCategory.removePreference(mManageSim1Pref);
+            } else {
+                mSmsPrefCategory.addPreference(mManageSim1Pref);
             }
-            if (!MessageUtils.isIccCardActivated(MessageUtils.SUB2)) {
-                mManageSim2Pref.setEnabled(false);
+            if (isAirPlaneModeOn() || !MessageUtils.isIccCardActivated(MessageUtils.SUB2)) {
+                mSmsPrefCategory.removePreference(mManageSim2Pref);
+            } else {
+                mSmsPrefCategory.addPreference(mManageSim2Pref);
             }
             mSmsPrefCategory.removePreference(mManageSimPref);
         } else {
-            if (!MessageUtils.hasIccCard()) {
-                mManageSimPref.setEnabled(false);
+            if (isAirPlaneModeOn() || !MessageUtils.hasIccCard()) {
+                mSmsPrefCategory.removePreference(mManageSimPref);
+            } else {
+                mSmsPrefCategory.addPreference(mManageSimPref);
             }
             mSmsPrefCategory.removePreference(mManageSim1Pref);
             mSmsPrefCategory.removePreference(mManageSim2Pref);
@@ -1647,6 +1657,10 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     //  2. the feature is enabled in the mms settings page
     //  3. the SIM knows its own phone number
     public static boolean getIsGroupMmsEnabled(Context context) {
+        if (RcsApiManager.isRcsServiceInstalled()
+                && RcsApiManager.isRcsOnline()) {
+            return false;
+        }
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         boolean groupMmsPrefOn = prefs.getBoolean(
                 MessagingPreferenceActivity.GROUP_MMS_MODE, true);

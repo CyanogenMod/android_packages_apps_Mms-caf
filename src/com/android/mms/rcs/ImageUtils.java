@@ -23,8 +23,20 @@
 
 package com.android.mms.rcs;
 
+import java.net.ContentHandler;
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 
 public class ImageUtils {
     private static int IMAGE_MAX_WIDTH = 480;
@@ -54,4 +66,32 @@ public class ImageUtils {
         }
         return scale;
     }
+
+    public static Drawable getRoundCornerDrawable(Resources resources, int resId){
+        Bitmap bitmapRes = BitmapFactory.decodeResource(resources, resId);
+        Bitmap bitmap = createBitmapRoundCorner(bitmapRes, bitmapRes.getWidth() / 2);
+        BitmapDrawable bd = new BitmapDrawable(bitmap);
+        return bd;
+    }
+
+    private static Bitmap createBitmapRoundCorner(Bitmap bitmap, int roundCornerPixels) {
+        if (bitmap == null)
+            return Bitmap.createBitmap(10, 10, Config.ARGB_8888);
+        Bitmap output = Bitmap
+                .createBitmap(bitmap.getWidth(), bitmap.getHeight(), Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+        final int color = 0xff424242;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        final RectF rectF = new RectF(rect);
+        final float roundPx = roundCornerPixels;
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+        paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+        return output;
+    }
+
 }

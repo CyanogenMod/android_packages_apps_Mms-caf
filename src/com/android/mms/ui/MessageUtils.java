@@ -159,6 +159,7 @@ public class MessageUtils {
 
     private static final int SELECT_SYSTEM = 0;
     private static final int SELECT_EXTERNAL = 1;
+    private static final int SELECT_LOCAL = 2;
     private static final boolean DEBUG = false;
     public static final int SUB_INVALID = -1;  //  for single card product
     public static final int SUB1 = 0;  // for DSDS product of slot one
@@ -769,7 +770,13 @@ public class MessageUtils {
         // We are not only displaying default RingtonePicker to add, we could have
         // other choices like external audio and system audio. Allow user to select
         // an audio from particular storage (Internal or External) and return it.
-        String[] items = new String[2];
+        String[] items = null;
+        if (RcsApiManager.isRcsOnline()) {
+            items = new String[3];
+            items[SELECT_LOCAL] = activity.getString(R.string.local_audio_item);
+        } else {
+            items = new String[2];
+        }
         items[SELECT_SYSTEM] = activity.getString(R.string.system_audio_item);
         items[SELECT_EXTERNAL] = activity.getString(R.string.external_audio_item);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity,
@@ -797,6 +804,11 @@ public class MessageUtils {
                                 audioIntent.setAction(Intent.ACTION_PICK);
                                 audioIntent.setData(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
                                 break;
+                            case SELECT_LOCAL:
+                                audioIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                                audioIntent.setAction(Intent.ACTION_GET_CONTENT);
+                                audioIntent.setType("audio/*");
+                                break;
                         }
                         // Add try here is to avoid monkey test failure.
                         try {
@@ -817,7 +829,7 @@ public class MessageUtils {
         intent.setClassName("com.android.soundrecorder",
                 "com.android.soundrecorder.SoundRecorder");
         // add RCS recordSound time add size limit
-        if (RcsUtils.isSupportRcs() && RcsApiManager.isRcsOnline()) {
+        if (RcsApiManager.isRcsServiceInstalled() && RcsApiManager.isRcsOnline()) {
             intent.putExtra(android.provider.MediaStore.Audio.Media.EXTRA_MAX_BYTES, sizeLimit*1024);
         } else {
             intent.putExtra(android.provider.MediaStore.Audio.Media.EXTRA_MAX_BYTES, sizeLimit);
@@ -828,7 +840,7 @@ public class MessageUtils {
 
     public static void recordVideo(Activity activity, int requestCode, long sizeLimit) {
         // add RCS recordVideo time add size limit
-        if(RcsUtils.isSupportRcs() && RcsApiManager.isRcsOnline()){
+        if(RcsApiManager.isRcsServiceInstalled() && RcsApiManager.isRcsOnline()){
             Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
             intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 10.0);
             intent.putExtra("android.intent.extra.sizeLimit", sizeLimit*1024);
@@ -849,11 +861,7 @@ public class MessageUtils {
         }
 
         Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        if(RcsUtils.isSupportRcs()){
-            intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 10.0);
-        }else{
-            intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
-        }
+        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
         intent.putExtra("android.intent.extra.sizeLimit", sizeLimit);
         intent.putExtra("android.intent.extra.durationLimit", durationLimit);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, TempFileProvider.SCRAP_CONTENT_URI);
@@ -1112,7 +1120,7 @@ public class MessageUtils {
         return getLocalNumber(SubscriptionManager.getDefaultDataSubId());
     }
 
-    public static String getLocalNumber(long subId) {
+    public static String getLocalNumber(int subId) {
         sLocalNumber = MmsApp.getApplication().getTelephonyManager()
             .getLine1NumberForSubscriber(subId);
         return sLocalNumber;
@@ -1669,7 +1677,7 @@ public class MessageUtils {
             return null;
         }
 
-        long subId[] = SubscriptionManager.getSubId(subscription);
+        int subId[] = SubscriptionManager.getSubId(subscription);
         final TelecomManager telecomManager = (TelecomManager) context
                 .getSystemService(Context.TELECOM_SERVICE);
         List<PhoneAccountHandle> pHandles = telecomManager.getCallCapablePhoneAccounts();
@@ -1686,7 +1694,7 @@ public class MessageUtils {
         }
         final PhoneAccount account = telecomManager
                 .getPhoneAccount(phoneAccountHandle);
-        return account.getIcon(context);
+        return account.createIconDrawable(context);
     }
 
     private static void log(String msg) {
@@ -1709,7 +1717,7 @@ public class MessageUtils {
     /**
      * Return the sim name of subscription.
      */
-    public static String getMultiSimName(Context context, long subscription) {
+    public static String getMultiSimName(Context context, int subscription) {
         if (subscription >= TelephonyManager.getDefault().getPhoneCount() || subscription < 0) {
             return null;
         }
@@ -1993,7 +2001,7 @@ public class MessageUtils {
     /**
      * Return the icc uri according to subscription
      */
-    public static Uri getIccUriBySubscription(long subscription) {
+    public static Uri getIccUriBySubscription(int subscription) {
         switch ((int)subscription) {
             case (int)SUB1:
                 return ICC1_URI;

@@ -120,7 +120,7 @@ public class SmsMessageSender implements MessageSender {
                     break;
                 }
                 log("updating Database with phoneId = " + mPhoneId);
-                long [] subId = SubscriptionManager.getSubId(mPhoneId);
+                int [] subId = SubscriptionManager.getSubId(mPhoneId);
                 if (subId == null && subId.length == 0) {
                     return false;
                 }
