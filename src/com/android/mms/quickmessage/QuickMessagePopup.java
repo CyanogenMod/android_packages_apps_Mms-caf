@@ -66,7 +66,6 @@ import com.android.mms.transaction.MessagingNotification.NotificationInfo;
 import com.android.mms.transaction.SmsMessageSender;
 import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.MessagingPreferenceActivity;
-import com.android.mms.ui.MsimDialog;
 import com.android.mms.util.UnicodeFilter;
 import com.google.android.mms.MmsException;
 
@@ -101,7 +100,6 @@ public class QuickMessagePopup extends Activity {
     private TextView mQmMessageCounter;
     private Button mCloseButton;
     private Button mViewButton;
-    private MsimDialog mMsimDialog;
 
     // General items
     private Drawable mDefaultContactImage;
@@ -592,9 +590,9 @@ public class QuickMessagePopup extends Activity {
      * @param message - message to send
      * @param qm - qm to reply to (for sender details)
      */
-    private void sendQuickMessage(final String message, final QuickMessage qm) {
+    private boolean sendQuickMessage(final String message, final QuickMessage qm) {
         if (message == null || qm == null) {
-            return;
+            return true;
         }
 
         final long threadId = qm.getThreadId();
@@ -602,22 +600,20 @@ public class QuickMessagePopup extends Activity {
         // If SMS prompt is enabled, prompt the user.
         // Use the default SMS phone ID to reply in the multi-sim environment.
         if (SubscriptionManager.isSMSPromptEnabled()) {
-            List<String> fromNumbers = Arrays.asList(qm.getFromNumber());
-            ContactList recipients = ContactList.getByNumbers(fromNumbers, true);
-            mMsimDialog = new MsimDialog(this, new MsimDialog.OnSimButtonClickListener() {
+            MessageUtils.showSimSelector(this, new MessageUtils.OnSimSelectedCallback() {
                 @Override
-                public void onSimButtonClick(int phoneId) {
+                public void onSimSelected(int subId) {
+                    final int phoneId = SubscriptionManager.getPhoneId(subId);
                     sendQuickMessageBackground(phoneId, threadId, message, qm);
                     mPagerAdapter.moveOn(qm);
-                    mMsimDialog.dismiss();
-                    mMsimDialog = null;
                 }
-            }, recipients);
-            mMsimDialog.show();
+            });
+            return false;
         } else {
             int subId = SubscriptionManager.getDefaultSmsSubId();
             int phoneId = SubscriptionManager.getPhoneId(subId);
             sendQuickMessageBackground(phoneId, threadId, message, qm);
+            return true;
         }
     }
 
@@ -792,8 +788,7 @@ public class QuickMessagePopup extends Activity {
             if (mUnicodeFilter != null) {
                 message = mUnicodeFilter.filter(message).toString();
             }
-            sendQuickMessage(message, qm);
-            if (mMsimDialog == null || !mMsimDialog.isShowing()) {
+            if (sendQuickMessage(message, qm)) {
                 moveOn(qm);
             }
         }

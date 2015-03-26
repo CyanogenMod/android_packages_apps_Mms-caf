@@ -126,6 +126,7 @@
 
     <string name="send_by_slot1">Send via SIM 1</string>
     <string name="send_by_slot2">Send via SIM 2</string>
+    <string name="select_phone_account_title">Send with</string>
 
     <string name="media_size_limit">Message size limit reached, can\'t send message.</string>
 
