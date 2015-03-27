@@ -37,6 +37,10 @@
         <item name="android:windowActionModeOverlay">true</item>
     </style>
 
+    <style name="ReceivedMessageTheme" parent="android:ThemeOverlay.Material.Dark">
+        <item name="android:colorButtonNormal">#60ffffff</item>
+    </style>
+
     <style name="HeaderTheme" parent="android:ThemeOverlay.Material.Dark.ActionBar">
         <item name="android:colorAccent">?android:attr/textColorPrimary</item>
         <item name="android:popupTheme">@android:style/ThemeOverlay.Material.Light</item>

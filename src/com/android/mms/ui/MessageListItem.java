@@ -133,6 +133,7 @@ public class MessageListItem extends ZoomMessageListItem implements
     private ImageButton mSlideShowButton;
     private TextView mSimMessageAddress;
     private TextView mBodyTextView;
+    private TextView mMessageSizeView;
     private Button mDownloadButton;
     private View mDownloading;
     private LinearLayout mMmsLayout;
@@ -184,6 +185,7 @@ public class MessageListItem extends ZoomMessageListItem implements
         mSimNameView = (TextView) findViewById(R.id.sim_name);
         mMessageBlock = findViewById(R.id.message_block);
         mSimMessageAddress = (TextView) findViewById(R.id.sim_message_address);
+        mMessageSizeView = (TextView) findViewById(R.id.mms_msg_size_view);
         mMmsLayout = (LinearLayout) findViewById(R.id.mms_layout_view_parent);
 
         mAvatar.setOverlay(null);
@@ -192,7 +194,8 @@ public class MessageListItem extends ZoomMessageListItem implements
         addZoomableTextView(mBodyTextView);
         addZoomableTextView(mDateView);
         addZoomableTextView(mSimMessageAddress);
-
+        addZoomableTextView(mSimNameView);
+        addZoomableTextView(mMessageSizeView);
     }
 
     public void bind(MessageItem msgItem, int accentColor,
@@ -271,17 +274,20 @@ public class MessageListItem extends ZoomMessageListItem implements
     private void bindNotifInd() {
         showMmsView(false);
 
-        String msgSizeText = mContext.getString(R.string.message_size_label)
-                                + String.valueOf((mMessageItem.mMessageSize + 1023) / 1024)
-                                + mContext.getString(R.string.kilobyte);
-
         mBodyTextView.setText(formatMessage(mMessageItem, null,
                                             mMessageItem.mSubject,
                                             mMessageItem.mHighlight,
                                             mMessageItem.mTextContentType));
 
         mBodyTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, mZoomFontSize);
-        mDateView.setText(buildTimestampLine(msgSizeText + " " + mMessageItem.mTimestamp));
+        mDateView.setText(buildTimestampLine(mMessageItem.mTimestamp));
+
+        final String msgSizeText = mContext.getString(R.string.message_size_label)
+                + String.valueOf((mMessageItem.mMessageSize + 1023) / 1024)
+                + mContext.getString(R.string.kilobyte);
+
+        mMessageSizeView.setText(msgSizeText);
+        mMessageSizeView.setVisibility(View.VISIBLE);
 
         updateSimIndicatorView(mMessageItem.mPhoneId);
 
