@@ -110,6 +110,7 @@ import android.text.method.TextKeyListener;
 import android.text.style.URLSpan;
 import android.util.Log;
 import android.util.SparseBooleanArray;
+import android.util.TypedValue;
 import android.view.ActionMode;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -341,6 +342,7 @@ public class ComposeMessageActivity extends Activity
     private View mTopPanel;                 // View containing the recipient and subject editors
     private View mBottomPanel;              // View containing the text editor, send button, ec.
     private EditText mTextEditor;           // Text editor to type your message into
+    private float mTextEditorFontSize;
     private TextView mTextCounter;          // Shows the number of characters used in text editor
     private TextView mSendButtonMms;        // Press to send mms
     private ImageButton mSendButtonSms;     // Press to send sms
@@ -2028,9 +2030,8 @@ public class ComposeMessageActivity extends Activity
     public void onZoomWithScale(float scale) {
         if (mMsgListView != null) {
             mMsgListView.handleZoomWithScale(scale);
-            int fontSize = mMsgListView.getZoomFontSize();
             if (mTextEditor != null) {
-                mTextEditor.setTextSize(fontSize);
+                mTextEditor.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextEditorFontSize * scale);
             }
         }
 
@@ -4323,6 +4324,7 @@ public class ComposeMessageActivity extends Activity
             mBottomPanel = findViewById(R.id.bottom_panel);
             mBottomPanel.setVisibility(View.VISIBLE);
             mTextEditor = (EditText) findViewById(R.id.embedded_text_editor);
+            mTextEditorFontSize = mTextEditor.getTextSize();
             mTextCounter = (TextView) findViewById(R.id.text_counter);
             mSendButtonMms = (TextView) findViewById(R.id.send_button_mms);
             mSendButtonSms = (ImageButton) findViewById(R.id.send_button_sms);

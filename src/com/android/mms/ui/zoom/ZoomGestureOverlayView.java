@@ -48,6 +48,8 @@ public class ZoomGestureOverlayView extends GestureOverlayView {
     private static final float THRESHOLD = 30.0f;
     private static final float SCALE_FACTOR_DOWN = 0.95f;
     private static final float SCALE_FACTOR_UP = 1.1f;
+    private static final float MIN_SCALE = 1.0f;
+    private static final float MAX_SCALE = 3.0f;
 
     // Members
     private float mOldDistance = 0.0f; // Stash spot for the 'original distance' or 'last distance'
@@ -56,6 +58,7 @@ public class ZoomGestureOverlayView extends GestureOverlayView {
 
     // Flags
     private boolean mCanZoom = false;
+    private float mCurrentScale = 1.0f;
 
     /**
      * Constructor
@@ -138,7 +141,12 @@ public class ZoomGestureOverlayView extends GestureOverlayView {
                     mOldDistance = newDistance;
                     // Replace old distance with new so we can keep on zoom zoom zoomin'
                     float scale = (distanceDifference > 0) ? SCALE_FACTOR_UP : SCALE_FACTOR_DOWN;
-                    fireListenersWithScale(scale);
+                    mCurrentScale *= scale;
+                    if (mCurrentScale >= 0.98 && mCurrentScale <= 1.02) {
+                        mCurrentScale = 1.0f;
+                    }
+                    mCurrentScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, mCurrentScale));
+                    fireListenersWithScale(mCurrentScale);
                     return true;
                 }
                 break;

@@ -359,8 +359,8 @@ public class MessageListAdapter extends CursorAdapter {
         if (mListView != null
                 && mListView instanceof ZoomMessageListView
                 && view instanceof ZoomMessageListItem) {
-            int zoomFontSize = ((ZoomMessageListView) mListView).getZoomFontSize();
-            ((ZoomMessageListItem) view).setZoomFontSize(zoomFontSize);
+            float zoomScale = ((ZoomMessageListView) mListView).getZoomScale();
+            ((ZoomMessageListItem) view).setZoomScale(zoomScale);
         }
     }
 
