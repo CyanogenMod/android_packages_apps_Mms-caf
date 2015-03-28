@@ -859,7 +859,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         if (MessageUtils.isMailboxMode()) {
             return true;
         }
-        getMenuInflater().inflate(R.menu.new_conversation_list_menu, menu);
+        getMenuInflater().inflate(R.menu.conversation_list_menu, menu);
 
         if (!getResources().getBoolean(R.bool.config_classify_search)) {
             mSearchItem = menu.findItem(R.id.search);
