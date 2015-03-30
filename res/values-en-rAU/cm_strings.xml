@@ -248,4 +248,8 @@
   <string name="menu_conversation_options">Conversation options</string>
   <string name="pref_title_reset_convopt_to_default">Reset to default</string>
   <string name="pref_summary_reset_convopt_to_default">Resets the conversation setting to the application level setting</string>
+  <string name="pref_title_mms_full_timestamp">Full timestamps</string>
+  <string name="pref_summary_mms_full_timestamp">Display both date and time in timestamps</string>
+  <string name="pref_title_mms_use_sent_timestamp">Original timestamps</string>
+  <string name="pref_summary_mms_use_sent_timestamp">Display sent date instead of received date in timestamps</string>
 </resources>

@@ -252,4 +252,6 @@
   <string name="pref_summary_mms_full_timestamp">Отображать полную дату и время в сообщениях</string>
   <string name="pref_title_mms_use_sent_timestamp">Исходная метка времени</string>
   <string name="pref_summary_mms_use_sent_timestamp">Отображать время отправки сообщения вместо времени приёма</string>
+  <string name="pref_title_mms_auto_enable_data">Автовключение данных</string>
+  <string name="pref_summary_mms_auto_enable_data">Автоматически включить мобильные данные для MMS-сообщений</string>
 </resources>

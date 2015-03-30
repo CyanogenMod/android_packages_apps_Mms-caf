@@ -126,6 +126,7 @@
   <string name="pref_more_smcs">Номер SMS-центра SIM <xliff:g id="slot_number">%d</xliff:g></string>
   <string name="set_smsc_error">Не вдалося налаштувати SMSC номер</string>
   <string name="set_smsc_success">Номер SMS-центра успішно встановлен</string>
+  <string name="set_smsc_confirm_message">Зміна номера SMS-центра може призвести до помилок під час відправлення SMS-повідомлень. Справді продовжити?</string>
   <string name="copy_to_sim">Копіювати повідомлення на SIM-картку</string>
   <string name="copy_to_sim_success"><xliff:g id="count">%1$d </xliff:g> <xliff:g id="total">%2$d </xliff:g> повідомлень, що зберігаються на SIM-картці.</string>
   <string name="copy_to_sim_fail">Не вдалося зберегти повідомлення</string>
@@ -247,4 +248,8 @@
   <string name="menu_conversation_options">Параметри розмови</string>
   <string name="pref_title_reset_convopt_to_default">Скинути налаштування</string>
   <string name="pref_summary_reset_convopt_to_default">Змінює параметри розмови на типові налаштування</string>
+  <string name="pref_title_mms_full_timestamp">Повна мітка часу</string>
+  <string name="pref_summary_mms_full_timestamp">Увімкнути відображення повної дати та часу</string>
+  <string name="pref_title_mms_use_sent_timestamp">Час надсилання</string>
+  <string name="pref_summary_mms_use_sent_timestamp">Відображення дати надсилання, замість дати отримання</string>
 </resources>

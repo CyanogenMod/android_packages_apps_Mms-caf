@@ -252,4 +252,6 @@
   <string name="pref_summary_mms_full_timestamp">Εμφάνιση της ημερομηνίας και της ώρας στα timestamp</string>
   <string name="pref_title_mms_use_sent_timestamp">Αρχικά timestamp</string>
   <string name="pref_summary_mms_use_sent_timestamp">Εμφάνιση ημερομηνίας αποστολής, αντί της ημερομηνίας παραλαβής στα timestamp</string>
+  <string name="pref_title_mms_auto_enable_data">Αυτόματη ενεργοποίηση δεδομένων</string>
+  <string name="pref_summary_mms_auto_enable_data">Αυτόματη ενεργοποίηση δεδομένων τηλεφωνίας για μηνύματα MMS</string>
 </resources>

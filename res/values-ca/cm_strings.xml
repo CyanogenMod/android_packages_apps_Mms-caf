@@ -252,4 +252,6 @@
   <string name="pref_summary_mms_full_timestamp">Mostra la data i l\'hora sencera</string>
   <string name="pref_title_mms_use_sent_timestamp">Data i hora originals</string>
   <string name="pref_summary_mms_use_sent_timestamp">Mostra la data d\'enviament enlloc de la de recepció</string>
+  <string name="pref_title_mms_auto_enable_data">Auto-habilita dades</string>
+  <string name="pref_summary_mms_auto_enable_data">Habilita automàticament les dades mòbils per als missatges MMS</string>
 </resources>
