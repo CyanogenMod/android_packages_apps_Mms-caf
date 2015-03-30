@@ -78,6 +78,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.contacts.common.widget.CheckableQuickContactBadge;
+import com.android.internal.telephony.PhoneConstants;
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
@@ -288,7 +289,7 @@ public class MessageListItem extends ZoomMessageListItem implements
         mMessageSizeView.setText(msgSizeText);
         mMessageSizeView.setVisibility(View.VISIBLE);
 
-        updateSimIndicatorView(mMessageItem.mPhoneId);
+        updateSimIndicatorView(mMessageItem.mSubId);
 
         switch (mMessageItem.getMmsDownloadStatus()) {
             case DownloadManager.STATE_PRE_DOWNLOADING:
@@ -359,7 +360,7 @@ public class MessageListItem extends ZoomMessageListItem implements
                         intent.putExtra(TransactionBundle.URI, mMessageItem.mMessageUri.toString());
                         intent.putExtra(TransactionBundle.TRANSACTION_TYPE,
                                 Transaction.RETRIEVE_TRANSACTION);
-                        intent.putExtra(Mms.PHONE_ID, mMessageItem.mPhoneId); //destination Phone Id
+                        intent.putExtra(PhoneConstants.SUBSCRIPTION_KEY, mMessageItem.mSubId);
 
                         mContext.startService(intent);
 
@@ -377,13 +378,13 @@ public class MessageListItem extends ZoomMessageListItem implements
         updateAvatarView(mMessageItem.mAddress, false);
     }
 
-    private void updateSimIndicatorView(int phoneId) {
-        if (MessageUtils.isMsimIccCardActive() && phoneId >= 0) {
-            Drawable mSimIndicatorIcon = MessageUtils.getMultiSimIcon(mContext, phoneId);
+    private void updateSimIndicatorView(int subId) {
+        if (MessageUtils.isMsimIccCardActive() && subId >= 0) {
+            Drawable mSimIndicatorIcon = MessageUtils.getMultiSimIcon(mContext, subId);
             mSimIndicatorView.setImageDrawable(mSimIndicatorIcon);
             mSimIndicatorView.setVisibility(View.VISIBLE);
 
-            CharSequence simName = MessageUtils.getSimName(mContext, phoneId);
+            CharSequence simName = MessageUtils.getSimName(mContext, subId);
             if (simName != null) {
                 mSimNameView.setText(simName);
                 mSimNameView.setVisibility(View.VISIBLE);
@@ -491,7 +492,7 @@ public class MessageListItem extends ZoomMessageListItem implements
         if (!sameItem || haveLoadedPdu) {
             mBodyTextView.setText(formattedMessage);
         }
-        updateSimIndicatorView(mMessageItem.mPhoneId);
+        updateSimIndicatorView(mMessageItem.mSubId);
         // Debugging code to put the URI of the image attachment in the body of the list item.
         if (DEBUG) {
             String debugText = null;

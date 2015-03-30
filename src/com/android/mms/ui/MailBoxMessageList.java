@@ -72,6 +72,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toolbar;
 
+import com.android.internal.telephony.PhoneConstants;
 import com.android.mms.data.Contact;
 import com.android.mms.data.Conversation;
 import com.android.mms.LogTag;
@@ -98,7 +99,7 @@ import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_SUBJECT;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_SUBJECT_CHARSET;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_ADDRESS;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_BODY;
-import static com.android.mms.ui.MessageListAdapter.COLUMN_PHONE_ID;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_SUB_ID;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_DATE;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_READ;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_TYPE;
@@ -310,7 +311,7 @@ public class MailBoxMessageList extends ListActivity implements
                 }
 
                 Uri msgUri = ContentUris.withAppendedId(Mms.CONTENT_URI, msgId);
-                int subId = c.getInt(COLUMN_PHONE_ID);
+                int subId = c.getInt(COLUMN_SMS_SUB_ID);
                 int mmsStatus = c.getInt(MessageListAdapter.COLUMN_MMS_STATUS);
                 int downloadStatus = MessageUtils.getMmsDownloadStatus(mmsStatus);
                 if (PduHeaders.MESSAGE_TYPE_NOTIFICATION_IND == c.getInt(COLUMN_MMS_MESSAGE_TYPE)) {
@@ -363,7 +364,7 @@ public class MailBoxMessageList extends ListActivity implements
         intent.putExtra(TransactionBundle.URI, uri.toString());
         intent.putExtra(TransactionBundle.TRANSACTION_TYPE,
                 Transaction.RETRIEVE_TRANSACTION);
-        intent.putExtra(Mms.PHONE_ID, subId); //destination subId
+        intent.putExtra(PhoneConstants.SUBSCRIPTION_KEY, subId);
         intent.putExtra(ORIGIN_SUB_ID,
                 SubscriptionManager.getDefaultDataSubId());
         startService(intent);
@@ -487,6 +488,8 @@ public class MailBoxMessageList extends ListActivity implements
         });
 
         if (MessageUtils.isMsimIccCardActive()) {
+            // FIXME: replace this spinner by a SIM spinner, based on a
+            // subscription DB cursor which is shared with ConversationList
             mSlotSpinner.setPrompt(getResources().getString(R.string.slot_type_select));
             ArrayAdapter<CharSequence> slotAdapter = ArrayAdapter.createFromResource(this,
                     R.array.slot_type, android.R.layout.simple_spinner_item);
@@ -530,6 +533,7 @@ public class MailBoxMessageList extends ListActivity implements
                 // the same token as what I input here.
                 mQueryDone = false;
                 String selStr = null;
+                // FIXME: replace by subscription ID
                 if (mQuerySlotType == TYPE_SLOT_ONE) {
                     selStr = "phone_id = " + MessageUtils.SUB1;
                 } else if (mQuerySlotType == TYPE_SLOT_TWO) {

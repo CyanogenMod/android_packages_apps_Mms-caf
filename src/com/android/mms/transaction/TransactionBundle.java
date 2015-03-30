@@ -95,11 +95,6 @@ public class TransactionBundle {
         mBundle.putString(URI, uri);
     }
 
-    public TransactionBundle(int transactionType, String uri, int subId) {
-        this(transactionType);
-        mBundle.putString(URI, uri);
-        mBundle.putInt(PhoneConstants.SUBSCRIPTION_KEY, subId);
-    }
     /**
      * Constructor of a transaction bundle used for incoming bundle instances.
      *
@@ -136,10 +131,6 @@ public class TransactionBundle {
         return mBundle.getString(URI);
     }
 
-    public int getSubId() {
-        return mBundle.getInt(PhoneConstants.SUBSCRIPTION_KEY);
-    }
-
     public byte[] getPushData() {
         return mBundle.getByteArray(PUSH_DATA);
     }
@@ -163,7 +154,6 @@ public class TransactionBundle {
             " pushData: " + IccUtils.bytesToHexString(getPushData()) +
             " mmscUrl: " + getMmscUrl() +
             " proxyAddress: " + getProxyAddress() +
-            " proxyPort: " + getProxyPort() +
-            " subId: " + getSubId();
+            " proxyPort: " + getProxyPort();
     }
 }

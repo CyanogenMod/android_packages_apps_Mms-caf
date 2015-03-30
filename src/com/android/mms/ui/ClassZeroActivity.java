@@ -73,7 +73,7 @@ public class ClassZeroActivity extends Activity {
     private long mTimerSet = 0;
     private AlertDialog mDialog = null;
 
-    private int mPhoneId;
+    private int mSubId;
     private ArrayList<SmsMessage> mMessageQueue = null;
 
     private Handler mHandler = new Handler() {
@@ -92,8 +92,8 @@ public class ClassZeroActivity extends Activity {
     private boolean queueMsgFromIntent(Intent msgIntent) {
         byte[] pdu = msgIntent.getByteArrayExtra("pdu");
         String format = msgIntent.getStringExtra("format");
-        mPhoneId = msgIntent.getIntExtra(PhoneConstants.PHONE_KEY,
-                SubscriptionManager.INVALID_PHONE_INDEX);
+        mSubId = msgIntent.getIntExtra(PhoneConstants.SUBSCRIPTION_KEY,
+                SubscriptionManager.INVALID_SUBSCRIPTION_ID);
         SmsMessage rawMessage = SmsMessage.createFromPdu(pdu, format);
         String message = rawMessage.getMessageBody();
         if (TextUtils.isEmpty(message)) {
@@ -243,7 +243,8 @@ public class ClassZeroActivity extends Activity {
         }
         values.put(Inbox.REPLY_PATH_PRESENT, sms.isReplyPathPresent() ? 1 : 0);
         values.put(Inbox.SERVICE_CENTER, sms.getServiceCenterAddress());
-        values.put(Sms.PHONE_ID, mPhoneId);
+        values.put(Sms.SUBSCRIPTION_ID, mSubId);
+        values.put(Sms.PHONE_ID, SubscriptionManager.getPhoneId(mSubId));
         return values;
     }
 

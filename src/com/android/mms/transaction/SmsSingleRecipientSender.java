@@ -30,8 +30,8 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
     private int mPriority = -1;
 
     public SmsSingleRecipientSender(Context context, String dest, String msgText, long threadId,
-            boolean requestDeliveryReport, Uri uri, int phoneId) {
-        super(context, null, msgText, threadId, phoneId);
+            boolean requestDeliveryReport, Uri uri, int subId) {
+        super(context, null, msgText, threadId, subId);
         mRequestDeliveryReport = requestDeliveryReport;
         mDest = dest;
         mUri = uri;
