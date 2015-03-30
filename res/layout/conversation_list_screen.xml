@@ -18,27 +18,45 @@
  */
 -->
 
-<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:focusable="true"  >
+    android:orientation="vertical" >
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/mms_theme_color"
+        android:elevation="@dimen/action_bar_elevation"
+        android:theme="@style/HeaderTheme">
+
+        <Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/banner_sms_promo"
-            android:orientation="vertical">
+            android:layout_height="?android:attr/actionBarSize" />
 
         <Spinner
             android:id="@+id/filterSpinner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:minHeight="48dip" />
+
+    </LinearLayout>
+
+    <include layout="@layout/banner_sms_promo" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
 
         <ListView android:id="@android:id/list"
             style="?android:attr/listViewWhiteStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/banner_sms_promo"
             android:divider="@null"
             android:dividerHeight="0dp"
             android:drawSelectorOnTop="false"
@@ -48,15 +66,14 @@
 
         <TextView android:id="@+id/empty"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:background="@color/background"
             android:text="@string/loading_conversations"
             android:textAppearance="?android:attr/textAppearanceMedium" />
-    </LinearLayout>
 
-    <include layout="@layout/banner_sms_promo" />
+        <include layout="@layout/floating_action_button" />
 
-    <include layout="@layout/floating_action_button" />
-</RelativeLayout>
+    </RelativeLayout>
+
+</LinearLayout>
