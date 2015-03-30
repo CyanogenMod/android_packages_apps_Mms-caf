@@ -829,6 +829,8 @@ public class Conversation {
             // currently the mms app treats phone_id as slot_id, so that is what we must
             // pass here, but we need to redesign this in the future
             //int phoneId = SubscriptionManager.getPhoneId(subId.longValue());
+
+            // FIXME: sub ID and slot ID are NOT the same thing
             int phoneId = subId;
 
             uri = sAllThreadsUri.buildUpon()

@@ -94,10 +94,8 @@ public class QuickMessageWear extends Activity {
                     sender
             };
 
-            int subId = SubscriptionManager.getDefaultSmsSubId();
-            int phoneId = SubscriptionManager.getPhoneId(subId);
             SmsMessageSender smsMessageSender = new SmsMessageSender(getBaseContext(), dest,
-                    message.toString(), tId, phoneId);
+                    message.toString(), tId, SubscriptionManager.getDefaultSmsSubId());
             try {
                 smsMessageSender.sendMessage(tId);
                 Toast.makeText(mContext, getString(R.string.qm_wear_sending_message, contactName),

@@ -30,8 +30,8 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
     private int mPriority = -1;
 
     public SmsSingleRecipientSender(Context context, String dest, String msgText, long threadId,
-            boolean requestDeliveryReport, Uri uri, int phoneId) {
-        super(context, null, msgText, threadId, phoneId);
+            boolean requestDeliveryReport, Uri uri, int subId) {
+        super(context, null, msgText, threadId, subId);
         mRequestDeliveryReport = requestDeliveryReport;
         mDest = dest;
         mUri = uri;
@@ -50,9 +50,7 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
             // one.
             throw new MmsException("Null message body or have multiple destinations.");
         }
-        int[] subId = SubscriptionManager.getSubId(mPhoneId);
-        Log.e(TAG, "send SMS phone Id = " + mPhoneId + " subId : = " + subId[0]);
-        SmsManager smsManager = SmsManager.getSmsManagerForSubscriptionId(subId[0]);
+        SmsManager smsManager = SmsManager.getSmsManagerForSubscriptionId(mSubId);
         ArrayList<String> messages = null;
         if ((MmsConfig.getEmailGateway() != null) &&
                 (Mms.isEmailAddress(mDest) || MessageUtils.isAlias(mDest))) {
@@ -67,7 +65,7 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
             // (e.g. "+8211-123-4567" -> "+82111234567")
             mDest = PhoneNumberUtils.stripSeparators(mDest);
             mDest = Conversation.verifySingleRecipient(mContext, mThreadId, mDest);
-            mDest = MessageUtils.checkIdp(mContext, mDest, mPhoneId);
+            mDest = MessageUtils.checkIdp(mContext, mDest, mSubId);
         }
         int messageCount = messages.size();
 
@@ -127,7 +125,7 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
         int validityPeriod = getValidityPeriod(mPhoneId);
         Log.d(TAG, "sendMessage validityPeriod = "+validityPeriod);
         // Remove all attributes for CDMA international roaming.
-        if (MessageUtils.isCDMAInternationalRoaming(mPhoneId)) {
+        if (MessageUtils.isCDMAInternationalRoaming(mSubId)) {
             Log.v(TAG, "sendMessage during CDMA international roaming.");
             mPriority = -1;
             deliveryIntents = null;
@@ -148,10 +146,10 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
         return false;
     }
 
-    private int getValidityPeriod(int subscription) {
+    private int getValidityPeriod(int slot) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         String valitidyPeriod = null;
-        switch (subscription) {
+        switch (slot) {
             case MessageUtils.SUB_INVALID:
                 valitidyPeriod = prefs.getString("pref_key_sms_validity_period", null);
                 break;

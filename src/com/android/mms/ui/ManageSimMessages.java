@@ -70,6 +70,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.internal.telephony.IccCardConstants;
+import com.android.internal.telephony.PhoneConstants;
 import com.android.internal.telephony.TelephonyIntents;
 import com.android.mms.LogTag;
 import com.android.mms.R;
@@ -83,9 +84,6 @@ import java.util.ArrayList;
  */
 public class ManageSimMessages extends Activity
         implements View.OnCreateContextMenuListener {
-    private static final Uri ICC_URI = Uri.parse("content://sms/icc");
-    private static final Uri ICC1_URI = Uri.parse("content://sms/icc1");
-    private static final Uri ICC2_URI = Uri.parse("content://sms/icc2");
     private static final String TAG = LogTag.TAG;
     private static final int MENU_COPY_TO_PHONE_MEMORY = 0;
     private static final int MENU_DELETE_FROM_SIM = 1;
@@ -102,6 +100,7 @@ public class ManageSimMessages extends Activity
     private static final int SHOW_EMPTY = 1;
     private static final int SHOW_BUSY = 2;
     private int mState;
+    private int mSlot;
     private int mSubscription;
 
     private Uri mIccUri;
@@ -171,9 +170,15 @@ public class ManageSimMessages extends Activity
     private void init() {
         MessagingNotification.cancelNotification(getApplicationContext(),
                 SIM_FULL_NOTIFICATION_ID);
-        mSubscription = getIntent().getIntExtra(MessageUtils.SUBSCRIPTION_KEY,
-                MessageUtils.SUB_INVALID);
-        mIccUri = MessageUtils.getIccUriBySubscription(mSubscription);
+        mSlot = getIntent().getIntExtra(PhoneConstants.PHONE_KEY, MessageUtils.SUB_INVALID);
+
+        mSubscription = MessageUtils.SUB_INVALID;
+        int[] subIds = SubscriptionManager.getSubId(mSlot);
+        if (subIds != null && subIds.length > 0) {
+            mSubscription = subIds[0];
+        }
+
+        mIccUri = MessageUtils.getIccUriBySlot(mSlot);
         updateState(SHOW_BUSY);
         startQuery();
     }
@@ -382,21 +387,20 @@ public class ManageSimMessages extends Activity
                 cursor.getColumnIndexOrThrow("address"));
         String body = cursor.getString(cursor.getColumnIndexOrThrow("body"));
         Long date = cursor.getLong(cursor.getColumnIndexOrThrow("date"));
-        int subscription;
-        // the regular ICC_URI does not return a phone_id, so we need to populate it ourselves.
+        int subId;
+        // the regular ICC_URI does not return a sub_id, so we need to populate it ourselves.
         if (mIccUri.equals(MessageUtils.ICC_URI)) {
-            subscription = SubscriptionManager.getPhoneId(
-                    SubscriptionManager.getDefaultDataSubId());
+            subId = SubscriptionManager.getDefaultDataSubId();
         } else {
-            subscription = cursor.getInt(cursor.getColumnIndexOrThrow("phone_id"));
+            subId = cursor.getInt(cursor.getColumnIndexOrThrow("sub_id"));
         }
         boolean success = true;
         try {
             if (isIncomingMessage(cursor)) {
-                Sms.Inbox.addMessage(subscription, mContentResolver, address, body, null,
+                Sms.Inbox.addMessage(subId, mContentResolver, address, body, null,
                         date, true /* read */);
             } else {
-                Sms.Sent.addMessage(subscription, mContentResolver, address, body, null, date);
+                Sms.Sent.addMessage(subId, mContentResolver, address, body, null, date);
             }
         } catch (SQLiteException e) {
             SqliteWrapper.checkSQLiteException(this, e);

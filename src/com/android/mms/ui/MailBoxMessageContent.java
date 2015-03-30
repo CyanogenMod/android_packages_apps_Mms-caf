@@ -89,7 +89,6 @@ public class MailBoxMessageContent extends Activity {
     private boolean mLock = false;
     private boolean mIsConvMode;
 
-    private int mSubID = MessageUtils.SUB_INVALID;
     private Cursor mCursor = null;
 
     private ViewPager mContentPager;
@@ -124,7 +123,6 @@ public class MailBoxMessageContent extends Activity {
         Sms.DATE,
         Sms.ADDRESS,
         Sms.BODY,
-        Sms.PHONE_ID,
         Sms.LOCKED,
         Sms.DATE_SENT,
         Sms.TYPE,
@@ -138,18 +136,17 @@ public class MailBoxMessageContent extends Activity {
     private static final int COLUMN_DATE = 1;
     private static final int COLUMN_SMS_ADDRESS = 2;
     private static final int COLUMN_SMS_BODY = 3;
-    private static final int COLUMN_SMS_SUBID = 4;
-    private static final int COLUMN_SMS_LOCKED = 5;
-    private static final int COLUMN_DATE_SENT = 6;
-    private static final int COLUMN_SMS_TYPE = 7;
-    private static final int COLUMN_SMS_ERROR_CODE = 8;
-    private static final int COLUMN_ID = 9;
-    private static final int COLUMN_STATUS = 10;
-    private static final int COLUMN_SMS_READ = 11;
+    private static final int COLUMN_SMS_LOCKED = 4;
+    private static final int COLUMN_DATE_SENT = 5;
+    private static final int COLUMN_SMS_TYPE = 6;
+    private static final int COLUMN_SMS_ERROR_CODE = 7;
+    private static final int COLUMN_ID = 8;
+    private static final int COLUMN_STATUS = 9;
+    private static final int COLUMN_SMS_READ = 10;
 
     private static final int SMS_ADDRESS_INDEX = 0;
     private static final int SMS_BODY_INDEX = 1;
-    private static final int SMS_PHONE_ID_INDEX = 2;
+    private static final int SMS_SUB_ID_INDEX = 2;
 
     private float mFontSizeForSave = MessageUtils.FONT_SIZE_DEFAULT;
 
@@ -336,7 +333,7 @@ public class MailBoxMessageContent extends Activity {
 
     private void resendShortMessage(long threadId, Uri uri) {
         Cursor cursor = SqliteWrapper.query(this, getContentResolver(), uri, new String[] {
-                Sms.ADDRESS, Sms.BODY, Sms.PHONE_ID
+                Sms.ADDRESS, Sms.BODY, Sms.SUBSCRIPTION_ID
         }, null, null, null);
 
         if (cursor != null) {
@@ -346,7 +343,7 @@ public class MailBoxMessageContent extends Activity {
                             new String[] {cursor.getString(SMS_ADDRESS_INDEX)},
                             cursor.getString(SMS_BODY_INDEX),
                             threadId,
-                            cursor.getInt(SMS_PHONE_ID_INDEX));
+                            cursor.getInt(SMS_SUB_ID_INDEX));
                     sender.sendMessage(threadId);
 
                     // Delete the undelivered message since the sender will
@@ -415,7 +412,6 @@ public class MailBoxMessageContent extends Activity {
         mMsgType = cursor.getInt(COLUMN_SMS_TYPE);
         mLock = cursor.getInt(COLUMN_SMS_LOCKED) != 0;
         mMsgstatus = cursor.getInt(COLUMN_STATUS);
-        mSubID = cursor.getInt(COLUMN_SMS_SUBID);
         mMsgId = cursor.getInt(COLUMN_ID);
     }
 
