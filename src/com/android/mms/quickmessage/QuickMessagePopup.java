@@ -558,15 +558,15 @@ public class QuickMessagePopup extends Activity {
     /**
      * Sends a quick message immediately, with the only UI being a Toast indicating
      * success or failure.
-     * @param phoneId The phoneId of the SIM slot to send the message with.
+     * @param subId The subscription ID of the SIM slot to send the message with.
      * @param threadId The thread ID of the QuickMessage.
      * @param message The actual message.
      * @param qm The QuickMessage object to send.
      */
-    private void sendQuickMessageBackground(int phoneId, long threadId,
+    private void sendQuickMessageBackground(int subId, long threadId,
             String message, QuickMessage qm) {
         SmsMessageSender sender = new SmsMessageSender(this,
-                qm.getFromNumber(), message, threadId, phoneId);
+                qm.getFromNumber(), message, threadId, subId);
 
         try {
             if (DEBUG) {
@@ -603,16 +603,14 @@ public class QuickMessagePopup extends Activity {
             MessageUtils.showSimSelector(this, new MessageUtils.OnSimSelectedCallback() {
                 @Override
                 public void onSimSelected(int subId) {
-                    final int phoneId = SubscriptionManager.getPhoneId(subId);
-                    sendQuickMessageBackground(phoneId, threadId, message, qm);
+                    sendQuickMessageBackground(subId, threadId, message, qm);
                     mPagerAdapter.moveOn(qm);
                 }
             });
             return false;
         } else {
             int subId = SubscriptionManager.getDefaultSmsSubId();
-            int phoneId = SubscriptionManager.getPhoneId(subId);
-            sendQuickMessageBackground(phoneId, threadId, message, qm);
+            sendQuickMessageBackground(subId, threadId, message, qm);
             return true;
         }
     }
