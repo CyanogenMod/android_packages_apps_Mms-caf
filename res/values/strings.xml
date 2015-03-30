@@ -1065,4 +1065,12 @@
     <string name="cell_broadcast_title">Cell broadcast settings</string>
     <string name="cell_broadcast_settings">SIM card cell broadcast settings</string>
 
+    <!-- Chat wallpaper -->
+    <string name="pref_chat_wallpaper">Chat wallpaper</string>
+    <string name="dialog_wallpaper_chooser_option_gallery">Gallery</string>
+    <string name="dialog_wallpaper_chooser_option_camera">Take a photo</string>
+    <string name="dialog_wallpaper_title">Choose Wallpaper</string>
+    <string name="intent_chooser_dialog_title">Complete action using</string>
+    <string name="gallery_packagename">com.android.gallery3d</string>
+    <string name="camera_packagename">com.android.camera2</string>
 </resources>

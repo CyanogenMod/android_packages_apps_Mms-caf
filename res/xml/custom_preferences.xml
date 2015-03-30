@@ -260,6 +260,9 @@
     </PreferenceCategory>
     <PreferenceScreen android:key="pref_key_general_settings"
         android:title="@string/pref_title_general_settings" >
+        <Preference
+                android:key="pref_key_chat_wallpaper"
+                android:title="@string/pref_chat_wallpaper" />
         <PreferenceCategory
             android:key="pref_key_storage_settings"
             android:title="@string/pref_sms_storage_title" >
