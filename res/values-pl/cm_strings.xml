@@ -252,4 +252,6 @@
   <string name="pref_summary_mms_full_timestamp">Wyświetlaj pełną datę oraz czas w wiadomościach</string>
   <string name="pref_title_mms_use_sent_timestamp">Oryginalna data</string>
   <string name="pref_summary_mms_use_sent_timestamp">Wyświetlaj datę wysłania zamiast daty odebrania wiadomości</string>
+  <string name="pref_title_mms_auto_enable_data">Automatyczne włączanie danych</string>
+  <string name="pref_summary_mms_auto_enable_data">Automatyczne włączanie danych dla wiadomości MMS</string>
 </resources>

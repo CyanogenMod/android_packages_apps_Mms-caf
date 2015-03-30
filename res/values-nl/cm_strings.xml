@@ -223,7 +223,7 @@
   <string name="import_sms_failed_toast">Kan geen berichten importeren</string>
   <string name="perform_backup_title">Exporteren</string>
   <string name="perform_restore_title">Importeren</string>
-  <string name="wait_progress_message">Een ogenblik geduld\u2026</string>
+  <string name="wait_progress_message">Even geduld\u2026</string>
   <string name="backup_file_name_message">Berichten geëxporteerd naar \'%1$s\'</string>
   <string name="manage_sdcard_messages">Berichten importeren/exporteren</string>
   <string name="no_backups_found">Geen back-ups gevonden</string>

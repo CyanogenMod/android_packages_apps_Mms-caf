@@ -252,4 +252,6 @@
   <string name="pref_summary_mms_full_timestamp">Zobrazení času i datumu v informacích o zprávě</string>
   <string name="pref_title_mms_use_sent_timestamp">Původní časové údaje</string>
   <string name="pref_summary_mms_use_sent_timestamp">Zobrazí se pouze čas odeslání zprávy</string>
+  <string name="pref_title_mms_auto_enable_data">Automaticky povolit data</string>
+  <string name="pref_summary_mms_auto_enable_data">Automaticky povolit mobilní data pro MMS zprávy</string>
 </resources>

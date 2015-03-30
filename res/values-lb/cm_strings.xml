@@ -18,7 +18,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="pref_quickmessage">Séier Messagen an Äntwerten</string>
   <string name="pref_quickmessage_title">Séier Messagen uweisen</string>
-  <string name="pref_quickmessage_summary">Automatesch de Pop-Up mat de séiere Messagen bei erakommenden SMS-Messagen opmaachen</string>
+  <string name="pref_quickmessage_summary">Automatesch de Pop-Up mat de séiere Messagë bei erakommenden SMS-Messagen opmaachen</string>
   <string name="pref_wake_unlock_title">Erwächen an entspären</string>
   <string name="pref_wake_unlock_summary">Den Apparat bei erakommende Messagë waakreg maachen an entspären (just bei onséchere Spärschiermer)</string>
   <string name="pref_close_all_title">All zoumaachen</string>
