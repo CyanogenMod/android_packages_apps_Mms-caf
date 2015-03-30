@@ -136,7 +136,7 @@ public class MailBoxMessageList extends ListActivity implements
     private static final String ORIGIN_SUB_ID = "origin_sub_id";
     private static final String NONE_SELECTED = "0";
     private static final String BOX_SPINNER_TYPE = "box_spinner_type";
-    private static final String SLOT_SPINNER_TYPE = "slot_spinner_type";
+    private static final String SUB_SPINNER_TYPE = "sub_spinner_type";
     private final static String THREAD_ID = "thread_id";
     private final static String MESSAGE_ID = "message_id";
     private final static String MESSAGE_TYPE = "message_type";
@@ -152,7 +152,7 @@ public class MailBoxMessageList extends ListActivity implements
     private boolean mIsPause = false;
     private boolean mQueryDone = true;
     private int mQueryBoxType = TYPE_INBOX;
-    private int mQuerySlotType = TYPE_ALL_SLOT;
+    private int mQuerySubId = SubscriptionManager.DEFAULT_SUBSCRIPTION_ID;
     private BoxMsgListQueryHandler mQueryHandler;
     private String mSmsWhereDelete = "";
     private String mMmsWhereDelete = "";
@@ -469,8 +469,8 @@ public class MailBoxMessageList extends ListActivity implements
                 }
                 if (oldQueryType != mQueryBoxType) {
                     if (mQueryBoxType == TYPE_DRAFTBOX) {
-                        mQuerySlotType = TYPE_ALL_SLOT;
-                        mSlotSpinner.setSelection(TYPE_ALL_SLOT);
+                        mQuerySubId = SubscriptionManager.DEFAULT_SUBSCRIPTION_ID;
+                        //mSlotSpinner.setSelection(TYPE_ALL_SLOT);
                         mSlotSpinner.setEnabled(false);
                     } else {
                         mSlotSpinner.setEnabled(true);
@@ -488,26 +488,16 @@ public class MailBoxMessageList extends ListActivity implements
         });
 
         if (MessageUtils.isMsimIccCardActive()) {
-            // FIXME: replace this spinner by a SIM spinner, based on a
-            // subscription DB cursor which is shared with ConversationList
-            mSlotSpinner.setPrompt(getResources().getString(R.string.slot_type_select));
-            ArrayAdapter<CharSequence> slotAdapter = ArrayAdapter.createFromResource(this,
-                    R.array.slot_type, android.R.layout.simple_spinner_item);
-            slotAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
-            mSlotSpinner.setAdapter(slotAdapter);
-            mSlotSpinner.setSelection(sp.getInt(SLOT_SPINNER_TYPE, TYPE_ALL_SLOT));
+            MSimSpinnerAdapter adapter = new MSimSpinnerAdapter(mSlotSpinner.getContext());
+            mSlotSpinner.setAdapter(adapter);
+            //mSlotSpinner.setSelection(sp.getInt(SLOT_SPINNER_TYPE, TYPE_ALL_SLOT));
             mSlotSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent,
                                            View view, int position, long id) {
-                    sp.edit().putInt(SLOT_SPINNER_TYPE, position).commit();
-                    // position 0-2 means slotType: slot_all, slot_one, slot_two
-                    int oldQuerySlotType = mQuerySlotType;
-                    if (position > TYPE_SLOT_TWO) {
-                        position = TYPE_ALL_SLOT;
-                    }
-                    mQuerySlotType = position;
-                    if (oldQuerySlotType != mQuerySlotType) {
+                    //sp.edit().putInt(SUB_SPINNER_TYPE, position).commit();
+                    if (id != mQuerySubId) {
+                        mQuerySubId = (int) id;
                         startAsyncQuery();
                         getListView().invalidateViews();
                     }
@@ -518,6 +508,8 @@ public class MailBoxMessageList extends ListActivity implements
                     // do nothing
                 }
             });
+            getLoaderManager().initLoader(0, null,
+                    new MSimSpinnerAdapter.LoaderCallbacks(adapter));
         } else {
             mSlotSpinner.setVisibility(View.GONE);
         }
@@ -532,13 +524,8 @@ public class MailBoxMessageList extends ListActivity implements
                 // AsyncQueryHandler.onQueryComplete() method doesn't provide
                 // the same token as what I input here.
                 mQueryDone = false;
-                String selStr = null;
-                // FIXME: replace by subscription ID
-                if (mQuerySlotType == TYPE_SLOT_ONE) {
-                    selStr = "phone_id = " + MessageUtils.SUB1;
-                } else if (mQuerySlotType == TYPE_SLOT_TWO) {
-                    selStr = "phone_id = " + MessageUtils.SUB2;
-                }
+                String selStr = mQuerySubId != SubscriptionManager.DEFAULT_SUBSCRIPTION_ID
+                        ? ("sub_id = " + mQuerySubId) : null;
                 if (mIsInSearchMode) {
                     Uri queryUri = SEARCH_URI.buildUpon().appendQueryParameter(
                             "search_mode", Integer.toString(mSearchModePosition)).build()
