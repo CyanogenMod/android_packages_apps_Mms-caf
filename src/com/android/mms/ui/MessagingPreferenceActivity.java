@@ -23,6 +23,7 @@ import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.ActivityNotFoundException;
 import android.app.DialogFragment;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -64,7 +65,6 @@ import android.util.Log;
 import com.android.internal.telephony.IccCardConstants;
 import com.android.internal.telephony.TelephonyIntents;
 import com.android.internal.telephony.PhoneConstants;
-
 import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
@@ -109,6 +109,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private final static String EXPIRY_ONE_WEEK = "604800"; // 7 * 24 * 60 * 60
     private final static String EXPIRY_TWO_DAYS = "172800"; // 2 * 24 * 60 * 60
 
+    public static final String CELL_BROADCAST            = "pref_key_cell_broadcast";
+
     // Menu entries
     private static final int MENU_RESTORE_DEFAULTS    = 1;
 
@@ -133,6 +135,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private Preference mManageSimPref;
     private Preference mManageSim1Pref;
     private Preference mManageSim2Pref;
+    private Preference mCBsettingPref;
     private Preference mClearHistoryPref;
     private Preference mConfigurationmessage;
     private CheckBoxPreference mVibratePref;
@@ -315,6 +318,10 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             PreferenceCategory OMACPConCategory =
                     (PreferenceCategory) findPreference(OMACP_CONFIGURATION_CATEGORY);
             prefRoot.removePreference(OMACPConCategory);
+        }
+
+        if (getResources().getBoolean(R.bool.def_custom_preferences_settings)) {
+            mCBsettingPref = findPreference(CELL_BROADCAST);
         }
 
         setMessagePreferences();
@@ -838,6 +845,15 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                 startActivity(intent);
             } catch (ActivityNotFoundException e) {
                 Log.e(TAG,"Activity not found : "+e);
+            }
+        } else if (getResources().getBoolean(
+                R.bool.def_custom_preferences_settings)
+                && preference == mCBsettingPref) {
+            try {
+                startActivity(MessageUtils.getCellBroadcastIntent());
+            } catch (ActivityNotFoundException e) {
+                Log.e(TAG,
+                        "ActivityNotFoundException for CellBroadcastListActivity");
             }
         }
 

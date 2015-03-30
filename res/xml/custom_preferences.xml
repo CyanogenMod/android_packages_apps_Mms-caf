@@ -300,6 +300,14 @@
                 android:key="pref_key_sms_store_card2"
                 android:title="@string/pref_title_sms_store_card2" />
         </PreferenceCategory>
+        <PreferenceCategory android:title="@string/cell_broadcast_title" >
+            <Preference
+                android:key="pref_key_cell_broadcast"
+                android:persistent="false"
+                android:summary="@string/cell_broadcast_settings"
+                android:title="@string/cell_broadcast" >
+            </Preference>
+        </PreferenceCategory>
         <PreferenceCategory android:title="@string/pref_wap_push_title" >
             <CheckBoxPreference
                 android:defaultValue="@bool/def_wap_push_enabled"

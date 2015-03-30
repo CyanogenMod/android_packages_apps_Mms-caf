@@ -1060,4 +1060,9 @@
     <!-- General settings -->
     <string name="pref_title_general_settings">General</string>
     <string name="pref_title_notification_settings">Notifications</string>
+    <!-- Cell broadcast settings -->
+    <string name="cell_broadcast">Cell broadcast</string>
+    <string name="cell_broadcast_title">Cell broadcast settings</string>
+    <string name="cell_broadcast_settings">SIM card cell broadcast settings</string>
+
 </resources>
