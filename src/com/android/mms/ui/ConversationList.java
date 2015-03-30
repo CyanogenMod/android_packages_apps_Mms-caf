@@ -330,17 +330,16 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                 getResources().getBoolean(R.bool.enable_filter_threads_by_sim);
 
         if (filterEnabled && mgr.isMultiSimEnabled()) {
-            // FIXME: replace adapter by a subscription DB cursor adapter
-            mFilterSpinner.setAdapter(new MSimSpinnerAdapter(this));
+            MSimSpinnerAdapter adapter = new MSimSpinnerAdapter(this);
+            mFilterSpinner.setAdapter(adapter);
             mFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
-                public void onItemSelected(AdapterView<?> parent,
-                                           View view, int position, long id) {
-                    // FIXME: this is the slot ID, not the subscription ID
+                public void onItemSelected(AdapterView<?> parent, View view,
+                        int position, long id) {
                     if (position == 0) {
                         mFilterSubId = null;
                     } else {
-                        mFilterSubId = position - 1;
+                        mFilterSubId = (int) id;
                     }
                     startAsyncQuery();
                 }
@@ -351,6 +350,9 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                     startAsyncQuery();
                 }
             });
+
+            getLoaderManager().initLoader(0, null,
+                    new MSimSpinnerAdapter.LoaderCallbacks(adapter));
         } else {
             mFilterSpinner.setVisibility(View.GONE);
         }
