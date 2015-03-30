@@ -111,7 +111,7 @@ public class SmsReceiverService extends Service {
         Sms.ADDRESS,    //2
         Sms.BODY,       //3
         Sms.STATUS,     //4
-        Sms.PHONE_ID,   //5
+        Sms.SUBSCRIPTION_ID, //5
         SMS_PRIORITY,   //6
     };
 
@@ -123,7 +123,7 @@ public class SmsReceiverService extends Service {
     private static final int SEND_COLUMN_ADDRESS    = 2;
     private static final int SEND_COLUMN_BODY       = 3;
     private static final int SEND_COLUMN_STATUS     = 4;
-    private static final int SEND_COLUMN_PHONE_ID   = 5;
+    private static final int SEND_COLUMN_SUB_ID     = 5;
     private static final int SEND_COLUMN_PRIORITY   = 6;
 
     // SMS sending delay
@@ -387,7 +387,7 @@ public class SmsReceiverService extends Service {
                     int status = c.getInt(SEND_COLUMN_STATUS);
 
                     int msgId = c.getInt(SEND_COLUMN_ID);
-                    int phoneId = c.getInt(SEND_COLUMN_PHONE_ID);
+                    int subId = c.getInt(SEND_COLUMN_SUB_ID);
                     int priority = c.getInt(SEND_COLUMN_PRIORITY);
                     Uri msgUri = ContentUris.withAppendedId(Sms.CONTENT_URI, msgId);
 
@@ -397,7 +397,7 @@ public class SmsReceiverService extends Service {
 
                     SmsMessageSender sender = new SmsSingleRecipientSender(this,
                             address, msgText, threadId, status == Sms.STATUS_PENDING,
-                            msgUri, phoneId);
+                            msgUri, subId);
 
                     if(priority != -1){
                         ((SmsSingleRecipientSender)sender).setPriority(priority);
@@ -524,11 +524,11 @@ public class SmsReceiverService extends Service {
                     String address = MessageUtils.convertIdp(this,
                             sms.getDisplayOriginatingAddress());
                     MessagingNotification.blockingUpdateNewIccMessageIndicator(
-                            this, address, sms.getDisplayMessageBody(),
-                            SubscriptionManager.getPhoneId(subId),
+                            this, address, sms.getDisplayMessageBody(), subId,
                             sms.getTimestampMillis());
-                    getContentResolver().notifyChange(MessageUtils.getIccUriBySubscription(
-                            SubscriptionManager.getPhoneId(subId)), null);
+                    int phoneId = SubscriptionManager.getPhoneId(subId);
+                    getContentResolver().notifyChange(
+                            MessageUtils.getIccUriBySlot(phoneId), null);
                 } else {
                     mToastHandler.post(new Runnable() {
                         public void run() {
@@ -835,10 +835,10 @@ public class SmsReceiverService extends Service {
         }
         selection = Sms.ADDRESS + " = ? AND " +
                     Sms.PROTOCOL + " = ? AND " +
-                    Sms.PHONE_ID +  " = ? ";
+                    Sms.SUBSCRIPTION_ID +  " = ? ";
         selectionArgs = new String[] {
                 originatingAddress, Integer.toString(protocolIdentifier),
-                Integer.toString(SubscriptionManager.getPhoneId(sms.getSubId()))
+                Integer.toString(sms.getSubId())
             };
 
         Cursor cursor = SqliteWrapper.query(context, resolver, Inbox.CONTENT_URI,
@@ -876,11 +876,13 @@ public class SmsReceiverService extends Service {
         }
 
         SmsMessage sms = msgs[0];
+        int subId = sms.getSubId();
 
         // Store the message in the content provider.
         ContentValues values = extractContentValues(sms);
         values.put(Sms.ERROR_CODE, error);
-        values.put(Sms.PHONE_ID, SubscriptionManager.getPhoneId(sms.getSubId()));
+        values.put(Sms.PHONE_ID, SubscriptionManager.getPhoneId(subId));
+        values.put(Sms.SUBSCRIPTION_ID, subId);
 
         int pduCount = msgs.length;
 
@@ -988,15 +990,12 @@ public class SmsReceiverService extends Service {
      *
      */
     private void displayClassZeroMessage(Context context, SmsMessage sms, String format) {
-        int subId = sms.getSubId();
-        int phoneId = SubscriptionManager.getPhoneId(subId);
-
         // Using NEW_TASK here is necessary because we're calling
         // startActivity from outside an activity.
         Intent smsDialogIntent = new Intent(context, ClassZeroActivity.class)
                 .putExtra("pdu", sms.getPdu())
                 .putExtra("format", format)
-                .putExtra(PhoneConstants.PHONE_KEY, phoneId)
+                .putExtra(PhoneConstants.SUBSCRIPTION_KEY, sms.getSubId())
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                           | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
 

@@ -330,11 +330,13 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                 getResources().getBoolean(R.bool.enable_filter_threads_by_sim);
 
         if (filterEnabled && mgr.isMultiSimEnabled()) {
+            // FIXME: replace adapter by a subscription DB cursor adapter
             mFilterSpinner.setAdapter(new MSimSpinnerAdapter(this));
             mFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent,
                                            View view, int position, long id) {
+                    // FIXME: this is the slot ID, not the subscription ID
                     if (position == 0) {
                         mFilterSubId = null;
                     } else {
