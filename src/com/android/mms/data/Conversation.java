@@ -826,15 +826,8 @@ public class Conversation {
 
         Uri uri = sAllThreadsUri;
         if (subId != null) {
-            // currently the mms app treats phone_id as slot_id, so that is what we must
-            // pass here, but we need to redesign this in the future
-            //int phoneId = SubscriptionManager.getPhoneId(subId.longValue());
-
-            // FIXME: sub ID and slot ID are NOT the same thing
-            int phoneId = subId;
-
             uri = sAllThreadsUri.buildUpon()
-                    .appendQueryParameter("phone_id", String.valueOf(phoneId)).build();
+                    .appendQueryParameter("sub_id", String.valueOf(subId)).build();
         }
         handler.startQuery(token, null, uri,
                 ALL_THREADS_PROJECTION, selection, null, Conversations.DEFAULT_SORT_ORDER);
