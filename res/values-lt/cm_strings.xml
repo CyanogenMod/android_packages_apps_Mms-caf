@@ -252,4 +252,6 @@
   <string name="pref_summary_mms_full_timestamp">Laiko žymėse rodyti datą ir laiką</string>
   <string name="pref_title_mms_use_sent_timestamp">Originalios laiko žymės</string>
   <string name="pref_summary_mms_use_sent_timestamp">Laiko žymėse rodyti išsiuntimo datą vietoj gautos datos</string>
+  <string name="pref_title_mms_auto_enable_data">Automatiškai įgalinti duomenis</string>
+  <string name="pref_summary_mms_auto_enable_data">Automatiškai įgalinti korinio ryšio duomenis MMS žinutėms</string>
 </resources>

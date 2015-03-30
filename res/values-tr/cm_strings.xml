@@ -252,4 +252,6 @@
   <string name="pref_summary_mms_full_timestamp">Zaman damgalarında hem tarih hem saati gösterir</string>
   <string name="pref_title_mms_use_sent_timestamp">Orijinal zaman damgaları</string>
   <string name="pref_summary_mms_use_sent_timestamp">Zaman damgalarında alış zamanı yerine gönderiliş zamanını gösterir</string>
+  <string name="pref_title_mms_auto_enable_data">Veri indirmeyi otomatik etkinleştir</string>
+  <string name="pref_summary_mms_auto_enable_data">MMS mesajları için Otomatik olarak mobil veriyi etkinleştirir</string>
 </resources>

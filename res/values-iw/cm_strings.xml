@@ -16,6 +16,9 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="pref_quickmessage">\"הודעה מהירה\" ותגובה</string>
+  <string name="pref_quickmessage_title">הראה \"הודעה מהירה\"</string>
+  <string name="pref_quickmessage_summary">פתח אוטומטית חלון \"הודעה מהירה\" קופץ למענה מהיר להודעות SMS נכנסות</string>
   <string name="pref_wake_unlock_title">הער ושחרר מנעילה</string>
   <string name="pref_wake_unlock_summary">הער את המכשיר ושחרר אותו מנעילתו בקבלת הודעה (במסכי נעילה לא מאובטחים בלבד)</string>
   <string name="pref_close_all_title">סגור הכל</string>
@@ -109,11 +112,16 @@
   <string name="loadurlinfo_str">כתובות אינטרנט ממקור לא ידוע עלולים להוות נסיונות דיוג (פישינג). אם אינך בטוח, אל תפתח כתובת זו.</string>
   <string name="pref_title_message_template">תבניות הודעה</string>
   <string name="title_new_message_template">תבנית חדשה</string>
+  <string name="summary_new_message_template">צור תבנית הודעה חדשה</string>
   <string name="dialog_editSMSTemplate_title">ערוך תבנית</string>
   <string name="import_message_template">הוסף תבנית</string>
+  <string name="template_full">טקסט התבנית הגיע לאורך המירבי.</string>
   <string name="pref_sms_signature_title">חתימת SMS</string>
+  <string name="pref_title_enable_signature">הוספת חתימה להודעות</string>
+  <string name="pref_title_edit_signature">ערוך את טקסט החתימה</string>
   <string name="menu_copy_to">העתק</string>
   <string name="operation_to_card_memory">העתק הודעה לכרטיס SIM</string>
+  <string name="pref_smsc_title">מרכז שירות SMS</string>
   <string name="pref_one_smcs">מספר SMSC</string>
   <string name="pref_more_smcs">מספר ה-SMSC של SIM <xliff:g id="slot_number">%d</xliff:g></string>
   <string name="set_smsc_error">אין אפשרות להגדיר את מספר SMSC</string>
@@ -134,9 +142,13 @@
   <string name="contact_info_text_as_phone">טל\':</string>
   <string name="contact_info_text_as_email">דוא\"ל:</string>
   <string name="type_vcal">אירוע לוח שנה</string>
+  <string name="pref_wap_push_title">דחוף הודעות שירות</string>
+  <string name="pref_title_wap_push_enabled">שירות הדחיפה WAP</string>
+  <string name="pref_summary_wap_push_enabled">קבל הודעות של שירות הרשת</string>
   <string name="memory_status_title">מצב הזיכרון</string>
   <string name="sms_phone_memory_usage">SMS: <xliff:g id="used">%1$d </xliff:g> מתוך <xliff:g id="total">%2$d </xliff:g> בשימוש</string>
   <string name="mms_phone_memory_usage">SMS: <xliff:g id="used">%1$d </xliff:g> מתוך <xliff:g id="total">%2$d </xliff:g> בשימוש</string>
+  <string name="pref_title_validity_period">זמן תוקף ההודעה</string>
   <string name="sms_validity_period_not_set">לא הוגדר</string>
   <string name="sms_validity_period_one_hour">שעה אחת</string>
   <string name="sms_validity_period_six_hours">6 שעות</string>
@@ -155,6 +167,8 @@
   <string name="confirm_delete_selected_messages">ההודעות שנבחרו יימחקו.</string>
   <string name="message_detail">פרטי ההודעה</string>
   <string name="no_message">אין הודעות.</string>
+  <string name="change_to_folder_mode">תצוגת תיקיה</string>
+  <string name="change_to_conversation_mode">תצוגת שיחה</string>
   <string name="type_inbox">תיבת דואר נכנס</string>
   <string name="type_sent">נשלחו</string>
   <string name="type_outbox">תיבת דואר יוצא</string>
@@ -167,6 +181,7 @@
   <string name="search_as_number">מספר</string>
   <string name="search_as_content">תוכן</string>
   <string name="search_as_subject">נושא</string>
+  <string name="invalid_name_toast">נא הזן שם תקף</string>
   <string name="sim_capacity_title">קיבולת SIM</string>
   <string name="sim_capacity"><xliff:g id="used">%1$d</xliff:g> מתוך <xliff:g id="total">%2$d</xliff:g> מקומות בשימוש בכרטיס ה-SIM</string>
   <string name="pref_sim_card_full_save_to_phone">כרטיס ה-SIM מלא, הודעות חדשות תשמרנה למכשיר עצמו.</string>
@@ -178,6 +193,7 @@
   <string name="cdma_priority_urgent">דחוף</string>
   <string name="cdma_priority_emergency">מקרה חירום</string>
   <string name="pref_title_cdma_priority">עדיפות ההודעה</string>
+  <string name="pref_summary_cdma_priority">עדיפות של הודעות CDMA</string>
   <string name="download_dialog_title">האם להוריד MMS זה?</string>
   <string name="menu_email">שלח דוא\"ל</string>
   <string name="pref_title_sms_store">מקום אחסון מועדף</string>
@@ -189,18 +205,24 @@
   <string name="pre_define_message_template_1">אתקשר אליך מאוחר יותר.</string>
   <string name="pre_define_message_template_2">אני בכנס. אתקשר אליך מאוחר יותר.</string>
   <string name="pre_define_message_template_3">תתקשר אלי מאוחר יותר בבקשה.</string>
+  <string name="pre_define_message_template_4">אתה יכול לחזור אליי בבקשה?</string>
   <string name="menu_delete_all_entries">מחק הכל</string>
   <string name="menu_delete_sms">מחק SMS</string>
   <string name="menu_delete_mms">מחק MMS</string>
+  <string name="import_sms_title">ייבא מאחסון המכשיר</string>
+  <string name="export_sms_title">ייצא לאחסון המכשיר</string>
   <string name="delete_sms_title">מחק גיבוי קיים</string>
   <string name="pick_sms_backup_title">בחר גיבוי SMS</string>
   <string name="delete_sms_toast">הגיבוי נמחק.</string>
   <string name="import_sms_toast">ההודעות יובאו בהצלחה.</string>
   <string name="export_sms_toast">ההודעות יוצאו בהצלחה.</string>
+  <string name="export_sms_failed_toast">ייצוא ההודעות נכשל</string>
+  <string name="import_sms_failed_toast">ייבוא ההודעות נכשל</string>
   <string name="perform_backup_title">מייצא</string>
   <string name="perform_restore_title">מייבא</string>
   <string name="wait_progress_message">אנא המתן\u2026</string>
   <string name="backup_file_name_message">ההודעות יוצאו ל-\"%1$s\"</string>
+  <string name="manage_sdcard_messages">יבא/יצא הודעות</string>
   <string name="no_backups_found">לא נמצאו גיבויים</string>
   <string name="qm_wear_sending_message">שולח תגובה ל\"<xliff:g id="name">%s</xliff:g>\"\u2026</string>
   <string name="qm_wear_messaged_failed">הודעת טקסט ל\"<xliff:g id="name">%s </xliff:g>\" לא נשלחה, אנא נסה שוב.</string>
@@ -213,6 +235,16 @@
   <string name="pref_mms_notification_vibrate_normal">רגיל</string>
   <string name="pref_mms_notification_vibrate_med_vib">רטט בינוני</string>
   <string name="pref_mms_notification_vibrate_long_vib">רטט ארוך</string>
+  <string name="menu_insert_smiley">הוסף סמיילי</string>
+  <string name="pref_title_enable_emoticons">תמיכה בסמלי רגשות</string>
+  <string name="pref_summary_enable_emoticons">החלפת סימונים טקסטואליים בציוריים</string>
   <string name="menu_conversation_options">אפשרויות שיחה</string>
   <string name="pref_title_reset_convopt_to_default">אפס לברירת מחדל</string>
+  <string name="pref_summary_reset_convopt_to_default">איפוס הגדרת השיחה אל ההגדרה ברמת היישום</string>
+  <string name="pref_title_mms_full_timestamp">חותמות זמן מלאות</string>
+  <string name="pref_summary_mms_full_timestamp">הצג גם תאריך וגם שעה בחותמת הזמן של ההודעות</string>
+  <string name="pref_title_mms_use_sent_timestamp">חותמות זמן מקוריות</string>
+  <string name="pref_summary_mms_use_sent_timestamp">הצג את חותמות הזמן של רגע השליחה במקום את אלה של רגע הקבלה</string>
+  <string name="pref_title_mms_auto_enable_data">הפעל נתונים אוטומטית</string>
+  <string name="pref_summary_mms_auto_enable_data">הפעל נתונים ניידים באופן אוטומטי עבור הודעות MMS</string>
 </resources>

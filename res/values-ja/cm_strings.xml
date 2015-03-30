@@ -252,4 +252,6 @@
   <string name="pref_summary_mms_full_timestamp">タイムスタンプに日付と時刻の両方を表示する</string>
   <string name="pref_title_mms_use_sent_timestamp">オリジナルタイムスタンプ</string>
   <string name="pref_summary_mms_use_sent_timestamp">タイムスタンプに受信日時の代わりに送信日時を表示する</string>
+  <string name="pref_title_mms_auto_enable_data">データ通信を自動で有効化</string>
+  <string name="pref_summary_mms_auto_enable_data">MMSメッセージを送受信するためにデータ通信を自動的に有効にする</string>
 </resources>

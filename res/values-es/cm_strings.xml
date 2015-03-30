@@ -252,4 +252,6 @@
   <string name="pref_summary_mms_full_timestamp">Mostrar fecha y hora en las marcas de tiempo</string>
   <string name="pref_title_mms_use_sent_timestamp">Marca de tiempo original</string>
   <string name="pref_summary_mms_use_sent_timestamp">Mostrar fecha de envío en lugar de la fecha de recepción en las marcas de tiempo</string>
+  <string name="pref_title_mms_auto_enable_data">Habilitar datos automáticamente</string>
+  <string name="pref_summary_mms_auto_enable_data">Habilitar automáticamente los datos móviles para mensajes MMS</string>
 </resources>

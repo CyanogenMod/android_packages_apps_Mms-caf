@@ -16,6 +16,8 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="pref_quickmessage">CəldMesaj və Cavab</string>
+  <string name="pref_quickmessage_title">CəldMesajı göstər</string>
   <string name="pref_wake_unlock_title">Oyan və kilidi aç</string>
   <string name="pref_wake_unlock_summary">Mesaj gələndə cihazı oyandır və kilidini aç (yalnız şifrəsiz kilit ekranlarında)</string>
   <string name="pref_close_all_title">Hamısını bağla</string>
