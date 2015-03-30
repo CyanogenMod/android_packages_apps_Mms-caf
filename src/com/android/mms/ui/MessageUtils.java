@@ -159,7 +159,6 @@ public class MessageUtils {
     public static final int SUB_INVALID = -1;  //  for single card product
     public static final int SUB1 = 0;  // for DSDS product of slot one
     public static final int SUB2 = 1;  // for DSDS product of slot two
-    public static final String SUBSCRIPTION_KEY = "subscription";
     public static final int MESSAGE_READ = 1;
     public static final int MESSAGE_SEEN = 1;
     // add manage mode of multi select action
@@ -1473,7 +1472,7 @@ public class MessageUtils {
         if (!Mms.isEmailAddress(address)) {
             Intent dialIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + address));
             if (isMultiSimEnabledMms()) {
-                dialIntent.putExtra(SUBSCRIPTION_KEY, subscription);
+                dialIntent.putExtra(PhoneConstants.SUBSCRIPTION_KEY, subscription);
             }
             context.startActivity(dialIntent);
         }
@@ -1492,18 +1491,15 @@ public class MessageUtils {
     }
 
     /**
-     * Return whether it has card in according slot -the input subscription is 0
-     * or 1 -It is only used in DSDS
+     * Return whether the given slot has a card inserted
      */
-    public static boolean hasIccCard(int subscription) {
+    public static boolean hasIccCard(int slot) {
         boolean hasCard = false;
         TelephonyManager telephonyManager = TelephonyManager.getDefault();
         if (isMultiSimEnabledMms()) {
-            hasCard = telephonyManager.hasIccCard(subscription);
-        } else {
-            if (subscription == SubscriptionManager.getDefaultSubId()) {
-                hasCard = telephonyManager.hasIccCard();
-            }
+            hasCard = telephonyManager.hasIccCard(slot);
+        } else if (slot == telephonyManager.getDefaultSim()) {
+            hasCard = telephonyManager.hasIccCard();
         }
         return hasCard;
     }
@@ -1551,33 +1547,33 @@ public class MessageUtils {
     }
 
     /**
-     * Return whether the card is activated according to Subscription
-     * used for DSDS
+     * Return whether the card in the given slot is activated
      */
-    public static boolean isIccCardActivated(int subscription) {
+    public static boolean isIccCardActivated(int slot) {
         TelephonyManager tm = TelephonyManager.getDefault();
-        final int simState = tm.getSimState(subscription);
+        final int simState = tm.getSimState(slot);
         log("isIccCardActivated subscription " + simState);
         return (simState != TelephonyManager.SIM_STATE_ABSENT)
                     && (simState != TelephonyManager.SIM_STATE_UNKNOWN);
     }
 
-    public static CharSequence getSimName(Context context, int phoneId) {
+    public static CharSequence getSimName(Context context, int subId) {
         if (TelephonyManager.getDefault().getPhoneCount() <= 1) {
             return null;
         }
 
-        int[] slotIds = SubscriptionManager.getSubId(phoneId);
-        if (slotIds != null) {
-            SubscriptionManager subMgr = SubscriptionManager.from(context);
-            for (int i = 0; i < slotIds.length; i++) {
-                SubscriptionInfo info = subMgr.getActiveSubscriptionInfo(slotIds[i]);
-                if (info != null) {
-                    return info.getDisplayName();
-                }
-            }
+        SubscriptionManager subMgr = SubscriptionManager.from(context);
+        SubscriptionInfo info = subMgr.getActiveSubscriptionInfo(subId);
+        return info != null ? info.getDisplayName() : null;
+    }
+
+    public static Drawable getMultiSimIconForSlot(Context context, int slot) {
+        int subId[] = SubscriptionManager.getSubId(slot);
+        if (subId == null || subId.length == 0) {
+            return null;
         }
-        return null;
+
+        return getMultiSimIcon(context, subId[0]);
     }
 
     public static Drawable getMultiSimIcon(Context context, int subscription) {
@@ -1586,13 +1582,12 @@ public class MessageUtils {
             return null;
         }
 
-        int subId[] = SubscriptionManager.getSubId(subscription);
         final TelecomManager telecomManager = (TelecomManager) context
                 .getSystemService(Context.TELECOM_SERVICE);
         List<PhoneAccountHandle> pHandles = telecomManager.getCallCapablePhoneAccounts();
         PhoneAccountHandle phoneAccountHandle = null;
         for (PhoneAccountHandle itorator : pHandles) {
-            if (String.valueOf(subId[0]).equals(itorator.getId())) {
+            if (String.valueOf(subscription).equals(itorator.getId())) {
                 phoneAccountHandle = itorator;
             }
         }
@@ -1626,16 +1621,16 @@ public class MessageUtils {
     /**
      * Return the sim name of subscription.
      */
-    public static String getMultiSimName(Context context, int subscription) {
-        if (subscription >= TelephonyManager.getDefault().getPhoneCount() || subscription < 0) {
+    public static String getMultiSimName(Context context, int slot) {
+        if (slot >= TelephonyManager.getDefault().getPhoneCount() || slot < 0) {
             return null;
         }
         //String multiSimName = Settings.System.getString(context.getContentResolver(),
         //        MULTI_SIM_NAME + (subscription + 1));
         //if (multiSimName == null) {
-            if (subscription == SUB1) {
+            if (slot == SUB1) {
                 return context.getString(R.string.slot1);
-            } else if (subscription == SUB2) {
+            } else if (slot == SUB2) {
                 return context.getString(R.string.slot2);
             }
         //}
@@ -1741,14 +1736,10 @@ public class MessageUtils {
     }
 
     private static boolean isCDMAPhone(int subscription) {
-        boolean isCDMA = false;
         int activePhone = isMultiSimEnabledMms()
                 ? TelephonyManager.getDefault().getCurrentPhoneType(subscription)
-                        : TelephonyManager.getDefault().getPhoneType();
-        if (TelephonyManager.PHONE_TYPE_CDMA == activePhone) {
-            isCDMA = true;
-        }
-        return isCDMA;
+                : TelephonyManager.getDefault().getPhoneType();
+        return activePhone == TelephonyManager.PHONE_TYPE_CDMA;
     }
 
     public static boolean isWebUrl(String url) {
@@ -1893,11 +1884,11 @@ public class MessageUtils {
     /**
      * Return the icc uri according to subscription
      */
-    public static Uri getIccUriBySubscription(int subscription) {
-        switch (subscription) {
-            case (int)SUB1:
+    public static Uri getIccUriBySlot(int slot) {
+        switch (slot) {
+            case SUB1:
                 return ICC1_URI;
-            case (int)SUB2:
+            case SUB2:
                 return ICC2_URI;
             default:
                 return ICC_URI;

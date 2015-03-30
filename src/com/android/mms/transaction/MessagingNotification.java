@@ -76,6 +76,7 @@ import android.text.style.TextAppearanceSpan;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.internal.telephony.PhoneConstants;
 import com.android.mms.LogTag;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
@@ -119,11 +120,9 @@ public class MessagingNotification {
 
     public static final int NOTIFICATION_ID = 123;
     public static final int FULL_NOTIFICATION_ID   = 125;
-    private static final int ICC_NOTIFICATION_ID_SLOT1 = 126;
-    private static final int ICC_NOTIFICATION_ID_SLOT2 = 127;
-    private static final int ICC_NOTIFICATION_ID = 128;
     public static final int MESSAGE_FAILED_NOTIFICATION_ID = 789;
     public static final int DOWNLOAD_FAILED_NOTIFICATION_ID = 531;
+    private static final int ICC_NOTIFICATION_ID_BASE = 1000;
     /**
      * This is the volume at which to play the in-conversation notification sound,
      * expressed as a fraction of the system notification volume.
@@ -132,15 +131,11 @@ public class MessagingNotification {
 
     // This must be consistent with the column constants below.
     private static final String[] MMS_STATUS_PROJECTION = new String[] {
-        Mms.THREAD_ID, Mms.DATE, Mms._ID, Mms.SUBJECT, Mms.SUBJECT_CHARSET, Mms.PHONE_ID };
+        Mms.THREAD_ID, Mms.DATE, Mms._ID, Mms.SUBJECT, Mms.SUBJECT_CHARSET, Mms.SUBSCRIPTION_ID };
 
     // This must be consistent with the column constants below.
     private static final String[] SMS_STATUS_PROJECTION = new String[] {
-        Sms.THREAD_ID, Sms.DATE, Sms.ADDRESS, Sms.BODY, Sms.PHONE_ID, Sms._ID };
-
-    private static final int[] NEW_ICC_NOTIFICATION_ID = new int[] {
-        ICC_NOTIFICATION_ID_SLOT1, ICC_NOTIFICATION_ID_SLOT2
-    };
+        Sms.THREAD_ID, Sms.DATE, Sms.ADDRESS, Sms.BODY, Sms.SUBSCRIPTION_ID, Sms._ID };
 
     private static final String[] MAILBOX_PROJECTION = new String[] {
             MmsSms.TYPE_DISCRIMINATOR_COLUMN, BaseColumns._ID,
@@ -386,11 +381,11 @@ public class MessagingNotification {
     }
 
     public static void blockingUpdateNewIccMessageIndicator(Context context, String address,
-            String message, int phoneId, long timeMillis) {
+            String message, int subId, long timeMillis) {
         final Notification.Builder noti = new Notification.Builder(context).setWhen(timeMillis);
         Contact contact = Contact.get(address, false);
         NotificationInfo info = getNewIccMessageNotificationInfo(context, true /* isSms */,
-                address, message, null /* subject */, phoneId, timeMillis,
+                address, message, null /* subject */, subId, timeMillis,
                 null /* attachmentBitmap */, contact, WorkingMessage.TEXT);
         noti.setSmallIcon(R.drawable.stat_notify_sms);
         NotificationManager nm = (NotificationManager)
@@ -399,13 +394,13 @@ public class MessagingNotification {
 //        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         // Update the notification.
         PendingIntent pendingIntent;
-        if (phoneId == MessageUtils.SUB_INVALID) {
+        if (subId == SubscriptionManager.INVALID_SUBSCRIPTION_ID) {
             pendingIntent = PendingIntent.getActivity(context, 0, info.mClickIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT);
         } else {
             // Use requestCode to avoid updating all intents of previous notifications
             pendingIntent = PendingIntent.getActivity(context,
-                    NEW_ICC_NOTIFICATION_ID[phoneId], info.mClickIntent,
+                    ICC_NOTIFICATION_ID_BASE + subId, info.mClickIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT);
         }
         String title = info.mTitle;
@@ -469,13 +464,7 @@ public class MessagingNotification {
         }
 
         notifyUserIfFullScreen(context, title);
-
-        if (phoneId == MessageUtils.SUB_INVALID) {
-            nm.notify(ICC_NOTIFICATION_ID, notification);
-        } else {
-            nm.notify(NEW_ICC_NOTIFICATION_ID[phoneId], notification);
-        }
-
+        nm.notify(ICC_NOTIFICATION_ID_BASE + subId, notification);
     }
 
     /**
@@ -825,7 +814,7 @@ public class MessagingNotification {
 
                 long threadId = cursor.getLong(COLUMN_MMS_THREAD_ID);
                 long timeMillis = cursor.getLong(COLUMN_MMS_DATE) * 1000;
-                int phoneId = cursor.getInt(COLUMN_MMS_SUB_ID);
+                int subId = cursor.getInt(COLUMN_MMS_SUB_ID);
 
                 if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
                     Log.d(TAG, "addMmsNotificationInfos: count=" + cursor.getCount() +
@@ -862,7 +851,7 @@ public class MessagingNotification {
                         false /* isSms */,
                         address,
                         messageBody, subject,
-                        threadId, phoneId,
+                        threadId, subId,
                         timeMillis,
                         attachedPicture,
                         contact,
@@ -962,7 +951,7 @@ public class MessagingNotification {
                 String message = cursor.getString(COLUMN_SMS_BODY);
                 long threadId = cursor.getLong(COLUMN_SMS_THREAD_ID);
                 long timeMillis = cursor.getLong(COLUMN_SMS_DATE);
-                int phoneId = cursor.getInt(COLUMN_SMS_SUB_ID);
+                int subId = cursor.getInt(COLUMN_SMS_SUB_ID);
                 String msgId = cursor.getString(COLUMN_SMS_ID);
 
                 if (Log.isLoggable(LogTag.APP, Log.VERBOSE))
@@ -974,7 +963,7 @@ public class MessagingNotification {
 
                 NotificationInfo info = getNewMessageNotificationInfo(context, true /* isSms */,
                         address, message, null /* subject */,
-                        threadId, phoneId, timeMillis, null /* attachmentBitmap */,
+                        threadId, subId, timeMillis, null /* attachmentBitmap */,
                         contact, WorkingMessage.TEXT);
                 if (MessageUtils.isMailboxMode()) {
                     info.mClickIntent.setData(
@@ -997,7 +986,7 @@ public class MessagingNotification {
             String message,
             String subject,
             long threadId,
-            int phoneId,
+            int subId,
             long timeMillis,
             Bitmap attachmentBitmap,
             Contact contact,
@@ -1008,7 +997,7 @@ public class MessagingNotification {
                 context, address, null, null).toString();
         String senderInfoName = senderInfo.substring(
                 0, senderInfo.length());
-        CharSequence simName = MessageUtils.getSimName(context, phoneId);
+        CharSequence simName = MessageUtils.getSimName(context, subId);
         CharSequence ticker = buildTickerMessage(
                 context, address, subject, message);
 
@@ -1049,7 +1038,7 @@ public class MessagingNotification {
             String address,
             String message,
             String subject,
-            int phoneId,
+            int subId,
             long timeMillis,
             Bitmap attachmentBitmap,
             Contact contact,
@@ -1059,12 +1048,12 @@ public class MessagingNotification {
                 | Intent.FLAG_ACTIVITY_SINGLE_TOP
                 | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        clickIntent.putExtra(MessageUtils.SUBSCRIPTION_KEY, phoneId);
+        clickIntent.putExtra(PhoneConstants.PHONE_KEY, SubscriptionManager.getPhoneId(subId));
         String senderInfo = buildTickerMessage(
                 context, address, null, null).toString();
         String senderInfoName = senderInfo.substring(
                 0, senderInfo.length());
-        CharSequence simName = MessageUtils.getSimName(context, phoneId);
+        CharSequence simName = MessageUtils.getSimName(context, subId);
         CharSequence ticker = buildTickerMessage(
                 context, address, subject, message);
 
@@ -1964,12 +1953,8 @@ public class MessagingNotification {
         }
     }
 
-    public static void blockingRemoveIccNotifications(Context context, int subscription) {
-        if (subscription == MessageUtils.SUB_INVALID) {
-            cancelNotification(context, ICC_NOTIFICATION_ID);
-        } else {
-            cancelNotification(context, NEW_ICC_NOTIFICATION_ID[subscription]);
-        }
+    public static void blockingRemoveIccNotifications(Context context, int subId) {
+        cancelNotification(context, ICC_NOTIFICATION_ID_BASE + subId);
     }
 
     /**

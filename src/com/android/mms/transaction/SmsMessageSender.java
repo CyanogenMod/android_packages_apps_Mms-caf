@@ -46,6 +46,7 @@ public class SmsMessageSender implements MessageSender {
     protected long mTimestamp;
     private static final String TAG = LogTag.TAG;
     protected int mPhoneId;
+    protected int mSubId;
 
     // Default preference values
     private static final boolean DEFAULT_DELIVERY_REPORT_MODE  = false;
@@ -59,7 +60,7 @@ public class SmsMessageSender implements MessageSender {
     private static final int COLUMN_SERVICE_CENTER     = 1;
 
     public SmsMessageSender(Context context, String[] dests,
-                 String msgText, long threadId, int phoneId) {
+                 String msgText, long threadId, int subId) {
         mContext = context;
         mMessageText = msgText;
         if (dests != null) {
@@ -73,7 +74,8 @@ public class SmsMessageSender implements MessageSender {
         mTimestamp = System.currentTimeMillis();
         mThreadId = threadId;
         mServiceCenter = getOutgoingServiceCenter(mThreadId);
-        mPhoneId = phoneId;
+        mSubId = subId;
+        mPhoneId = SubscriptionManager.getPhoneId(subId);
     }
 
     public boolean sendMessage(long token) throws MmsException {
@@ -120,8 +122,7 @@ public class SmsMessageSender implements MessageSender {
                     break;
                 }
                 log("updating Database with phoneId = " + mPhoneId);
-                int[] subId = SubscriptionManager.getSubId(mPhoneId);
-                Sms.addMessageToUri(subId[0], mContext.getContentResolver(),
+                Sms.addMessageToUri(mSubId, mContext.getContentResolver(),
                         Uri.parse("content://sms/queued"), mDests[i],
                         mMessageText, null, mTimestamp,
                         true /* read */,

@@ -34,6 +34,7 @@ import android.os.Handler;
 import android.provider.Telephony.Sms;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.MmsSms;
+import android.telephony.SubscriptionManager;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
@@ -120,16 +121,16 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
     }
 
     private void updateAvatarView(QuickContactBadge view, String address,
-            int subscription, boolean isMms, boolean isDraft) {
+            int slot, boolean isMms, boolean isDraft) {
         int overlayResId;
 
         if (!isDraft && MessageUtils.isMsimIccCardActive()) {
             if (isMms) {
-                overlayResId = subscription == MessageUtils.SUB1
+                overlayResId = slot == MessageUtils.SUB1
                         ? R.drawable.quickcontact_overlay_sim1_mms
                         : R.drawable.quickcontact_overlay_sim2_mms;
             } else {
-                overlayResId = subscription == MessageUtils.SUB1
+                overlayResId = slot == MessageUtils.SUB1
                         ? R.drawable.quickcontact_overlay_sim1
                         : R.drawable.quickcontact_overlay_sim2;
             }
@@ -198,14 +199,14 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
         boolean isLocked = false;
         boolean isUnread = false;
         boolean isDraft = false;
-        int subscription = MessageUtils.SUB_INVALID;
+        int subscription = SubscriptionManager.INVALID_SUBSCRIPTION_ID;
 
         if (type.equals("sms")) {
             BoxMessageItem item = getCachedMessageItem(type, msgId, cursor);
             int status = item.mStatus;
             isDraft = item.mSmsType == Sms.MESSAGE_TYPE_DRAFT;
             isUnread = item.mRead == 0;
-            subscription = item.mSubID;
+            subscription = item.mSubId;
             addr = item.mAddress;
             isError = item.mSmsType == Sms.MESSAGE_TYPE_FAILED;
             isLocked = item.mLocked;
@@ -269,7 +270,8 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
         }
 
         formatNameView(nameView, addr, nameContact, isUnread);
-        updateAvatarView(avatarView, addr, subscription, type.equals("mms"), isDraft);
+        updateAvatarView(avatarView, addr, SubscriptionManager.getPhoneId(subscription),
+                type.equals("mms"), isDraft);
 
         Long lastMsgId = (Long) avatarView.getTag();
         boolean sameItem = lastMsgId != null && lastMsgId.equals(msgId);
