@@ -32,6 +32,7 @@ import android.net.Uri;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Mms.Inbox;
 import android.provider.Telephony.Threads;
+import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -81,8 +82,8 @@ public class NotificationTransaction extends Transaction implements Runnable {
 
     public NotificationTransaction(
             Context context, int serviceId,
-            TransactionSettings connectionSettings, String uriString) {
-        super(context, serviceId, connectionSettings);
+            TransactionSettings connectionSettings, String uriString, int subId) {
+        super(context, serviceId, connectionSettings, subId);
 
         mUri = Uri.parse(uriString);
 
@@ -106,8 +107,8 @@ public class NotificationTransaction extends Transaction implements Runnable {
      */
     public NotificationTransaction(
             Context context, int serviceId,
-            TransactionSettings connectionSettings, NotificationInd ind) {
-        super(context, serviceId, connectionSettings);
+            TransactionSettings connectionSettings, NotificationInd ind, int subId) {
+        super(context, serviceId, connectionSettings, subId);
 
         try {
             // Save the pdu. If we can start downloading the real pdu immediately, don't allow
@@ -206,20 +207,9 @@ public class NotificationTransaction extends Transaction implements Runnable {
                     // Use local time instead of PDU time
                     ContentValues values = new ContentValues(3);
                     values.put(Mms.DATE, System.currentTimeMillis() / 1000L);
-                    Cursor c = mContext.getContentResolver().query(mUri,
-                            null, null, null, null);
-                    if (c != null) {
-                        try {
-                            if (c.moveToFirst()) {
-                                int phoneId = c.getInt(c.getColumnIndex(Mms.PHONE_ID));
-                                values.put(Mms.PHONE_ID, phoneId);
-                            }
-                        } catch (Exception ex) {
-                            Log.e(TAG, "Exception:" + ex);
-                        } finally {
-                            c.close();
-                        }
-                    }
+                    values.put(Mms.SUBSCRIPTION_ID, mSubId);
+                    values.put(Mms.PHONE_ID, SubscriptionManager.getPhoneId(mSubId));
+
                     // Update Message Size for Original MMS.
                     values.put(Mms.MESSAGE_SIZE, mNotificationInd.getMessageSize());
                     SqliteWrapper.update(mContext, mContext.getContentResolver(),
