@@ -24,6 +24,7 @@ import android.database.sqlite.SqliteWrapper;
 import android.net.Uri;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Mms.Inbox;
+import android.telephony.SubscriptionManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -78,9 +79,9 @@ public class RetrieveTransaction extends Transaction implements Runnable {
     static final int COLUMN_LOCKED                = 1;
 
     public RetrieveTransaction(Context context, int serviceId,
-            TransactionSettings connectionSettings, String uri)
+            TransactionSettings connectionSettings, String uri, int subId)
             throws MmsException {
-        super(context, serviceId, connectionSettings);
+        super(context, serviceId, connectionSettings, subId);
 
         if (uri.startsWith("content://")) {
             mUri = Uri.parse(uri); // The Uri of the M-Notification.ind
@@ -173,19 +174,9 @@ public class RetrieveTransaction extends Transaction implements Runnable {
                 // Use local time instead of PDU time
                 ContentValues values = new ContentValues(3);
                 values.put(Mms.DATE, System.currentTimeMillis() / 1000L);
-                Cursor c = mContext.getContentResolver().query(mUri,
-                        null, null, null, null);
-                if (c != null) {
-                    try {
-                        if (c.moveToFirst()) {
-                            int phoneId = c.getInt(c.getColumnIndex(Mms.PHONE_ID));
-                            Log.d(TAG, "RetrieveTransaction: phoneId value is " + phoneId);
-                            values.put(Mms.PHONE_ID, phoneId);
-                        }
-                    } finally {
-                        c.close();
-                    }
-                }
+                values.put(Mms.SUBSCRIPTION_ID, mSubId);
+                values.put(Mms.PHONE_ID, SubscriptionManager.getPhoneId(mSubId));
+
                 // Update Message Size for Original MMS.
                 values.put(Mms.MESSAGE_SIZE, msgSize);
                 SqliteWrapper.update(mContext, mContext.getContentResolver(),

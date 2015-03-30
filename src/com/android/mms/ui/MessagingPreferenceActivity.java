@@ -70,7 +70,6 @@ import android.util.Log;
 
 import com.android.internal.telephony.TelephonyIntents;
 import com.android.internal.telephony.PhoneConstants;
-
 import com.android.internal.telephony.util.BlacklistUtils;
 import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
@@ -875,11 +874,11 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             manageSMS();
         } else if (preference == mManageSim1Pref) {
             Intent intent = new Intent(this, ManageSimMessages.class);
-            intent.putExtra(MessageUtils.SUBSCRIPTION_KEY, MessageUtils.SUB1);
+            intent.putExtra(PhoneConstants.PHONE_KEY, MessageUtils.SUB1);
             startActivity(intent);
         } else if (preference == mManageSim2Pref) {
             Intent intent = new Intent(this, ManageSimMessages.class);
-            intent.putExtra(MessageUtils.SUBSCRIPTION_KEY, MessageUtils.SUB2);
+            intent.putExtra(PhoneConstants.PHONE_KEY, MessageUtils.SUB2);
             startActivity(intent);
         } else if (preference == mClearHistoryPref) {
             showDialog(CONFIRM_CLEAR_SEARCH_HISTORY_DIALOG);

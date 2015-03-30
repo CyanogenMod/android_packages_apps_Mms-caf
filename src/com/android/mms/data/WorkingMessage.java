@@ -166,7 +166,7 @@ public class WorkingMessage {
     };
 
     private static final int MMS_MESSAGE_SIZE_INDEX  = 1;
-    public static int mCurrentConvPhoneId = PhoneConstants.PHONE_ID1;
+    public int mCurrentConvSubId = -1;
 
     // Flag indicate resend sms that the recipient of conversion is more than one.
     private boolean mResendMultiRecipients;
@@ -380,8 +380,8 @@ public class WorkingMessage {
         return mText;
     }
 
-    public void setWorkingMessageSub(int phoneId) {
-        mCurrentConvPhoneId = phoneId;
+    public void setWorkingMessageSub(int subId) {
+        mCurrentConvSubId = subId;
     }
     /**
      * @return True if the message has any text. A message with just whitespace is not considered
@@ -1393,7 +1393,7 @@ public class WorkingMessage {
                     semiSepRecipients + ", threadId=" + threadId);
         }
         MessageSender sender = new SmsMessageSender(mActivity, dests, msgText, threadId,
-                mCurrentConvPhoneId);
+                mCurrentConvSubId);
         try {
             sender.sendMessage(threadId);
 
@@ -1460,12 +1460,11 @@ public class WorkingMessage {
                 if (textOnly) {
                     values.put(Mms.TEXT_ONLY, 1);
                 }
-                if ((TelephonyManager.getDefault().getPhoneCount()) > 1) {
-                    values.put(Mms.PHONE_ID, mCurrentConvPhoneId);
-                } else {
-                    values.put(Mms.PHONE_ID, SubscriptionManager.getPhoneId(
-                            SubscriptionManager.getDefaultDataSubId()));
-                }
+
+                int subId = TelephonyManager.getDefault().getPhoneCount() > 1
+                        ? mCurrentConvSubId : SubscriptionManager.getDefaultDataSubId();
+                values.put(Mms.SUBSCRIPTION_ID, subId);
+                values.put(Mms.PHONE_ID, SubscriptionManager.getPhoneId(subId));
                 mmsUri = SqliteWrapper.insert(mActivity, mContentResolver, Mms.Outbox.CONTENT_URI,
                         values);
             }
@@ -1531,16 +1530,14 @@ public class WorkingMessage {
         }
 
         ContentValues values = new ContentValues(1);
-        if ((TelephonyManager.getDefault().getPhoneCount()) > 1) {
-            values.put(Mms.PHONE_ID, mCurrentConvPhoneId);
-        } else {
-            values.put(Mms.PHONE_ID, SubscriptionManager.getPhoneId(
-                    SubscriptionManager.getDefaultDataSubId()));
-        }
+        int subId = TelephonyManager.getDefault().getPhoneCount() > 1
+                ? mCurrentConvSubId : SubscriptionManager.getDefaultDataSubId();
+        values.put(Mms.SUBSCRIPTION_ID, subId);
+        values.put(Mms.PHONE_ID, SubscriptionManager.getPhoneId(subId));
         SqliteWrapper.update(mActivity, mContentResolver, mmsUri, values, null, null);
 
         MessageSender sender = new MmsMessageSender(mActivity, mmsUri,
-                slideshow.getCurrentMessageSize(), mCurrentConvPhoneId);
+                slideshow.getCurrentMessageSize(), mCurrentConvSubId);
         try {
             if (!sender.sendMessage(threadId)) {
                 // The message was sent through SMS protocol, we should
