@@ -66,7 +66,7 @@
     <!-- configuration for forwarding conversaction -->
     <bool name="config_forwardconv">false</bool>
     <!-- configuration for showing messages by mailbox -->
-    <bool name="config_mailbox_enable">false</bool>
+    <bool name="config_mailbox_enable">true</bool>
     <!-- configuration for display two send buttons -->
     <bool name="config_btnstyle">false</bool>
     <!-- configuration for enter key as send -->
@@ -104,5 +104,5 @@
 
     <!-- configuration for error toast during retry -->
     <bool name="config_mms_retry_toast">false</bool>
-    <bool name="enable_filter_threads_by_sim">false</bool>
+    <bool name="enable_filter_threads_by_sim">true</bool>
 </resources>
