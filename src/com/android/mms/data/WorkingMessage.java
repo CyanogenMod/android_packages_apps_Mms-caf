@@ -277,6 +277,8 @@ public class WorkingMessage {
                 mAttachmentType = AUDIO;
             } else if (slide.hasVcard()) {
                 mAttachmentType = VCARD;
+            } else if (slide.hasVCal()) {
+                mAttachmentType = VCAL;
             }
         }
 
