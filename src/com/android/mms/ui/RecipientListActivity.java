@@ -20,6 +20,7 @@ import android.app.ActionBar;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -151,9 +152,13 @@ public class RecipientListActivity extends ListActivity {
             } else {
                 badge.assignContactFromPhone(contact.getNumber(), true);
             }
-            final Drawable avatarDrawable = new BitmapDrawable(contact.getAvatar(getContext()));
-            badge.setImageDrawable(avatarDrawable);
-
+            Bitmap bitmap = contact.getAvatar(getContext());
+            if (bitmap == null) {
+                badge.setImageDrawable(mDefaultContactImage);
+            } else {
+                final Drawable avatarDrawable = new BitmapDrawable(bitmap);
+                badge.setImageDrawable(avatarDrawable);
+            }
             return listItemView;
         }
     }

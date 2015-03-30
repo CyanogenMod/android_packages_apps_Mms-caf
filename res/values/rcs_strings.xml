@@ -59,6 +59,7 @@
     <string name="group_chat_disbanded">Group chat is disbanded.</string>
     <string name="group_chat_policy">Message receiving policy has been changed.</string>
     <string name="group_chat_gone">You are not in the group chat.</string>
+    <string name="group_chat_remark_delete">Remark has been deleted.</string>
 
     <string name="new_message">New message</string>
     <string name="new_group_chat">New group chat</string>
@@ -131,7 +132,7 @@
     <string name="file_share">mCloud file share</string>
     <string name="download_mcloud_file_fail">mColud dowload fail</string>
     <string name="save_back_message">Message backup/restore</string>
-    <string name="cacel_back_message">Cancel back message</string>
+    <string name="cacel_back_message">Cancel</string>
     <string name="message_save">Message backup</string>
     <string name="message_back">Message restore</string>
     <string name="message_is_begin">Begin backup</string>
@@ -221,6 +222,18 @@
     <string name="please_install_application">Please install the application</string>
     <string name="emotion_download_fail">download fail emotion.</string>
     <string name="message_restore_fail">Restore fail</string>
+    <string name="forward_message_not_support">The message cannot be forwarded</string>
+    <string name="save_message_not_support">The message cannot be saved</string>
+    <string name="confirm_complain_dialog_title">"Comfirm to complain the information?"</string>
+    <string name="del_image_action">Image manipulation</string>
+    <string name="input_quality">Please enter the scaling quality</string>
+    <string name="input_no_fit">Input is not legal</string>
+    <string name="send_comfirm_ok">determine</string>
+    <string name="send_comfirm_cancel">cancel</string>
     <string name="cloud_file_name">Name:</string>
     <string name="cloud_file_size">,Size:</string>
+    <string name="favorite_success">Collection of success</string>
+    <string name="favorite_fail">Collection of failure</string>
+    <string name="temp_group_chat">Temp group chat</string>
+    <string name="rcs_offline_on_groupchat">You have been offline,group chat can not send multimedia messages.</string>
 </resources>

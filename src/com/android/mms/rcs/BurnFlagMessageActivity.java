@@ -57,6 +57,7 @@ import android.widget.Toast;
 import android.widget.VideoView;
 import android.text.method.ScrollingMovementMethod;
 
+import java.io.File;
 import java.util.HashMap;
 
 import android.util.Log;
@@ -397,12 +398,23 @@ public class BurnFlagMessageActivity extends Activity {
             e1.printStackTrace();
         }
         if (RcsChatMessageUtils.isFileDownload(mFilePath, mMsg.getFilesize())) {
-            Bitmap imageBm = ImageUtils.getBitmap(mFilePath);
-            mImage.setImageBitmap(imageBm);
-            if (mMsg.getSendReceive() == SuntekMessageData.MSG_RECEIVE) {
-                burnMessage(mSmsId, mRcsId);
+
+            if ("image/gif".equals(mMsg.getMimeType())
+                           || mMsg.getFilename() != null && mMsg.getFilename().endsWith("gif")) {
+                File file = new File(mFilePath);
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.fromFile(file), "image/gif");
+                intent.setAction("com.android.gallery3d.VIEW_GIF");
+                startActivity(intent);
+            } else {
+                Bitmap imageBm = ImageUtils.getBitmap(mFilePath);
+                mImage.setImageBitmap(imageBm);
+                if (mMsg.getSendReceive() == SuntekMessageData.MSG_RECEIVE) {
+                   burnMessage(mSmsId, mRcsId);
+                }
+                mProgressText.setVisibility(View.GONE);
             }
-            mProgressText.setVisibility(View.GONE);
+
         } else {
             acceptFile();
             mProgressText.setVisibility(View.VISIBLE);
