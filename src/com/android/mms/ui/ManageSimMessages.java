@@ -382,21 +382,20 @@ public class ManageSimMessages extends Activity
                 cursor.getColumnIndexOrThrow("address"));
         String body = cursor.getString(cursor.getColumnIndexOrThrow("body"));
         Long date = cursor.getLong(cursor.getColumnIndexOrThrow("date"));
-        int subscription;
-        // the regular ICC_URI does not return a phone_id, so we need to populate it ourselves.
+        int subId;
+        // the regular ICC_URI does not return a sub_id, so we need to populate it ourselves.
         if (mIccUri.equals(MessageUtils.ICC_URI)) {
-            subscription = SubscriptionManager.getPhoneId(
-                    SubscriptionManager.getDefaultDataSubId());
+            subId = SubscriptionManager.getDefaultDataSubId();
         } else {
-            subscription = cursor.getInt(cursor.getColumnIndexOrThrow("phone_id"));
+            subId = cursor.getInt(cursor.getColumnIndexOrThrow("sub_id"));
         }
         boolean success = true;
         try {
             if (isIncomingMessage(cursor)) {
-                Sms.Inbox.addMessage(subscription, mContentResolver, address, body, null,
+                Sms.Inbox.addMessage(subId, mContentResolver, address, body, null,
                         date, true /* read */);
             } else {
-                Sms.Sent.addMessage(subscription, mContentResolver, address, body, null, date);
+                Sms.Sent.addMessage(subId, mContentResolver, address, body, null, date);
             }
         } catch (SQLiteException e) {
             SqliteWrapper.checkSQLiteException(this, e);

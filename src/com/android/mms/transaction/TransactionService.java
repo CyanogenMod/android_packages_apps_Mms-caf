@@ -181,50 +181,48 @@ public class TransactionService extends Service implements Observer {
     private NetworkRequest mMmsNetworkRequest = null;
 
 
-    private ConnectivityManager.NetworkCallback  getNetworkCallback(String subId) {
-        final String mSubId = subId;
-
+    private ConnectivityManager.NetworkCallback getNetworkCallback(final int subId) {
         return new ConnectivityManager.NetworkCallback() {
             @Override
             public void onPreCheck(Network network) {
-                Log.d(TAG, "sub:" + mSubId + "NetworkCallback.onPrecheck: network=" + network);
+                Log.d(TAG, "sub:" + subId + "NetworkCallback.onPrecheck: network=" + network);
             }
             @Override
             public void onAvailable(Network network) {
-                Log.d(TAG, "sub:" + mSubId + "NetworkCallback.onAvailable: network=" + network);
+                Log.d(TAG, "sub:" + subId + "NetworkCallback.onAvailable: network=" + network);
                 mServiceHandler.removeMessages(EVENT_MMS_PDP_ACTIVATION_TIMEOUT);
-                onMmsPdpConnected(mSubId, network);
+                onMmsPdpConnected(subId, network);
 
             }
             @Override
             public void onLosing(Network network, int timeToLive) {
-                Log.d(TAG, "sub:" + mSubId + "NetworkCallback.onLosing: network="
+                Log.d(TAG, "sub:" + subId + "NetworkCallback.onLosing: network="
                         + network + ", maxTimeToLive= " + timeToLive);
             }
             @Override
             public void onLost(Network network) {
-                Log.d(TAG, "sub:" + mSubId + "NetworkCallback.onLost: network=" + network);
+                Log.d(TAG, "sub:" + subId + "NetworkCallback.onLost: network=" + network);
             }
             @Override
             public void onUnavailable() {
-                Log.d(TAG,"sub:" + mSubId + "NetworkCallback.onUnavailable");
+                Log.d(TAG,"sub:" + subId + "NetworkCallback.onUnavailable");
 
             }
             @Override
             public void onCapabilitiesChanged(Network network, NetworkCapabilities nc) {
-                Log.d(TAG, "sub:" + mSubId + "NetworkCallback.onCapabilitiesChanged: network="
+                Log.d(TAG, "sub:" + subId + "NetworkCallback.onCapabilitiesChanged: network="
                         + network + ", Cap = " + nc);
             }
             @Override
             public void onLinkPropertiesChanged(Network network, LinkProperties lp) {
-                Log.d(TAG, "sub:" + mSubId + "NetworkCallback.onLinkPropertiesChanged: network="
+                Log.d(TAG, "sub:" + subId + "NetworkCallback.onLinkPropertiesChanged: network="
                         + network + ", LP = " + lp);
             }
 
         };
     }
 
-    private void onMmsPdpConnected(String subId, Network network) {
+    private void onMmsPdpConnected(int subId, Network network) {
         Log.d(TAG, "onMmsPdpConnected subId = " + subId);
 
         NetworkInfo mmsNetworkInfo = mConnMgr.getNetworkInfo(network);
@@ -247,8 +245,7 @@ public class TransactionService extends Service implements Observer {
 
             if (mmsNetworkInfo.isConnected()) {
                 TransactionSettings settings = new TransactionSettings(
-                        TransactionService.this, mmsNetworkInfo.getExtraInfo(),
-                        Long.parseLong(subId));
+                        TransactionService.this, mmsNetworkInfo.getExtraInfo(), subId);
                 // If this APN doesn't have an MMSC, mark everything as failed and bail.
                 if (TextUtils.isEmpty(settings.getMmscUrl())) {
                     Log.v(TAG, "   empty MMSC url, bail");
@@ -275,13 +272,13 @@ public class TransactionService extends Service implements Observer {
         }
     }
 
-    private NetworkRequest buildNetworkRequest(String subId) {
+    private NetworkRequest buildNetworkRequest(int subId) {
         NetworkRequest networkRequest = new NetworkRequest.Builder()
             .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
             .addCapability(NetworkCapabilities.NET_CAPABILITY_MMS)
             .build();
 
-        networkRequest.networkCapabilities.setNetworkSpecifier(subId);
+        networkRequest.networkCapabilities.setNetworkSpecifier(String.valueOf(subId));
 
         return networkRequest;
     }
@@ -336,34 +333,6 @@ public class TransactionService extends Service implements Observer {
             mServiceHandler.sendMessage(msg);
         }
         return Service.START_NOT_STICKY;
-    }
-
-    private int[] getSubIdFromDb(Uri uri) {
-        int phoneId = 0;
-        Cursor c = getApplicationContext().getContentResolver().query(uri,
-                null, null, null, null);
-        Log.d(TAG, "Cursor= " + DatabaseUtils.dumpCursorToString(c));
-        if (c != null) {
-            try {
-                if (c.moveToFirst()) {
-                    phoneId = c.getInt(c.getColumnIndex(Mms.PHONE_ID));
-                    Log.d(TAG, "phoneId in db = " + phoneId );
-                    c.close();
-                    c = null;
-                }
-            } finally {
-                if (c != null) {
-                    c.close();
-                }
-            }
-        }
-        // If client does not update the DB with phoneId, use default sms
-        // phoneId
-        if (!SubscriptionManager.isValidSlotId(phoneId)) {
-            phoneId = SubscriptionManager.getPhoneId(SubscriptionManager.getDefaultSmsSubId());
-        }
-        Log.d(TAG, "Destination Phone Id = " + phoneId);
-        return (SubscriptionManager.getSubId(phoneId));
     }
 
     private boolean isMmsAllowed() {
@@ -448,6 +417,8 @@ public class TransactionService extends Service implements Observer {
                     int columnIndexOfMsgId = cursor.getColumnIndexOrThrow(PendingMessages.MSG_ID);
                     int columnIndexOfMsgType = cursor.getColumnIndexOrThrow(
                             PendingMessages.MSG_TYPE);
+                    int columnIndexOfSubId = cursor.getColumnIndexOrThrow(
+                            PendingMessages.SUBSCRIPTION_ID);
 
                     while (cursor.moveToNext()) {
                         int msgType = cursor.getInt(columnIndexOfMsgType);
@@ -523,32 +494,8 @@ public class TransactionService extends Service implements Observer {
                                         Mms.CONTENT_URI,
                                         cursor.getLong(columnIndexOfMsgId));
 
-                                int[] subId = getSubIdFromDb(uri);
-                                // subId is null. Bail out.
-                                if (subId == null) {
-                                    Log.e(TAG, "SMS subId is null. Bail out");
-                                    return;
-                                }
-
-                                Log.d(TAG, "destination Sub Id = " + subId[0]);
-
-                                if (subId[0] < 0) {
-                                    Log.d(TAG, "Subscriptions are not yet ready.");
-                                    int defSmsSubId = getDefaultSmsSubId();
-                                    // We dont have enough info about subId. We dont know if the
-                                    // phoneId as persent in DB actually would match the subId of
-                                    // defaultSmsSubId. We can not also ignore this transaction
-                                    // since no retry would be scheduled if we return from here. The
-                                    // only option is to do best effort try on current default sms
-                                    // subId, if it failed then a retry would be scheduled and while
-                                    // processing that retry attempt we would be able to get correct
-                                    // subId from subscription manager.
-                                    Log.d(TAG, "Override with default Sms subId = " + defSmsSubId);
-                                    subId[0] = defSmsSubId;
-                                }
-
                                 TransactionBundle args = new TransactionBundle(transactionType,
-                                        uri.toString(), subId[0]);
+                                        uri.toString());
                                 // Handle no net work failed case.
                                 // If the network is restored, then
                                 // show the MMS status as sending.
@@ -562,7 +509,8 @@ public class TransactionService extends Service implements Observer {
                                     Log.v(TAG, "onNewIntent: launchTransaction uri=" + uri);
                                 }
                                 // FIXME: We use the same serviceId for all MMs.
-                                launchTransaction(serviceId, args, false);
+                                launchTransaction(serviceId, args, false,
+                                        cursor.getInt(columnIndexOfSubId));
                                 break;
                         }
                     }
@@ -593,26 +541,17 @@ public class TransactionService extends Service implements Observer {
             String uriStr = intent.getStringExtra("uri");
             Uri uri = Uri.parse(uriStr);
 
-            int[] subId = getSubIdFromDb(uri);
-            // subId is null. Bail out.
-            if (subId == null) {
-                Log.e(TAG, "SMS subId is null. Bail out");
-                return;
-            }
-
-            Log.d(TAG, "destination Sub Id = " + subId[0]);
-
-            if (subId[0] < 0) {
-                int defSmsSubId = getDefaultSmsSubId();
-                Log.d(TAG, "Override with default Sms subId = " + defSmsSubId);
-                subId[0] = defSmsSubId;
-            }
-
-            Bundle bundle = intent.getExtras();
-            bundle.putInt(PhoneConstants.SUBSCRIPTION_KEY, subId[0]);
             // For launching NotificationTransaction and test purpose.
-            TransactionBundle args = new TransactionBundle(bundle);
-            launchTransaction(serviceId, args, noNetwork);
+            TransactionBundle args = new TransactionBundle(intent.getIntExtra(
+                    TransactionBundle.TRANSACTION_TYPE, Transaction.READREC_TRANSACTION),
+                    intent.getStringExtra(TransactionBundle.URI));
+            int subId = intent.getIntExtra(PhoneConstants.SUBSCRIPTION_KEY,
+                    SubscriptionManager.INVALID_SUBSCRIPTION_ID);
+            if (!SubscriptionManager.isValidSubscriptionId(subId)) {
+                Log.e(TAG, "onNewIntent subId error, " + args.toString());
+            } else {
+                launchTransaction(serviceId, args, noNetwork, subId);
+            }
         }
     }
 
@@ -650,7 +589,8 @@ public class TransactionService extends Service implements Observer {
         }
     }
 
-    private void launchTransaction(int serviceId, TransactionBundle txnBundle, boolean noNetwork) {
+    private void launchTransaction(int serviceId, TransactionBundle txnBundle,
+            boolean noNetwork, int subId) {
         if (noNetwork) {
             Log.w(TAG, "launchTransaction: no network error!");
             onNetworkUnavailable(serviceId, txnBundle.getTransactionType(),
@@ -659,6 +599,7 @@ public class TransactionService extends Service implements Observer {
         }
         Message msg = mServiceHandler.obtainMessage(EVENT_TRANSACTION_REQUEST);
         msg.arg1 = serviceId;
+        msg.arg2 = subId;
         msg.obj = txnBundle;
 
         if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
@@ -904,7 +845,7 @@ public class TransactionService extends Service implements Observer {
     /* MMS app initiates one transaction at a time. Next transaction is started only on the
        completion(success/failure) of previous one.
     */
-    protected int beginMmsConnectivity(String subId) throws IOException {
+    protected int beginMmsConnectivity(int subId) throws IOException {
         if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
             Log.v(TAG, "beginMmsConnectivity for subId = " + subId);
         }
@@ -912,7 +853,7 @@ public class TransactionService extends Service implements Observer {
         createWakeLock();
 
         int result = mConnMgr.startUsingNetworkFeatureForSubscription(
-                ConnectivityManager.TYPE_MOBILE, Phone.FEATURE_ENABLE_MMS, subId);
+                ConnectivityManager.TYPE_MOBILE, Phone.FEATURE_ENABLE_MMS, String.valueOf(subId));
 
         if (mMmsNetworkRequest == null) {
             mMmsNetworkRequest = buildNetworkRequest(subId);
@@ -1051,11 +992,11 @@ public class TransactionService extends Service implements Observer {
                     }
 
                     try {
-                        long subId = SubscriptionManager.getOnDemandDataSubId();
+                        int subId = SubscriptionManager.getOnDemandDataSubId();
                         if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
                             Log.v(TAG, "renew PDP connection for subscription: " + subId);
                         }
-                        int result = beginMmsConnectivity(Long.toString(subId));
+                        int result = beginMmsConnectivity(subId);
                         if (result != PhoneConstants.APN_ALREADY_ACTIVE) {
                             Log.v(TAG, "Extending MMS connectivity returned " + result +
                                     " instead of APN_ALREADY_ACTIVE");
@@ -1074,6 +1015,7 @@ public class TransactionService extends Service implements Observer {
 
                 case EVENT_TRANSACTION_REQUEST:
                     int serviceId = msg.arg1;
+                    int subId = msg.arg2;
                     try {
                         TransactionBundle args = (TransactionBundle) msg.obj;
                         TransactionSettings transactionSettings;
@@ -1091,8 +1033,7 @@ public class TransactionService extends Service implements Observer {
                                     mmsc, args.getProxyAddress(), args.getProxyPort());
                         } else {
                             transactionSettings = new TransactionSettings(
-                                                    TransactionService.this, null,
-                                                    args.getSubId());
+                                                    TransactionService.this, null, subId);
                         }
 
                         int transactionType = args.getTransactionType();
@@ -1109,7 +1050,7 @@ public class TransactionService extends Service implements Observer {
                                 if (uri != null) {
                                     transaction = new NotificationTransaction(
                                             TransactionService.this, serviceId,
-                                            transactionSettings, uri);
+                                            transactionSettings, uri, subId);
                                 } else {
                                     // Now it's only used for test purpose.
                                     byte[] pushData = args.getPushData();
@@ -1122,7 +1063,7 @@ public class TransactionService extends Service implements Observer {
                                     if ((ind != null) && (ind.getMessageType() == type)) {
                                         transaction = new NotificationTransaction(
                                                 TransactionService.this, serviceId,
-                                                transactionSettings, (NotificationInd) ind);
+                                                transactionSettings, (NotificationInd) ind, subId);
                                     } else {
                                         Log.e(TAG, "Invalid PUSH data.");
                                         transaction = null;
@@ -1133,25 +1074,23 @@ public class TransactionService extends Service implements Observer {
                             case Transaction.RETRIEVE_TRANSACTION:
                                 transaction = new RetrieveTransaction(
                                         TransactionService.this, serviceId,
-                                        transactionSettings, args.getUri());
+                                        transactionSettings, args.getUri(), subId);
                                 break;
                             case Transaction.SEND_TRANSACTION:
                                 transaction = new SendTransaction(
                                         TransactionService.this, serviceId,
-                                        transactionSettings, args.getUri());
+                                        transactionSettings, args.getUri(), subId);
                                 break;
                             case Transaction.READREC_TRANSACTION:
                                 transaction = new ReadRecTransaction(
                                         TransactionService.this, serviceId,
-                                        transactionSettings, args.getUri());
+                                        transactionSettings, args.getUri(), subId);
                                 break;
                             default:
                                 Log.w(TAG, "Invalid transaction type: " + serviceId);
                                 transaction = null;
                                 return;
                         }
-                        //copy the subId from TransactionBundle to transaction obj.
-                        transaction.setSubId(args.getSubId());
 
                         if (!processTransaction(transaction)) {
                             transaction = null;
@@ -1204,7 +1143,7 @@ public class TransactionService extends Service implements Observer {
 
                     if (!mPending.isEmpty()) {
                         try {
-                            beginMmsConnectivity(Long.toString(SubscriptionManager.getDefaultDataSubId()));
+                            beginMmsConnectivity(SubscriptionManager.getDefaultDataSubId());
                         } catch (IOException e) {
                             Log.w(TAG, "Attempt to use of MMS connectivity failed");
                             return;
@@ -1340,7 +1279,7 @@ public class TransactionService extends Service implements Observer {
                     }
                 }
 
-                long subId = transaction.getSubId();
+                int subId = transaction.getSubId();
                 /*
                 * Make sure that the network connectivity necessary
                 * for MMS traffic is enabled. If it is not, we need
@@ -1350,7 +1289,7 @@ public class TransactionService extends Service implements Observer {
                 if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
                     Log.v(TAG, "processTransaction: call beginMmsConnectivity on subId = " + subId);
                 }
-                int connectivityResult = beginMmsConnectivity(Long.toString(subId));
+                int connectivityResult = beginMmsConnectivity(subId);
                 if (connectivityResult == PhoneConstants.APN_REQUEST_STARTED) {
                     mPending.add(transaction);
                     if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {

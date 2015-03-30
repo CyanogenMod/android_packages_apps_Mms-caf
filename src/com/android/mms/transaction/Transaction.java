@@ -60,11 +60,12 @@ public abstract class Transaction extends Observable {
     public static final int READREC_TRANSACTION      = 3;
 
     public Transaction(Context context, int serviceId,
-            TransactionSettings settings) {
+            TransactionSettings settings, int subId) {
         mContext = context;
         mTransactionState = new TransactionState();
         mServiceId = serviceId;
         mTransactionSettings = settings;
+        mSubId = subId;
     }
 
     /**
@@ -103,10 +104,6 @@ public abstract class Transaction extends Observable {
 
     public int getSubId() {
         return mSubId;
-    }
-
-    public void setSubId(int subId) {
-        mSubId = subId;
     }
 
     public TransactionSettings getConnectionSettings() {
