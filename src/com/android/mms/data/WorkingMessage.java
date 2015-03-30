@@ -94,6 +94,7 @@ import com.suntek.mway.rcs.client.aidl.contacts.RCSContact;
 import com.suntek.mway.rcs.client.aidl.provider.model.GroupChatModel;
 import com.suntek.mway.rcs.client.aidl.provider.SuntekMessageData;
 import com.suntek.mway.rcs.client.api.im.impl.MessageApi;
+import com.suntek.mway.rcs.client.api.mcloud.McloudFileApi;
 import com.suntek.mway.rcs.client.api.util.FileSuffixException;
 import com.suntek.mway.rcs.client.api.util.FileTransferException;
 import com.suntek.mway.rcs.client.api.util.ServiceDisconnectedException;
@@ -220,6 +221,16 @@ public class WorkingMessage {
     private String mRcsEmoId;
 
     private String mRcsEmoName;
+
+    private String mCloudFileId;
+
+    public String getCloudFileId() {
+        return mCloudFileId;
+    }
+
+    public void setCloudFileId(String cloudFileId) {
+        this.mCloudFileId = cloudFileId;
+    }
 
     public String getScaling() {
         return mScaling;
@@ -395,6 +406,7 @@ public class WorkingMessage {
         String[] dests = TextUtils.split(semiSepRecipients, ";");
         Recycler.getSmsRecycler().deleteOldMessagesByThreadId(mActivity, threadId);
         MessageApi messageApi = RcsApiManager.getMessageApi();
+        McloudFileApi mcloudFileApi = RcsApiManager.getMcloudFileApi();
         switch (mRcsType) {
             case RcsUtils.RCS_MSG_TYPE_TEXT:
                 mStatusListener.onPreMessageSent();
@@ -424,11 +436,37 @@ public class WorkingMessage {
                 mStatusListener.onPreMessageSent();
                 sendRcsPaidEmo(dests, threadId, messageApi);
                 break;
+            case RcsUtils.RCS_MSG_TYPE_CAIYUNFILE:
+                mStatusListener.onPreRcsMessageSent();
+                sendRcsCloudFile(dests, threadId, mcloudFileApi);
+		break;
             default:
                 break;
         }
         mStatusListener.onMessageSent();
         MmsWidgetProvider.notifyDatasetChanged(mActivity);
+    }
+
+    private void sendRcsCloudFile(String[] dests, long threadId,McloudFileApi mcloudFileApi)
+            throws ServiceDisconnectedException {
+        if (mConversation.isGroupChat()) {
+            GroupChatModel groupChat = mConversation.getGroupChat();
+            long thread_id = groupChat.getThreadId();
+            String conversationId = groupChat.getConversationId();
+            String groupId = String.valueOf(groupChat.getId());
+            mcloudFileApi.shareFileAndSendGroup(getCloudFileId(), "",
+                    thread_id, conversationId,groupId);
+        } else if (dests.length == 1) {
+            mcloudFileApi.shareFileAndSend(getCloudFileId(), "",
+                    dests[0],threadId, "");
+        } else {
+            List<String> numberList = new ArrayList<String>();
+            for (int i = 0; i < dests.length; i++) {
+                numberList.add(dests[i]);
+            }
+            mcloudFileApi.shareFileAndSendOne2Many(getCloudFileId(), "",
+                    numberList, threadId, "");
+        }
     }
 
     private void sendRcsPaidEmo(String[] dests, long threadId, MessageApi messageApi)
@@ -1786,8 +1824,7 @@ public class WorkingMessage {
             }, "WorkingMessage.send MMS").start();
         } else {
 
-            if (RcsApiManager.isRcsServiceInstalled()
-                    && RcsApiManager.isRcsOnline()) {
+            if (RcsApiManager.isRcsServiceInstalled()) {
                 String text = mText.toString();
                 final String msgText = text;
                 new Thread(new Runnable() {

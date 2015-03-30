@@ -37,6 +37,15 @@
         android:minWidth="60dp"
         android:visibility="visible" />
 
+    <ImageView
+        android:id="@+id/vcard_image_view"
+        android:layout_width="@dimen/avatar_width_height_2"
+        android:layout_height="@dimen/avatar_width_height_2"
+        android:layout_gravity="center"
+        android:adjustViewBounds="false"
+        android:scaleType="centerInside"
+        android:visibility="gone" />
+
     <ImageButton
         android:id="@+id/play_slideshow_button"
         android:layout_width="52dp"
