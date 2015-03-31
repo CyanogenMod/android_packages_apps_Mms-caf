@@ -486,6 +486,9 @@ public class ComposeMessageActivity extends Activity
     private ImageView mIndicatorForSimMmsFir, mIndicatorForSimSmsFir;
     private ImageView mIndicatorForSimMmsSec, mIndicatorForSimSmsSec;
     private ZoomGestureOverlayView mZoomGestureOverlayView; // overlay for handling zoom
+    private View mRcsThumbnailLayout;
+    private ImageButton mRcsThumbnailSendButton;
+    private ImageView mRcsThumbnailView;
 
     private AttachmentEditor mAttachmentEditor;
     private View mAttachmentEditorScrollView;
@@ -1289,6 +1292,9 @@ public class ComposeMessageActivity extends Activity
             mWorkingMessage.setWorkingRecipients(mRecipientsEditor.getNumbers());
             mWorkingMessage.setHasEmail(mRecipientsEditor.containsEmail(), true);
 
+            if (mRecipientsEditor.getNumbers().size() > 0) {
+                mRcsThumbnailSendButton.setEnabled(true);
+            }
             checkForTooManyRecipients();
             // If pick recipients from Contacts,
             // then only update title once when process finished
@@ -4229,9 +4235,6 @@ public class ComposeMessageActivity extends Activity
                 || (requestCode == REQUEST_CODE_SAIYUN)
                 || (requestCode == REQUEST_SELECT_LOCAL_AUDIO);
         if (mIsRcsEnabled && RcsApiManager.isRcsOnline() && isRcsMessage) {
-            if(mConversation.getRecipients().size() == 0){
-                return;
-            }
             switch (requestCode) {
                 case PHOTO_CROP:
                     if (data != null) {
@@ -4416,8 +4419,10 @@ public class ComposeMessageActivity extends Activity
                     break;
             }
             if (!isDisposeImage) {
-                mWorkingMessage.setIsBurn(mIsBurnMessage);
-                rcsSend();
+                if (!cacheWorkingMessage()) {
+                    mWorkingMessage.setIsBurn(mIsBurnMessage);
+                    rcsSend();
+                }
             }
             return;
         }
@@ -4573,6 +4578,27 @@ public class ComposeMessageActivity extends Activity
         }
     }
 
+    private boolean cacheWorkingMessage() {
+        if (mConversation.getRecipients().size() == 0) {
+            mRcsThumbnailLayout.setVisibility(View.VISIBLE);
+            mRcsThumbnailSendButton.setOnClickListener(
+                    new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!isDisposeImage) {
+                        mWorkingMessage.setIsBurn(mIsBurnMessage);
+                        rcsSend();
+                        mRcsThumbnailLayout.setVisibility(View.GONE);
+                    }
+                }
+            });
+            mRcsThumbnailSendButton.setEnabled(false);
+            RcsUtils.setThumbnailForMessageItem(this, mRcsThumbnailView, mWorkingMessage);
+            return true;
+        }
+        return false;
+    }
+
     private void imageDispose(final String photoPath){
         isDisposeImage = true;
         String[] imageItems = getResources().getStringArray(R.array.del_image_mode);
@@ -4595,8 +4621,10 @@ public class ComposeMessageActivity extends Activity
                     case 2:
                         mWorkingMessage.setRcsType(RcsUtils.RCS_MSG_TYPE_IMAGE);
                         mWorkingMessage.setRcsPath(photoPath);
-                        mWorkingMessage.setIsBurn(mIsBurnMessage);
-                        rcsSend();
+                        if (!cacheWorkingMessage()) {
+                            mWorkingMessage.setIsBurn(mIsBurnMessage);
+                            rcsSend();
+                        }
                         dialog.dismiss();
                         break;
                     case 3:
@@ -4663,8 +4691,10 @@ public class ComposeMessageActivity extends Activity
                     mWorkingMessage.setRcsType(RcsUtils.RCS_MSG_TYPE_IMAGE);
                     mWorkingMessage.setRcsPath(photoPath);
                     mWorkingMessage.setScaling(quality);
-                    mWorkingMessage.setIsBurn(mIsBurnMessage);
-                    rcsSend();
+                    if (!cacheWorkingMessage()) {
+                        mWorkingMessage.setIsBurn(mIsBurnMessage);
+                        rcsSend();
+                    }
                 }
             }
         });
@@ -5812,6 +5842,9 @@ public class ComposeMessageActivity extends Activity
         mAttachmentEditorScrollView = findViewById(R.id.attachment_editor_scroll_view);
         mAttachmentSelector = findViewById(R.id.attachments_selector);
 
+        mRcsThumbnailLayout = findViewById(R.id.layout_thumbnail);
+        mRcsThumbnailSendButton = (ImageButton) findViewById(R.id.ib_thumbnail_send);
+        mRcsThumbnailView = (ImageView) findViewById(R.id.image_view_thumbnail);
         setEmojBtnGone();
     }
 
@@ -6217,6 +6250,8 @@ public class ComposeMessageActivity extends Activity
             toast(R.string.rcs_service_is_not_available);
         } else if (BroadcastConstants.BC_VAR_SEND_ERROR_GROUP_HAS_DELETED.equals(tickerText)) {
             toast(R.string.group_chat_deleted);
+        } else if (BroadcastConstants.BC_VAR_SEND_ERROR_GROUP_NOT_MEMBER.equals(tickerText)) {
+            toast(R.string.group_wait_member_join);
         } else if (BroadcastConstants.BC_VAR_SEND_ERROR_GROUP_NOT_COMPLETED.equals(tickerText)) {
             toast(R.string.group_chat_not_active);
         } else if (BroadcastConstants.BC_VAR_SEND_ERROR_GROUP_NOT_EXIST.equals(tickerText)) {
@@ -6265,6 +6300,7 @@ public class ComposeMessageActivity extends Activity
                 public void onUpdateRemark(Bundle extras) {
                     handleRcsGroupChatUpdateRemark(extras);
                 }
+
                 @Override
                 public void onCreateNotActive(Bundle extras) {
                 }
@@ -6291,8 +6327,7 @@ public class ComposeMessageActivity extends Activity
                 && !TextUtils.isEmpty(groupId)
                 && groupId.equals(mConversation.getGroupChat().getId())) {
             try {
-                GroupChatModel groupChat = mMessageApi
-                        .getGroupChatById(groupId);
+                GroupChatModel groupChat = mMessageApi.getGroupChatById(groupId);
                 mConversation.setGroupChat(groupChat);
                 runOnUiThread(mResetMessageRunnable);
                 updateTitle(new ContactList());
@@ -8139,7 +8174,7 @@ public class ComposeMessageActivity extends Activity
     }
 
     private static final IntentFilter DELAYED_SEND_COUNTDOWN_FILTER = new IntentFilter(
-                SmsReceiverService.ACTION_SEND_COUNTDOWN);
+            SmsReceiverService.ACTION_SEND_COUNTDOWN);
 
     private final BroadcastReceiver mDelayedSendProgressReceiver = new BroadcastReceiver() {
         @Override
