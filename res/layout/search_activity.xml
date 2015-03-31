@@ -26,8 +26,8 @@
     <ListView android:id="@android:id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white"
-        android:cacheColorHint="@android:color/white"
+        android:background="@color/search_activity_background_color"
+        android:cacheColorHint="@color/search_activity_background_color"
         android:fadingEdgeLength="16dip"/>
 
     <TextView android:id="@android:id/empty"
