@@ -309,7 +309,11 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     }
 
     private void loadPrefs() {
-        addPreferencesFromResource(R.xml.preferences);
+        if (getResources().getBoolean(R.bool.def_custom_preferences_settings)) {
+            addPreferencesFromResource(R.xml.custom_preferences);
+        } else {
+            addPreferencesFromResource(R.xml.preferences);
+        }
 
         mSmsDisabledPref = findPreference("pref_key_sms_disabled");
         mSmsEnabledPref = findPreference("pref_key_sms_enabled");

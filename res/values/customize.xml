@@ -85,4 +85,6 @@
 
     <bool name="def_hide_unknown_sender">false</bool>
 
+    <bool name="def_custom_preferences_settings">false</bool>
+
 </resources>
