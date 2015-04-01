@@ -726,11 +726,17 @@ public class ComposeMessageActivity extends Activity
 
     private void pickContacts(int mode, int requestCode) {
         Intent intent = new Intent(ComposeMessageActivity.this, SelectRecipientsList.class);
-        if (mRecipientsEditor == null) {
-            initRecipientsEditor();
+        // Only add recipients need make sure  initialize mRecipientsEditor first.
+        // In other conditions  mRecipientsEditor is gone and  mRecipientsEditor.getNumbers() is empty
+        // And here  initialize it  will set the empty contactList in  mWorkingMessage, when invoke
+        // setWorkingRecipients(mRecipientsEditor.getNumbers()); finally  cause save draft failure.
+        if(requestCode == REQUEST_CODE_ADD_RECIPIENTS) {
+            if (mRecipientsEditor == null) {
+                initRecipientsEditor();
+            }
+            ContactList contacts = mRecipientsEditor.constructContactsFromInput(false);
+            intent.putExtra(SelectRecipientsList.EXTRA_RECIPIENTS, contacts.getNumbers());
         }
-        ContactList contacts = mRecipientsEditor.constructContactsFromInput(false);
-        intent.putExtra(SelectRecipientsList.EXTRA_RECIPIENTS, contacts.getNumbers());
         intent.putExtra(SelectRecipientsList.MODE, mode);
         startActivityForResult(intent, requestCode);
     }

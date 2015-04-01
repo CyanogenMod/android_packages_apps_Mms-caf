@@ -239,6 +239,12 @@ public class SelectRecipientsList extends Activity implements
                 // Restart the loader to reflect the change
                 getLoaderManager().restartLoader(0, null, this);
                 return true;
+                // If don't handle the home action menu, system will start parent activity(compose)
+                //with null intent.
+            case android.R.id.home:
+                setResult(RESULT_CANCELED, null);
+                finish();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
