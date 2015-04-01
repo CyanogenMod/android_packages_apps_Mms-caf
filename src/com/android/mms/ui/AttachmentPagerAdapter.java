@@ -73,6 +73,7 @@ public class AttachmentPagerAdapter extends PagerAdapter {
     private static final int SLIDESHOW_ITEM_POSITION    = 0;
     private static final int CONTACT_INFO_ITEM_POSITION = 1;
     private static final int VCARD_ITEM_POSITION        = 2;
+    private static final int VCAL_ITEM_POSITION         = 3;
 
     private boolean mHasAttachment;
     private boolean mHasVcard;
@@ -265,7 +266,8 @@ public class AttachmentPagerAdapter extends PagerAdapter {
             } else {
                 if (!mIsReplace && ((mHasVcard && position == SLIDESHOW_ITEM_POSITION)
                         || (mHasSlideshow && position == CONTACT_INFO_ITEM_POSITION)
-                        || (mHasAttachment && position == VCARD_ITEM_POSITION))) {
+                        || (mHasAttachment && position == VCARD_ITEM_POSITION)
+                        || (mHasAttachment && position == VCAL_ITEM_POSITION))) {
                     return false;
                 }
             }
