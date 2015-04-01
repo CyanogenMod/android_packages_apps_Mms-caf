@@ -1098,4 +1098,8 @@
     <!-- General settings -->
     <string name="pref_title_general_settings">General</string>
     <string name="pref_title_notification_settings">Notifications</string>
+
+    <string name="pref_title_display_settings">DISPLAY &#38; PREFERENCE</string>
+    <string name="pref_title_show_email_address">Show email address</string>
+    <string name="pref_summary_show_email_address">Include email address in contact results</string>
 </resources>
