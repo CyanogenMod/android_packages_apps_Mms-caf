@@ -601,7 +601,6 @@ public class MessageListItem extends ZoomMessageListItem implements
                 mDownloadButton.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mDownloading.setVisibility(View.VISIBLE);
                         try {
                             NotificationInd nInd = (NotificationInd) PduPersister.getPduPersister(
                                     mContext).load(mMessageItem.mMessageUri);
