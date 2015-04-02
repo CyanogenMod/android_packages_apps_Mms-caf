@@ -86,4 +86,10 @@
     <string name="start_new_message_button">新信息</string>
     <string name="no_recipients">未找到联系人</string>
     <string name="attach_add_calendar_events">日历事件</string>
+    <plurals name="confirm_mark_unread_conversation">
+        <!-- Case of 1 result. -->
+        <item quantity="one">1 个会话将会被标记为未读。</item>
+        <!-- Case of 0 or 2 or more results. -->
+        <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> 个会话将会被标记为未读。</item>
+    </plurals>
 </resources>
