@@ -239,6 +239,11 @@ public class SelectRecipientsList extends Activity implements
                 // Restart the loader to reflect the change
                 getLoaderManager().restartLoader(0, null, this);
                 return true;
+            case android.R.id.home:
+                //avoid start compose screen with empty intent.
+                setResult(RESULT_CANCELED, null);
+                finish();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
