@@ -534,11 +534,14 @@ public class ComposeMessageActivity extends Activity
 
     private void pickContacts(int mode, int requestCode) {
         Intent intent = new Intent(ComposeMessageActivity.this, SelectRecipientsList.class);
-        if (mRecipientsEditor == null) {
-            initRecipientsEditor();
+        // avoid initialize mRecipientsEditor wrong. otherwise cause failure when save draft
+        if(requestCode == REQUEST_CODE_ADD_RECIPIENTS) {
+            if (mRecipientsEditor == null) {
+                initRecipientsEditor();
+            }
+            ContactList contacts = mRecipientsEditor.constructContactsFromInput(false);
+            intent.putExtra(SelectRecipientsList.EXTRA_RECIPIENTS, contacts.getNumbers());
         }
-        ContactList contacts = mRecipientsEditor.constructContactsFromInput(false);
-        intent.putExtra(SelectRecipientsList.EXTRA_RECIPIENTS, contacts.getNumbers());
         intent.putExtra(SelectRecipientsList.MODE, mode);
         startActivityForResult(intent, requestCode);
     }
