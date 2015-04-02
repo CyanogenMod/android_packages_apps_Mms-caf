@@ -66,18 +66,21 @@
                       android:title="@string/pref_title_sms_store"
                       android:defaultValue="@string/def_sms_store_value"
                       android:dialogTitle="@string/pref_title_sms_store"
+                      android:summary="%s"
                       android:entries="@array/entries_sms_store"
                       android:entryValues="@array/entries_sms_store_value" />
     <ListPreference android:key="pref_key_sms_store_card1"
                       android:title="@string/pref_title_sms_store_card1"
                       android:defaultValue="@string/def_sms_store_card1_value"
                       android:dialogTitle="@string/pref_title_sms_store"
+                      android:summary="%s"
                       android:entries="@array/entries_sms_store"
                       android:entryValues="@array/entries_sms_store_value" />
     <ListPreference android:key="pref_key_sms_store_card2"
                       android:title="@string/pref_title_sms_store_card2"
                       android:defaultValue="@string/def_sms_store_card2_value"
                       android:dialogTitle="@string/pref_title_sms_store"
+                      android:summary="%s"
                       android:entries="@array/entries_sms_store"
                       android:entryValues="@array/entries_sms_store_value" />
   </PreferenceCategory>
@@ -118,6 +121,7 @@
         android:entries="@array/entries_sms_validity_period"
         android:entryValues="@array/entries_sms_validity_period_value"
         android:key="pref_key_sms_validity_period"
+        android:summary="%s"
         android:title="@string/pref_title_validity_period" />
     <ListPreference
         android:defaultValue="-1"
@@ -125,6 +129,7 @@
         android:entries="@array/entries_sms_validity_period"
         android:entryValues="@array/entries_sms_validity_period_value"
         android:key="pref_key_sms_validity_period_slot1"
+        android:summary="%s"
         android:title="@string/pref_title_validity_period_slot1" />
     <ListPreference
         android:defaultValue="-1"
@@ -132,6 +137,7 @@
         android:entries="@array/entries_sms_validity_period"
         android:entryValues="@array/entries_sms_validity_period_value"
         android:key="pref_key_sms_validity_period_slot2"
+        android:summary="%s"
         android:title="@string/pref_title_validity_period_slot2" />
   </PreferenceCategory>
 
@@ -180,18 +186,21 @@
     <ListPreference android:key="pref_key_mms_expiry"
                     android:title="@string/pref_title_validity_period"
                     android:dialogTitle="@string/pref_title_validity_period"
+                    android:summary="%s"
                     android:entries="@array/save_time"
                     android:entryValues="@array/save_time_values"
                     android:defaultValue="0" />
     <ListPreference android:key="pref_key_mms_expiry_slot1"
                     android:title="@string/pref_title_validity_period_slot1"
                     android:dialogTitle="@string/pref_title_validity_period"
+                    android:summary="%s"
                     android:entries="@array/save_time"
                     android:entryValues="@array/save_time_values"
                     android:defaultValue="0" />
     <ListPreference android:key="pref_key_mms_expiry_slot2"
                     android:title="@string/pref_title_validity_period_slot2"
                     android:dialogTitle="@string/pref_title_validity_period"
+                    android:summary="%s"
                     android:entries="@array/save_time"
                     android:entryValues="@array/save_time_values"
                     android:defaultValue="0" />
