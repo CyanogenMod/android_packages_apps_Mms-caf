@@ -112,6 +112,11 @@ import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_LOCKED;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_LOCKED;
 import com.android.mms.rcs.FavouriteMessageList;
 import com.android.mms.rcs.RcsSelectionMenu;
+
+import com.android.mms.data.Conversation;
+import com.android.mms.data.Conversation.ConversationQueryHandler;
+import java.util.Collection;
+
 /**
  * This activity provides a list view of MailBox-Mode.
  */
@@ -772,6 +777,11 @@ public class MailBoxMessageList extends ListActivity implements
                     Log.e(TAG, "ActivityNotFoundException for CellBroadcastListActivity");
                 }
                 break;
+            case R.id.action_mark_all_as_unread:
+                final MarkAsUnreadThreadListener listener = new MarkAsUnreadThreadListener(
+                        null, this);
+                confirmMarkAsUnreadDialog(listener, null, this);
+                break;
             case R.id.my_favorited:
                 Intent favouriteIntent = new Intent(this, FavouriteMessageList.class);
                 favouriteIntent.putExtra("favorited", true);
@@ -798,6 +808,61 @@ public class MailBoxMessageList extends ListActivity implements
             mListAdapter.changeCursor(null);
         }
         MessageUtils.removeDialogs();
+    }
+
+    public static class MarkAsUnreadThreadListener implements OnClickListener {
+        private final Collection<Long> mThreadIds;
+        private final Context mContext;
+
+        public MarkAsUnreadThreadListener(Collection<Long> threadIds, Context context) {
+            mThreadIds = threadIds;
+            mContext = context;
+        }
+
+        @Override
+        public void onClick(DialogInterface dialog, final int whichButton) {
+            MessageUtils.handleReadReport(mContext, mThreadIds,
+                    PduHeaders.READ_STATUS__DELETED_WITHOUT_BEING_READ, new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mThreadIds == null) {
+                                Conversation.startMarkAsUnreadAll(mContext, null, 0);
+                                DraftCache.getInstance().refresh();
+                            }
+                        }
+                    });
+            dialog.dismiss();
+        }
+    }
+
+     /**
+     * Build and show the proper mark as unread thread dialog. The UI is slightly different
+     * depending on whether we're deleting single/multiple threads or all threads.
+     * @param listener gets called when the delete button is pressed
+     * @param threadIds the thread IDs to be deleted (pass null for all threads)
+     * @param context used to load the various UI elements
+     */
+    private static void confirmMarkAsUnreadDialog(final MarkAsUnreadThreadListener listener,
+            Collection<Long> threadIds,
+            Context context) {
+        View contents = View.inflate(context,R.layout.mark_unread_thread_dialog_view,null);
+        TextView msg = (TextView)contents.findViewById(R.id.message);
+        if (threadIds == null) {
+            msg.setText(R.string.confirm_mark_unread_all_conversations);
+        } else {
+            // Show the number of threads getting marked as unread in the confirmation dialog.
+            int cnt = threadIds.size();
+            msg.setText(context.getResources().getQuantityString(
+                R.plurals.confirm_mark_unread_conversation,cnt,cnt));
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.confirm_mark_unread_dialog_title)
+            .setIconAttribute(android.R.attr.alertDialogIcon)
+            .setCancelable(true)
+            .setPositiveButton(R.string.menu_as_unread,listener)
+            .setNegativeButton(R.string.no,null)
+            .setView(contents)
+            .show();
     }
 
     private void confirmDeleteMessages() {
