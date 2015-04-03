@@ -389,8 +389,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         @Override
         public void onClick(View view) {
             if (mIsSmsEnabled) {
-                if (RcsApiManager.isRcsServiceInstalled()
-                        && RcsApiManager.isRcsOnline()) {
+                if (mIsRcsEnabled) {
                     selectComposeAction();
                 } else {
                     createNewMessage();
@@ -505,7 +504,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             invalidateOptionsMenu();
         }
         // Check if the RCS service is installed.
-        mIsRcsEnabled = RcsApiManager.isRcsServiceInstalled();
+        mIsRcsEnabled = RcsApiManager.getSupportApi().isRcsSupported();
 
         // Multi-select is used to delete conversations. It is disabled if we are not the sms app.
         ListView listView = getListView();
@@ -886,13 +885,6 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             item.setVisible(false);
         }
 
-        MenuItem saveOrBackItem = menu.findItem(R.id.saveorbackmessage);
-        if (saveOrBackItem != null) {
-            if (!mIsRcsEnabled || (mIsRcsEnabled && !RcsApiManager.isRcsOnline())) {
-                saveOrBackItem.setVisible(false);
-            }
-        }
-
         MenuItem cellBroadcastItem = menu.findItem(R.id.action_cell_broadcasts);
         if (cellBroadcastItem != null) {
             // Enable link to Cell broadcast activity depending on the value in config.xml.
@@ -912,6 +904,15 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             if (!isCellBroadcastAppLinkEnabled) {
                 cellBroadcastItem.setVisible(false);
             }
+        }
+
+        MenuItem myFavoriteItem = menu.findItem(R.id.my_favorited);
+        if (myFavoriteItem != null) {
+            myFavoriteItem.setVisible(mIsRcsEnabled);
+        }
+        MenuItem saveOrBackItem = menu.findItem(R.id.saveorbackmessage);
+        if (saveOrBackItem != null) {
+            saveOrBackItem.setVisible(mIsRcsEnabled);
         }
 
         return true;
@@ -1472,7 +1473,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                     }
                     if (mThreadIds == null) {
                         Conversation.startDeleteAll(mHandler, token, mDeleteLockedMessages);
-                        if (RcsApiManager.isRcsServiceInstalled()) {
+                        if (RcsApiManager.getSupportApi().isRcsSupported()) {
                             try {
                                 RcsApiManager.getMessageApi().removeAllMessage();
                             } catch (Exception e) {
@@ -1489,7 +1490,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                         }
                         Conversation.startDelete(mHandler, token, mDeleteLockedMessages,
                                 mThreadIds);
-                        if (RcsApiManager.isRcsServiceInstalled()) {
+                        if (RcsApiManager.getSupportApi().isRcsSupported()) {
                             RcsUtils.deleteRcsMessageByThreadId(mContext, mThreadIds);
                         }
                     }

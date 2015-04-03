@@ -48,6 +48,7 @@ import com.suntek.mway.rcs.client.aidl.provider.model.GroupChatUser;
 import com.suntek.mway.rcs.client.api.autoconfig.RcsAccountApi;
 import com.suntek.mway.rcs.client.api.im.impl.MessageApi;
 import com.suntek.mway.rcs.client.api.specialnumber.impl.SpecialServiceNumApi;
+import com.suntek.mway.rcs.client.api.support.RcsSupportApi;
 import com.suntek.mway.rcs.client.api.util.FileDurationException;
 import com.suntek.mway.rcs.client.api.util.FileSuffixException;
 import com.suntek.mway.rcs.client.api.util.FileTransferException;
@@ -2178,7 +2179,8 @@ public class RcsUtils {
     }
 
     public static void addPublicAccountItem(final Context context, ListView listView) {
-        if (!isPackageInstalled(context, PUBLIC_ACCOUNT_PACKAGE_NAME)) {
+        if (!RcsApiManager.getSupportApi().isRcsSupported()
+                || !isPackageInstalled(context, PUBLIC_ACCOUNT_PACKAGE_NAME)) {
             return;
         }
         View view = LayoutInflater.from(context).inflate(
@@ -2202,7 +2204,8 @@ public class RcsUtils {
     }
 
     public static void addNotificationItem(final Context context, ListView listView) {
-        if (!isPackageInstalled(context, NATIVE_UI_PACKAGE_NAME)) {
+        if (!RcsApiManager.getSupportApi().isRcsSupported() ||
+                !isPackageInstalled(context, NATIVE_UI_PACKAGE_NAME)) {
             return;
         }
         View view = LayoutInflater.from(context).inflate(

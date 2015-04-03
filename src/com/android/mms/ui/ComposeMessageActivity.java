@@ -235,7 +235,6 @@ import com.android.mms.util.IntentUtils;
 import com.android.mms.util.PhoneNumberFormatter;
 import com.android.mms.util.SendingProgressTokenManager;
 import com.android.mms.widget.MmsWidgetProvider;
-
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
 import com.google.android.mms.pdu.EncodedStringValue;
@@ -243,7 +242,6 @@ import com.google.android.mms.pdu.PduBody;
 import com.google.android.mms.pdu.PduPart;
 import com.google.android.mms.pdu.PduPersister;
 import com.google.android.mms.pdu.SendReq;
-
 import com.suntek.mway.rcs.client.aidl.capability.RCSCapabilities;
 import com.suntek.mway.rcs.client.aidl.constant.BroadcastConstants;
 import com.suntek.mway.rcs.client.aidl.contacts.RCSContact;
@@ -259,6 +257,7 @@ import com.suntek.mway.rcs.client.api.capability.callback.CapabiltyListener;
 import com.suntek.mway.rcs.client.api.capability.impl.CapabilityApi;
 import com.suntek.mway.rcs.client.api.im.impl.MessageApi;
 import com.suntek.mway.rcs.client.api.impl.groupchat.ConfApi;
+import com.suntek.mway.rcs.client.api.support.RcsSupportApi;
 import com.suntek.mway.rcs.client.api.util.FileDurationException;
 import com.suntek.mway.rcs.client.api.util.FileSuffixException;
 import com.suntek.mway.rcs.client.api.util.FileTransferException;
@@ -583,7 +582,7 @@ public class ComposeMessageActivity extends Activity
     private boolean mIsSmsEnabled;
 
     private static int mIsAirplain = 0;
-    // Whether or not the RCS Service is installed.
+    // Whether or not the RCS Service is installed and the Sim is supported RCS.
     private boolean mIsRcsEnabled;
 
     private static boolean rcsShareVcard = false;
@@ -598,7 +597,12 @@ public class ComposeMessageActivity extends Activity
 
     // RCS Account API
     private RcsAccountApi mAccountApi;
+
+    // Rcs Capability API
     private CapabilityApi mCapabilityApi;
+
+    // RCS Support API
+    private RcsSupportApi mSupportApi;
 
     private RcsEmojiInitialize mRcsEmojiInitialize = null;
 
@@ -966,7 +970,7 @@ public class ComposeMessageActivity extends Activity
              */
         int msgCount = params[0];
         int remainingInCurrentMessage = params[2];
-        if (!mIsRcsEnabled) {
+        if (!mSupportApi.isRcsSupported()) {
             if (!MmsConfig.getMultipartSmsEnabled()) {
                 // The provider doesn't support multi-part sms's so as soon as
                 // the user types
@@ -2315,11 +2319,12 @@ public class ComposeMessageActivity extends Activity
             mConversation.setIsGroupChat(isGroupChat);
         }
 
-        mIsRcsEnabled = RcsApiManager.isRcsServiceInstalled();
         mConfApi = RcsApiManager.getConfApi();
         mMessageApi = RcsApiManager.getMessageApi();
         mAccountApi = RcsApiManager.getRcsAccountApi();
         mCapabilityApi = RcsApiManager.getCapabilityApi();
+        mSupportApi = RcsApiManager.getSupportApi();
+        mIsRcsEnabled = mSupportApi.isRcsSupported();
 
         initGroupChat(intent);
     }
@@ -3507,8 +3512,8 @@ public class ComposeMessageActivity extends Activity
                 }
             }
         }
-        if (mIsRcsEnabled) {
-            menu.add(0,MENU_RCS_MCLOUD_SHARE,0,R.string.rcs_mcloud_share_file);
+        if (mIsRcsEnabled && mSupportApi.isRcsPluginInstalled(this)) {
+            menu.add(0, MENU_RCS_MCLOUD_SHARE, 0, R.string.rcs_mcloud_share_file);
         }
 
         return true;
@@ -3924,7 +3929,7 @@ public class ComposeMessageActivity extends Activity
 
             case AttachmentPagerAdapter.RECORD_VIDEO: {
                 long sizeLimit = 0;
-                if (mIsRcsEnabled && RcsApiManager.isRcsOnline()) {
+                if (mIsRcsEnabled && mSupportApi.isOnline()) {
                     sizeLimit = RcsUtils.getVideoFtMaxSize();
                 } else {
                     sizeLimit = computeAttachmentSizeLimit(slideShow, currentSlideSize);
@@ -4073,7 +4078,7 @@ public class ComposeMessageActivity extends Activity
         //close KB and emoji view.
         if (mRcsEmojiInitialize != null)
             mRcsEmojiInitialize.closeViewAndKB();
-        if(RcsApiManager.isRcsServiceInstalled()){
+        if(RcsApiManager.getSupportApi().isRcsSupported()){
             RcsUtils.closeKB(ComposeMessageActivity.this);
         }
         mAttachmentPager = (ViewPager) findViewById(R.id.attachments_selector_pager);
@@ -4164,7 +4169,7 @@ public class ComposeMessageActivity extends Activity
 
     public void rcsSend() {
         try {
-            if (isPreparedForSending() || mIsRcsEnabled && mAccountApi.isOnline()) {
+            if (isPreparedForSending() || mIsRcsEnabled && mSupportApi.isOnline()) {
                 RcsUserProfileInfo userProfile = mAccountApi.getRcsUserProfileInfo();
                 if (userProfile == null || Integer.valueOf(userProfile.getVersion()) > 0) {
                     confirmSendMessageIfNeeded();
@@ -4249,7 +4254,7 @@ public class ComposeMessageActivity extends Activity
                 || (requestCode == REQUEST_CODE_VCARD_GROUP)
                 || (requestCode == REQUEST_CODE_SAIYUN)
                 || (requestCode == REQUEST_SELECT_LOCAL_AUDIO);
-        if (mIsRcsEnabled && RcsApiManager.isRcsOnline() && isRcsMessage) {
+        if (mIsRcsEnabled && mSupportApi.isOnline() && isRcsMessage) {
             switch (requestCode) {
                 case PHOTO_CROP:
                     if (data != null) {
@@ -4415,7 +4420,7 @@ public class ComposeMessageActivity extends Activity
             }
             return;
         }
-        if (!RcsApiManager.isRcsOnline() && mConversation.isGroupChat()) {
+        if (!mSupportApi.isOnline() && mConversation.isGroupChat()) {
             toast(R.string.rcs_offline_on_groupchat);
             return;
         }
@@ -5193,8 +5198,7 @@ public class ComposeMessageActivity extends Activity
             if (extras.containsKey(Intent.EXTRA_STREAM)) {
                 final Uri uri = (Uri)extras.getParcelable(Intent.EXTRA_STREAM);
 
-                boolean isRcsAvailable = RcsApiManager.isRcsServiceInstalled()
-                        && RcsApiManager.isRcsOnline();
+                boolean isRcsAvailable = mIsRcsEnabled && mSupportApi.isOnline();
                 if (isRcsAvailable && uri.toString().contains("as_vcard")) {
                     RcsUtils.setVcard(this, uri);
                     rcsShareVcard = true;
@@ -5842,8 +5846,7 @@ public class ComposeMessageActivity extends Activity
     }
 
     private void setEmojBtnGone(){
-        boolean isRcsAvailable = RcsApiManager.isRcsServiceInstalled()
-                && RcsApiManager.isRcsOnline();
+        boolean isRcsAvailable = mIsRcsEnabled && mSupportApi.isOnline();
         if (!isRcsAvailable) {
             mButtonEmoj.setVisibility(View.GONE);
         }
@@ -6857,7 +6860,7 @@ public class ComposeMessageActivity extends Activity
                             threadIds,
                             cursor != null && cursor.getCount() > 0,
                             ComposeMessageActivity.this);
-                    if(RcsApiManager.isRcsServiceInstalled()){
+                    if(RcsApiManager.getSupportApi().isRcsSupported()){
                         RcsUtils.deleteRcsMessageByThreadId(ComposeMessageActivity.this, threadIds);
                     }
                     if (cursor != null) {
@@ -7381,7 +7384,7 @@ public class ComposeMessageActivity extends Activity
                 SqliteWrapper.delete(getContext(), mContentResolver, uri, null,
                         null);
             }
-            if(RcsApiManager.isRcsServiceInstalled()){
+            if(RcsApiManager.getSupportApi().isRcsSupported()){
                 RcsUtils.deleteRcsMessageByMessageId(mSelectedRcsMsg);
             }
             mDeleteLockedMessages = false;

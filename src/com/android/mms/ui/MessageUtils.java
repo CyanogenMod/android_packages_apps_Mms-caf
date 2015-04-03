@@ -770,7 +770,7 @@ public class MessageUtils {
         // other choices like external audio and system audio. Allow user to select
         // an audio from particular storage (Internal or External) and return it.
         String[] items = null;
-        if (RcsApiManager.isRcsOnline()) {
+        if (RcsApiManager.getSupportApi().isOnline()) {
             items = new String[3];
             items[SELECT_LOCAL] = activity.getString(R.string.local_audio_item);
         } else {
@@ -828,7 +828,7 @@ public class MessageUtils {
         intent.setClassName("com.android.soundrecorder",
                 "com.android.soundrecorder.SoundRecorder");
         // add RCS recordSound time add size limit
-        if (RcsApiManager.isRcsServiceInstalled() && RcsApiManager.isRcsOnline()) {
+        if (RcsApiManager.getSupportApi().isOnline()) {
             intent.putExtra(android.provider.MediaStore.Audio.Media.EXTRA_MAX_BYTES, sizeLimit*1024);
         } else {
             intent.putExtra(android.provider.MediaStore.Audio.Media.EXTRA_MAX_BYTES, sizeLimit);
@@ -839,7 +839,7 @@ public class MessageUtils {
 
     public static void recordVideo(Activity activity, int requestCode, long sizeLimit) {
         // add RCS recordVideo time add size limit
-        if(RcsApiManager.isRcsServiceInstalled() && RcsApiManager.isRcsOnline()){
+        if (RcsApiManager.getSupportApi().isOnline()) {
             Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
             intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 10.0);
             intent.putExtra("android.intent.extra.sizeLimit", sizeLimit*1024);
