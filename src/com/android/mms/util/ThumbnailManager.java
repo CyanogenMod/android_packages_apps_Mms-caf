@@ -461,7 +461,7 @@ public class ThumbnailManager extends BackgroundLoaderManager {
             }
 
             options.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(inputStream, null, options, false); // DRM Change
+            BitmapFactory.decodeStream(inputStream, null, options);
             closeSilently(inputStream);
 
             // No way to reset the stream. Have to open it again :-(
@@ -476,9 +476,7 @@ public class ThumbnailManager extends BackgroundLoaderManager {
                     options.outWidth, options.outHeight, targetSize);
             options.inJustDecodeBounds = false;
 
-            // DRM Change start
-            Bitmap result = BitmapFactory.decodeStream(inputStream, null, options, false);
-            // DRM Change end
+            Bitmap result = BitmapFactory.decodeStream(inputStream, null, options);
             closeSilently(inputStream);
 
             if (result == null) {
