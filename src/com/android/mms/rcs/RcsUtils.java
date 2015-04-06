@@ -27,6 +27,7 @@ import com.android.mms.R;
 import com.android.mms.data.Contact;
 import com.android.mms.data.ContactList;
 import com.android.mms.data.Conversation;
+import com.android.mms.data.WorkingMessage;
 import com.android.mms.ui.ComposeMessageActivity;
 import com.android.mms.ui.ConversationList;
 import com.android.mms.ui.ConversationListItem;
@@ -77,6 +78,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
 import android.media.MediaPlayer;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -108,6 +110,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -123,6 +126,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -193,6 +197,8 @@ public class RcsUtils {
     public static final String IM_ONLY = "1";
     public static final String SMS_ONLY = "2";
     public static final String RCS_MMS_VCARD_PATH = "sdcard/rcs/" + "mms.vcf";
+
+    private static final int DEFAULT_THUMBNAIL_SIZE_IN_DP = 150;
 
     public static GeoLocation readMapXml(String filepath) {
         GeoLocation geo = null;
@@ -1611,7 +1617,8 @@ public class RcsUtils {
         }
     }
 
-    public static void setThumbnailForMessageItem(Context context, ImageView imageView, MessageItem messageItem) {
+    public static void setThumbnailForMessageItem(Context context, ImageView imageView,
+            MessageItem messageItem) {
         if (messageItem.mRcsType == RcsUtils.RCS_MSG_TYPE_PAID_EMO) {
             String[] body = messageItem.mBody.split(",");
             RcsEmojiStoreUtil.getInstance().loadImageAsynById(imageView, body[0],
@@ -1677,6 +1684,63 @@ public class RcsUtils {
                     bitmap.getHeight(), matrix, true);
         }
         imageView.setImageBitmap(bitmap);
+    }
+
+    public static void setThumbnailForMessageItem(Context context,
+            ImageView imageView, WorkingMessage workingMessage) {
+        int rcsType = workingMessage.getRcsType();
+        Bitmap bitmap = null;
+        switch (rcsType) {
+            case RcsUtils.RCS_MSG_TYPE_IMAGE: {
+                String imagePath = workingMessage.getRcsPath();
+                if (imagePath != null
+                        && new File(imagePath).exists()) {
+                } else if (imagePath != null
+                        && imagePath.contains(".")) {
+                    imagePath = imagePath.substring(0,
+                            imagePath.lastIndexOf("."));
+                }
+                bitmap = decodeInSampleSizeBitmap(imagePath);
+                break;
+            }
+            case RcsUtils.RCS_MSG_TYPE_VIDEO: {
+                String videoPath = workingMessage.getRcsPath();
+                bitmap = getVideoThumbnail(context, videoPath);
+                break;
+            }
+            case RcsUtils.RCS_MSG_TYPE_VCARD: {
+                bitmap = BitmapFactory.decodeResource(context.getResources(),
+                        R.drawable.ic_attach_vcard);
+                break;
+            }
+            case RcsUtils.RCS_MSG_TYPE_AUDIO: {
+                bitmap = BitmapFactory.decodeResource(context.getResources(),
+                        R.drawable.rcs_voice);
+                break;
+            }
+            case RcsUtils.RCS_MSG_TYPE_MAP: {
+                bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.rcs_map);
+                break;
+            }
+            case RcsUtils.RCS_MSG_TYPE_CAIYUNFILE:{
+                bitmap = BitmapFactory.decodeResource(context.getResources(),
+                        R.drawable.rcs_ic_cloud);
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+        imageView.setImageBitmap(bitmap);
+    }
+
+    private static Bitmap getVideoThumbnail(Context context, String path) {
+        Bitmap bitmap = null;
+        bitmap = ThumbnailUtils.createVideoThumbnail(path, MediaStore.Images.Thumbnails.MICRO_KIND);
+        int px = RcsUtils.dip2px(context, DEFAULT_THUMBNAIL_SIZE_IN_DP);
+        bitmap = ThumbnailUtils.extractThumbnail(bitmap, px, px,
+                ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+        return bitmap;
     }
 
     public static String getContentTypeForMessageItem(MessageItem messageItem) {

@@ -65,6 +65,7 @@ public class AttachmentPagerAdapter extends PagerAdapter {
     public static final int ADD_CONTACT_AS_TEXT  = 7;
     public static final int ADD_CONTACT_AS_VCARD = 8;
     public static final int ADD_MAP              = 9;
+    public final static int ADD_CALENDAR_EVENTS  = 10;
 
     private static final String GRID_ITEM_IMAGE = "grid_item_image";
     private static final String GRID_ITEM_TEXT  = "grid_item_text";
@@ -74,6 +75,8 @@ public class AttachmentPagerAdapter extends PagerAdapter {
     private static final int CONTACT_INFO_ITEM_POSITION = 1;
     private static final int VCARD_ITEM_POSITION        = 2;
     private static final int VCAL_ITEM_POSITION         = 3;
+
+    private HashMap<Integer, Integer> mIndexOfAttachmentTypes = new HashMap<Integer, Integer>();
 
     private boolean mHasAttachment;
     private boolean mHasVcard;
@@ -158,54 +161,73 @@ public class AttachmentPagerAdapter extends PagerAdapter {
     }
 
     private List<IconListItem> getAttachmentData() {
-        List<IconListItem> list = new ArrayList<IconListItem>(9);
+        int index = 0;
+        mIndexOfAttachmentTypes.clear();
+
+        List<IconListItem> list = new ArrayList<IconListItem>(10);
         list.add(new IconListItem(mContext.getString(R.string.attach_image),
                 (!mIsReplace && mHasVcard) ? R.drawable.ic_attach_picture_disable
                         : R.drawable.ic_attach_picture_holo_light));
+        mIndexOfAttachmentTypes.put(index++, ADD_IMAGE);
         list.add(new IconListItem(mContext.getString(R.string.attach_take_photo),
                 (!mIsReplace && mHasVcard) ? R.drawable.ic_attach_capture_picture_disable
                         : R.drawable.ic_attach_capture_picture_holo_light));
+        mIndexOfAttachmentTypes.put(index++, TAKE_PICTURE);
         list.add(new IconListItem(mContext.getString(R.string.attach_video),
                 (!mIsReplace && mHasVcard) ? R.drawable.ic_attach_video_disable
                         : R.drawable.ic_attach_video_holo_light));
+        mIndexOfAttachmentTypes.put(index++, ADD_VIDEO);
         list.add(new IconListItem(mContext.getString(R.string.attach_record_video),
                 (!mIsReplace && mHasVcard) ? R.drawable.ic_attach_capture_video_disable
                         : R.drawable.ic_attach_capture_video_holo_light));
+        mIndexOfAttachmentTypes.put(index++, RECORD_VIDEO);
         if (MmsConfig.getAllowAttachAudio()) {
             list.add(new IconListItem(mContext.getString(R.string.attach_sound),
                     (!mIsReplace && mHasVcard) ? R.drawable.ic_attach_audio_disable
                             : R.drawable.ic_attach_audio_holo_light));
+            mIndexOfAttachmentTypes.put(index++, ADD_SOUND);
         }
         list.add(new IconListItem(mContext.getString(R.string.attach_record_sound),
                 (!mIsReplace && mHasVcard) ? R.drawable.ic_attach_capture_audio_disable
                         : R.drawable.ic_attach_capture_audio_holo_light));
+        mIndexOfAttachmentTypes.put(index++, RECORD_SOUND);
         list.add(new IconListItem(mContext.getString(R.string.attach_slideshow),
                 (!mIsReplace && mHasVcard) ? R.drawable.ic_attach_slideshow_disable
                         : R.drawable.ic_attach_slideshow_holo_light));
+        mIndexOfAttachmentTypes.put(index++, ADD_SLIDESHOW);
         boolean config_vcard = mContext.getResources().getBoolean(R.bool.config_vcard);
         if (config_vcard) {
             list.add(new IconListItem(mContext.getString(R.string.attach_add_contact_as_text),
                     (!mIsReplace && mHasSlideshow) ? R.drawable.ic_attach_contact_info_disable
                             : R.drawable.ic_attach_contact_info_holo_light));
+            mIndexOfAttachmentTypes.put(index++, ADD_CONTACT_AS_TEXT);
             list.add(new IconListItem(mContext.getString(R.string.attach_add_contact_as_vcard),
                     (!mIsReplace && mHasAttachment) ? R.drawable.ic_attach_vcard_disable
                             : R.drawable.ic_attach_vcard_holo_light));
+            mIndexOfAttachmentTypes.put(index++, ADD_CONTACT_AS_VCARD);
         } else if (RcsApiManager.isRcsServiceInstalled() && RcsApiManager.isRcsOnline()) {
             list.add(new IconListItem(mContext.getString(R.string.attach_add_contact_as_vcard),
                     (!mIsReplace && mHasAttachment) ? R.drawable.ic_attach_vcard_disable
                             : R.drawable.ic_attach_vcard_holo_light));
+            mIndexOfAttachmentTypes.put(index++, ADD_CONTACT_AS_VCARD);
         }
         if (RcsApiManager.isRcsServiceInstalled() && RcsApiManager.isRcsOnline()) {
             list.add(new IconListItem(mContext.getString(R.string.attach_map),
                     R.drawable.rcs_caiyun_sharefile));
+            mIndexOfAttachmentTypes.put(index++, ADD_MAP);
         }
 
         // calendar event support
         list.add(new IconListItem(mContext.getString(R.string.attach_add_calendar_events),
                 (!mIsReplace && mHasAttachment) ? R.drawable.ic_attach_vcard_disable
                         : R.drawable.ic_attach_vcard_holo_light));
+        mIndexOfAttachmentTypes.put(index++, ADD_CALENDAR_EVENTS);
 
         return list;
+    }
+
+    public int getAttachmentTypeByIndex(int index) {
+        return mIndexOfAttachmentTypes.get(index);
     }
 
     public void setGridItemClickListener(OnItemClickListener l) {
