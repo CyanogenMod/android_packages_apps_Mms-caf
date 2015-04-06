@@ -348,19 +348,37 @@ public class RecipientsEditor extends RecipientEditTextView {
         if (list.size() == 0) {
             // The base class RecipientEditTextView will ignore empty text. That's why we need
             // this special case.
-            setText(null);
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    setText(null);
+                }
+            });
         } else {
-            // Clear the recipient when add contact again
-            setText("");
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    // Clear the recipient when add contact again
+                    setText("");
+                }
+            });
+
             for (Contact c : list) {
                 // Calling setText to set the recipients won't create chips,
                 // but calling append() will.
 
                 // Need to judge  whether contactToToken(c) return valid data,if it is not,
                 // do not append it so that the comma can not be displayed.
-                CharSequence charSequence = contactToToken(c);
+                final CharSequence charSequence = contactToToken(c);
+
                 if (charSequence != null && charSequence.length() > 0) {
-                    append( charSequence+ ", ");
+                    post(new Runnable() {
+                        @Override
+                        public void run() {
+                            append(charSequence + ", ");
+                        }
+                    });
+
                 }
             }
         }
