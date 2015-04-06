@@ -58,6 +58,9 @@ public class RecipientsEditor extends RecipientEditTextView {
     private static final char SBC_CHAR_START = 65281;
     private static final char SBC_CHAR_END = 65373;
 
+    // If we're trying to add more than 15 contacts, turn off the chips UI
+    private static final int MAX_CONTACTS_FOR_CHIPS = 15;
+
     private int mLongPressedPosition = -1;
     private final RecipientsEditorTokenizer mTokenizer;
     private char mLastSeparator = ',';
@@ -328,7 +331,7 @@ public class RecipientsEditor extends RecipientEditTextView {
         return s;
     }
 
-    public void populate(ContactList list) {
+    public void populate(final ContactList list) {
         // Very tricky bug. In the recipient editor, we always leave a trailing
         // comma to make it easy for users to add additional recipients. When a
         // user types (or chooses from the dropdown) a new contact Mms has never
@@ -350,19 +353,63 @@ public class RecipientsEditor extends RecipientEditTextView {
         if (list.size() == 0) {
             // The base class RecipientEditTextView will ignore empty text. That's why we need
             // this special case.
-            setText(null);
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    setText(null);
+                }
+            });
         } else {
-            // Clear the recipient when add contact again
-            setText("");
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    // Clear the recipient when add contact again
+                    setText("");
+                }
+            });
+
+            if (list.size() > MAX_CONTACTS_FOR_CHIPS) {
+                // Too many contacts!
+                final StringBuilder stringBuilder = new StringBuilder();
+                for (Contact c : list) {
+                    final CharSequence charSequence = contactToToken(c);
+
+                    if (charSequence != null && charSequence.length() > 0) {
+                        stringBuilder.append(charSequence + ", ");
+                    }
+                }
+
+                if (!getNoChips()) {
+                    setNoChips(true);
+                }
+
+                post(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Calling setText to set the recipients won't create chips
+                        setText(stringBuilder.toString());
+                    }
+                });
+
+                return;
+            }
+
             for (Contact c : list) {
                 // Calling setText to set the recipients won't create chips,
                 // but calling append() will.
 
                 // Need to judge  whether contactToToken(c) return valid data,if it is not,
                 // do not append it so that the comma can not be displayed.
-                CharSequence charSequence = contactToToken(c);
+                final CharSequence charSequence = contactToToken(c);
+
                 if (charSequence != null && charSequence.length() > 0) {
-                    append( charSequence+ ", ");
+                    post(new Runnable() {
+                        @Override
+                        public void run() {
+                            append(charSequence + ", ");
+                        }
+                    });
+
                 }
             }
         }
