@@ -58,6 +58,7 @@
   <string name="menu_mobile">Numai numere mobile</string>
   <string name="menu_order_by_given_name">Ordonare după prenume</string>
   <string name="menu_order_by_last_name">Ordonare după nume</string>
+  <string name="message_share">Distribuie</string>
   <string name="start_new_message_button">Mesaj nou</string>
   <string name="all_spinner_option">Toate</string>
   <string name="deleting_threads">Ştergerea conversațiilor\u2026</string>
@@ -66,13 +67,17 @@
   <string name="send_by_slot1">Trimite prin SIM 1</string>
   <string name="send_by_slot2">Trimite prin SIM 2</string>
   <string name="media_size_limit">Mesajul a ajuns la limita de dimensiune, nu se poate trimite mesajul.</string>
+  <string name="illegal_message_or_increase_size">Mărime mesaj incorectă.</string>
   <string name="cannot_add_text_anymore">Nu se poate adăuga mai mult text.</string>
   <string name="title_send_message">Trimitere mesaj</string>
+  <string name="pref_title_manage_sim_messages_slot1">Gestionează mesajele SIM 1</string>
+  <string name="pref_title_manage_sim_messages_slot2">Gestionează mesajele SIM 2</string>
   <string name="status_deleted_unread">Șters fără a fi citit</string>
   <string name="disk_storage_full_error">Eroare: Spațiul de stocare este plin.</string>
   <string name="mms_too_large">Mesajul este prea mare pentru a fi descărcat.</string>
   <string name="system_audio_item">Ton de apel</string>
   <string name="external_audio_item">Muzică</string>
+  <string name="pref_title_message_template">Şabloane de mesaje</string>
   <string name="title_new_message_template">Şablon nou</string>
   <string name="dialog_editSMSTemplate_title">Editare şablon</string>
   <string name="pref_sms_signature_title">Semnătura SMS</string>
