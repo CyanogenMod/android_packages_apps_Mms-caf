@@ -175,6 +175,9 @@
                     android:entryValues="@array/pref_entries_creation_mode"
                     android:dialogTitle="@string/pref_dialog_title_creation_mode"
                     android:summary="@string/pref_summary_creation_mode" />
+    <Preference
+        android:title="@string/pref_title_size_limit"
+        android:key="pref_key_mms_size_limit" />
 
   </PreferenceCategory>
   </PreferenceScreen>

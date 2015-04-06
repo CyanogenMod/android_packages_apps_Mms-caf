@@ -202,6 +202,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private Preference mCBsettingPref;
     private Preference mClearHistoryPref;
     private Preference mConfigurationmessage;
+    private Preference mMmsSizeLimit;
     private CheckBoxPreference mVibratePref;
     private CheckBoxPreference mEnableNotificationsPref;
     private CheckBoxPreference mMmsAutoRetrievialPref;
@@ -383,6 +384,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
         if (getResources().getBoolean(R.bool.def_custom_preferences_settings)) {
             mCBsettingPref = findPreference(CELL_BROADCAST);
+            mMmsSizeLimit = (Preference) findPreference("pref_key_mms_size_limit");
+            setMmsSizeSummary();
         }
         //Chat wallpaper
         if (getResources().getBoolean(R.bool.def_custom_preferences_settings)) {
@@ -1440,5 +1443,10 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             }
         }
         return null;
+    }
+    private void setMmsSizeSummary() {
+        mMmsSizeLimit.setSummary(Integer.toString(MmsConfig
+                .getMaxMessageSize() / MmsConfig.KB_IN_BYTES)
+                + MmsConfig.KILO_BYTE);
     }
 }
