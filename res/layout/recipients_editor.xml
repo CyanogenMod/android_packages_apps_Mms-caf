@@ -19,6 +19,7 @@
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:chips="http://schemas.android.com/apk/res/com.android.mms"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -43,7 +44,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:inputType="textFilter|textMultiLine"
-            android:nextFocusRight="@+id/recipients_selector" />
+            android:nextFocusRight="@+id/recipients_selector"
+            chips:maxChips="@integer/max_chips_parsed" />
 
         <ImageView
             android:id="@+id/recipients_selector"
