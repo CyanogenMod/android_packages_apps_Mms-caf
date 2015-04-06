@@ -678,6 +678,8 @@ public class ComposeMessageActivity extends Activity
 
     private final static String MULTI_SELECT_CONV = "select_conversation";
 
+    private AddNumbersTask mAddNumbersTask;
+
     @SuppressWarnings("unused")
     public static void log(String logMsg) {
         Thread current = Thread.currentThread();
@@ -4488,7 +4490,8 @@ public class ComposeMessageActivity extends Activity
                 break;
 
             case REQUEST_CODE_ADD_RECIPIENTS:
-                insertNumbersIntoRecipientsEditor(
+                mAddNumbersTask = new AddNumbersTask();
+                mAddNumbersTask.execute(
                         data.getStringArrayListExtra(SelectRecipientsList.EXTRA_RECIPIENTS));
                 break;
             case REQUEST_CODE_ADD_CALENDAR_EVENTS:
@@ -4668,16 +4671,43 @@ public class ComposeMessageActivity extends Activity
         }
     }
 
-    private void insertNumbersIntoRecipientsEditor(final ArrayList<String> numbers) {
-        ContactList list = ContactList.getByNumbers(numbers, true);
-        ContactList existing = mRecipientsEditor.constructContactsFromInput(true);
-        for (Contact contact : existing) {
-            if (!contact.existsInDatabase()) {
-                list.add(contact);
+    class AddNumbersTask extends AsyncTask<ArrayList<String>, Void, Void> {
+        ProgressDialog mPD;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mPD = new ProgressDialog(ComposeMessageActivity.this);
+            mPD.setMessage("Adding contacts...");
+            mPD.show();
+        }
+
+        @Override
+        protected Void doInBackground(ArrayList<String>... params) {
+            if (params == null || params.length < 1) {
+                return null;
+            }
+
+            ArrayList<String> numbers = params[0];
+
+            ContactList list = ContactList.getByNumbers(numbers, true);
+            ContactList existing = mRecipientsEditor.constructContactsFromInput(true);
+            for (Contact contact : existing) {
+                if (!contact.existsInDatabase()) {
+                    list.add(contact);
+                }
+            }
+
+            mRecipientsEditor.populate(list);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (mPD != null && mPD.isShowing()) {
+                mPD.dismiss();
             }
         }
-        mRecipientsEditor.setText(null);
-        mRecipientsEditor.populate(list);
     }
 
     private void processPickResult(final Intent data) {
@@ -7687,7 +7717,7 @@ public class ComposeMessageActivity extends Activity
                     switch (arg1) {
                         case 0:
                             toast(R.string.message_save);
-                            showProgressDialog(context, 0, 
+                            showProgressDialog(context, 0,
                                     context.getString(R.string.message_save));
                             break;
                         case 1:
