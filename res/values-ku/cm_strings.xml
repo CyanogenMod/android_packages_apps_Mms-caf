@@ -84,9 +84,13 @@
   <string name="alert_dialog_yes">بەڵێ</string>
   <string name="alert_dialog_no">نەخێر</string>
   <string name="menu_as_unread">نیشانەکردن وەکو نەخوێندراوە</string>
+  <string name="menu_as_read">نیشانەکردن وەکو خوێندراوە</string>
   <string name="menu_all_as_unread">دیاریکردنی هه‌مووی وه‌کو خوێندراوه‌</string>
+  <string name="menu_all_as_read">نیشانەکردنی هەمووی وەکو خوێندراوە</string>
   <string name="confirm_mark_unread_dialog_title">نیشانەکردن وەکو نەخوێندراوە؟</string>
+  <string name="confirm_mark_read_dialog_title">نیشانەکردن وەکو خوێندراوە؟</string>
   <string name="confirm_mark_unread_all_conversations">هه‌موو بابه‌ته‌کان دیاری ده‌کرێن وه‌ک نه‌خوێندراوه‌.</string>
+  <string name="confirm_mark_read_all_conversations">هه‌موو بابه‌ته‌کان دیاری ده‌کرێن وه‌کو خوێندراوه‌.</string>
   <string name="select_recipients">دیاریکردنی وه‌رگر</string>
   <string name="groups_header">گرووپەکان</string>
   <string name="no_recipients">هیچ ناوێک نەدۆزرایەوە</string>

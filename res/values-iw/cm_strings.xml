@@ -90,6 +90,7 @@
   <string name="confirm_mark_unread_dialog_title">סמן כלא נקרא?</string>
   <string name="confirm_mark_read_dialog_title">לסמן כנקרא?</string>
   <string name="confirm_mark_unread_all_conversations">כל השיחות יסומנו כלא נקראו.</string>
+  <string name="confirm_mark_read_all_conversations">כל השיחות יסומנו כנקראו.</string>
   <string name="select_recipients">בחר נמענים</string>
   <string name="groups_header">קבוצות</string>
   <string name="no_recipients">לא נמצאו אנשי קשר</string>
@@ -127,6 +128,7 @@
   <string name="subscription_settings_title">הגדרות כרטיס ה-SIM</string>
   <string name="sub_no_sim">אין SIM</string>
   <string name="pref_manage_subs_title">נהל כרטיסי SIM</string>
+  <string name="deleting_threads">מוחק שיחות\u2026</string>
   <string name="cell_broadcast_sender">ערוץ שידורים סלולאריים</string>
   <string name="sent_on">"נשלח: <xliff:g id="date">%s </xliff:g>"</string>
   <string name="received_on">"התקבל: <xliff:g id="date">%s </xliff:g>"</string>
@@ -143,6 +145,7 @@
   <string name="converting_to_text_message">ממיר להודעת טקסט\u2026</string>
   <string name="cannot_add_text_anymore">לא ניתן להוסיף טקסט נוסף.</string>
   <string name="title_send_message">שלח הודעה</string>
+  <string name="subject_full">הנושא מלא</string>
   <string name="status_deleted_unread">יימחק מבלי שנקרא</string>
   <string name="sms_full_body_cm">זיכרון הטלפון מלא, אין אפשרות לשלוח ולקבל הודעות חדשות. מחק הודעות ישנות.</string>
   <string name="memory_low_title">זיכרון הודעות הטקסט נמוך</string>
@@ -161,8 +164,10 @@
   <string name="pending_mms">הודעת MMS אחת או יותר נמצאת בתהליך שליחה</string>
   <string name="pending_mms_text">גע כדי להחליף את כרטיס ה-SIM</string>
   <string name="switch_data_subscription_success">החלפת נתוני כרטיס SIM עברה בהצלחה.</string>
+  <string name="switch_data_subscription_failed">החלפת נתוני כרטיס SIM נכשלה.</string>
   <string name="abort_mms">בטל MMS</string>
   <string name="abort_mms_text">גע כדי לבטל</string>
+  <string name="progress_mms_title">עיבוד MMS על כרטיס SIM אחר בתהליך</string>
   <string name="progress_mms">הודעת MMS נמצאת בתהליך</string>
   <string name="progress_mms_text">גע כדי לנסות שוב</string>
   <string name="menu_connect_url">התחבר</string>
@@ -174,6 +179,7 @@
   <string name="pref_title_enable_signature">חתימת SMS</string>
   <string name="pref_title_edit_signature">ערוך חתימת SMS</string>
   <string name="signature_full_toast">החתימה הגיעה לאורכה המרבי.</string>
+  <string name="pref_title_sms_validity_period">זמן תוקף ה־SMS</string>
   <string name="sms_validity_period_not_set">לא הוגדר</string>
   <string name="sms_validity_period_one_hour">שעה אחת</string>
   <string name="sms_validity_period_six_hours">6 שעות</string>
@@ -208,6 +214,7 @@
   <string name="mms_phone_capacity">קיבולת MMS:</string>
   <string name="pref_wap_push_title">הודעות שירות PUSH</string>
   <string name="pref_title_wap_push_enabled">הפעל שירות WAP PUSH</string>
+  <string name="pref_summary_wap_push_enabled">אפשר קבלת הודעות שירות</string>
   <string name="open_wap_push_title">מידע נוסף</string>
   <string name="open_wap_push_body">האם ברצונך לפתוח האתר המכיל מידע אודות WAP PUSH?</string>
   <string name="confirm_delete_selected_messages">ההודעות שנבחרו יימחקו.</string>
@@ -231,9 +238,22 @@
   <string name="search_as_number">מספר</string>
   <string name="search_as_content">תוכן</string>
   <string name="search_as_subject">נושא</string>
+  <string name="invalid_name_toast">נא הזן שם תקף</string>
+  <string name="slot_type">חריץ <xliff:g id="number">%s </xliff:g></string>
+  <string name="sim_capacity_title">קיבולת SIM</string>
+  <string name="sim_capacity_used">שומש:\u0020 </string>
+  <string name="sim_capacity">קיבולת: \u0020</string>
+  <string name="pref_title_mms_save_time">תקופת תוקף ה-MMS</string>
   <string name="mms_two_days">יומיים</string>
+  <string name="mms_max">מקסימום</string>
+  <string name="save_description">משך הזמן שבו ההודעות יישארו מאוחסנות בשרת</string>
+  <string name="status_expired">MMS פג תוקף</string>
+  <string name="pref_title_sms_store">מקום אחסון מועדף</string>
+  <string name="pref_title_sms_store_card1">כרטיס SIM 1 מועדף לשמירה</string>
+  <string name="pref_title_sms_store_card2">כרטיס SIM 2 מועדף לשמירה</string>
   <string name="pref_sms_store_phone">טלפון</string>
   <string name="pref_sms_store_card">כרטיס SIM</string>
+  <string name="pref_sim_card_full_save_to_phone">כרטיס ה-SIM מלא, שומר הודעות חדשות למכשיר עצמו.</string>
   <string name="mms_size_indicator"><xliff:g id="mms_size">%1$s </xliff:g>KB / <xliff:g id="all_size">%2$s </xliff:g> KB</string>
   <string name="selected_all">בחר הכול</string>
   <string name="deselected_all">בטל את כל הבחירות</string>
@@ -248,4 +268,7 @@
   <string name="pref_title_cdma_priority">עדיפות ההודעה</string>
   <string name="pref_summary_cdma_priority">עדיפות של הודעות CDMA</string>
   <string name="prefDialogTitle_cdma_priority">עדיפות</string>
+  <string name="forward_size_over">לא יכול להעביר הלאה, גודל ההודעה החדשה גדול מ-300KB.</string>
+  <string name="menu_batch_delete">שיחות למחיקה</string>
+  <string name="download_dialog_title">האם אתה בטוח שברצונך להוריד MMS זה?</string>
 </resources>
