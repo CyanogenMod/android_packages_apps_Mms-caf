@@ -149,6 +149,8 @@
   <string name="sms_phone_memory_usage">SMS: <xliff:g id="used">%1$d </xliff:g> מתוך <xliff:g id="total">%2$d </xliff:g> בשימוש</string>
   <string name="mms_phone_memory_usage">SMS: <xliff:g id="used">%1$d </xliff:g> מתוך <xliff:g id="total">%2$d </xliff:g> בשימוש</string>
   <string name="pref_title_validity_period">זמן תוקף ההודעה</string>
+  <string name="pref_title_validity_period_slot1">זמן תוקף להודעה של SIM 1</string>
+  <string name="pref_title_validity_period_slot2">זמן תוקף להודעה של SIM 2</string>
   <string name="sms_validity_period_not_set">לא הוגדר</string>
   <string name="sms_validity_period_one_hour">שעה אחת</string>
   <string name="sms_validity_period_six_hours">6 שעות</string>
@@ -165,6 +167,7 @@
   <string name="slot2">SIM 2</string>
   <string name="cannot_play">אין אפשרות להציג שקופיות.</string>
   <string name="confirm_delete_selected_messages">ההודעות שנבחרו יימחקו.</string>
+  <string name="send_failure">לא ניתן לשלוח את ההודעה.</string>
   <string name="message_detail">פרטי ההודעה</string>
   <string name="no_message">אין הודעות.</string>
   <string name="change_to_folder_mode">תצוגת תיקיה</string>
@@ -224,9 +227,11 @@
   <string name="backup_file_name_message">ההודעות יוצאו ל-\"%1$s\"</string>
   <string name="manage_sdcard_messages">יבא/יצא הודעות</string>
   <string name="no_backups_found">לא נמצאו גיבויים</string>
+  <string name="remove_subject">הסר נושא</string>
   <string name="qm_wear_sending_message">שולח תגובה ל\"<xliff:g id="name">%s</xliff:g>\"\u2026</string>
   <string name="qm_wear_messaged_failed">הודעת טקסט ל\"<xliff:g id="name">%s </xliff:g>\" לא נשלחה, אנא נסה שוב.</string>
   <string name="qm_wear_voice_reply">מהי תגובתך?</string>
+  <string name="qm_wear_reply_by_voice">הגב באמצעות קול</string>
   <string name="copy_empty_string">אין טקסט להעתקה</string>
   <string name="attach_add_calendar_events">אירוע לוח שנה</string>
   <string name="calendar_attachment_activity_not_found">לא ניתן למצוא יישום לוח שנה תומך</string>
@@ -235,6 +240,8 @@
   <string name="pref_mms_notification_vibrate_normal">רגיל</string>
   <string name="pref_mms_notification_vibrate_med_vib">רטט בינוני</string>
   <string name="pref_mms_notification_vibrate_long_vib">רטט ארוך</string>
+  <string name="pref_mms_notification_vibrate_mult_short">קצר מרובה</string>
+  <string name="pref_mms_notification_vibrate_mult_long">ארוך מרובה</string>
   <string name="menu_insert_smiley">הוסף סמיילי</string>
   <string name="pref_title_enable_emoticons">תמיכה בסמלי רגשות</string>
   <string name="pref_summary_enable_emoticons">החלפת סימונים טקסטואליים בציוריים</string>
