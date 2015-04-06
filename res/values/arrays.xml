@@ -135,4 +135,9 @@
         <item>3</item>
     </string-array>
 
+    <string-array name="chat_wallpaper_chooser_options">
+        <item>@string/dialog_wallpaper_chooser_option_camera</item>
+        <item>@string/dialog_wallpaper_chooser_option_gallery</item>
+    </string-array>
+
 </resources>

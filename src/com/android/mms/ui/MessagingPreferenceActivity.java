@@ -17,6 +17,7 @@
 
 package com.android.mms.ui;
 
+import android.R.drawable;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -31,7 +32,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -56,6 +61,7 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.RingtonePreference;
+import android.provider.MediaStore;
 import android.provider.SearchRecentSuggestions;
 import android.provider.Settings;
 import android.provider.Telephony;
@@ -63,11 +69,20 @@ import android.telephony.SmsManager;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.SimpleAdapter;
+import android.widget.SimpleAdapter.ViewBinder;
 import android.widget.Toast;
 import android.util.Log;
 
@@ -86,10 +101,13 @@ import com.android.mms.QTIBackupSMS;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 
 /**
@@ -123,6 +141,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             "pref_key_sms_omacp_configuration";
     public static final String CONFIGURATION_MESSAGE    = "pref_key_configuration_message";
 
+    public static final String CHAT_WALLPAPER_SETTING   = "pref_key_chat_wallpaper";
 
     // Expiry of MMS
     private final static String EXPIRY_ONE_WEEK = "604800"; // 7 * 24 * 60 * 60
@@ -136,6 +155,11 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     public static final String SHOW_EMAIL_ADDRESS        = "pref_key_show_email_address";
     // Blacklist
     public static final String BLACKLIST                 = "pref_blacklist";
+    //Chat wallpaper
+    public static final String CHAT_WALLPAPER            = "chat_wallpaper";
+
+    private static final int  PICK_FROM_CAMERA        = 0;
+    private static final int  PICK_FROM_GALLERY       = 1;
 
     public static final String CELL_BROADCAST            = "pref_key_cell_broadcast";
 
@@ -156,6 +180,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     public static final String SEND_DELAY_DURATION = "pref_key_send_delay";
 
     private ListPreference mMessageSendDelayPref;
+    private Preference mChatWallpaperPref;
     private Preference mSmsLimitPref;
     private Preference mSmsDeliveryReportPref;
     private Preference mSmsDeliveryReportPrefSub1;
@@ -387,6 +412,10 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
         if (getResources().getBoolean(R.bool.def_custom_preferences_settings)) {
             mCBsettingPref = findPreference(CELL_BROADCAST);
+        }
+        //Chat wallpaper
+        if (getResources().getBoolean(R.bool.def_custom_preferences_settings)) {
+            mChatWallpaperPref = findPreference(CHAT_WALLPAPER_SETTING);
         }
 
         // Blacklist screen - Needed for setting summary
@@ -995,6 +1024,10 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                 Log.e(TAG,
                         "ActivityNotFoundException for CellBroadcastListActivity");
             }
+        } else if (getResources().getBoolean(
+                R.bool.def_custom_preferences_settings)
+                && preference == mChatWallpaperPref) {
+            setChatWallpaper();
         }
 
         return super.onPreferenceTreeClick(preferenceScreen, preference);
@@ -1700,5 +1733,195 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         return MmsConfig.getGroupMmsEnabled() &&
                 groupMmsPrefOn &&
                 !TextUtils.isEmpty(MessageUtils.getLocalNumber());
+    }
+
+    private void setChatWallpaper() {
+        final String[] mWallpaperText = getResources().getStringArray(
+                R.array.chat_wallpaper_chooser_options);
+        Drawable cameraAppIcon = null;
+        Drawable galleryAppIcon = null;
+        final PackageManager packageManager = getPackageManager();
+        try {
+            cameraAppIcon = packageManager.getApplicationIcon(getResources()
+                    .getString(
+                            R.string.camera_packagename));
+            galleryAppIcon = packageManager.getApplicationIcon(getResources()
+                    .getString(
+                            R.string.gallery_packagename));
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        final Object[] mWallpaperImage = new Drawable[] {cameraAppIcon,
+            galleryAppIcon};
+
+        final String imageField = "imageField";
+        final String textField = "textField";
+        AlertDialog.Builder wallpaperDialogBuilder = new AlertDialog.Builder(
+                this);
+
+        ArrayList<HashMap<String, Object>> wallpaper = new ArrayList<HashMap<String, Object>>();
+        for (int i = 0; i < 2; i++) {
+            HashMap<String, Object> hashMap = new HashMap<String, Object>();
+            hashMap.put(imageField, mWallpaperImage[i]);
+            hashMap.put(textField, mWallpaperText[i]);
+            wallpaper.add(hashMap);
+        }
+
+        SimpleAdapter wallpaperDialogAdapter = new SimpleAdapter(
+                MessagingPreferenceActivity.this, wallpaper,
+                R.layout.wallpaper_chooser_dialog_item, new String[] {
+                        imageField, textField
+                }, new int[] {
+                        R.id.wallpaper_item_imageview,
+                        R.id.wallpaper_item_textview
+                });
+
+        wallpaperDialogAdapter.setViewBinder(new ViewBinder() {
+
+            public boolean setViewValue(View view, Object data,
+                    String textRepresentation) {
+                if ((view instanceof ImageView) && (data instanceof Drawable))
+                {
+                    ImageView imageView = (ImageView) view;
+                    Drawable drawable = (Drawable) data;
+                    imageView.setImageDrawable(drawable);
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        LayoutInflater mInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View layout = mInflater.inflate(R.layout.wallpaper_chooser_dialog,
+                (ViewGroup) findViewById(R.id.forwallpaperchooser));
+
+        GridView mGridView = (GridView) layout
+                .findViewById(R.id.wallpaperchooserdialog);
+        mGridView.setAdapter(wallpaperDialogAdapter);
+
+        final AlertDialog wallpaperChooser = wallpaperDialogBuilder
+                .setTitle(
+                        getResources().getString(
+                                R.string.dialog_wallpaper_title))
+                .setView(layout).create();
+        wallpaperChooser.show();
+        mGridView.setOnItemClickListener(new OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position,
+                    long id) {
+                switch (position) {
+                    case PICK_FROM_CAMERA:
+                        chooseFromCamera();
+                        wallpaperChooser.dismiss();
+                        break;
+                    case PICK_FROM_GALLERY:
+                        chooseFromGallery();
+                        wallpaperChooser.dismiss();
+                        break;
+                }
+
+            }
+        });
+    }
+
+    private void chooseFromGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(
+                Intent.createChooser(intent, getString(R.string.intent_chooser_dialog_title)),
+                PICK_FROM_GALLERY);
+    }
+
+    private void chooseFromCamera() {
+        final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File file = new File(Environment.getExternalStorageDirectory()
+                + "/DCIM/", "image" + new Date().getTime() + ".png");
+        Uri imgUri = Uri.fromFile(file);
+        if(imgUri != null) {
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, imgUri);
+            startActivityForResult(intent, PICK_FROM_CAMERA);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case PICK_FROM_CAMERA:
+                    if (data.getExtras() != null) {
+                        Bitmap photo = data.getExtras().getParcelable("data");
+                        String picturePath = getAbsolutePath(getImageUri(this,
+                                photo));
+                        PreferenceManager.getDefaultSharedPreferences(this)
+                                .edit()
+                                .putString(CHAT_WALLPAPER, picturePath)
+                                .commit();
+                    }
+                    break;
+                case PICK_FROM_GALLERY:
+                    if (data != null) {
+                        Uri selectedImage = data.getData();
+                        String picturePath = getAbsolutePath(selectedImage);
+                        PreferenceManager.getDefaultSharedPreferences(this)
+                                .edit()
+                                .putString(CHAT_WALLPAPER, picturePath)
+                                .commit();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+
+        String filepath = Environment.getExternalStorageDirectory().getPath();
+        File file = new File(filepath, "temp");
+
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        String fileName = null;
+        try {
+            fileName = file.getAbsolutePath() + "/"
+                    + System.currentTimeMillis() + ".png";
+
+            FileOutputStream ostream = new FileOutputStream(fileName);
+            inImage.compress(Bitmap.CompressFormat.PNG, 100, ostream);
+            ostream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return Uri.parse(fileName);
+    }
+
+    public String getAbsolutePath(Uri uri) {
+        String[] filePathColumn = {
+                MediaStore.Images.Media.DATA
+        };
+        Cursor cursor = null;
+        cursor = getContentResolver().query(uri,
+                filePathColumn, null, null, null);
+        try {
+            if (cursor != null && cursor.moveToFirst()) {
+                int columnIndex = cursor
+                        .getColumnIndexOrThrow(filePathColumn[0]);
+                String picturePath = cursor.getString(columnIndex);
+                return picturePath;
+            }
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return null;
     }
 }

@@ -95,6 +95,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SqliteWrapper;
 import android.drm.DrmStore;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
@@ -2875,6 +2878,10 @@ public class ComposeMessageActivity extends Activity
         mConversation.markAsRead(true);
         mIsAirplain = Settings.System.getInt(ComposeMessageActivity.this.getContentResolver(),
                 Settings.System.AIRPLANE_MODE_ON, 0) ;
+
+        if (getResources().getBoolean(R.bool.def_custom_preferences_settings)) {
+            setBackgroundWallpaper();
+        }
     }
 
     @Override
@@ -8334,4 +8341,20 @@ public class ComposeMessageActivity extends Activity
             }
         }
     };
+
+    private void setBackgroundWallpaper() {
+        SharedPreferences mPreferences = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        String imageUri = mPreferences.getString(
+                MessagingPreferenceActivity.CHAT_WALLPAPER, null);
+        if (!TextUtils.isEmpty(imageUri)) {
+            Bitmap bitmap = BitmapFactory.decodeFile(mPreferences
+                    .getString(
+                            MessagingPreferenceActivity.CHAT_WALLPAPER, null));
+            if(bitmap != null) {
+                mMsgListView.setBackground(new BitmapDrawable(bitmap));
+            }
+        }
+    }
+
 }
