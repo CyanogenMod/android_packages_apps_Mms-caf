@@ -70,7 +70,6 @@ import android.util.Log;
 
 import com.android.internal.telephony.TelephonyIntents;
 import com.android.internal.telephony.PhoneConstants;
-
 import com.android.internal.telephony.util.BlacklistUtils;
 import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
@@ -114,6 +113,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     public static final String AUTO_DELETE              = "pref_key_auto_delete";
     public static final String GROUP_MMS_MODE           = "pref_key_mms_group_mms";
     public static final String SMS_CDMA_PRIORITY        = "pref_key_sms_cdma_priority";
+    public static final String SMART_DIALER_ENABLED = "pref_key_mms_smart_dialer";
 
     // Unicode
     public static final String UNICODE_STRIPPING            = "pref_key_unicode_stripping_value";
@@ -174,6 +174,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private SwitchPreference mVibratePref;
     private SwitchPreference mEnableNotificationsPref;
     private SwitchPreference mMmsAutoRetrievialPref;
+    private SwitchPreference mSmartCall;
     private ListPreference mMmsExpiryPref;
     private ListPreference mMmsExpiryCard1Pref;
     private ListPreference mMmsExpiryCard2Pref;
@@ -275,6 +276,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mSmsPrefCategory.setEnabled(mIsSmsEnabled);
         mMmsPrefCategory.setEnabled(mIsSmsEnabled);
         mNotificationPrefCategory.setEnabled(mIsSmsEnabled);
+        mSmartCall.setEnabled(mIsSmsEnabled);
     }
 
     @Override
@@ -434,13 +436,9 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
                 if (!MessageUtils.isIccCardActivated(MessageUtils.SUB1)) {
                     mSmsStoreCard1Pref.setEnabled(false);
-                } else {
-                    setSmsPreferStoreSummary(MessageUtils.SUB1);
                 }
                 if (!MessageUtils.isIccCardActivated(MessageUtils.SUB2)) {
                     mSmsStoreCard2Pref.setEnabled(false);
-                } else {
-                    setSmsPreferStoreSummary(MessageUtils.SUB2);
                 }
             } else {
                 PreferenceCategory storageOptions =
@@ -450,8 +448,6 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
                 if (!MessageUtils.hasIccCard()) {
                     mSmsStorePref.setEnabled(false);
-                } else {
-                    setSmsPreferStoreSummary();
                 }
             }
         } else {
@@ -536,7 +532,6 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             } else {
                 storageOptions.removePreference(mSmsValidityCard1Pref);
                 storageOptions.removePreference(mSmsValidityCard2Pref);
-                setSmsPreferValiditySummary(MessageUtils.SUB_INVALID);
             }
         } else {
             storageOptions.removePreference(mSmsValidityPref);
@@ -619,97 +614,15 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         return title;
     }
 
-    private void setSmsPreferStoreSummary() {
-        mSmsStorePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                final String summary = newValue.toString();
-                int index = mSmsStorePref.findIndexOfValue(summary);
-                mSmsStorePref.setSummary(mSmsStorePref.getEntries()[index]);
-                mSmsStorePref.setValue(summary);
-                return true;
-            }
-        });
-        mSmsStorePref.setSummary(mSmsStorePref.getEntry());
-    }
-
-    private void setSmsPreferStoreSummary(int subscription) {
-        if (MessageUtils.SUB1 == subscription) {
-            mSmsStoreCard1Pref.setOnPreferenceChangeListener(
-                    new Preference.OnPreferenceChangeListener() {
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    final String summary = newValue.toString();
-                    int index = mSmsStoreCard1Pref.findIndexOfValue(summary);
-                    mSmsStoreCard1Pref.setSummary(mSmsStoreCard1Pref.getEntries()[index]);
-                    mSmsStoreCard1Pref.setValue(summary);
-                    return false;
-                }
-            });
-            mSmsStoreCard1Pref.setSummary(mSmsStoreCard1Pref.getEntry());
-        } else {
-            mSmsStoreCard2Pref.setOnPreferenceChangeListener(
-                    new Preference.OnPreferenceChangeListener() {
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    final String summary = newValue.toString();
-                    int index = mSmsStoreCard2Pref.findIndexOfValue(summary);
-                    mSmsStoreCard2Pref.setSummary(mSmsStoreCard2Pref.getEntries()[index]);
-                    mSmsStoreCard2Pref.setValue(summary);
-                    return false;
-                }
-            });
-            mSmsStoreCard2Pref.setSummary(mSmsStoreCard2Pref.getEntry());
-        }
-    }
-
-    private void setSmsPreferValiditySummary(int subscription) {
-        switch (subscription) {
-            case MessageUtils.SUB_INVALID:
-                mSmsValidityPref.setOnPreferenceChangeListener(
-                        new Preference.OnPreferenceChangeListener() {
-                    public boolean onPreferenceChange(Preference preference, Object newValue) {
-                        final String summary = newValue.toString();
-                        int index = mSmsValidityPref.findIndexOfValue(summary);
-                        mSmsValidityPref.setSummary(mSmsValidityPref.getEntries()[index]);
-                        mSmsValidityPref.setValue(summary);
-                        return true;
-                    }
-                });
-                mSmsValidityPref.setSummary(mSmsValidityPref.getEntry());
-                break;
-            case MessageUtils.SUB1:
-                mSmsValidityCard1Pref.setOnPreferenceChangeListener(
-                        new Preference.OnPreferenceChangeListener() {
-                    public boolean onPreferenceChange(Preference preference, Object newValue) {
-                        final String summary = newValue.toString();
-                        int index = mSmsValidityCard1Pref.findIndexOfValue(summary);
-                        mSmsValidityCard1Pref.setSummary(mSmsValidityCard1Pref.getEntries()[index]);
-                        mSmsValidityCard1Pref.setValue(summary);
-                        return true;
-                    }
-                });
-                mSmsValidityCard1Pref.setSummary(mSmsValidityCard1Pref.getEntry());
-                break;
-            case MessageUtils.SUB2:
-                mSmsValidityCard2Pref.setOnPreferenceChangeListener(
-                        new Preference.OnPreferenceChangeListener() {
-                    public boolean onPreferenceChange(Preference preference, Object newValue) {
-                        final String summary = newValue.toString();
-                        int index = mSmsValidityCard2Pref.findIndexOfValue(summary);
-                        mSmsValidityCard2Pref.setSummary(mSmsValidityCard2Pref.getEntries()[index]);
-                        mSmsValidityCard2Pref.setValue(summary);
-                        return true;
-                    }
-                });
-                mSmsValidityCard2Pref.setSummary(mSmsValidityCard2Pref.getEntry());
-                break;
-            default:
-                break;
-        }
-    }
-
     private void setEnabledNotificationsPref() {
         // The "enable notifications" setting is really stored in our own prefs. Read the
         // current value and set the Switch to match.
         mEnableNotificationsPref.setChecked(getNotificationEnabled(this));
+    }
+
+    private void setEnabledSmartCallPref() {
+        boolean isSmartCallEnabled = getSmartCallEnabled(this);
+        mSmartCall.setChecked(isSmartCallEnabled);
     }
 
     private void setEnabledQuickMessagePref() {
@@ -755,64 +668,13 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             mmsSettings.removePreference(mMmsExpiryPref);
             if (!MessageUtils.isIccCardActivated(MessageUtils.SUB1)) {
                 mMmsExpiryCard1Pref.setEnabled(false);
-            } else {
-                setMmsExpirySummary(PhoneConstants.SUB1);
             }
             if (!MessageUtils.isIccCardActivated(MessageUtils.SUB2)) {
                 mMmsExpiryCard2Pref.setEnabled(false);
-            } else {
-                setMmsExpirySummary(PhoneConstants.SUB2);
             }
         } else {
             mmsSettings.removePreference(mMmsExpiryCard1Pref);
             mmsSettings.removePreference(mMmsExpiryCard2Pref);
-            setMmsExpirySummary(MessageUtils.SUB_INVALID);
-        }
-    }
-
-    private void setMmsExpirySummary(int subscription) {
-        switch (subscription) {
-            case MessageUtils.SUB_INVALID:
-                mMmsExpiryPref.setOnPreferenceChangeListener(
-                        new Preference.OnPreferenceChangeListener() {
-                    public boolean onPreferenceChange(Preference preference, Object newValue) {
-                        final String value = newValue.toString();
-                        int index = mMmsExpiryPref.findIndexOfValue(value);
-                        mMmsExpiryPref.setValue(value);
-                        mMmsExpiryPref.setSummary(mMmsExpiryPref.getEntries()[index]);
-                        return false;
-                    }
-                });
-                mMmsExpiryPref.setSummary(mMmsExpiryPref.getEntry());
-                break;
-            case PhoneConstants.SUB1:
-                mMmsExpiryCard1Pref.setOnPreferenceChangeListener(
-                        new Preference.OnPreferenceChangeListener() {
-                    public boolean onPreferenceChange(Preference preference, Object newValue) {
-                        final String value = newValue.toString();
-                        int index = mMmsExpiryCard1Pref.findIndexOfValue(value);
-                        mMmsExpiryCard1Pref.setValue(value);
-                        mMmsExpiryCard1Pref.setSummary(mMmsExpiryCard1Pref.getEntries()[index]);
-                        return false;
-                    }
-                });
-                mMmsExpiryCard1Pref.setSummary(mMmsExpiryCard1Pref.getEntry());
-                break;
-            case PhoneConstants.SUB2:
-                mMmsExpiryCard2Pref.setOnPreferenceChangeListener(
-                        new Preference.OnPreferenceChangeListener() {
-                    public boolean onPreferenceChange(Preference preference, Object newValue) {
-                        final String value = newValue.toString();
-                        int index = mMmsExpiryCard2Pref.findIndexOfValue(value);
-                        mMmsExpiryCard2Pref.setValue(value);
-                        mMmsExpiryCard2Pref.setSummary(mMmsExpiryCard2Pref.getEntries()[index]);
-                        return false;
-                    }
-                });
-                mMmsExpiryCard2Pref.setSummary(mMmsExpiryCard2Pref.getEntry());
-                break;
-            default:
-                break;
         }
     }
 
@@ -875,11 +737,11 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             manageSMS();
         } else if (preference == mManageSim1Pref) {
             Intent intent = new Intent(this, ManageSimMessages.class);
-            intent.putExtra(MessageUtils.SUBSCRIPTION_KEY, MessageUtils.SUB1);
+            intent.putExtra(PhoneConstants.PHONE_KEY, MessageUtils.SUB1);
             startActivity(intent);
         } else if (preference == mManageSim2Pref) {
             Intent intent = new Intent(this, ManageSimMessages.class);
-            intent.putExtra(MessageUtils.SUBSCRIPTION_KEY, MessageUtils.SUB2);
+            intent.putExtra(PhoneConstants.PHONE_KEY, MessageUtils.SUB2);
             startActivity(intent);
         } else if (preference == mClearHistoryPref) {
             showDialog(CONFIRM_CLEAR_SEARCH_HISTORY_DIALOG);
@@ -889,6 +751,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             enableNotifications(mEnableNotificationsPref.isChecked(), this);
         } else if (preference == mSmsSignaturePref) {
             updateSignatureStatus();
+        } else if (preference == mSmartCall) {
+            enableSmartDialer(mSmartCall.isChecked(), this);
         } else if (preference == mEnableQuickMessagePref) {
             // Update the actual "enable quickmessage" value that is stored in secure settings.
             enableQuickMessage(mEnableQuickMessagePref.isChecked(), this);
@@ -1277,6 +1141,20 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
         editor.putBoolean(MessagingPreferenceActivity.NOTIFICATION_ENABLED, enabled);
 
+        editor.apply();
+    }
+
+    public static boolean getSmartCallEnabled(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean smartCallEnabled =
+            prefs.getBoolean(MessagingPreferenceActivity.SMART_DIALER_ENABLED, false);
+        return smartCallEnabled;
+    }
+
+    public static void enableSmartDialer(boolean enabled, Context context) {
+        SharedPreferences.Editor editor =
+            PreferenceManager.getDefaultSharedPreferences(context).edit();
+        editor.putBoolean(MessagingPreferenceActivity.SMART_DIALER_ENABLED, enabled);
         editor.apply();
     }
 
