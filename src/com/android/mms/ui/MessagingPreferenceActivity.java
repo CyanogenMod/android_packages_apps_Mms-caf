@@ -53,6 +53,7 @@ import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.RingtonePreference;
 import android.preference.SwitchPreference;
+import android.preference.CheckBoxPreference;
 import android.provider.SearchRecentSuggestions;
 import android.provider.Settings;
 import android.provider.Telephony;
@@ -137,6 +138,9 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     public static final String FULL_TIMESTAMP            = "pref_key_mms_full_timestamp";
     public static final String SENT_TIMESTAMP            = "pref_key_mms_use_sent_timestamp";
 
+    // Smar Call
+    public static final String SMART_DIALER_ENABLED = "pref_key_mms_smart_dialer";
+
     // Vibrate pattern
     public static final String NOTIFICATION_VIBRATE_PATTERN =
             "pref_key_mms_notification_vibrate_pattern";
@@ -174,6 +178,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private SwitchPreference mVibratePref;
     private SwitchPreference mEnableNotificationsPref;
     private SwitchPreference mMmsAutoRetrievialPref;
+    private CheckBoxPreference mSmartCall;
     private ListPreference mMmsExpiryPref;
     private ListPreference mMmsExpiryCard1Pref;
     private ListPreference mMmsExpiryCard2Pref;
@@ -192,6 +197,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private ArrayList<Preference> mSmscPrefList = new ArrayList<Preference>();
     private static final int CONFIRM_CLEAR_SEARCH_HISTORY_DIALOG = 3;
     private ListPreference mUnicodeStripping;
+    public static final String SMART_CALLS_ENABLED = "pref_key_mms_SmartCall";
 
     // Whether or not we are currently enabled for SMS. This field is updated in onResume to make
     // sure we notice if the user has changed the default SMS app.
@@ -275,6 +281,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mSmsPrefCategory.setEnabled(mIsSmsEnabled);
         mMmsPrefCategory.setEnabled(mIsSmsEnabled);
         mNotificationPrefCategory.setEnabled(mIsSmsEnabled);
+        mSmartCall.setEnabled(mIsSmsEnabled);
     }
 
     @Override
@@ -325,6 +332,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mMmsExpiryCard2Pref = (ListPreference) findPreference("pref_key_mms_expiry_slot2");
         mSmsSignaturePref = (SwitchPreference) findPreference("pref_key_enable_signature");
         mSmsSignatureEditPref = (EditTextPreference) findPreference("pref_key_edit_signature");
+        mSmartCall = (CheckBoxPreference) findPreference(SMART_DIALER_ENABLED);
         mVibratePref = (SwitchPreference) findPreference(NOTIFICATION_VIBRATE);
         Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         if (vibrator == null || !vibrator.hasVibrator()) {
@@ -462,6 +470,9 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             storageOptions.removePreference(mSmsStoreCard2Pref);
         }
         setSmsValidityPeriodPref();
+
+        // SmartCall
+        setEnabledSmartCallPref();
 
         // If needed, migrate vibration setting from the previous tri-state setting stored in
         // NOTIFICATION_VIBRATE_WHEN to the boolean setting stored in NOTIFICATION_VIBRATE.
@@ -712,6 +723,11 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mEnableNotificationsPref.setChecked(getNotificationEnabled(this));
     }
 
+     private void setEnabledSmartCallPref() {
+        boolean isSmartCallEnabled = getSmartCallEnabled(this);
+        mSmartCall.setChecked(isSmartCallEnabled);
+    }
+
     private void setEnabledQuickMessagePref() {
         // The "enable quickmessage" setting is really stored in our own prefs. Read the
         // current value and set the Switch to match.
@@ -901,6 +917,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         } else if (preference == mEnableQmDarkThemePref) {
             // Update the actual "enable dark theme" value that is stored in secure settings.
             enableQmDarkTheme(mEnableQmDarkThemePref.isChecked(), this);
+        } else if (preference == mSmartCall) {
+            enableSmartDialer(mSmartCall.isChecked(), this);
         } else if (preference == mMmsAutoRetrievialPref) {
             if (mMmsAutoRetrievialPref.isChecked()) {
                 startMmsDownload();
@@ -1277,6 +1295,20 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
         editor.putBoolean(MessagingPreferenceActivity.NOTIFICATION_ENABLED, enabled);
 
+        editor.apply();
+    }
+
+    public static boolean getSmartCallEnabled(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean smartCallEnabled =
+            prefs.getBoolean(MessagingPreferenceActivity.SMART_DIALER_ENABLED, false);
+        return smartCallEnabled;
+    }
+
+    public static void enableSmartDialer(boolean enabled, Context context) {
+        SharedPreferences.Editor editor =
+            PreferenceManager.getDefaultSharedPreferences(context).edit();
+        editor.putBoolean(MessagingPreferenceActivity.SMART_DIALER_ENABLED, enabled);
         editor.apply();
     }
 
