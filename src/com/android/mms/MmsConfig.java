@@ -56,6 +56,8 @@ public class MmsConfig {
     public static final int CREATIONMODE_FREE = 3;
 
     public static final String EXTRA_URI = "uri";
+    public static final String KILO_BYTE = "KB";
+    public static final int KB_IN_BYTES = 1024;
 
     /**
      * Whether to hide MMS functionality from the user (i.e. SMS only).
