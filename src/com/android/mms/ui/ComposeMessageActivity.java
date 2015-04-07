@@ -52,6 +52,7 @@ import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.app.Service;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
@@ -166,6 +167,7 @@ import com.android.mms.ui.zoom.ZoomGestureOverlayView.IZoomListener;
 import com.android.mms.ui.zoom.ZoomMessageListItem;
 import com.android.mms.util.DraftCache;
 import com.android.mms.util.IntentUtils;
+import com.android.mms.util.MultiSensorManager;
 import com.android.mms.util.PhoneNumberFormatter;
 import com.android.mms.util.SendingProgressTokenManager;
 import com.android.mms.util.UnicodeFilter;
@@ -192,7 +194,7 @@ import com.google.android.mms.pdu.SendReq;
  * exit_on_sent boolean Exit this activity after the message is sent.
  */
 public class ComposeMessageActivity extends Activity
-        implements View.OnClickListener, TextView.OnEditorActionListener,
+        implements View.OnClickListener, TextView.OnEditorActionListener, MultiSensorManager.MultiSensorListener,
         MessageStatusListener, Contact.UpdateListener, IZoomListener {
     public static final int REQUEST_CODE_ATTACH_IMAGE                   = 100;
     public static final int REQUEST_CODE_TAKE_PICTURE                   = 101;
@@ -325,6 +327,8 @@ public class ComposeMessageActivity extends Activity
         CONVERSATION_TYPE_URI = builder.build();
         System.out.println("URI " + CONVERSATION_TYPE_URI);
     }
+
+    private MultiSensorManager mMultiSensorManager;
 
     private ContentResolver mContentResolver;
 
@@ -2019,6 +2023,7 @@ public class ComposeMessageActivity extends Activity
         mBackgroundQueryHandler = new BackgroundQueryHandler(mContentResolver);
 
         updateAccentColorFromTheme(true);
+        mMultiSensorManager = new MultiSensorManager(ComposeMessageActivity.this, this);
         initialize(savedInstanceState, 0);
 
         if (TRACE) {
@@ -2493,6 +2498,12 @@ public class ComposeMessageActivity extends Activity
             }
         }, 100);
 
+        TelephonyManager tm = (TelephonyManager) getSystemService(Service.TELEPHONY_SERVICE);
+        if (MessagingPreferenceActivity.getSmartCallEnabled(ComposeMessageActivity.this)
+              && tm.getCallState() == TelephonyManager.CALL_STATE_IDLE) {
+            mMultiSensorManager.enable();
+        }
+
         mIsRunning = true;
         updateThreadIdIfRunning();
         mConversation.markAsRead(true);
@@ -2517,6 +2528,9 @@ public class ComposeMessageActivity extends Activity
         if (isRecipientsEditorVisible()) {
             mRecipientsEditor.removeTextChangedListener(mRecipientsWatcher);
         }
+
+        // always disable just to make sure we never keep it alive
+        mMultiSensorManager.disable();
 
         // remove any callback to display a progress spinner
         if (mAsyncDialog != null) {
@@ -4693,6 +4707,21 @@ public class ComposeMessageActivity extends Activity
         }
         return text;
     }
+
+    @Override
+    public void onPickup() {
+        if (getRecipients().isEmpty() == false) {
+            mMultiSensorManager.disable();
+            // get number and attach it to an Intent.ACTION_CALL, then start
+            // the Intent
+            String number = getRecipients().get(0).getNumber();
+            Intent dialIntent = new Intent(Intent.ACTION_CALL);
+            dialIntent.setData(Uri.fromParts("tel", number, null));
+            dialIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(dialIntent);
+        }
+    }
+
 
     private void resetMessage() {
         if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {

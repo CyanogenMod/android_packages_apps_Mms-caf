@@ -282,6 +282,13 @@
             android:defaultValue="0" />
 
         <SwitchPreference
+            android:key="pref_key_mms_smartcall"
+            android:title="@string/pref_title_smartcall"
+            android:summary="@string/pref_summary_smartcall"
+            android:defaultValue="false" />
+
+
+        <SwitchPreference
             android:key="pref_key_mms_full_timestamp"
             android:title="@string/pref_title_mms_full_timestamp"
             android:summary="@string/pref_summary_mms_full_timestamp"
