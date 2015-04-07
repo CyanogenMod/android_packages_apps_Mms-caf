@@ -267,6 +267,9 @@
                 android:title="@string/pref_title_show_email_address"
                 android:summary="@string/pref_summary_show_email_address" />
         </PreferenceCategory>
+        <Preference
+                android:key="pref_key_chat_wallpaper"
+                android:title="@string/pref_chat_wallpaper" />
         <PreferenceCategory
             android:key="pref_key_storage_settings"
             android:title="@string/pref_sms_storage_title" >
