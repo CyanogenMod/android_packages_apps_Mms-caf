@@ -266,6 +266,15 @@
         <Preference
                 android:key="pref_key_chat_wallpaper"
                 android:title="@string/pref_chat_wallpaper" />
+            <ListPreference
+                android:key="pref_key_message_font_size"
+                android:defaultValue="@string/def_message_font_size_value"
+                android:title="@string/pref_title_message_font_size"
+                android:dialogTitle="@string/pref_title_message_font_size"
+                android:entries="@array/pref_message_font_size_choices"
+                android:entryValues="@array/pref_message_font_size_values"
+                android:summary="@string/pref_title_message_font_size"/>
+
         <PreferenceCategory
             android:key="pref_key_storage_settings"
             android:title="@string/pref_sms_storage_title" >

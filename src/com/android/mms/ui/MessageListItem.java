@@ -1035,4 +1035,11 @@ public class MessageListItem extends LinearLayout implements
             }
         }
     }
+
+    public void setBodyTextSize(float size) {
+        if (mBodyTextView != null
+                && mBodyTextView.getVisibility() == View.VISIBLE) {
+            mBodyTextView.setTextSize(size);
+        }
+    }
 }

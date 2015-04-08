@@ -30,14 +30,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-<<<<<<< HEAD
-=======
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
->>>>>>> eb3685a... MMS: Chat wallpaper change
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -71,12 +63,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-<<<<<<< HEAD
-=======
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
->>>>>>> eb3685a... MMS: Chat wallpaper change
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -93,22 +79,7 @@ import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.transaction.TransactionService;
 import com.android.mms.util.Recycler;
-<<<<<<< HEAD
 import java.util.ArrayList;
-=======
-import com.android.mms.QTIBackupMMS;
-import com.android.mms.QTIBackupSMS;
-
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
->>>>>>> eb3685a... MMS: Chat wallpaper change
 
 
 /**
@@ -148,24 +119,9 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private final static String EXPIRY_ONE_WEEK = "604800"; // 7 * 24 * 60 * 60
     private final static String EXPIRY_TWO_DAYS = "172800"; // 2 * 24 * 60 * 60
 
-<<<<<<< HEAD
-=======
-    // QuickMessage
-    public static final String QUICKMESSAGE_ENABLED      = "pref_key_quickmessage";
-    public static final String QM_LOCKSCREEN_ENABLED     = "pref_key_qm_lockscreen";
-    public static final String QM_CLOSE_ALL_ENABLED      = "pref_key_close_all";
-    public static final String QM_DARK_THEME_ENABLED     = "pref_dark_theme";
-    public static final String SHOW_EMAIL_ADDRESS        = "pref_key_show_email_address";
-    // Blacklist
-    public static final String BLACKLIST                 = "pref_blacklist";
-    //Chat wallpaper
-    public static final String CHAT_WALLPAPER            = "chat_wallpaper";
-
-    private static final int  PICK_FROM_CAMERA        = 0;
-    private static final int  PICK_FROM_GALLERY       = 1;
-
->>>>>>> eb3685a... MMS: Chat wallpaper change
     public static final String CELL_BROADCAST            = "pref_key_cell_broadcast";
+    //Fontsize
+    public static final String FONT_SIZE_SETTING         = "pref_key_message_font_size";
 
     // Menu entries
     private static final int MENU_RESTORE_DEFAULTS    = 1;
@@ -180,14 +136,6 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private PreferenceCategory mNotificationPrefCategory;
     private PreferenceCategory mSmscPrefCate;
 
-<<<<<<< HEAD
-=======
-    // Delay send
-    public static final String SEND_DELAY_DURATION = "pref_key_send_delay";
-
-    private ListPreference mMessageSendDelayPref;
-    private Preference mChatWallpaperPref;
->>>>>>> eb3685a... MMS: Chat wallpaper change
     private Preference mSmsLimitPref;
     private Preference mSmsDeliveryReportPref;
     private Preference mSmsDeliveryReportPrefSub1;
@@ -206,6 +154,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private CheckBoxPreference mVibratePref;
     private CheckBoxPreference mEnableNotificationsPref;
     private CheckBoxPreference mMmsAutoRetrievialPref;
+    private ListPreference mFontSizePref;
     private ListPreference mMmsCreationModePref;
     private ListPreference mMmsExpiryPref;
     private ListPreference mMmsExpiryCard1Pref;
@@ -237,6 +186,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private static final int EVENT_GET_SMSC_DONE = 1;
     private static final String EXTRA_EXCEPTION = "exception";
     private static SmscHandler mHandler = null;
+
+    public static final String MESSAGE_FONT_SIZE = "message_font_size";
 
     public static final String MMS_CREATION_MODE = "pref_key_creation_mode";
     public static final int CREATION_MODE_RESTRICTED = 1;
@@ -386,6 +337,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             mCBsettingPref = findPreference(CELL_BROADCAST);
             mMmsSizeLimit = (Preference) findPreference("pref_key_mms_size_limit");
             setMmsSizeSummary();
+            mFontSizePref = (ListPreference) findPreference(FONT_SIZE_SETTING);
         }
         //Chat wallpaper
         if (getResources().getBoolean(R.bool.def_custom_preferences_settings)) {
@@ -1448,5 +1400,23 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mMmsSizeLimit.setSummary(Integer.toString(MmsConfig
                 .getMaxMessageSize() / MmsConfig.KB_IN_BYTES)
                 + MmsConfig.KILO_BYTE);
+    }
+
+    private void setSmsPreferFontSummary() {
+        if (getResources().getBoolean(R.bool.def_custom_preferences_settings)
+                && mFontSizePref != null) {
+            mFontSizePref
+                    .setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                        public boolean onPreferenceChange(
+                                Preference preference, Object newValue) {
+                            final String summary = newValue.toString();
+                            int index = mFontSizePref.findIndexOfValue(summary);
+                            mFontSizePref.setSummary(mFontSizePref.getEntries()[index]);
+                            mFontSizePref.setValue(summary);
+                            return true;
+                        }
+                    });
+            mFontSizePref.setSummary(mFontSizePref.getEntry());
+        }
     }
 }
