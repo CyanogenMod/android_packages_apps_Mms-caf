@@ -1805,6 +1805,11 @@ public class MessageUtils {
         return !mConnService.getMobileDataEnabled();
     }
 
+    public static boolean isAirplaneModeOn(Context context) {
+        return Settings.Global.getInt(context.getContentResolver(),
+                Settings.Global.AIRPLANE_MODE_ON, 0) == 1;
+    }
+
     public static float onFontSizeScale(ArrayList<TextView> list, float scale,
             float mFontSizeForSave) {
         float mCurrentSize = 0;

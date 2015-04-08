@@ -456,6 +456,7 @@ public class ComposeMessageActivity extends Activity
     // sure we notice if the user has changed the default SMS app.
     private boolean mIsSmsEnabled;
 
+    private boolean mIsAirplaneModeOn = false;
     private Handler mHandler = new Handler();
 
     private  boolean mIsRTL = false;
@@ -2039,6 +2040,9 @@ public class ComposeMessageActivity extends Activity
         mBackgroundQueryHandler = new BackgroundQueryHandler(mContentResolver);
 
         initialize(savedInstanceState, 0);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+        registerReceiver(mAirplaneModeBroadcastReceiver, intentFilter);
 
         if (TRACE) {
             android.os.Debug.startMethodTracing("compose");
@@ -2495,6 +2499,7 @@ public class ComposeMessageActivity extends Activity
 
         mIsRunning = true;
         updateThreadIdIfRunning();
+        mIsAirplaneModeOn = MessageUtils.isAirplaneModeOn(this);
 
         if (getResources().getBoolean(R.bool.def_custom_preferences_settings)) {
             setBackgroundWallpaper();
@@ -2586,6 +2591,7 @@ public class ComposeMessageActivity extends Activity
             android.os.Debug.stopMethodTracing();
         }
 
+        unregisterReceiver(mAirplaneModeBroadcastReceiver);
         if (mMsgListAdapter != null) {
             mMsgListAdapter.changeCursor(null);
             mMsgListAdapter.cancelBackgroundLoading();
@@ -4769,14 +4775,28 @@ public class ComposeMessageActivity extends Activity
     }
 
     private boolean isPreparedForSending() {
-        int recipientCount = recipientCount();
+        if (mIsAirplaneModeOn) {
+            return false;
+        }
 
+        int recipientCount = recipientCount();
         return (MessageUtils.getActivatedIccCardCount() > 0 || isCdmaNVMode()) &&
                 recipientCount > 0 && recipientCount <= MmsConfig.getRecipientLimit() &&
                 mIsSmsEnabled &&
                 (mWorkingMessage.hasAttachment() || mWorkingMessage.hasText() ||
                     mWorkingMessage.hasSubject());
     }
+
+    private BroadcastReceiver mAirplaneModeBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(Intent.ACTION_AIRPLANE_MODE_CHANGED)) {
+                mIsAirplaneModeOn = intent.getBooleanExtra("state", false);
+                updateSendButtonState();
+            }
+        }
+    };
 
     private boolean isCdmaNVMode() {
         if (TelephonyManager.getDefault().isMultiSimEnabled()) {
