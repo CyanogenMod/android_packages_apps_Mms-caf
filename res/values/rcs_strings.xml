@@ -81,7 +81,7 @@
     <string name="message_has_been_burned">Burnt</string>
     <string name="message_download">Click to download</string>
     <string name="message_downloaded">Download complete</string>
-    <string name="message_send_fail_resend">Failed to be sent, click to resend</string>
+    <string name="message_send_fail_resend">Failed to be sent, click to resume</string>
     <!-- RCS -->
     <string name="image_downloading">Downloading: %1$d %%</string>
     <string name="audio_length">Audio duration: </string>
