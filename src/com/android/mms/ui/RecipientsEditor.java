@@ -363,6 +363,27 @@ public class RecipientsEditor extends RecipientEditTextView {
                 }
             });
 
+            if (list.size() >= getMaxChipsParsed()) {
+                // These chips won't be parsed anyway
+                // Add these contacts in one go instead of appending individually
+                final StringBuilder stringBuilder = new StringBuilder();
+
+                for (Contact c : list) {
+                    CharSequence charSequence = contactToToken(c);
+
+                    if (charSequence != null && charSequence.length() > 0) {
+                        stringBuilder.append(charSequence + ", ");
+                    }
+                }
+
+                post(new Runnable() {
+                    @Override
+                    public void run() {
+                        setText(stringBuilder.toString());
+                    }
+                });
+            }
+
             for (Contact c : list) {
                 // Calling setText to set the recipients won't create chips,
                 // but calling append() will.
