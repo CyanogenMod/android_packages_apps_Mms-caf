@@ -354,7 +354,7 @@ public class SlideListItemView extends LinearLayout implements SlideViewInterfac
         if (name != null) {
             mAttachmentName.setText(name);
             if (mContext instanceof MobilePaperShowActivity) {
-                mAttachmentIcon.setImageResource(R.drawable.ic_attach_cal_event);
+                mAttachmentIcon.setImageResource(R.drawable.ic_attach_event);
                 ViewAttachmentListener l = new ViewAttachmentListener(vcalUri, name, false);
                 setOnClickListener(l);
             }
