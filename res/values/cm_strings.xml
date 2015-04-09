@@ -104,4 +104,7 @@
 
     <!-- friendlier text for an activity not found exception for calendar attachments -->
     <string name="calendar_attachment_activity_not_found">Unable to find a supporting Calendar app</string>
+
+    <!-- Select recipients dialog -->
+    <string name="adding_selected_recipients_dialog_text">Adding contacts&#8230;</string>
 </resources>
