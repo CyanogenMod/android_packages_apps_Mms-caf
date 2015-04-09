@@ -373,4 +373,7 @@
     <!-- Original timestamps -->
     <string name="pref_title_mms_use_sent_timestamp">Original timestamps</string>
     <string name="pref_summary_mms_use_sent_timestamp">Display sent date instead of received date in timestamps</string>
+
+    <!-- Select recipients dialog -->
+    <string name="adding_selected_recipients_dialog_text">Adding contacts&#8230;</string>
 </resources>
