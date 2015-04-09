@@ -5325,7 +5325,8 @@ public class ComposeMessageActivity extends Activity
                 // Rebuild the message list so each MessageItem will get the last contact info.
                 ComposeMessageActivity.this.mMsgListAdapter.notifyDataSetChanged();
 
-                if (mRecipientsEditor != null) {
+                if (mRecipientsEditor != null && (mAddNumbersTask == null ||
+                        mAddNumbersTask.getStatus() != AsyncTask.Status.RUNNING)) {
                     mRecipientsEditor.populate(recipients);
                 }
             }
