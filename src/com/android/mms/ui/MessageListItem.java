@@ -1004,7 +1004,7 @@ public class MessageListItem extends ZoomMessageListItem implements
         showMmsView(true);
 
         try {
-            mImageView.setImageResource(R.drawable.ic_attach_cal_event);
+            mImageView.setImageResource(R.drawable.ic_attach_event);
             mImageView.setVisibility(VISIBLE);
         } catch (java.lang.OutOfMemoryError e) {
             // shouldn't be here.
