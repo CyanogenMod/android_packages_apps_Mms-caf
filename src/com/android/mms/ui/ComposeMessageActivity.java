@@ -4104,6 +4104,10 @@ public class ComposeMessageActivity extends Activity
                 if (view != null) {
                     addAttachment((mCurrentAttachmentPager > DEFAULT_ATTACHMENT_PAGER ? position
                             + mAttachmentPagerAdapter.PAGE_GRID_COUNT : position), replace);
+                    int index = mCurrentAttachmentPager > DEFAULT_ATTACHMENT_PAGER ? position
+                            + mAttachmentPagerAdapter.PAGE_GRID_COUNT : position;
+                    int type = mAttachmentPagerAdapter.getAttachmentTypeByIndex(index);
+                    addAttachment(type, replace);
                     mAttachmentSelector.setVisibility(View.GONE);
                 }
             }
@@ -4111,6 +4115,8 @@ public class ComposeMessageActivity extends Activity
         setAttachmentSelectorHeight();
         mAttachmentPager.setAdapter(mAttachmentPagerAdapter);
         mAttachmentPager.setCurrentItem(((mIsRTL) ? 1 : 0));
+        mAttachmentPager.setCurrentItem(0);
+        mCurrentAttachmentPager = 0;
         mAttachmentPager.setOnPageChangeListener(mAttachmentPagerChangeListener);
         mAttachmentSelector.setVisibility(View.VISIBLE);
         // Delay 200ms for drawing view completed.
@@ -7934,8 +7940,7 @@ public class ComposeMessageActivity extends Activity
                         intent.putExtra(THREAD_ID, mTempThreadId);
                     }
 
-                    if (msgItem.mType.equals("sms")
-                            || (mIsRcsEnabled && msgItem.mRcsType == RcsUtils.RCS_MSG_TYPE_TEXT)) {
+                    if (msgItem.mType.equals("sms")) {
                         intent.putExtra("sms_body", mBodyString);
                     } else {
                         intent.putExtra("msg_uri", mTempMmsUri);
