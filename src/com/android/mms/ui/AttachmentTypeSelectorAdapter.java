@@ -98,7 +98,7 @@ public class AttachmentTypeSelectorAdapter extends IconListAdapter {
 
         // calendar event support
         addItem(data, context.getResources().getString(R.string.attach_add_calendar_events),
-                R.drawable.ic_attach_vcard, ADD_CALENDAR_EVENTS);
+                R.drawable.ic_attach_invitation, ADD_CALENDAR_EVENTS);
 
         return data;
     }
