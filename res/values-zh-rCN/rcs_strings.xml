@@ -37,7 +37,8 @@
 
     <!-- 发送群聊消息失败 -->
     <string name="group_chat_not_exist">找不到群聊。</string>
-    <string name="group_chat_not_active">群聊已创建，正在等待其他成员加入。</string>
+    <string name="group_wait_member_join">群聊已创建，正在等待其他成员加入。</string>
+    <string name="group_chat_not_active">群聊未激活。</string>
     <string name="group_chat_deleted">群聊已删除。</string>
 
     <!-- 群聊状态 -->

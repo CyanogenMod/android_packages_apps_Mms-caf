@@ -37,7 +37,8 @@
 
     <!-- Failed sending Group chat message. -->
     <string name="group_chat_not_exist">Cannot found group chat.</string>
-    <string name="group_chat_not_active">Group chat has been created, waiting for other members to join in.</string>
+    <string name="group_wait_member_join">Group chat has been created, waiting for other members to join in.</string>
+    <string name="group_chat_not_active">The group chat is not active.</string>
     <string name="group_chat_deleted">The group chat is deleted.</string>
 
     <!-- Group chat status -->
