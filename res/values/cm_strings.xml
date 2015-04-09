@@ -376,4 +376,7 @@
     <string name="pref_title_mms_auto_enable_data">Auto-enable data</string>
     <!-- Settings item description for boolean auto-enable data for MMS option -->
     <string name="pref_summary_mms_auto_enable_data">Automatically enable mobile data for MMS messages</string>
+
+    <!-- Select recipients dialog -->
+    <string name="adding_selected_recipients_dialog_text">Adding contacts&#8230;</string>
 </resources>

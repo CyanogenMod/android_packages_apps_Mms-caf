@@ -3692,7 +3692,7 @@ public class ComposeMessageActivity extends Activity
         protected void onPreExecute() {
             super.onPreExecute();
             mPD = new ProgressDialog(ComposeMessageActivity.this);
-            mPD.setMessage("Adding contacts...");
+            mPD.setMessage(getString(R.string.adding_selected_recipients_dialog_text));
             mPD.show();
         }
 
@@ -3701,7 +3701,7 @@ public class ComposeMessageActivity extends Activity
             if (params == null || params.length < 1) {
                 return null;
             }
-
+    
             ArrayList<String> numbers = params[0];
 
             ContactList list = ContactList.getByNumbers(numbers, true);
