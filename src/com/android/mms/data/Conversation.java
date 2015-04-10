@@ -988,8 +988,6 @@ public class Conversation {
 
             handler.setDeleteToken(token);
             handler.startDelete(token, new Long(-1), Threads.CONTENT_URI, selection, null);
-            handler.startDelete(token, new Long(-1), SuntekMessageData.SUNTEK_MESSAGE_CONTENT_URI,
-                    null, null);
         }
     }
 
