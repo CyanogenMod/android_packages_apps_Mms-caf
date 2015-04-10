@@ -160,7 +160,7 @@ public class RcsCreateGroupChatActivity extends Activity implements
             launchMultiplePhonePicker();
             break;
         case R.id.create_group_chat:
-            createGroupChat();
+            tryCreateGroupChat();
             break;
         default:
             break;
@@ -178,23 +178,40 @@ public class RcsCreateGroupChatActivity extends Activity implements
         startActivityForResult(intent, REQUEST_CODE_CONTACTS_PICK);
     }
 
-    private void createGroupChat() {
+    private void tryCreateGroupChat() {
+        try {
+            confirmCreateGroupChat();
+        } catch (ServiceDisconnectedException e) {
+            toast(R.string.rcs_service_is_not_available);
+            Log.w("RCS_UI", e);
+        }
+    }
+
+    private void confirmCreateGroupChat() throws ServiceDisconnectedException {
+        if (RcsApiManager.getRcsAccountApi().isOnline()) {
+            createGroupChat();
+        } else {
+            toast(R.string.rcs_service_is_not_available);
+        }
+    }
+
+    private void createGroupChat() throws ServiceDisconnectedException {
         List<String> list = mRecipientsEditor.getNumbers();
         if (list != null && list.size() > 0) {
             String subject = mSubjectEdit.getText().toString();
             if (TextUtils.isEmpty(subject)) {
-                subject = "";
+                subject = getString(R.string.temp_group_chat);
             }
-            try {
-                RcsApiManager.getConfApi().createGroupChat(subject, list);
-                if (mCreateGroupChatCallback == null) {
-                    mCreateGroupChatCallback = new ComposeMessageCreateGroupChatCallback(
-                            this);
+            if (mCreateGroupChatCallback == null) {
+                mCreateGroupChatCallback = new ComposeMessageCreateGroupChatCallback(this);
+            }
+            mCreateGroupChatCallback.onBegin();
+            String result = RcsApiManager.getConfApi().createGroupChat(subject, list);
+            if (TextUtils.isEmpty(result)) {
+                if (mCreateGroupChatCallback != null) {
+                    mCreateGroupChatCallback.onDone(true);
+                    mCreateGroupChatCallback.onEnd();
                 }
-                mCreateGroupChatCallback.onBegin();
-            } catch (ServiceDisconnectedException e) {
-                toast(R.string.rcs_service_is_not_available);
-                Log.w("RCS_UI", e);
             }
         }
     }
@@ -229,6 +246,10 @@ public class RcsCreateGroupChatActivity extends Activity implements
                 @Override
                 public void onCreateNotActive(Bundle extras) {
                     handleRcsGroupChatCreateNotActive(extras);
+                }
+
+                @Override
+                public void onBootMe(Bundle extras) {
                 }
             });
 

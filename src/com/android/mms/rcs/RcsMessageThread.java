@@ -47,6 +47,9 @@ public class RcsMessageThread extends Thread {
     private static final int MESSAGE_STATUS_DISPLAYED = 100;
     private static final long COPY_RCS_MESSAGE_FAIL = 0;
 
+    private static final String ACTION_UI_SHOW_GROUP_MESSAGE_NOTIFY =
+            "com.suntek.mway.rcs.ACTION_UI_SHOW_GROUP_MESSAGE_NOTIFY";
+
     private volatile boolean mIsExit = false;
 
     private int mIndex;
@@ -119,7 +122,7 @@ public class RcsMessageThread extends Thread {
             if ((chatType == SuntekMessageData.CHAT_TYPE_GROUP)
                     && (sendReceive == SuntekMessageData.MSG_RECEIVE)
                     && chatMessage.getMsgType() != SuntekMessageData.MSG_TYPE_NOTIFICATION) {
-                Intent groupNotifyIntent = new Intent("ACTION_UI_SHOW_GROUP_MESSAGE_NOTIFY");
+                Intent groupNotifyIntent = new Intent(ACTION_UI_SHOW_GROUP_MESSAGE_NOTIFY);
                 groupNotifyIntent.putExtra("id", (long)chatMessage.getId());
                 groupNotifyIntent.putExtra("threadId", chatMessage.getThreadId());
                 MmsApp.getApplication().sendBroadcast(groupNotifyIntent);

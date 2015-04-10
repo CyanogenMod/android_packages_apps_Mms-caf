@@ -99,6 +99,7 @@ public class ComposeMessageCloudFileReceiver extends BroadcastReceiver {
                 textDataView.setText(context.getString(
                         R.string.downloading_percent, percent));
             }
+            mMsgListAdapter.notifyDataSetChanged();
         } else if (!TextUtils.isEmpty(eventType) && eventType
                 .equals(BroadcastConstants.BC_V_MC_EVENTTYPE_SUCCESS)) {
             fileProgressHashMap.remove(String.valueOf(messageId));
@@ -106,6 +107,7 @@ public class ComposeMessageCloudFileReceiver extends BroadcastReceiver {
                 textDataView.setText(context
                         .getString(R.string.downloading_finish));
             }
+            mMsgListAdapter.notifyDataSetChanged();
         } else if(!TextUtils.isEmpty(eventType) && eventType
                 .equals(BroadcastConstants.BC_V_MC_EVENTTYPE_FILE_TOO_LARGE)){
           Toast.makeText(context,R.string.file_is_too_larger,

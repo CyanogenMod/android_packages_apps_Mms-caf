@@ -54,7 +54,8 @@ public class ConversationListAdapter extends CursorAdapter implements AbsListVie
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        if (!(view instanceof ConversationListItem)) {
+        if (!(view instanceof ConversationListItem) ||
+                cursor == null || cursor.getPosition() < 0) {
             Log.e(TAG, "Unexpected bound view: " + view);
             return;
         }
@@ -104,6 +105,9 @@ public class ConversationListAdapter extends CursorAdapter implements AbsListVie
         int count = getCount();
         for (int i = 0; i < count; i++) {
             Cursor cursor = (Cursor)getItem(i);
+            if (cursor == null || cursor.getPosition() < 0) {
+                continue;
+            }
             Conversation conv = Conversation.from(mContext, cursor);
             conv.setIsChecked(false);
         }

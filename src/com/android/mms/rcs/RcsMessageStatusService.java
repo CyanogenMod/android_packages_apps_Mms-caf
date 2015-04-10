@@ -111,6 +111,9 @@ public class RcsMessageStatusService extends IntentService {
                  if (BroadcastConstants.UI_SHOW_GROUP_MESSAGE_NOTIFY.equals(action)) {
                     long rcsThreadId = intent.getLongExtra("threadId", -1);
                     MessageApi messageApi = RcsApiManager.getMessageApi();
+                    if(messageApi == null){
+                        return;
+                    }
                     try {
                         GroupChatModel model = messageApi.getGroupChatByThreadId(rcsThreadId);
                         if (model != null) {

@@ -71,6 +71,10 @@ public class GroupChatManagerReceiver extends BroadcastReceiver {
                 if (mCallback != null) {
                     mCallback.onCreateNotActive(extras);
                 }
+            } else if (BroadcastConstants.ACTION_TYPE_BOOTED.equals(actionType)) {
+                if (mCallback != null) {
+                    mCallback.onBootMe(extras);
+                }
             }
         }
     }
@@ -89,6 +93,8 @@ public class GroupChatManagerReceiver extends BroadcastReceiver {
         void onUpdateRemark(Bundle extras);
 
         void onCreateNotActive(Bundle extras);
+
+        void onBootMe(Bundle extras);
     }
 
 }

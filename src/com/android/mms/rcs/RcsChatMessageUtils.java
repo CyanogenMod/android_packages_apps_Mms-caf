@@ -168,11 +168,12 @@ public class RcsChatMessageUtils {
         return isDownload;
     }
 
-    public static void startBurnMessageActivity(Context mContext, int rcs_is_burn, long smsId , long rcsId) {
+    public static void startBurnMessageActivity(Context context, int rcs_is_burn, long rcsId,
+        long smsId) {
         if (rcs_is_burn == 1) {
-            Toast.makeText(mContext, R.string.message_is_burnd, Toast.LENGTH_LONG).show();
+            Toast.makeText(context, R.string.message_is_burnd, Toast.LENGTH_LONG).show();
         } else {
-            mContext.startActivity(new Intent(mContext, BurnFlagMessageActivity.class).putExtra(
+            context.startActivity(new Intent(context, BurnFlagMessageActivity.class).putExtra(
                     EXTRA_SMS_ID, smsId).putExtra(EXTRA_RCS_ID , rcsId));
         }
     }
