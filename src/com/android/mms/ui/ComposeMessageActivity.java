@@ -2893,6 +2893,7 @@ public class ComposeMessageActivity extends Activity
 
         if (getResources().getBoolean(R.bool.def_custom_preferences_settings)) {
             setBackgroundWallpaper();
+            setTextFontsize();
         }
     }
 
@@ -8423,6 +8424,27 @@ public class ComposeMessageActivity extends Activity
                             MessagingPreferenceActivity.CHAT_WALLPAPER, null));
             if(bitmap != null) {
                 mMsgListView.setBackground(new BitmapDrawable(bitmap));
+            }
+        }
+    }
+    private void setTextFontsize() {
+        int size =  MessageUtils.getFontSize();
+        if (mTextEditor != null) {
+            mTextEditor.setTextSize(size);
+        }
+        if (mMsgListAdapter != null) {
+            mMsgListAdapter.setTextSize(size);
+        }
+
+        if (mMsgListView != null
+                && mMsgListView.getVisibility() == View.VISIBLE) {
+            int count = mMsgListView.getChildCount();
+            for (int i = 0; i < count; i++) {
+                MessageListItem item = (MessageListItem) mMsgListView
+                        .getChildAt(i);
+                if (item != null) {
+                    item.setBodyTextSize(size);
+                }
             }
         }
     }

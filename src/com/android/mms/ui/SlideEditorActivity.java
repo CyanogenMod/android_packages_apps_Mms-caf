@@ -212,6 +212,12 @@ public class SlideEditorActivity extends Activity implements
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mTextEditor.setTextSize(MessageUtils.getFontSize());
+    }
+
     private void initActivityState(Bundle savedInstanceState, Intent intent) {
         if (savedInstanceState != null) {
             mUri = (Uri) savedInstanceState.getParcelable(MESSAGE_URI);
