@@ -2639,7 +2639,7 @@ public class MessageUtils {
         try {
             input = ctx.getContentResolver().openInputStream(uri);
             if (input.available() / COMPRESSION_FACTOR > MmsConfig
-                    .getMaxMessageSize() * KILOBYTE_SIZE) {
+                    .getMaxMessageSize()) {
                 isTooLarge = true;
             }
         } catch (Exception e) {
