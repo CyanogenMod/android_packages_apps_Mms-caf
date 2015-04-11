@@ -1116,4 +1116,12 @@
     <string name="camera_packagename">com.android.camera2</string>
     <string name="pref_title_size_limit">Size Limit</string>
     <string name="plugger_priority">999</string>
+    <!-- Font settings -->
+    <string name="pref_title_message_font_size">Message font size</string>
+    <string name="message_font_size_dialog_title">Message font size</string>
+    <string name="font_follow_system_font">Follow system font size</string>
+    <string name="font_small">Small</string>
+    <string name="font_medium">Medium</string>
+    <string name="font_large">Large</string>
+    <string name="font_extra_large">Extra large</string>
 </resources>

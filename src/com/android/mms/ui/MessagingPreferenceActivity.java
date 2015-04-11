@@ -162,6 +162,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private static final int  PICK_FROM_GALLERY       = 1;
 
     public static final String CELL_BROADCAST            = "pref_key_cell_broadcast";
+    //Fontsize
+    public static final String FONT_SIZE_SETTING         = "pref_key_message_font_size";
 
     // Menu entries
     private static final int MENU_RESTORE_DEFAULTS    = 1;
@@ -200,6 +202,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private CheckBoxPreference mVibratePref;
     private CheckBoxPreference mEnableNotificationsPref;
     private CheckBoxPreference mMmsAutoRetrievialPref;
+    private ListPreference mFontSizePref;
     private ListPreference mMmsCreationModePref;
     private ListPreference mMmsExpiryPref;
     private ListPreference mMmsExpiryCard1Pref;
@@ -236,6 +239,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     // ConfigurationClient
     private static final String ACTION_CONFIGURE_MESSAGE =
             "org.codeaurora.CONFIGURE_MESSAGE";
+    public static final String MESSAGE_FONT_SIZE = "message_font_size";
 
     public static final String MMS_CREATION_MODE = "pref_key_creation_mode";
     public static final int CREATION_MODE_RESTRICTED = 1;
@@ -415,6 +419,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             mCBsettingPref = findPreference(CELL_BROADCAST);
             mMmsSizeLimit = (Preference) findPreference("pref_key_mms_size_limit");
             setMmsSizeSummary();
+            mFontSizePref = (ListPreference) findPreference(FONT_SIZE_SETTING);
         }
         //Chat wallpaper
         if (getResources().getBoolean(R.bool.def_custom_preferences_settings)) {
@@ -559,6 +564,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         setRingtoneSummary(soundValue);
 
         mMessageSendDelayPref.setOnPreferenceChangeListener(this);
+        setSmsPreferFontSummary();
     }
 
     private void setMmsRelatedPref() {
@@ -1931,5 +1937,23 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mMmsSizeLimit.setSummary(Integer.toString(MmsConfig
                 .getMaxMessageSize() / MmsConfig.KB_IN_BYTES)
                 + MmsConfig.KILO_BYTE);
+    }
+
+    private void setSmsPreferFontSummary() {
+        if (getResources().getBoolean(R.bool.def_custom_preferences_settings)
+                && mFontSizePref != null) {
+            mFontSizePref
+                    .setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                        public boolean onPreferenceChange(
+                                Preference preference, Object newValue) {
+                            final String summary = newValue.toString();
+                            int index = mFontSizePref.findIndexOfValue(summary);
+                            mFontSizePref.setSummary(mFontSizePref.getEntries()[index]);
+                            mFontSizePref.setValue(summary);
+                            return true;
+                        }
+                    });
+            mFontSizePref.setSummary(mFontSizePref.getEntry());
+        }
     }
 }
