@@ -3631,10 +3631,12 @@ public class ComposeMessageActivity extends Activity
             case MENU_TOP_CONVERSATION:
                 mTopThread.add(mConversation.getThreadId());
                 RcsUtils.topConversion(this,mConversation.getThreadId());
+                mConversation.setTop(1);
                 break;
             case MENU_CANCEL_TOP_CONVERSATION:
                 mTopThread.remove(mConversation.getThreadId());
                 RcsUtils.cancelTopConversion(this, mConversation.getThreadId());
+                mConversation.setTop(0);
                 break;
             case android.R.id.home:
             case MENU_CONVERSATION_LIST:
