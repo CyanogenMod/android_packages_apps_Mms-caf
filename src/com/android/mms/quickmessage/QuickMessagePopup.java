@@ -338,13 +338,13 @@ public class QuickMessagePopup extends Activity implements
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-
+    protected void onDestroy() {
+        super.onDestroy();
         if (mScreenUnlocked) {
             // Cancel the receiver that will clear the wake locks
             ClearAllReceiver.removeCancel(getApplicationContext());
             ClearAllReceiver.clearAll(true);
+            mScreenUnlocked = false;
         }
     }
 
