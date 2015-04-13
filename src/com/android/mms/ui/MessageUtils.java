@@ -564,7 +564,7 @@ public class MessageUtils {
         // Message Type: Text message.
         details.append(res.getString(R.string.message_type_label));
         int rcsId = cursor.getInt(cursor.getColumnIndexOrThrow("rcs_id"));
-        if (rcsId != 0)
+        if (rcsId > 0)
             details.append(res.getString(R.string.rcs_text_message));
         else
             details.append(res.getString(R.string.text_message));

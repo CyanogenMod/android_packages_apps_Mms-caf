@@ -42,6 +42,7 @@ import com.suntek.mway.rcs.client.aidl.plugin.entity.emoticon.EmoticonBO;
 import com.suntek.mway.rcs.client.aidl.plugin.entity.emoticon.EmoticonConstant;
 import com.suntek.mway.rcs.client.aidl.provider.SuntekMessageData;
 import com.suntek.mway.rcs.client.aidl.provider.model.ChatMessage;
+import com.suntek.mway.rcs.client.aidl.provider.model.CloudFileMessage;
 import com.suntek.mway.rcs.client.aidl.provider.model.GroupChatModel;
 import com.suntek.mway.rcs.client.aidl.provider.model.GroupChatUser;
 import com.suntek.mway.rcs.client.api.autoconfig.RcsAccountApi;
@@ -168,7 +169,7 @@ public class RcsUtils {
     public static final String RCS_NATIVE_UI_ACTION_GROUP_CHAT_DETAIL =
             "com.suntek.mway.rcs.nativeui.ACTION_LUNCH_RCS_GROUPCHATDETAIL";
     public static final String RCS_NATIVE_UI_ACTION_NOTIFICATION_LIST =
-            "com.suntek.mway.rcs.nativeui.ACTION_LUNCHER_RCS_NOTIFICATIONLIST";
+            "com.suntek.mway.rcs.nativeui.ACTION_LUNCHER_RCS_NOTIFICATION_LIST";
     public static final String RCS_NATIVE_UI_ACTION_CONVERSATION_LIST =
             "com.suntek.mway.rcs.publicaccount.ACTION_LUNCHER_RCS_CONVERSATION_LIST";
 
@@ -446,30 +447,40 @@ public class RcsUtils {
 
     }
 
-    public static void rcsInsertMany(Context context, List<ChatMessage> cMsgList)
+    public static void rcsInsertMany(Context context, List<ChatMessage> cMsgList, boolean isSms)
             throws ServiceDisconnectedException {
         if(cMsgList.size() == 0){
             Log.i("RCS_UI","RETURN");
             return;
         }
         for(ChatMessage cMsg:cMsgList){
-            if (cMsg != null && !isMessageExist(context, cMsg)) {
+            if (cMsg != null && !isMessageExist(context, cMsg, isSms)) {
                 rcsInsert(context, cMsg);
             }
         }
     }
 
-    public static boolean isMessageExist(Context context, ChatMessage chatMessage) {
+    public static boolean isMessageExist(Context context, ChatMessage chatMessage, boolean isSms) {
         Log.i("RCS_UI", "chatMessage.getMessageId()=" + chatMessage.getMessageId());
-        String id = chatMessage.getMessageId();
-        if (id == null) {
-            id = "";
+        if (!isSms) {
+            String id = chatMessage.getMessageId();
+            if (id == null) {
+                return false;
+            }
         }
         ContentResolver resolver = context.getContentResolver();
-        Cursor cursor = SqliteWrapper.query(context, resolver, Sms.CONTENT_URI, null,
-                "rcs_message_id = ?", new String[] {
-                    chatMessage.getMessageId()
-                }, null);
+        Cursor cursor = null;
+        if (!isSms) {
+            cursor = SqliteWrapper.query(context, resolver, Sms.CONTENT_URI, null,
+                    "rcs_message_id = ?", new String[] {
+                        chatMessage.getMessageId()
+                    }, null);
+        } else {
+            cursor = SqliteWrapper.query(context, resolver, Sms.CONTENT_URI, null, "_id = ?",
+                    new String[] {
+                        String.valueOf(chatMessage.getId())
+                    }, null);
+        }
         try {
             if (cursor != null && cursor.moveToNext()) {
                 dumpCursorRows(cursor);
@@ -484,8 +495,6 @@ public class RcsUtils {
 
     public static long rcsInsert(Context context, ChatMessage chatMessage)
             throws ServiceDisconnectedException {
-        MessageApi messageApi = RcsApiManager.getMessageApi();
-
         String address = chatMessage.getContact();
         String body = chatMessage.getData();
         int rcs_msg_type = chatMessage.getMsgType();
@@ -510,6 +519,7 @@ public class RcsUtils {
         int rcs_chat_type = chatMessage.getChatType();
         long rcsThreadId = chatMessage.getThreadId();
         long fileSize = chatMessage.getFilesize();
+        long time = chatMessage.getTime();
 
         int playTime = 0;
         String rcs_path = "";
@@ -522,18 +532,18 @@ public class RcsUtils {
                 break;
             case SuntekMessageData.MSG_TYPE_VIDEO:
                 rcs_path = getFilePath(chatMessage);
-                rcs_thumb_path = messageApi.getThumbFilepath(chatMessage);
-                playTime = messageApi.getPlayTime(rcs_msg_type, chatMessage.getData());
+                rcs_thumb_path = chatMessage.getThumbpath();
+                playTime = chatMessage.getDuration();
                 break;
             case SuntekMessageData.MSG_TYPE_AUDIO:
                 rcs_path = getFilePath(chatMessage);
-                playTime = messageApi.getPlayTime(rcs_msg_type, chatMessage.getData());
+                playTime = chatMessage.getDuration();
                 break;
             case SuntekMessageData.MSG_TYPE_IMAGE:
             case SuntekMessageData.MSG_TYPE_GIF:
             case SuntekMessageData.MSG_TYPE_CONTACT:
                 rcs_path = getFilePath(chatMessage);
-                rcs_thumb_path = messageApi.getThumbFilepath(chatMessage);
+                rcs_thumb_path = chatMessage.getThumbpath();
                 break;
             case SuntekMessageData.MSG_TYPE_PAID_EMO:
                 body = chatMessage.getData() + "," + chatMessage.getFilename();
@@ -597,6 +607,7 @@ public class RcsUtils {
                 values.put("rcs_file_size", fileSize);
                 values.put("rcs_msg_state", rcs_msg_state);
                 values.put("rcs_play_time", playTime);
+                values.put("date", time);
 
                 Uri insertedUri = SqliteWrapper.insert(context, resolver, uri, values);
                 // Now make sure we're not over the limit in stored messages
@@ -628,6 +639,7 @@ public class RcsUtils {
             values.put("rcs_file_size", fileSize);
             values.put("rcs_play_time", playTime);
             values.put("rcs_msg_state", rcs_msg_state);
+            values.put("date", time);
             if (send_receive == 2) {
                 values.put("type", 2);
             }
@@ -1111,7 +1123,11 @@ public class RcsUtils {
                 body = context.getString(R.string.group_chat_subject, subject);
             } else if (body.startsWith(GROUP_CHAT_NOTIFICATION_KEY_WORDS_REMARK)) {
                 String remark = body.substring(body.indexOf(",") + 1);
-                body = context.getString(R.string.group_chat_remark, remark);
+                if (TextUtils.isEmpty(remark)) {
+                    body = context.getString(R.string.group_chat_remark_delete);
+                } else {
+                    body = context.getString(R.string.group_chat_remark, remark);
+                }
             } else if (body.equals(GROUP_CHAT_NOTIFICATION_KEY_WORDS_ACTIVE)) {
                 body = context.getString(R.string.group_chat_active);
             } else if (body.startsWith(GROUP_CHAT_NOTIFICATION_KEY_WORDS_ALIAS)) {
@@ -1322,38 +1338,6 @@ public class RcsUtils {
             }
             return true;
         }
-    }
-
-    public static Bitmap createBitmap_Compress(String absFilePath) {
-        try {
-            final BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            options.inPurgeable = true;
-            BitmapFactory.decodeFile(absFilePath, options);
-
-            options.inSampleSize = calculateInSampleSize(options, 480, 800);
-            options.inJustDecodeBounds = false;
-            return BitmapFactory.decodeFile(absFilePath, options);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } catch (OutOfMemoryError e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth,
-            int reqHeight) {
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-            final int heightRatio = Math.round((float) height / (float) reqHeight);
-            final int widthRatio = Math.round((float) width / (float) reqWidth);
-            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
-        }
-        return inSampleSize;
     }
 
     public static Bitmap decodeInSampleSizeBitmap(String imageFilePath) {
@@ -1629,8 +1613,7 @@ public class RcsUtils {
         switch (messageItem.mRcsType) {
             case RcsUtils.RCS_MSG_TYPE_IMAGE: {
                 if (messageItem.mRcsThumbPath != null
-                        && new File(messageItem.mRcsThumbPath).exists()) {
-                } else if (messageItem.mRcsThumbPath != null
+                        && new File(messageItem.mRcsThumbPath).exists()
                         && messageItem.mRcsThumbPath.contains(".")) {
                     messageItem.mRcsThumbPath = messageItem.mRcsThumbPath.substring(0,
                             messageItem.mRcsThumbPath.lastIndexOf("."));
@@ -1652,15 +1635,12 @@ public class RcsUtils {
                             byte[] bytes = propertyNode.propValue_bytes;
                             bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                             bitmap = decodeInSampleSizeBitmap(bitmap);
-                        } else {
-                            bitmap = BitmapFactory.decodeResource(context.getResources(),
-                                    R.drawable.ic_attach_vcard);
                         }
                     }
-                    if (bitmap == null ){
-                        bitmap = BitmapFactory.decodeResource(context.getResources(),
-                                R.drawable.ic_attach_vcard);
-                    }
+                }
+                if (bitmap == null) {
+                    bitmap = BitmapFactory.decodeResource(context.getResources(),
+                            R.drawable.ic_attach_vcard);
                 }
                 break;
             }
@@ -1677,13 +1657,11 @@ public class RcsUtils {
                 break;
             }
         }
-        if (bitmap != null) {
-            Matrix matrix = new Matrix();
-            matrix.postScale(1.5f, 1.5f);
-            Bitmap resizeBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
-                    bitmap.getHeight(), matrix, true);
+        if (messageItem.mRcsType == RcsUtils.RCS_MSG_TYPE_VCARD) {
+            imageView.setBackground(new BitmapDrawable(bitmap));
+        } else {
+            imageView.setImageBitmap(bitmap);
         }
-        imageView.setImageBitmap(bitmap);
     }
 
     public static void setThumbnailForMessageItem(Context context,
@@ -1694,9 +1672,7 @@ public class RcsUtils {
             case RcsUtils.RCS_MSG_TYPE_IMAGE: {
                 String imagePath = workingMessage.getRcsPath();
                 if (imagePath != null
-                        && new File(imagePath).exists()) {
-                } else if (imagePath != null
-                        && imagePath.contains(".")) {
+                        && new File(imagePath).exists() && imagePath.contains(".")) {
                     imagePath = imagePath.substring(0,
                             imagePath.lastIndexOf("."));
                 }
@@ -1874,6 +1850,25 @@ public class RcsUtils {
         return bodyText;
     }
 
+    public static String getCaiYunFileBodyText(Context context, int msgId){
+        ChatMessage msg = null;
+        String body = "";
+        try {
+            msg = RcsApiManager.getMessageApi().getMessageById(
+                    String.valueOf(msgId));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (msg != null) {
+            CloudFileMessage cMessage = msg.getCloudFileMessage();
+            body = context.getString(R.string.cloud_file_name)
+                    + cMessage.getFileName()
+                    + context.getString(R.string.cloud_file_size)
+                    + "(" + cMessage.getFileSize() + "K)";
+        }
+        return body;
+    }
+
    public static boolean saveRcsMassage(Context context, long msgId) {
        InputStream input = null;
        FileOutputStream fout = null;
@@ -2018,10 +2013,12 @@ public class RcsUtils {
         if (end.equals("m4a") || end.equals("mp3") || end.equals("mid") || end.equals("xmf")
                 || end.equals("ogg") || end.equals("wav") || end.equals("amr")) {
             return getAudioFileIntent(filePath);
+        } else if(end.equals("GIF")|| end.equals("gif")) {
+            return getGifIntent(filePath);
         } else if (end.equals("3gp") || end.equals("mp4")) {
             return getVideoFileIntent(filePath);
-        } else if (end.equals("jpg") || end.equals("gif") || end.equals("png")
-                || end.equals("jpeg") || end.equals("bmp")) {
+        } else if (end.equals("jpg")  || end.equals("png")
+                || end.equals("jpeg") || end.equals("bmp") ) {
             return getImageFileIntent(filePath);
         } else if (end.equals("apk")) {
             return getApkFileIntent(filePath);
@@ -2059,6 +2056,14 @@ public class RcsUtils {
         intent.putExtra("configchange", 0);
         Uri uri = Uri.fromFile(new File(param));
         intent.setDataAndType(uri, "audio/*");
+        return intent;
+    }
+
+    private static Intent getGifIntent(String param){
+        File file = new File(param);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.fromFile(file), "image/gif");
+        intent.setAction("com.android.gallery3d.VIEW_GIF");
         return intent;
     }
 
@@ -2260,4 +2265,166 @@ public class RcsUtils {
         }
         return isFileDownload;
     }
+
+    public static String getPhoneNumberTypeStr(Context context, PropertyNode propertyNode) {
+        String numberTypeStr = "";
+        if (null == propertyNode.paramMap_TYPE
+                || propertyNode.paramMap_TYPE.size() == 0) {
+            return numberTypeStr;
+        }
+        String number = propertyNode.propValue;
+        if (propertyNode.paramMap_TYPE.size() == 2) {
+            if (propertyNode.paramMap_TYPE.contains("FAX")
+                    && propertyNode.paramMap_TYPE.contains("HOME")) {
+                numberTypeStr = context
+                        .getString(R.string.vcard_number_fax_home) + number;
+            } else if (propertyNode.paramMap_TYPE.contains("FAX")
+                    && propertyNode.paramMap_TYPE.contains("WORK")) {
+                numberTypeStr = context
+                        .getString(R.string.vcard_number_fax_work) + number;
+            } else if (propertyNode.paramMap_TYPE.contains("PREF")
+                    && propertyNode.paramMap_TYPE.contains("WORK")) {
+                numberTypeStr = context
+                        .getString(R.string.vcard_number_pref_work) + number;
+            } else if (propertyNode.paramMap_TYPE.contains("CELL")
+                    && propertyNode.paramMap_TYPE.contains("WORK")) {
+                numberTypeStr = context
+                        .getString(R.string.vcard_number_call_work) + number;
+            } else if (propertyNode.paramMap_TYPE.contains("WORK")
+                    && propertyNode.paramMap_TYPE.contains("PAGER")) {
+                numberTypeStr = context
+                        .getString(R.string.vcard_number_work_pager) + number;
+            } else {
+                numberTypeStr = context.getString(R.string.vcard_number_other)
+                        + number;
+            }
+        } else {
+            if (propertyNode.paramMap_TYPE.contains("CELL")) {
+                numberTypeStr = context.getString(R.string.vcard_number)
+                        + number;
+            } else if (propertyNode.paramMap_TYPE.contains("HOME")) {
+                numberTypeStr = context.getString(R.string.vcard_number_home)
+                        + number;
+            } else if (propertyNode.paramMap_TYPE.contains("WORK")) {
+                numberTypeStr = context.getString(R.string.vcard_number_work)
+                        + number;
+            } else if (propertyNode.paramMap_TYPE.contains("PAGER")) {
+                numberTypeStr = context.getString(R.string.vcard_number_pager)
+                        + number;
+            } else if (propertyNode.paramMap_TYPE.contains("VOICE")) {
+                numberTypeStr = context.getString(R.string.vcard_number_other)
+                        + number;
+            } else if (propertyNode.paramMap_TYPE.contains("CAR")) {
+                numberTypeStr = context.getString(R.string.vcard_number_car)
+                        + number;
+            } else if (propertyNode.paramMap_TYPE.contains("ISDN")) {
+                numberTypeStr = context.getString(R.string.vcard_number_isdn)
+                        + number;
+            } else if (propertyNode.paramMap_TYPE.contains("PREF")) {
+                numberTypeStr = context.getString(R.string.vcard_number_pref)
+                        + number;
+            } else if (propertyNode.paramMap_TYPE.contains("FAX")) {
+                numberTypeStr = context.getString(R.string.vcard_number_fax)
+                        + number;
+            } else if (propertyNode.paramMap_TYPE.contains("TLX")) {
+                numberTypeStr = context.getString(R.string.vcard_number_tlx)
+                        + number;
+            } else if (propertyNode.paramMap_TYPE.contains("MSG")) {
+                numberTypeStr = context.getString(R.string.vcard_number_msg)
+                        + number;
+            } else {
+                numberTypeStr = context.getString(R.string.vcard_number_other)
+                        + number;
+            }
+        }
+        return numberTypeStr;
+    }
+
+    public static void deleteRcsMessageByThreadId(final Context context,
+            final Collection<Long> threadIds) {
+        if(threadIds == null || threadIds.size() == 0){
+            return;
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    for (long threadId : threadIds) {
+                        long rcsThreadId = RcsUtils.getRcsThreadIdByThreadId(
+                                context, threadId);
+                        RcsApiManager.getMessageApi().removeMessageByThreadId(
+                                rcsThreadId);
+                    }
+                } catch (ServiceDisconnectedException e) {
+                }
+            }
+        }).start();
+    }
+
+    public static void deleteRcsMessageByMessageId(
+            final ArrayList<String> messageIds){
+        if(messageIds == null || messageIds.size() == 0){
+            return;
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    for (String messageId : messageIds) {
+                        RcsApiManager.getMessageApi().removeOneMessage(messageId);
+                    }
+                } catch (ServiceDisconnectedException e) {
+                }
+            }
+        }).start();
+    }
+
+    public static String disposeVcardMessage(Context context, int id, String str){
+        String vcardFilePath = RcsUtils.getFilePath(id, str);
+        ArrayList<PropertyNode> propList = RcsMessageOpenUtils.
+                openRcsVcardDetail(context, vcardFilePath);
+        if (propList == null) {
+            return "";
+        }
+        String name = "";
+        String number = "";
+        String phoneNumber = null;
+        String homeNumber = null;
+        String workNumber = null;
+        for (PropertyNode propertyNode : propList) {
+            if ("FN".equals(propertyNode.propName)) {
+                if(!TextUtils.isEmpty(propertyNode.propValue)){
+                    name = propertyNode.propValue;
+                }
+            } else if ("TEL".equals(propertyNode.propName)) {
+                if(!TextUtils.isEmpty(propertyNode.propValue)){
+                    if (propertyNode.paramMap_TYPE.contains("CELL")
+                            && !propertyNode.paramMap_TYPE.contains("WORK")) {
+                        phoneNumber = context.getString(R.string.vcard_number)
+                                + propertyNode.propValue;
+                    } else if (propertyNode.paramMap_TYPE.contains("HOME")
+                            && !propertyNode.paramMap_TYPE.contains("FAX")){
+                        homeNumber = context.getString(R.string.vcard_number_home)
+                                + propertyNode.propValue;
+                    } else if(propertyNode.paramMap_TYPE.contains("WORK")
+                            && !propertyNode.paramMap_TYPE.contains("FAX")){
+                        workNumber = context.getString(R.string.vcard_number_work)
+                                + propertyNode.propValue;
+                    } else {
+                        number = RcsUtils.getPhoneNumberTypeStr(context, propertyNode);
+                    }
+                }
+            }
+        }
+        if (!TextUtils.isEmpty(phoneNumber)) {
+            number = phoneNumber;
+        } else if (!TextUtils.isEmpty(homeNumber)) {
+            number = homeNumber;
+        } else if (!TextUtils.isEmpty(workNumber)) {
+            number = workNumber;
+        }
+        return "[Vcard]\n" + context.getString(R.string.vcard_name)
+                + name + "\n" + number;
+    }
+
 }

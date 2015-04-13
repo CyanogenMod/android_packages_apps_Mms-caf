@@ -30,9 +30,13 @@
 package com.android.mms.ui;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.List;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -63,8 +67,17 @@ import android.widget.VideoView;
 
 import com.android.mms.R;
 import com.android.mms.rcs.GeoLocation;
+import com.android.mms.rcs.PropertyNode;
 import com.android.mms.rcs.RcsApiManager;
+import com.android.mms.rcs.RcsEmojiStoreUtil;
+import com.android.mms.rcs.RcsMessageOpenUtils;
 import com.android.mms.rcs.RcsUtils;
+import com.android.vcard.VCardParser;
+import com.android.vcard.VCardParser_V21;
+import com.android.mms.rcs.VNode;
+import com.android.mms.rcs.VNodeBuilder;
+import com.android.mms.ui.MessageItem;
+import com.android.mms.ui.MessageListItem;
 import com.android.mms.ui.MessageUtils;
 import com.suntek.mway.rcs.client.aidl.provider.model.ChatMessage;
 
@@ -124,8 +137,13 @@ public class MessageDetailAdapter extends PagerAdapter {
                 mContentType = "map/*";
             } else if (mMsgType == RcsUtils.RCS_MSG_TYPE_VCARD) {
                 textView.setVisibility(View.GONE);
-                imageView.setImageResource(R.drawable.ic_attach_vcard);
+                initVcardMagView(mLinearLayout);
                 mContentType = "text/x-vCard";
+            } else if (mMsgType == RcsUtils.RCS_MSG_TYPE_PAID_EMO) {
+                String messageBody = mCursor.getString(mCursor.getColumnIndex(Sms.BODY));
+                String[] body = messageBody.split(",");
+                RcsEmojiStoreUtil.getInstance().loadImageAsynById(imageView, body[0],
+                        RcsEmojiStoreUtil.EMO_STATIC_FILE);
             } else {
                 bodyText.setVisibility(View.VISIBLE);
                 mLinearLayout.setVisibility(View.GONE);
@@ -202,16 +220,51 @@ public class MessageDetailAdapter extends PagerAdapter {
     private void initImageMsgView(LinearLayout linearLayout) {
         String thumbPath = mCursor.getString(mCursor.getColumnIndexOrThrow("rcs_thumb_path"));
         String filePath = mCursor.getString(mCursor.getColumnIndexOrThrow("rcs_path"));
+        if (thumbPath != null && new File(thumbPath).exists() && thumbPath.contains(".")) {
+            thumbPath = thumbPath.substring(0, thumbPath.lastIndexOf("."));
+        }
+        if (filePath != null && new File(filePath).exists() && filePath.contains(".")) {
+            filePath = filePath.substring(0, filePath.lastIndexOf("."));
+        }
         ImageView imageView = (ImageView)linearLayout.findViewById(R.id.image_view);
-        Bitmap bitmap = null;
-        if(!TextUtils.isEmpty(thumbPath))
-            bitmap = RcsUtils.createBitmap_Compress(thumbPath);
-        else if (!TextUtils.isEmpty(filePath))
-            bitmap = RcsUtils.createBitmap_Compress(filePath);
-        if(bitmap != null){
-            imageView.setBackground(RcsUtils.createDrawable(mContext, bitmap));
-        }else{
+        Bitmap thumbPathBitmap = null;
+        Bitmap filePathBitmap = null;
+        if(!TextUtils.isEmpty(thumbPath)) {
+            thumbPathBitmap = RcsUtils.decodeInSampleSizeBitmap(thumbPath);
+        } else if (!TextUtils.isEmpty(filePath)) {
+            filePathBitmap = RcsUtils.decodeInSampleSizeBitmap(filePath);
+        }
+        if (thumbPathBitmap != null) {
+            imageView.setBackgroundDrawable(new BitmapDrawable(thumbPathBitmap));
+        } else if (filePathBitmap != null) {
+            imageView.setBackgroundDrawable(new BitmapDrawable(filePathBitmap));
+        } else {
             imageView.setBackgroundResource(R.drawable.ic_attach_picture_holo_light);
+        }
+    }
+
+    private void initVcardMagView(LinearLayout linearLayout){
+        ImageView imageView = (ImageView)linearLayout.findViewById(R.id.image_view);
+        int rcsId = mCursor.getInt(mCursor.getColumnIndexOrThrow("rcs_id"));
+        String filePath = mCursor.getString(mCursor.getColumnIndexOrThrow("rcs_path"));
+        String vcardFilePath = RcsUtils.getFilePath(rcsId, filePath);
+        ArrayList<PropertyNode> propList = RcsMessageOpenUtils.openRcsVcardDetail(
+                mContext, vcardFilePath);
+        Bitmap bitmap = null;
+        for (PropertyNode propertyNode : propList) {
+            if ("PHOTO".equals(propertyNode.propName)) {
+                if(propertyNode.propValue_bytes != null){
+                    byte[] bytes = propertyNode.propValue_bytes;
+                    bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    bitmap = RcsUtils.decodeInSampleSizeBitmap(bitmap);
+                    break;
+                }
+            }
+        }
+        if (bitmap != null) {
+            imageView.setBackgroundDrawable(new BitmapDrawable(bitmap));
+        } else {
+            imageView.setBackgroundResource(R.drawable.ic_attach_vcard);
         }
     }
 
@@ -258,8 +311,7 @@ public class MessageDetailAdapter extends PagerAdapter {
                     break;
 
                 case RcsUtils.RCS_MSG_TYPE_VCARD:
-                    intent.putExtra("VIEW_VCARD_FROM_MMS", true);
-                    mContext.startActivity(intent);
+                    showOpenRcsVcardDialog();
                     break;
                 case RcsUtils.RCS_MSG_TYPE_MAP:
                     Intent intent_map = new Intent();
@@ -280,4 +332,41 @@ public class MessageDetailAdapter extends PagerAdapter {
             }
         }
     };
+
+    private void showOpenRcsVcardDialog(){
+        int rcsId = mCursor.getInt(mCursor.getColumnIndexOrThrow("rcs_id"));
+        String filePath = mCursor.getString(mCursor.getColumnIndexOrThrow("rcs_path"));
+        final String vcardFilePath = RcsUtils.getFilePath(rcsId, filePath);
+        final String[] openVcardItems = new String[] {
+                mContext.getString(R.string.vcard_detail_info),
+                mContext.getString(R.string.vcard_import)
+        };
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setItems(openVcardItems, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        ArrayList<PropertyNode> propList = RcsMessageOpenUtils.
+                                openRcsVcardDetail(mContext, vcardFilePath);
+                        RcsMessageOpenUtils.showDetailVcard(mContext, propList);
+                        break;
+                    case 1:
+                        try {
+                          File file = new File(vcardFilePath);
+                          Intent intent = new Intent(Intent.ACTION_VIEW);
+                          intent.setDataAndType(Uri.fromFile(file), mContentType
+                                  .toLowerCase());
+                          intent.putExtra("VIEW_VCARD_FROM_MMS", true);
+                          mContext.startActivity(intent);
+                      } catch (Exception e) {
+                      }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+        builder.create().show();
+    }
+
 }

@@ -163,6 +163,7 @@ public class MessageListItem extends ZoomMessageListItem implements
 
     private View mMmsView;
     private ImageView mImageView;
+    public ImageView mVCardImageView;
     private ImageView mLockedIndicator;
     private ImageView mDeliveredIndicator;
     private ImageView mDetailsIndicator;
@@ -312,6 +313,9 @@ public class MessageListItem extends ZoomMessageListItem implements
         }
         boolean sameItem = mMessageItem != null && mMessageItem.mMsgId == msgItem.mMsgId;
         mMessageItem = msgItem;
+        if (mVCardImageView != null) {
+            mVCardImageView.setVisibility(View.GONE);
+        }
 
         updateBodyTextView();
 
@@ -325,7 +329,6 @@ public class MessageListItem extends ZoomMessageListItem implements
                                 // to this listitem. We always want the listview to handle the
                                 // clicks first.
 
-        showMmsView(false);
         if (isRcsMessage()) {
             bindRcsMessage();
         }
@@ -359,7 +362,7 @@ public class MessageListItem extends ZoomMessageListItem implements
     }
 
     private boolean isRcsMessage() {
-        return mMessageItem.mIsRcs == RcsUtils.IS_RCS_TRUE;
+        return mMessageItem.mRcsId > 0;
     }
 
     private void bindRcsMessage() {
@@ -427,51 +430,16 @@ public class MessageListItem extends ZoomMessageListItem implements
                 break;
             }
             case RcsUtils.RCS_MSG_TYPE_VCARD:{
-                String name = "";
-                String number = "";
-                String vcardFilePath = RcsUtils
-                        .getFilePath(mMessageItem.mRcsId, mMessageItem.mRcsPath);
-                ArrayList<PropertyNode> propList = RcsMessageOpenUtils
-                        .openRcsVcardDetail(getContext(), vcardFilePath);
-                if (propList == null) {
-                    return;
-                }
-                for (PropertyNode propertyNode : propList) {
-                    if ("FN".equals(propertyNode.propName)) {
-                        if(!TextUtils.isEmpty(propertyNode.propValue)){
-                            name = propertyNode.propValue;
-                        }
-                    } else if ("TEL".equals(propertyNode.propName)) {
-                        if(!TextUtils.isEmpty(propertyNode.propValue)){
-                            number = propertyNode.propValue;
-                        }
-                    }
-                }
-
                 mBodyTextView.setVisibility(View.VISIBLE);
-                mBodyTextView.setText("[Vcard]\n" + mContext.getString(R.string.vcard_name)
-                        + name + "\n" + mContext.getString(R.string.vcard_number) + number);
+                mBodyTextView.setText(RcsUtils.disposeVcardMessage(
+                        getContext(), mMessageItem.mRcsId, mMessageItem.mRcsPath));
                 break;
             }
             case RcsUtils.RCS_MSG_TYPE_CAIYUNFILE:{
                 mBodyTextView.setVisibility(View.VISIBLE);
-                ChatMessage msg = null;
-                String body = null;
-                try {
-                    msg = RcsApiManager.getMessageApi().getMessageById(
-                            String.valueOf(mMessageItem.mRcsId));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                if (msg != null) {
-                    CloudFileMessage cMessage = msg.getCloudFileMessage();
-                    body = mContext.getString(R.string.cloud_file_name)
-                            + cMessage.getFileName()
-                            + mContext.getString(R.string.cloud_file_size)
-                            + cMessage.getFileSize() + "K";
-                }
-                mBodyTextView.setText(body);
-                mMessageItem.mBody = body;
+                mMessageItem.mBody = RcsUtils.getCaiYunFileBodyText(
+                        getContext(), mMessageItem.mRcsId);
+                mBodyTextView.setText(mMessageItem.mBody);
                 break;
             }
         }
@@ -484,6 +452,13 @@ public class MessageListItem extends ZoomMessageListItem implements
             showMmsView(true);
             if (mSlideShowButton == null) {
                 mSlideShowButton = (ImageButton) findViewById(R.id.play_slideshow_button);
+            }
+            if (mMessageItem.mRcsType == RcsUtils.RCS_MSG_TYPE_VCARD) {
+                mImageView.setVisibility(View.GONE);
+                mVCardImageView.setVisibility(View.VISIBLE);
+                RcsUtils.setThumbnailForMessageItem(getContext(), mVCardImageView, mMessageItem);
+            } else {
+                RcsUtils.setThumbnailForMessageItem(getContext(), mImageView, mMessageItem);
             }
             if (mMessageItem.mRcsType == RcsUtils.RCS_MSG_TYPE_VIDEO) {
                 mSlideShowButton.setVisibility(View.VISIBLE);
@@ -499,17 +474,20 @@ public class MessageListItem extends ZoomMessageListItem implements
                     }
                 });
                 mImageView.setOnClickListener(null);
+                mVCardImageView.setOnClickListener(null);
             } else {
                 mSlideShowButton.setVisibility(View.GONE);
-                mImageView.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        RcsMessageOpenUtils.resendOrOpenRcsMessage(MessageListItem.this);
-                    }
-                });
+                if (mMessageItem.mRcsType == RcsUtils.RCS_MSG_TYPE_VCARD) {
+                    RcsMessageOpenUtils.setRcsImageViewClickListener(
+                            mVCardImageView, MessageListItem.this);
+                    mImageView.setOnClickListener(null);
+                } else {
+                    RcsMessageOpenUtils.setRcsImageViewClickListener(
+                            mImageView, MessageListItem.this);
+                    mVCardImageView.setOnClickListener(null);
+                }
                 mSlideShowButton.setOnClickListener(null);
             }
-            RcsUtils.setThumbnailForMessageItem(getContext(), mImageView, mMessageItem);
             mRcsShowMmsView = true;
         }
     }
@@ -793,7 +771,14 @@ public class MessageListItem extends ZoomMessageListItem implements
         }
         if (!sameItem || haveLoadedPdu) {
             if (mMessageItem.mRcsType != RcsUtils.RCS_MSG_TYPE_VCARD) {
-                mBodyTextView.setText(formattedMessage);
+                if (mMessageItem.mRcsType == RcsUtils.RCS_MSG_TYPE_MAP) {
+                    String body = formattedMessage.toString();
+                    String messageStr = body.substring(body.
+                            lastIndexOf("/") + 1, body.length());
+                    mBodyTextView.setText(messageStr);
+                } else {
+                    mBodyTextView.setText(formattedMessage);
+                }
             }
         }
         updateSimIndicatorView(mMessageItem.mPhoneId);
@@ -913,7 +898,7 @@ public class MessageListItem extends ZoomMessageListItem implements
                             }
                         }
                     }
-                } else if (mRcsIsStopDown) {
+                } else if (mRcsIsStopDown && !RcsUtils.isFileDownLoadoK(mMessageItem)) {
                     mDateView.setText(getContext().getString(R.string.stop_down_load));
                 } else if (mMessageItem.mRcsIsDownload == RcsUtils.RCS_IS_DOWNLOAD_OK) {
                     mDateView.setText(buildTimestampLine(mMessageItem.isSending() ? mContext
@@ -1027,6 +1012,9 @@ public class MessageListItem extends ZoomMessageListItem implements
         if (mMmsView != null) {
             if (mImageView == null) {
                 mImageView = (ImageView) findViewById(R.id.image_view);
+            }
+            if (mVCardImageView == null) {
+                mVCardImageView = (ImageView) findViewById(R.id.vcard_image_view);
             }
             if (mSlideShowButton == null) {
                 mSlideShowButton = (ImageButton) findViewById(R.id.play_slideshow_button);
