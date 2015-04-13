@@ -335,6 +335,34 @@ public class TransactionService extends Service implements Observer {
         return Service.START_NOT_STICKY;
     }
 
+    private int[] getSubIdFromDb(Uri uri) {
+        int phoneId = 0;
+        Cursor c = getApplicationContext().getContentResolver().query(uri,
+                null, null, null, null);
+        Log.d(TAG, "Cursor= " + DatabaseUtils.dumpCursorToString(c));
+        if (c != null) {
+            try {
+                if (c.moveToFirst()) {
+                    phoneId = c.getInt(c.getColumnIndex(Mms.PHONE_ID));
+                    Log.d(TAG, "phoneId in db = " + phoneId );
+                    c.close();
+                    c = null;
+                }
+            } finally {
+                if (c != null) {
+                    c.close();
+                }
+            }
+        }
+        // If client does not update the DB with phoneId, use default sms
+        // phoneId
+        if (!SubscriptionManager.isValidSlotId(phoneId)) {
+            phoneId = SubscriptionManager.getPhoneId(SubscriptionManager.getDefaultSmsSubId());
+        }
+        Log.d(TAG, "Destination Phone Id = " + phoneId);
+        return (SubscriptionManager.getSubId(phoneId));
+    }
+
     private boolean isMmsAllowed() {
         boolean noNetwork = false;
 
@@ -494,6 +522,30 @@ public class TransactionService extends Service implements Observer {
                                         Mms.CONTENT_URI,
                                         cursor.getLong(columnIndexOfMsgId));
 
+                                int[] subId = getSubIdFromDb(uri);
+                                // subId is null. Bail out.
+                                if (subId == null) {
+                                    Log.e(TAG, "SMS subId is null. Bail out");
+                                    return;
+                                }
+
+                                Log.d(TAG, "destination Sub Id = " + subId[0]);
+
+                                if (subId[0] < 0) {
+                                    Log.d(TAG, "Subscriptions are not yet read.");
+                                    int defSmsSubId = getDefaultSmsSubId();
+                                    // We dont have enough info about subId. We dont know if the
+                                    // phoneId as persist in DB actually would match the subId of
+                                    // defaultSmsSubId. We can not also ignore this transaction
+                                    // since no retry would be scheduled if we return from here. The
+                                    // only option is to do best effort try on current default sms
+                                    // subId, if it failed then a retry would be scheduled and while
+                                    // processing that retry attempt would be able to get correct
+                                    // subId from subscription manager.
+                                    Log.d(TAG, "Override with default Sms subId = " + defSmsSubId);
+                                    subId[0] = defSmsSubId;
+                                }
+
                                 TransactionBundle args = new TransactionBundle(transactionType,
                                         uri.toString());
                                 // Handle no net work failed case.
@@ -509,8 +561,7 @@ public class TransactionService extends Service implements Observer {
                                     Log.v(TAG, "onNewIntent: launchTransaction uri=" + uri);
                                 }
                                 // FIXME: We use the same serviceId for all MMs.
-                                launchTransaction(serviceId, args, false,
-                                        cursor.getInt(columnIndexOfSubId));
+                                launchTransaction(serviceId, args, false, subId[0]);
                                 break;
                         }
                     }
