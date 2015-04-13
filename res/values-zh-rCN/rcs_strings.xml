@@ -59,6 +59,7 @@
     <string name="group_chat_disbanded">群聊已经解散。</string>
     <string name="group_chat_policy">已经修改消息接收策略。</string>
     <string name="group_chat_gone">您已不在群聊中。</string>
+    <string name="group_chat_remark_delete">群聊备注已删除。</string>
 
     <string name="attach_map">位置</string>
     <string name="message_received">送达</string>
@@ -126,7 +127,7 @@
     <string name="message_back">消息恢复</string>
     <string name="message_is_begin">准备备份</string>
     <string name="message_is_saving">消息备份中</string>
-    <string name="cacel_back_message">取消备份</string>
+    <string name="cacel_back_message">取消</string>
     <string name="message_save_ok">备份完成</string>
     <string name="message_save_fail">备份失败</string>
     <string name="message_is_restore_begin">准备恢复</string>
@@ -214,6 +215,14 @@
     <string name="file_is_too_larger">文件太大</string>
     <string name="please_install_application">请安装相关应用</string>
     <string name="emotion_download_fail">表情下载失败。</string>
+    <string name="confirm_complain_dialog_title">"要举报该信息吗？"</string>
+    <string name="message_restore_fail">还原失败</string>
+    <string name="forward_message_not_support">该消息不能转发</string>
+    <string name="save_message_not_support">该消息不能保存</string>
     <string name="cloud_file_name">文件名:</string>
     <string name="cloud_file_size">,文件大小:</string>
+    <string name="favorite_success">收藏成功</string>
+    <string name="favorite_fail">收藏失败</string>
+    <string name="temp_group_chat">临时群聊</string>
+    <string name="rcs_offline_on_groupchat">您已离线，群聊不能发送多媒体消息。</string>
 </resources>

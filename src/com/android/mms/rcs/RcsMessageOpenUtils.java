@@ -29,8 +29,6 @@ import com.android.mms.ui.MessageItem;
 import com.android.mms.ui.MessageListItem;
 import com.android.vcard.VCardParser;
 import com.android.vcard.VCardParser_V21;
-import com.android.vcard.VCardParser;
-import com.android.vcard.VCardParser_V21;
 import com.android.vcard.exception.VCardException;
 import com.suntek.mway.rcs.client.api.im.impl.MessageApi;
 import com.suntek.mway.rcs.client.api.mcloud.McloudFileApi;
@@ -117,7 +115,17 @@ public class RcsMessageOpenUtils {
         }
     }
 
-    public static void resendOrOpenRcsMessage(MessageListItem messageListItem) {
+    public static void setRcsImageViewClickListener(
+            ImageView imageView, final MessageListItem messageListItem){
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resendOrOpenRcsMessage(messageListItem);
+            }
+        });
+    }
+
+    private static void resendOrOpenRcsMessage(MessageListItem messageListItem) {
         MessageItem messageItem = messageListItem.getMessageItem();
         if (messageItem.mRcsMsgState == RcsUtils.MESSAGE_FAIL
                 && messageItem.mRcsType != RcsUtils.RCS_MSG_TYPE_TEXT) {
@@ -166,8 +174,7 @@ public class RcsMessageOpenUtils {
             cMessage = msg.getCloudFileMessage();
             api = RcsApiManager.getMcloudFileApi();
             if (msg != null)
-                isFileDownload = RcsChatMessageUtils.isFileDownload(api.getLocalRootPath()
-                                    + cMessage.getFileName(), cMessage.getFileSize());
+                isFileDownload = RcsUtils.isFileDownLoadoK(mMessageItem);
             if(messageListItem.isDownloading()){
                 transOper  = TransNode.TransOper.RESUME;
             }
@@ -176,7 +183,7 @@ public class RcsMessageOpenUtils {
                 operation.pause();
                 messageListItem.setDateViewText(R.string.stop_down_load);
                 Log.i(LOG_TAG, "STOP LOAD");
-            } else {
+            } else if(!isFileDownload) {
                 messageListItem.setRcsIsStopDown(false);
                 operation = api.downloadFileFromUrl(cMessage.getShareUrl(), cMessage.getFileName(),
                         transOper,mMessageItem.mRcsId);
@@ -349,7 +356,7 @@ public class RcsMessageOpenUtils {
         }
     }
 
-    private static void showDetailVcard(Context context,
+    public static void showDetailVcard(Context context,
             ArrayList<PropertyNode> propList) {
         AlertDialog.Builder builder = new Builder(context);
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -373,7 +380,11 @@ public class RcsMessageOpenUtils {
                 }
             } else if ("TEL".equals(propertyNode.propName)) {
                 if (!TextUtils.isEmpty(propertyNode.propValue)) {
-                    getPhoneNumberMap(context, numberList, propertyNode);
+                    String numberTypeStr =
+                            RcsUtils.getPhoneNumberTypeStr(context, propertyNode);
+                    if(!TextUtils.isEmpty(numberTypeStr)){
+                        numberList.add(numberTypeStr);
+                    }
                 }
             } else if ("ADR".equals(propertyNode.propName)) {
                 if (!TextUtils.isEmpty(propertyNode.propValue)) {
@@ -433,89 +444,17 @@ public class RcsMessageOpenUtils {
         }
     }
 
-    private static void getPhoneNumberMap(Context context,
-            ArrayList<String> numberList, PropertyNode propertyNode) {
-        if (null == propertyNode.paramMap_TYPE
-                || propertyNode.paramMap_TYPE.size() == 0) {
-            return;
-        }
-        String number = propertyNode.propValue;
-        if (propertyNode.paramMap_TYPE.size() == 2) {
-            if (propertyNode.paramMap_TYPE.contains("FAX")
-                    && propertyNode.paramMap_TYPE.contains("HOME")) {
-                numberList.add(context
-                        .getString(R.string.vcard_number_fax_home) + number);
-            } else if (propertyNode.paramMap_TYPE.contains("FAX")
-                    && propertyNode.paramMap_TYPE.contains("WORK")) {
-                numberList.add(context
-                        .getString(R.string.vcard_number_fax_work) + number);
-            } else if (propertyNode.paramMap_TYPE.contains("PREF")
-                    && propertyNode.paramMap_TYPE.contains("WORK")) {
-                numberList.add(context
-                        .getString(R.string.vcard_number_pref_work) + number);
-            } else if (propertyNode.paramMap_TYPE.contains("CELL")
-                    && propertyNode.paramMap_TYPE.contains("WORK")) {
-                numberList.add(context
-                        .getString(R.string.vcard_number_call_work) + number);
-            } else if (propertyNode.paramMap_TYPE.contains("WORK")
-                    && propertyNode.paramMap_TYPE.contains("PAGER")) {
-                numberList.add(context
-                        .getString(R.string.vcard_number_work_pager) + number);
-            } else {
-                numberList.add(context.getString(R.string.vcard_number_other)
-                        + number);
-            }
-        } else {
-            if (propertyNode.paramMap_TYPE.contains("CELL")) {
-                numberList.add(context.getString(R.string.vcard_number)
-                        + number);
-            } else if (propertyNode.paramMap_TYPE.contains("HOME")) {
-                numberList.add(context.getString(R.string.vcard_number_home)
-                        + number);
-            } else if (propertyNode.paramMap_TYPE.contains("WORK")) {
-                numberList.add(context.getString(R.string.vcard_number_work)
-                        + number);
-            } else if (propertyNode.paramMap_TYPE.contains("PAGER")) {
-                numberList.add(context.getString(R.string.vcard_number_pager)
-                        + number);
-            } else if (propertyNode.paramMap_TYPE.contains("VOICE")) {
-                numberList.add(context.getString(R.string.vcard_number_other)
-                        + number);
-            } else if (propertyNode.paramMap_TYPE.contains("CAR")) {
-                numberList.add(context.getString(R.string.vcard_number_car)
-                        + number);
-            } else if (propertyNode.paramMap_TYPE.contains("ISDN")) {
-                numberList.add(context.getString(R.string.vcard_number_isdn)
-                        + number);
-            } else if (propertyNode.paramMap_TYPE.contains("PREF")) {
-                numberList.add(context.getString(R.string.vcard_number_pref)
-                        + number);
-            } else if (propertyNode.paramMap_TYPE.contains("FAX")) {
-                numberList.add(context.getString(R.string.vcard_number_fax)
-                        + number);
-            } else if (propertyNode.paramMap_TYPE.contains("TLX")) {
-                numberList.add(context.getString(R.string.vcard_number_tlx)
-                        + number);
-            } else if (propertyNode.paramMap_TYPE.contains("MSG")) {
-                numberList.add(context.getString(R.string.vcard_number_msg)
-                        + number);
-            } else {
-                numberList.add(context.getString(R.string.vcard_number_other)
-                        + number);
-            }
-        }
-    }
-
     private static void openRcsLocationMessage(MessageListItem messageListItem) {
         MessageItem messageItem = messageListItem.getMessageItem();
         String filePath = RcsUtils.getFilePath(messageItem.mRcsId, messageItem.mRcsPath);
+        String messageItemBody = messageItem.mBody;
         try {
             GeoLocation geo = RcsUtils.readMapXml(filePath);
-            String geourl = "geo:" + geo.getLat() + "," + geo.getLng();
+            String messageStr = messageItemBody.substring(messageItemBody.
+                    lastIndexOf("/") + 1, messageItemBody.length());
+            String geourl = "geo:" + geo.getLat() + "," + geo.getLng()+ "?q=" + messageStr;
             Uri uri = Uri.parse(geourl);
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(geourl));
-            Log.i("RCS_UI","BODY="+messageItem.mBody);
-            intent.putExtra("address",messageItem.mBody);
             messageListItem.getContext().startActivity(intent);
         } catch (NullPointerException e) {
             Log.w(LOG_TAG, e);
