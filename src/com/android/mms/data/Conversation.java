@@ -572,6 +572,9 @@ public class Conversation {
         return mIsTop;
     }
 
+    public void setTop(int top) {
+        mIsTop = top;
+    }
     public synchronized void clearThreadId() {
         // remove ourself from the cache
         if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
