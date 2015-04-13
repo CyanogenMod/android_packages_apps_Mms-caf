@@ -21,6 +21,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.android.mms.MmsApp;
+import com.android.mms.MmsConfig;
 import com.android.mms.ui.MessagingPreferenceActivity;
 
 public class ContentRestrictionFactory {
@@ -44,7 +45,13 @@ public class ContentRestrictionFactory {
                 MessagingPreferenceActivity.MMS_CREATION_MODE,
                 MessagingPreferenceActivity.CREATION_MODE_FREE + ""));
         if (null == sContentRestriction) {
-            sContentRestriction = new CarrierContentRestriction(creationMode);
+            if (MmsConfig.isCreationModeEnabled()) {
+                sContentRestriction = new CarrierContentRestriction(
+                        creationMode);
+            } else {
+                sContentRestriction = new CarrierContentRestriction();
+            }
+
         }
         sCreationMode = creationMode;
         return sContentRestriction;
