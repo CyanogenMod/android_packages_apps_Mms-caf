@@ -54,27 +54,30 @@
             <LinearLayout
                 android:id="@+id/subject_wrapper"
                 android:orientation="horizontal"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:weightSum="1.0">
+                android:layout_marginTop="4dp"
+                android:visibility="gone">
+
                 <EditText android:id="@+id/subject"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_weight="1"
                     android:capitalize="sentences"
                     android:autoText="true"
                     android:singleLine="true"
-                    android:layout_weight=".80"
                     android:hint="@string/subject_hint"/>
+
                 <ImageView
                     android:id="@+id/subject_cancel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:padding="4dp"
                     android:src="@drawable/ic_navigation_close"
-                    android:layout_weight=".20"
-                    android:background="?android:selectableItemBackground"
-                    android:contentDescription="@string/remove_subject"/>
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/remove_subject" />
+
             </LinearLayout>
 
         </LinearLayout>
