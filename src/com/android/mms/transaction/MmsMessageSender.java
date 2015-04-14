@@ -118,6 +118,8 @@ public class MmsMessageSender implements MessageSender {
             values.put(PendingMessages.ERROR_CODE, 0);
             values.put(PendingMessages.RETRY_INDEX, 0);
             values.put(PendingMessages.DUE_TIME, 0);
+            values.put(PendingMessages.SUBSCRIPTION_ID, mSubId);
+            values.put(PendingMessages.PHONE_ID, mPhoneId);
 
             SqliteWrapper.insert(mContext, mContext.getContentResolver(),
                     PendingMessages.CONTENT_URI, values);
