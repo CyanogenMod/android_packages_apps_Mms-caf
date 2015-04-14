@@ -25,6 +25,7 @@ import static com.google.android.mms.pdu.PduHeaders.MESSAGE_TYPE_NOTIFICATION_IN
 import static com.google.android.mms.pdu.PduHeaders.MESSAGE_TYPE_READ_ORIG_IND;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -38,6 +39,7 @@ import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Mms.Inbox;
+import android.provider.Telephony.MmsSms.PendingMessages;
 import android.util.Log;
 
 import com.android.internal.telephony.PhoneConstants;
@@ -212,10 +214,10 @@ public class PushReceiver extends BroadcastReceiver {
 
                         if (!isDuplicateNotification(mContext, nInd)) {
                             int phoneId = intent.getIntExtra(PhoneConstants.SLOT_KEY, 0);
-                            long subId = intent.getLongExtra(PhoneConstants.SUBSCRIPTION_KEY, 0);
+                            int subId = intent.getIntExtra(PhoneConstants.SUBSCRIPTION_KEY, 0);
                             //Phone ID will be updated in data base
                             Log.d(TAG, "phoneId : " + phoneId + " subId : " + subId);
-                            ContentValues values = new ContentValues(1);
+                            ContentValues values = new ContentValues(2);
                             values.put(Mms.PHONE_ID, phoneId);
                             values.put(Mms.SUBSCRIPTION_ID, subId);
                             Uri uri = p.persist(pdu, Inbox.CONTENT_URI,
@@ -224,6 +226,15 @@ public class PushReceiver extends BroadcastReceiver {
                                     null);
 
                             SqliteWrapper.update(mContext, cr, uri, values, null, null);
+
+                            // Also update subscription in pending message table
+                            long msgId = ContentUris.parseId(uri);
+                            final ContentValues pendingValues = new ContentValues(2);
+                            pendingValues.put(PendingMessages.PHONE_ID, phoneId);
+                            pendingValues.put(PendingMessages.SUBSCRIPTION_ID, subId);
+                            SqliteWrapper.update(mContext, cr, PendingMessages.CONTENT_URI,
+                                    pendingValues, PendingMessages.MSG_ID + "=" + msgId, null);
+
                             // Start service to finish the notification transaction.
                             Intent svc = new Intent(mContext, TransactionService.class);
                             svc.putExtra(TransactionBundle.URI, uri.toString());

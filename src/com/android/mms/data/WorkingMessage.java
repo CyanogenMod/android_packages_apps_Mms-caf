@@ -43,7 +43,6 @@ import android.provider.Telephony.MmsSms.PendingMessages;
 import android.provider.Telephony.Sms;
 import android.telephony.SmsMessage;
 import android.telephony.SubscriptionManager;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
@@ -147,6 +146,8 @@ public class WorkingMessage {
 
     // Set to true if this message has been discarded.
     private boolean mDiscarded = false;
+    // Subscription this message is to be sent out under
+    private int mSubscriptionId = SubscriptionManager.INVALID_SUBSCRIPTION_ID;
 
     // Track whether we have drafts
     private volatile boolean mHasMmsDraft;
@@ -166,7 +167,6 @@ public class WorkingMessage {
     };
 
     private static final int MMS_MESSAGE_SIZE_INDEX  = 1;
-    public int mCurrentConvSubId = -1;
 
     // Flag indicate resend sms that the recipient of conversion is more than one.
     private boolean mResendMultiRecipients;
@@ -380,9 +380,24 @@ public class WorkingMessage {
         return mText;
     }
 
-    public void setWorkingMessageSub(int subId) {
-        mCurrentConvSubId = subId;
+    public void setSubscriptionId(int subId) {
+        mSubscriptionId = subId;
     }
+
+    private int getSubscriptionIdForSms() {
+        if (mSubscriptionId != SubscriptionManager.INVALID_SUBSCRIPTION_ID) {
+            return mSubscriptionId;
+        }
+        return SubscriptionManager.getDefaultSmsSubId();
+    }
+
+    private int getSubscriptionIdForMms() {
+        if (mSubscriptionId != SubscriptionManager.INVALID_SUBSCRIPTION_ID) {
+            return mSubscriptionId;
+        }
+        return SubscriptionManager.getDefaultDataSubId();
+    }
+
     /**
      * @return True if the message has any text. A message with just whitespace is not considered
      * to have text.
@@ -1392,8 +1407,8 @@ public class WorkingMessage {
             Log.d(LogTag.TRANSACTION, "sendSmsWorker sending message: recipients=" +
                     semiSepRecipients + ", threadId=" + threadId);
         }
-        MessageSender sender = new SmsMessageSender(mActivity, dests, msgText, threadId,
-                mCurrentConvSubId);
+        MessageSender sender = new SmsMessageSender(mActivity, dests,
+                msgText, threadId, getSubscriptionIdForSms());
         try {
             sender.sendMessage(threadId);
 
@@ -1412,6 +1427,8 @@ public class WorkingMessage {
         long threadId = 0;
         Cursor cursor = null;
         boolean newMessage = false;
+        int subId = getSubscriptionIdForMms();
+
         try {
             // Put a placeholder message in the database first
             DraftCache.getInstance().setSavingDraft(true);
@@ -1461,8 +1478,6 @@ public class WorkingMessage {
                     values.put(Mms.TEXT_ONLY, 1);
                 }
 
-                int subId = TelephonyManager.getDefault().getPhoneCount() > 1
-                        ? mCurrentConvSubId : SubscriptionManager.getDefaultDataSubId();
                 values.put(Mms.SUBSCRIPTION_ID, subId);
                 values.put(Mms.PHONE_ID, SubscriptionManager.getPhoneId(subId));
                 mmsUri = SqliteWrapper.insert(mActivity, mContentResolver, Mms.Outbox.CONTENT_URI,
@@ -1529,15 +1544,13 @@ public class WorkingMessage {
             return;
         }
 
-        ContentValues values = new ContentValues(1);
-        int subId = TelephonyManager.getDefault().getPhoneCount() > 1
-                ? mCurrentConvSubId : SubscriptionManager.getDefaultDataSubId();
+        ContentValues values = new ContentValues(2);
         values.put(Mms.SUBSCRIPTION_ID, subId);
         values.put(Mms.PHONE_ID, SubscriptionManager.getPhoneId(subId));
         SqliteWrapper.update(mActivity, mContentResolver, mmsUri, values, null, null);
 
         MessageSender sender = new MmsMessageSender(mActivity, mmsUri,
-                slideshow.getCurrentMessageSize(), mCurrentConvSubId);
+                slideshow.getCurrentMessageSize(), subId);
         try {
             if (!sender.sendMessage(threadId)) {
                 // The message was sent through SMS protocol, we should
@@ -1561,8 +1574,12 @@ public class WorkingMessage {
             p.move(mmsUri, Mms.Outbox.CONTENT_URI);
 
             // Now update the pending_msgs table with an error for that new item.
+            int subId = getSubscriptionIdForMms();
             ContentValues values = new ContentValues(1);
             values.put(PendingMessages.ERROR_TYPE, MmsSms.ERR_TYPE_GENERIC_PERMANENT);
+            values.put(PendingMessages.SUBSCRIPTION_ID, subId);
+            values.put(PendingMessages.PHONE_ID, SubscriptionManager.getPhoneId(subId));
+
             long msgId = ContentUris.parseId(mmsUri);
             SqliteWrapper.update(mActivity, mContentResolver,
                     PendingMessages.CONTENT_URI,
