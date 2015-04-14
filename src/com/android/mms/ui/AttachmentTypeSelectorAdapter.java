@@ -50,7 +50,7 @@ public class AttachmentTypeSelectorAdapter extends IconListAdapter {
     public AttachmentTypeSelectorAdapter(Context context, int mode) {
         super(context, getData(mode, context));
     }
-    
+
     public int buttonToCommand(int whichButton) {
         AttachmentListItem item = (AttachmentListItem)getItem(whichButton);
         return item.getCommand();
@@ -99,7 +99,8 @@ public class AttachmentTypeSelectorAdapter extends IconListAdapter {
         }
         // calendar event support
         addItem(data, context.getResources().getString(R.string.attach_add_calendar_events),
-                R.drawable.ic_attach_vcard, ADD_CALENDAR_EVENTS);
+                R.drawable.ic_attach_event, ADD_CALENDAR_EVENTS);
+
         if (mode == MODE_RCS) {
             addItem(data, context.getString(R.string.attach_map),
                     R.drawable.rcs_attach_map_icon, ADD_MAP);
@@ -121,7 +122,7 @@ public class AttachmentTypeSelectorAdapter extends IconListAdapter {
         AttachmentListItem temp = new AttachmentListItem(title, resource, command);
         data.add(temp);
     }
-    
+
     public static class AttachmentListItem extends IconListAdapter.IconListItem {
         private int mCommand;
 
