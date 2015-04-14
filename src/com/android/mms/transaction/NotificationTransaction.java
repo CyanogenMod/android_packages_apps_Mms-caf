@@ -205,7 +205,7 @@ public class NotificationTransaction extends Transaction implements Runnable {
                             MessagingPreferenceActivity.getIsGroupMmsEnabled(mContext), null);
 
                     // Use local time instead of PDU time
-                    ContentValues values = new ContentValues(3);
+                    ContentValues values = new ContentValues(4);
                     values.put(Mms.DATE, System.currentTimeMillis() / 1000L);
                     values.put(Mms.SUBSCRIPTION_ID, mSubId);
                     values.put(Mms.PHONE_ID, SubscriptionManager.getPhoneId(mSubId));

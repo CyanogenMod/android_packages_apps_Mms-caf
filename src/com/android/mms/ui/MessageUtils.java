@@ -91,6 +91,7 @@ import android.text.format.Time;
 import android.text.style.URLSpan;
 import android.util.Log;
 import android.util.TypedValue;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -1062,15 +1063,19 @@ public class MessageUtils {
             selectionBuilder.append(" AND (" + threadIdSelection + ")");
         }
 
+        final String[] projection = new String[] {
+            Mms._ID, Mms.MESSAGE_ID, Mms.SUBSCRIPTION_ID
+        };
         final Cursor c = SqliteWrapper.query(context, context.getContentResolver(),
-                        Mms.Inbox.CONTENT_URI, new String[] {Mms._ID, Mms.MESSAGE_ID},
+                        Mms.Inbox.CONTENT_URI, projection,
                         selectionBuilder.toString(), null, null);
 
         if (c == null) {
             return;
         }
 
-        final Map<String, String> map = new HashMap<String, String>();
+        final Map<String, Pair<String, Integer>> map =
+                new HashMap<String, Pair<String, Integer>>();
         try {
             if (c.getCount() == 0) {
                 if (callback != null) {
@@ -1081,7 +1086,8 @@ public class MessageUtils {
 
             while (c.moveToNext()) {
                 Uri uri = ContentUris.withAppendedId(Mms.CONTENT_URI, c.getLong(0));
-                map.put(c.getString(1), AddressUtils.getFrom(context, uri));
+                map.put(c.getString(1),
+                        Pair.create(AddressUtils.getFrom(context, uri), c.getInt(2)));
             }
         } finally {
             c.close();
@@ -1090,9 +1096,10 @@ public class MessageUtils {
         OnClickListener positiveListener = new OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                for (final Map.Entry<String, String> entry : map.entrySet()) {
-                    MmsMessageSender.sendReadRec(context, entry.getValue(),
-                                                 entry.getKey(), status);
+                for (final Map.Entry<String, Pair<String, Integer>> entry : map.entrySet()) {
+                    Pair<String, Integer> value = entry.getValue();
+                    MmsMessageSender.sendReadRec(context, value.first,
+                            entry.getKey(), value.second, status);
                 }
 
                 if (callback != null) {
