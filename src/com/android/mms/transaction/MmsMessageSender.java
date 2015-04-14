@@ -109,7 +109,7 @@ public class MmsMessageSender implements MessageSender {
             // entry in the pending_msgs table which is where TransacationService looks for
             // messages to send. Normally, the entry in pending_msgs is created by the trigger:
             // insert_mms_pending_on_update, when a message is moved from drafts to the outbox.
-            ContentValues values = new ContentValues(7);
+            ContentValues values = new ContentValues(9);
 
             values.put(PendingMessages.PROTO_TYPE, MmsSms.MMS_PROTO);
             values.put(PendingMessages.MSG_ID, messageId);
@@ -118,6 +118,8 @@ public class MmsMessageSender implements MessageSender {
             values.put(PendingMessages.ERROR_CODE, 0);
             values.put(PendingMessages.RETRY_INDEX, 0);
             values.put(PendingMessages.DUE_TIME, 0);
+            values.put(PendingMessages.SUBSCRIPTION_ID, mSubId);
+            values.put(PendingMessages.PHONE_ID, mPhoneId);
 
             SqliteWrapper.insert(mContext, mContext.getContentResolver(),
                     PendingMessages.CONTENT_URI, values);

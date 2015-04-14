@@ -1537,7 +1537,7 @@ public class WorkingMessage {
         SqliteWrapper.update(mActivity, mContentResolver, mmsUri, values, null, null);
 
         MessageSender sender = new MmsMessageSender(mActivity, mmsUri,
-                slideshow.getCurrentMessageSize(), mCurrentConvSubId);
+                slideshow.getCurrentMessageSize(), subId);
         try {
             if (!sender.sendMessage(threadId)) {
                 // The message was sent through SMS protocol, we should
