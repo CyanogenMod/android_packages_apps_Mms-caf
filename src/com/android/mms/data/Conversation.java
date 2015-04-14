@@ -341,9 +341,11 @@ public class Conversation {
             selection = selection + " AND " + Mms.THREAD_ID + " = " + threadId;
         }
 
+        final String[] projection = new String[] {
+            Mms._ID, Mms.MESSAGE_ID, Mms.SUBSCRIPTION_ID
+        };
         final Cursor c = SqliteWrapper.query(context, context.getContentResolver(),
-                        Mms.Inbox.CONTENT_URI, new String[] {Mms._ID, Mms.MESSAGE_ID},
-                        selection, null, null);
+                        Mms.Inbox.CONTENT_URI, projection, selection, null, null);
 
         try {
             if (c == null || c.getCount() == 0) {
@@ -356,7 +358,7 @@ public class Conversation {
                     LogTag.debug("sendReadReport: uri = " + uri);
                 }
                 MmsMessageSender.sendReadRec(context, AddressUtils.getFrom(context, uri),
-                                             c.getString(1), status);
+                                             c.getString(1), c.getInt(2), status);
             }
         } finally {
             if (c != null) {
