@@ -1824,7 +1824,7 @@ public class WorkingMessage {
             }, "WorkingMessage.send MMS").start();
         } else {
 
-            if (RcsApiManager.isRcsServiceInstalled()) {
+            if (RcsApiManager.getSupportApi().isRcsSupported()) {
                 String text = mText.toString();
                 final String msgText = text;
                 new Thread(new Runnable() {

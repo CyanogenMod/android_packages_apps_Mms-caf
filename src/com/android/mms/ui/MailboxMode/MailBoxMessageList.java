@@ -716,10 +716,22 @@ public class MailBoxMessageList extends ListActivity implements
                 mSearchView.setSearchableInfo(info);
             }
         }
+
         MenuItem item = menu.findItem(R.id.action_change_to_folder_mode);
         if (item != null) {
             item.setVisible(false);
         }
+
+        boolean isRcsSupported = RcsApiManager.getSupportApi().isRcsSupported();
+        MenuItem myFavoriteItem = menu.findItem(R.id.my_favorited);
+        if (myFavoriteItem != null) {
+            myFavoriteItem.setVisible(isRcsSupported);
+        }
+        MenuItem saveOrBackItem = menu.findItem(R.id.saveorbackmessage);
+        if (saveOrBackItem != null) {
+            saveOrBackItem.setVisible(isRcsSupported);
+        }
+
         return true;
     }
 
