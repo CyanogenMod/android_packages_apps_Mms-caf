@@ -896,7 +896,7 @@ public class ComposeMessageActivity extends Activity
     }
 
     private void sendMsimMessage(boolean bCheckEcmMode, int subId) {
-        mWorkingMessage.setWorkingMessageSub(subId);
+        mWorkingMessage.setSubscriptionId(subId);
         sendMessage(bCheckEcmMode);
     }
 
@@ -905,12 +905,10 @@ public class ComposeMessageActivity extends Activity
             MessageUtils.showSimSelector(this, new MessageUtils.OnSimSelectedCallback() {
                 @Override
                 public void onSimSelected(int subId) {
-                    mWorkingMessage.setWorkingMessageSub(subId);
-                    sendMessage(bCheckEcmMode);
+                    sendMsimMessage(bCheckEcmMode, subId);
                 }
             });
         } else {
-            mWorkingMessage.setWorkingMessageSub(SubscriptionManager.getDefaultSmsSubId());
             sendMessage(bCheckEcmMode);
         }
     }
