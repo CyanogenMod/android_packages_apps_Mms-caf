@@ -899,8 +899,8 @@ public class TransactionService extends Service implements Observer {
     }
 
     protected void endMmsConnectivity() {
-        long subId = SubscriptionManager.getOnDemandDataSubId();
-        endMmsConnectivity(Long.toString(subId));
+        int subId = SubscriptionManager.getOnDemandDataSubId();
+        endMmsConnectivity(Integer.toString(subId));
     }
 
     protected void endMmsConnectivity(String subId) {
