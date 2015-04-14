@@ -102,26 +102,21 @@ public class MmsMessageSender implements MessageSender {
 
         long messageId = ContentUris.parseId(mMessageUri);
 
-        // Move the message into MMS Outbox.
-        if (!mMessageUri.toString().startsWith(Mms.Draft.CONTENT_URI.toString())) {
-            // If the message is already in the outbox (most likely because we created a "primed"
-            // message in the outbox when the user hit send), then we have to manually put an
-            // entry in the pending_msgs table which is where TransacationService looks for
-            // messages to send. Normally, the entry in pending_msgs is created by the trigger:
-            // insert_mms_pending_on_update, when a message is moved from drafts to the outbox.
-            ContentValues values = new ContentValues(7);
+        ContentValues values = new ContentValues(9);
 
-            values.put(PendingMessages.PROTO_TYPE, MmsSms.MMS_PROTO);
-            values.put(PendingMessages.MSG_ID, messageId);
-            values.put(PendingMessages.MSG_TYPE, pdu.getMessageType());
-            values.put(PendingMessages.ERROR_TYPE, 0);
-            values.put(PendingMessages.ERROR_CODE, 0);
-            values.put(PendingMessages.RETRY_INDEX, 0);
-            values.put(PendingMessages.DUE_TIME, 0);
+        values.put(PendingMessages.PROTO_TYPE, MmsSms.MMS_PROTO);
+        values.put(PendingMessages.MSG_ID, messageId);
+        values.put(PendingMessages.MSG_TYPE, pdu.getMessageType());
+        values.put(PendingMessages.ERROR_TYPE, 0);
+        values.put(PendingMessages.ERROR_CODE, 0);
+        values.put(PendingMessages.RETRY_INDEX, 0);
+        values.put(PendingMessages.DUE_TIME, 0);
+        values.put(PendingMessages.SUBSCRIPTION_ID, mSubId);
+        values.put(PendingMessages.PHONE_ID, mPhoneId);
 
-            SqliteWrapper.insert(mContext, mContext.getContentResolver(),
-                    PendingMessages.CONTENT_URI, values);
-        } else {
+        SqliteWrapper.insert(mContext, mContext.getContentResolver(),
+                PendingMessages.CONTENT_URI, values);
+        if (mMessageUri.toString().startsWith(Mms.Draft.CONTENT_URI.toString())) {
             p.move(mMessageUri, Mms.Outbox.CONTENT_URI);
         }
 
