@@ -97,10 +97,8 @@ public class ZoomGestureOverlayView extends GestureOverlayView {
      * @param message {@link java.lang.String} if empty or null, gracefully do nothing
      */
     private void logDebug(String message) {
-        if (!TextUtils.isEmpty(message)) {
-            if (Log.isLoggable(TAG, Log.DEBUG)) {
-                Log.d(TAG, message);
-            }
+        if (!TextUtils.isEmpty(message) && Log.isLoggable(TAG, Log.VERBOSE)) {
+            Log.v(TAG, message);
         }
     }
 
