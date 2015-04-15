@@ -66,12 +66,10 @@ public class TransactionSettings {
         }
         String selection = null;
         String[] selectionArgs = null;
-        Uri contentUri = Telephony.Carriers.CONTENT_URI;
+        Uri contentUri = Uri.withAppendedPath(Telephony.Carriers.CONTENT_URI, "/subId/" + subId);
         if (!TextUtils.isEmpty(apnName)) {
             selection = Telephony.Carriers.APN + "=?";
             selectionArgs = new String[]{ apnName.trim() };
-        } else {
-            contentUri = Uri.withAppendedPath(contentUri, "/subId/" + subId);
         }
 
         Cursor cursor = SqliteWrapper.query(context, context.getContentResolver(),
