@@ -356,7 +356,8 @@ public class MessageItem {
         return ContentType.isImageType(type) || ContentType.isVideoType(type)
                 || ContentType.isAudioType(type) || DrmUtils.isDrmType(type)
                 || type.equals(ContentType.AUDIO_OGG.toLowerCase())
-                || type.equals(ContentType.TEXT_VCARD.toLowerCase());
+                || type.equals(ContentType.TEXT_VCARD.toLowerCase())
+                || type.equals(ContentType.TEXT_VCALENDAR.toLowerCase());
     }
 
     private void isAttachmentSaveable(PduBody body) {
