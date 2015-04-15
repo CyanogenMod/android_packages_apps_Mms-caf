@@ -383,11 +383,13 @@ public class TransactionService extends Service implements Observer {
                     " intent=" + intent);
         }
 
-        Bundle extras = intent.getExtras();
+        final Bundle extras = intent.getExtras();
         String action = intent.getAction();
-        if ((ACTION_ONALARM.equals(action) || ACTION_ENABLE_AUTO_RETRIEVE.equals(action) ||
-                (extras == null)) || ((extras != null) && !extras.containsKey("uri")
-                && !extras.containsKey(CANCEL_URI))) {
+        boolean hasUriExtra = extras != null &&
+                (extras.containsKey(TransactionBundle.URI) || extras.containsKey(CANCEL_URI));
+
+        if (ACTION_ONALARM.equals(action) || ACTION_ENABLE_AUTO_RETRIEVE.equals(action)
+                || extras == null || !hasUriExtra) {
 
             //We hit here when either the Retrymanager triggered us or there is
             //send operation in which case uri is not set. For rest of the
@@ -526,7 +528,7 @@ public class TransactionService extends Service implements Observer {
                 RetryScheduler.setRetryAlarm(this);
                 stopSelfIfIdle(serviceId);
             }
-        } else if ((extras != null) && extras.containsKey(CANCEL_URI)) {
+        } else if (extras != null && extras.containsKey(CANCEL_URI)) {
             String uriStr = intent.getStringExtra(CANCEL_URI);
             Uri mCancelUri = Uri.parse(uriStr);
             for (Transaction transaction : mProcessing) {
