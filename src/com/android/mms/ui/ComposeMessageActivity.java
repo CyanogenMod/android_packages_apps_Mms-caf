@@ -6265,11 +6265,16 @@ public class ComposeMessageActivity extends Activity
         }
 
         private MessageItem getMessageItemByPos(int position) {
-            MessageListItem msglistItem = (MessageListItem) mMsgListView.getChildAt(position);
-            if (msglistItem == null) {
-                return null;
+            if (mMsgListAdapter.getItemViewType(position)
+                    != MessageListAdapter.GROUP_CHAT_ITEM_TYPE) {
+                Cursor cursor = (Cursor) mMsgListAdapter.getItem(position);
+                if (cursor != null) {
+                    return mMsgListAdapter.getCachedMessageItem(
+                            cursor.getString(COLUMN_MSG_TYPE),
+                            cursor.getLong(COLUMN_ID), cursor);
+                }
             }
-            return  msglistItem.getMessageItem();
+            return null;
         }
 
         private boolean isDeliveryReportMsg(int position) {
