@@ -396,7 +396,9 @@ public class TransactionService extends Service implements Observer {
             // Scan database to find all pending operations.
             Cursor cursor = PduPersister.getPduPersister(this).getPendingMessages(
                     System.currentTimeMillis());
-            Log.d(TAG, "Cursor= " + DatabaseUtils.dumpCursorToString(cursor));
+            if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
+                Log.v(TAG, "Pending message cursor: " + DatabaseUtils.dumpCursorToString(cursor));
+            }
             if (cursor != null) {
                 try {
                     int count = cursor.getCount();

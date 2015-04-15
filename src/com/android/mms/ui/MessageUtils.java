@@ -1559,7 +1559,6 @@ public class MessageUtils {
     public static boolean isIccCardActivated(int slot) {
         TelephonyManager tm = TelephonyManager.getDefault();
         final int simState = tm.getSimState(slot);
-        log("isIccCardActivated subscription " + simState);
         return (simState != TelephonyManager.SIM_STATE_ABSENT)
                     && (simState != TelephonyManager.SIM_STATE_UNKNOWN);
     }

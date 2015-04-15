@@ -704,7 +704,6 @@ public class ManageSimMessages extends Activity
         private void recoredCheckedItemPositions(){
             SparseBooleanArray booleanArray = getListView().getCheckedItemPositions();
             mSelectedPos.clear();
-            Log.d(TAG, "booleanArray = " + booleanArray);
             for (int i = 0; i < booleanArray.size(); i++) {
                 int pos = booleanArray.keyAt(i);
                 boolean checked = booleanArray.get(pos);
