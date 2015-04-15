@@ -219,9 +219,8 @@ public class AttachmentPagerAdapter extends PagerAdapter {
 
         // calendar event support
         list.add(new IconListItem(mContext.getString(R.string.attach_add_calendar_events),
-                (!mIsReplace && mHasAttachment) ? R.drawable.ic_attach_vcard_disable
-                        : R.drawable.ic_attach_vcard_holo_light));
-        mIndexOfAttachmentTypes.put(index++, ADD_CALENDAR_EVENTS);
+                (!mIsReplace && mHasAttachment) ? R.drawable.ic_attach_event_disable
+                        : R.drawable.ic_attach_event));
 
         return list;
     }
