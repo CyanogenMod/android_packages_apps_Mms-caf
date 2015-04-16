@@ -196,6 +196,7 @@ public class AttachmentPagerAdapter extends PagerAdapter {
                         : R.drawable.ic_attach_slideshow_holo_light));
         mIndexOfAttachmentTypes.put(index++, ADD_SLIDESHOW);
         boolean config_vcard = mContext.getResources().getBoolean(R.bool.config_vcard);
+        boolean isRcsSupported = RcsApiManager.getSupportApi().isRcsSupported();
         if (config_vcard) {
             list.add(new IconListItem(mContext.getString(R.string.attach_add_contact_as_text),
                     (!mIsReplace && mHasSlideshow) ? R.drawable.ic_attach_contact_info_disable
@@ -204,14 +205,13 @@ public class AttachmentPagerAdapter extends PagerAdapter {
             list.add(new IconListItem(mContext.getString(R.string.attach_add_contact_as_vcard),
                     (!mIsReplace && mHasAttachment) ? R.drawable.ic_attach_vcard_disable
                             : R.drawable.ic_attach_vcard_holo_light));
-            mIndexOfAttachmentTypes.put(index++, ADD_CONTACT_AS_VCARD);
-        } else if (RcsApiManager.isRcsServiceInstalled() && RcsApiManager.isRcsOnline()) {
+        } else if (isRcsSupported) {
             list.add(new IconListItem(mContext.getString(R.string.attach_add_contact_as_vcard),
                     (!mIsReplace && mHasAttachment) ? R.drawable.ic_attach_vcard_disable
                             : R.drawable.ic_attach_vcard_holo_light));
             mIndexOfAttachmentTypes.put(index++, ADD_CONTACT_AS_VCARD);
         }
-        if (RcsApiManager.isRcsServiceInstalled() && RcsApiManager.isRcsOnline()) {
+        if (isRcsSupported) {
             list.add(new IconListItem(mContext.getString(R.string.attach_map),
                     R.drawable.rcs_caiyun_sharefile));
             mIndexOfAttachmentTypes.put(index++, ADD_MAP);
