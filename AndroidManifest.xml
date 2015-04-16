@@ -458,18 +458,20 @@
 
         <!-- Message Template Content Provider -->
         <provider android:name="MessageTemplateProvider"
-                android:authorities="com.android.mms.MessageTemplateProvider" />
+                android:authorities="com.android.mms.MessageTemplateProvider" >
+        </provider>
 
-       <activity android:name=".transaction.MmsNoConfirmationSendActivity"
-           android:label="@string/plugger"
-           android:enabled="@bool/enablePlugger"
-           android:icon="@drawable/icon_of_plugger">
-           <intent-filter>
-              <action android:name="android.intent.action.SEND" />
-              <category android:name="android.intent.category.DEFAULT" />
-              <data android:mimeType="image/*" />
-              <data android:mimeType="video/*" />
-              <data android:mimeType="vnd.android/mms" />
+        <activity
+            android:name=".transaction.MmsNoConfirmationSendActivity"
+            android:label="@string/plugger"
+            android:enabled="@bool/enablePlugger"
+            android:icon="@drawable/icon_of_plugger">
+            <intent-filter android:priority="@string/plugger_priority">
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+                <data android:mimeType="video/*" />
+                <data android:mimeType="vnd.android/mms" />
             </intent-filter>
         </activity>
 

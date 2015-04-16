@@ -1064,7 +1064,6 @@
     <string name="cell_broadcast">Cell broadcast</string>
     <string name="cell_broadcast_title">Cell broadcast settings</string>
     <string name="cell_broadcast_settings">SIM card cell broadcast settings</string>
-
     <!-- Chat wallpaper -->
     <string name="pref_chat_wallpaper">Chat wallpaper</string>
     <string name="dialog_wallpaper_chooser_option_gallery">Gallery</string>
@@ -1082,4 +1081,5 @@
     <string name="font_medium">Medium</string>
     <string name="font_large">Large</string>
     <string name="font_extra_large">Extra large</string>
+    <string name="plugger_priority">999</string>
 </resources>
