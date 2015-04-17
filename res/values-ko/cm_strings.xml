@@ -147,10 +147,10 @@
   <string name="title_send_message">메시지 전송</string>
   <string name="subject_full">제목이 너무 길음</string>
   <string name="status_deleted_unread">읽지 않고 삭제됨</string>
-  <string name="sms_full_body_cm">휴대폰의 메모리가 부족하여 새 메시지를 전송하고 수신할 수 없습니다. 예전 메시지를 삭제하십시오.</string>
+  <string name="sms_full_body_cm">휴대전화의 메모리가 부족하여 새 메시지를 전송하고 수신할 수 없습니다. 예전 메시지를 삭제하십시오.</string>
   <string name="memory_low_title">텍스트 메시지 메모리 적음</string>
   <string name="memory_low_body">폰 메모리가 적습니다. 예전 데이터를 삭제하여 새 메시지를 수신할 여유 공간을 만들어 주십시오.</string>
-  <string name="disk_storage_full_error">휴대폰 저장공간 부족</string>
+  <string name="disk_storage_full_error">휴대전화 저장공간 부족</string>
   <string name="mobile_data_disable">모바일 데이터가 꺼져 있습니다. 계속 MMS를 <xliff:g id="action" example="download">%1$s</xliff:g>하시겠습니까? 모바일 데이터 트래픽을 발생시킬 것입니다.</string>
   <string name="mobile_data_send">전송</string>
   <string name="mobile_data_download">다운로드</string>

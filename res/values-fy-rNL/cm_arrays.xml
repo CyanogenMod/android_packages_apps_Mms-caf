@@ -16,8 +16,27 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <plurals name="confirm_mark_unread_conversation">
-    <item quantity="one">Elkarrizketa <xliff:g id="number">%1$s</xliff:g> ez irakurria bezala markatuko da.</item>
-    <item quantity="other"><xliff:g id="number">%1$s</xliff:g> elkarrizketa ez irakurriak bezala markatuko dira.</item>
-  </plurals>
+  <string-array name="default_smiley_names">
+    <item>Happy</item>
+    <item>Sad</item>
+    <item>Winking</item>
+    <item>Tongue sticking out</item>
+    <item>Surprised</item>
+    <item>Kissing</item>
+    <item>Yelling</item>
+    <item>Cool</item>
+    <item>Money mouth</item>
+    <item>Foot in mouth</item>
+    <item>Embarrassed</item>
+    <item>Ingel</item>
+    <item>Undecided</item>
+    <item>Crying</item>
+    <item>Lips are sealed</item>
+    <item>Laughing</item>
+    <item>Confused</item>
+    <item>Hert</item>
+    <item>Mad</item>
+    <item>Smirk</item>
+    <item>Poker face</item>
+  </string-array>
 </resources>
