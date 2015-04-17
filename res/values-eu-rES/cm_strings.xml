@@ -17,11 +17,9 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="pref_wake_unlock_title">Esnatu eta desblokeatu</string>
-  <string name="pref_wake_unlock_summary">Mezu bat jasotzean gailua esnatu eta deslokatzen du (segurtasunik gabeko lokatze pantaila soilik)</string>
   <string name="pref_close_all_title">Dena itxi</string>
   <string name="pref_close_all_summary">Itxi sakatzean, mezu guztiak itxiko dira</string>
   <string name="pref_dark_theme_title">Gai iluna erabili</string>
-  <string name="pref_dark_theme_summary">Hautatuta ez badago, gai argia erabiliko da</string>
   <string name="button_close">Itxi</string>
   <string name="button_view">Ikusi</string>
   <string name="button_templates">Txantiloiak</string>
@@ -29,18 +27,11 @@
   <string name="qm_mark_read">Irakurrita</string>
   <string name="pref_title_send_delay">Bidaltzea atzeratu</string>
   <string name="send_delay_immediate">Atzerapenik gabe</string>
-  <string name="send_delay_3seconds">3 segundu</string>
-  <string name="send_delay_5seconds">5 segundu</string>
-  <string name="send_delay_10seconds">10 segundu</string>
-  <string name="send_delay_20seconds">20 segundu</string>
-  <string name="send_delay_30seconds">30 segundu</string>
   <string name="sent_countdown">Mezua bidaltzeko atzerakontua</string>
   <string name="pref_extra_settings">Ezarpen osagarriak</string>
   <string name="blacklist_title">Zerrenda beltza</string>
   <string name="blacklist_summary_disabled">Ezgaituta</string>
-  <string name="blacklist_summary">Zerrenda beltzeko zenbakien sartzen diren mezuak lokatu egingo dira</string>
   <string name="add_to_blacklist">Zerrenda beltzera gehitu</string>
-  <string name="add_to_blacklist_message">%s -(r)en mezuak lokatu egingo dira</string>
   <string name="alert_dialog_yes">Bai</string>
   <string name="alert_dialog_no">Ez</string>
   <string name="menu_as_unread">Irakurri gabe bezala markatu</string>

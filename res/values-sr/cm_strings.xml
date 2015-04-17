@@ -252,4 +252,6 @@
   <string name="pref_summary_mms_full_timestamp">Прикажи оба датума и време у временским ознакама</string>
   <string name="pref_title_mms_use_sent_timestamp">Оригиналне временске ознаке</string>
   <string name="pref_summary_mms_use_sent_timestamp">Прикажи датум слања уместо датума пријема у временским ознакама</string>
+  <string name="pref_title_mms_auto_enable_data">Аутоматско омогућавање података</string>
+  <string name="pref_summary_mms_auto_enable_data">Аутоматски омогући мобилне податке за MMS поруке</string>
 </resources>

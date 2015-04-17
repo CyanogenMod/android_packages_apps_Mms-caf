@@ -252,4 +252,6 @@
   <string name="pref_summary_mms_full_timestamp">Afficher la date et l\'heure des messages</string>
   <string name="pref_title_mms_use_sent_timestamp">Date originale</string>
   <string name="pref_summary_mms_use_sent_timestamp">Afficher la date d\'envoi au lieu de la date de réception</string>
+  <string name="pref_title_mms_auto_enable_data">Activation auto des données mobiles</string>
+  <string name="pref_summary_mms_auto_enable_data">Activer automatiquement les données mobiles pour les messages MMS</string>
 </resources>

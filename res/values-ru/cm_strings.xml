@@ -254,4 +254,5 @@
   <string name="pref_summary_mms_use_sent_timestamp">Отображать время отправки сообщения вместо времени приёма</string>
   <string name="pref_title_mms_auto_enable_data">Автовключение данных</string>
   <string name="pref_summary_mms_auto_enable_data">Автоматически включить мобильные данные для MMS-сообщений</string>
+  <string name="adding_selected_recipients_dialog_text">Добавление контактов\u2026</string>
 </resources>

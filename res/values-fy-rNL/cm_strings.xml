@@ -16,16 +16,11 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <plurals name="remaining_delay_time">
-    <item quantity="one">Stuur in 1 sekonde, raak om te kanselleer.</item>
-    <item quantity="other">Stuur in %1$d sekondes, raak om te kanselleer.</item>
-  </plurals>
-  <plurals name="confirm_delete_messages">
-    <item quantity="one">Een boodskap sal verwyder word.</item>
-    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> boodskappe sal verwyder word.</item>
-  </plurals>
-  <plurals name="confirm_mark_read_conversation">
-    <item quantity="one">Die gesprek sal gemerk word as gelees.</item>
-    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> gesprekke sal gemerk word as gelees.</item>
-  </plurals>
+  <string name="cancel_downloading">Annulearje</string>
+  <string name="contact_info_text_as_email">E-mail:</string>
+  <string name="sms_validity_period_one_hour">1 oere</string>
+  <string name="sms_validity_period_six_hours">6 oere</string>
+  <string name="sms_validity_period_twelve_hours">12 oere</string>
+  <string name="sms_validity_period_one_day">1 dei</string>
+  <string name="mms_validity_period_two_days">2 dagen</string>
 </resources>

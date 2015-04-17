@@ -254,4 +254,5 @@
   <string name="pref_summary_mms_use_sent_timestamp">Verzenddatum tonen i.p.v. ontvangstdatum in tijdsaanduidingen</string>
   <string name="pref_title_mms_auto_enable_data">Automatisch mobiele gegevens</string>
   <string name="pref_summary_mms_auto_enable_data">Automatisch mobiele gegevensverbinding inschakelen voor mms-berichten</string>
+  <string name="adding_selected_recipients_dialog_text">Contacten toevoegen\u2026</string>
 </resources>

@@ -254,4 +254,5 @@
   <string name="pref_summary_mms_use_sent_timestamp">在时间戳中显示发送时间而不是接收时间</string>
   <string name="pref_title_mms_auto_enable_data">自动启用数据</string>
   <string name="pref_summary_mms_auto_enable_data">自动启用彩信的移动数据</string>
+  <string name="adding_selected_recipients_dialog_text">添加联系人\u2026</string>
 </resources>
