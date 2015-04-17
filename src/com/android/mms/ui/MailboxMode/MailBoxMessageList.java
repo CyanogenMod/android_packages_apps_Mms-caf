@@ -20,8 +20,10 @@
 package com.android.mms.ui;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.SearchManager;
@@ -161,8 +163,8 @@ public class MailBoxMessageList extends ListActivity implements
     private int mQuerySlotType = TYPE_ALL_SLOT;
     private BoxMsgListQueryHandler mQueryHandler;
     private long mThreadId;
-    private String mSmsWhereDelete = "";
-    private String mMmsWhereDelete = "";
+    private String mSmsWhereClause = "";
+    private String mMmsWhereClause = "";
     private boolean mHasLockedMessage = false;
     private ArrayList<Long> mThreadIds = new ArrayList<Long>();
 
@@ -777,9 +779,9 @@ public class MailBoxMessageList extends ListActivity implements
                 }
                 break;
             case R.id.action_mark_all_as_unread:
-                final MarkAsUnreadThreadListener listener = new MarkAsUnreadThreadListener(
-                        null, this);
-                confirmMarkAsUnreadDialog(listener, null, this);
+                final MarkMessagesAsUnreadListener listener =
+                        new MarkMessagesAsUnreadListener(null, null, "", "", this);
+                confirmMarkAsUnreadDialog(listener, -1, this);
                 break;
             case R.id.my_favorited:
                 Intent favouriteIntent = new Intent(this, FavouriteMessageList.class);
@@ -809,23 +811,63 @@ public class MailBoxMessageList extends ListActivity implements
         MessageUtils.removeDialogs();
     }
 
-    public static class MarkAsUnreadThreadListener implements OnClickListener {
+    /**
+     * Mark messages as unread when this listener is fired. To be passed to a confirmation dialog
+     * and run when the confirm button is clicked.
+     */
+    public class MarkMessagesAsUnreadListener implements OnClickListener {
         private final Collection<Long> mThreadIds;
-        private final Context mContext;
+        private final ActionMode mMode;
+        private final String mSmsWhereUpdate;
+        private final String mMmsWhereUpdate;
+        private final Activity mActivity;
 
-        public MarkAsUnreadThreadListener(Collection<Long> threadIds, Context context) {
+        /**
+         * Create a new MarkMessagesAsUnreadListener.
+         * @param threadIds The IDs of the threads that will be affected.
+         * @param mode An ActionMode, if it needs to be finished after this operation. Can be null.
+         * @param smsWhere The where clause describing which SMS messages to mark as unread. Can
+         *                 be null or empty to select all.
+         * @param mmsWhere The where clause describing which MMS messages to mark as unread. Can
+         *                 be null or empty to select all.
+         * @param activity The Activity that this listener is running in.
+         */
+        public MarkMessagesAsUnreadListener(Collection<Long> threadIds,
+                                          ActionMode mode,
+                                          String smsWhere,
+                                          String mmsWhere,
+                                          Activity activity) {
             mThreadIds = threadIds;
-            mContext = context;
+            mMode = mode;
+            mSmsWhereUpdate = smsWhere;
+            mMmsWhereUpdate = mmsWhere;
+            mActivity = activity;
         }
 
         @Override
         public void onClick(DialogInterface dialog, final int whichButton) {
-            MessageUtils.handleReadReport(mContext, mThreadIds,
+            MessageUtils.handleReadReport(mActivity, mThreadIds,
                     PduHeaders.READ_STATUS__DELETED_WITHOUT_BEING_READ, new Runnable() {
                         @Override
                         public void run() {
-                            if (mThreadIds == null) {
-                                Conversation.startMarkAsUnreadAll(mContext, null, 0);
+                            if (!TextUtils.isEmpty(mSmsWhereUpdate)
+                                    && !TextUtils.isEmpty(mMmsWhereUpdate)) {
+                                AsyncDialog progressDialog = new AsyncDialog(mActivity);
+                                progressDialog.runAsync(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        markMessagesAsUnread(mSmsWhereUpdate, mMmsWhereUpdate);
+                                    }
+                                }, new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (mMode != null) {
+                                            mMode.finish();;
+                                        }
+                                    }
+                                }, R.string.wait_progress_message);
+                            } else {
+                                Conversation.startMarkAsUnreadAll(mActivity, null, 0);
                                 DraftCache.getInstance().refresh();
                             }
                         }
@@ -838,21 +880,21 @@ public class MailBoxMessageList extends ListActivity implements
      * Build and show the proper mark as unread thread dialog. The UI is slightly different
      * depending on whether we're deleting single/multiple threads or all threads.
      * @param listener gets called when the delete button is pressed
-     * @param threadIds the thread IDs to be deleted (pass null for all threads)
+     * @param numSelected The number of messages selected. Pass -1 if all messages will be marked
+      *                   as unread.
      * @param context used to load the various UI elements
      */
-    private static void confirmMarkAsUnreadDialog(final MarkAsUnreadThreadListener listener,
-            Collection<Long> threadIds,
-            Context context) {
+    private static void confirmMarkAsUnreadDialog(final MarkMessagesAsUnreadListener listener,
+                                                  int numSelected,
+                                                  Context context) {
         View contents = View.inflate(context,R.layout.mark_unread_thread_dialog_view,null);
         TextView msg = (TextView)contents.findViewById(R.id.message);
-        if (threadIds == null) {
+        if (numSelected == -1) {
             msg.setText(R.string.confirm_mark_unread_all_conversations);
         } else {
             // Show the number of threads getting marked as unread in the confirmation dialog.
-            int cnt = threadIds.size();
             msg.setText(context.getResources().getQuantityString(
-                R.plurals.confirm_mark_unread_conversation,cnt,cnt));
+                R.plurals.confirm_mark_unread_conversation, numSelected, numSelected));
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(R.string.confirm_mark_unread_dialog_title)
@@ -912,10 +954,10 @@ public class MailBoxMessageList extends ListActivity implements
 
     private void deleteMessages(boolean deleteLocked) {
         String whereClause;
-        String smsWhereDelete = mSmsWhereDelete;
-        String mmsWhereDelete = mMmsWhereDelete;
+        String smsWhereDelete = mSmsWhereClause;
+        String mmsWhereDelete = mMmsWhereClause;
 
-        if (!TextUtils.isEmpty(mSmsWhereDelete)) {
+        if (!TextUtils.isEmpty(mSmsWhereClause)) {
             smsWhereDelete = smsWhereDelete.substring(0, smsWhereDelete.length() - 1);
             smsWhereDelete = "_id in (" + smsWhereDelete + ")";
             if (!deleteLocked) {
@@ -967,6 +1009,40 @@ public class MailBoxMessageList extends ListActivity implements
         }
     }
 
+    private void markMessagesAsUnread(String smsWhere, String mmsWhere) {
+        String smsWhereUpdate = smsWhere;
+        String mmsWhereUpdate = mmsWhere;
+
+        ContentValues smsUpdateCV = new ContentValues();
+        smsUpdateCV.put(Sms.READ, 0);
+
+        if (!TextUtils.isEmpty(smsWhereUpdate)) {
+            smsWhereUpdate = smsWhereUpdate.substring(0, smsWhereUpdate.length() - 1);
+            smsWhereUpdate = "_id in (" + smsWhereUpdate + ")";
+
+            if (!TextUtils.isEmpty(smsWhereUpdate)) {
+                SqliteWrapper.update(this, getContentResolver(),
+                                       Uri.parse("content://sms"), smsUpdateCV,
+                                       smsWhereUpdate, null);
+            }
+        }
+
+        ContentValues mmsUpdateCV = new ContentValues();
+        mmsUpdateCV.put(Mms.READ, 0);
+
+        if (!TextUtils.isEmpty(mmsWhereUpdate)) {
+            mmsWhereUpdate = mmsWhereUpdate.substring(0, mmsWhereUpdate.length() - 1);
+            mmsWhereUpdate = "_id in (" + mmsWhereUpdate + ")";
+
+            if (!TextUtils.isEmpty(mmsWhereUpdate)) {
+                SqliteWrapper.update(this, getContentResolver(),
+                                     Uri.parse("content://mms"), mmsUpdateCV, mmsWhereUpdate, null);
+            }
+        }
+        // The selection will be deselected now.
+        mThreadIds.clear();
+    }
+
     private void calcuteSelect() {
         int count = mListAdapter.getCount();
         SparseBooleanArray booleanArray = mListView.getCheckedItemPositions();
@@ -1015,8 +1091,8 @@ public class MailBoxMessageList extends ListActivity implements
             }
             mThreadId = c.getLong(COLUMN_THREAD_ID);
         }
-        mSmsWhereDelete = smsWhereDelete;
-        mMmsWhereDelete = mmsWhereDelete;
+        mSmsWhereClause = smsWhereDelete;
+        mMmsWhereClause = mmsWhereDelete;
         mHasLockedMessage = hasLocked;
     }
 
@@ -1117,6 +1193,13 @@ public class MailBoxMessageList extends ListActivity implements
                 case R.id.delete:
                     confirmDeleteMessages();
                     break;
+                case R.id.markAsUnread:
+                    calcuteSelect();
+                    final MarkMessagesAsUnreadListener listener =
+                            new MarkMessagesAsUnreadListener(mThreadIds, mode,
+                                   mSmsWhereClause, mSmsWhereClause, MailBoxMessageList.this);
+                    confirmMarkAsUnreadDialog(listener, checkedCount, MailBoxMessageList.this);
+                    return false;
                 case R.id.selection_toggle:
                     if (allItemsSelected()) {
                         unCheckAll();
