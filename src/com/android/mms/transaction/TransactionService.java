@@ -1033,7 +1033,7 @@ public class TransactionService extends Service implements Observer {
                         String mmsc = args.getMmscUrl();
                         if (mmsc != null) {
                             transactionSettings = new TransactionSettings(
-                                    mmsc, args.getProxyAddress(), args.getProxyPort());
+                                    TransactionService.this, mmsc, args.getProxyAddress(), args.getProxyPort(), subId);
                         } else {
                             transactionSettings = new TransactionSettings(
                                                     TransactionService.this, null, subId);
