@@ -369,7 +369,7 @@ public class Conversation {
         }
     }
 
-    public void markAsUnread() {
+    public void markAsUnread(final boolean markIndividualMessages) {
         if (mMarkAsUnreadTask != null) {
             // already a task in progress
             return;
@@ -380,7 +380,7 @@ public class Conversation {
             protected Void doInBackground(Void... none) {
                 if (threadUri!=null) {
                     buildUnReadContentValues();
-                    Long smsID = -1L;
+                    Long firstMessageId = -1L;
                     Cursor c = mContext.getContentResolver().query(threadUri,
                             UNREAD_PROJECTION, READ_SELECTION, null, Sms._ID + " DESC");
                     boolean needUpdate = false;
@@ -388,19 +388,25 @@ public class Conversation {
                         try {
                             needUpdate = c.getCount() > 0;
                             if (needUpdate && c.moveToFirst()) {
-                                smsID = c.getLong(0);
+                                firstMessageId = c.getLong(0);
                             }
                         } finally {
                             c.close();
                         }
                     }
 
-                    if (needUpdate && smsID!=-1) {
+                    if (needUpdate && firstMessageId != -1) {
                         LogTag.debug("markAsUnRead: update read/seen for thread uri: " +
-                                threadUri);
+                                     threadUri);
+                        // To mark the entire thread as unread, by way of a DB trigger,
+                        // mark the most recent message in the conversation as unread.
                         mContext.getContentResolver().update(threadUri, sUnReadContentValues,
-                                Sms._ID + " = "+smsID,null);
+                                Sms._ID + " = " + firstMessageId, null);
 
+                        if (markIndividualMessages) {
+                            // Mark all SMS/MMS as unread
+                            markSmsAndMmsReadStatus(false);
+                        }
                         setHasUnreadMessages(true);
                     }
                 }
@@ -412,12 +418,36 @@ public class Conversation {
     }
 
     /**
+     * Mark all the SMS and MMS messages in this Conversation as read or unread.
+     * @param read If true, mark all messages as read, otherwise unread.
+     */
+    private void markSmsAndMmsReadStatus(boolean read) {
+        int readState = read ? 1 : 0;
+
+        // Mark all SMS/MMS as read
+        ContentValues smsCV = new ContentValues();
+        smsCV.put(Sms.READ, readState);
+        mContext.getContentResolver().update(Uri.parse("content://sms/"),
+                smsCV,
+                Sms.THREAD_ID + " = ?",
+                new String[] { Long.toString(mThreadId) });
+
+        ContentValues mmsCV = new ContentValues();
+        mmsCV.put(Mms.READ, readState);
+        mContext.getContentResolver().update(Uri.parse("content://mms/"),
+                mmsCV,
+                Mms.THREAD_ID + " = ?",
+                new String[] { Long.toString(mThreadId) });
+    }
+
+    /**
      * Marks all messages in this conversation as read and updates
      * relevant notifications.  This method returns immediately;
      * work is dispatched to a background thread. This function should
      * always be called from the UI thread.
      */
-    public void markAsRead(final boolean updateNotifications) {
+    public void markAsRead(final boolean updateNotifications,
+                           final boolean updateIndividualMessages) {
         if (DELETEDEBUG) {
             Contact.logWithTrace(TAG, "markAsRead mMarkAsReadWaiting: " + mMarkAsReadWaiting +
                     " mMarkAsReadBlocked: " + mMarkAsReadBlocked);
@@ -473,6 +503,11 @@ public class Conversation {
                             showStorageFullToast(mContext);
                             return null;
                         }
+
+                        if (updateIndividualMessages) {
+                            markSmsAndMmsReadStatus(true);
+                        }
+
                         MessagingNotification.blockingUpdateAllNotifications(mContext,
                                 MessagingNotification.THREAD_NONE);
                     }
@@ -506,7 +541,7 @@ public class Conversation {
             if (!mMarkAsReadBlocked) {
                 if (mMarkAsReadWaiting) {
                     mMarkAsReadWaiting = false;
-                    markAsRead(true);
+                    markAsRead(true, false);
                 }
             }
         }
@@ -887,7 +922,7 @@ public class Conversation {
             for (long threadId : threadIds) {
                 Conversation c = Conversation.get(context,threadId,true);
                 if (c!=null) {
-                    c.markAsUnread();
+                    c.markAsUnread(false);
                 }
             }
         }
@@ -911,7 +946,7 @@ public class Conversation {
             for (long threadId : threadIds) {
                 Conversation c = Conversation.get(context,threadId,true);
                 if (c!=null) {
-                    c.markAsRead(true);
+                    c.markAsRead(true, false);
                 }
             }
         }
@@ -923,9 +958,11 @@ public class Conversation {
      * @param handler An AsyncQueryHandler that will receive onMarkAsUnreadComplete
      *                upon completion of the conversation being marked as unread
      * @param token   The token that will be passed to onMarkAsUnreadComplete
+     * @param markIndividualMessages If true, all SMS and MMS messages in the Conversation will
+     *                               also be marked as unread.
      */
     public static void startMarkAsUnreadAll(Context context,  ConversationQueryHandler handler,
-                                            int token) {
+                                            int token, boolean markIndividualMessages) {
         synchronized(sDeletingThreadsLock) {
             if (UNMARKDEBUG) {
                 Log.v(TAG,"Conversation startMarkAsUnread marking all as unread");
@@ -940,7 +977,7 @@ public class Conversation {
                         long threadId = c.getLong(ID);
                         Conversation con = Conversation.get(context,threadId,true);
                         if (con!=null) {
-                            con.markAsUnread();
+                            con.markAsUnread(markIndividualMessages);
                         }
                    }
                 }
@@ -958,9 +995,11 @@ public class Conversation {
      * @param handler An AsyncQueryHandler that will receive onMarkAsReadComplete
      *                upon completion of the conversation being marked as read
      * @param token   The token that will be passed to onMarkAsReadComplete
+     * @param markIndividualMessages If true, mark every message in the conversation as read.
+     *                               Otherwise, mark only the most recent.
      */
     public static void startMarkAsReadAll(Context context,  ConversationQueryHandler handler,
-                                            int token) {
+                                            int token, boolean markIndividualMessages) {
         synchronized(sDeletingThreadsLock) {
             if (UNMARKDEBUG) {
                 Log.v(TAG,"Conversation startMarkAsRead marking all as read");
@@ -975,7 +1014,7 @@ public class Conversation {
                         long threadId = c.getLong(ID);
                         Conversation con = Conversation.get(context,threadId,true);
                         if (con!=null) {
-                            con.markAsRead(true);
+                            con.markAsRead(true, markIndividualMessages);
                         }
                     }
                 }
