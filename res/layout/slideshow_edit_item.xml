@@ -79,16 +79,6 @@
                 android:paddingStart="4dip"
                 android:paddingTop="4dip"
                 android:layout_weight="0" />
-
-            <TextView android:id="@+id/duration_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:paddingStart="8dip"
-                android:textAppearance="@android:style/TextAppearance.Material.Caption"
-                android:textColor="?android:attr/textColorSecondary"
-                android:maxLines="1"
-                android:layout_weight="0" />
         </LinearLayout>
 
         <!-- Make sure the duration text will be displayed completed. -->
