@@ -271,9 +271,7 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
             isDraft = mMsgBox == Mms.MESSAGE_BOX_DRAFTS;
             recipientIds = cursor.getString(COLUMN_RECIPIENT_IDS);
 
-            if (0 == mmsRead && mMsgBox == Mms.MESSAGE_BOX_INBOX) {
-                mIsUnread = true;
-            }
+            mIsUnread = 0 == mmsRead && mMsgBox == Mms.MESSAGE_BOX_INBOX;
 
             bodyStr = MessageUtils.extractEncStrFromCursor(cursor, COLUMN_MMS_SUBJECT,
                     COLUMN_MMS_SUBJECT_CHARSET);
