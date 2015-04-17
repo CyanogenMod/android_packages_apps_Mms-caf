@@ -30,6 +30,7 @@
 package com.android.mms.transaction;
 
 import com.android.mms.MmsConfig;
+import com.android.mms.ui.ComposeMessageActivity;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -54,11 +55,14 @@ public class MmsNoConfirmationSendActivity extends Activity {
         Bundle extras = intent.getExtras();
         Uri uri = (Uri) extras.getParcelable(Intent.EXTRA_STREAM);
         Intent serviceIntent = new Intent();
+        serviceIntent.putExtra("address", MmsConfig.getMmsDestination());
+        serviceIntent.setAction(intent.getAction());
+        serviceIntent.setType(intent.getType());
         serviceIntent.setComponent(new ComponentName(getApplicationContext(),
-                MmsNoConfirmationSendService.class));
+                ComposeMessageActivity.class));
         if (uri != null) {
-            serviceIntent.putExtra(MmsConfig.EXTRA_URI, uri.toString());
-            this.startService(serviceIntent);
+            serviceIntent.putExtra(Intent.EXTRA_STREAM, uri);
+            this.startActivity(serviceIntent);
         } else {
             Log.d(LOG_TAG, "No URI --- Cannot send");
         }
