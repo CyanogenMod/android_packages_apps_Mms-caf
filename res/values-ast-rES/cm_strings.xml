@@ -54,6 +54,10 @@
   <string name="add_to_blacklist_message">Los mensaxes de %s van bloquiase</string>
   <string name="alert_dialog_yes">Sí</string>
   <string name="alert_dialog_no">Non</string>
+  <string name="pref_title_unicode_stripping">Llimpiar Unicode en SMS</string>
+  <string name="pref_unicode_stripping_leave_intact">Nun modificar el mensaxe</string>
+  <string name="pref_unicode_stripping_non_encodable">Sustituyir los caráuteres non sofitaos</string>
+  <string name="pref_unicode_stripping_all">Sustituyir tolos caráuteres</string>
   <string name="menu_as_unread">Marcar como non lleío</string>
   <string name="menu_as_read">Marcar como lleío</string>
   <string name="menu_all_as_unread">Marcar toos como ensin lleer</string>
@@ -231,4 +235,23 @@
   <string name="copy_empty_string">Nun hai testu que copiar</string>
   <string name="attach_add_calendar_events">Eventu del calendariu</string>
   <string name="calendar_attachment_activity_not_found">Imposible atopar una aplicación de calendariu</string>
+  <string name="pref_title_mms_notification_vibrate_pattern">Patrón de vibración</string>
+  <string name="pref_summary_mms_notification_vibrate_pattern">Camudar patrón de vibración</string>
+  <string name="pref_mms_notification_vibrate_normal">Normal</string>
+  <string name="pref_mms_notification_vibrate_med_vib">Vibración media</string>
+  <string name="pref_mms_notification_vibrate_long_vib">Vibración llarga</string>
+  <string name="pref_mms_notification_vibrate_mult_short">Múltiples curties</string>
+  <string name="pref_mms_notification_vibrate_mult_long">Múltiples llargues</string>
+  <string name="menu_insert_smiley">Inxertar fustaxe</string>
+  <string name="pref_title_enable_emoticons">Sofitu pa emoticonos</string>
+  <string name="pref_summary_enable_emoticons">Sustituyir los emoticonos de testu polos sos equivalentes gráficos</string>
+  <string name="menu_conversation_options">Opciones de conversación</string>
+  <string name="pref_title_reset_convopt_to_default">Restablecer valores</string>
+  <string name="pref_summary_reset_convopt_to_default">Reafitar los axustes de conversación a los axustes de nivel d\'aplicación</string>
+  <string name="pref_title_mms_full_timestamp">Marca de tiempu completa</string>
+  <string name="pref_summary_mms_full_timestamp">Amosar data y hora nes marques de tiempu</string>
+  <string name="pref_title_mms_use_sent_timestamp">Marca de tiempu orixinal</string>
+  <string name="pref_summary_mms_use_sent_timestamp">Amosar data d\'unviu en cuenta de la data de receición nes marques de tiempu</string>
+  <string name="pref_title_mms_auto_enable_data">Habilitar datos automáticamente</string>
+  <string name="pref_summary_mms_auto_enable_data">Habilitar automáticamente los datos móviles pa mensaxes MMS</string>
 </resources>

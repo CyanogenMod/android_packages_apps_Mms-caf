@@ -252,4 +252,6 @@
   <string name="pref_summary_mms_full_timestamp">Vis både dato og tid i tidsstempler</string>
   <string name="pref_title_mms_use_sent_timestamp">Originale tidsstempler</string>
   <string name="pref_summary_mms_use_sent_timestamp">Vis dato sendt og ikke dato mottatt i tidsstempler</string>
+  <string name="pref_title_mms_auto_enable_data">Automatisk aktiver data</string>
+  <string name="pref_summary_mms_auto_enable_data">Automatisk aktiver mobildata for MMS meldinger</string>
 </resources>

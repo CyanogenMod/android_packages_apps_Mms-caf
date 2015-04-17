@@ -252,4 +252,6 @@
   <string name="pref_summary_mms_full_timestamp">타임스탬프에 날짜와 시간 모두 보이기</string>
   <string name="pref_title_mms_use_sent_timestamp">원본 타임스탬프</string>
   <string name="pref_summary_mms_use_sent_timestamp">타임스탬프에 받은 날짜 대신 보낸 날짜 표시</string>
+  <string name="pref_title_mms_auto_enable_data">데이터 통신 자동 연결</string>
+  <string name="pref_summary_mms_auto_enable_data">MMS 메시지 송수신을 위해 자동으로 데이터 통신을 활성화함</string>
 </resources>

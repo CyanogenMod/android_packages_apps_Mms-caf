@@ -100,7 +100,7 @@
   <string name="pref_title_sms_delivery_reports_slot1">SIM 1 siuntimo ataskaitos</string>
   <string name="pref_title_sms_delivery_reports_slot2">SIM 2 siuntimo ataskaitos</string>
   <string name="status_deleted_unread">Ištrinta neskaičius</string>
-  <string name="disk_storage_full_error">Klaida: atmintinė pilna.</string>
+  <string name="disk_storage_full_error">Klaida: saugykla pilna.</string>
   <string name="mms_too_large">Pranešimas yra per didelis, kad būtų galima atsisiųsti.</string>
   <string name="send_failed_retry">Nepavyko išsiųsti pranešimo, bandoma dar kartą\u2026</string>
   <string name="download_failed_retry">Nepavyko atsisiųsti pranešimo, bandoma dar kartą\u2026</string>
@@ -205,10 +205,10 @@
   <string name="pref_sms_store_phone">Telefonas</string>
   <string name="pref_sms_store_card">SIM kortelė</string>
   <string name="mms_size_indicator"><xliff:g id="mms_size">%1$d</xliff:g>/<xliff:g id="all_size">%2$d</xliff:g> KB</string>
-  <string name="pre_define_message_template_1">Aš paskambinsiu jums vėliau.</string>
-  <string name="pre_define_message_template_2">Esu konferencijoje. Aš paskambinsiu jums vėliau.</string>
+  <string name="pre_define_message_template_1">Aš perskambinsiu jums vėliau.</string>
+  <string name="pre_define_message_template_2">Esu konferencijoje. Aš perskambinsiu jums vėliau.</string>
   <string name="pre_define_message_template_3">Paskambinkite man vėliau.</string>
-  <string name="pre_define_message_template_4">Ar galite man paskambinti?</string>
+  <string name="pre_define_message_template_4">Ar galite man perskambinti?</string>
   <string name="menu_delete_all_entries">Ištrinti viską</string>
   <string name="menu_delete_sms">Ištrinti SMS</string>
   <string name="menu_delete_mms">Ištrinti MMS</string>
@@ -246,7 +246,7 @@
   <string name="pref_title_enable_emoticons">Emocijų palaikymas</string>
   <string name="pref_summary_enable_emoticons">Pakeisti tekstines emocijas į grafinius atitikmenis</string>
   <string name="menu_conversation_options">Pokalbio parinktys</string>
-  <string name="pref_title_reset_convopt_to_default">Nustatyti iš naujo į numatytuosius</string>
+  <string name="pref_title_reset_convopt_to_default">Nustatyti iš naujo į numatytasias</string>
   <string name="pref_summary_reset_convopt_to_default">Nustato iš naujo pokalbio parametrą į programos lygio nustatymą</string>
   <string name="pref_title_mms_full_timestamp">Visos laiko žymės</string>
   <string name="pref_summary_mms_full_timestamp">Laiko žymėse rodyti datą ir laiką</string>
@@ -254,4 +254,5 @@
   <string name="pref_summary_mms_use_sent_timestamp">Laiko žymėse rodyti išsiuntimo datą vietoj gautos datos</string>
   <string name="pref_title_mms_auto_enable_data">Automatiškai įgalinti duomenis</string>
   <string name="pref_summary_mms_auto_enable_data">Automatiškai įgalinti korinio ryšio duomenis MMS žinutėms</string>
+  <string name="adding_selected_recipients_dialog_text">Pridedami kontaktai\u2026</string>
 </resources>
