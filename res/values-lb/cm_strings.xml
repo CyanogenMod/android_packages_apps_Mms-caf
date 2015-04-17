@@ -248,4 +248,8 @@
   <string name="menu_conversation_options">Konversatiounsoptiounen</string>
   <string name="pref_title_reset_convopt_to_default">Op de Standard zrécksetzen</string>
   <string name="pref_summary_reset_convopt_to_default">Astellung vun der Konversatioun zrécksetzen op déi global Applikatiounsastellung</string>
+  <string name="pref_title_mms_full_timestamp">Voll Zäitstempelen</string>
+  <string name="pref_summary_mms_full_timestamp">Datum an Zäit vun de Messagen uweisen</string>
+  <string name="pref_title_mms_use_sent_timestamp">Original Zäitstempelen</string>
+  <string name="pref_summary_mms_use_sent_timestamp">Zäitpunkt vum Verschécken uweisen anmplaz vum Zäitpunkt vum Empfank</string>
 </resources>

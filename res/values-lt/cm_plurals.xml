@@ -24,7 +24,7 @@
   <plurals name="confirm_delete_messages">
     <item quantity="one">Pranešimas bus ištrintas.</item>
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> pranešimai bus ištrinti.</item>
-    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> pranešimų bus ištrintą.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> pranešimų bus ištrinta.</item>
   </plurals>
   <plurals name="confirm_mark_read_conversation">
     <item quantity="one">Pokalbis bus pažymėtas kaip perskaitytas.</item>

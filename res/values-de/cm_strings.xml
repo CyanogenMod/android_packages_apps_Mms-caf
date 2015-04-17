@@ -254,4 +254,5 @@
   <string name="pref_summary_mms_use_sent_timestamp">Statt Empfangszeitpunkt den Sendezeitpunkt der Nachricht anzeigen</string>
   <string name="pref_title_mms_auto_enable_data">Mobile Daten automatisch aktivieren</string>
   <string name="pref_summary_mms_auto_enable_data">Mobile Daten für MMS-Nachrichten automatisch aktivieren</string>
+  <string name="adding_selected_recipients_dialog_text">Hinzufügen von Kontakten\u2026</string>
 </resources>

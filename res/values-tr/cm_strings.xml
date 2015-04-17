@@ -254,4 +254,5 @@
   <string name="pref_summary_mms_use_sent_timestamp">Zaman damgalarında alış zamanı yerine gönderiliş zamanını gösterir</string>
   <string name="pref_title_mms_auto_enable_data">Veri indirmeyi otomatik etkinleştir</string>
   <string name="pref_summary_mms_auto_enable_data">MMS mesajları için Otomatik olarak mobil veriyi etkinleştirir</string>
+  <string name="adding_selected_recipients_dialog_text">Kişiler ekleniyor\u2026</string>
 </resources>

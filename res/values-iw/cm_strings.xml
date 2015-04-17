@@ -254,4 +254,5 @@
   <string name="pref_summary_mms_use_sent_timestamp">הצג את חותמות הזמן של רגע השליחה במקום את אלה של רגע הקבלה</string>
   <string name="pref_title_mms_auto_enable_data">הפעל נתונים אוטומטית</string>
   <string name="pref_summary_mms_auto_enable_data">הפעל נתונים ניידים באופן אוטומטי עבור הודעות MMS</string>
+  <string name="adding_selected_recipients_dialog_text">מוסיף אנשי קשר\u2026</string>
 </resources>
