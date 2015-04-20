@@ -59,12 +59,13 @@ public class AttachmentPagerAdapter extends PagerAdapter {
     public static final int TAKE_PICTURE         = 1;
     public static final int ADD_VIDEO            = 2;
     public static final int RECORD_VIDEO         = 3;
-    public static final int ADD_SOUND            = 4;
-    public static final int RECORD_SOUND         = 5;
-    public static final int ADD_SLIDESHOW        = 6;
-    public static final int ADD_CONTACT_AS_TEXT  = 7;
-    public static final int ADD_CONTACT_AS_VCARD = 8;
-    public static final int ADD_MAP              = 9;
+    public static final int ADD_CALENDAR_EVENTS  = 4;
+    public static final int ADD_SOUND            = 5;
+    public static final int RECORD_SOUND         = 6;
+    public static final int ADD_SLIDESHOW        = 7;
+    public static final int ADD_CONTACT_AS_TEXT  = 8;
+    public static final int ADD_CONTACT_AS_VCARD = 9;
+    public static final int ADD_MAP              = 10;
 
     private static final String GRID_ITEM_IMAGE = "grid_item_image";
     private static final String GRID_ITEM_TEXT  = "grid_item_text";
@@ -148,6 +149,10 @@ public class AttachmentPagerAdapter extends PagerAdapter {
         list.add(new IconListItem(mContext.getString(R.string.attach_record_video),
                 (!mIsReplace && mHasVcard) ? R.drawable.ic_attach_capture_video_disable
                         : R.drawable.ic_attach_capture_video_holo_light));
+        // calendar event support
+        list.add(new IconListItem(mContext.getString(R.string.attach_add_calendar_events),
+                (!mIsReplace && mHasAttachment) ? R.drawable.ic_attach_event_disable
+                        : R.drawable.ic_attach_event));
         if (MmsConfig.getAllowAttachAudio()) {
             list.add(new IconListItem(mContext.getString(R.string.attach_sound),
                     (!mIsReplace && mHasVcard) ? R.drawable.ic_attach_audio_disable
@@ -176,11 +181,6 @@ public class AttachmentPagerAdapter extends PagerAdapter {
             list.add(new IconListItem(mContext.getString(R.string.attach_map),
                     R.drawable.rcs_caiyun_sharefile));
         }
-
-        // calendar event support
-        list.add(new IconListItem(mContext.getString(R.string.attach_add_calendar_events),
-                (!mIsReplace && mHasAttachment) ? R.drawable.ic_attach_event_disable
-                        : R.drawable.ic_attach_event));
 
         return list;
     }
