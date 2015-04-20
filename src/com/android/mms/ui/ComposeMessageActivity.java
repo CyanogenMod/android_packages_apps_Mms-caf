@@ -1823,6 +1823,7 @@ public class ComposeMessageActivity extends Activity
                 && !ContentType.isVideoType(type)
                 && !ContentType.isAudioType(type)
                 && !(ContentType.TEXT_VCARD.toLowerCase().equals(type.toLowerCase()))
+                && !(ContentType.TEXT_VCALENDAR.toLowerCase().equals(type.toLowerCase()))
                 && !(ContentType.AUDIO_OGG.toLowerCase().equals(type.toLowerCase()))) {
             return true;    // we only save pictures, videos, and sounds. Skip the text parts,
                             // the app (smil) parts, and other type that we can't handle.
@@ -3930,6 +3931,11 @@ public class ComposeMessageActivity extends Activity
             }
             break;
 
+            case AttachmentPagerAdapter.ADD_CALENDAR_EVENTS:
+                MessageUtils.selectCalendarEvents(this,
+                        getMakRequestCode(replace, REQUEST_CODE_ADD_CALENDAR_EVENTS));
+                break;
+
             case AttachmentPagerAdapter.ADD_SOUND:
                 MessageUtils.selectAudio(this,
                         getMakRequestCode(replace, REQUEST_CODE_ATTACH_SOUND));
@@ -3984,10 +3990,6 @@ public class ComposeMessageActivity extends Activity
                     Toast.makeText(this, getString(R.string.please_install_rcs_map),
                             Toast.LENGTH_LONG).show();
                 }
-                break;
-            case AttachmentTypeSelectorAdapter.ADD_CALENDAR_EVENTS:
-                MessageUtils.selectCalendarEvents(this,
-                        getMakRequestCode(replace, REQUEST_CODE_ADD_CALENDAR_EVENTS));
                 break;
             default:
                 break;

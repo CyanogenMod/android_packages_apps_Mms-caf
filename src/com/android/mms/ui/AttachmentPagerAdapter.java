@@ -64,7 +64,8 @@ public class AttachmentPagerAdapter extends PagerAdapter {
     public static final int ADD_SLIDESHOW        = 6;
     public static final int ADD_CONTACT_AS_TEXT  = 7;
     public static final int ADD_CONTACT_AS_VCARD = 8;
-    public static final int ADD_MAP              = 9;
+    public static final int ADD_CALENDAR_EVENTS  = 9;
+    public static final int ADD_MAP              = 10;
 
     private static final String GRID_ITEM_IMAGE = "grid_item_image";
     private static final String GRID_ITEM_TEXT  = "grid_item_text";
@@ -172,15 +173,14 @@ public class AttachmentPagerAdapter extends PagerAdapter {
                     (!mIsReplace && mHasAttachment) ? R.drawable.ic_attach_vcard_disable
                             : R.drawable.ic_attach_vcard_holo_light));
         }
-        if (RcsApiManager.isRcsServiceInstalled() && RcsApiManager.isRcsOnline()) {
-            list.add(new IconListItem(mContext.getString(R.string.attach_map),
-                    R.drawable.rcs_caiyun_sharefile));
-        }
-
         // calendar event support
         list.add(new IconListItem(mContext.getString(R.string.attach_add_calendar_events),
                 (!mIsReplace && mHasAttachment) ? R.drawable.ic_attach_event_disable
                         : R.drawable.ic_attach_event));
+        if (RcsApiManager.isRcsServiceInstalled() && RcsApiManager.isRcsOnline()) {
+            list.add(new IconListItem(mContext.getString(R.string.attach_map),
+                    R.drawable.rcs_caiyun_sharefile));
+        }
 
         return list;
     }
