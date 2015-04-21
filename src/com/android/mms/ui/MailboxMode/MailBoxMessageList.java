@@ -753,9 +753,6 @@ public class MailBoxMessageList extends ListActivity implements
                     break;
                 }
                 return true;
-            case R.id.action_compose_new:
-                startActivity(ComposeMessageActivity.createIntent(this, 0));
-                break;
             case R.id.action_settings:
                 Intent intent = new Intent(this, MessagingPreferenceActivity.class);
                 startActivityIfNeeded(intent, -1);
