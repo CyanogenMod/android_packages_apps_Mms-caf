@@ -834,7 +834,8 @@ public class MessageUtils {
             activity.startActivityForResult(intent, requestCode);
         } catch (ActivityNotFoundException e) {
             Toast.makeText(activity, activity.getResources().getString(
-                    R.string.calendar_attachment_activity_not_found), Toast.LENGTH_SHORT);
+                    R.string.calendar_attachment_activity_not_found), Toast.LENGTH_SHORT)
+                    .show();
         }
     }
 
