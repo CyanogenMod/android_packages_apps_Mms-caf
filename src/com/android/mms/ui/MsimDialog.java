@@ -104,7 +104,8 @@ public class MsimDialog extends AlertDialog {
                     .getActiveSubscriptionInfoForSimSlotIndex(phoneId);
 
             String displayName = (sir != null) ?
-                    sir.getDisplayName().toString() : "SIM " + (i + 1);
+                    (i + 1) + ": " + sir.getDisplayName().toString() 
+                    : "SIM " + (i + 1);
 
             smsBtns[i].setText(displayName);
             smsBtns[i].setOnClickListener(
