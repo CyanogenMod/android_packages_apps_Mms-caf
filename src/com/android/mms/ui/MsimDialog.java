@@ -102,7 +102,7 @@ public class MsimDialog extends AlertDialog {
             List<SubInfoRecord> sir = SubscriptionManager.getSubInfoUsingSlotId(phoneId);
 
             String displayName = ((sir != null) && (sir.size() > 0)) ?
-                    sir.get(0).displayName : "SIM " + (i + 1);
+                    (i + 1) + ": " + sir.get(0).displayName : "SIM " + (i + 1);
 
             smsBtns[i].setText(displayName);
             smsBtns[i].setOnClickListener(
