@@ -100,7 +100,7 @@
     </integer-array>
 
     <!-- configuration for error toast during retry -->
-    <bool name="config_mms_retry_toast">false</bool>
+    <bool name="config_mms_retry_toast">true</bool>
 
     <!-- configuration for ignoring CDMA SMS attributes during international roaming -->
     <bool name="config_ignore_sms_attributes">false</bool>
