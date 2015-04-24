@@ -30,7 +30,7 @@
   <string name="button_view">הצג</string>
   <string name="button_templates">תבניות</string>
   <string name="type_to_reply_text_enter_to_send">הקלד כדי להגיב</string>
-  <string name="qm_mark_read">נקראה</string>
+  <string name="qm_mark_read">נקרא</string>
   <string name="toast_sending_message">שולח הודעה\u2026</string>
   <string name="pref_title_send_delay">עיכוב שליחה</string>
   <string name="send_delay_immediate">שלח מיד</string>
@@ -39,7 +39,7 @@
   <string name="send_delay_10seconds">10 שניות</string>
   <string name="send_delay_20seconds">20 שניות</string>
   <string name="send_delay_30seconds">30 שניות</string>
-  <string name="sent_countdown">ספירה לאחור משלוח הודעה</string>
+  <string name="sent_countdown">ספירה לאחור למשלוח ההודעה</string>
   <string name="pref_extra_settings">הגדרות נוספות</string>
   <string name="blacklist_title">רשימה שחורה</string>
   <string name="blacklist_summary_disabled">מושבת</string>
