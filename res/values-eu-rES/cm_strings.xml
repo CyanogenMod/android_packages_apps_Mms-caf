@@ -27,6 +27,11 @@
   <string name="qm_mark_read">Irakurrita</string>
   <string name="pref_title_send_delay">Bidaltzea atzeratu</string>
   <string name="send_delay_immediate">Atzerapenik gabe</string>
+  <string name="send_delay_3seconds">3 segundo</string>
+  <string name="send_delay_5seconds">5 segundo</string>
+  <string name="send_delay_10seconds">10 segundo</string>
+  <string name="send_delay_20seconds">20 segundo</string>
+  <string name="send_delay_30seconds">30 segundo</string>
   <string name="sent_countdown">Mezua bidaltzeko atzerakontua</string>
   <string name="pref_extra_settings">Ezarpen osagarriak</string>
   <string name="blacklist_title">Zerrenda beltza</string>
