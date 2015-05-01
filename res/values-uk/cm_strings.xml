@@ -252,4 +252,7 @@
   <string name="pref_summary_mms_full_timestamp">Увімкнути відображення повної дати та часу</string>
   <string name="pref_title_mms_use_sent_timestamp">Час надсилання</string>
   <string name="pref_summary_mms_use_sent_timestamp">Відображення дати надсилання, замість дати отримання</string>
+  <string name="pref_title_mms_auto_enable_data">Авто-увімкнення даних</string>
+  <string name="pref_summary_mms_auto_enable_data">Автоматично вмикати мобільні дані для MMS-повідомлень</string>
+  <string name="adding_selected_recipients_dialog_text">Додавання одержувачів</string>
 </resources>
