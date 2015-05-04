@@ -993,7 +993,7 @@ public class MessageListItem extends ZoomMessageListItem implements
 
     @Override
     public void setAudio(Uri audio, String name, Map<String, ?> extras) {
-        // TODO Auto-generated method stub
+        showMmsView(true);
     }
 
     @Override
