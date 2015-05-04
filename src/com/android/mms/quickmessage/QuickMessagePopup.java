@@ -101,6 +101,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import android.view.inputmethod.InputMethodManager;
 
 public class QuickMessagePopup extends Activity {
     private static final String LOG_TAG = "QuickMessagePopup";
@@ -757,6 +758,7 @@ public class QuickMessagePopup extends Activity {
                     implements ViewPager.OnPageChangeListener {
 
         protected LinearLayout mCurrentPrimaryLayout = null;
+        private EditText qmReplyText;
 
         @Override
         public int getCount() {
@@ -776,7 +778,7 @@ public class QuickMessagePopup extends Activity {
             }
 
             // Load the main views
-            EditText qmReplyText = (EditText) layout.findViewById(R.id.embedded_text_editor);
+            qmReplyText = (EditText) layout.findViewById(R.id.embedded_text_editor);
             TextView qmTextCounter = (TextView) layout.findViewById(R.id.text_counter);
             ImageButton qmSendButton = (ImageButton) layout.findViewById(R.id.send_button_sms);
             TextView qmMessageText = (TextView) layout.findViewById(R.id.messageTextView);
@@ -843,6 +845,11 @@ public class QuickMessagePopup extends Activity {
                                 }
                             }
                             return true;
+                        } else if (actionId == EditorInfo.IME_ACTION_DONE) {
+                                if (v != null) {
+                                    hideKeyboard();
+                            }
+                            return true;
                         }
                         return true;
                     }
@@ -881,6 +888,11 @@ public class QuickMessagePopup extends Activity {
             return layout;
         }
 
+        private void hideKeyboard() {
+            InputMethodManager inputMethodManager =
+                 (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(qmReplyText.getWindowToken(), 0);
+        }
         /**
          * This method sends the supplied message in reply to the supplied qm and then
          * moves to the next or previous message as appropriate.
