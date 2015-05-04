@@ -113,6 +113,7 @@ import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_DELIVERY_REPORT;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_LOCKED;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_LOCKED;
 import com.android.mms.rcs.FavouriteMessageList;
+import com.android.mms.rcs.RcsApiManager;
 import com.android.mms.rcs.RcsSelectionMenu;
 
 import com.android.mms.data.Conversation;
@@ -435,6 +436,8 @@ public class MailBoxMessageList extends ListActivity implements
         // Cancel failed notification.
         MessageUtils.cancelFailedToDeliverNotification(intent, this);
         MessageUtils.cancelFailedDownloadNotification(intent, this);
+
+        Conversation.markAllConversationsAsSeen(MailBoxMessageList.this);
     }
 
     @Override
@@ -651,7 +654,6 @@ public class MailBoxMessageList extends ListActivity implements
             setProgressBarIndeterminateVisibility(false);
             mQueryDone = true;
             MessagingNotification.setCurrentlyDisplayedMsgType(mQueryBoxType);
-            Conversation.markAllConversationsAsSeen(MailBoxMessageList.this);
         }
     }
 
@@ -718,10 +720,22 @@ public class MailBoxMessageList extends ListActivity implements
                 mSearchView.setSearchableInfo(info);
             }
         }
+
         MenuItem item = menu.findItem(R.id.action_change_to_folder_mode);
         if (item != null) {
             item.setVisible(false);
         }
+
+        boolean isRcsSupported = RcsApiManager.getSupportApi().isRcsSupported();
+        MenuItem myFavoriteItem = menu.findItem(R.id.my_favorited);
+        if (myFavoriteItem != null) {
+            myFavoriteItem.setVisible(isRcsSupported);
+        }
+        MenuItem saveOrBackItem = menu.findItem(R.id.saveorbackmessage);
+        if (saveOrBackItem != null) {
+            saveOrBackItem.setVisible(isRcsSupported);
+        }
+
         return true;
     }
 
@@ -731,7 +745,10 @@ public class MailBoxMessageList extends ListActivity implements
         if (item != null) {
             item.setVisible(false);
         }
-
+        MenuItem saveOrBackItem = menu.findItem(R.id.saveorbackmessage);
+        if (saveOrBackItem != null) {
+                saveOrBackItem.setVisible(false);
+        }
         // if mQueryText is not null,so restore it.
         if (mQueryText != null && mSearchView != null) {
             mSearchView.setQuery(mQueryText, false);

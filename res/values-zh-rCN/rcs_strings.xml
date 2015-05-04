@@ -37,7 +37,8 @@
 
     <!-- 发送群聊消息失败 -->
     <string name="group_chat_not_exist">找不到群聊。</string>
-    <string name="group_chat_not_active">群聊已创建，正在等待其他成员加入。</string>
+    <string name="group_wait_member_join">群聊已创建，正在等待其他成员加入。</string>
+    <string name="group_chat_not_active">群聊未激活。</string>
     <string name="group_chat_deleted">群聊已删除。</string>
 
     <!-- 群聊状态 -->
@@ -58,6 +59,7 @@
     <string name="group_chat_disbanded">群聊已经解散。</string>
     <string name="group_chat_policy">已经修改消息接收策略。</string>
     <string name="group_chat_gone">您已不在群聊中。</string>
+    <string name="group_chat_remark_delete">群聊备注已删除。</string>
 
     <string name="attach_map">位置</string>
     <string name="message_received">送达</string>
@@ -67,7 +69,7 @@
     <string name="message_has_been_burned">消息已焚</string>
     <string name="message_download">点击下载</string>
     <string name="message_downloaded">下载完毕</string>
-    <string name="message_send_fail_resend">发送失败，点击重发</string>
+    <string name="message_send_fail_resend">发送失败，点击继续发送</string>
     <!-- RCS -->
     <string name="image_downloading">下载中：%1$d %%</string>
     <string name="audio_length">音频时长:</string>
@@ -98,11 +100,11 @@
     <string name="cannot_send_video">不能发送时长小于1秒的视频。</string>
     <string name="cannot_send_audio">不能发送时长小于1秒的语音。</string>
 
-    <string name="del_image_action">Image manipulation</string>
-    <string name="input_quality">Please enter the scaling quality</string>
-    <string name="input_no_fit">Input is not legal</string>
-    <string name="send_comfirm_ok">determine</string>
-    <string name="send_comfirm_cancel">cancel</string>
+    <string name="del_image_action">图片操作</string>
+    <string name="input_quality">请输入缩放质量值</string>
+    <string name="input_no_fit">输入不合法</string>
+    <string name="send_comfirm_ok">确定</string>
+    <string name="send_comfirm_cancel">取消</string>
     <string name="top_conversation">置顶</string>
     <string name="cancel_top_conversation">取消置顶</string>
     <string name="im_only">只发即时消息</string>
@@ -125,7 +127,7 @@
     <string name="message_back">消息恢复</string>
     <string name="message_is_begin">准备备份</string>
     <string name="message_is_saving">消息备份中</string>
-    <string name="cacel_back_message">取消备份</string>
+    <string name="cacel_back_message">取消</string>
     <string name="message_save_ok">备份完成</string>
     <string name="message_save_fail">备份失败</string>
     <string name="message_is_restore_begin">准备恢复</string>
@@ -213,6 +215,14 @@
     <string name="file_is_too_larger">文件太大</string>
     <string name="please_install_application">请安装相关应用</string>
     <string name="emotion_download_fail">表情下载失败。</string>
+    <string name="confirm_complain_dialog_title">"要举报该信息吗？"</string>
+    <string name="message_restore_fail">还原失败</string>
+    <string name="forward_message_not_support">该消息不能转发</string>
+    <string name="save_message_not_support">该消息不能保存</string>
     <string name="cloud_file_name">文件名:</string>
     <string name="cloud_file_size">,文件大小:</string>
+    <string name="favorite_success">收藏成功</string>
+    <string name="favorite_fail">收藏失败</string>
+    <string name="temp_group_chat">临时群聊</string>
+    <string name="rcs_offline_on_groupchat">您已离线，群聊不能发送多媒体消息。</string>
 </resources>

@@ -213,11 +213,9 @@ public class FavouriteMessageList extends ListActivity implements
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(false);
         setupActionBar();
-       // ActionBar actionBar = getActionBar();
-        actionBar.setTitle("favourite");
+        actionBar.setTitle(getString(R.string.my_favorited));
         mHandler = new Handler();
-        recordMailboxMode();
-        MessageUtils.setMailboxMode(true);
+
     }
 
     @Override
@@ -437,6 +435,7 @@ public class FavouriteMessageList extends ListActivity implements
         startAsyncQuery();
         if (!mIsInSearchMode) {
             mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+            mListView.setMultiChoiceModeListener(mModeCallback);
         }
 
         getListView().invalidateViews();
@@ -666,7 +665,7 @@ public class FavouriteMessageList extends ListActivity implements
             mMessageTitle.setText(getResources().getQuantityString(
                     R.plurals.search_results_title, 0, 0, mSearchDisplayStr));
         }
-        mMessageTitle.setText("Favourite");
+        mMessageTitle.setText(getString(R.string.my_favorited));
     }
 
     SearchView.OnQueryTextListener mQueryTextListener = new SearchView.OnQueryTextListener() {
@@ -706,17 +705,17 @@ public class FavouriteMessageList extends ListActivity implements
                 mSearchView.setSearchableInfo(info);
             }
         }
-        if (FOLDER_MODE == getMailboxMode()) {
+
             MenuItem item = menu.findItem(R.id.action_change_to_folder_mode);
             if (item != null) {
                 item.setVisible(false);
             }
-        } else {
-            MenuItem item = menu.findItem(R.id.action_change_to_conversation_mode);
-            if (item != null) {
-                item.setVisible(false);
+
+            MenuItem itemConversation = menu.findItem(R.id.action_change_to_conversation_mode);
+            if (itemConversation != null) {
+                itemConversation.setVisible(false);
             }
-        }
+
         return true;
     }
 
@@ -757,16 +756,16 @@ public class FavouriteMessageList extends ListActivity implements
                 break;
             case R.id.action_change_to_conversation_mode:
                 Intent modeIntent = new Intent(this, ConversationList.class);
-                startActivityIfNeeded(modeIntent, -1);
                 MessageUtils.setMailboxMode(false);
                 isChangeToConvasationMode = true;
+                startActivityIfNeeded(modeIntent, -1);
                 finish();
                 break;
             case R.id.action_change_to_folder_mode:
                 Intent folderModeIntent = new Intent(this, ConversationList.class);
-                startActivityIfNeeded(folderModeIntent, -1);
                 MessageUtils.setMailboxMode(true);
                 isChangeToConvasationMode = false;
+                startActivityIfNeeded(folderModeIntent, -1);
                 finish();
                 break;
             case R.id.action_memory_status:
@@ -781,11 +780,7 @@ public class FavouriteMessageList extends ListActivity implements
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(FOLDER_MODE == getMailboxMode() && !isChangeToConvasationMode) {
-            MessageUtils.setMailboxMode(true);
-        } else {
-            MessageUtils.setMailboxMode(false);
-        }
+
         mHasLockedMessage = false;
         mIsPause = true;
         if (mCursor != null) {
@@ -991,7 +986,7 @@ public class FavouriteMessageList extends ListActivity implements
 
         mCountTextView = (TextView) v.findViewById(R.id.message_count);
         mMessageTitle = (TextView) v.findViewById(R.id.message_title);
-        mMessageTitle.setText("Favourite");
+        mMessageTitle.setText(getString(R.string.my_favorited));
     }
 
     private class ModeCallback implements ListView.MultiChoiceModeListener {

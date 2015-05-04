@@ -76,6 +76,7 @@ import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.android.mms.rcs.FavouriteMessageList;
 import com.android.mms.LogTag;
 import com.android.mms.MmsConfig;
@@ -103,10 +104,12 @@ import com.suntek.mway.rcs.client.aidl.provider.model.GroupChatModel;
 import com.suntek.mway.rcs.client.aidl.provider.model.ChatMessage;
 import com.suntek.mway.rcs.client.api.im.impl.MessageApi;
 import com.suntek.mway.rcs.client.api.util.ServiceDisconnectedException;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -216,6 +219,10 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                 @Override
                 public void onCreateNotActive(Bundle extras) {
                 }
+
+                @Override
+                public void onBootMe(Bundle extras) {
+                }
             });
 
     private BroadcastReceiver backupAllMessageReceiver = new BroadcastReceiver() {
@@ -311,10 +318,11 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                             cMsg.setMsgState(jsonObj.getInt("status"));
                             cMsg.setContact(jsonObj.getString("address"));
                             cMsg.setThreadId(jsonObj.getLong("thread_id"));
+                            cMsg.setId(jsonObj.getInt("_id"));
                             cMsgList.add(cMsg);
                             Log.i("RCS_UI", "jsonObecj body ->" + jsonObj.getString("body"));
                         }
-                        RcsUtils.rcsInsertMany(ConversationList.this, cMsgList);
+                        RcsUtils.rcsInsertMany(ConversationList.this, cMsgList, true);
                     } catch (Exception e) {
                         Log.e("RCS_UI",e.toString());
                     }
@@ -351,7 +359,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                                 }
                             }
                         }
-                        RcsUtils.rcsInsertMany(ConversationList.this, cMsgList);
+                        RcsUtils.rcsInsertMany(ConversationList.this, cMsgList,false);
                     } catch (Exception e) {
                         Log.e("RCS_UI",e.toString());
                     }
@@ -382,8 +390,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         @Override
         public void onClick(View view) {
             if (mIsSmsEnabled) {
-                if (RcsApiManager.isRcsServiceInstalled()
-                        && RcsApiManager.isRcsOnline()) {
+                if (mIsRcsEnabled) {
                     selectComposeAction();
                 } else {
                     createNewMessage();
@@ -462,10 +469,6 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
 
         registerReceiver(groupReceiver,
                 new IntentFilter(BroadcastConstants.UI_GROUP_MANAGE_NOTIFY));
-//        registerReceiver(backAllMessageReceiver,
-//                new IntentFilter("com.suntek.mway.rcs.BACKUP_ALL_MESSAGE"));
-//        registerReceiver(restoreAllMessageReceiver,
-//                new IntentFilter("com.suntek.mway.rcs. RESTORE_ALL_MESSAGE"));
     }
 
     @Override
@@ -502,7 +505,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             invalidateOptionsMenu();
         }
         // Check if the RCS service is installed.
-        mIsRcsEnabled = RcsApiManager.isRcsServiceInstalled();
+        mIsRcsEnabled = RcsApiManager.getSupportApi().isRcsSupported();
 
         // Multi-select is used to delete conversations. It is disabled if we are not the sms app.
         ListView listView = getListView();
@@ -819,6 +822,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
 
     private void startAsyncQuery() {
         try {
+            mEmptyView.setVisibility(View.VISIBLE);
             mEmptyView.setText(R.string.loading_conversations);
 
             Conversation.startQueryForAll(mQueryHandler, THREAD_LIST_QUERY_TOKEN, mFilterSubId);
@@ -882,13 +886,6 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             item.setVisible(false);
         }
 
-        MenuItem saveOrBackItem = menu.findItem(R.id.saveorbackmessage);
-        if (saveOrBackItem != null) {
-            if (!mIsRcsEnabled || (mIsRcsEnabled && !RcsApiManager.isRcsOnline())) {
-                saveOrBackItem.setVisible(false);
-            }
-        }
-
         MenuItem cellBroadcastItem = menu.findItem(R.id.action_cell_broadcasts);
         if (cellBroadcastItem != null) {
             // Enable link to Cell broadcast activity depending on the value in config.xml.
@@ -908,6 +905,15 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             if (!isCellBroadcastAppLinkEnabled) {
                 cellBroadcastItem.setVisible(false);
             }
+        }
+
+        MenuItem myFavoriteItem = menu.findItem(R.id.my_favorited);
+        if (myFavoriteItem != null) {
+            myFavoriteItem.setVisible(mIsRcsEnabled);
+        }
+        MenuItem saveOrBackItem = menu.findItem(R.id.saveorbackmessage);
+        if (saveOrBackItem != null) {
+            saveOrBackItem.setVisible(mIsRcsEnabled);
         }
 
         return true;
@@ -1041,7 +1047,6 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                 Intent favouriteIntent = new Intent(this, FavouriteMessageList.class);
                 favouriteIntent.putExtra("favorited", true);
                 startActivityIfNeeded(favouriteIntent, -1);
-                MessageUtils.setMailboxMode(true);
 
                 break;
             case R.id.saveorbackmessage:
@@ -1117,21 +1122,21 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                     try {
                         RcsApiManager.getMessageApi().cancelBackup();
                     } catch (Exception e) {
-                                Log.e("RCS_UI", e.toString());
-                            } finally {
-                                try {
-                                    unregisterReceiver(backupAllMessageReceiver);
-                                } catch (Exception e) {
-                                    Log.e("RCS_UI", e.toString());
-                                }
-                                try {
-                                    unregisterReceiver(restoreAllMessageReceiver);
-                                } catch (Exception e) {
-                                    Log.e("RCS_UI", e.toString());
-                                }
-                            }
+                        Log.e("RCS_UI", e.toString());
+                    } finally {
+                        try {
+                            unregisterReceiver(backupAllMessageReceiver);
+                        } catch (Exception e) {
+                            Log.e("RCS_UI", e.toString());
                         }
-                    });
+                        try {
+                            unregisterReceiver(restoreAllMessageReceiver);
+                        } catch (Exception e) {
+                            Log.e("RCS_UI", e.toString());
+                        }
+                    }
+                 }
+            });
             mSaveOrBackProgressDialog.show();
             mSaveOrBackProgressDialog.setMax(total);
             mSaveOrBackProgressDialog.setProgress(progress);
@@ -1153,6 +1158,9 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         // (ConversationListAdapter extends CursorAdapter, so getItemAtPosition() should
         // return the cursor object, which is moved to the position passed in)
         Cursor cursor  = (Cursor) getListView().getItemAtPosition(position);
+        if (cursor == null || cursor.getPosition() < 0) {
+            return;
+        }
         Conversation conv = Conversation.from(this, cursor);
         long tid = conv.getThreadId();
 
@@ -1537,6 +1545,13 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                     }
                     if (mThreadIds == null) {
                         Conversation.startDeleteAll(mHandler, token, mDeleteLockedMessages);
+                        if (RcsApiManager.getSupportApi().isRcsSupported()) {
+                            try {
+                                RcsApiManager.getMessageApi().removeAllMessage();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
                         DraftCache.getInstance().refresh();
                     } else {
                         int size = mThreadIds.size();
@@ -1547,6 +1562,9 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                         }
                         Conversation.startDelete(mHandler, token, mDeleteLockedMessages,
                                 mThreadIds);
+                        if (RcsApiManager.getSupportApi().isRcsSupported()) {
+                            RcsUtils.deleteRcsMessageByThreadId(mContext, mThreadIds);
+                        }
                     }
                 }
             });

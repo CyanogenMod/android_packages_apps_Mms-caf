@@ -963,6 +963,9 @@ public class SmsReceiverService extends Service {
             if (cacheContact != null) {
                 address = cacheContact.getNumber();
             }
+        } else if (TextUtils.isEmpty(address)
+                && getResources().getBoolean(R.bool.def_hide_unknown_sender)) {
+            values.put(Sms.ADDRESS, "");
         } else {
             address = getString(R.string.unknown_sender);
             values.put(Sms.ADDRESS, address);

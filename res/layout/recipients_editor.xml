@@ -38,14 +38,21 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.android.mms.ui.RecipientsEditor
-            android:id="@+id/recipients_editor"
-            android:layout_width="0dp"
+        <HorizontalScrollView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:inputType="textFilter|textMultiLine"
-            android:nextFocusRight="@+id/recipients_selector"
-            chips:maxChips="@integer/max_chips_parsed" />
+            android:fillViewport="true"
+            android:scrollbars="none" >
+
+            <com.android.mms.ui.RecipientsEditor
+                android:id="@+id/recipients_editor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:nextFocusRight="@+id/recipients_selector"
+                chips:maxChips="@integer/max_chips_parsed" />
+
+        </HorizontalScrollView>
 
         <ImageView
             android:id="@+id/recipients_selector"

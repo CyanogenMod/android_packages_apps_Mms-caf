@@ -41,46 +41,13 @@
             android:targetPackage="com.android.settings">
         </intent>
     </Preference>
-    <PreferenceCategory android:title="@string/pref_sms_storage_title"
-                      android:key="pref_key_storage_settings">
 <!--
     <Preference android:key="pref_key_mms_clear_history"
                       android:title="@string/pref_mms_clear_search_history_title"
                       android:summary="@string/pref_mms_clear_search_history_summary" />
 -->
-     <CheckBoxPreference android:defaultValue="@bool/auto_delete_message"
-                      android:key="pref_key_auto_delete"
-                      android:summary="@string/pref_summary_auto_delete"
-                      android:title="@string/pref_title_auto_delete" />
-    <Preference android:key="pref_key_sms_delete_limit"
-                      android:dependency="pref_key_auto_delete"
-                      android:persistent="false"
-                      android:summary="@string/pref_summary_delete_limit"
-                      android:title="@string/pref_title_sms_delete" />
-    <Preference android:key="pref_key_mms_delete_limit"
-                      android:dependency="pref_key_auto_delete"
-                      android:persistent="false"
-                      android:summary="@string/pref_summary_delete_limit"
-                      android:title="@string/pref_title_mms_delete" />
-    <ListPreference android:key="pref_key_sms_store"
-                      android:title="@string/pref_title_sms_store"
-                      android:defaultValue="@string/def_sms_store_value"
-                      android:dialogTitle="@string/pref_title_sms_store"
-                      android:entries="@array/entries_sms_store"
-                      android:entryValues="@array/entries_sms_store_value" />
-    <ListPreference android:key="pref_key_sms_store_card1"
-                      android:title="@string/pref_title_sms_store_card1"
-                      android:defaultValue="@string/def_sms_store_card1_value"
-                      android:dialogTitle="@string/pref_title_sms_store"
-                      android:entries="@array/entries_sms_store"
-                      android:entryValues="@array/entries_sms_store_value" />
-    <ListPreference android:key="pref_key_sms_store_card2"
-                      android:title="@string/pref_title_sms_store_card2"
-                      android:defaultValue="@string/def_sms_store_card2_value"
-                      android:dialogTitle="@string/pref_title_sms_store"
-                      android:entries="@array/entries_sms_store"
-                      android:entryValues="@array/entries_sms_store_value" />
-  </PreferenceCategory>
+  <PreferenceScreen android:key="pref_key_sms_settings_screen"
+                      android:title="@string/pref_sms_settings_title" >
   <PreferenceCategory android:title="@string/pref_sms_settings_title"
                       android:key="pref_key_sms_settings" >
     <ListPreference   android:key="pref_key_send_delay"
@@ -155,7 +122,9 @@
                       android:title="@string/pref_title_edit_signature"
                       android:maxLength="64"/>
   </PreferenceCategory>
-
+  </PreferenceScreen>
+  <PreferenceScreen android:key="pref_key_mms_settings_screen"
+                      android:title="@string/pref_mms_settings_title" >
   <PreferenceCategory android:title="@string/pref_mms_settings_title"
                       android:key="pref_key_mms_settings">
     <CheckBoxPreference android:defaultValue="true"
@@ -203,11 +172,17 @@
                     android:defaultValue="3"
                     android:title="@string/pref_title_notification_creation_mode"
                     android:entries="@array/pref_entries_creation_mode"
-                    android:entryValues="@array/pref_values_creation_mode"
+                    android:entryValues="@array/pref_entries_creation_mode"
                     android:dialogTitle="@string/pref_dialog_title_creation_mode"
                     android:summary="@string/pref_summary_creation_mode" />
+    <Preference
+        android:title="@string/pref_title_size_limit"
+        android:key="pref_key_mms_size_limit" />
 
   </PreferenceCategory>
+  </PreferenceScreen>
+  <PreferenceScreen android:key="pref_notification_settings"
+                    android:title="@string/pref_title_notification_settings" >
   <PreferenceCategory android:title="@string/pref_notification_settings_title"
                       android:key="pref_key_notification_settings">
     <CheckBoxPreference android:key="pref_key_enable_notifications"
@@ -232,7 +207,7 @@
                         android:summary="@string/pref_summary_wap_push_enabled"
                         android:defaultValue="@bool/def_wap_push_enabled" />
   </PreferenceCategory>
-
+  </PreferenceScreen>
   <!-- QuickMessage settings -->
   <PreferenceCategory android:title="@string/pref_quickmessage">
       <CheckBoxPreference
@@ -266,9 +241,7 @@
     </PreferenceCategory>
 
     <!-- Extra Settings -->
-    <PreferenceCategory
-            android:key="pref_key_extra_settings"
-            android:title="@string/pref_extra_settings">
+    <PreferenceCategory android:title="@string/pref_extra_settings">
 
         <PreferenceScreen
                 android:key="pref_blacklist"
@@ -288,4 +261,81 @@
             android:summary="@string/configuration_message_key_activity"
             android:title="@string/configuration_message_key" />
     </PreferenceCategory>
+    <PreferenceScreen android:key="pref_key_general_settings"
+        android:title="@string/pref_title_general_settings" >
+        <PreferenceCategory android:title="@string/pref_title_display_settings"
+            android:key="pref_key_display_preference_settings">
+            <CheckBoxPreference android:defaultValue="true"
+                android:key="pref_key_show_email_address"
+                android:title="@string/pref_title_show_email_address"
+                android:summary="@string/pref_summary_show_email_address" />
+        </PreferenceCategory>
+        <Preference
+                android:key="pref_key_chat_wallpaper"
+                android:title="@string/pref_chat_wallpaper" />
+            <ListPreference
+                android:key="pref_key_message_font_size"
+                android:defaultValue="@string/def_message_font_size_value"
+                android:title="@string/pref_title_message_font_size"
+                android:dialogTitle="@string/pref_title_message_font_size"
+                android:entries="@array/pref_message_font_size_choices"
+                android:entryValues="@array/pref_message_font_size_values"
+                android:summary="@string/pref_title_message_font_size"/>
+
+        <PreferenceCategory
+            android:key="pref_key_storage_settings"
+            android:title="@string/pref_sms_storage_title" >
+            <CheckBoxPreference
+                android:defaultValue="@bool/auto_delete_message"
+                android:key="pref_key_auto_delete"
+                android:summary="@string/pref_summary_auto_delete"
+                android:title="@string/pref_title_auto_delete" />
+
+            <Preference
+                android:dependency="pref_key_auto_delete"
+                android:key="pref_key_sms_delete_limit"
+                android:persistent="false"
+                android:summary="@string/pref_summary_delete_limit"
+                android:title="@string/pref_title_sms_delete" />
+            <Preference
+                android:dependency="pref_key_auto_delete"
+                android:key="pref_key_mms_delete_limit"
+                android:persistent="false"
+                android:summary="@string/pref_summary_delete_limit"
+                android:title="@string/pref_title_mms_delete" />
+
+            <ListPreference
+                android:defaultValue="@string/def_sms_store_value"
+                android:dialogTitle="@string/pref_title_sms_store"
+                android:entries="@array/entries_sms_store"
+                android:entryValues="@array/entries_sms_store_value"
+                android:key="pref_key_sms_store"
+                android:title="@string/pref_title_sms_store" />
+            <ListPreference
+                android:defaultValue="@string/def_sms_store_card1_value"
+                android:dialogTitle="@string/pref_title_sms_store"
+                android:key="pref_key_sms_store_card1"
+                android:title="@string/pref_title_sms_store_card1" />
+            <ListPreference
+                android:defaultValue="@string/def_sms_store_card2_value"
+                android:dialogTitle="@string/pref_title_sms_store"
+                android:key="pref_key_sms_store_card2"
+                android:title="@string/pref_title_sms_store_card2" />
+        </PreferenceCategory>
+        <PreferenceCategory android:title="@string/cell_broadcast_title" >
+            <Preference
+                android:key="pref_key_cell_broadcast"
+                android:persistent="false"
+                android:summary="@string/cell_broadcast_settings"
+                android:title="@string/cell_broadcast" >
+            </Preference>
+        </PreferenceCategory>
+        <PreferenceCategory android:title="@string/pref_wap_push_title" >
+            <CheckBoxPreference
+                android:defaultValue="@bool/def_wap_push_enabled"
+                android:key="pref_key_enable_wap_push"
+                android:summary="@string/pref_summary_wap_push_enabled"
+                android:title="@string/pref_title_wap_push_enabled" />
+        </PreferenceCategory>
+    </PreferenceScreen>
 </PreferenceScreen>

@@ -82,7 +82,12 @@ public class MmsApp extends Application {
         sMmsApp = this;
 
         // Load the default preference values
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        if (getResources().getBoolean(R.bool.def_custom_preferences_settings)) {
+            PreferenceManager.setDefaultValues(this, R.xml.custom_preferences,
+                    false);
+        } else {
+            PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        }
 
         // Figure out the country *before* loading contacts and formatting numbers
         mCountryDetector = (CountryDetector) getSystemService(Context.COUNTRY_DETECTOR);

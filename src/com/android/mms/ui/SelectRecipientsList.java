@@ -52,6 +52,7 @@ import com.android.mms.data.RecipientsListLoader;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Locale;
 
 public class SelectRecipientsList extends Activity implements
         LoaderManager.LoaderCallbacks<RecipientsListLoader.Result> {
@@ -548,6 +549,12 @@ public class SelectRecipientsList extends Activity implements
         public Object instantiateItem(ViewGroup container, int position) {
             ItemListFragment result =
                     (ItemListFragment) super.instantiateItem(container, position);
+            boolean isRtl = TextUtils.getLayoutDirectionFromLocale(Locale.getDefault())
+                    == View.LAYOUT_DIRECTION_RTL;
+            if (isRtl) {
+               position = getCount() - 1 - position;
+            }
+
             if (position == 1) {
                 mGroupFragment = result;
             } else {

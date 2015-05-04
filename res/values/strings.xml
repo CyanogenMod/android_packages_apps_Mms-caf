@@ -611,6 +611,10 @@
     <string name="sms_full_title">Text message memory full</string>
     <!-- Device Full Notification dialog text. -->
     <string name="sms_full_body">Phone memory is full, can\'t send and receive new messages, please delete some old messages.</string>
+    <!-- Device Low Notification dialog title. -->
+    <string name="memory_low_title">Phone memory low</string>
+    <!-- Device Low Notification dialog text. -->
+    <string name="memory_low_body">Phone memory is going to full, please delete some old data to make sure get new message well.</string>
     <!-- Disk Storage Full Error Notification dialog text. -->
     <string name="disk_storage_full_error">Error: Storage is full.</string>
 
@@ -1089,4 +1093,38 @@
     <string name="bad_file">The file is corrupted and can not be inserted!</string>
     <string name="indication_send_message_successfully">"Message has been sent out."</string>
     <string name="indication_send_message_failed">"Failed to send message."</string>
+
+    <!-- ConfigurationClient -->
+    <string name="omacp_configuration">OMACP Configuration</string>
+    <string name="configuration_message_key">Configuration Message</string>
+    <string name="configuration_message_key_activity">Touch to configure your OMACP messages</string>
+    <!-- General settings -->
+    <string name="pref_title_general_settings">General</string>
+    <string name="pref_title_notification_settings">Notifications</string>
+
+    <string name="pref_title_display_settings">DISPLAY &#38; PREFERENCE</string>
+    <string name="pref_title_show_email_address">Show email address</string>
+    <string name="pref_summary_show_email_address">Include email address in contact results</string>
+    <!-- Cell broadcast settings -->
+    <string name="cell_broadcast">Cell broadcast</string>
+    <string name="cell_broadcast_title">Cell broadcast settings</string>
+    <string name="cell_broadcast_settings">SIM card cell broadcast settings</string>
+    <!-- Chat wallpaper -->
+    <string name="pref_chat_wallpaper">Chat wallpaper</string>
+    <string name="dialog_wallpaper_chooser_option_gallery">Gallery</string>
+    <string name="dialog_wallpaper_chooser_option_camera">Take a photo</string>
+    <string name="dialog_wallpaper_title">Choose Wallpaper</string>
+    <string name="intent_chooser_dialog_title">Complete action using</string>
+    <string name="gallery_packagename">com.android.gallery3d</string>
+    <string name="camera_packagename">com.android.camera2</string>
+    <string name="pref_title_size_limit">Size Limit</string>
+    <string name="plugger_priority">999</string>
+    <!-- Font settings -->
+    <string name="pref_title_message_font_size">Message font size</string>
+    <string name="message_font_size_dialog_title">Message font size</string>
+    <string name="font_follow_system_font">Follow system font size</string>
+    <string name="font_small">Small</string>
+    <string name="font_medium">Medium</string>
+    <string name="font_large">Large</string>
+    <string name="font_extra_large">Extra large</string>
 </resources>

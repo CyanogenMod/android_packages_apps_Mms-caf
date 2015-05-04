@@ -64,8 +64,8 @@ public class AttachmentPagerAdapter extends PagerAdapter {
     public static final int ADD_SLIDESHOW        = 6;
     public static final int ADD_CONTACT_AS_TEXT  = 7;
     public static final int ADD_CONTACT_AS_VCARD = 8;
-    public static final int ADD_CALENDAR_EVENTS  = 9;
-    public static final int ADD_MAP              = 10;
+    public static final int ADD_MAP              = 9;
+    public final static int ADD_CALENDAR_EVENTS  = 10;
 
     private static final String GRID_ITEM_IMAGE = "grid_item_image";
     private static final String GRID_ITEM_TEXT  = "grid_item_text";
@@ -76,6 +76,8 @@ public class AttachmentPagerAdapter extends PagerAdapter {
     private static final int VCARD_ITEM_POSITION        = 2;
     private static final int VCAL_ITEM_POSITION         = 3;
 
+    private HashMap<Integer, Integer> mIndexOfAttachmentTypes = new HashMap<Integer, Integer>();
+
     private boolean mHasAttachment;
     private boolean mHasVcard;
     private boolean mHasSlideshow;
@@ -83,6 +85,7 @@ public class AttachmentPagerAdapter extends PagerAdapter {
     private Context mContext;
     private ArrayList<GridView> mPagerGridViewViews;
     private OnItemClickListener mGridItemClickListener;
+    private boolean mIsRTL = false;
 
     public AttachmentPagerAdapter(Context context) {
         mContext = context;
@@ -92,6 +95,7 @@ public class AttachmentPagerAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup view, int position) {
         View pagerContent = LayoutInflater.from(mContext).inflate(
                 R.layout.attachment_selector_pager, view, false);
+        mIsRTL = (view.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL);
         bindPagerView(pagerContent, position);
         view.addView(pagerContent);
         return pagerContent;
@@ -115,6 +119,27 @@ public class AttachmentPagerAdapter extends PagerAdapter {
     private ArrayList<HashMap<String, Object>> getGridData(int pagerPosition) {
         List<IconListItem> attachmentDataList = getAttachmentData();
         ArrayList<HashMap<String, Object>> gridData = new ArrayList<HashMap<String, Object>>();
+        if (mIsRTL) {
+            if (pagerPosition == 0) {
+                for (int i = PAGE_GRID_COUNT; i < attachmentDataList.size(); i++) {
+                    IconListItem item = (IconListItem) attachmentDataList.get(i);
+                       HashMap<String, Object> map = new HashMap<String, Object>();
+                    map.put(GRID_ITEM_IMAGE, item.getResource());
+                    map.put(GRID_ITEM_TEXT, item.getTitle());
+                    gridData.add(map);
+                }
+            } else {
+                for (int i = 0; i < PAGE_GRID_COUNT; i++) {
+                    IconListItem item = (IconListItem) attachmentDataList.get(i);
+                    HashMap<String, Object> map = new HashMap<String, Object>();
+                    map.put(GRID_ITEM_IMAGE, item.getResource());
+                    map.put(GRID_ITEM_TEXT, item.getTitle());
+                    gridData.add(map);
+                }
+            }
+            return gridData;
+        }
+
         if (pagerPosition == 0) {
             for (int i = 0; i < PAGE_GRID_COUNT; i++) {
                 IconListItem item = (IconListItem) attachmentDataList.get(i);
@@ -136,53 +161,71 @@ public class AttachmentPagerAdapter extends PagerAdapter {
     }
 
     private List<IconListItem> getAttachmentData() {
-        List<IconListItem> list = new ArrayList<IconListItem>(9);
+        int index = 0;
+        mIndexOfAttachmentTypes.clear();
+
+        List<IconListItem> list = new ArrayList<IconListItem>(10);
         list.add(new IconListItem(mContext.getString(R.string.attach_image),
                 (!mIsReplace && mHasVcard) ? R.drawable.ic_attach_picture_disable
                         : R.drawable.ic_attach_picture_holo_light));
+        mIndexOfAttachmentTypes.put(index++, ADD_IMAGE);
         list.add(new IconListItem(mContext.getString(R.string.attach_take_photo),
                 (!mIsReplace && mHasVcard) ? R.drawable.ic_attach_capture_picture_disable
                         : R.drawable.ic_attach_capture_picture_holo_light));
+        mIndexOfAttachmentTypes.put(index++, TAKE_PICTURE);
         list.add(new IconListItem(mContext.getString(R.string.attach_video),
                 (!mIsReplace && mHasVcard) ? R.drawable.ic_attach_video_disable
                         : R.drawable.ic_attach_video_holo_light));
+        mIndexOfAttachmentTypes.put(index++, ADD_VIDEO);
         list.add(new IconListItem(mContext.getString(R.string.attach_record_video),
                 (!mIsReplace && mHasVcard) ? R.drawable.ic_attach_capture_video_disable
                         : R.drawable.ic_attach_capture_video_holo_light));
+        mIndexOfAttachmentTypes.put(index++, RECORD_VIDEO);
         if (MmsConfig.getAllowAttachAudio()) {
             list.add(new IconListItem(mContext.getString(R.string.attach_sound),
                     (!mIsReplace && mHasVcard) ? R.drawable.ic_attach_audio_disable
                             : R.drawable.ic_attach_audio_holo_light));
+            mIndexOfAttachmentTypes.put(index++, ADD_SOUND);
         }
         list.add(new IconListItem(mContext.getString(R.string.attach_record_sound),
                 (!mIsReplace && mHasVcard) ? R.drawable.ic_attach_capture_audio_disable
                         : R.drawable.ic_attach_capture_audio_holo_light));
+        mIndexOfAttachmentTypes.put(index++, RECORD_SOUND);
         list.add(new IconListItem(mContext.getString(R.string.attach_slideshow),
                 (!mIsReplace && mHasVcard) ? R.drawable.ic_attach_slideshow_disable
                         : R.drawable.ic_attach_slideshow_holo_light));
+        mIndexOfAttachmentTypes.put(index++, ADD_SLIDESHOW);
         boolean config_vcard = mContext.getResources().getBoolean(R.bool.config_vcard);
+        boolean isRcsSupported = RcsApiManager.getSupportApi().isRcsSupported();
         if (config_vcard) {
             list.add(new IconListItem(mContext.getString(R.string.attach_add_contact_as_text),
                     (!mIsReplace && mHasSlideshow) ? R.drawable.ic_attach_contact_info_disable
                             : R.drawable.ic_attach_contact_info_holo_light));
+            mIndexOfAttachmentTypes.put(index++, ADD_CONTACT_AS_TEXT);
             list.add(new IconListItem(mContext.getString(R.string.attach_add_contact_as_vcard),
                     (!mIsReplace && mHasAttachment) ? R.drawable.ic_attach_vcard_disable
                             : R.drawable.ic_attach_vcard_holo_light));
-        } else if (RcsApiManager.isRcsServiceInstalled() && RcsApiManager.isRcsOnline()) {
+        } else if (isRcsSupported) {
             list.add(new IconListItem(mContext.getString(R.string.attach_add_contact_as_vcard),
                     (!mIsReplace && mHasAttachment) ? R.drawable.ic_attach_vcard_disable
                             : R.drawable.ic_attach_vcard_holo_light));
+            mIndexOfAttachmentTypes.put(index++, ADD_CONTACT_AS_VCARD);
         }
+        if (isRcsSupported) {
+            list.add(new IconListItem(mContext.getString(R.string.attach_map),
+                    R.drawable.rcs_caiyun_sharefile));
+            mIndexOfAttachmentTypes.put(index++, ADD_MAP);
+        }
+
         // calendar event support
         list.add(new IconListItem(mContext.getString(R.string.attach_add_calendar_events),
                 (!mIsReplace && mHasAttachment) ? R.drawable.ic_attach_event_disable
                         : R.drawable.ic_attach_event));
-        if (RcsApiManager.isRcsServiceInstalled() && RcsApiManager.isRcsOnline()) {
-            list.add(new IconListItem(mContext.getString(R.string.attach_map),
-                    R.drawable.rcs_caiyun_sharefile));
-        }
-
         return list;
+    }
+
+    public int getAttachmentTypeByIndex(int index) {
+        return mIndexOfAttachmentTypes.get(index);
     }
 
     public void setGridItemClickListener(OnItemClickListener l) {

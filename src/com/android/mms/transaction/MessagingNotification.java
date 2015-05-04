@@ -1940,9 +1940,9 @@ public class MessagingNotification {
      * @param context the context to use
      * @param isFull if notify a full icon, it should be true, otherwise, false.
      */
-    public static void updateSmsMessageFullIndicator(Context context, boolean isFull) {
+    public static void updateMessageFullIndicator(Context context, boolean isSms, boolean isFull) {
         if (isFull) {
-            sendFullNotification(context);
+            sendFullNotification(context, isSms);
         } else {
             cancelNotification(context, FULL_NOTIFICATION_ID);
         }
@@ -1952,12 +1952,14 @@ public class MessagingNotification {
      * This method sends a notification to NotificationManager to display
      * an dialog indicating the message memory is full.
      */
-    private static void sendFullNotification(Context context) {
+    private static void sendFullNotification(Context context, boolean isSms) {
         NotificationManager nm = (NotificationManager)context.getSystemService(
                 Context.NOTIFICATION_SERVICE);
 
-        String title = context.getString(R.string.sms_full_title);
-        String description = context.getString(R.string.sms_full_body);
+        String title = context.getString(isSms ? R.string.sms_full_title
+                : R.string.memory_low_title);
+        String description = context.getString(isSms ? R.string.sms_full_body
+                : R.string.memory_low_body);
         PendingIntent intent = PendingIntent.getActivity(context, 0,  new Intent(), 0);
         Notification notification = new Notification();
         notification.icon = R.drawable.stat_notify_sms_failed;

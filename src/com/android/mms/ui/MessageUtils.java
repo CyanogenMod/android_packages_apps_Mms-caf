@@ -136,6 +136,7 @@ import com.google.android.mms.pdu.PduPart;
 import com.google.android.mms.pdu.PduPersister;
 import com.google.android.mms.pdu.RetrieveConf;
 import com.google.android.mms.pdu.SendReq;
+
 import static com.google.android.mms.ContentType.TEXT_VCALENDAR;
 import static android.telephony.SmsMessage.ENCODING_7BIT;
 import static android.telephony.SmsMessage.ENCODING_16BIT;
@@ -146,6 +147,7 @@ import static android.telephony.SmsMessage.MAX_USER_DATA_SEPTETS;
 import static com.google.android.mms.ContentType.TEXT_VCALENDAR;
 import com.android.mms.rcs.RcsApiManager;
 import com.android.mms.rcs.RcsUtils;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -210,6 +212,7 @@ public class MessageUtils {
     // the remaining space , format as MB
     public static final long MIN_AVAILABLE_SPACE_MMS = 2 * 1024 * 1024;
     private static final long KILOBYTE_SIZE = 1024;
+    private static final int DEFAULT_FONT_SIZE = 18;
 
     // add for query message count from iccsms table
     public static final Uri ICC_SMS_URI = Uri.parse("content://sms/iccsms");
@@ -562,7 +565,7 @@ public class MessageUtils {
         // Message Type: Text message.
         details.append(res.getString(R.string.message_type_label));
         int rcsId = cursor.getInt(cursor.getColumnIndexOrThrow("rcs_id"));
-        if (rcsId != 0)
+        if (rcsId > 0)
             details.append(res.getString(R.string.rcs_text_message));
         else
             details.append(res.getString(R.string.text_message));
@@ -771,7 +774,7 @@ public class MessageUtils {
         // other choices like external audio and system audio. Allow user to select
         // an audio from particular storage (Internal or External) and return it.
         String[] items = null;
-        if (RcsApiManager.isRcsOnline()) {
+        if (RcsApiManager.getSupportApi().isOnline()) {
             items = new String[3];
             items[SELECT_LOCAL] = activity.getString(R.string.local_audio_item);
         } else {
@@ -829,7 +832,7 @@ public class MessageUtils {
         intent.setClassName("com.android.soundrecorder",
                 "com.android.soundrecorder.SoundRecorder");
         // add RCS recordSound time add size limit
-        if (RcsApiManager.isRcsServiceInstalled() && RcsApiManager.isRcsOnline()) {
+        if (RcsApiManager.getSupportApi().isOnline()) {
             intent.putExtra(android.provider.MediaStore.Audio.Media.EXTRA_MAX_BYTES, sizeLimit*1024);
         } else {
             intent.putExtra(android.provider.MediaStore.Audio.Media.EXTRA_MAX_BYTES, sizeLimit);
@@ -840,7 +843,7 @@ public class MessageUtils {
 
     public static void recordVideo(Activity activity, int requestCode, long sizeLimit) {
         // add RCS recordVideo time add size limit
-        if(RcsApiManager.isRcsServiceInstalled() && RcsApiManager.isRcsOnline()){
+        if (RcsApiManager.getSupportApi().isOnline()) {
             Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
             intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 10.0);
             intent.putExtra("android.intent.extra.sizeLimit", sizeLimit*1024);
@@ -1715,6 +1718,17 @@ public class MessageUtils {
         sp.edit().putBoolean(VIEW_MODE_NAME, mode).commit();
     }
 
+    public static int getFontSize() {
+        SharedPreferences sp = PreferenceManager
+                .getDefaultSharedPreferences(MmsApp
+                        .getApplication());
+        int mFontSize = Integer
+                .parseInt(sp.getString(
+                        MessagingPreferenceActivity.FONT_SIZE_SETTING,
+                        Integer.toString(DEFAULT_FONT_SIZE)));
+        return mFontSize;
+    }
+
     /**
      * Return the sim name of subscription.
      */
@@ -2159,9 +2173,17 @@ public class MessageUtils {
         return false;
     }
 
+    // Used for check whether have memory for save SMS.
     public static boolean checkIsPhoneMessageFull(Context context) {
         boolean isFull = isPhoneMemoryFull() || isPhoneSmsCountFull(context);
-        MessagingNotification.updateSmsMessageFullIndicator(context, isFull);
+        MessagingNotification.updateMessageFullIndicator(context, true, isFull);
+        return isFull;
+    }
+
+    // Used for check whether have memory for save MMS.
+    public static boolean checkIsPhoneMemoryFull(Context context) {
+        boolean isFull = isPhoneMemoryFull();
+        MessagingNotification.updateMessageFullIndicator(context, false, isFull);
         return isFull;
     }
 
@@ -2639,7 +2661,7 @@ public class MessageUtils {
         try {
             input = ctx.getContentResolver().openInputStream(uri);
             if (input.available() / COMPRESSION_FACTOR > MmsConfig
-                    .getMaxMessageSize() * KILOBYTE_SIZE) {
+                    .getMaxMessageSize()) {
                 isTooLarge = true;
             }
         } catch (Exception e) {

@@ -99,7 +99,6 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
     private String mAddress;
     private String mName;
     private int mMsgBox;
-    private boolean mIsUnread;
     private int mWapPushAddressIndex;
 
     public MailBoxMessageListAdapter(Context context, OnListContentChangedListener changedListener,
@@ -243,6 +242,7 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
         Drawable sendTypeIcon = null;
         boolean isError = false;
         boolean isLocked = false;
+        boolean isUnread = false;
         mMsgBox = Sms.MESSAGE_TYPE_INBOX;
         boolean isDraft = false;
 
@@ -252,7 +252,7 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
             mMsgBox = item.mSmsType;
             isDraft = mMsgBox == Sms.MESSAGE_TYPE_DRAFT;
             int smsRead = item.mRead;
-            mIsUnread = (smsRead == 0 ? true : false);
+            isUnread = (smsRead == 0 ? true : false);
             mSubscription = item.mSubID;
             addr = item.mAddress;
             isError = item.mSmsType == Sms.MESSAGE_TYPE_FAILED;
@@ -271,7 +271,7 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
             isDraft = mMsgBox == Mms.MESSAGE_BOX_DRAFTS;
             recipientIds = cursor.getString(COLUMN_RECIPIENT_IDS);
 
-            mIsUnread = 0 == mmsRead && mMsgBox == Mms.MESSAGE_BOX_INBOX;
+            isUnread = 0 == mmsRead && mMsgBox == Mms.MESSAGE_BOX_INBOX;
 
             bodyStr = MessageUtils.extractEncStrFromCursor(cursor, COLUMN_MMS_SUBJECT,
                     COLUMN_MMS_SUBJECT_CHARSET);
@@ -298,7 +298,7 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
 
         if (mListView.isItemChecked(cursor.getPosition())) {
             view.setBackgroundDrawable(mBgSelectedDrawable);
-        } else if (mIsUnread) {
+        } else if (isUnread) {
             view.setBackgroundDrawable(mBgUnReadDrawable);
         } else {
             view.setBackgroundDrawable(mBgReadDrawable);
@@ -318,17 +318,18 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
             String[] mMailBoxName = nameContact.split(":");
             formatNameView(
                     mMailBoxAddresses[mWapPushAddressIndex],
-                    mMailBoxName[mWapPushAddressIndex]);
+                    mMailBoxName[mWapPushAddressIndex],
+                    isUnread);
         } else if (MessageUtils.isWapPushNumber(addr)) {
             String[] mailBoxAddresses = addr.split(":");
             addr = mailBoxAddresses[mWapPushAddressIndex];
-            formatNameView(addr, mName);
+            formatNameView(addr, mName, isUnread);
         } else if (MessageUtils.isWapPushNumber(nameContact)) {
             String[] mailBoxName = nameContact.split(":");
             nameContact = mailBoxName[mWapPushAddressIndex];
-            formatNameView(mAddress, nameContact);
+            formatNameView(mAddress, nameContact, isUnread);
         } else {
-            formatNameView(mAddress, mName);
+            formatNameView(mAddress, mName, isUnread);
         }
         updateAvatarView();
 
@@ -341,7 +342,7 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
         mErrorIndicator.setVisibility(isError ? View.VISIBLE : View.GONE);
 
         mDateView.setText(dateStr);
-        if (mIsUnread) {
+        if (isUnread) {
             SpannableStringBuilder buf = new SpannableStringBuilder(bodyStr);
             buf.setSpan(STYLE_BOLD, 0, buf.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
             mBodyView.setText(buf);
@@ -350,7 +351,7 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
         }
     }
 
-    public void formatNameView(String address, String name) {
+    public void formatNameView(String address, String name, boolean isUnread) {
         SpannableStringBuilder buf = null;
         if (TextUtils.isEmpty(name)) {
             if (TextUtils.isEmpty(address)) {
@@ -362,7 +363,7 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
         } else {
             buf = new SpannableStringBuilder(name);
         }
-        if (mIsUnread) {
+        if (isUnread) {
             buf.setSpan(STYLE_BOLD, 0, buf.length(),
                     Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
         }

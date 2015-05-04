@@ -118,7 +118,7 @@ public class Conversation {
     private boolean mMarkAsReadBlocked;
     private boolean mMarkAsReadWaiting;
     private boolean mHasMmsForward = false; // True if has forward mms
-    private String mForwardRecipientNumber; // The recipient that the forwarded Mms received from
+    private String[] mForwardRecipientNumber; // The recipient that the forwarded Mms received from
     private AsyncTask mMarkAsUnreadTask;
     private boolean mIsGroupChat;
     private GroupChatModel mGroupChat;
@@ -1090,8 +1090,6 @@ public class Conversation {
 
             handler.setDeleteToken(token);
             handler.startDelete(token, new Long(-1), Threads.CONTENT_URI, selection, null);
-            handler.startDelete(token, new Long(-1), SuntekMessageData.SUNTEK_MESSAGE_CONTENT_URI,
-                    null, null);
         }
     }
 
@@ -1790,11 +1788,11 @@ public class Conversation {
         mHasMmsForward = value;
     }
 
-    public String getForwardRecipientNumber() {
+    public String[] getForwardRecipientNumber() {
         return mForwardRecipientNumber;
     }
 
-    public void setForwardRecipientNumber(String forwardRecipientNumber) {
+    public void setForwardRecipientNumber(String[] forwardRecipientNumber) {
         mForwardRecipientNumber = forwardRecipientNumber;
     }
 

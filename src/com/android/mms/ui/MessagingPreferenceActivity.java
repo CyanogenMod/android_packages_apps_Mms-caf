@@ -17,6 +17,7 @@
 
 package com.android.mms.ui;
 
+import android.R.drawable;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -24,13 +25,18 @@ import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ActivityNotFoundException;
 import android.app.DialogFragment;
+import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -55,6 +61,7 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.RingtonePreference;
+import android.provider.MediaStore;
 import android.provider.SearchRecentSuggestions;
 import android.provider.Settings;
 import android.provider.Telephony;
@@ -62,18 +69,27 @@ import android.telephony.SmsManager;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.SimpleAdapter;
+import android.widget.SimpleAdapter.ViewBinder;
 import android.widget.Toast;
 import android.util.Log;
+import android.os.SystemProperties;
 
 import com.android.internal.telephony.IccCardConstants;
 import com.android.internal.telephony.TelephonyIntents;
 import com.android.internal.telephony.PhoneConstants;
-
 import com.android.internal.telephony.util.BlacklistUtils;
 import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
@@ -86,10 +102,13 @@ import com.android.mms.QTIBackupSMS;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 
 /**
@@ -123,6 +142,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             "pref_key_sms_omacp_configuration";
     public static final String CONFIGURATION_MESSAGE    = "pref_key_configuration_message";
 
+    public static final String CHAT_WALLPAPER_SETTING   = "pref_key_chat_wallpaper";
 
     // Expiry of MMS
     private final static String EXPIRY_ONE_WEEK = "604800"; // 7 * 24 * 60 * 60
@@ -133,9 +153,18 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     public static final String QM_LOCKSCREEN_ENABLED     = "pref_key_qm_lockscreen";
     public static final String QM_CLOSE_ALL_ENABLED      = "pref_key_close_all";
     public static final String QM_DARK_THEME_ENABLED     = "pref_dark_theme";
-
+    public static final String SHOW_EMAIL_ADDRESS        = "pref_key_show_email_address";
     // Blacklist
     public static final String BLACKLIST                 = "pref_blacklist";
+    //Chat wallpaper
+    public static final String CHAT_WALLPAPER            = "chat_wallpaper";
+
+    private static final int  PICK_FROM_CAMERA        = 0;
+    private static final int  PICK_FROM_GALLERY       = 1;
+
+    public static final String CELL_BROADCAST            = "pref_key_cell_broadcast";
+    //Fontsize
+    public static final String FONT_SIZE_SETTING         = "pref_key_message_font_size";
 
     // Menu entries
     private static final int MENU_RESTORE_DEFAULTS    = 1;
@@ -154,6 +183,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     public static final String SEND_DELAY_DURATION = "pref_key_send_delay";
 
     private ListPreference mMessageSendDelayPref;
+    private Preference mChatWallpaperPref;
     private Preference mSmsLimitPref;
     private Preference mSmsDeliveryReportPref;
     private Preference mSmsDeliveryReportPrefSub1;
@@ -166,11 +196,14 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private Preference mManageSim1Pref;
     private Preference mManageSim2Pref;
     private Preference mManageSdcardSMSPref;
+    private Preference mCBsettingPref;
     private Preference mClearHistoryPref;
     private Preference mConfigurationmessage;
+    private Preference mMmsSizeLimit;
     private CheckBoxPreference mVibratePref;
     private CheckBoxPreference mEnableNotificationsPref;
     private CheckBoxPreference mMmsAutoRetrievialPref;
+    private ListPreference mFontSizePref;
     private ListPreference mMmsCreationModePref;
     private ListPreference mMmsExpiryPref;
     private ListPreference mMmsExpiryCard1Pref;
@@ -185,6 +218,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private Recycler mSmsRecycler;
     private Recycler mMmsRecycler;
     private Preference mSmsTemplate;
+    private CheckBoxPreference mShowEmailPref;
     private CheckBoxPreference mSmsSignaturePref;
     private EditTextPreference mSmsSignatureEditPref;
     private ArrayList<Preference> mSmscPrefList = new ArrayList<Preference>();
@@ -206,6 +240,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     // ConfigurationClient
     private static final String ACTION_CONFIGURE_MESSAGE =
             "org.codeaurora.CONFIGURE_MESSAGE";
+    public static final String MESSAGE_FONT_SIZE = "message_font_size";
 
     public static final String MMS_CREATION_MODE = "pref_key_creation_mode";
     public static final int CREATION_MODE_RESTRICTED = 1;
@@ -223,9 +258,6 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                 }
             } else if (Intent.ACTION_AIRPLANE_MODE_CHANGED.equals(action)) {
                 updateSMSCPref();
-                if (smsCategory != null) {
-                    updateSIMSMSPref();
-                }
             }
         }
     };
@@ -309,7 +341,11 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     }
 
     private void loadPrefs() {
-        addPreferencesFromResource(R.xml.preferences);
+        if (getResources().getBoolean(R.bool.def_custom_preferences_settings)) {
+            addPreferencesFromResource(R.xml.custom_preferences);
+        } else {
+            addPreferencesFromResource(R.xml.preferences);
+        }
 
         mSmsDisabledPref = findPreference("pref_key_sms_disabled");
         mSmsEnabledPref = findPreference("pref_key_sms_enabled");
@@ -358,7 +394,9 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mSmsValidityCard2Pref
             = (ListPreference) findPreference("pref_key_sms_validity_period_slot2");
         // ConfigurationClient
-        if((MmsConfig.isOMACPEnabled())){
+        if((MmsConfig.isOMACPEnabled())
+                || SystemProperties.getBoolean("persist.mmssupportcp.enable",
+                        false)) {
             mConfigurationmessage = findPreference(CONFIGURATION_MESSAGE);
         }else {
             PreferenceScreen prefRoot = (PreferenceScreen) findPreference("pref_key_root");
@@ -372,10 +410,24 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mEnableQmLockscreenPref = (CheckBoxPreference) findPreference(QM_LOCKSCREEN_ENABLED);
         mEnableQmCloseAllPref = (CheckBoxPreference) findPreference(QM_CLOSE_ALL_ENABLED);
         mEnableQmDarkThemePref = (CheckBoxPreference) findPreference(QM_DARK_THEME_ENABLED);
+        if(getResources().getBoolean(R.bool.def_custom_preferences_settings)) {
+            mShowEmailPref = (CheckBoxPreference) findPreference(SHOW_EMAIL_ADDRESS);
+        }
 
         // SMS Sending Delay
         mMessageSendDelayPref = (ListPreference) findPreference(SEND_DELAY_DURATION);
         mMessageSendDelayPref.setSummary(mMessageSendDelayPref.getEntry());
+
+        if (getResources().getBoolean(R.bool.def_custom_preferences_settings)) {
+            mCBsettingPref = findPreference(CELL_BROADCAST);
+            mMmsSizeLimit = (Preference) findPreference("pref_key_mms_size_limit");
+            setMmsSizeSummary();
+            mFontSizePref = (ListPreference) findPreference(FONT_SIZE_SETTING);
+        }
+        //Chat wallpaper
+        if (getResources().getBoolean(R.bool.def_custom_preferences_settings)) {
+            mChatWallpaperPref = findPreference(CHAT_WALLPAPER_SETTING);
+        }
 
         // Blacklist screen - Needed for setting summary
         mBlacklist = (PreferenceScreen) findPreference(BLACKLIST);
@@ -515,6 +567,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         setRingtoneSummary(soundValue);
 
         mMessageSendDelayPref.setOnPreferenceChangeListener(this);
+        setSmsPreferFontSummary();
     }
 
     private void setMmsRelatedPref() {
@@ -642,19 +695,19 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
     private void updateSIMSMSPref() {
         if (MessageUtils.isMultiSimEnabledMms()) {
-            if (isAirPlaneModeOn() || !MessageUtils.isIccCardActivated(MessageUtils.SUB1)) {
+            if (!MessageUtils.isIccCardActivated(MessageUtils.SUB1)) {
                 mSmsPrefCategory.removePreference(mManageSim1Pref);
             } else {
                 mSmsPrefCategory.addPreference(mManageSim1Pref);
             }
-            if (isAirPlaneModeOn() || !MessageUtils.isIccCardActivated(MessageUtils.SUB2)) {
+            if (!MessageUtils.isIccCardActivated(MessageUtils.SUB2)) {
                 mSmsPrefCategory.removePreference(mManageSim2Pref);
             } else {
                 mSmsPrefCategory.addPreference(mManageSim2Pref);
             }
             mSmsPrefCategory.removePreference(mManageSimPref);
         } else {
-            if (isAirPlaneModeOn() || !MessageUtils.hasIccCard()) {
+            if (!MessageUtils.hasIccCard()) {
                 mSmsPrefCategory.removePreference(mManageSimPref);
             } else {
                 mSmsPrefCategory.addPreference(mManageSimPref);
@@ -970,6 +1023,23 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             } catch (ActivityNotFoundException e) {
                 Log.e(TAG,"Activity not found : "+e);
             }
+        } else if (getResources().getBoolean(
+                R.bool.def_custom_preferences_settings)
+                && preference == mShowEmailPref) {
+            enableEmailAddress(mShowEmailPref.isChecked(), this);
+        } else if (getResources().getBoolean(
+                R.bool.def_custom_preferences_settings)
+                && preference == mCBsettingPref) {
+            try {
+                startActivity(MessageUtils.getCellBroadcastIntent());
+            } catch (ActivityNotFoundException e) {
+                Log.e(TAG,
+                        "ActivityNotFoundException for CellBroadcastListActivity");
+            }
+        } else if (getResources().getBoolean(
+                R.bool.def_custom_preferences_settings)
+                && preference == mChatWallpaperPref) {
+            setChatWallpaper();
         }
 
         return super.onPreferenceTreeClick(preferenceScreen, preference);
@@ -1425,6 +1495,14 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         return qmDarkThemeEnabled;
     }
 
+    public static void enableEmailAddress(boolean enabled, Context context) {
+        SharedPreferences.Editor editor =
+                PreferenceManager.getDefaultSharedPreferences(context).edit();
+        editor.putBoolean(MessagingPreferenceActivity.SHOW_EMAIL_ADDRESS,
+                enabled);
+        editor.apply();
+    }
+
     private void registerListeners() {
         mRingtonePref.setOnPreferenceChangeListener(this);
         final IntentFilter intentFilter =
@@ -1657,8 +1735,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     //  2. the feature is enabled in the mms settings page
     //  3. the SIM knows its own phone number
     public static boolean getIsGroupMmsEnabled(Context context) {
-        if (RcsApiManager.isRcsServiceInstalled()
-                && RcsApiManager.isRcsOnline()) {
+        if (RcsApiManager.getSupportApi().isOnline()) {
             return false;
         }
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -1667,5 +1744,218 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         return MmsConfig.getGroupMmsEnabled() &&
                 groupMmsPrefOn &&
                 !TextUtils.isEmpty(MessageUtils.getLocalNumber());
+    }
+
+    private void setChatWallpaper() {
+        final String[] mWallpaperText = getResources().getStringArray(
+                R.array.chat_wallpaper_chooser_options);
+        Drawable cameraAppIcon = null;
+        Drawable galleryAppIcon = null;
+        final PackageManager packageManager = getPackageManager();
+        try {
+            cameraAppIcon = packageManager.getApplicationIcon(getResources()
+                    .getString(
+                            R.string.camera_packagename));
+            galleryAppIcon = packageManager.getApplicationIcon(getResources()
+                    .getString(
+                            R.string.gallery_packagename));
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        final Object[] mWallpaperImage = new Drawable[] {cameraAppIcon,
+            galleryAppIcon};
+
+        final String imageField = "imageField";
+        final String textField = "textField";
+        AlertDialog.Builder wallpaperDialogBuilder = new AlertDialog.Builder(
+                this);
+
+        ArrayList<HashMap<String, Object>> wallpaper = new ArrayList<HashMap<String, Object>>();
+        for (int i = 0; i < 2; i++) {
+            HashMap<String, Object> hashMap = new HashMap<String, Object>();
+            hashMap.put(imageField, mWallpaperImage[i]);
+            hashMap.put(textField, mWallpaperText[i]);
+            wallpaper.add(hashMap);
+        }
+
+        SimpleAdapter wallpaperDialogAdapter = new SimpleAdapter(
+                MessagingPreferenceActivity.this, wallpaper,
+                R.layout.wallpaper_chooser_dialog_item, new String[] {
+                        imageField, textField
+                }, new int[] {
+                        R.id.wallpaper_item_imageview,
+                        R.id.wallpaper_item_textview
+                });
+
+        wallpaperDialogAdapter.setViewBinder(new ViewBinder() {
+
+            public boolean setViewValue(View view, Object data,
+                    String textRepresentation) {
+                if ((view instanceof ImageView) && (data instanceof Drawable))
+                {
+                    ImageView imageView = (ImageView) view;
+                    Drawable drawable = (Drawable) data;
+                    imageView.setImageDrawable(drawable);
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        LayoutInflater mInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View layout = mInflater.inflate(R.layout.wallpaper_chooser_dialog,
+                (ViewGroup) findViewById(R.id.forwallpaperchooser));
+
+        GridView mGridView = (GridView) layout
+                .findViewById(R.id.wallpaperchooserdialog);
+        mGridView.setAdapter(wallpaperDialogAdapter);
+
+        final AlertDialog wallpaperChooser = wallpaperDialogBuilder
+                .setTitle(
+                        getResources().getString(
+                                R.string.dialog_wallpaper_title))
+                .setView(layout).create();
+        wallpaperChooser.show();
+        mGridView.setOnItemClickListener(new OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position,
+                    long id) {
+                switch (position) {
+                    case PICK_FROM_CAMERA:
+                        chooseFromCamera();
+                        wallpaperChooser.dismiss();
+                        break;
+                    case PICK_FROM_GALLERY:
+                        chooseFromGallery();
+                        wallpaperChooser.dismiss();
+                        break;
+                }
+
+            }
+        });
+    }
+
+    private void chooseFromGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(
+                Intent.createChooser(intent, getString(R.string.intent_chooser_dialog_title)),
+                PICK_FROM_GALLERY);
+    }
+
+    private void chooseFromCamera() {
+        final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File file = new File(Environment.getExternalStorageDirectory()
+                + "/DCIM/", "image" + new Date().getTime() + ".png");
+        Uri imgUri = Uri.fromFile(file);
+        if(imgUri != null) {
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, imgUri);
+            startActivityForResult(intent, PICK_FROM_CAMERA);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case PICK_FROM_CAMERA:
+                    if (data.getExtras() != null) {
+                        Bitmap photo = data.getExtras().getParcelable("data");
+                        String picturePath = getAbsolutePath(getImageUri(this,
+                                photo));
+                        PreferenceManager.getDefaultSharedPreferences(this)
+                                .edit()
+                                .putString(CHAT_WALLPAPER, picturePath)
+                                .commit();
+                    }
+                    break;
+                case PICK_FROM_GALLERY:
+                    if (data != null) {
+                        Uri selectedImage = data.getData();
+                        String picturePath = getAbsolutePath(selectedImage);
+                        PreferenceManager.getDefaultSharedPreferences(this)
+                                .edit()
+                                .putString(CHAT_WALLPAPER, picturePath)
+                                .commit();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+
+        String filepath = Environment.getExternalStorageDirectory().getPath();
+        File file = new File(filepath, "temp");
+
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        String fileName = null;
+        try {
+            fileName = file.getAbsolutePath() + "/"
+                    + System.currentTimeMillis() + ".png";
+
+            FileOutputStream ostream = new FileOutputStream(fileName);
+            inImage.compress(Bitmap.CompressFormat.PNG, 100, ostream);
+            ostream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return Uri.parse(fileName);
+    }
+
+    public String getAbsolutePath(Uri uri) {
+        String[] filePathColumn = {
+                MediaStore.Images.Media.DATA
+        };
+        Cursor cursor = null;
+        cursor = getContentResolver().query(uri,
+                filePathColumn, null, null, null);
+        try {
+            if (cursor != null && cursor.moveToFirst()) {
+                int columnIndex = cursor
+                        .getColumnIndexOrThrow(filePathColumn[0]);
+                String picturePath = cursor.getString(columnIndex);
+                return picturePath;
+            }
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return null;
+    }
+    private void setMmsSizeSummary() {
+        mMmsSizeLimit.setSummary(Integer.toString(MmsConfig
+                .getMaxMessageSize() / MmsConfig.KB_IN_BYTES)
+                + MmsConfig.KILO_BYTE);
+    }
+
+    private void setSmsPreferFontSummary() {
+        if (getResources().getBoolean(R.bool.def_custom_preferences_settings)
+                && mFontSizePref != null) {
+            mFontSizePref
+                    .setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                        public boolean onPreferenceChange(
+                                Preference preference, Object newValue) {
+                            final String summary = newValue.toString();
+                            int index = mFontSizePref.findIndexOfValue(summary);
+                            mFontSizePref.setSummary(mFontSizePref.getEntries()[index]);
+                            mFontSizePref.setValue(summary);
+                            return true;
+                        }
+                    });
+            mFontSizePref.setSummary(mFontSizePref.getEntry());
+        }
     }
 }

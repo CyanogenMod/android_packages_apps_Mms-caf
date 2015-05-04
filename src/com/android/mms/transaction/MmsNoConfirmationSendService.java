@@ -56,6 +56,7 @@ import com.android.mms.transaction.MessageSender;
 import com.android.mms.ui.ComposeMessageActivity;
 import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.MessagingPreferenceActivity;
+import com.android.mms.ui.NoConfirmationSendService;
 import com.android.mms.ui.UriImage;
 import com.google.android.mms.InvalidHeaderValueException;
 import com.google.android.mms.MmsException;
@@ -66,30 +67,16 @@ import com.google.android.mms.pdu.PduPart;
 import com.google.android.mms.pdu.PduPersister;
 import com.google.android.mms.pdu.SendReq;
 
-public class MmsNoConfirmationSendService extends Service {
+public class MmsNoConfirmationSendService extends NoConfirmationSendService {
     private static final String TAG =
             MmsNoConfirmationSendService.class.getSimpleName();
 
     @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-    }
-
-    @Override
-    public int onStartCommand(Intent serviceIntent, int flags, int id) {
-        if (serviceIntent != null) {
-            String uriString = serviceIntent
-                    .getStringExtra(MmsConfig.EXTRA_URI);
-            Log.d(TAG, "Uri To Attach = " + uriString);
-            Uri uri = Uri.parse(uriString);
-            sendMms(uri, this.getApplicationContext());
+    protected void onHandleIntent(Intent intent) {
+        if(intent != null) {
+            String uriString = intent.getStringExtra(MmsConfig.EXTRA_URI);
+            sendMms(Uri.parse(uriString), this.getApplicationContext());
         }
-        return Service.START_STICKY;
     }
 
     @Override
@@ -271,7 +258,7 @@ public class MmsNoConfirmationSendService extends Service {
     }
 
     public boolean isAirplaneMode() {
-        return android.provider.Settings.System.getInt(getContentResolver(),
-                android.provider.Settings.System.AIRPLANE_MODE_ON, 0) > 0;
+        return android.provider.Settings.Global.getInt(getContentResolver(),
+                android.provider.Settings.Global.AIRPLANE_MODE_ON, 0) > 0;
     }
 }
