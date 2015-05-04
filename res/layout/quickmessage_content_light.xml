@@ -140,7 +140,7 @@
             android:textColorHint="?android:attr/textColorTertiary"
             android:textCursorDrawable = "@null"
             android:maxLines="3"
-            android:imeOptions="actionSend|flagNoEnterAction"
+            android:imeOptions="actionDone|flagNoEnterAction"
             android:maxLength="2000" />
 
         <LinearLayout
