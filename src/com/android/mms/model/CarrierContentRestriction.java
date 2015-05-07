@@ -48,6 +48,9 @@ public class CarrierContentRestriction implements ContentRestriction {
         }
 
         sSupportedAudioTypes = ContentType.getAudioTypes();
+        if (!sSupportedAudioTypes.contains(AUDIO_WAVE_2CH_LPCM)) {
+            sSupportedAudioTypes.add(AUDIO_WAVE_2CH_LPCM);
+        }
         sSupportedVideoTypes = ContentType.getVideoTypes();
     }
 
