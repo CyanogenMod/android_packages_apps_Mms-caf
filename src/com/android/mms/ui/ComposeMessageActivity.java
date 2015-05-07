@@ -1290,6 +1290,39 @@ public class ComposeMessageActivity extends Activity
     }
 
     private final TextWatcher mRecipientsWatcher = new TextWatcher() {
+        private Editable mRecipientAfterTextChanged;
+
+        private Runnable mGroupMmsRunnable = new Runnable() {
+            @Override
+            public void run() {
+                List<String> numbers = mRecipientsEditor.getNumbers();
+                mWorkingMessage.setWorkingRecipients(numbers);
+                mWorkingMessage.setHasEmail(mRecipientsEditor.containsEmail(), true);
+
+                boolean multiRecipients = (numbers != null) && (numbers.size() > 1);
+                mWorkingMessage.setHasMultipleRecipients(multiRecipients, true);
+
+                checkForTooManyRecipients();
+                // If pick recipients from Contacts,
+                // then only update title once when process finished
+                if (mIsProcessPickedRecipients) {
+                     return;
+                }
+
+                if (mRecipientsPickList != null) {
+                    // Update UI with mRecipientsPickList, which is picked from
+                    // People.
+                    updateTitle(mRecipientsPickList);
+                    mRecipientsPickList = null;
+                } else {
+                    updateTitleForRecipientsChange(mRecipientAfterTextChanged);
+                }
+
+                // If we have gone to zero recipients, disable send button.
+                updateSendButtonState();
+            };
+        };
+
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }
@@ -1322,31 +1355,9 @@ public class ComposeMessageActivity extends Activity
                      "RecipientsWatcher: afterTextChanged called with invisible mRecipientsEditor");
                 return;
             }
-
-            mWorkingMessage.setWorkingRecipients(mRecipientsEditor.getNumbers());
-            mWorkingMessage.setHasEmail(mRecipientsEditor.containsEmail(), true);
-
-            if (mRecipientsEditor.getNumbers().size() > 0) {
-                mRcsThumbnailSendButton.setEnabled(true);
-            }
-            checkForTooManyRecipients();
-            // If pick recipients from Contacts,
-            // then only update title once when process finished
-            if (mIsProcessPickedRecipients) {
-                 return;
-            }
-
-            if (mRecipientsPickList != null) {
-                // Update UI with mRecipientsPickList, which is picked from
-                // People.
-                updateTitle(mRecipientsPickList);
-                mRecipientsPickList = null;
-            } else {
-                updateTitleForRecipientsChange(s);
-            }
-
-            // If we have gone to zero recipients, disable send button.
-            updateSendButtonState();
+            mRecipientAfterTextChanged = s;
+            mHandler.removeCallbacks(mGroupMmsRunnable);
+            mHandler.postDelayed(mGroupMmsRunnable,60);
         }
     };
 
