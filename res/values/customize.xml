@@ -89,4 +89,6 @@
 
     <string name="def_message_font_size_value">18</string>
 
+    <!-- enable to send a blank sms-->
+    <bool name="enable_send_blank_message">false</bool>
 </resources>

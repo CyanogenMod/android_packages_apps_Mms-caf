@@ -32,6 +32,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.android.mms.LogTag;
+import com.android.mms.R;
 import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.MessagingPreferenceActivity;
 import com.google.android.mms.MmsException;
@@ -85,7 +86,10 @@ public class SmsMessageSender implements MessageSender {
     private boolean queueMessage(long token) throws MmsException {
         if ((mMessageText == null) || (mNumberOfDests == 0)) {
             // Don't try to send an empty message.
-            throw new MmsException("Null message body or dest.");
+            if (!(mMessageText == null &&
+                    mContext.getResources().getBoolean(R.bool.enable_send_blank_message))) {
+                throw new MmsException("Null message body or dest.");
+            }
         }
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
