@@ -476,7 +476,7 @@
 
          <receiver
             android:name=".quickmessage.QmMarkRead"
-            android:exported="true" />
+            android:exported="false" />
 
          <receiver android:name=".quickmessage.ClearAllReceiver" />
 
