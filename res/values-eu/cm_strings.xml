@@ -109,4 +109,5 @@
   <string name="pref_title_enable_emoticons">Emotikonoentzako euskarria</string>
   <string name="pref_summary_enable_emoticons">Testu emotikonoak beraien baliokide grafikoekin ordeztu</string>
   <string name="cannot_play">Aurkezpena ezin da bistaratu.</string>
+  <string name="status_deleted_unread">Irakurri gabe ezabatuta</string>
 </resources>
