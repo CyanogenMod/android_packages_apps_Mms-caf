@@ -16,6 +16,14 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <plurals name="template_confirm_delete_conversation">
+    <item quantity="one">Txantiloi <xliff:g id="number">%1$s</xliff:g> ezabatuko da.</item>
+    <item quantity="other"><xliff:g id="number">%1$s</xliff:g> txantiloi ezabatuko dira.</item>
+  </plurals>
+  <plurals name="remaining_delay_time">
+    <item quantity="one">Segundo %1$dean bidaltzen, sakatu uzteko.</item>
+    <item quantity="other">%1$d segundotan bidaltzen, sakatu uzteko.</item>
+  </plurals>
   <plurals name="confirm_mark_unread_conversation">
     <item quantity="one">Elkarrizketa <xliff:g id="number">%1$s</xliff:g> ez irakurria bezala markatuko da.</item>
     <item quantity="other"><xliff:g id="number">%1$s</xliff:g> elkarrizketa ez irakurriak bezala markatuko dira.</item>
