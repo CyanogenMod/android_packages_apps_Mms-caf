@@ -43,10 +43,23 @@
   <string name="menu_all_as_unread">Denak ez irakurriak bezala markatu</string>
   <string name="confirm_mark_unread_dialog_title">Irakurri gabe bezala markatu?</string>
   <string name="confirm_mark_unread_all_conversations">Elkarrizketa guztiak ez irakurriak bezala markatuko dira.</string>
+  <string name="loading">Kargatzen\u2026</string>
   <string name="select_recipients">Hartzaileak hautatu</string>
   <string name="no_recipients">Ez da kontakturik aurkitu</string>
   <string name="no_recipients_mobile_only">Ez dago bat datorren kontakturik. Saia saitez \u00ABTelefono zenbakiak bakarrik\u00BB iragazki barik</string>
   <string name="menu_done">Egina</string>
   <string name="menu_mobile">Telefono zenbakiak bakarrik</string>
+  <string name="status_deleted_unread">Irakurri gabe ezabatuta</string>
   <string name="cannot_play">Aurkezpena ezin da bistaratu.</string>
+  <string name="confirm_delete_selected_messages">Aukeratutako mezuak ezabatuko dira.</string>
+  <string name="menu_delete_all_entries">Ezabatu guztiak</string>
+  <string name="menu_delete_sms">Ezabatu SMSa</string>
+  <string name="menu_delete_mms">Ezabatu MMSa</string>
+  <string name="delete_sms_title">Ezabatu dagoen babeskopia</string>
+  <string name="pick_sms_backup_title">Aukeratu SMS babeskopia</string>
+  <string name="delete_sms_toast">Babeskopia ezabatu da.</string>
+  <string name="perform_backup_title">Esportatzen</string>
+  <string name="backup_file_name_message">Mezuak hona esportatu dira: \'%1$s\'</string>
+  <string name="no_backups_found">Ez da babeskopiarik aurkitu</string>
+  <string name="remove_subject">Kendu gaia</string>
 </resources>

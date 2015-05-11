@@ -254,4 +254,5 @@
   <string name="pref_summary_mms_use_sent_timestamp">Afficher la date d\'envoi au lieu de la date de réception</string>
   <string name="pref_title_mms_auto_enable_data">Activation auto des données mobiles</string>
   <string name="pref_summary_mms_auto_enable_data">Activer automatiquement les données mobiles pour les messages MMS</string>
+  <string name="adding_selected_recipients_dialog_text">Ajout de contacts\u2026</string>
 </resources>
