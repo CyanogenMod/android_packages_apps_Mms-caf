@@ -32,16 +32,18 @@ import com.android.mms.data.RecipientsListLoader;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 public class SelectRecipientsListAdapter extends ArrayAdapter<RecipientsListLoader.Result>
         implements SectionIndexer, AbsListView.RecyclerListener {
     private final LayoutInflater mInflater;
+    private final HashSet<PhoneNumber> mSelectedPhoneNumbers;
     private String[] mSections;
     private int[] mPositions;
 
     public SelectRecipientsListAdapter(Context context,
-            List<RecipientsListLoader.Result> items) {
+            List<RecipientsListLoader.Result> items, HashSet<PhoneNumber> selectedPhoneNumbers) {
         super(context, R.layout.select_recipients_list_item, items);
         mInflater = LayoutInflater.from(context);
 
@@ -87,6 +89,8 @@ public class SelectRecipientsListAdapter extends ArrayAdapter<RecipientsListLoad
             mSections[i] = sections.get(i);
             mPositions[i] = positions.get(i);
         }
+
+        mSelectedPhoneNumbers = selectedPhoneNumbers;
     }
 
     @Override
@@ -118,6 +122,9 @@ public class SelectRecipientsListAdapter extends ArrayAdapter<RecipientsListLoad
 
     private void bindView(int position, SelectRecipientsListItem view) {
         final RecipientsListLoader.Result item = getItem(position);
+        if (mSelectedPhoneNumbers.contains(item.phoneNumber)) {
+            item.phoneNumber.setChecked(true);
+        }
 
         if (item.group == null) {
             PhoneNumber phoneNumber = item.phoneNumber;

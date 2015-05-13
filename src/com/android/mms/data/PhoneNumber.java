@@ -90,6 +90,13 @@ public class PhoneNumber implements Comparable<PhoneNumber> {
     private String mSectionIndex;
     private String mLookupKey;
 
+    // for non-contacts
+    public PhoneNumber(String number, boolean checked) {
+        mNumber = number;
+        mName = number;
+        mIsChecked = checked;
+    }
+
     public PhoneNumber(Cursor c) {
         mId = c.getLong(COLUMN_ID);
         mNumber = c.getString(COLUMN_NUMBER);
@@ -183,12 +190,18 @@ public class PhoneNumber implements Comparable<PhoneNumber> {
     public boolean equals(Object obj) {
         if (obj instanceof PhoneNumber) {
             PhoneNumber other = (PhoneNumber) obj;
-            return mContactId == other.mContactId
-                && PhoneNumberUtils.compare(mNumber, other.mNumber);
+            return PhoneNumberUtils.compare(mNumber, other.mNumber);
         } else if (obj instanceof String) {
             return PhoneNumberUtils.compare(mNumber, (String) obj);
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + mNumber.hashCode();
+        return result;
     }
 
     @Override
