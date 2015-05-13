@@ -80,6 +80,7 @@ public class PhoneNumber implements Comparable<PhoneNumber> {
 
     private long mId;
     private String mNumber;
+    private String mNormalizedNumber;
     private int mType;
     private String mLabel;
     private String mName;
@@ -90,9 +91,18 @@ public class PhoneNumber implements Comparable<PhoneNumber> {
     private String mSectionIndex;
     private String mLookupKey;
 
+    // for non-contacts
+    public PhoneNumber(String number, boolean checked) {
+        mNumber = number;
+        mNormalizedNumber = getNormalizedNumber(number);
+        mName = number;
+        mIsChecked = checked;
+    }
+
     public PhoneNumber(Cursor c) {
         mId = c.getLong(COLUMN_ID);
         mNumber = c.getString(COLUMN_NUMBER);
+        mNormalizedNumber = getNormalizedNumber(mNumber);
         mType = c.getInt(COLUMN_TYPE);
         mLabel = c.getString(COLUMN_LABEL);
         mName = c.getString(COLUMN_DISPLAY_NAME);
@@ -104,6 +114,7 @@ public class PhoneNumber implements Comparable<PhoneNumber> {
     private PhoneNumber(Context context, Cursor c, String sectionIndex) {
         mId = c.getLong(COLUMN_ID);
         mNumber = c.getString(COLUMN_NUMBER);
+        mNormalizedNumber = getNormalizedNumber(mNumber);
         mType = c.getInt(COLUMN_TYPE);
         mLabel = c.getString(COLUMN_LABEL);
         mName = c.getString(COLUMN_DISPLAY_NAME);
@@ -176,6 +187,10 @@ public class PhoneNumber implements Comparable<PhoneNumber> {
         mIsChecked = checked;
     }
 
+    private String getNormalizedNumber(String number) {
+        return PhoneNumberUtils.formatNumber(number);
+    }
+
     /**
      * The primary key of a recipient is its number
      */
@@ -183,12 +198,21 @@ public class PhoneNumber implements Comparable<PhoneNumber> {
     public boolean equals(Object obj) {
         if (obj instanceof PhoneNumber) {
             PhoneNumber other = (PhoneNumber) obj;
-            return mContactId == other.mContactId
-                && PhoneNumberUtils.compare(mNumber, other.mNumber);
+            // loose comparison based on 'dialable' digits within the numbers
+            return PhoneNumberUtils.compare(mNumber, other.mNumber);
         } else if (obj instanceof String) {
             return PhoneNumberUtils.compare(mNumber, (String) obj);
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        // since equality is based on 'fuzzy match', we are using the
+        // normalized number to generate the hashcode
+        result = 31 * result + mNormalizedNumber.hashCode();
+        return result;
     }
 
     @Override
