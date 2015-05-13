@@ -243,7 +243,7 @@ public class SelectRecipientsList extends ListActivity implements
             if (item.group != null) {
                 checkGroup(item.group, !item.group.isChecked());
             } else {
-                checkPhoneNumber(item.phoneNumber, !item.phoneNumber.isChecked());
+                selectPhoneNumber(item.phoneNumber, !item.phoneNumber.isChecked());
                 updateGroupCheckStateForNumber(item.phoneNumber, null);
             }
         }
@@ -261,7 +261,7 @@ public class SelectRecipientsList extends ListActivity implements
         mVCardNumber.setChecked(true);
     }
 
-    private void checkPhoneNumber(PhoneNumber phoneNumber, boolean check) {
+    private void selectPhoneNumber(PhoneNumber phoneNumber, boolean check) {
         phoneNumber.setChecked(check);
         if (check) {
             mCheckedPhoneNumbers.add(phoneNumber);
@@ -314,7 +314,7 @@ public class SelectRecipientsList extends ListActivity implements
         if (phoneNumbers != null) {
             for (PhoneNumber phoneNumber : phoneNumbers) {
                 if (phoneNumber.isDefault()) {
-                    checkPhoneNumber(phoneNumber, check);
+                    selectPhoneNumber(phoneNumber, check);
                     updateGroupCheckStateForNumber(phoneNumber, group);
                 }
             }
@@ -349,23 +349,24 @@ public class SelectRecipientsList extends ListActivity implements
         mProgressSpinner.setVisibility(View.GONE);
 
         // Create and set the list adapter
-        mListAdapter = new SelectRecipientsListAdapter(this, data);
+        mListAdapter = new SelectRecipientsListAdapter(this, data, mCheckedPhoneNumbers);
 
         if (getIntent() != null) {
             String[] initialRecipients = getIntent().getStringArrayExtra(EXTRA_RECIPIENTS);
             if (initialRecipients != null && mMode == MODE_DEFAULT) {
                 for (String recipient : initialRecipients) {
-                    for (RecipientsListLoader.Result result : data) {
-                        if (result.phoneNumber != null && result.phoneNumber.equals(recipient)) {
-                            checkPhoneNumber(result.phoneNumber, true);
-                            updateGroupCheckStateForNumber(result.phoneNumber, null);
-                            break;
-                        }
-                    }
+                    addPhoneNumberToSelectionList(data, recipient);
                 }
                 invalidateOptionsMenu();
             }
             setIntent(null);
+        } else {
+            // loader was re-triggered, retain previous selection list
+            HashSet<PhoneNumber> selectedNumbers = mCheckedPhoneNumbers;
+            mCheckedPhoneNumbers = new HashSet<PhoneNumber>();
+            for (PhoneNumber number : selectedNumbers) {
+                addPhoneNumberToSelectionList(data, number);
+            }
         }
 
         if (mListAdapter == null) {
@@ -376,6 +377,23 @@ public class SelectRecipientsList extends ListActivity implements
         } else {
             setListAdapter(mListAdapter);
             getListView().setRecyclerListener(mListAdapter);
+        }
+    }
+
+    private void addPhoneNumberToSelectionList(ArrayList<RecipientsListLoader.Result> queryResults,
+            String number) {
+        addPhoneNumberToSelectionList(queryResults, new PhoneNumber(number, true /*add to list*/));
+    }
+
+    private void addPhoneNumberToSelectionList(ArrayList<RecipientsListLoader.Result> queryResults,
+            PhoneNumber numberToAdd) {
+        // the PhoneNumber is added to the selection list regardless of it being a contact or not
+        selectPhoneNumber(numberToAdd, true);
+        for (RecipientsListLoader.Result result : queryResults) {
+            if (result.phoneNumber != null && result.phoneNumber.equals(numberToAdd)) {
+                updateGroupCheckStateForNumber(result.phoneNumber, null);
+                break;
+            }
         }
     }
 
