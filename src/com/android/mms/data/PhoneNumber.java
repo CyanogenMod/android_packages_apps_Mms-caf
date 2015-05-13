@@ -89,6 +89,11 @@ public class PhoneNumber implements Comparable<PhoneNumber> {
     private String mSectionIndex;
     private String mLookupKey;
 
+    public PhoneNumber(String stranger){
+        mNumber = stranger;
+        mName =stranger;
+    }
+
     public PhoneNumber(Cursor c) {
         mId = c.getLong(COLUMN_ID);
         mNumber = c.getString(COLUMN_NUMBER);
