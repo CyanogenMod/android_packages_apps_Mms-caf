@@ -355,21 +355,47 @@ public class SelectRecipientsList extends Activity implements
         if (getIntent() != null) {
             String[] initialRecipients = getIntent().getStringArrayExtra(EXTRA_RECIPIENTS);
             if (initialRecipients != null && mMode == MODE_DEFAULT) {
+                boolean found;
                 for (String recipient : initialRecipients) {
+                    found = false;
                     // if statement to check if there are any contacts with phone numbers first
                     if (data.phoneNumbers != null) {
                         for (PhoneNumber number : data.phoneNumbers) {
                             if (number.equals(recipient)) {
+                                found = true;
                                 checkPhoneNumber(number, true);
                                 updateGroupCheckStateForNumber(number, null);
                                 break;
                             }
                         }
                     }
+                    if (!found) {
+                        mCheckedPhoneNumbers.add(new PhoneNumber(recipient, true));
+                    }
                 }
                 invalidateOptionsMenu();
             }
             setIntent(null);
+        } else {
+            HashSet<PhoneNumber> old = mCheckedPhoneNumbers;
+            mCheckedPhoneNumbers = new HashSet<PhoneNumber>();
+            boolean found;
+            for (PhoneNumber checked : old) {
+                found = false;
+                if (data.phoneNumbers != null) {
+                    for (PhoneNumber number : data.phoneNumbers) {
+                        if (number.equals(checked)) {
+                            checkPhoneNumber(number, true);
+                            updateGroupCheckStateForNumber(number, null);
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                if (!found) {
+                    mCheckedPhoneNumbers.add(checked);
+                }
+            }
         }
 
         mContactListAdapter.setNotifyOnChange(false);
