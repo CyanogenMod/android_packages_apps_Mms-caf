@@ -3724,13 +3724,6 @@ public class ComposeMessageActivity extends Activity
             ArrayList<String> numbers = params[0];
 
             ContactList list = ContactList.getByNumbers(numbers, true);
-            ContactList existing = mRecipientsEditor.constructContactsFromInput(true);
-            for (Contact contact : existing) {
-                if (!contact.existsInDatabase()) {
-                    list.add(contact);
-                }
-            }
-
             mRecipientsEditor.populate(list);
             return null;
         }
