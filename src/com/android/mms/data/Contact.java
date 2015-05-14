@@ -20,6 +20,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
+import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Contacts;
@@ -512,7 +513,11 @@ public class Contact {
                 Phone.NORMALIZED_NUMBER,        // 7
                 Phone.PHOTO_ID,                 // 8
                 Phone.LOOKUP_KEY,               // 9
-                Contacts.SEND_TO_VOICEMAIL      // 10
+                Contacts.SEND_TO_VOICEMAIL,     // 10
+                Phone.ACCOUNT_TYPE_AND_DATA_SET, //11
+                ContactsContract.RawContacts.ACCOUNT_TYPE, //12
+                ContactsContract.RawContacts.ACCOUNT_NAME,//13
+
         };
 
         private static final int PHONE_ID_COLUMN = 0;
@@ -526,6 +531,8 @@ public class Contact {
         private static final int CONTACT_PHOTO_ID_COLUMN = 8;
         private static final int CONTACT_LOOKUP_KEY_COLUMN = 9;
         private static final int SEND_TO_VOICEMAIL = 10;
+        private static final int CONTCT_ACCOUNT_TYPE = 12;
+        private static final int CONTCT_ACCOUNT_NAME = 13;
 
         private static final String[] SELF_PROJECTION = new String[] {
                 Phone._ID,                      // 0
@@ -732,6 +739,9 @@ public class Contact {
                 final String whereClause = Phone._ID + " IN (" + idSetBuilder.toString() + ")";
                 cursor = mContext.getContentResolver().query(
                         PHONES_WITH_PRESENCE_URI, CALLER_ID_PROJECTION, whereClause, null, null);
+                String accountAndDataSet =  cursor.getString(11);
+                Log.d("JOEC","AccountAndDataSet: "+ accountAndDataSet);
+
             }
 
             if (cursor == null) {
@@ -750,6 +760,13 @@ public class Contact {
                     // Put the result in the cache.
                     mContactsHash.put(key(entry.mNumber, sStaticKeyBuffer), value);
                     entries.add(entry);
+                   String accountAndDataSet =  cursor.getString(11);
+                    Log.d("JOEC","AccountAndDataSet: "+ accountAndDataSet);
+                    accountAndDataSet = cursor.getString(12);
+                    Log.d("JOEC","AccountAndDataSet: "+ accountAndDataSet);
+                    accountAndDataSet = cursor.getString(13);
+                    Log.d("JOEC","AccountAndDataSet: "+ accountAndDataSet);
+
                 }
             } finally {
                 cursor.close();

@@ -355,7 +355,7 @@ public class SelectRecipientsList extends Activity implements
         if (getIntent() != null) {
             String[] initialRecipients = getIntent().getStringArrayExtra(EXTRA_RECIPIENTS);
             if (initialRecipients != null && mMode == MODE_DEFAULT) {
-                boolean found ;
+                boolean found;
                 for (String recipient : initialRecipients) {
                     found = false;
                     // if statement to check if there are any contacts with phone numbers first
@@ -370,17 +370,17 @@ public class SelectRecipientsList extends Activity implements
                         }
                     }
                     if(!found){
-                        mCheckedPhoneNumbers.add(new PhoneNumber(recipient));
+                        mCheckedPhoneNumbers.add(new PhoneNumber(recipient, true));
                     }
                 }
                 invalidateOptionsMenu();
             }
             setIntent(null);
-        }else{
+        } else {
             HashSet<PhoneNumber> old = mCheckedPhoneNumbers;
             mCheckedPhoneNumbers = new HashSet<PhoneNumber>();
-            boolean found ;
-            for(PhoneNumber checked: old) {
+            boolean found;
+            for(PhoneNumber checked : old) {
                 found = false;
                 if (data.phoneNumbers != null) {
                     for (PhoneNumber number : data.phoneNumbers) {
