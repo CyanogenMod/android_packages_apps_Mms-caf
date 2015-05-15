@@ -68,16 +68,16 @@
     <string-array name="number_options" translatable="false">
         <item>@string/menu_call</item>
         <item>@string/title_send_message</item>
-        <item>@string/menu_add_to_contacts</item>
+        <item>@string/menu_add_to_contacts_cm</item>
     </string-array>
 
     <string-array name="email_options" translatable="false">
         <item>@string/menu_email</item>
-        <item>@string/menu_add_to_contacts</item>
+        <item>@string/menu_add_to_contacts_cm</item>
     </string-array>
 
     <string-array name="email_options_no_send" translatable="false">
-        <item>@string/menu_add_to_contacts</item>
+        <item>@string/menu_add_to_contacts_cm</item>
     </string-array>
 
     <string-array name="entries_sms_store_value" translatable="false">

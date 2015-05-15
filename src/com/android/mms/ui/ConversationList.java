@@ -853,7 +853,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                 if (recipients.get(0).existsInDatabase()) {
                     menu.add(0, MENU_VIEW_CONTACT, 0, R.string.menu_view_contact);
                 } else {
-                    menu.add(0, MENU_ADD_TO_CONTACTS, 0, R.string.menu_add_to_contacts);
+                    menu.add(0, MENU_ADD_TO_CONTACTS, 0, R.string.menu_add_to_contacts_cm);
                 }
             }
             if (mIsSmsEnabled) {
