@@ -144,7 +144,7 @@
     <item msgid="7786079681602275449">"Other"</item>
   </string-array>
     <string name="menu_view_contact" msgid="1414670584423909451">"View contact"</string>
-    <string name="menu_add_to_contacts" msgid="1258127580972228970">"Add to People"</string>
+    <string name="menu_add_to_contacts" msgid="1258127580972228970">"Add to Contacts"</string>
     <string name="hidden_sender_address" msgid="2776075636669924968">"Hidden sender address"</string>
     <string name="yes" msgid="3246158147503160811">"OK"</string>
     <string name="no" msgid="4289742508556913860">"Cancel"</string>

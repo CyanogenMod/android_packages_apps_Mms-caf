@@ -287,7 +287,7 @@
     <string name="menu_view_contact">View contact</string>
     <!-- Context menu item on a message recipient for adding them to the user's
          contacts (used if the recipient is not already in the address book) -->
-    <string name="menu_add_to_contacts">Add to People</string>
+    <string name="menu_add_to_contacts">Add to Contacts</string>
 
     <!-- Sender to be used if the sender address has been hidden -->
     <string name="hidden_sender_address">Hidden sender address</string>

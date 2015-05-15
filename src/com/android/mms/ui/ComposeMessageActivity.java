@@ -3070,7 +3070,7 @@ public class ComposeMessageActivity extends Activity
     }
 
     private void buildAddAddressToContactMenuItem(Menu menu) {
-        // bug #7087793: for group of recipients, remove "Add to People" action. Rely on
+        // bug #7087793: for group of recipients, remove "Add to Contacts" action. Rely on
         // individually creating contacts for unknown phone numbers by touching the individual
         // sender's avatars, one at a time
         ContactList contacts = getRecipients();
