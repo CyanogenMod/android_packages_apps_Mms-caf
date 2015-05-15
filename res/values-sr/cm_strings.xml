@@ -41,16 +41,13 @@
   <string name="send_delay_30seconds">30 секунди</string>
   <string name="sent_countdown">Одбројавање достава порука</string>
   <string name="pref_extra_settings">Екстра подешавања</string>
-  <string name="blacklist_title">Црна листа</string>
   <string name="blacklist_summary_disabled">Онемогућено</string>
-  <string name="blacklist_summary">Долазне поруке са телефонских бројева у црној листи ће бити блокиране</string>
   <string name="blacklist_notification">Блокирај поруку од %s</string>
   <string name="blacklist_notification_private_number">Блокирај поруку са приватног броја</string>
   <string name="blacklist_notification_list_private">Приватно</string>
   <string name="blacklist_notification_unknown_number">Блокирај поруку са непознатог броја %s</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> поруке су блокиране</string>
   <string name="unblock_number">Одблокирај</string>
-  <string name="add_to_blacklist">Додај на црну листу</string>
   <string name="add_to_blacklist_message">Будуће поруке од %s ће бити блокиране</string>
   <string name="alert_dialog_yes">Да</string>
   <string name="alert_dialog_no">Не</string>

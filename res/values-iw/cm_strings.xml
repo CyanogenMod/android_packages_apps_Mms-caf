@@ -41,16 +41,13 @@
   <string name="send_delay_30seconds">30 שניות</string>
   <string name="sent_countdown">ספירה לאחור למשלוח ההודעה</string>
   <string name="pref_extra_settings">הגדרות נוספות</string>
-  <string name="blacklist_title">רשימה שחורה</string>
   <string name="blacklist_summary_disabled">מושבת</string>
-  <string name="blacklist_summary">הודעות נכנסות ממספרי טלפון שברשימה השחורה ייחסמו</string>
   <string name="blacklist_notification">חסם הודעה מ-%s</string>
   <string name="blacklist_notification_private_number">חסם הודעה ממספר חסוי</string>
   <string name="blacklist_notification_list_private">פרטי</string>
   <string name="blacklist_notification_unknown_number">חסם הודעה ממספר לא ידוע %s</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> הודעות נחסמו</string>
   <string name="unblock_number">הורד חסימה</string>
-  <string name="add_to_blacklist">הוסף לרשימה שחורה</string>
   <string name="add_to_blacklist_message">הודעות עתידיות מ-%s ייחסמו</string>
   <string name="alert_dialog_yes">כן</string>
   <string name="alert_dialog_no">לא</string>
@@ -165,6 +162,7 @@
   <string name="menu_reply">הגב</string>
   <string name="slot1">SIM 1</string>
   <string name="slot2">SIM 2</string>
+  <string name="sim_spinner_active_item_postfix">SIM %d</string>
   <string name="cannot_play">אין אפשרות להציג שקופיות.</string>
   <string name="confirm_delete_selected_messages">ההודעות שנבחרו יימחקו.</string>
   <string name="send_failure">לא ניתן לשלוח את ההודעה.</string>
@@ -255,4 +253,6 @@
   <string name="pref_title_mms_auto_enable_data">הפעל נתונים אוטומטית</string>
   <string name="pref_summary_mms_auto_enable_data">הפעל נתונים ניידים באופן אוטומטי עבור הודעות MMS</string>
   <string name="adding_selected_recipients_dialog_text">מוסיף אנשי קשר\u2026</string>
+  <string name="pref_title_mms_smart_dialer">שיחה חכמה</string>
+  <string name="pref_summary_mms_smart_dialer">חייג אוטומטית לאיש הקשר באמצעות קירוב המכשיר לאוזן</string>
 </resources>

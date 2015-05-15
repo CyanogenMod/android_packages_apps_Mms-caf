@@ -41,16 +41,13 @@
   <string name="send_delay_30seconds">30 सेकंड</string>
   <string name="sent_countdown">संदेश सुपुर्दगी उल्टी गिनती</string>
   <string name="pref_extra_settings">अतिरिक्त सेटिंग</string>
-  <string name="blacklist_title">काली सूची</string>
   <string name="blacklist_summary_disabled">अक्षम</string>
-  <string name="blacklist_summary">काली सूची के फ़ोन नंबरों से आने वाले कॉलों को अवरुद्ध किया जाएगा</string>
   <string name="blacklist_notification">%s के एक संदेश को अवरुद्ध किया</string>
   <string name="blacklist_notification_private_number">एक निजी नंबर से आए संदेश को अवरुद्ध किया</string>
   <string name="blacklist_notification_list_private">निजी</string>
   <string name="blacklist_notification_unknown_number">अज्ञात नंबर %s से आने वाले संदेश को अवरुद्ध किया</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> संदेशों को अवरुद्ध किया गया</string>
   <string name="unblock_number">अनवरुद्ध करें</string>
-  <string name="add_to_blacklist">काली सूची में जोड़ें</string>
   <string name="add_to_blacklist_message">%s के भावी संदेश अवरुद्ध किए जाएँगे</string>
   <string name="alert_dialog_yes">हाँ</string>
   <string name="alert_dialog_no">नहीं</string>

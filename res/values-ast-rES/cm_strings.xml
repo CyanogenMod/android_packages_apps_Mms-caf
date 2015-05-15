@@ -41,16 +41,13 @@
   <string name="send_delay_30seconds">30 segundos</string>
   <string name="sent_countdown">Cuenta atrás pal unviu</string>
   <string name="pref_extra_settings">Axustes adicionales</string>
-  <string name="blacklist_title">Llista prieta</string>
   <string name="blacklist_summary_disabled">Deshabilitada</string>
-  <string name="blacklist_summary">Los mensaxes entrantes de los númberos na llista prieta van bloquiase</string>
   <string name="blacklist_notification">Bloquióse un mensaxe de %s</string>
   <string name="blacklist_notification_private_number">Bloquióse un mensaxe d\'un númberu priváu</string>
   <string name="blacklist_notification_list_private">Priváu</string>
   <string name="blacklist_notification_unknown_number">Bloquióse un mensaxe d\'un númberu desconocíu %s</string>
   <string name="blacklist_notification_multiple">Bloquiáronse <xliff:g id="count">%d</xliff:g> mensaxes</string>
   <string name="unblock_number">Desbloquiar</string>
-  <string name="add_to_blacklist">Amestar a la llista prieta</string>
   <string name="add_to_blacklist_message">Los mensaxes de %s van bloquiase</string>
   <string name="alert_dialog_yes">Sí</string>
   <string name="alert_dialog_no">Non</string>

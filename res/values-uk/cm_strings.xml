@@ -41,16 +41,16 @@
   <string name="send_delay_30seconds">30 секунд</string>
   <string name="sent_countdown">Зворотний відлік</string>
   <string name="pref_extra_settings">Додаткові налаштування</string>
-  <string name="blacklist_title">Чорний список</string>
+  <string name="blacklist_title">Список заблокованих абонентів</string>
   <string name="blacklist_summary_disabled">Вимкнено</string>
-  <string name="blacklist_summary">Вхідні повідомлення від номерів чорного списку блокуватимуться</string>
+  <string name="blacklist_summary">Ви не будете отримувати вхідні дзвінки чи повідомлення від абонентів, які знаходяться у списку заблокованих</string>
   <string name="blacklist_notification">Повідомлення від %s заблоковано</string>
   <string name="blacklist_notification_private_number">Повідомлення з прихованого номеру заблоковано</string>
   <string name="blacklist_notification_list_private">Прихований номер</string>
   <string name="blacklist_notification_unknown_number">Повідомлення з невідомого номеру %s заблоковано</string>
   <string name="blacklist_notification_multiple">Повідомлень заблоковано: <xliff:g id="count">%d </xliff:g></string>
   <string name="unblock_number">Розблокувати</string>
-  <string name="add_to_blacklist">Додати в чорний список</string>
+  <string name="add_to_blacklist">Додати абонента до списку заблокованих</string>
   <string name="add_to_blacklist_message">Майбутні повідомлення від %s будуть блокуватися</string>
   <string name="alert_dialog_yes">Так</string>
   <string name="alert_dialog_no">Ні</string>
@@ -87,6 +87,7 @@
   <string name="confirm_cancel_downloading">Завантаження MMS буде скасовано.</string>
   <string name="send_by_slot1">Надіслати за допомогою SIM 1</string>
   <string name="send_by_slot2">Надіслати за допомогою SIM 2</string>
+  <string name="select_phone_account_title">Відправити за допомогою</string>
   <string name="media_size_limit">Повідомлення досягло максимального розміру, не вдається надіслати повідомлення.</string>
   <string name="illegal_message_or_increase_size">Некоректний розмір повідомлення.</string>
   <string name="discard_message_reason_some_invalid">Ваше повідомлення буде скасовано, оскільки деякі одержувачі, є недійсними.</string>
@@ -165,6 +166,7 @@
   <string name="menu_reply">Відповісти</string>
   <string name="slot1">SIM 1</string>
   <string name="slot2">SIM 2</string>
+  <string name="sim_spinner_active_item_postfix">SIM %d</string>
   <string name="cannot_play">Неможливо відтворити слайд-шоу.</string>
   <string name="confirm_delete_selected_messages">Видалити обрані повідомлення.</string>
   <string name="send_failure">Неможливо надіслати повідомлення.</string>
@@ -255,4 +257,6 @@
   <string name="pref_title_mms_auto_enable_data">Авто-увімкнення даних</string>
   <string name="pref_summary_mms_auto_enable_data">Автоматично вмикати мобільні дані для MMS-повідомлень</string>
   <string name="adding_selected_recipients_dialog_text">Додавання одержувачів</string>
+  <string name="pref_title_mms_smart_dialer">Розумний виклик</string>
+  <string name="pref_summary_mms_smart_dialer">Автоматично телефонувати контакту, у випадку піднесення пристрою до вуха</string>
 </resources>

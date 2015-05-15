@@ -34,10 +34,7 @@
   <string name="send_delay_20seconds">20 saniyə</string>
   <string name="send_delay_30seconds">30 saniyə</string>
   <string name="pref_extra_settings">Əlavə tənzimləmələr</string>
-  <string name="blacklist_title">Qara siyahı</string>
   <string name="blacklist_summary_disabled">Aktiv deyil</string>
-  <string name="blacklist_summary">Qara siyahıdakı telefon nömrələrindən gələn mesajlar əngəllənəcək</string>
-  <string name="add_to_blacklist">Qara siyahıya əlavə et</string>
   <string name="add_to_blacklist_message">%s şəxsindən gələcək mesajlar əngəllənəcək</string>
   <string name="alert_dialog_yes">Bəli</string>
   <string name="alert_dialog_no">Xeyr</string>

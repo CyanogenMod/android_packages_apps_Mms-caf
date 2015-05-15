@@ -16,6 +16,11 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <plurals name="remaining_delay_time">
+    <item quantity="one">Відправлення за 1 секунду, торкніться, щоб відмінити.</item>
+    <item quantity="few">Відправлення за %1$d секунди, торкніться аби відмінити.</item>
+    <item quantity="other">Відправлення за %1$d секунд, торкніться аби відмінити.</item>
+  </plurals>
   <plurals name="confirm_delete_messages">
     <item quantity="one">Одне повідомлення буде видалено.</item>
     <item quantity="few">Буде видалено <xliff:g id="number" example="15">%1$s</xliff:g> повідомлення.</item>

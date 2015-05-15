@@ -41,16 +41,16 @@
   <string name="send_delay_30seconds">30 sek.</string>
   <string name="sent_countdown">Pranešimo siuntimo laikmatis</string>
   <string name="pref_extra_settings">Papildomi nustatymai</string>
-  <string name="blacklist_title">Juodasis sąrašas</string>
+  <string name="blacklist_title">Užblokuotų skambintojų sąrašas</string>
   <string name="blacklist_summary_disabled">Neleidžiamas</string>
-  <string name="blacklist_summary">Gaunami pranešimai iš telefonų numerių kurie yra juodajame sąraše bus blokuojami</string>
+  <string name="blacklist_summary">Jūs negausite įeinančių skambučių ar pranešimų iš telefonų numerių kurie yra užblokuotų skambintojų sąraše</string>
   <string name="blacklist_notification">Užblokuotas pranešimas iš %s</string>
   <string name="blacklist_notification_private_number">Užblokuotas pranešimas iš privataus numerio</string>
   <string name="blacklist_notification_list_private">Privatus</string>
   <string name="blacklist_notification_unknown_number">Užblokuotas pranešimas iš nežinomo numerio %s</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> pranešimai buvo užblokuoti</string>
   <string name="unblock_number">Atblokuoti</string>
-  <string name="add_to_blacklist">Pridėti į juodąjį sąrašą</string>
+  <string name="add_to_blacklist">Pridėti prie užblokuotų skambintojų sąrašo</string>
   <string name="add_to_blacklist_message">Būsimi pranešimai iš %s bus blokuojami</string>
   <string name="alert_dialog_yes">Taip</string>
   <string name="alert_dialog_no">Ne</string>
@@ -87,6 +87,7 @@
   <string name="confirm_cancel_downloading">MMS atsisiuntimas bus atšauktas.</string>
   <string name="send_by_slot1">Siųsti naudojant SIM 1</string>
   <string name="send_by_slot2">Siųsti naudojant SIM 2</string>
+  <string name="select_phone_account_title">Siųsti naudojant</string>
   <string name="media_size_limit">Pasiekta pranešimo dydžio riba, negalima išsiųsti pranešimo.</string>
   <string name="illegal_message_or_increase_size">Neteisingas pranešimo dydis.</string>
   <string name="discard_message_reason_some_invalid">Jūsų pranešimas bus atmestas, nes, kai kurie gavėjai yra neteisingi.</string>
@@ -165,6 +166,7 @@
   <string name="menu_reply">Atsakyti</string>
   <string name="slot1">SIM 1</string>
   <string name="slot2">SIM 2</string>
+  <string name="sim_spinner_active_item_postfix">SIM %d</string>
   <string name="cannot_play">Skaidrių peržiūra negalima.</string>
   <string name="confirm_delete_selected_messages">Pasirinkti pranešimai bus ištrinti.</string>
   <string name="send_failure">Nepavyko išsiųsti pranešimo.</string>
@@ -255,4 +257,6 @@
   <string name="pref_title_mms_auto_enable_data">Automatiškai įgalinti duomenis</string>
   <string name="pref_summary_mms_auto_enable_data">Automatiškai įgalinti korinio ryšio duomenis MMS pranešimams</string>
   <string name="adding_selected_recipients_dialog_text">Pridedami kontaktai\u2026</string>
+  <string name="pref_title_mms_smart_dialer">Sumanusis skambutis</string>
+  <string name="pref_summary_mms_smart_dialer">Automatiškai skambinti kontaktui pridedant įrenginį prie ausies</string>
 </resources>

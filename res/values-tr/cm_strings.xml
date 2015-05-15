@@ -41,16 +41,13 @@
   <string name="send_delay_30seconds">30 saniye</string>
   <string name="sent_countdown">Mesaj ulaştırma geri sayımı</string>
   <string name="pref_extra_settings">Ek seçenekler</string>
-  <string name="blacklist_title">Kara liste</string>
   <string name="blacklist_summary_disabled">Devre dışı</string>
-  <string name="blacklist_summary">Kara listedeki telefon numaralardan gelen mesajlar engellenecek</string>
   <string name="blacklist_notification">%s kişisinden gelen mesaj engellendi</string>
   <string name="blacklist_notification_private_number">Özel numaradan gelen bir mesaj engellendi</string>
   <string name="blacklist_notification_list_private">Özel</string>
   <string name="blacklist_notification_unknown_number">Bilinmeyen numaradan (%s) gelen bir mesaj engellendi</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> mesaj engellendi</string>
   <string name="unblock_number">Engeli kaldır</string>
-  <string name="add_to_blacklist">Kara listeye ekle</string>
   <string name="add_to_blacklist_message">%s kişisinden ilerde gelecek mesajlar engellenecek</string>
   <string name="alert_dialog_yes">Evet</string>
   <string name="alert_dialog_no">Hayır</string>

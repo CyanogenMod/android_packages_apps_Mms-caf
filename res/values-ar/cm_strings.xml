@@ -36,10 +36,7 @@
   <string name="send_delay_30seconds">30 ثانية</string>
   <string name="sent_countdown">العد التنازلي لي إيصال الرسالة</string>
   <string name="pref_extra_settings">إعدادات إضافية</string>
-  <string name="blacklist_title">القائمة السوداء</string>
   <string name="blacklist_summary_disabled">معطلة</string>
-  <string name="blacklist_summary">سيتم حظر المكالمات الواردة من أرقام الهاتف في القائمة السوداء</string>
-  <string name="add_to_blacklist">إضافة إلى القائمة السوداء</string>
   <string name="add_to_blacklist_message">سيتم حظر الرسائل في المستقبل من %s</string>
   <string name="alert_dialog_yes">نعم</string>
   <string name="alert_dialog_no">لا</string>

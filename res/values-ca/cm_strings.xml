@@ -41,16 +41,16 @@
   <string name="send_delay_30seconds">30 segons</string>
   <string name="sent_countdown">Compte enrera pel lliurament del missatge</string>
   <string name="pref_extra_settings">Configuracions addicionals</string>
-  <string name="blacklist_title">Llista negra</string>
+  <string name="blacklist_title">Llista de números bloquejats</string>
   <string name="blacklist_summary_disabled">Desactivada</string>
-  <string name="blacklist_summary">Els missatges entrants dels números de telèfon a la llista negra seran bloquejats</string>
+  <string name="blacklist_summary">No rebràs trucades entrants o missatges dels números de telèfon que siguin dins la llista de números bloquejats</string>
   <string name="blacklist_notification">S\'ha bloquejat un missatge de %s</string>
   <string name="blacklist_notification_private_number">S\'ha bloquejat un missatge d\'un número privat</string>
   <string name="blacklist_notification_list_private">Privat</string>
   <string name="blacklist_notification_unknown_number">S\'ha bloquejat un missatge d\'un número desconegut %s</string>
   <string name="blacklist_notification_multiple">S\'han bloquejat <xliff:g id="count">%d</xliff:g> missatges</string>
   <string name="unblock_number">Desbloqueja</string>
-  <string name="add_to_blacklist">Afegeix a la llista negra</string>
+  <string name="add_to_blacklist">Afegeix a la llista de números bloquejats</string>
   <string name="add_to_blacklist_message">Els missatges futurs de %s seran bloquejats</string>
   <string name="alert_dialog_yes">Sí</string>
   <string name="alert_dialog_no">No</string>
@@ -87,6 +87,7 @@
   <string name="confirm_cancel_downloading">La descàrrega de MMS serà cancel·lada.</string>
   <string name="send_by_slot1">Envia via la SIM 1</string>
   <string name="send_by_slot2">Envia via la SIM 2</string>
+  <string name="select_phone_account_title">Envia amb</string>
   <string name="media_size_limit">S\'ha arribat a la mida límit del missatge, no es pot enviar el missatge.</string>
   <string name="illegal_message_or_increase_size">Mida del missatge incorrecta.</string>
   <string name="discard_message_reason_some_invalid">El teu missatge es descartarà perquè alguns destinataris són invàlids.</string>
@@ -165,6 +166,7 @@
   <string name="menu_reply">Respon</string>
   <string name="slot1">SIM 1</string>
   <string name="slot2">SIM 2</string>
+  <string name="sim_spinner_active_item_postfix">SIM %d</string>
   <string name="cannot_play">No es pot mostrar la projecció de diapositives.</string>
   <string name="confirm_delete_selected_messages">Els missatges seleccionats seran esborrats.</string>
   <string name="send_failure">No s\'ha pogut enviar el missatge.</string>
@@ -255,4 +257,6 @@
   <string name="pref_title_mms_auto_enable_data">Auto-habilita dades</string>
   <string name="pref_summary_mms_auto_enable_data">Habilita automàticament les dades mòbils per als missatges MMS</string>
   <string name="adding_selected_recipients_dialog_text">S\'estan afegint els contactes\u2026</string>
+  <string name="pref_title_mms_smart_dialer">Trucada intel·ligent</string>
+  <string name="pref_summary_mms_smart_dialer">Truca automàticament el contacte movent el dispositiu a la teva orella</string>
 </resources>

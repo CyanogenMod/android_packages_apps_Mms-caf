@@ -41,16 +41,13 @@
   <string name="send_delay_30seconds">30 秒</string>
   <string name="sent_countdown">延迟发送倒计时</string>
   <string name="pref_extra_settings">其他设置</string>
-  <string name="blacklist_title">黑名单</string>
   <string name="blacklist_summary_disabled">禁用</string>
-  <string name="blacklist_summary">来自于黑名单中电话号码的短信信息将会被阻止</string>
   <string name="blacklist_notification">来自 %s 的信息已被阻止</string>
   <string name="blacklist_notification_private_number">阻止来自私人号码的信息</string>
   <string name="blacklist_notification_list_private">私人号码</string>
   <string name="blacklist_notification_unknown_number">来自未知号码 %s 的信息已阻止</string>
   <string name="blacklist_notification_multiple">已阻止<xliff:g id="count">%d</xliff:g> 条信息</string>
   <string name="unblock_number">取消阻止</string>
-  <string name="add_to_blacklist">添加到黑名单</string>
   <string name="add_to_blacklist_message">未来来自于 %s 的信息将会被阻止</string>
   <string name="alert_dialog_yes">是</string>
   <string name="alert_dialog_no">否</string>
@@ -87,6 +84,7 @@
   <string name="confirm_cancel_downloading">彩信下载将被取消。</string>
   <string name="send_by_slot1">通过 SIM 卡 1 发送</string>
   <string name="send_by_slot2">通过 SIM 卡 2 发送</string>
+  <string name="select_phone_account_title">发送方式</string>
   <string name="media_size_limit">信息大小已超过限制，无法发送。</string>
   <string name="illegal_message_or_increase_size">不正确的信息大小。</string>
   <string name="discard_message_reason_some_invalid">因为部分接收人无效，您的信息将被丢弃。</string>
@@ -165,6 +163,7 @@
   <string name="menu_reply">回复</string>
   <string name="slot1">SIM 卡 1</string>
   <string name="slot2">SIM 卡 2</string>
+  <string name="sim_spinner_active_item_postfix">SIM %d</string>
   <string name="cannot_play">无法展示幻灯片</string>
   <string name="confirm_delete_selected_messages">选中的信息将被删除。</string>
   <string name="send_failure">无法发送信息。</string>

@@ -41,16 +41,13 @@
   <string name="send_delay_30seconds">30 secondes</string>
   <string name="sent_countdown">Décompte avant l\'envoi</string>
   <string name="pref_extra_settings">Paramètres supplémentaires</string>
-  <string name="blacklist_title">Liste noire</string>
   <string name="blacklist_summary_disabled">Désactivé</string>
-  <string name="blacklist_summary">Les messages entrants des numéros de la liste noire seront bloqués</string>
   <string name="blacklist_notification">Message de %s bloqué</string>
   <string name="blacklist_notification_private_number">Message d\'un numéro privé bloqué</string>
   <string name="blacklist_notification_list_private">Privé</string>
   <string name="blacklist_notification_unknown_number">Message d\'un numéro inconnu %s bloqué</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> messages ont été bloqués</string>
   <string name="unblock_number">Débloquer</string>
-  <string name="add_to_blacklist">Ajouter à la liste noire</string>
   <string name="add_to_blacklist_message">Les futurs messages de %s seront bloqués</string>
   <string name="alert_dialog_yes">Oui</string>
   <string name="alert_dialog_no">Non</string>
@@ -254,4 +251,5 @@
   <string name="pref_summary_mms_use_sent_timestamp">Afficher la date d\'envoi au lieu de la date de réception</string>
   <string name="pref_title_mms_auto_enable_data">Activation auto des données mobiles</string>
   <string name="pref_summary_mms_auto_enable_data">Activer automatiquement les données mobiles pour les messages MMS</string>
+  <string name="adding_selected_recipients_dialog_text">Ajout de contacts\u2026</string>
 </resources>

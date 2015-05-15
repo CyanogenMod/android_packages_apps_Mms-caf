@@ -41,16 +41,16 @@
   <string name="send_delay_30seconds">30 Sekonnen</string>
   <string name="sent_countdown">Zäit bis zum Verschécken</string>
   <string name="pref_extra_settings">Weider Astellungen</string>
-  <string name="blacklist_title">Schwaarz Lëscht</string>
+  <string name="blacklist_title">Lëscht vu blockéierten Nummeren</string>
   <string name="blacklist_summary_disabled">Desaktivéiert</string>
-  <string name="blacklist_summary">Erakommend Messagë vun Telefonsnummeren op der schwaarzer Lëscht gi blockéiert</string>
+  <string name="blacklist_summary">Du wäerts keng Uriff oder Messagë vun den Telefonsnummeren op dëser Lëscht empfänken</string>
   <string name="blacklist_notification">E Message vum %s gouf blockéiert</string>
   <string name="blacklist_notification_private_number">Message vun enger privater Nummer gouf blockéiert</string>
   <string name="blacklist_notification_list_private">Privat</string>
   <string name="blacklist_notification_unknown_number">Message vun der onbekannter Nummer %s gouf blockéiert</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> Messagë goufe blockéiert</string>
   <string name="unblock_number">Deblockéieren</string>
-  <string name="add_to_blacklist">Op d\'schwaarz Lëscht setzen</string>
+  <string name="add_to_blacklist">Op d\'Lëscht mat de blockéierten Nummere setzen</string>
   <string name="add_to_blacklist_message">Zuküfteg Messagë vum %s gi blockéiert</string>
   <string name="alert_dialog_yes">Jo</string>
   <string name="alert_dialog_no">Nee</string>
@@ -87,6 +87,7 @@
   <string name="confirm_cancel_downloading">MMS-Download gëtt ofgebrach.</string>
   <string name="send_by_slot1">Iwwer d\'SIM 1 schécken</string>
   <string name="send_by_slot2">Iwwer d\'SIM 2 schécken</string>
+  <string name="select_phone_account_title">Schécke mat</string>
   <string name="media_size_limit">Gréisstelimitt erreecht. De Message kann net verschéckt ginn.</string>
   <string name="illegal_message_or_increase_size">Inkorrekt Messagëgréisst.</string>
   <string name="discard_message_reason_some_invalid">Däi Message gëtt verworf, well e puer vun den Empfänger ongëlteg sinn.</string>
@@ -165,6 +166,7 @@
   <string name="menu_reply">Äntweren</string>
   <string name="slot1">SIM 1</string>
   <string name="slot2">SIM 2</string>
+  <string name="sim_spinner_active_item_postfix">SIM %d</string>
   <string name="cannot_play">Kann d\'Diashow net presentéieren.</string>
   <string name="confirm_delete_selected_messages">Déi ausgewielt Messagë gi geläscht.</string>
   <string name="send_failure">Message konnt net geschéckt ginn.</string>
@@ -252,4 +254,9 @@
   <string name="pref_summary_mms_full_timestamp">Datum an Zäit vun de Messagen uweisen</string>
   <string name="pref_title_mms_use_sent_timestamp">Original Zäitstempelen</string>
   <string name="pref_summary_mms_use_sent_timestamp">Zäitpunkt vum Verschécken uweisen anmplaz vum Zäitpunkt vum Empfank</string>
+  <string name="pref_title_mms_auto_enable_data">Daten automatesch aktivéieren</string>
+  <string name="pref_summary_mms_auto_enable_data">Mobil Daten automatesch fir MMS-Messagen aktivéieren</string>
+  <string name="adding_selected_recipients_dialog_text">Kontakter ginn dobäigesat\u2026</string>
+  <string name="pref_title_mms_smart_dialer">Intelligenten Uruff</string>
+  <string name="pref_summary_mms_smart_dialer">De Kontakt automatesch uruffe wann den Apparat bei d\'Ouer beweegt gëtt</string>
 </resources>

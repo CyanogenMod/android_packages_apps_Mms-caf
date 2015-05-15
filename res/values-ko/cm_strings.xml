@@ -41,16 +41,13 @@
   <string name="send_delay_30seconds">30초</string>
   <string name="sent_countdown">메시지 전송 카운트다운</string>
   <string name="pref_extra_settings">추가 설정</string>
-  <string name="blacklist_title">블랙리스트</string>
   <string name="blacklist_summary_disabled">사용 안 함</string>
-  <string name="blacklist_summary">블랙리스트에 등록된 번호에서 오는 메시지는 차단됩니다</string>
   <string name="blacklist_notification">%s(으)로부터의 메시지 차단됨</string>
   <string name="blacklist_notification_private_number">발신번호 표시가 제한된 메시지 차단됨</string>
   <string name="blacklist_notification_list_private">비공개</string>
   <string name="blacklist_notification_unknown_number">알 수 없는 번호 %s(으)로부터의 메시지 차단됨</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g>건의 메시지 차단됨</string>
   <string name="unblock_number">차단 해제</string>
-  <string name="add_to_blacklist">블랙리스트에 추가</string>
   <string name="add_to_blacklist_message">%s에서 오는 메시지가 차단됩니다</string>
   <string name="alert_dialog_yes">예</string>
   <string name="alert_dialog_no">아니오</string>

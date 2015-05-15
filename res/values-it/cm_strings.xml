@@ -41,16 +41,13 @@
   <string name="send_delay_30seconds">30 secondi</string>
   <string name="sent_countdown">Conto alla rovescia invio</string>
   <string name="pref_extra_settings">Impostazioni aggiuntive</string>
-  <string name="blacklist_title">Blacklist</string>
   <string name="blacklist_summary_disabled">Disattivata</string>
-  <string name="blacklist_summary">I messaggi provenienti dai numeri presenti nella blacklist saranno bloccati</string>
   <string name="blacklist_notification">Bloccato un messaggio da %s</string>
   <string name="blacklist_notification_private_number">Bloccato un messaggio da un numero privato</string>
   <string name="blacklist_notification_list_private">Privato</string>
   <string name="blacklist_notification_unknown_number">Bloccato un messaggio da un numero sconosciuto: %s</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> messaggi sono stati bloccati</string>
   <string name="unblock_number">Sblocca</string>
-  <string name="add_to_blacklist">Aggiungi alla blacklist</string>
   <string name="add_to_blacklist_message">I futuri messaggi da %s saranno bloccati</string>
   <string name="alert_dialog_yes">Si</string>
   <string name="alert_dialog_no">No</string>
@@ -87,6 +84,7 @@
   <string name="confirm_cancel_downloading">Il download dell\'MMS sarà annullato.</string>
   <string name="send_by_slot1">Invia tramite SIM 1</string>
   <string name="send_by_slot2">Invia tramite SIM 2</string>
+  <string name="select_phone_account_title">Inviato con</string>
   <string name="media_size_limit">Raggiunto limite di dimensione del messaggio, non è possibile inviare il messaggio.</string>
   <string name="illegal_message_or_increase_size">Dimensione messaggio non corretta.</string>
   <string name="discard_message_reason_some_invalid">Il tuo messaggio sarà scartato perché non tutti i destinatari sono validi.</string>
@@ -165,6 +163,7 @@
   <string name="menu_reply">Rispondi</string>
   <string name="slot1">SIM 1</string>
   <string name="slot2">SIM 2</string>
+  <string name="sim_spinner_active_item_postfix">SIM %d</string>
   <string name="cannot_play">Impossibile eseguire slide show.</string>
   <string name="confirm_delete_selected_messages">I messaggi selezionati verranno eliminati.</string>
   <string name="send_failure">Impossibile inviare il messaggio.</string>
@@ -255,4 +254,6 @@
   <string name="pref_title_mms_auto_enable_data">Attiva dati mobili automaticamente</string>
   <string name="pref_summary_mms_auto_enable_data">Attiva automaticamente dati mobili per messaggi MMS</string>
   <string name="adding_selected_recipients_dialog_text">Aggiunta contatti\u2026</string>
+  <string name="pref_title_mms_smart_dialer">Smart Call</string>
+  <string name="pref_summary_mms_smart_dialer">Chiama il contatto posizionando il dispositivo vicino all\'orecchio</string>
 </resources>

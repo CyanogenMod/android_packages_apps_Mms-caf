@@ -41,16 +41,16 @@
   <string name="send_delay_30seconds">30 másodperc</string>
   <string name="sent_countdown">Üzenetkézbesítési visszaszámlálás</string>
   <string name="pref_extra_settings">Extra beállítások</string>
-  <string name="blacklist_title">Tiltólista</string>
+  <string name="blacklist_title">Blokkolt hívók listája</string>
   <string name="blacklist_summary_disabled">Letiltva</string>
-  <string name="blacklist_summary">Bejövő üzenetek blokkolása, melyek szerepelnek a tiltólistán</string>
+  <string name="blacklist_summary">Nem fog bejövő hívásokat és üzeneteket kapni a blokkolt hívó listán szereplő telefonszámokról</string>
   <string name="blacklist_notification">Blokkolt üzenet a következő számról: %s</string>
   <string name="blacklist_notification_private_number">Blokkolt szám nélküli üzenet</string>
   <string name="blacklist_notification_list_private">Rejtett szám</string>
   <string name="blacklist_notification_unknown_number">Blokkolt ismeretlen üzenet: %s</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> blokkolt üzenet</string>
   <string name="unblock_number">Eltávolítás</string>
-  <string name="add_to_blacklist">Hozzáadás a tiltólistához</string>
+  <string name="add_to_blacklist">Hozzáadás a blokkolt hívók listájához</string>
   <string name="add_to_blacklist_message">%s számról érkező üzenetek blokkolva lesznek</string>
   <string name="alert_dialog_yes">Igen</string>
   <string name="alert_dialog_no">Nem</string>
@@ -87,6 +87,7 @@
   <string name="confirm_cancel_downloading">MMS letöltése megszakításra kerül.</string>
   <string name="send_by_slot1">Küldés SIM 1 használatával</string>
   <string name="send_by_slot2">Küldés SIM 2 használatával</string>
+  <string name="select_phone_account_title">Küldés a következővel</string>
   <string name="media_size_limit">Elérte az üzenet méretkorlátját, nem lehet elküldeni.</string>
   <string name="illegal_message_or_increase_size">Üzenet mérete helytelen.</string>
   <string name="discard_message_reason_some_invalid">Az üzenet eldobásra kerül, mert néhány címzett érvénytelen.</string>
@@ -165,6 +166,7 @@
   <string name="menu_reply">Válasz</string>
   <string name="slot1">SIM 1</string>
   <string name="slot2">SIM 2</string>
+  <string name="sim_spinner_active_item_postfix">SIM %d</string>
   <string name="cannot_play">Nem lehet elindítani a diavetítést.</string>
   <string name="confirm_delete_selected_messages">Kijelölt üzenetek törlésre kerülnek.</string>
   <string name="send_failure">Üzenet küldése sikertelen.</string>
@@ -255,4 +257,6 @@
   <string name="pref_title_mms_auto_enable_data">Adatkapcsolat automatikus engedélyezése</string>
   <string name="pref_summary_mms_auto_enable_data">Adatkapcsolat automatikus engedélyezése az MMS üzenetek számára</string>
   <string name="adding_selected_recipients_dialog_text">Névjegyek hozzáadása\u2026</string>
+  <string name="pref_title_mms_smart_dialer">Intelligens hívás</string>
+  <string name="pref_summary_mms_smart_dialer">A kapcsolat automatikus hívása, ha a telefont a füléhez emeli</string>
 </resources>

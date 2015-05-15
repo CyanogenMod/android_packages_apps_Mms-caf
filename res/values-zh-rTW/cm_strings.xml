@@ -36,10 +36,7 @@
   <string name="send_delay_30seconds">30 秒</string>
   <string name="sent_countdown">訊息傳送倒數</string>
   <string name="pref_extra_settings">更多設定</string>
-  <string name="blacklist_title">黑名單</string>
   <string name="blacklist_summary_disabled">已停用</string>
-  <string name="blacklist_summary">黑名單內的電話號碼所傳來的訊息將會被封鎖</string>
-  <string name="add_to_blacklist">新增至黑名單</string>
   <string name="add_to_blacklist_message">%s 以後傳來的訊息將會被封鎖</string>
   <string name="alert_dialog_yes">是</string>
   <string name="alert_dialog_no">否</string>

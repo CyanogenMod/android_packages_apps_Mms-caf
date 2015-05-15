@@ -41,16 +41,13 @@
   <string name="send_delay_30seconds">30 seconds</string>
   <string name="sent_countdown">Message delivery countdown</string>
   <string name="pref_extra_settings">Extra settings</string>
-  <string name="blacklist_title">Blacklist</string>
   <string name="blacklist_summary_disabled">Disabled</string>
-  <string name="blacklist_summary">Incoming messages from phone numbers in the blacklist will be blocked</string>
   <string name="blacklist_notification">Blocked a message from %s</string>
   <string name="blacklist_notification_private_number">Blocked a message from a private number</string>
   <string name="blacklist_notification_list_private">Private</string>
   <string name="blacklist_notification_unknown_number">Blocked a message from unknown number %s</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> messages were blocked</string>
   <string name="unblock_number">Unblock</string>
-  <string name="add_to_blacklist">Add to blacklist</string>
   <string name="add_to_blacklist_message">Future messages from %s will be blocked</string>
   <string name="alert_dialog_yes">Yes</string>
   <string name="alert_dialog_no">No</string>

@@ -36,10 +36,7 @@
   <string name="send_delay_30seconds">තත්පර 30</string>
   <string name="sent_countdown">පණිවිඩය බාරදීමේ අවරෝහණ ගණනය</string>
   <string name="pref_extra_settings">අමතර සැකසීම්</string>
-  <string name="blacklist_title">අපලේඛණය</string>
   <string name="blacklist_summary_disabled">අබලයි</string>
-  <string name="blacklist_summary">අපලේඛණයේ ඇති දුරකථන අංක මගින් පැමිණෙන පනිවිඩ අවහිර කෙරේ</string>
-  <string name="add_to_blacklist">අපලේඛණයට එක් කරන්න</string>
   <string name="add_to_blacklist_message">%s වෙතින් ඉදිරියට පැමිණෙන පනිවිඩ අවහිර කෙරේ</string>
   <string name="alert_dialog_yes">ඔව්</string>
   <string name="alert_dialog_no">නැහැ</string>

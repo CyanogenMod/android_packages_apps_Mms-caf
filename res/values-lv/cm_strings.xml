@@ -36,10 +36,7 @@
   <string name="send_delay_30seconds">30 sekundes</string>
   <string name="sent_countdown">Ziņas piegādes atpakaļskaitīšana</string>
   <string name="pref_extra_settings">Papildu iestatījumi</string>
-  <string name="blacklist_title">Melnais saraksts</string>
   <string name="blacklist_summary_disabled">Izslēgts</string>
-  <string name="blacklist_summary">Ienākošās ziņas no numuriem melnajā sarakstā tiks bloķētas</string>
-  <string name="add_to_blacklist">Pievienot melnajam sarakstam</string>
   <string name="add_to_blacklist_message">Turpmākās ziņas no %s tiks bloķētas</string>
   <string name="alert_dialog_yes">Jā</string>
   <string name="alert_dialog_no">Nē</string>

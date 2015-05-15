@@ -41,16 +41,16 @@
   <string name="send_delay_30seconds">30 δευτερόλεπτα</string>
   <string name="sent_countdown">Αντίστροφη μέτρηση παράδοσης μηνύματος</string>
   <string name="pref_extra_settings">Επιπλέον ρυθμίσεις</string>
-  <string name="blacklist_title">Μαύρη λίστα</string>
+  <string name="blacklist_title">Λίστα αποκλεισμένων καλούντων</string>
   <string name="blacklist_summary_disabled">Απενεργοποιημένη</string>
-  <string name="blacklist_summary">Εισερχόμενα μηνύματα από αριθμούς που είναι στη μαύρη λίστα θα απορρίπτονται</string>
+  <string name="blacklist_summary">Δε θα λαμβάνετε εισερχόμενες κλήσεις ή μηνύματα από τηλεφωνικούς αριθμούς στη λίστα αποκλεισμένων καλούντων</string>
   <string name="blacklist_notification">Απορρίφθηκε μήνυμα από %s</string>
   <string name="blacklist_notification_private_number">Απορρίφθηκε μήνυμα από απόρρητο αριθμό</string>
   <string name="blacklist_notification_list_private">Απόρρητο</string>
   <string name="blacklist_notification_unknown_number">Απορρίφθηκε μήνυμα από άγνωστο αριθμό %s</string>
   <string name="blacklist_notification_multiple">Απορρίφθηκαν <xliff:g id="count">%d</xliff:g> μηνύματα</string>
   <string name="unblock_number">Ακύρωση φραγής</string>
-  <string name="add_to_blacklist">Προσθήκη στη μαύρη λίστα</string>
+  <string name="add_to_blacklist">Προσθήκη στη λίστα αποκλεισμένων καλούντων</string>
   <string name="add_to_blacklist_message">Μελλοντικά μηνύματα από το %s θα απορρίπτονται</string>
   <string name="alert_dialog_yes">Ναι</string>
   <string name="alert_dialog_no">Όχι</string>
@@ -87,6 +87,7 @@
   <string name="confirm_cancel_downloading">Η λήψη MMS θα ακυρωθεί.</string>
   <string name="send_by_slot1">Αποστολή μέσω SIM 1</string>
   <string name="send_by_slot2">Αποστολή μέσω SIM 2</string>
+  <string name="select_phone_account_title">Αποστολή με</string>
   <string name="media_size_limit">Το μήνυμα έφτασε το όριο μεγέθους, το μήνυμα δεν θα αποσταλεί.</string>
   <string name="illegal_message_or_increase_size">Μη έγκυρο μέγεθος μηνύματος.</string>
   <string name="discard_message_reason_some_invalid">Το μήνυμά σας θα απορριφθεί επειδή μερικοί παραλήπτες δεν είναι έγκυροι.</string>
@@ -165,6 +166,7 @@
   <string name="menu_reply">Απάντηση</string>
   <string name="slot1">SIM 1</string>
   <string name="slot2">SIM 2</string>
+  <string name="sim_spinner_active_item_postfix">SIM %d</string>
   <string name="cannot_play">Δεν είναι δυνατή η προβολή της παρουσίασης.</string>
   <string name="confirm_delete_selected_messages">Τα επιλεγμένα μηνύματα θα διαγραφούν.</string>
   <string name="send_failure">Δεν ήταν δυνατή η αποστολή του μηνύματος.</string>
@@ -255,4 +257,6 @@
   <string name="pref_title_mms_auto_enable_data">Αυτόματη ενεργοποίηση δεδομένων</string>
   <string name="pref_summary_mms_auto_enable_data">Αυτόματη ενεργοποίηση δεδομένων τηλεφωνίας για μηνύματα MMS</string>
   <string name="adding_selected_recipients_dialog_text">Προσθήκη επαφών\u2026</string>
+  <string name="pref_title_mms_smart_dialer">Έξυπνη κλήση</string>
+  <string name="pref_summary_mms_smart_dialer">Αυτόματη κλήση της επαφής μετακινώντας το τηλέφωνο στο αυτί σας</string>
 </resources>

@@ -43,7 +43,7 @@
   <string name="pref_extra_settings">Meer\u2026</string>
   <string name="blacklist_title">Zwarte lijst</string>
   <string name="blacklist_summary_disabled">Uitgeschakeld</string>
-  <string name="blacklist_summary">Inkomende berichten van telefoonnummers op de zwarte lijst worden geblokkeerd</string>
+  <string name="blacklist_summary">U ontvangt geen inkomende oproepen of berichten van telefoonnummers op de zwarte lijst</string>
   <string name="blacklist_notification">Bericht van %s geblokkeerd</string>
   <string name="blacklist_notification_private_number">Bericht van afgeschermd nummer geblokkeerd</string>
   <string name="blacklist_notification_list_private">Afgeschermd</string>

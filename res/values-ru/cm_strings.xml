@@ -43,7 +43,7 @@
   <string name="pref_extra_settings">Дополнительные настройки</string>
   <string name="blacklist_title">Чёрный список</string>
   <string name="blacklist_summary_disabled">Выключен</string>
-  <string name="blacklist_summary">Входящие сообщения от абонентов из чёрного списка будут блокироваться</string>
+  <string name="blacklist_summary">Вы не будете получать входящие вызовы или сообщения от телефонных номеров из черного списка</string>
   <string name="blacklist_notification">Сообщение от %s заблокировано</string>
   <string name="blacklist_notification_private_number">Сообщение от скрытого номера заблокировано</string>
   <string name="blacklist_notification_list_private">Скрытый номер</string>
@@ -87,6 +87,7 @@
   <string name="confirm_cancel_downloading">Загрузка MMS будет отменена</string>
   <string name="send_by_slot1">Отправить через SIM 1</string>
   <string name="send_by_slot2">Отправить через SIM 2</string>
+  <string name="select_phone_account_title">Отправить через\u2026</string>
   <string name="media_size_limit">Сообщение больше максимально допустимого размера, отправка невозможна.</string>
   <string name="illegal_message_or_increase_size">Некорректный размер сообщения.</string>
   <string name="discard_message_reason_some_invalid">Сообщение будет удалено, так как некоторые получатели недействительны.</string>
@@ -165,6 +166,7 @@
   <string name="menu_reply">Ответить</string>
   <string name="slot1">SIM 1</string>
   <string name="slot2">SIM 2</string>
+  <string name="sim_spinner_active_item_postfix">SIM %d</string>
   <string name="cannot_play">Невозможно воспроизвести слайд-шоу.</string>
   <string name="confirm_delete_selected_messages">Выбранные сообщения будут удалены.</string>
   <string name="send_failure">Не удается отправить сообщение.</string>
@@ -255,4 +257,6 @@
   <string name="pref_title_mms_auto_enable_data">Автовключение данных</string>
   <string name="pref_summary_mms_auto_enable_data">Автоматически включить мобильные данные для MMS-сообщений</string>
   <string name="adding_selected_recipients_dialog_text">Добавление контактов\u2026</string>
+  <string name="pref_title_mms_smart_dialer">Интеллектуальный вызов</string>
+  <string name="pref_summary_mms_smart_dialer">Автоматически начинать звонок при поднесении телефона к уху</string>
 </resources>

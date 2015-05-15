@@ -41,16 +41,16 @@
   <string name="send_delay_30seconds">30 Sekunden</string>
   <string name="sent_countdown">Zeit bis zum Versand</string>
   <string name="pref_extra_settings">Weitere Einstellungen</string>
-  <string name="blacklist_title">Sperrliste</string>
+  <string name="blacklist_title">Gesperrte Anruferliste</string>
   <string name="blacklist_summary_disabled">Deaktiviert</string>
-  <string name="blacklist_summary">Eingehende Nachrichten von Nummern, die sich in der Sperrliste befinden, werden abgewiesen</string>
+  <string name="blacklist_summary">Sie werden keine Anrufe oder Nachrichten von Nummern aus der Sperrliste empfangen</string>
   <string name="blacklist_notification">Eine Nachricht von %s wurde abgewiesen</string>
   <string name="blacklist_notification_private_number">Eine Nachricht mit unterdrückter Nummer wurde abgewiesen</string>
   <string name="blacklist_notification_list_private">Unterdrückte Nummer</string>
   <string name="blacklist_notification_unknown_number">Eine Nachricht von unbekannter Nummer %s wurde abgewiesen</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> Nachrichten wurden blockiert</string>
   <string name="unblock_number">Sperre aufheben</string>
-  <string name="add_to_blacklist">Zur Sperrliste hinzufügen</string>
+  <string name="add_to_blacklist">Zur gesperrten Anruferliste hinzufügen</string>
   <string name="add_to_blacklist_message">Zukünftige Nachrichten von %s werden abgewiesen</string>
   <string name="alert_dialog_yes">Ja</string>
   <string name="alert_dialog_no">Nein</string>
@@ -87,6 +87,7 @@
   <string name="confirm_cancel_downloading">MMS-Download wird abgebrochen.</string>
   <string name="send_by_slot1">Mit SIM 1 versenden</string>
   <string name="send_by_slot2">Mit SIM 2 versenden</string>
+  <string name="select_phone_account_title">Senden mit</string>
   <string name="media_size_limit">Größenbeschränkung der Nachricht erreicht. Nachricht kann nicht versandt werden.</string>
   <string name="illegal_message_or_increase_size">Falsche Nachrichtengröße.</string>
   <string name="discard_message_reason_some_invalid">Ihre Nachricht wird verworfen werden, da einige Empfänger ungültig sind.</string>
@@ -165,6 +166,7 @@
   <string name="menu_reply">Antworten</string>
   <string name="slot1">SIM 1</string>
   <string name="slot2">SIM 2</string>
+  <string name="sim_spinner_active_item_postfix">SIM %d</string>
   <string name="cannot_play">Die Diashow kann nicht gestartet werden.</string>
   <string name="confirm_delete_selected_messages">Ausgewählte Nachrichten werden gelöscht.</string>
   <string name="send_failure">Nachricht konnte nicht gesendet werden.</string>

@@ -41,16 +41,16 @@
   <string name="send_delay_30seconds">30 segundos</string>
   <string name="sent_countdown">Contagem regressiva para envio de mensagem</string>
   <string name="pref_extra_settings">Definições extra</string>
-  <string name="blacklist_title">Números Bloqueados</string>
+  <string name="blacklist_title">Lista de números bloqueados</string>
   <string name="blacklist_summary_disabled">Desativado</string>
-  <string name="blacklist_summary">Mensagens de entrada de números de telefone na lista negra serão bloqueadas</string>
+  <string name="blacklist_summary">Não receberá chamadas ou mensagens de números de telefone na lista de números bloqueados</string>
   <string name="blacklist_notification">Bloqueou uma mensagem de %s</string>
   <string name="blacklist_notification_private_number">Bloqueou uma mensagem de um número privado</string>
   <string name="blacklist_notification_list_private">Privada</string>
   <string name="blacklist_notification_unknown_number">Bloqueou uma mensagem do número desconhecido %s</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> mensagens foram bloqueadas</string>
   <string name="unblock_number">Desbloquear</string>
-  <string name="add_to_blacklist">Adicionar aos numeros bloqueados</string>
+  <string name="add_to_blacklist">Adicionar à lista de números bloqueados</string>
   <string name="add_to_blacklist_message">Futuras mensagens de %s serão bloqueadas</string>
   <string name="alert_dialog_yes">Sim</string>
   <string name="alert_dialog_no">Não</string>
@@ -87,6 +87,7 @@
   <string name="confirm_cancel_downloading">A transferência da MMS será cancelada.</string>
   <string name="send_by_slot1">Enviar através do SIM 1</string>
   <string name="send_by_slot2">Enviar através do SIM 2</string>
+  <string name="select_phone_account_title">Enviar com</string>
   <string name="media_size_limit">Tamanho limite de mensagem atingido, não é possível enviar a mensagem.</string>
   <string name="illegal_message_or_increase_size">Tamanho incorreto da mensagem.</string>
   <string name="discard_message_reason_some_invalid">A sua mensagem será descartada porque alguns destinatários são inválidos.</string>
@@ -165,6 +166,7 @@
   <string name="menu_reply">Responder</string>
   <string name="slot1">SIM 1</string>
   <string name="slot2">SIM 2</string>
+  <string name="sim_spinner_active_item_postfix">SIM %d</string>
   <string name="cannot_play">Não consegue apresentar os slides.</string>
   <string name="confirm_delete_selected_messages">As mensagens selecionadas serão eliminadas.</string>
   <string name="send_failure">Não foi possível enviar a mensagem.</string>
@@ -255,4 +257,6 @@
   <string name="pref_title_mms_auto_enable_data">Dados automáticos</string>
   <string name="pref_summary_mms_auto_enable_data">Ativar automaticamente os dados móveis para as mensagens MMS</string>
   <string name="adding_selected_recipients_dialog_text">A adicionar contactos\u2026</string>
+  <string name="pref_title_mms_smart_dialer">Chamada inteligente</string>
+  <string name="pref_summary_mms_smart_dialer">Chamar automaticamente o contacto ao mover o telefone para o seu ouvido</string>
 </resources>
