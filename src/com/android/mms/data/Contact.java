@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import android.accounts.Account;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.ContentObserver;
@@ -20,6 +21,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
+import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Contacts;
@@ -119,6 +121,8 @@ public class Contact {
     private boolean mIsMe;          // true if this contact is me!
     private boolean mSendToVoicemail;   // true if this contact should not put up notification
     private Uri mPeopleReferenceUri;
+    private String mAccountType;
+    private String mAccountName;
 
     public interface UpdateListener {
         public void onUpdate(Contact updated);
@@ -317,8 +321,14 @@ public class Contact {
     }
 
     public synchronized void bindAvatar(ImageView view) {
+        if (TextUtils.isEmpty(mAccountName) || TextUtils.isEmpty(mAccountType)) {
         sContactPhotoManager.loadThumbnail(view, mPhotoId, false, true,
                 new DefaultImageRequest(getName(), getPhotoIdentifier(), true));
+        } else {
+            sContactPhotoManager.loadThumbnail(view, mPhotoId,
+                    new Account(mAccountName, mAccountType), false, true,
+                    new DefaultImageRequest(getName(), getPhotoIdentifier(), true));
+        }
     }
 
     public synchronized int getPresenceResId() {
@@ -512,7 +522,9 @@ public class Contact {
                 Phone.NORMALIZED_NUMBER,        // 7
                 Phone.PHOTO_ID,                 // 8
                 Phone.LOOKUP_KEY,               // 9
-                Contacts.SEND_TO_VOICEMAIL      // 10
+                Contacts.SEND_TO_VOICEMAIL,     // 10
+                ContactsContract.RawContacts.ACCOUNT_TYPE, //11
+                ContactsContract.RawContacts.ACCOUNT_NAME, //12
         };
 
         private static final int PHONE_ID_COLUMN = 0;
@@ -526,6 +538,8 @@ public class Contact {
         private static final int CONTACT_PHOTO_ID_COLUMN = 8;
         private static final int CONTACT_LOOKUP_KEY_COLUMN = 9;
         private static final int SEND_TO_VOICEMAIL = 10;
+        private static final int CONTACT_ACCOUNT_TYPE = 11;
+        private static final int CONTACT_ACCOUNT_NAME = 12;
 
         private static final String[] SELF_PROJECTION = new String[] {
                 Phone._ID,                      // 0
@@ -553,7 +567,9 @@ public class Contact {
                 Phone.DISPLAY_NAME,           // 4
                 Email.PHOTO_ID,               // 5
                 Email.LOOKUP_KEY,             // 6
-                Contacts.SEND_TO_VOICEMAIL    // 7
+                Contacts.SEND_TO_VOICEMAIL,   // 7
+                ContactsContract.RawContacts.ACCOUNT_NAME, //8
+                ContactsContract.RawContacts.ACCOUNT_TYPE, //9
         };
         private static final int EMAIL_ID_COLUMN = 0;
         private static final int EMAIL_NAME_COLUMN = 1;
@@ -563,6 +579,8 @@ public class Contact {
         private static final int EMAIL_PHOTO_ID_COLUMN = 5;
         private static final int EMAIL_CONTACT_LOOKUP_KEY_COLUMN = 6;
         private static final int EMAIL_SEND_TO_VOICEMAIL_COLUMN = 7;
+        private static final int EMAIL_CONTACT_ACCOUNT_NAME = 8;
+        private static final int EMAIL_CONTACT_ACCOUNT_TYPE = 9;
 
         private final Context mContext;
 
@@ -732,6 +750,7 @@ public class Contact {
                 final String whereClause = Phone._ID + " IN (" + idSetBuilder.toString() + ")";
                 cursor = mContext.getContentResolver().query(
                         PHONES_WITH_PRESENCE_URI, CALLER_ID_PROJECTION, whereClause, null, null);
+
             }
 
             if (cursor == null) {
@@ -750,6 +769,7 @@ public class Contact {
                     // Put the result in the cache.
                     mContactsHash.put(key(entry.mNumber, sStaticKeyBuffer), value);
                     entries.add(entry);
+
                 }
             } finally {
                 cursor.close();
@@ -860,6 +880,8 @@ public class Contact {
                     c.mName = entry.mName;
                     c.mSendToVoicemail = entry.mSendToVoicemail;
                     c.mPeopleReferenceUri = entry.mPeopleReferenceUri;
+                    c.mAccountType = entry.mAccountType;
+                    c.mAccountName = entry.mAccountName;
 
                     c.notSynchronizedUpdateNameAndNumber();
 
@@ -1046,6 +1068,8 @@ public class Contact {
 
                 String lookupKey = cursor.getString(CONTACT_LOOKUP_KEY_COLUMN);
                 contact.mLookupUri = Contacts.getLookupUri(contact.mPersonId, lookupKey);
+                contact.mAccountName = cursor.getString(CONTACT_ACCOUNT_NAME);
+                contact.mAccountType = cursor.getString(CONTACT_ACCOUNT_TYPE);
 
                 if (Log.isLoggable(LogTag.CONTACT, Log.DEBUG)) {
                     log("fillPhoneTypeContact: name=" + contact.mName + ", number="
@@ -1182,6 +1206,8 @@ public class Contact {
                                 }
                                 found = true;
                             }
+                            entry.mAccountName = cursor.getString(EMAIL_CONTACT_ACCOUNT_NAME);
+                            entry.mAccountType = cursor.getString(EMAIL_CONTACT_ACCOUNT_TYPE);
                         }
 
                         if (found) {
