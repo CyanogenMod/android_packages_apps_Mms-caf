@@ -1166,7 +1166,7 @@ public class ComposeMessageActivity extends Activity
                     menu.add(0, MENU_VIEW_CONTACT, 0, R.string.menu_view_contact)
                             .setOnMenuItemClickListener(l);
                 } else if (canAddToContacts(c)){
-                    menu.add(0, MENU_ADD_TO_CONTACTS, 0, R.string.menu_add_to_contacts)
+                    menu.add(0, MENU_ADD_TO_CONTACTS, 0, R.string.menu_add_to_contacts_cm)
                             .setOnMenuItemClickListener(l);
                 }
             }
@@ -3070,7 +3070,7 @@ public class ComposeMessageActivity extends Activity
     }
 
     private void buildAddAddressToContactMenuItem(Menu menu) {
-        // bug #7087793: for group of recipients, remove "Add to People" action. Rely on
+        // bug #7087793: for group of recipients, remove "Add to Contacts" action. Rely on
         // individually creating contacts for unknown phone numbers by touching the individual
         // sender's avatars, one at a time
         ContactList contacts = getRecipients();
@@ -3083,7 +3083,7 @@ public class ComposeMessageActivity extends Activity
         Contact c = contacts.get(0);
         if (!c.existsInDatabase() && canAddToContacts(c)) {
             Intent intent = ConversationList.createAddContactIntent(c.getNumber());
-            menu.add(0, MENU_ADD_ADDRESS_TO_CONTACTS, 0, R.string.menu_add_to_contacts)
+            menu.add(0, MENU_ADD_ADDRESS_TO_CONTACTS, 0, R.string.menu_add_to_contacts_cm)
                 .setIcon(android.R.drawable.ic_menu_add)
                 .setIntent(intent);
         }

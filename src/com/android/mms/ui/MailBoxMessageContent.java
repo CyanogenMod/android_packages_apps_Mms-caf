@@ -247,7 +247,7 @@ public class MailBoxMessageContent extends Activity {
         }
 
         if (!Contact.get(mMsgFrom, false).existsInDatabase()) {
-            menu.add(0, MENU_SAVE_TO_CONTACT, 0, R.string.menu_add_to_contacts);
+            menu.add(0, MENU_SAVE_TO_CONTACT, 0, R.string.menu_add_to_contacts_cm);
         }
 
         return true;
