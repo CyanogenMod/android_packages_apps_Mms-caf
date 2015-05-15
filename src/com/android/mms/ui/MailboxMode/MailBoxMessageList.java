@@ -775,6 +775,7 @@ public class MailBoxMessageList extends ListActivity implements
             mListAdapter.changeCursor(null);
         }
         MessageUtils.removeDialogs();
+        Contact.clearListener();
     }
 
     private void confirmDeleteMessages() {
