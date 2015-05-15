@@ -44,22 +44,29 @@ public class CMConversationSettings {
             new String[] { String.valueOf(threadId) },
             null, null, null, null);
 
-        // we should only have one result
-        int count = cursor.getCount();
-        CMConversationSettings convSetting;
-        if (cursor != null && count == 1) {
-            cursor.moveToFirst();
-            convSetting = new CMConversationSettings(context,
-                threadId,
-                cursor.getInt(1),
-                cursor.getString(2),
-                cursor.getInt(3),
-                cursor.getString(4)
-            );
-        } else if (count > 1) {
-            Log.wtf(TAG, "More than one settings with the same thread id is returned!");
-            return null;
-        } else {
+        CMConversationSettings convSetting = null;
+        if (cursor != null) {
+            // we should only have one result
+            int count = cursor.getCount();
+            if (count == 1) {
+                cursor.moveToFirst();
+                convSetting = new CMConversationSettings(context,
+                        threadId,
+                        cursor.getInt(1),
+                        cursor.getString(2),
+                        cursor.getInt(3),
+                        cursor.getString(4)
+                        );
+            } else if (count > 1) {
+                Log.wtf(TAG, "More than one settings with the same thread id is returned!");
+                cursor.close();
+                return null;
+            }
+            cursor.close();
+        }
+
+        // Either cursor was null or empty
+        if (convSetting == null) {
             convSetting = new CMConversationSettings(context, threadId,
                 DEFAULT_NOTIFICATION_ENABLED, DEFAULT_NOTIFICATION_TONE,
                 DEFAULT_VIBRATE_ENABLED, DEFAULT_VIBRATE_PATTERN);
