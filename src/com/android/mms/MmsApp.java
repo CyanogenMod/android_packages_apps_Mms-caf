@@ -33,6 +33,7 @@ import android.util.Log;
 
 import com.android.mms.data.Contact;
 import com.android.mms.data.Conversation;
+import com.android.mms.data.cm.CMMmsDatabaseHelper;
 import com.android.mms.layout.LayoutManager;
 import com.android.mms.transaction.MessagingNotification;
 import com.android.mms.transaction.MmsSystemEventReceiver;
@@ -126,6 +127,7 @@ public class MmsApp extends Application {
     @Override
     public void onTerminate() {
         mCountryDetector.removeCountryListener(mCountryListener);
+        CMMmsDatabaseHelper.closeIfNecessary();
     }
 
     @Override

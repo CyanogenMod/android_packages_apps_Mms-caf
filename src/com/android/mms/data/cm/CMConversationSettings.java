@@ -47,7 +47,7 @@ public class CMConversationSettings {
         // we should only have one result
         int count = cursor.getCount();
         CMConversationSettings convSetting;
-        if (cursor != null && count == 1) {
+        if (count == 1) {
             cursor.moveToFirst();
             convSetting = new CMConversationSettings(context,
                 threadId,
@@ -58,6 +58,7 @@ public class CMConversationSettings {
             );
         } else if (count > 1) {
             Log.wtf(TAG, "More than one settings with the same thread id is returned!");
+            cursor.close();
             return null;
         } else {
             convSetting = new CMConversationSettings(context, threadId,
@@ -66,7 +67,7 @@ public class CMConversationSettings {
 
             helper.insertCMConversationSettings(convSetting);
         }
-
+        cursor.close();
         return convSetting;
     }
 
