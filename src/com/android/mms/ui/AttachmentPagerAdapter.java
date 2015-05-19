@@ -205,6 +205,7 @@ public class AttachmentPagerAdapter extends PagerAdapter {
             list.add(new IconListItem(mContext.getString(R.string.attach_add_contact_as_vcard),
                     (!mIsReplace && mHasAttachment) ? R.drawable.ic_attach_vcard_disable
                             : R.drawable.ic_attach_vcard_holo_light));
+            mIndexOfAttachmentTypes.put(index++, ADD_CONTACT_AS_VCARD);
         } else if (isRcsSupported) {
             list.add(new IconListItem(mContext.getString(R.string.attach_add_contact_as_vcard),
                     (!mIsReplace && mHasAttachment) ? R.drawable.ic_attach_vcard_disable
@@ -221,6 +222,7 @@ public class AttachmentPagerAdapter extends PagerAdapter {
         list.add(new IconListItem(mContext.getString(R.string.attach_add_calendar_events),
                 (!mIsReplace && mHasAttachment) ? R.drawable.ic_attach_event_disable
                         : R.drawable.ic_attach_event));
+        mIndexOfAttachmentTypes.put(index++, ADD_CALENDAR_EVENTS);
         return list;
     }
 
