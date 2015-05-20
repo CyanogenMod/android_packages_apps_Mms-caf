@@ -104,4 +104,6 @@
 
     <!-- configuration for ignoring CDMA SMS attributes during international roaming -->
     <bool name="config_ignore_sms_attributes">false</bool>
+    <!-- configuration for display sent time in CT mode -->
+    <bool name="config_display_sent_time">false</bool>
 </resources>
