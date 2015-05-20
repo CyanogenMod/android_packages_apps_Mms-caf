@@ -64,11 +64,11 @@ public class TransactionSettings {
             Log.v(TAG, "TransactionSettings: apnName: " + apnName +
                     "subId: " + subId);
         }
-        String selection = null;
+        String selection = Telephony.Carriers.CURRENT + " IS NOT NULL";
         String[] selectionArgs = null;
         Uri contentUri = Telephony.Carriers.CONTENT_URI;
         if (!TextUtils.isEmpty(apnName)) {
-            selection = Telephony.Carriers.APN + "=?";
+            selection += " AND " + Telephony.Carriers.APN + "=?";
             selectionArgs = new String[]{ apnName.trim() };
         } else {
             contentUri = Uri.withAppendedPath(contentUri, "/subId/" + subId);
