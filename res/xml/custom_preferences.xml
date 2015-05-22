@@ -241,7 +241,9 @@
     </PreferenceCategory>
 
     <!-- Extra Settings -->
-    <PreferenceCategory android:title="@string/pref_extra_settings">
+    <PreferenceCategory
+            android:key="pref_key_extra_settings"
+            android:title="@string/pref_extra_settings">
 
         <PreferenceScreen
                 android:key="pref_blacklist"
