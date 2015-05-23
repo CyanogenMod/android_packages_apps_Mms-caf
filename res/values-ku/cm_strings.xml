@@ -29,11 +29,11 @@
   <string name="qm_mark_read">خوێندنەوە</string>
   <string name="pref_title_send_delay">ماوەی وەرگرتن</string>
   <string name="send_delay_immediate">ناردنی یەکسەری</string>
-  <string name="send_delay_3seconds">3 چرکە</string>
-  <string name="send_delay_5seconds">5 چرکە</string>
-  <string name="send_delay_10seconds">10 چرکە</string>
-  <string name="send_delay_20seconds">20 چرکە</string>
-  <string name="send_delay_30seconds">30 چرکە</string>
+  <string name="send_delay_3seconds">٣ چرکە</string>
+  <string name="send_delay_5seconds">٥ چرکە</string>
+  <string name="send_delay_10seconds">١٠ چرکە</string>
+  <string name="send_delay_20seconds">٢٠ چرکە</string>
+  <string name="send_delay_30seconds">٣٠ چرکە</string>
   <string name="sent_countdown">نامه‌ی گه‌شتن کاتی ته‌واوبوو</string>
   <string name="pref_extra_settings">ڕێکخستنی زیاتر</string>
   <string name="blacklist_summary_disabled">ناچالاکە</string>
@@ -49,7 +49,7 @@
   <string name="no_recipients_mobile_only">هیچ په‌یوه‌ندییه‌ک نه‌دۆزرایه‌وه‌. هه‌وڵبده‌ به‌بێ فیلته‌ری \"ژماره‌ مۆبایل\" کاربکه‌یت</string>
   <string name="menu_done">تەواو</string>
   <string name="menu_mobile">تەنیا ژمارەی مۆبایل</string>
-  <string name="deleting_threads">سڕینه‌وه‌ی بابه‌تی\u2026</string>
+  <string name="deleting_threads">سڕینه‌وه‌ی بابه‌تی\u٢٠٢٦</string>
   <string name="menu_resend">دووباره‌ناردنه‌وه‌</string>
   <string name="cancel_downloading">لابردن</string>
   <string name="media_size_limit">قه‌باره‌ی نامه‌ گه‌شته‌ سنووری خۆی، ناتوانرێ بنێردرێ.</string>
@@ -67,7 +67,7 @@
   <string name="contact_info_text_as_name">ناو:</string>
   <string name="contact_info_text_as_phone">تەلەفۆن:</string>
   <string name="contact_info_text_as_email">پۆستی ئه‌لەکترۆنی:</string>
-  <string name="memory_status_title">دۆخی بیرگە</string>
+  <string name="memory_status_title">دۆخی یادگە</string>
   <string name="sms_validity_period_not_set">دانەنراوە</string>
   <string name="sms_validity_period_one_hour">١ کاژێر</string>
   <string name="sms_validity_period_six_hours">٦ کاژێر</string>
@@ -103,7 +103,7 @@
   <string name="cdma_priority_urgent">بەپەلە</string>
   <string name="cdma_priority_emergency">فریاگوزاری</string>
   <string name="pref_title_cdma_priority">پێشەنگیی نامە</string>
-  <string name="pref_title_sms_store">بیرگەی بەباشزانراو</string>
+  <string name="pref_title_sms_store">یادگەی بەباشزانراو</string>
   <string name="pref_sms_store_phone">مۆبایل</string>
   <string name="pref_sms_store_card">سیمکارت</string>
 </resources>
