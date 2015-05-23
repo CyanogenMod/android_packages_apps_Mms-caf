@@ -68,6 +68,7 @@ import com.android.mms.LogTag;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.ui.ComposeMessageActivity;
+import com.android.mms.ui.MessageUtils;
 import com.android.mms.util.DownloadManager;
 import com.android.mms.util.RateController;
 import com.google.android.mms.pdu.GenericPdu;
@@ -430,6 +431,13 @@ public class TransactionService extends Service implements Observer {
             return;
         }
         boolean noNetwork = false;
+        if (getResources().getBoolean(
+                com.android.internal.R.bool.config_regional_mms_via_wifi_enable)) {
+            NetworkInfo ni = mConnMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE_MMS);
+            boolean shouldUseWifi = MessageUtils.shouldHandleMmsViaWifi(getApplicationContext());
+            noNetwork = !shouldUseWifi && (!mConnMgr.getMobileDataEnabled()
+                    || !(ni != null && ni.isAvailable()));
+        }
 
         if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
             Log.v(TAG, "onNewIntent: serviceId: " + serviceId + ": " + intent.getExtras() +
@@ -1002,6 +1010,12 @@ public class TransactionService extends Service implements Observer {
         }
         // Take a wake lock so we don't fall asleep before the message is downloaded.
         createWakeLock();
+        if (getResources().getBoolean(
+                com.android.internal.R.bool.config_regional_mms_via_wifi_enable)) {
+            if (MessageUtils.shouldHandleMmsViaWifi(getApplicationContext())){
+                return PhoneConstants.APN_ALREADY_ACTIVE;
+            }
+        }
 
         int result = mConnMgr.startUsingNetworkFeatureForSubscription(
                 ConnectivityManager.TYPE_MOBILE, Phone.FEATURE_ENABLE_MMS, subId);
