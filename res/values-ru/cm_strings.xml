@@ -62,6 +62,7 @@
   <string name="menu_as_read">Отметить как прочит.</string>
   <string name="menu_all_as_unread">Отм. все как непрочит.</string>
   <string name="menu_all_as_read">Отм. все как прочит.</string>
+  <string name="menu_add_to_contacts_cm">Добавить в контакты</string>
   <string name="confirm_mark_unread_dialog_title">Отметить как непрочитанное?</string>
   <string name="confirm_mark_unread_conversation">Цепочка будет помечена как содержащая новые сообщения.</string>
   <string name="confirm_mark_read_dialog_title">Отметить как прочитанное?</string>
@@ -87,7 +88,7 @@
   <string name="confirm_cancel_downloading">Загрузка MMS будет отменена</string>
   <string name="send_by_slot1">Отправить через SIM 1</string>
   <string name="send_by_slot2">Отправить через SIM 2</string>
-  <string name="select_phone_account_title">Отправить через\u2026</string>
+  <string name="select_phone_account_title">Отправить через</string>
   <string name="media_size_limit">Сообщение больше максимально допустимого размера, отправка невозможна.</string>
   <string name="illegal_message_or_increase_size">Некорректный размер сообщения.</string>
   <string name="discard_message_reason_some_invalid">Сообщение будет удалено, так как некоторые получатели недействительны.</string>

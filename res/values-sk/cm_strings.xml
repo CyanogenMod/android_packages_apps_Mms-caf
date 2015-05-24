@@ -62,6 +62,7 @@
   <string name="menu_as_read">Označiť ako prečítané</string>
   <string name="menu_all_as_unread">Označiť všetko ako neprečítané</string>
   <string name="menu_all_as_read">Označiť všetko ako prečítané</string>
+  <string name="menu_add_to_contacts_cm">Pridať do kontaktov</string>
   <string name="confirm_mark_unread_dialog_title">Označiť ako neprečítané?</string>
   <string name="confirm_mark_unread_conversation">Konverzácia bude označená ako neprečítaná.</string>
   <string name="confirm_mark_read_dialog_title">Označiť ako prečítané?</string>

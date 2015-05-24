@@ -41,13 +41,16 @@
   <string name="send_delay_30seconds">30 秒</string>
   <string name="sent_countdown">延迟发送倒计时</string>
   <string name="pref_extra_settings">其他设置</string>
+  <string name="blacklist_title">呼叫黑名单列表</string>
   <string name="blacklist_summary_disabled">禁用</string>
+  <string name="blacklist_summary">您将不会收到来自呼叫黑名单列表中的来电或短信</string>
   <string name="blacklist_notification">来自 %s 的信息已被阻止</string>
   <string name="blacklist_notification_private_number">阻止来自私人号码的信息</string>
   <string name="blacklist_notification_list_private">私人号码</string>
   <string name="blacklist_notification_unknown_number">来自未知号码 %s 的信息已阻止</string>
   <string name="blacklist_notification_multiple">已阻止<xliff:g id="count">%d</xliff:g> 条信息</string>
   <string name="unblock_number">取消阻止</string>
+  <string name="add_to_blacklist">添加到呼叫黑名单</string>
   <string name="add_to_blacklist_message">未来来自于 %s 的信息将会被阻止</string>
   <string name="alert_dialog_yes">是</string>
   <string name="alert_dialog_no">否</string>
@@ -59,6 +62,7 @@
   <string name="menu_as_read">标记为已读</string>
   <string name="menu_all_as_unread">全部标记为未读</string>
   <string name="menu_all_as_read">全部标记为已读</string>
+  <string name="menu_add_to_contacts_cm">添加到联系人</string>
   <string name="confirm_mark_unread_dialog_title">标记为未读？</string>
   <string name="confirm_mark_unread_conversation">该会话将被标记为未读。</string>
   <string name="confirm_mark_read_dialog_title">标记为已读？</string>
@@ -254,4 +258,6 @@
   <string name="pref_title_mms_auto_enable_data">自动启用数据</string>
   <string name="pref_summary_mms_auto_enable_data">自动启用彩信的移动数据</string>
   <string name="adding_selected_recipients_dialog_text">添加联系人\u2026</string>
+  <string name="pref_title_mms_smart_dialer">智能呼叫</string>
+  <string name="pref_summary_mms_smart_dialer">移动手机到您的耳边时，自动呼叫该联系人</string>
 </resources>

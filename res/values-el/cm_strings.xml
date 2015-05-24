@@ -62,6 +62,7 @@
   <string name="menu_as_read">Επισήμανση ως αναγνωσμένο</string>
   <string name="menu_all_as_unread">Επισήμανση όλων ως μη αναγνωσμένα</string>
   <string name="menu_all_as_read">Επισήμανση όλων ως αναγνωσμένα</string>
+  <string name="menu_add_to_contacts_cm">Προσθήκη στις Επαφές</string>
   <string name="confirm_mark_unread_dialog_title">Επισήμανση ως μη αναγνωσμένο;</string>
   <string name="confirm_mark_unread_conversation">Η συνομιλία θα επισημανθεί ως μη αναγνωσμένη.</string>
   <string name="confirm_mark_read_dialog_title">Επισήμανση ως αναγνωσμένο;</string>

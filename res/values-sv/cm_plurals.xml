@@ -20,4 +20,12 @@
     <item quantity="one">Skickar om 1 sekund, tryck för att avbryta.</item>
     <item quantity="other">Skickar om %1$d sekunder, tryck för att avbryta.</item>
   </plurals>
+  <plurals name="confirm_delete_messages">
+    <item quantity="one">Ett meddelande kommer att tas bort.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> meddelanden kommer att tas bort.</item>
+  </plurals>
+  <plurals name="confirm_mark_read_conversation">
+    <item quantity="one">Konversationen kommer att markeras som oläst.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> konversationer kommer att markeras som olästa.</item>
+  </plurals>
 </resources>

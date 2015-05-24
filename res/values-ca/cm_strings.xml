@@ -62,6 +62,7 @@
   <string name="menu_as_read">Marca com a llegit</string>
   <string name="menu_all_as_unread">Marcal\'s tots com sense llegir</string>
   <string name="menu_all_as_read">Marca-ho tot com a llegit</string>
+  <string name="menu_add_to_contacts_cm">Afegeix als contactes</string>
   <string name="confirm_mark_unread_dialog_title">Marcar com a sense llegir?</string>
   <string name="confirm_mark_unread_conversation">La conversa es marcarà com a no llegida.</string>
   <string name="confirm_mark_read_dialog_title">Marcar-ho com a llegit?</string>
