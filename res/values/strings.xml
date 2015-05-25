@@ -1008,6 +1008,7 @@
     <string name="mms_max">Maximum</string>
     <string name="save_description">The time of message storing in server</string>
     <string name="status_expired">Mms expired</string>
+    <string name="mms_recipient_Limit"></string>
 
     <string name="pref_sim_card_full_save_to_phone">SIM card full, save new message to phone.</string>
 
