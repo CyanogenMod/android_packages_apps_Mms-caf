@@ -2875,6 +2875,16 @@ public class ComposeMessageActivity extends Activity
 
         mIsRunning = true;
 
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        int inputType = Integer.parseInt(prefs.getString(MessagingPreferenceActivity.INPUT_TYPE,
+                Integer.toString(InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE)));
+        // Clear the current input type
+        int currInputType = mTextEditor.getInputType();
+        currInputType &= ~InputType.TYPE_TEXT_VARIATION_LONG_MESSAGE;
+        currInputType &= ~InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE;
+
+        mTextEditor.setInputType(currInputType | inputType);
+
         // refresh autotext state after adding word to dictionary
         CharSequence text = mWorkingMessage.getText();
         if (text != null && mTextEditor.isCursorVisible()) {
@@ -4842,10 +4852,6 @@ public class ComposeMessageActivity extends Activity
             mTextEditor.setFilters(new InputFilter[] {
                     new LengthFilter(getResources().getInteger(R.integer.slide_text_limit_size))});
         }
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        int inputType = Integer.parseInt(prefs.getString(MessagingPreferenceActivity.INPUT_TYPE,
-                Integer.toString(InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE)));
-        mTextEditor.setInputType(mTextEditor.getInputType() | inputType);
 
         mTopPanel = findViewById(R.id.recipients_subject_linear);
         mTopPanel.setFocusable(false);
