@@ -229,7 +229,8 @@ public class ClassZeroActivity extends Activity {
         // Store the message in the content provider.
         ContentValues values = new ContentValues();
 
-        values.put(Inbox.ADDRESS, MessageUtils.convertIdp(this, sms.getDisplayOriginatingAddress()));
+        values.put(Inbox.ADDRESS, MessageUtils.convertIdp(this,
+                sms.getDisplayOriginatingAddress(), sms.getSubId()));
 
         // Use now for the timestamp to avoid confusion with clock
         // drift between the handset and the SMSC.
@@ -253,7 +254,8 @@ public class ClassZeroActivity extends Activity {
         values.put(Inbox.BODY, sms.getMessageBody());
 
         ContentResolver resolver = getContentResolver();
-        String originatingAddress = MessageUtils.convertIdp(this, sms.getOriginatingAddress());
+        String originatingAddress = MessageUtils.convertIdp(this,
+                sms.getOriginatingAddress(), sms.getSubId());
         int protocolIdentifier = sms.getProtocolIdentifier();
         String selection = Sms.ADDRESS + " = ? AND " + Sms.PROTOCOL + " = ?";
         String[] selectionArgs = new String[] { originatingAddress,
