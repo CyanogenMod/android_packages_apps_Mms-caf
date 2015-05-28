@@ -91,4 +91,6 @@
 
     <!-- enable to send a blank sms-->
     <bool name="enable_send_blank_message">false</bool>
+
+    <bool name="def_show_mms_size">false</bool>
 </resources>

@@ -333,10 +333,10 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             prefRoot.removePreference(OMACPConCategory);
         }
 
+        mMmsSizeLimit = (Preference) findPreference("pref_key_mms_size_limit");
+
         if (getResources().getBoolean(R.bool.def_custom_preferences_settings)) {
             mCBsettingPref = findPreference(CELL_BROADCAST);
-            mMmsSizeLimit = (Preference) findPreference("pref_key_mms_size_limit");
-            setMmsSizeSummary();
             mFontSizePref = (ListPreference) findPreference(FONT_SIZE_SETTING);
         }
         //Chat wallpaper
@@ -484,6 +484,13 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             }
             if (!MmsConfig.isCreationModeEnabled()) {
                 mMmsPrefCategory.removePreference(mMmsCreationModePref);
+            }
+            if (!getResources().getBoolean(
+                    R.bool.def_custom_preferences_settings)
+                    && !(getResources().getBoolean(R.bool.def_show_mms_size))) {
+                mMmsPrefCategory.removePreference(mMmsSizeLimit);
+            } else {
+                setMmsSizeSummary();
             }
         }
 
@@ -1398,9 +1405,17 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         return null;
     }
     private void setMmsSizeSummary() {
-        mMmsSizeLimit.setSummary(Integer.toString(MmsConfig
-                .getMaxMessageSize() / MmsConfig.KB_IN_BYTES)
-                + MmsConfig.KILO_BYTE);
+        String mSize = "";
+        if (getResources().getBoolean(R.bool.def_custom_preferences_settings)) {
+            mSize = MmsConfig
+                    .getMaxMessageSize() / MmsConfig.KB_IN_BYTES
+                    + MmsConfig.KILO_BYTE;
+        } else if (getResources().getBoolean(R.bool.def_show_mms_size)) {
+            mSize = MmsConfig.getMaxMessageSize()
+                    / (MmsConfig.KB_IN_BYTES * MmsConfig.KB_IN_BYTES)
+                    + MmsConfig.MEGA_BYTE;
+        }
+        mMmsSizeLimit.setSummary(mSize);
     }
 
     private void setSmsPreferFontSummary() {

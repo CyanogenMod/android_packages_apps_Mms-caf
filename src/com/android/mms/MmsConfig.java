@@ -56,6 +56,7 @@ public class MmsConfig {
 
     public static final String EXTRA_URI = "uri";
     public static final String KILO_BYTE = "KB";
+    public static final String MEGA_BYTE = "MB";
     public static final int KB_IN_BYTES = 1024;
 
     /**
