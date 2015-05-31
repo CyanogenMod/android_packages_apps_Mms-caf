@@ -78,7 +78,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:linksClickable="false"
-                    android:textColorLink="@color/outgoing_message_bg"
+                    android:textColorLink="@color/message_link_text_color"
                     android:textAppearance="@android:style/TextAppearance.Material.Body1" />
 
                 <TextView android:id="@+id/mms_msg_size_view"
