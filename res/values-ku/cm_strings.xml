@@ -254,7 +254,7 @@
   <string name="pref_sms_store_phone">مۆبایل</string>
   <string name="pref_sms_store_card">سیمکارت</string>
   <string name="pref_sim_card_full_save_to_phone">سیمکارت پڕە، پاشەکەوتکردنی نامە نوێیەکان بۆ ناو بیرگەی مۆبایل.</string>
-  <string name="mms_size_indicator"><xliff:g id="mms_size">%1$s</xliff:g>KB/<xliff:g id="all_size">%2$s</xliff:g>KB</string>
+  <string name="mms_size_indicator"><xliff:g id="mms_size">%١$s</xliff:g>KB/<xliff:g id="all_size">%٢$s</xliff:g>KB</string>
   <string name="selected_all">دیاریکردنی هەموو</string>
   <string name="deselected_all">دیاری نەکردنی هەموو</string>
   <string name="selected_count"><xliff:g id="COUNT">%d</xliff:g> دیاری کراوە</string>
