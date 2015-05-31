@@ -17,19 +17,19 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <plurals name="template_confirm_delete_conversation">
-    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> چوارچێوەکە ئەسڕێتەوە.</item>
-    <item quantity="other"><xliff:g id="number">%1$s</xliff:g> چوارچێوەکە ئەسڕێتەوە.</item>
+    <item quantity="one"><xliff:g id="number">%١$s</xliff:g> چوارچێوەکە ئەسڕێتەوە.</item>
+    <item quantity="other"><xliff:g id="number">%١$s</xliff:g> چوارچێوەکە ئەسڕێتەوە.</item>
   </plurals>
   <plurals name="remaining_delay_time">
-    <item quantity="one">ناردن بۆ %1$d دوەم دەستلێدان بۆ پوچکردنەوە.</item>
-    <item quantity="other">ناردن بۆ %1$d دوەم دەستلێدان بۆ هەڵوەشاندنەوە.</item>
+    <item quantity="one">ناردن بۆ %١$d دوەم دەستلێدان بۆ پوچکردنەوە.</item>
+    <item quantity="other">ناردن بۆ %١$d دوەم دەستلێدان بۆ هەڵوەشاندنەوە.</item>
   </plurals>
   <plurals name="confirm_mark_unread_conversation">
-    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> گفتوگۆکە دیاری ئەکرێت وەکو نەخوێندن.</item>
-    <item quantity="other"><xliff:g id="number">%1$s</xliff:g> گفتوگۆکە دیاری ئەکرێت وەکو نەخوێندراوە.</item>
+    <item quantity="one"><xliff:g id="number">%١$s</xliff:g> گفتوگۆکە دیاری ئەکرێت وەکو نەخوێندن.</item>
+    <item quantity="other"><xliff:g id="number">%١$s</xliff:g> گفتوگۆکە دیاری ئەکرێت وەکو نەخوێندراوە.</item>
   </plurals>
   <plurals name="confirm_mark_read_conversation">
-    <item quantity="one"><xliff:g id="number">%1$s</xliff:g> گفتوگۆکە دیاری ئەکرێت وەکو خوێندراوە.</item>
-    <item quantity="other"><xliff:g id="number">%1$s</xliff:g> گفتوگۆکە دیاری ئەکرێت وەکو خوێندراوە.</item>
+    <item quantity="one"><xliff:g id="number">%١$s</xliff:g> گفتوگۆکە دیاری ئەکرێت وەکو خوێندراوە.</item>
+    <item quantity="other"><xliff:g id="number">%١$s</xliff:g> گفتوگۆکە دیاری ئەکرێت وەکو خوێندراوە.</item>
   </plurals>
 </resources>

@@ -24,13 +24,13 @@
   <string name="toast_sending_message">ناردنی پەیام</string>
   <string name="qm_quick_reply">وەڵامدانەوە</string>
   <string name="qm_mark_read">خوێندنەوە</string>
-  <string name="message_counter">%1$d لە %2$d</string>
+  <string name="message_counter">%١$d لە %٢$d</string>
   <string name="pref_title_notification_privacy_mode_enabled">شێوازی تایبەتی</string>
   <string name="pref_summary_notification_privacy_mode_enabled">شاردنه‌وه‌ی نێرده‌ری نامه‌که‌ و نامه‌که‌ خۆی له‌ شریتی دۆخ وه‌ له‌کارخستنی \'وه‌ڵامی خێرا\'</string>
   <string name="notification_single_title_privacy_mode">پەیامی نوێ</string>
-  <string name="notification_single_text_privacy_mode">1 پەیامی نەخوێندراوە</string>
+  <string name="notification_single_text_privacy_mode">١ پەیامی نەخوێندراوە</string>
   <string name="notification_multiple_title_privacy_mode">پەیامی نوێ</string>
-  <string name="notification_multiple_text_privacy_mode"><xliff:g id="number" example="3">%1$s</xliff:g> پەیامی نەخوێندراوە</string>
+  <string name="notification_multiple_text_privacy_mode"><xliff:g id="number" example="٣">%١$s</xliff:g> پەیامی نەخوێندراوە</string>
   <string name="notification_ticker_privacy_mode">پەیامێکی نوێ هات</string>
   <string name="pref_quickmessage">وەڵامدانەوەی خێرا</string>
   <string name="pref_dark_theme_title">بەکارهێنانی ڕووکاری تاریک</string>
@@ -75,7 +75,7 @@
   <string name="pref_keyboard_new_line">نیشاندانی کلیلی ئینته‌ر</string>
   <string name="pref_keyboard_unknown">نه‌زانراو، تکایه‌ هه‌ڵیبژێره‌وه‌</string>
   <string name="pref_title_sms_split_counter">له‌تبوونی ژمێره‌ر</string>
-  <string name="pref_summary_sms_split_counter">زیادکردنی ژمیره‌ر بۆ نامه‌کان وه‌ک.(1/2)</string>
+  <string name="pref_summary_sms_split_counter">زیادکردنی ژمیره‌ر بۆ نامه‌کان وه‌ک.(١/٢)</string>
   <string name="blacklist_title">لیستی ڕەش</string>
   <string name="blacklist_summary_disabled">ناچالاکە</string>
   <string name="blacklist_summary">نامه‌ی هاتوو له‌ ژماره‌ی مۆبایله‌کانه‌وه‌ له‌ لیستی ڕه‌ش بلۆک ده‌بێت</string>
@@ -88,24 +88,24 @@
   <string name="menu_all_as_unread">دیاریکردنی هه‌مووی وه‌کو خوێندراوه‌</string>
   <string name="menu_all_as_read">نیشانەکردنی هەمووی وەکو خوێندراوە</string>
   <string name="confirm_mark_unread_dialog_title">نیشانەکردن وەکو نەخوێندراوە؟</string>
-  <string name="confirm_mark_read_dialog_title">نیشانەکردن وەکو خوێندراوە؟</string>
+  <string name="confirm_mark_read_dialog_title">نیشانەکردن وەکو خوێندراوە</string>
   <string name="confirm_mark_unread_all_conversations">هه‌موو بابه‌ته‌کان دیاری ده‌کرێن وه‌ک نه‌خوێندراوه‌.</string>
   <string name="confirm_mark_read_all_conversations">هه‌موو بابه‌ته‌کان دیاری ده‌کرێن وه‌کو خوێندراوه‌.</string>
   <string name="select_recipients">دیاریکردنی وه‌رگر</string>
-  <string name="groups_header">گرووپەکان</string>
+  <string name="groups_header">کۆمەڵەکان</string>
   <string name="no_recipients">هیچ ناوێک نەدۆزرایەوە</string>
   <string name="no_recipients_mobile_only">هیچ په‌یوه‌ندییه‌ک نه‌دۆزرایه‌وه‌. هه‌وڵبده‌ به‌بێ فیلته‌ری \"ژماره‌ مۆبایل\" کاربکه‌یت</string>
   <string name="menu_done">تەواو</string>
   <string name="menu_mobile">تەنیا ژمارەی مۆبایل</string>
-  <string name="menu_groups">پیشاندانی گرووپەکان</string>
-  <string name="fastscroll_index_groups">گروپ</string>
+  <string name="menu_groups">پیشاندانی کۆمەڵەکان</string>
+  <string name="fastscroll_index_groups">کۆمەڵ</string>
   <string name="pref_title_send_delay">ماوەی وەرگرتن</string>
   <string name="send_delay_immediate">ناردنی یەکسەری</string>
-  <string name="send_delay_3seconds">3 چرکە</string>
-  <string name="send_delay_5seconds">5 چرکە</string>
-  <string name="send_delay_10seconds">10 چرکە</string>
-  <string name="send_delay_20seconds">20 چرکە</string>
-  <string name="send_delay_30seconds">30 چرکە</string>
+  <string name="send_delay_3seconds">٣ چرکە</string>
+  <string name="send_delay_5seconds">٥ چرکە</string>
+  <string name="send_delay_10seconds">١٠ چرکە</string>
+  <string name="send_delay_20seconds">٢٠ چرکە</string>
+  <string name="send_delay_30seconds">٣٠ چرکە</string>
   <string name="sent_countdown">نامه‌ی گه‌شتن کاتی ته‌واوبوو</string>
   <string name="pref_title_mms_notification_vibrate_pattern">شێوازی له‌رینه‌وه‌</string>
   <string name="pref_summary_mms_notification_vibrate_pattern">گۆڕینی شێوازی له‌رینه‌وه‌</string>
@@ -128,7 +128,7 @@
   <string name="subscription_settings_title">ڕێکخستنی سیمکارد</string>
   <string name="sub_no_sim">سیمی تیانیه‌</string>
   <string name="pref_manage_subs_title">به‌ڕێوه‌بردنی سیمکارده‌کان</string>
-  <string name="deleting_threads">سڕینه‌وه‌ی بابه‌تی\u2026</string>
+  <string name="deleting_threads">سڕینه‌وه‌ی بابه‌تی\u٢٠٢٦</string>
   <string name="cell_broadcast_sender">که‌ناڵی په‌خشی خانه‌یی</string>
   <string name="sent_on">"نێردرا:<xliff:g id="date">%s</xliff:g>"</string>
   <string name="received_on">"وه‌رگیرا:<xliff:g id="date">%s</xliff:g>"</string>
@@ -142,21 +142,21 @@
   <string name="media_size_limit">قه‌باره‌ی نامه‌ گه‌شته‌ سنووری خۆی، ناتوانرێ بنێردرێ.</string>
   <string name="discard_message">ڕەتکردنەوە</string>
   <string name="cannot_send_attach_reason">ناتوانێت دەست بگەیەنێتە پاشکۆ، ناتوانێت نامە بنێرێت.</string>
-  <string name="converting_to_text_message">گۆڕان بۆ نامەی دەق\u2026</string>
+  <string name="converting_to_text_message">گۆڕان بۆ نامەی دەق\u٢٠٢٦</string>
   <string name="cannot_add_text_anymore">ناتوانێت دەقی زیاتر زیا بکرێت.</string>
   <string name="title_send_message">نامە ئەنێری؟</string>
   <string name="subject_full">بابەت پڕە</string>
   <string name="status_deleted_unread">سڕدراوە بێ ئەوەی بخوێندرێتەوە</string>
-  <string name="sms_full_body_cm">بیرگەی تەلەفۆن پڕە، ناتوانێت نامەی نوێ بنێرێت و وەربگرێت. هەندێک نامەی کۆن بسڕەوە.</string>
-  <string name="memory_low_title">بیرگەی نامەی دەق کەمە</string>
-  <string name="memory_low_body">بیرگەی تەلەفۆن کەمە، هەندێک دراوەی کۆن بسڕەوە بۆ دڵنیابوون لەوەی کە بۆشایی ئازادی پێویستت هەیە بۆ وەرگرتنی نامە نوێیەکان.</string>
+  <string name="sms_full_body_cm">یادگەی تەلەفۆن پڕە، ناتوانێت نامەی نوێ بنێرێت و وەربگرێت. هەندێک نامەی کۆن بسڕەوە.</string>
+  <string name="memory_low_title">یادگەی نامەی دەق کەمە</string>
+  <string name="memory_low_body">یادگەی تەلەفۆن کەمە، هەندێک دراوەی کۆن بسڕەوە بۆ دڵنیابوون لەوەی کە بۆشایی ئازادی پێویستت هەیە بۆ وەرگرتنی نامە نوێیەکان.</string>
   <string name="disk_storage_full_error">کۆگای مۆبایلەکەت پڕە.</string>
-  <string name="mobile_data_disable">دراوەی مۆبایل کوژاوەتەوە, ئێستاش دەتەوێ MMSەکە <xliff:g id="action" example="download">%1$s</xliff:g> بکەی؟ ئەمە لەوانەیە هاتووچووی دراوەی مۆبایل بەدیبهێنێت.</string>
+  <string name="mobile_data_disable">دراوەی مۆبایل کوژاوەتەوە, ئێستاش دەتەوێ MMSەکە <xliff:g id="action" example="download">%١$s</xliff:g> بکەی؟ ئەمە لەوانەیە هاتووچووی دراوەی مۆبایل بەدیبهێنێت.</string>
   <string name="mobile_data_send">ناردن</string>
   <string name="mobile_data_download">داگرتن</string>
   <string name="mms_too_large">ئەم نامەیە زۆر گەورەیە بۆ داگرتن.</string>
-  <string name="send_failed_retry">نامەکە نەنێردرا، هەوڵدانەوە\u2026</string>
-  <string name="download_failed_retry">نامەکە دانەبەزێنرا، هەوڵدانەوە\u2026</string>
+  <string name="send_failed_retry">نامەکە نەنێردرا، هەوڵدانەوە\u٢٠٢٦</string>
+  <string name="download_failed_retry">نامەکە دانەبەزێنرا، هەوڵدانەوە\u٢٠٢٦</string>
   <string name="download_canceled">داگرتن پاشگەزکرایەوە.</string>
   <string name="system_audio_item">ده‌نگی سیسته‌م</string>
   <string name="external_audio_item">ده‌نگی ده‌ره‌کی</string>
@@ -168,7 +168,7 @@
   <string name="abort_mms">نامه‌کردن:هه‌ڵوه‌شاندنه‌وه‌ی MMS</string>
   <string name="abort_mms_text">بیسوو بۆ هەڵوەشاندنەوە</string>
   <string name="progress_mms_title">گواستنەوەی MMS لە سیمکارتی دیکەوە لە بەردەوامیدایە</string>
-  <string name="progress_mms">نامه‌کردن:MMS له‌ بەردەوامیدایە\u2026</string>
+  <string name="progress_mms">نامه‌کردن:MMS له‌ بەردەوامیدایە\u٢٠٢٦</string>
   <string name="progress_mms_text">بیسوو بۆ هەوڵدانەوە</string>
   <string name="menu_connect_url">بەستنەوە</string>
   <string name="menu_add_to_label">پاشەکەوتکردن لە په‌ڕتووکنیشانه‌که‌ر</string>
@@ -207,7 +207,7 @@
   <string name="contact_info_text_as_name">ناو:</string>
   <string name="contact_info_text_as_phone">تەلەفۆن:</string>
   <string name="contact_info_text_as_email">پۆستی ئه‌لەکترۆنی:</string>
-  <string name="memory_status_title">دۆخی بیرگە</string>
+  <string name="memory_status_title">دۆخی یادگە</string>
   <string name="sms_phone_used">نامەی بەکارهاتوو:</string>
   <string name="sms_phone_capacity">دێرایشی کورتەنامە:</string>
   <string name="mms_phone_used">MMS بەکارهێنرا:</string>
@@ -241,25 +241,25 @@
   <string name="invalid_name_toast">تکایە ناوێکی ڕەوا تێبکە</string>
   <string name="slot_type">قڵێشی <xliff:g id="number">%s</xliff:g></string>
   <string name="sim_capacity_title">دێرایشی سیمکارت</string>
-  <string name="sim_capacity_used">بەکارهاتوو:\u0020 </string>
-  <string name="sim_capacity">دێرایش:\u0020</string>
+  <string name="sim_capacity_used">بەکارهاتوو:\u٠٠٢٠ </string>
+  <string name="sim_capacity">دێرایش:\u٠٠٢٠</string>
   <string name="pref_title_mms_save_time">ماوەی ڕەواییی MMS</string>
   <string name="mms_two_days">دوو ڕۆژ</string>
   <string name="mms_max">زۆرترین</string>
   <string name="save_description">ئەو ماوەی کە نامەکە دەمێنێتەوە لە ناو ڕاژەکاردا کۆگا دەکرێت</string>
   <string name="status_expired">MMS بەسەر چوووە</string>
-  <string name="pref_title_sms_store">بیرگەی بەباشزانراو</string>
-  <string name="pref_title_sms_store_card1">بیرگەی بەباشزانراوی سیمکارتی ١</string>
-  <string name="pref_title_sms_store_card2">بیرگەی بەباشزانراوی سیمکارتی ٢</string>
+  <string name="pref_title_sms_store">یادگەی بەباشزانراو</string>
+  <string name="pref_title_sms_store_card1">یادگەی بەباشزانراوی سیمکارتی ١</string>
+  <string name="pref_title_sms_store_card2">یادگەی بەباشزانراوی سیمکارتی ٢</string>
   <string name="pref_sms_store_phone">مۆبایل</string>
   <string name="pref_sms_store_card">سیمکارت</string>
-  <string name="pref_sim_card_full_save_to_phone">سیمکارت پڕە، پاشەکەوتکردنی نامە نوێیەکان بۆ ناو بیرگەی مۆبایل.</string>
-  <string name="mms_size_indicator"><xliff:g id="mms_size">%1$s</xliff:g>KB/<xliff:g id="all_size">%2$s</xliff:g>KB</string>
+  <string name="pref_sim_card_full_save_to_phone">سیمکارت پڕە، پاشەکەوتکردنی نامە نوێیەکان بۆ ناو یادگەی مۆبایل.</string>
+  <string name="mms_size_indicator"><xliff:g id="mms_size">%١$s</xliff:g>KB/<xliff:g id="all_size">%٢$s</xliff:g>KB</string>
   <string name="selected_all">دیاریکردنی هەموو</string>
   <string name="deselected_all">دیاری نەکردنی هەموو</string>
   <string name="selected_count"><xliff:g id="COUNT">%d</xliff:g> دیاری کراوە</string>
   <string name="deleting_title">سڕینەوە</string>
-  <string name="please_wait">تکایە چاوەڕێ بکە\u2026</string>
+  <string name="please_wait">تکایە چاوەڕێ بکە\u٢٠٢٦</string>
   <string name="done_delete">ته‌واوبوو</string>
   <string name="cdma_priority_normal">ئاسایی</string>
   <string name="cdma_priority_interactive">دوولایەنە</string>
