@@ -62,6 +62,7 @@
   <string name="menu_as_read">סמן כנקרא</string>
   <string name="menu_all_as_unread">סמן את כולם כנקראו</string>
   <string name="menu_all_as_read">סמן הכל כנקרא</string>
+  <string name="menu_add_to_contacts_cm">הוסף לאנשי קשר</string>
   <string name="confirm_mark_unread_dialog_title">סמן כלא נקרא?</string>
   <string name="confirm_mark_unread_conversation">השיחה תסומן כלא נקראה.</string>
   <string name="confirm_mark_read_dialog_title">לסמן כנקרא?</string>

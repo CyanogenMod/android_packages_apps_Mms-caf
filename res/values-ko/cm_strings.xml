@@ -41,13 +41,16 @@
   <string name="send_delay_30seconds">30초</string>
   <string name="sent_countdown">메시지 전송 카운트다운</string>
   <string name="pref_extra_settings">추가 설정</string>
+  <string name="blacklist_title">차단된 발신자 목록</string>
   <string name="blacklist_summary_disabled">사용 안 함</string>
+  <string name="blacklist_summary">차단된 발신자 목록에 있는 전화 번호의 통화나 메세지를 받지 않습니다</string>
   <string name="blacklist_notification">%s(으)로부터의 메시지 차단됨</string>
   <string name="blacklist_notification_private_number">발신번호 표시가 제한된 메시지 차단됨</string>
   <string name="blacklist_notification_list_private">비공개</string>
   <string name="blacklist_notification_unknown_number">알 수 없는 번호 %s(으)로부터의 메시지 차단됨</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g>건의 메시지 차단됨</string>
   <string name="unblock_number">차단 해제</string>
+  <string name="add_to_blacklist">차단된 발신자 목록에 추가</string>
   <string name="add_to_blacklist_message">%s에서 오는 메시지가 차단됩니다</string>
   <string name="alert_dialog_yes">예</string>
   <string name="alert_dialog_no">아니오</string>
@@ -59,6 +62,7 @@
   <string name="menu_as_read">읽음으로 표시</string>
   <string name="menu_all_as_unread">모두 읽지 않은 상태로 표시</string>
   <string name="menu_all_as_read">모두 읽음으로 표시</string>
+  <string name="menu_add_to_contacts_cm">주소록에 추가</string>
   <string name="confirm_mark_unread_dialog_title">읽지 않은 상태로 표시할까요?</string>
   <string name="confirm_mark_unread_conversation">메시지가 읽지 않음으로 표시됩니다.</string>
   <string name="confirm_mark_read_dialog_title">읽음으로 표시합니까?</string>
@@ -84,6 +88,7 @@
   <string name="confirm_cancel_downloading">MMS 다운로드가 취소됩니다.</string>
   <string name="send_by_slot1">SIM 1으로 보내기</string>
   <string name="send_by_slot2">SIM 2로 보내기</string>
+  <string name="select_phone_account_title">다른 앱으로 보내기</string>
   <string name="media_size_limit">메시지 크기 제한에 도달하여 메시지를 보낼 수 없습니다. </string>
   <string name="illegal_message_or_increase_size">메시지 크기가 맞지 않습니다.</string>
   <string name="discard_message_reason_some_invalid">받는 이중 일부의 번호에 오류가 있어 메시지가 삭제됩니다.</string>
@@ -162,6 +167,7 @@
   <string name="menu_reply">답장</string>
   <string name="slot1">SIM 1</string>
   <string name="slot2">SIM 2</string>
+  <string name="sim_spinner_active_item_postfix">SIM %d</string>
   <string name="cannot_play">슬라이드 쇼를 표시할 수 없습니다</string>
   <string name="confirm_delete_selected_messages">선택된 메시지가 삭제됩니다.</string>
   <string name="send_failure">메시지를 보낼 수 없습니다.</string>
@@ -251,4 +257,7 @@
   <string name="pref_summary_mms_use_sent_timestamp">타임스탬프에 받은 날짜 대신 보낸 날짜 표시</string>
   <string name="pref_title_mms_auto_enable_data">데이터 통신 자동 연결</string>
   <string name="pref_summary_mms_auto_enable_data">MMS 메시지 송수신을 위해 자동으로 데이터 통신을 활성화함</string>
+  <string name="adding_selected_recipients_dialog_text">연락처 추가하는 중\u2026</string>
+  <string name="pref_title_mms_smart_dialer">스마트 전화</string>
+  <string name="pref_summary_mms_smart_dialer">전화기를 귀에 가까이 대면 자동으로 전화를 겁니다</string>
 </resources>

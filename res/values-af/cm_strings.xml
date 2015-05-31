@@ -62,6 +62,7 @@
   <string name="menu_as_read">Mark as gelees</string>
   <string name="menu_all_as_unread">Merk alles as ongelees</string>
   <string name="menu_all_as_read">Mark alles as gelees</string>
+  <string name="menu_add_to_contacts_cm">Voeg by kontakte</string>
   <string name="confirm_mark_unread_dialog_title">Merk as ongelees?</string>
   <string name="confirm_mark_unread_conversation">Die gesprek sal gemerk word as ongelees.</string>
   <string name="confirm_mark_read_dialog_title">Mark as gelees?</string>

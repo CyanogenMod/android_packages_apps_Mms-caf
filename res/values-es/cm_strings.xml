@@ -62,6 +62,7 @@
   <string name="menu_as_read">Marcar como leído</string>
   <string name="menu_all_as_unread">Marcar todos como no leídos</string>
   <string name="menu_all_as_read">Marcar todos como leídos</string>
+  <string name="menu_add_to_contacts_cm">Añadir a contactos</string>
   <string name="confirm_mark_unread_dialog_title">¿Marcar como no leído?</string>
   <string name="confirm_mark_unread_conversation">La conversación será marcada como no leída.</string>
   <string name="confirm_mark_read_dialog_title">¿Marcar como leído?</string>

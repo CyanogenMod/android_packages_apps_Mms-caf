@@ -62,6 +62,7 @@
   <string name="menu_as_read">Oznacz jako przeczytane</string>
   <string name="menu_all_as_unread">Oznacz wszystkie jako nieprzeczytane</string>
   <string name="menu_all_as_read">Oznacz wszystkie jako przeczytane</string>
+  <string name="menu_add_to_contacts_cm">Dodaj do kontaktów</string>
   <string name="confirm_mark_unread_dialog_title">Oznaczyć jako nieprzeczytane?</string>
   <string name="confirm_mark_unread_conversation">Rozmowa zostanie oznaczona jako nieprzeczytana.</string>
   <string name="confirm_mark_read_dialog_title">Oznaczyć jako przeczytane?</string>

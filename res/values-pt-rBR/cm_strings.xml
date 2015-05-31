@@ -62,6 +62,7 @@
   <string name="menu_as_read">Marcar como lida</string>
   <string name="menu_all_as_unread">Marcar todas como não lidas</string>
   <string name="menu_all_as_read">Marcar todas como lidas</string>
+  <string name="menu_add_to_contacts_cm">Adicionar aos Contatos</string>
   <string name="confirm_mark_unread_dialog_title">Marcar como não lida?</string>
   <string name="confirm_mark_unread_conversation">A conversa será marcada como não lida.</string>
   <string name="confirm_mark_read_dialog_title">Marcar como lida?</string>

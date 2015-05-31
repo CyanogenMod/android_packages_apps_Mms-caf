@@ -62,6 +62,7 @@
   <string name="menu_as_read">Megjelölés olvasottként</string>
   <string name="menu_all_as_unread">Mindet olvasatlanként jelöl</string>
   <string name="menu_all_as_read">Mind megjelölése olvasottként</string>
+  <string name="menu_add_to_contacts_cm">Névjegyekhez ad</string>
   <string name="confirm_mark_unread_dialog_title">Megjelölés olvasatlanként?</string>
   <string name="confirm_mark_unread_conversation">Ez a beszélgetés olvasatlanként lesz jelölve.</string>
   <string name="confirm_mark_read_dialog_title">Megjelölés olvasottként?</string>

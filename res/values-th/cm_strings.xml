@@ -62,6 +62,7 @@
   <string name="menu_as_read">ทำเครื่องหมายเป็นอ่านแล้ว</string>
   <string name="menu_all_as_unread">ทำเครื่องหมายทั้งหมดเป็นยังไม่ได้อ่าน</string>
   <string name="menu_all_as_read">ทำเครื่องหมายเป็นอ่านแล้วทั้งหมด</string>
+  <string name="menu_add_to_contacts_cm">เพิ่มผู้ติดต่อ</string>
   <string name="confirm_mark_unread_dialog_title">ทำเครื่องหมายว่ายังไม่ได้อ่าน?</string>
   <string name="confirm_mark_unread_conversation">การสนทนาจะถูกทำเครื่องหมายเป็นยังไม่อ่าน</string>
   <string name="confirm_mark_read_dialog_title">ทำเครื่องหมายเป็นอ่านแล้ว?</string>
