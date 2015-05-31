@@ -18,5 +18,6 @@
     <color name="compose_message_background_color">#ffffffff</color>
     <color name="compose_message_text_color">#ff000000</color>
     <color name="compose_message_divider_color">#ffeeeeee</color>
+    <color name="message_link_text_color">#ffffffff</color>
     <color name="search_activity_background_color">@android:color/white</color>
 </resources>
