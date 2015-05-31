@@ -84,9 +84,13 @@
   <string name="alert_dialog_yes">Jā</string>
   <string name="alert_dialog_no">Nē</string>
   <string name="menu_as_unread">Atzīmēt kā nelasītu</string>
+  <string name="menu_as_read">Atzīmēt kā izlasītu</string>
   <string name="menu_all_as_unread">Atzīmēt visas kā nelasītas</string>
+  <string name="menu_all_as_read">Atzīmēt visus kā izlasītus</string>
   <string name="confirm_mark_unread_dialog_title">Atzīmēt kā nelasītas?</string>
+  <string name="confirm_mark_read_dialog_title">Atzīmēt kā izlasītu?</string>
   <string name="confirm_mark_unread_all_conversations">Visas tēmas tiks atzīmētas kā nelasītas.</string>
+  <string name="confirm_mark_read_all_conversations">Visas sarunas tiks atzīmētas kā izlasītas.</string>
   <string name="select_recipients">Atlasiet saņēmējus</string>
   <string name="groups_header">Grupas</string>
   <string name="no_recipients">Kontakti nav atrasti</string>

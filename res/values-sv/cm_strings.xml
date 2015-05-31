@@ -206,6 +206,7 @@
   <string name="mms_phone_capacity">MMS kapacitet:</string>
   <string name="open_wap_push_title">Mer information</string>
   <string name="menu_delete_msg">Ta bort</string>
+  <string name="message_detail">Meddelandeinfo</string>
   <string name="no_message">Inga meddelanden</string>
   <string name="change_mode">Ändra läge</string>
   <string name="type_inbox">Inkorg</string>
@@ -226,12 +227,18 @@
   <string name="sim_capacity_used">Används: \u0020</string>
   <string name="sim_capacity">Kapacitet: \u0020</string>
   <string name="pref_title_mms_save_time">Giltighetstid för MMS</string>
+  <string name="mms_two_days">Två dagar</string>
+  <string name="mms_max">Maximalt</string>
+  <string name="status_expired">MMS har löpt ut</string>
+  <string name="pref_title_sms_store">Vald lagring</string>
   <string name="pref_sms_store_phone">Telefon</string>
   <string name="pref_sms_store_card">SIM-kort</string>
   <string name="mms_size_indicator"><xliff:g id="mms_size">%1$s</xliff:g>KB/<xliff:g id="all_size">%2$s</xliff:g>KB</string>
   <string name="selected_all">Markera alla</string>
   <string name="deselected_all">Avmarkera alla</string>
   <string name="selected_count"><xliff:g id="COUNT">%d</xliff:g> markerade</string>
+  <string name="deleting_title">Raderar</string>
+  <string name="please_wait">Var god vänta\u2026</string>
   <string name="done_delete">Färdig</string>
   <string name="cdma_priority_normal">Normal</string>
   <string name="cdma_priority_emergency">Nödmeddelanden</string>
