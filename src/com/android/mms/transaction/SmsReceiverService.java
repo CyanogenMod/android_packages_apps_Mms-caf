@@ -507,8 +507,9 @@ public class SmsReceiverService extends Service {
         // Some messages may get stuck in the outbox. At this point, they're probably irrelevant
         // to the user, so mark them as failed and notify the user, who can then decide whether to
         // resend them manually.
-        int numMoved = moveOutboxMessagesToFailedBox();
-        if (numMoved > 0) {
+        moveOutboxMessagesToFailedBox();
+        int numUnreadFailed = getUnreadFailedMessageCount();
+        if (numUnreadFailed > 0) {
             MessagingNotification.notifySendFailed(getApplicationContext(), true);
         }
 
@@ -518,6 +519,20 @@ public class SmsReceiverService extends Service {
         // Called off of the UI thread so ok to block.
         MessagingNotification.blockingUpdateNewMessageIndicator(
                 this, MessagingNotification.THREAD_ALL, false);
+    }
+
+    private int getUnreadFailedMessageCount() {
+        final Uri uri = Uri.parse("content://sms/failed");
+        Cursor cursor = SqliteWrapper.query(
+                getApplicationContext(), getContentResolver(), uri,
+                new String[] { Sms._ID }, "read=0", null, null);
+        int count = 0;
+        if (cursor != null) {
+            count = cursor.getCount();
+            cursor.close();
+        }
+
+        return count;
     }
 
     /**
