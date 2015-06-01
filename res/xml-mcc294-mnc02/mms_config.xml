@@ -23,5 +23,8 @@
     <!-- Maximum width for an attached image -->
     <int name="maxImageWidth">2592</int>
 
+    <!-- UAProf URL -->
+    <string name="uaProfUrl">http://www.google.com/oha/rdf/ua-profile-kila.xml</string>
+
 </mms_config>
 
