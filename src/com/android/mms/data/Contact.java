@@ -860,7 +860,7 @@ public class Contact {
         }
 
         private void updateContact(final Contact c) {
-            if (c == null) {
+            if (c == null || c.getContactMethodId() == Contact.CONTACT_METHOD_ID_UNKNOWN) {
                 return;
             }
 
