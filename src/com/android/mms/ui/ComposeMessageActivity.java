@@ -7030,28 +7030,31 @@ public class ComposeMessageActivity extends Activity
 
     @Override
     public void onUpdate(final Contact updated) {
-        // Using an existing handler for the post, rather than conjuring up a new one.
-        mMessageListItemHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                ContactList recipients = isRecipientsEditorVisible() ?
-                        mRecipientsEditor.constructContactsFromInput(false) : getRecipients();
-                if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
-                    log("[CMA] onUpdate contact updated: " + updated);
-                    log("[CMA] onUpdate recipients: " + recipients);
-                }
-                updateTitle(recipients);
+        // check to make sure the update and contact is valid
+        if (updated.getContactMethodId() != Contact.CONTACT_METHOD_ID_UNKNOWN) {
+            // Using an existing handler for the post, rather than conjuring up a new one.
+            mMessageListItemHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    ContactList recipients = isRecipientsEditorVisible() ?
+                            mRecipientsEditor.constructContactsFromInput(false) : getRecipients();
+                    if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
+                        log("[CMA] onUpdate contact updated: " + updated);
+                        log("[CMA] onUpdate recipients: " + recipients);
+                    }
+                    updateTitle(recipients);
 
-                // The contact information for one (or more) of the recipients has changed.
-                // Rebuild the message list so each MessageItem will get the last contact info.
-                ComposeMessageActivity.this.mMsgListAdapter.notifyDataSetChanged();
+                    // The contact information for one (or more) of the recipients has changed.
+                    // Rebuild the message list so each MessageItem will get the last contact info.
+                    ComposeMessageActivity.this.mMsgListAdapter.notifyDataSetChanged();
 
-                if (mRecipientsEditor != null && (mAddNumbersTask == null ||
-                        mAddNumbersTask.getStatus() != AsyncTask.Status.RUNNING)) {
-                    mRecipientsEditor.populate(recipients);
+                    if (mRecipientsEditor != null && (mAddNumbersTask == null ||
+                            mAddNumbersTask.getStatus() != AsyncTask.Status.RUNNING)) {
+                        mRecipientsEditor.populate(recipients);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     private void addRecipientsListeners() {
