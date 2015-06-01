@@ -53,7 +53,7 @@ public class Contact {
     public static final int CONTACT_METHOD_TYPE_SELF = 3;       // the "Me" or profile contact
     public static final String TEL_SCHEME = "tel";
     public static final String CONTENT_SCHEME = "content";
-    private static final int CONTACT_METHOD_ID_UNKNOWN = -1;
+    public static final int CONTACT_METHOD_ID_UNKNOWN = -1;
     private static final String TAG = LogTag.TAG;
     private static ContactsCache sContactCache;
     private static ContactPhotoManager sContactPhotoManager;
