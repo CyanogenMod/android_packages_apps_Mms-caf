@@ -1317,6 +1317,10 @@ public class Contact {
         }
     }
 
+    public synchronized long getPersonId() {
+        return mPersonId;
+    }
+
     private static void log(String msg) {
         Log.d(TAG, msg);
     }
