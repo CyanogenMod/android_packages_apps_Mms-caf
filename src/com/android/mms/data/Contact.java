@@ -860,7 +860,7 @@ public class Contact {
         }
 
         private void updateContact(final Contact c) {
-            if (c == null) {
+            if (c == null || c.mPersonId == 0) {
                 return;
             }
 
