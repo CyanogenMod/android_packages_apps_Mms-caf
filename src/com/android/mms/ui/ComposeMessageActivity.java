@@ -2806,12 +2806,16 @@ public class ComposeMessageActivity extends Activity
                 }
                 break;
             case KeyEvent.KEYCODE_BACK:
-                exitComposeMessageActivity(new Runnable() {
-                    @Override
-                    public void run() {
-                        finish();
-                    }
-                });
+                if (mAttachmentSelector.getVisibility() == View.VISIBLE) {
+                    mAttachmentSelector.setVisibility(View.GONE);
+                } else {
+                    exitComposeMessageActivity(new Runnable() {
+                        @Override
+                        public void run() {
+                            finish();
+                        }
+                    });
+                }
                 return true;
         }
 
