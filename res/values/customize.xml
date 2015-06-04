@@ -93,4 +93,6 @@
     <bool name="enable_send_blank_message">false</bool>
 
     <bool name="def_show_mms_size">false</bool>
+
+    <bool name="def_enable_reset_smsc">false</bool>
 </resources>

@@ -20,10 +20,13 @@ package com.android.mms.transaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.provider.Telephony.Mms;
+import android.telephony.SmsManager;
 import android.telephony.SubscriptionManager;
 import android.util.Log;
 
@@ -31,6 +34,8 @@ import com.android.internal.telephony.PhoneConstants;
 import com.android.internal.telephony.TelephonyIntents;
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
+import com.android.mms.R;
+import com.android.mms.ui.MessagingPreferenceActivity;
 
 /**
  * MmsSystemEventReceiver receives the
@@ -102,6 +107,17 @@ public class MmsSystemEventReceiver extends BroadcastReceiver {
             // Scan and send pending Mms once after boot completed since
             // ACTION_ANY_DATA_CONNECTION_STATE_CHANGED wasn't registered in a whole life cycle
             wakeUpService(context);
+
+            if (context.getResources().getBoolean(R.bool.def_enable_reset_smsc)) {
+                SharedPreferences prefs = PreferenceManager
+                        .getDefaultSharedPreferences(context);
+                SharedPreferences.Editor prefsEditor = prefs.edit();
+                prefsEditor.putString(MessagingPreferenceActivity.SMSC_DEFAULT,
+                        SmsManager.getDefault().getSmscAddressFromIcc());
+                prefsEditor.apply();
+                prefsEditor.commit();
+            }
+
         } else if (action.equals(TelephonyIntents.ACTION_SUBSCRIPTION_SET_UICC_RESULT)) {
 
             int status = intent.getIntExtra(TelephonyIntents.EXTRA_RESULT, PhoneConstants.FAILURE);

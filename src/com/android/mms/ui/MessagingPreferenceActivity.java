@@ -30,10 +30,18 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Resources;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Parcelable;
 import android.os.Vibrator;
 import android.os.Message;
 import android.os.Handler;
@@ -108,6 +116,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     public static final String AUTO_DELETE              = "pref_key_auto_delete";
     public static final String GROUP_MMS_MODE           = "pref_key_mms_group_mms";
     public static final String SMS_CDMA_PRIORITY        = "pref_key_sms_cdma_priority";
+    public static final String SMSC_DEFAULT             = "pref_key_default_smsc";
+
     // ConfigurationClient
     public static final String OMACP_CONFIGURATION_CATEGORY =
             "pref_key_sms_omacp_configuration";
@@ -184,6 +194,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private static final String SMSC_DIALOG_SUB = "sub";
     private static final int EVENT_SET_SMSC_DONE = 0;
     private static final int EVENT_GET_SMSC_DONE = 1;
+    private static final int EVENT_SET_SMSC_PREF_DONE = 2;
     private static final String EXTRA_EXCEPTION = "exception";
     private static SmscHandler mHandler = null;
 
@@ -1013,11 +1024,15 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         // We need update the preference summary.
         if (prefEnabled) {
             Log.d(TAG, "get SMSC from sub= " + id);
-            final Message callback = mHandler.obtainMessage(EVENT_GET_SMSC_DONE);
-            Bundle userParams = new Bundle();
-            userParams.putInt(PhoneConstants.SLOT_KEY, id);
-            callback.obj = userParams;
-            MessageUtils.getSmscFromSub(this, id, callback);
+            if (getResources().getBoolean(R.bool.def_enable_reset_smsc)) {
+                updateSmscFromPreference(id);
+            } else {
+                final Message callback = mHandler.obtainMessage(EVENT_GET_SMSC_DONE);
+                Bundle userParams = new Bundle();
+                userParams.putInt(PhoneConstants.SLOT_KEY, id);
+                callback.obj = userParams;
+                MessageUtils.getSmscFromSub(this, id, callback);
+            }
         } else {
             mSmscPrefList.get(id).setSummary(null);
         }
@@ -1088,6 +1103,12 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                     if (sub != -1) {
                         bundle.putInt(PhoneConstants.SLOT_KEY, sub);
                         mOwner.updateSmscFromBundle(bundle);
+                    }
+                    break;
+                case EVENT_SET_SMSC_PREF_DONE:
+                    int key = userParams.getInt(PhoneConstants.SLOT_KEY, -1);
+                    if (key != -1) {
+                        mOwner.updateSmscFromPreference(key);
                     }
                     break;
             }
@@ -1183,12 +1204,19 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                            Log.d(TAG, "set SMSC from sub= " +sub + " SMSC= " + displayedSMSC);
-                           final Message callback = mHandler.obtainMessage(EVENT_SET_SMSC_DONE);
                            Bundle userParams = new Bundle();
                            userParams.putInt(PhoneConstants.SLOT_KEY, sub);
-                           userParams.putString(MessageUtils.EXTRA_SMSC,actualSMSC);
-                           callback.obj = userParams;
-                           MessageUtils.setSmscForSub(mActivity, sub, actualSMSC, callback);
+                           if (getResources().getBoolean(R.bool.def_enable_reset_smsc)) {
+                                final Message callbackMessage = mHandler
+                                        .obtainMessage(EVENT_SET_SMSC_PREF_DONE);
+                               callbackMessage.obj = userParams;
+                               putSmscIntoPref(mActivity,sub,displayedSMSC,callbackMessage);
+                           } else {
+                               final Message callback = mHandler.obtainMessage(EVENT_SET_SMSC_DONE);
+                               userParams.putString(MessageUtils.EXTRA_SMSC,actualSMSC);
+                               callback.obj = userParams;
+                               MessageUtils.setSmscForSub(mActivity, sub, actualSMSC, callback);
+                           }
                         }
                     })
                     .setNegativeButton(android.R.string.cancel, null)
@@ -1435,4 +1463,35 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             mFontSizePref.setSummary(mFontSizePref.getEntry());
         }
     }
+
+    private void updateSmscFromPreference(int sub) {
+        String smsc = PreferenceManager.getDefaultSharedPreferences(this)
+                .getString(SMSC_DEFAULT,
+                        SmsManager.getDefault().getSmscAddressFromIcc());
+        if (sub != -1) {
+            mSmscPrefList.get(sub).setSummary(smsc);
+        }
+    }
+
+    private static void putSmscIntoPref(Context context, int sub, String smsc,
+            Message callback) {
+
+        SharedPreferences.Editor editor = PreferenceManager
+                .getDefaultSharedPreferences(context).edit();
+        editor.putString(SMSC_DEFAULT, smsc);
+        editor.apply();
+        editor.commit();
+
+        Bundle params = new Bundle();
+        params.putInt(PhoneConstants.SLOT_KEY, sub);
+        params.putString(MessageUtils.EXTRA_SMSC, smsc);
+
+        params.putParcelable("userobj", (Parcelable) callback.obj);
+        callback.obj = params;
+
+        if (callback.getTarget() != null) {
+            callback.sendToTarget();
+        }
+    }
+
 }
