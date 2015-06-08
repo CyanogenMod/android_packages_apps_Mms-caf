@@ -87,7 +87,7 @@ import com.android.mms.ui.SearchActivityExtend;
 import com.android.mms.ui.SelectionMenu;
 import com.android.mms.util.DownloadManager;
 import com.android.mms.util.DraftCache;
-
+import com.android.mms.widget.MmsWidgetProvider;
 import com.google.android.mms.pdu.PduHeaders;
 
 import static com.android.mms.ui.MessageListAdapter.MAILBOX_PROJECTION;
@@ -874,7 +874,7 @@ public class MailBoxMessageList extends ListActivity implements
                 }
             }
         }
-
+        MmsWidgetProvider.notifyDatasetChanged(getApplicationContext());
         if (mThreadIds.size() > 0) {
             Conversation.updateThreads(mThreadIds);
             mThreadIds.clear();
