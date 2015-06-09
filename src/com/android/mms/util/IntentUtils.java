@@ -3,25 +3,12 @@ package com.android.mms.util;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
-import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class IntentUtils {
-
-    public static Intent createFilteredChooser(
-            Context ctx, String title, Intent baseIntent, String... pkgNamesToFilter) {
-        List<Intent> targetedShareIntents =
-                getTargetSharedIntents(ctx, baseIntent, pkgNamesToFilter);
-        Intent chooserIntent = Intent.createChooser(
-                targetedShareIntents.remove(0), title);
-        chooserIntent.putExtra(
-                Intent.EXTRA_INITIAL_INTENTS, targetedShareIntents.toArray(new Parcelable[]{}));
-        return chooserIntent;
-    }
-
     /**
      * The number of activities that can handle the baseIntent after filtering
      *
