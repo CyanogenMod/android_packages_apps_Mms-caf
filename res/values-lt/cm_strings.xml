@@ -62,6 +62,7 @@
   <string name="menu_as_read">Pažymėti kaip perskaitytą</string>
   <string name="menu_all_as_unread">Pažymėti visus kaip neperskaitytus</string>
   <string name="menu_all_as_read">Pažymėti visus kaip perskaitytus</string>
+  <string name="menu_add_to_contacts_cm">Pridėti prie kontaktų</string>
   <string name="confirm_mark_unread_dialog_title">Pažymėti kaip neperskaitytą?</string>
   <string name="confirm_mark_unread_conversation">Pokalbis bus pažymėtas kaip neperskaitytas.</string>
   <string name="confirm_mark_read_dialog_title">Pažymėti kaip perskaitytą?</string>

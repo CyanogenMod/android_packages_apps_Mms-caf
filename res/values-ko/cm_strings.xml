@@ -259,5 +259,5 @@
   <string name="pref_summary_mms_auto_enable_data">MMS 메시지 송수신을 위해 자동으로 데이터 통신을 활성화함</string>
   <string name="adding_selected_recipients_dialog_text">연락처 추가하는 중\u2026</string>
   <string name="pref_title_mms_smart_dialer">스마트 전화</string>
-  <string name="pref_summary_mms_smart_dialer">전화기를 귀에 가까이 대면 자동으로 전화를 겁니다</string>
+  <string name="pref_summary_mms_smart_dialer">휴대전화를 귀에 가까이 대어 자동으로 연락처에 전화</string>
 </resources>

@@ -62,6 +62,7 @@
   <string name="menu_as_read">Markér som læst</string>
   <string name="menu_all_as_unread">Markér alle som ulæst</string>
   <string name="menu_all_as_read">Markér alle som læst</string>
+  <string name="menu_add_to_contacts_cm">Føj til kontaktpersoner</string>
   <string name="confirm_mark_unread_dialog_title">Markér som ulæst?</string>
   <string name="confirm_mark_unread_conversation">Samtalen vil blive markeret som ulæst.</string>
   <string name="confirm_mark_read_dialog_title">Markér som læst?</string>

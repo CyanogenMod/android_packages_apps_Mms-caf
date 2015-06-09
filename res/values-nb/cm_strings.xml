@@ -62,6 +62,7 @@
   <string name="menu_as_read">Marker som lest</string>
   <string name="menu_all_as_unread">Merk alle som ulest</string>
   <string name="menu_all_as_read">Marker alle som lest</string>
+  <string name="menu_add_to_contacts_cm">Legg til i kontakter</string>
   <string name="confirm_mark_unread_dialog_title">Merk som ulest?</string>
   <string name="confirm_mark_unread_conversation">Samtalen vil bli merket som ulest.</string>
   <string name="confirm_mark_read_dialog_title">Marker som lest?</string>
