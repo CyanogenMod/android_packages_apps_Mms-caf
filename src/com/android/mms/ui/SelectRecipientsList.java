@@ -330,7 +330,6 @@ public class SelectRecipientsList extends Activity implements
             for (PhoneNumber phoneNumber : phoneNumbers) {
                 if (phoneNumber.isDefault()) {
                     checkPhoneNumber(phoneNumber, check);
-                    updateGroupCheckStateForNumber(phoneNumber, group);
                 }
             }
         }
