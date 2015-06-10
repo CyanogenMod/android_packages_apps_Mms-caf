@@ -4857,7 +4857,8 @@ public class ComposeMessageActivity extends Activity
                     recipientCount > 0 && recipientCount <= MmsConfig.getRecipientLimit() &&
                     mIsSmsEnabled;
         } else {
-            return (MessageUtils.getActivatedIccCardCount() > 0 || isCdmaNVMode()) &&
+            return (MessageUtils.getActivatedIccCardCount() > 0 || isCdmaNVMode() ||
+                    TelephonyManager.getDefault().isImsRegistered()) &&
                     recipientCount > 0 && recipientCount <= MmsConfig.getRecipientLimit() &&
                     mIsSmsEnabled &&
                     (mWorkingMessage.hasAttachment() || mWorkingMessage.hasText() ||
