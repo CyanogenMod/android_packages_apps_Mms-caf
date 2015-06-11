@@ -178,6 +178,7 @@ public class SendTransaction extends Transaction implements Runnable {
         Log.d(TAG, "markFailed = " + this);
         mTransactionState.setState(TransactionState.FAILED);
         mTransactionState.setContentUri(mSendReqURI);
+        mFailReason = FAIL_REASON_CAN_NOT_SETUP_DATA_CALL;
 
         notifyObservers();
     }

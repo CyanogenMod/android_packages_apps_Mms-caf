@@ -160,6 +160,8 @@ public class TransactionService extends Service implements Observer {
     private static final int TOAST_NO_APN = 3;
     private static final int TOAST_SEND_FAILED_RETRY = 4;
     private static final int TOAST_DOWNLOAD_FAILED_RETRY = 5;
+    private static final int TOAST_SETUP_DATA_CALL_FAILED_FOR_SEND = 6;
+    private static final int TOAST_SETUP_DATA_CALL_FAILED_FOR_DOWNLOAD = 7;
     private static final int TOAST_NONE = -1;
 
     // How often to extend the use of the MMS APN while a transaction
@@ -305,6 +307,10 @@ public class TransactionService extends Service implements Observer {
                 str = getString(R.string.send_failed_retry);
             } else if (msg.what == TOAST_DOWNLOAD_FAILED_RETRY && showRetryToast) {
                 str = getString(R.string.download_failed_retry);
+            } else if (msg.what == TOAST_SETUP_DATA_CALL_FAILED_FOR_SEND && showRetryToast) {
+                str = getString(R.string.no_network_send_failed_retry);
+            } else if (msg.what == TOAST_SETUP_DATA_CALL_FAILED_FOR_DOWNLOAD && showRetryToast) {
+                str = getString(R.string.no_network_download_failed_retry);
             }
 
             if (str != null) {
@@ -467,6 +473,8 @@ public class TransactionService extends Service implements Observer {
                     int columnIndexOfMsgId = cursor.getColumnIndexOrThrow(PendingMessages.MSG_ID);
                     int columnIndexOfMsgType = cursor.getColumnIndexOrThrow(
                             PendingMessages.MSG_TYPE);
+                    int columnIndexOfRetryIndex = cursor.getColumnIndexOrThrow(
+                            PendingMessages.RETRY_INDEX);
 
                     while (cursor.moveToNext()) {
                         int msgType = cursor.getInt(columnIndexOfMsgType);
@@ -478,6 +486,7 @@ public class TransactionService extends Service implements Observer {
                         Uri uri = ContentUris.withAppendedId(
                                 Mms.CONTENT_URI,
                                 cursor.getLong(columnIndexOfMsgId));
+                        boolean inRetry = cursor.getInt(columnIndexOfRetryIndex) > 0;
                         if (noNetwork) {
                             // Because there is a MMS queue list including
                             // unsent and undownload MMS in database while data
@@ -492,7 +501,6 @@ public class TransactionService extends Service implements Observer {
                             cursor.moveToLast();
                             transactionType = getTransactionType(cursor
                                     .getInt(columnIndexOfMsgType));
-                            boolean inRetry = ACTION_ONALARM.equals(intent.getAction());
                             onNetworkUnavailable(serviceId, transactionType, uri, inRetry);
                             return;
                         }
@@ -514,9 +522,9 @@ public class TransactionService extends Service implements Observer {
                                             isTransientFailure(failureType) + " autoDownload=" +
                                             autoDownload);
                                 }
-                                if (!autoDownload) {
-                                    // If autodownload is turned off, don't process the
-                                    // transaction.
+                                if (!autoDownload && !inRetry) {
+                                    // If autodownload is turned off and not in retry peroid,
+                                    // don't process the transaction.
                                     if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
                                         Log.v(TAG, "onNewIntent: skipping - autodownload off");
                                     }
@@ -574,7 +582,7 @@ public class TransactionService extends Service implements Observer {
                                         downloadManager.markState(uri,
                                                 DownloadManager.STATE_SKIP_RETRYING);
                                     }
-
+                                    onNetworkUnavailable(serviceId, transactionType, uri, inRetry);
                                     break;
                                 }
 
@@ -635,6 +643,11 @@ public class TransactionService extends Service implements Observer {
                 Log.d(TAG, "Either mobile data is off or apn not present, Abort");
 
                 downloadManager.markState(uri, DownloadManager.STATE_SKIP_RETRYING);
+
+                boolean isRetry = getRetryIndex(uri.getLastPathSegment()) > 0;
+                int type = intent.getIntExtra(TransactionBundle.TRANSACTION_TYPE,
+                        Transaction.NOTIFICATION_TRANSACTION);
+                onNetworkUnavailable(serviceId, type, uri, isRetry);
                 return;
             }
 
@@ -702,35 +715,67 @@ public class TransactionService extends Service implements Observer {
             Log.v(TAG, "onNetworkUnavailable: sid=" + serviceId + ", type=" + transactionType);
         }
 
+       if (transactionType == Transaction.NOTIFICATION_TRANSACTION
+               && !DownloadManager.getInstance().isAuto()) {
+           // Not trigger next retry for retrieval MMS if user not initiate it.
+           return;
+       }
+
+        // Need the RetryScheduler first to update the retry index and result,
+        // then set the toast type accordingly.
+        if (getResources().getBoolean(R.bool.config_retry_always)) {
+            RetryScheduler.scheduleRetry(getApplicationContext(), uri);
+            RetryScheduler.setRetryAlarm(getApplicationContext());
+        }
+
         int toastType = TOAST_NONE;
-        if (transactionType == Transaction.RETRIEVE_TRANSACTION) {
+        if (transactionType == Transaction.RETRIEVE_TRANSACTION ||
+                transactionType == Transaction.NOTIFICATION_TRANSACTION) {
             if (getResources().getBoolean(R.bool.config_retry_always) && inRetry) {
                 toastType = isLastRetry(uri.getLastPathSegment()) ?
-                        TOAST_NONE : TOAST_DOWNLOAD_FAILED_RETRY;
+                        TOAST_NONE : TOAST_SETUP_DATA_CALL_FAILED_FOR_DOWNLOAD;
             } else {
-                toastType = TOAST_DOWNLOAD_LATER;
+                toastType = TOAST_SETUP_DATA_CALL_FAILED_FOR_DOWNLOAD;
             }
         } else if (transactionType == Transaction.SEND_TRANSACTION) {
             if (getResources().getBoolean(R.bool.config_retry_always) && inRetry) {
                 toastType = isLastRetry(uri.getLastPathSegment()) ?
-                        TOAST_NONE : TOAST_SEND_FAILED_RETRY;
+                        TOAST_NONE : TOAST_SETUP_DATA_CALL_FAILED_FOR_SEND;
             } else {
                 if (getResources().getBoolean(R.bool.config_manual_resend)) {
                     updateMsgErrorType(uri, MmsSms.ERR_TYPE_MMS_PROTO_TRANSIENT);
                 }
-                toastType = TOAST_MSG_QUEUED;
+                toastType = TOAST_SETUP_DATA_CALL_FAILED_FOR_SEND;
             }
         }
         if (toastType != TOAST_NONE) {
             mToastHandler.sendEmptyMessage(toastType);
         }
 
-        if (getResources().getBoolean(R.bool.config_retry_always)
-                && !isLastRetry(uri.getLastPathSegment())) {
-            RetryScheduler.scheduleRetry(getApplicationContext(), uri);
-            RetryScheduler.setRetryAlarm(getApplicationContext());
-        }
         stopSelfIfIdle(serviceId);
+    }
+
+    private int getRetryIndex(String msgId) {
+        Uri.Builder uriBuilder = PendingMessages.CONTENT_URI.buildUpon();
+        uriBuilder.appendQueryParameter("protocol", "mms");
+        uriBuilder.appendQueryParameter("message", msgId);
+
+        Cursor cursor = null;
+        try {
+             cursor = SqliteWrapper.query(this, getContentResolver(),
+                    uriBuilder.build(), null, null, null, null);
+            if (cursor != null && (cursor.getCount() == 1) && cursor.moveToFirst()) {
+                int index = cursor.getInt(cursor.getColumnIndexOrThrow(
+                        PendingMessages.RETRY_INDEX));
+                Log.v(TAG, "getRetryIndex:" + index) ;
+                return index;
+            }
+            return 0;
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
     }
 
     private void updateMsgErrorType(Uri mmsUri, int errorType) {
@@ -757,7 +802,7 @@ public class TransactionService extends Service implements Observer {
                         PendingMessages.RETRY_INDEX));
                 DefaultRetryScheme scheme = new DefaultRetryScheme(this, retryIndex);
                 Log.i(TAG,"isLastRetry retryIndex="+retryIndex+" limit="+scheme.getRetryLimit());
-                if (retryIndex == scheme.getRetryLimit()) {
+                if (retryIndex >= scheme.getRetryLimit()) {
                     return true;
                 }
             }
@@ -873,14 +918,30 @@ public class TransactionService extends Service implements Observer {
                 case TransactionState.FAILED:
                     int type = transaction.getType();
                     Uri uri = state.getContentUri();
+                    boolean failSetupDataCall = Transaction.FAIL_REASON_CAN_NOT_SETUP_DATA_CALL
+                            == transaction.getFailReason();
                     if (uri != null) {
                         String msgId = uri.getLastPathSegment();
                         if (!isLastRetry(msgId)) {
                             if (type == Transaction.SEND_TRANSACTION) {
-                                mToastHandler.sendEmptyMessage(TOAST_SEND_FAILED_RETRY);
+                                if (failSetupDataCall) {
+                                    mToastHandler.sendEmptyMessage(
+                                            TOAST_SETUP_DATA_CALL_FAILED_FOR_SEND);
+                                } else {
+                                    mToastHandler.sendEmptyMessage(TOAST_SEND_FAILED_RETRY);
+                                }
                             } else if ((type == Transaction.RETRIEVE_TRANSACTION) ||
                                     (type == Transaction.NOTIFICATION_TRANSACTION)) {
-                                mToastHandler.sendEmptyMessage(TOAST_DOWNLOAD_FAILED_RETRY);
+                                if (DownloadManager.getInstance().isAuto() ||
+                                        getResources().getBoolean(R.bool.config_retry_always)) {
+                                    if (failSetupDataCall) {
+                                        mToastHandler.sendEmptyMessage(
+                                                TOAST_SETUP_DATA_CALL_FAILED_FOR_DOWNLOAD);
+                                    } else {
+                                        mToastHandler.sendEmptyMessage(
+                                                TOAST_DOWNLOAD_FAILED_RETRY);
+                                    }
+                                }
                             }
                         }
                     }

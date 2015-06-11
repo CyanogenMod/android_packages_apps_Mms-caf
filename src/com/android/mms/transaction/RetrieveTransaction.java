@@ -342,14 +342,9 @@ public class RetrieveTransaction extends Transaction implements Runnable {
     @Override
     public void abort() {
         Log.d(TAG, "markFailed = " + this);
-        DownloadManager downloadManager = DownloadManager.getInstance();
         mTransactionState.setState(TransactionState.FAILED);
         mTransactionState.setContentUri(mUri);
-        if (mContext.getResources().getBoolean(R.bool.config_retry_always)) {
-            downloadManager.markState(mUri, DownloadManager.STATE_PERMANENT_FAILURE);
-        } else {
-            downloadManager.markState(mUri, DownloadManager.STATE_SKIP_RETRYING);
-        }
+        mFailReason = FAIL_REASON_CAN_NOT_SETUP_DATA_CALL;
         notifyObservers();
     }
 

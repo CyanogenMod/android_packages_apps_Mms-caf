@@ -299,13 +299,13 @@ public class NotificationTransaction extends Transaction implements Runnable {
     public void abort() {
         Log.d(TAG, "markFailed = " + this);
         DownloadManager downloadManager = DownloadManager.getInstance();
-        mTransactionState.setState(FAILED);
-        mTransactionState.setContentUri(mUri);
-        if (mContext.getResources().getBoolean(R.bool.config_retry_always)) {
-            downloadManager.markState(mUri, DownloadManager.STATE_PERMANENT_FAILURE);
+        if (downloadManager.isAuto()) {
+            mTransactionState.setState(FAILED);
         } else {
-            downloadManager.markState(mUri, DownloadManager.STATE_SKIP_RETRYING);
+            mTransactionState.setState(SUCCESS);
         }
+        mTransactionState.setContentUri(mUri);
+        mFailReason = FAIL_REASON_CAN_NOT_SETUP_DATA_CALL;
         notifyObservers();
     }
 

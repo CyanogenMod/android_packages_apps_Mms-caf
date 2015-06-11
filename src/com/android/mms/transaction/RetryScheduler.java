@@ -178,6 +178,11 @@ public class RetryScheduler implements Observer {
                             retry = false;
                             return;
                         }
+                        // If autodownload is turned off and not retry always, skip retry.
+                        if (!DownloadManager.getInstance().isAuto() && !context
+                                .getResources().getBoolean(R.bool.config_retry_always)) {
+                            retry = false;
+                        }
                     }
                     if ((retryIndex < scheme.getRetryLimit()) && retry) {
                         long retryAt = current + scheme.getWaitingInterval();

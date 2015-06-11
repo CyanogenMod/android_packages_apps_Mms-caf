@@ -41,6 +41,7 @@ public abstract class Transaction extends Observable {
     protected TransactionState mTransactionState;
     protected TransactionSettings mTransactionSettings;
     protected int mSubId;
+    protected int mFailReason;
 
     /**
      * Identifies push requests.
@@ -59,12 +60,17 @@ public abstract class Transaction extends Observable {
      */
     public static final int READREC_TRANSACTION      = 3;
 
+
+    public static final int FAIL_REASON_NONE = 0;
+    public static final int FAIL_REASON_CAN_NOT_SETUP_DATA_CALL = 1;
+
     public Transaction(Context context, int serviceId,
             TransactionSettings settings) {
         mContext = context;
         mTransactionState = new TransactionState();
         mServiceId = serviceId;
         mTransactionSettings = settings;
+        mFailReason = FAIL_REASON_NONE;
     }
 
     /**
@@ -114,6 +120,10 @@ public abstract class Transaction extends Observable {
     }
     public void setConnectionSettings(TransactionSettings settings) {
         mTransactionSettings = settings;
+    }
+
+    public int getFailReason() {
+        return mFailReason;
     }
 
     /**
