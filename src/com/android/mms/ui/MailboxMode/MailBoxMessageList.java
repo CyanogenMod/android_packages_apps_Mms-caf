@@ -65,6 +65,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.view.ActionMode;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -776,6 +777,21 @@ public class MailBoxMessageList extends ListActivity implements
         }
         MessageUtils.removeDialogs();
         Contact.clearListener();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_SEARCH && !mMultiChoiceMode) {
+            if (getResources().getBoolean(R.bool.config_classify_search)) {
+                Intent searchintent = new Intent(this, SearchActivityExtend.class);
+                startActivityIfNeeded(searchintent, -1);
+            } else if (mSearchView != null) {
+                mSearchView.setIconified(false);
+            }
+            return true;
+        }
+
+        return super.onKeyDown(keyCode, event);
     }
 
     private void confirmDeleteMessages() {

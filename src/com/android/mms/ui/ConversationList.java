@@ -137,6 +137,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
     private boolean mIsSmsEnabled;
     private Toast mComposeDisabledToast;
     private static long mLastDeletedThread = -1;
+    private boolean mMultiChoiceMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -793,6 +794,21 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         if (DEBUG) Log.v(TAG, "onConfigurationChanged: " + newConfig);
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_SEARCH && !mMultiChoiceMode) {
+            if (getResources().getBoolean(R.bool.config_classify_search)) {
+                Intent searchintent = new Intent(this, SearchActivityExtend.class);
+                startActivityIfNeeded(searchintent, -1);
+            } else if (mSearchView != null) {
+                mSearchView.setIconified(false);
+            }
+            return true;
+        }
+
+        return super.onKeyDown(keyCode, event);
+    }
+
     /**
      * Start the process of putting up a dialog to confirm deleting a thread,
      * but first start a background query to see if any of the threads or thread
@@ -1164,6 +1180,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             MenuInflater inflater = getMenuInflater();
             mSelectedThreadIds = new HashSet<Long>();
             inflater.inflate(R.menu.conversation_multi_select_menu, menu);
+            mMultiChoiceMode = true;
 
             if (mMultiSelectActionBarView == null) {
                 mMultiSelectActionBarView = LayoutInflater.from(ConversationList.this).inflate(
@@ -1221,10 +1238,14 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
 
         @Override
         public void onDestroyActionMode(ActionMode mode) {
-            ConversationListAdapter adapter = (ConversationListAdapter)getListView().getAdapter();
-            adapter.uncheckAll();
-            mSelectedThreadIds = null;
-            mSelectionMenu.dismiss();
+            if (getListView().getAdapter() instanceof ConversationListAdapter) {
+                 ConversationListAdapter adapter =
+                         (ConversationListAdapter)getListView().getAdapter();
+                 adapter.uncheckAll();
+                 mSelectedThreadIds = null;
+                 mSelectionMenu.dismiss();
+                 mMultiChoiceMode = false;
+             }
         }
 
         @Override
