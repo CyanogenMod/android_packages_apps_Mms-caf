@@ -6125,8 +6125,9 @@ public class ComposeMessageActivity extends Activity
                 }
                 break;
             case R.id.resend:
+                mode.finish();
                 resendCheckedMessage();
-                break;
+                return true;
             case R.id.copy_to_sim:
                 copySmsToSim();
                 break;
