@@ -328,6 +328,10 @@ public class MessageUtils {
     public static final String SMS_BOX_ID = "box_id";
     public static final String COPY_SMS_INTO_SIM_SUCCESS = "success";
 
+    public static final int MESSAGE_REPORT_COLUMN_ID         = 0;
+    public static final int MESSAGE_REPORT_COLUMN_MESSAGE_ID = 1;
+    public static final int MESSAGE_REPORT_COLUMN_PHONE_ID   = 2;
+
     private MessageUtils() {
         // Forbidden being instantiated.
     }
@@ -1089,14 +1093,15 @@ public class MessageUtils {
         }
 
         final Cursor c = SqliteWrapper.query(context, context.getContentResolver(),
-                        Mms.Inbox.CONTENT_URI, new String[] {Mms._ID, Mms.MESSAGE_ID},
+                        Mms.Inbox.CONTENT_URI, new String[] {Mms._ID, Mms.MESSAGE_ID, Mms.PHONE_ID},
                         selectionBuilder.toString(), null, null);
 
         if (c == null) {
             return;
         }
 
-        final Map<String, String> map = new HashMap<String, String>();
+        final Map<String, String> addressMap = new HashMap<String, String>();
+        final Map<String, Integer> phoneIdMap = new HashMap<String, Integer>();
         try {
             if (c.getCount() == 0) {
                 if (callback != null) {
@@ -1106,8 +1111,12 @@ public class MessageUtils {
             }
 
             while (c.moveToNext()) {
-                Uri uri = ContentUris.withAppendedId(Mms.CONTENT_URI, c.getLong(0));
-                map.put(c.getString(1), AddressUtils.getFrom(context, uri));
+                Uri uri = ContentUris.withAppendedId(Mms.CONTENT_URI,
+                        c.getLong(MESSAGE_REPORT_COLUMN_ID));
+                addressMap.put(c.getString(MESSAGE_REPORT_COLUMN_MESSAGE_ID),
+                        AddressUtils.getFrom(context, uri));
+                phoneIdMap.put(c.getString(MESSAGE_REPORT_COLUMN_MESSAGE_ID),
+                        c.getInt(MESSAGE_REPORT_COLUMN_PHONE_ID));
             }
         } finally {
             c.close();
@@ -1116,9 +1125,11 @@ public class MessageUtils {
         OnClickListener positiveListener = new OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                for (final Map.Entry<String, String> entry : map.entrySet()) {
+                for (final Map.Entry<String, String> entry : addressMap.entrySet()) {
+                    String mId = entry.getKey();
+                    int phoneId = phoneIdMap.get(mId);
                     MmsMessageSender.sendReadRec(context, entry.getValue(),
-                                                 entry.getKey(), status);
+                            mId, phoneId, status);
                 }
 
                 if (callback != null) {

@@ -173,7 +173,8 @@ public class MmsMessageSender implements MessageSender {
         return expiryTime;
     }
 
-    public static void sendReadRec(Context context, String to, String messageId, int status) {
+    public static void sendReadRec(Context context, String to, String messageId, int phoneId,
+            int status) {
         EncodedStringValue[] sender = new EncodedStringValue[1];
         sender[0] = new EncodedStringValue(to);
 
@@ -187,8 +188,11 @@ public class MmsMessageSender implements MessageSender {
 
             readRec.setDate(System.currentTimeMillis() / 1000);
 
-            PduPersister.getPduPersister(context).persist(readRec, Mms.Outbox.CONTENT_URI, true,
-                    MessagingPreferenceActivity.getIsGroupMmsEnabled(context), null);
+            Uri uri = PduPersister.getPduPersister(context).persist(readRec, Mms.Outbox.CONTENT_URI,
+                    true, MessagingPreferenceActivity.getIsGroupMmsEnabled(context), null);
+            ContentValues values = new ContentValues(1);
+            values.put(Mms.PHONE_ID, phoneId);
+            SqliteWrapper.update(context, context.getContentResolver(), uri, values, null, null);
             context.startService(new Intent(context, TransactionService.class));
         } catch (InvalidHeaderValueException e) {
             Log.e(TAG, "Invalide header value", e);
