@@ -166,7 +166,7 @@
                       android:summary="@string/pref_summary_mms_auto_retrieval" />
     <CheckBoxPreference android:layout="?android:attr/preferenceLayoutChild"
                         android:dependency="pref_key_mms_auto_retrieval"
-                        android:defaultValue="false"
+                        android:defaultValue="@bool/def_mms_roaming_auto_retrieval"
                         android:key="pref_key_mms_retrieval_during_roaming"
                         android:title="@string/pref_title_mms_retrieval_during_roaming"
                         android:summary="@string/pref_summary_mms_retrieval_during_roaming" />

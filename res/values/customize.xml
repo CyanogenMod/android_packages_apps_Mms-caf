@@ -95,4 +95,8 @@
     <bool name="def_show_mms_size">false</bool>
 
     <bool name="def_enable_reset_smsc">false</bool>
+
+    <!-- automatically retrieve mms messages while roaming, default is false -->
+    <bool name="def_mms_roaming_auto_retrieval">false</bool>
+
 </resources>
