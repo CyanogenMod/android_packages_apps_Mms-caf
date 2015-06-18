@@ -19,6 +19,7 @@ package com.android.mms.ui;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.telephony.PhoneNumberUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,14 +28,18 @@ import android.widget.AbsListView;
 import android.widget.CursorAdapter;
 
 import com.android.mms.LogTag;
+import com.android.mms.MmsApp;
 import com.android.mms.R;
+import com.android.mms.data.ContactList;
 import com.android.mms.data.Conversation;
+import com.cyanogen.lookup.phonenumber.response.LookupResponse;
 
 /**
  * The back-end data adapter for ConversationList.
  */
-//TODO: This should be public class ConversationListAdapter extends ArrayAdapter<Conversation>
-public class ConversationListAdapter extends CursorAdapter implements AbsListView.RecyclerListener {
+// TODO: This should be public class ConversationListAdapter extends ArrayAdapter<Conversation>
+public class ConversationListAdapter extends CursorAdapter implements AbsListView.RecyclerListener,
+        MmsApp.PhoneNumberLookupListener {
     private static final String TAG = LogTag.TAG;
     private static final boolean LOCAL_LOGV = false;
 
@@ -44,6 +49,8 @@ public class ConversationListAdapter extends CursorAdapter implements AbsListVie
     public ConversationListAdapter(Context context, Cursor cursor) {
         super(context, cursor, false /* auto-requery */);
         mFactory = LayoutInflater.from(context);
+        // register w/ Mms app to facilitate contact info lookup
+        MmsApp.getApplication().addPhoneNumberLookupListener(this);
     }
 
     @Override
@@ -56,6 +63,35 @@ public class ConversationListAdapter extends CursorAdapter implements AbsListVie
         ConversationListItem headerView = (ConversationListItem) view;
         Conversation conv = Conversation.from(context, cursor);
         headerView.bind(context, conv);
+
+        // check if contact is unknown and request info if applicable
+        checkForUnknownContact(conv, headerView);
+    }
+
+    private String normalizePhoneNumber(String number) {
+        System.out.println("number : " + PhoneNumberUtils.normalizeNumber(number));
+        System.out.println("current country iso code : " + MmsApp.getApplication().getCurrentCountryIso());
+        return PhoneNumberUtils.formatNumberToE164(PhoneNumberUtils.normalizeNumber(number),
+                MmsApp.getApplication().getCurrentCountryIso());
+    }
+
+    private void checkForUnknownContact(Conversation conv, ConversationListItem view) {
+        // if recipients list has contact not in DB , request cache for info
+        ContactList recipients = conv.getRecipients();
+        if (recipients.size() == 1 && !recipients.get(0).existsInDatabase()) {
+            // String number = normalizePhoneNumber(recipients.get(0).getNumber());
+            String number = recipients.get(0).getE164Number();
+            System.out.println("requesting info for : " + number);
+
+            LookupResponse lookupResponse =
+                    MmsApp.getApplication().getPhoneNumberLookupResonse(number);
+            if (lookupResponse != null) {
+                view.updateView(lookupResponse);
+            } else {
+                // request info for this contact
+                MmsApp.getApplication().lookupInfoForPhoneNumber(number);
+            }
+        }
     }
 
     public void onMovedToScrapHeap(View view) {
@@ -67,6 +103,18 @@ public class ConversationListAdapter extends CursorAdapter implements AbsListVie
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         if (LOCAL_LOGV) Log.v(TAG, "inflating new view");
         return mFactory.inflate(R.layout.conversation_list_item, parent, false);
+    }
+
+    @Override
+    public void onNewInfoAvailable() {
+        // doing a mass refresh rather than a targeted one
+        // TODO : change ^
+        notifyDataSetChanged();
+    }
+
+    public void destroy() {
+        // clean up
+        MmsApp.getApplication().removePhoneNumberLookupListener(this);
     }
 
     public interface OnContentChangedListener {
@@ -94,4 +142,5 @@ public class ConversationListAdapter extends CursorAdapter implements AbsListVie
             conv.setIsChecked(false);
         }
     }
+
 }

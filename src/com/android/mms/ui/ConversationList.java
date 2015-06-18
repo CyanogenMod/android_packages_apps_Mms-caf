@@ -552,7 +552,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        mListAdapter.destroy();
         MessageUtils.removeDialogs();
     }
 

@@ -98,6 +98,7 @@ import com.android.mms.util.DownloadManager;
 import com.android.mms.util.ItemLoadedCallback;
 import com.android.mms.util.SmileyParser;
 import com.android.mms.util.ThumbnailManager.ImageLoaded;
+import com.android.mms.widget.ContactBadgeWithAttribution;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
 import com.google.android.mms.pdu.NotificationInd;
@@ -145,7 +146,7 @@ public class MessageListItem extends ZoomMessageListItem implements
     private TextView mDateView;
     private TextView mSimNameView;
     public View mMessageBlock;
-    private CheckableQuickContactBadge mAvatar;
+    private ContactBadgeWithAttribution mAvatar;
     static private RoundedBitmapDrawable sDefaultContactImage;
     private Presenter mPresenter;
     private int mPosition;      // for debugging
@@ -182,7 +183,7 @@ public class MessageListItem extends ZoomMessageListItem implements
         mLockedIndicator = (ImageView) findViewById(R.id.locked_indicator);
         mDeliveredIndicator = (ImageView) findViewById(R.id.delivered_indicator);
         mDetailsIndicator = (ImageView) findViewById(R.id.details_indicator);
-        mAvatar = (CheckableQuickContactBadge) findViewById(R.id.avatar);
+        mAvatar = (ContactBadgeWithAttribution) findViewById(R.id.avatar);
         mSimIndicatorView = (ImageView) findViewById(R.id.sim_indicator_icon);
         mSimNameView = (TextView) findViewById(R.id.sim_name);
         mMessageBlock = findViewById(R.id.message_block);
@@ -429,6 +430,8 @@ public class MessageListItem extends ZoomMessageListItem implements
                     mAvatar.assignContactFromPhone(contact.getNumber(), true);
                 }
             }
+
+            // if contact not in
         } else {
             mAvatar.setImageDrawable(sDefaultContactImage);
         }

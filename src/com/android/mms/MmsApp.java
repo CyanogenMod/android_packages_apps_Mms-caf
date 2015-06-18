@@ -17,6 +17,7 @@
 
 package com.android.mms;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +26,7 @@ import android.drm.DrmManagerClient;
 import android.location.Country;
 import android.location.CountryDetector;
 import android.location.CountryListener;
+import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.provider.SearchRecentSuggestions;
@@ -46,10 +48,17 @@ import com.android.mms.util.PduLoaderManager;
 import com.android.mms.util.RateController;
 import com.android.mms.util.SmileyParser;
 import com.android.mms.util.ThumbnailManager;
+import com.cyanogen.lookup.phonenumber.LookupHandlerThread;
+import com.cyanogen.lookup.phonenumber.provider.LookupProvider;
+import com.cyanogen.lookup.phonenumber.request.LookupRequest;
+import com.cyanogen.lookup.phonenumber.response.LookupResponse;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class MmsApp extends Application {
+public class MmsApp extends Application implements Application.ActivityLifecycleCallbacks, LookupRequest.Callback {
     public static final String LOG_TAG = LogTag.TAG;
 
     private SearchRecentSuggestions mRecentSuggestions;
@@ -62,6 +71,11 @@ public class MmsApp extends Application {
     private ThumbnailManager mThumbnailManager;
     private ContactPhotoManager mContactPhotoManager;
     private DrmManagerClient mDrmManagerClient;
+
+    private short mActivityCount = 0;
+    private ConcurrentHashMap<String, LookupResponse> mPhoneNumberLookupCache;
+    private LookupHandlerThread mLookupHandlerThread;
+    private HashSet<PhoneNumberLookupListener> mLookupListeners;
 
     @Override
     public void onCreate() {
@@ -105,6 +119,13 @@ public class MmsApp extends Application {
         MessagingNotification.init(this);
 
         activePendingMessages();
+
+        // go through the intial setup for Contact Info lookup
+        // TODO: need ctx in contructor ?
+        mLookupHandlerThread = new LookupHandlerThread("PhoneNumberLookupHandler", this);
+        mLookupHandlerThread.initialize();
+        mPhoneNumberLookupCache = new ConcurrentHashMap<>();
+        mLookupListeners = new HashSet<>();
     }
 
     /**
@@ -212,6 +233,104 @@ public class MmsApp extends Application {
             mDrmManagerClient = new DrmManagerClient(getApplicationContext());
         }
         return mDrmManagerClient;
+    }
+
+    @Override
+    public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+        if (mActivityCount == 0) {
+            // moved setup into onCreate of Application
+        }
+
+        mActivityCount++;
+        System.out.println("Activity Count : " + mActivityCount);
+    }
+
+    @Override
+    public void onActivityDestroyed(Activity activity) {
+        --mActivityCount;
+        if (mActivityCount == 0) {
+            // tear down the phone number lookup cache and handler thread
+            mLookupHandlerThread.quit();
+            mLookupHandlerThread = null;
+            mPhoneNumberLookupCache.clear();
+            mPhoneNumberLookupCache = null;
+            mLookupListeners.clear();
+            mLookupListeners = null;
+        }
+
+        System.out.println("Activity Count : " + mActivityCount);
+    }
+
+    /**
+     * Get contact info in the form of {@link LookupResponse}, if information
+     * has previously been requested and was available
+     * @param phoneNumber should be E-164 formatted
+     */
+    public LookupResponse getPhoneNumberLookupResonse(String phoneNumber) {
+        if (phoneNumber == null) return null;
+        return mPhoneNumberLookupCache.get(phoneNumber);
+    }
+
+    /**
+     * Request contact info for a given phone number
+     * @param phoneNumber should be E-164 formatted
+     */
+    public boolean lookupInfoForPhoneNumber(String phoneNumber) {
+        if (phoneNumber == null) return false;
+        LookupRequest lookupRequest = new LookupRequest(phoneNumber, this);
+        return mLookupHandlerThread.fetchInfoForPhoneNumber(lookupRequest);
+    }
+
+    /**
+     * Registration mechanism for anyone interested in new contact info
+     * being available from an external provider. The updates aren't granular
+     * as of now - you will be notified of updates to all contact info requests
+     */
+    public void addPhoneNumberLookupListener(PhoneNumberLookupListener listener) {
+        mLookupListeners.add(listener);
+    }
+
+    /**
+     * Stop getting updates about newly added contact info
+     */
+    public void removePhoneNumberLookupListener(PhoneNumberLookupListener listener) {
+        mLookupListeners.remove(listener);
+    }
+
+    @Override
+    public void onNewInfo(LookupRequest lookupRequest, LookupResponse response) {
+        // called from a another thread
+        if (mPhoneNumberLookupCache != null) {
+            mPhoneNumberLookupCache.put(lookupRequest.mPhoneNumber, response);
+        }
+
+        // notify listeners of new entry
+        for (PhoneNumberLookupListener listener : mLookupListeners) {
+            listener.onNewInfoAvailable();
+        }
+    }
+
+    @Override
+    public void onActivityStarted(Activity activity) {}
+
+    @Override
+    public void onActivityResumed(Activity activity) {}
+
+    @Override
+    public void onActivityPaused(Activity activity) {}
+
+    @Override
+    public void onActivityStopped(Activity activity) {}
+
+    @Override
+    public void onActivitySaveInstanceState(Activity activity, Bundle outState) {}
+
+    /**
+     * Callbacks for client requesting phone number lookups
+     */
+    public interface PhoneNumberLookupListener {
+        // generic call back when new info is available
+        void onNewInfoAvailable();
     }
 
 }

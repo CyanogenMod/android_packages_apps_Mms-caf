@@ -152,6 +152,7 @@ public class Contact {
         mIsStale = true;
         mSendToVoicemail = false;
     }
+
     @Override
     public String toString() {
         return String.format("{ number=%s, name=%s, nameAndNumber=%s, label=%s, person_id=%d, photo_id=%d, hash=%d method_id=%d }",
@@ -259,6 +260,10 @@ public class Contact {
 
     public synchronized String getNumber() {
         return mNumber;
+    }
+
+    public synchronized String getE164Number() {
+        return mNumberE164;
     }
 
     public synchronized void setNumber(String number) {

@@ -46,14 +46,17 @@ import android.widget.ListView;
 
 import com.android.mms.LogTag;
 import com.android.mms.R;
+import com.android.mms.model.ContactInfo;
 import com.android.mms.ui.zoom.ZoomMessageListItem;
 import com.android.mms.ui.zoom.ZoomMessageListView;
+import com.android.mms.util.ContactInfoUpdater;
 import com.google.android.mms.MmsException;
 
 /**
  * The back-end data adapter of a message list.
  */
-public class MessageListAdapter extends CursorAdapter {
+public class MessageListAdapter extends CursorAdapter implements
+        ContactInfoUpdater.InfoUpdateListener {
     private static final String TAG = LogTag.TAG;
     private static final boolean LOCAL_LOGV = false;
 
@@ -260,8 +263,24 @@ public class MessageListAdapter extends CursorAdapter {
                 mBodyCache.put(position, msgItem.mBody);
             }
 
+            // check if contact info needs to be requested
+            checkForUnknown(msgItem);
+
             handleZoomForItem(view);
         }
+    }
+
+    private void checkForUnknown(MessageItem msgItem) {
+//        msgItem.
+    }
+
+    @Override
+    public void onNewInfo(String phoneNumber, ContactInfo contactInfo) {
+        // store entry in cache
+
+
+        // notify data set changed
+
     }
 
     public interface OnDataSetChangedListener {

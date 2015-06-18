@@ -46,6 +46,8 @@ import com.android.mms.data.Contact;
 import com.android.mms.data.ContactList;
 import com.android.mms.data.Conversation;
 import com.android.mms.util.SmileyParser;
+import com.android.mms.widget.ContactBadgeWithAttribution;
+import com.cyanogen.lookup.phonenumber.response.LookupResponse;
 
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -64,7 +66,7 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
     private TextView mDateView;
     private View mAttachmentView;
     private View mErrorIndicator;
-    private CheckableQuickContactBadge mAvatarView;
+    private ContactBadgeWithAttribution mAvatarView;
 
     static private RoundedBitmapDrawable sDefaultContactImage;
 
@@ -102,8 +104,10 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         mDateView = (TextView) findViewById(R.id.date);
         mAttachmentView = findViewById(R.id.attachment);
         mErrorIndicator = findViewById(R.id.error);
-        mAvatarView = (CheckableQuickContactBadge) findViewById(R.id.avatar);
+        mAvatarView = (ContactBadgeWithAttribution) findViewById(R.id.avatar);
         mAvatarView.setOverlay(null);
+
+        // TODO : set attribution slot dimension
     }
 
     public Conversation getConversation() {
@@ -266,6 +270,7 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
 
         // From.
         mFromView.setText(formatMessage());
+        System.out.println("formatted msg : " + formatMessage());
 
         // Register for updates in changes of any of the contacts in this conversation.
         ContactList contacts = conversation.getRecipients();
@@ -291,6 +296,17 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
 
         updateAvatarView();
         mAvatarView.setChecked(isChecked(), sameItem);
+    }
+
+    public void updateView(LookupResponse lookupResponse) {
+        // add attribution to avatar
+        mAvatarView.setAttributionDrawable(lookupResponse.mAttributionLogo);
+
+        // add name
+        if (!TextUtils.isEmpty(lookupResponse.mName)) {
+            mFromView.setText(lookupResponse.mName);
+        }
+
     }
 
     public final void unbind() {

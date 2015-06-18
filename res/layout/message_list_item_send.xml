@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:padding="4dp">
 
-            <com.android.contacts.common.widget.CheckableQuickContactBadge
+            <com.android.mms.widget.ContactBadgeWithAttribution
                 android:id="@+id/avatar"
                 android:layout_alignParentEnd="true"
                 android:layout_width="@dimen/avatar_width_height"
