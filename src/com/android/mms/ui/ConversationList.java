@@ -254,7 +254,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         actionBar.setCustomView(v,
                 new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
                         ActionBar.LayoutParams.WRAP_CONTENT,
-                        Gravity.CENTER_VERTICAL | Gravity.RIGHT));
+                        Gravity.CENTER_VERTICAL | Gravity.END));
 
         mUnreadConvCount = (TextView)v.findViewById(R.id.unread_conv_count);
     }
