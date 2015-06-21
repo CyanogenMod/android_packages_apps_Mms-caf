@@ -425,6 +425,14 @@
                 android:resource="@xml/searchable" />
         </activity>
 
+        <activity android:name=".ui.MultiPickContactGroups"
+            android:configChanges="orientation|screenSize">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <meta-data android:name="android.app.default_searchable"
             android:value=".ui.SearchActivity" />
 
@@ -483,6 +491,11 @@
         <service android:name=".widget.MmsWidgetService"
                  android:permission="android.permission.BIND_REMOTEVIEWS"
                  android:exported="false" />
+
+        <activity android:name=".ui.MultiPickContactsActivity"
+                  android:windowSoftInputMode="stateHidden|adjustResize"
+                  android:configChanges="orientation|keyboardHidden|screenSize" >
+        </activity>
 
         <!-- Message Template Content Provider -->
         <provider android:name="MessageTemplateProvider"

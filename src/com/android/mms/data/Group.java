@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract.Groups;
-import android.provider.LocalGroups;
 import android.util.Log;
 
 import com.android.mms.LogTag;
@@ -38,27 +37,16 @@ public class Group {
         Groups.SUMMARY_COUNT,
     };
 
-    private static final String[] LOCAL_PROJECTION = new String[] {
-            LocalGroups.GroupColumns._ID,
-            LocalGroups.GroupColumns.TITLE,
-            LocalGroups.GroupColumns.COUNT,
-    };
-
     private static final String SELECTION = Groups.ACCOUNT_TYPE + " NOT NULL AND "
             + Groups.ACCOUNT_NAME + " NOT NULL AND "
             + Groups.AUTO_ADD + "=0 AND "
             + Groups.DELETED + "=0 AND "
             + Groups.SUMMARY_COUNT + "!=0";
 
-    private static final String LOCAL_SELECTION = LocalGroups.GroupColumns.TITLE + " NOT NULL ";
-
     private static final String SORT = Groups.ACCOUNT_TYPE + ", "
             + Groups.ACCOUNT_NAME + ", "
             + Groups.DATA_SET + ", "
             + Groups.TITLE + " COLLATE LOCALIZED ASC";
-
-    private static final String LOCAL_SORT = LocalGroups.GroupColumns.TITLE +
-            " COLLATE LOCALIZED ASC";
 
     private static final int COLUMN_ID            = 0;
     private static final int COLUMN_GROUP_TITLE   = 1;
@@ -67,8 +55,6 @@ public class Group {
     private static final int COLUMN_DATA_SET      = 4;
     private static final int COLUMN_SUMMARY_COUNT = 5;
 
-    private static final int LOCAL_COLUMN_COUNT = 2;
-
     private long mId;
     private String mTitle;
     private String mAccountName;
@@ -76,22 +62,16 @@ public class Group {
     private String mDataSet;
     private int mSummaryCount;
     private ArrayList<PhoneNumber> mPhoneNumbers;
-    private boolean mLocal = false;
 
     private boolean mIsChecked;
 
-    private Group(Context context, Cursor c, boolean local) {
-        mLocal = local;
+    private Group(Context context, Cursor c) {
         mId = c.getLong(COLUMN_ID);
         mTitle = c.getString(COLUMN_GROUP_TITLE);
-        if (!local) {
-            mAccountName = c.getString(COLUMN_ACCOUNT_NAME);
-            mAccountType = c.getString(COLUMN_ACCOUNT_TYPE);
-            mDataSet = c.getString(COLUMN_DATA_SET);
-            mSummaryCount = c.getInt(COLUMN_SUMMARY_COUNT);
-        } else {
-            mSummaryCount = c.getInt(LOCAL_COLUMN_COUNT);
-        }
+        mAccountName = c.getString(COLUMN_ACCOUNT_NAME);
+        mAccountType = c.getString(COLUMN_ACCOUNT_TYPE);
+        mDataSet = c.getString(COLUMN_DATA_SET);
+        mSummaryCount = c.getInt(COLUMN_SUMMARY_COUNT);
         mPhoneNumbers = new ArrayList<PhoneNumber>();
 
         if (Log.isLoggable(LogTag.THREAD_CACHE, Log.VERBOSE)) {
@@ -125,10 +105,6 @@ public class Group {
 
     public ArrayList<PhoneNumber> getPhoneNumbers() {
         return mPhoneNumbers;
-    }
-
-    public boolean isLocal() {
-        return mLocal;
     }
 
     public void addPhoneNumber(PhoneNumber phoneNumber) {
@@ -168,27 +144,9 @@ public class Group {
 
         cursor.moveToPosition(-1);
         while (cursor.moveToNext()) {
-            groups.add(new Group(context, cursor, false));
+            groups.add(new Group(context, cursor));
         }
         cursor.close();
-
-        final Cursor localCursor = context.getContentResolver().query(LocalGroups.CONTENT_URI,
-                LOCAL_PROJECTION, LOCAL_SELECTION, null, LOCAL_SORT);
-
-        if (localCursor  == null) {
-            return groups;
-        }
-
-        if (localCursor.getCount() == 0) {
-            localCursor.close();
-            return groups;
-        }
-
-        localCursor.moveToPosition(-1);
-        while (localCursor.moveToNext()) {
-            groups.add(new Group(context, localCursor, true));
-        }
-        localCursor.close();
 
         return groups;
     }
