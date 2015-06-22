@@ -386,4 +386,18 @@
     <!-- Smart Dialer -->
     <string name="pref_title_mms_smart_dialer">Smart call</string>
     <string name="pref_summary_mms_smart_dialer">Automatically call the contact by moving your phone to your ear</string>
+
+    <!-- Conversation list datetime headers -->
+    <string name="conversation_list_today_header">Today</string>
+    <string name="conversation_list_yesterday_header">Yesterday</string>
+    <string name="conversation_list_this_week_header">This week</string>
+    <string name="conversation_list_last_week_header">Last week</string>
+    <string name="conversation_list_older_header">Older</string>
+
+    <!-- Pretty formats -->
+    <string name="pretty_format_yesterday">Yesterday at <xliff:g id="time">%s</xliff:g></string>
+    <string name="pretty_format_x_days_ago"><xliff:g id="n_days">%d</xliff:g> days ago</string>
+
+    <string name="mms_next_empty_no_messages">You have no new messages.</string>
+
 </resources>

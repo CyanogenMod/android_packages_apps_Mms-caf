@@ -6,9 +6,20 @@ include $(CLEAR_VARS)
 chips_dir := ../../../frameworks/opt/chips/res
 contacts_common_dir := ../ContactsCommon
 phone_common_dir := ../PhoneCommon
+stickylistheaders_dir := ../../../external/emilsjolander/stickylistheaders/library
+android_joda_dir := android-joda
 
-res_dirs := res $(chips_dir) $(contacts_common_dir)/res $(phone_common_dir)/res
-src_dirs := src $(contacts_common_dir)/src $(phone_common_dir)/src
+res_dirs := res \
+	$(chips_dir) \
+	$(contacts_common_dir)/res \
+	$(stickylistheaders_dir)/res \
+	 $(android_joda_dir)/res \
+	$(phone_common_dir)/res
+
+src_dirs := src \
+	$(contacts_common_dir)/src \
+	$(phone_common_dir)/src \
+	$(stickylistheaders_dir)/src
 
 $(shell rm -f $(LOCAL_PATH)/chips)
 
@@ -29,12 +40,18 @@ LOCAL_STATIC_JAVA_LIBRARIES += com.android.vcard libphonenumber libgeocoding gua
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v7-palette
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v4
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v13
+LOCAL_STATIC_JAVA_LIBRARIES += \
+	joda-time \
+	android-joda
+
 
 LOCAL_AAPT_FLAGS := \
-    --auto-add-overlay \
-    --extra-packages com.android.ex.chips \
-    --extra-packages com.android.contacts.common \
-    --extra-packages com.android.phone.common
+	--auto-add-overlay \
+	--extra-packages com.android.ex.chips \
+	--extra-packages com.android.contacts.common \
+	--extra-packages se.emilsjolander.stickylistheaders \
+	--extra-packages net.danlew.android.joda \
+	--extra-packages com.android.phone.common
 
 LOCAL_REQUIRED_MODULES := SoundRecorder
 
@@ -45,4 +62,4 @@ LOCAL_PRIVILEGED_MODULE := true
 include $(BUILD_PACKAGE)
 
 # This finds and builds the test apk as well, so a single make does both.
-include $(call all-makefiles-under,$(LOCAL_PATH))
+#include $(call all-makefiles-under,$(LOCAL_PATH))

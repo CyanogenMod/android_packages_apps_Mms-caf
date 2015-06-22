@@ -113,7 +113,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
     public static final int MENU_VIEW_CONTACT         = 2;
     public static final int MENU_ADD_TO_CONTACTS      = 3;
 
-    public static final class DeleteInfo {
+    public static class DeleteInfo {
 
         private final MessageDeleteTypes mDeleteType;
         private final int mDeleteCount;
@@ -1504,4 +1504,5 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         String s = String.format(format, args);
         Log.d(TAG, "[" + Thread.currentThread().getId() + "] " + s);
     }
+
 }
