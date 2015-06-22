@@ -21,7 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
 
@@ -96,9 +97,15 @@ public class AttachmentTypeSelectorAdapter extends IconListAdapter {
                     R.drawable.ic_attach_contact_info, ADD_CONTACT_AS_TEXT);
         }
 
-        // calendar event support
-        addItem(data, context.getResources().getString(R.string.attach_add_calendar_events),
-                R.drawable.ic_attach_event, ADD_CALENDAR_EVENTS);
+        // show Calendar Event attachment type only if an activity can respond to the intent
+        PackageManager pm = context.getPackageManager();
+        List<ResolveInfo> resolveInfos = pm.queryIntentActivities
+                (MessageUtils.getSelectCalendarEventIntent(), 0);
+        if (resolveInfos.size() > 0) {
+            // add calendar event attachment type
+            addItem(data, context.getResources().getString(R.string.attach_add_calendar_events),
+                    R.drawable.ic_attach_event, ADD_CALENDAR_EVENTS);
+        }
 
         return data;
     }
