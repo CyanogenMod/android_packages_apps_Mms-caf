@@ -16,13 +16,16 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="button_close">بستن</string>
-  <string name="button_view">مشاهده</string>
-  <string name="cancel_downloading">لغو</string>
-  <string name="menu_add_to_label">افزودن به نشانک‌ها</string>
-  <string name="selected_all">انتخاب همه</string>
-  <string name="cdma_priority_normal">عادی</string>
-  <string name="menu_delete_all_entries">حذف همه</string>
-  <string name="menu_delete_sms">حذف پیامک</string>
-  <string name="pref_mms_notification_vibrate_normal">عادی</string>
+  <plurals name="remaining_delay_time">
+    <item quantity="one">Sendado post 1 sekundo, tuŝu por nuligi.</item>
+    <item quantity="other">Sendado post %1$d sekundoj, tuŝu por nuligi.</item>
+  </plurals>
+  <plurals name="confirm_delete_messages">
+    <item quantity="one">Unu mesaĝo estos nuligita.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> mesaĝoj estos nuligitaj.</item>
+  </plurals>
+  <plurals name="confirm_mark_read_conversation">
+    <item quantity="one">Unu dialogo estos markita kiel legita.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> dialogoj estos markitaj kiel legitaj.</item>
+  </plurals>
 </resources>
