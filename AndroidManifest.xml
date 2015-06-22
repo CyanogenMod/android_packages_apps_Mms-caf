@@ -78,7 +78,7 @@
         <service android:name=".transaction.SmsReceiverService"
                  android:exported="false" />
 
-        <activity android:name=".ui.ConversationList"
+        <activity android:name=".ui.next.NextConversationListActivity"
                   android:label="@string/app_label"
                   android:configChanges="orientation|screenSize|keyboardHidden"
                   android:theme="@style/MmsTheme.NoActionBar"
