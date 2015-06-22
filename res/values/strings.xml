@@ -21,6 +21,10 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- The name of the SMS/MMS app as it appears to the user in the Home screen, task switcher, etc. -->
     <string name="app_label">Messaging</string>
+    <plurals name="app_label_with_unread">
+        <item quantity="one">%d New Message</item>
+        <item quantity="other">%d New Messages</item>
+    </plurals>
 
     <!-- Command name to open a Compose screen; displays in conversation list.
          Also used as accessibility text for widget's new message button -->
