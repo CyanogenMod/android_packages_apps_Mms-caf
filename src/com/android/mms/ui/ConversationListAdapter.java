@@ -26,18 +26,26 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.CursorAdapter;
 
+import android.widget.ListView;
+import android.widget.TextView;
 import com.android.mms.LogTag;
 import com.android.mms.R;
 import com.android.mms.data.Conversation;
+import com.android.mms.util.PrettyTime;
+import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
+import se.emilsjolander.stickylistheaders.WrapperView;
 
 /**
  * The back-end data adapter for ConversationList.
  */
 //TODO: This should be public class ConversationListAdapter extends ArrayAdapter<Conversation>
-public class ConversationListAdapter extends CursorAdapter implements AbsListView.RecyclerListener {
+public class ConversationListAdapter extends CursorAdapter implements AbsListView
+        .RecyclerListener, StickyListHeadersAdapter {
     private static final String TAG = LogTag.TAG;
     private static final boolean LOCAL_LOGV = false;
+    private static final int DATE = 1;
 
+    private PrettyTime mPrettyTime = new PrettyTime();
     private final LayoutInflater mFactory;
     private OnContentChangedListener mOnContentChangedListener;
 
@@ -59,7 +67,8 @@ public class ConversationListAdapter extends CursorAdapter implements AbsListVie
     }
 
     public void onMovedToScrapHeap(View view) {
-        ConversationListItem headerView = (ConversationListItem)view;
+        WrapperView wrappedHeader = (WrapperView) view;
+        ConversationListItem headerView = (ConversationListItem) wrappedHeader.getItem();
         headerView.unbind();
     }
 
@@ -94,4 +103,40 @@ public class ConversationListAdapter extends CursorAdapter implements AbsListVie
             conv.setIsChecked(false);
         }
     }
+
+
+    @Override
+    public long getHeaderId(int position) {
+        // peek to position passed in to get date
+        Cursor cursor = getCursor();
+        int curPos = cursor.getPosition();
+        cursor.moveToPosition(position);
+        long dateTime = cursor.getLong(DATE);
+        cursor.moveToPosition(curPos);
+
+        return mPrettyTime.getWeekBucket(dateTime).ordinal();
+    }
+
+    @Override
+    public View getHeaderView(int position, View convertView, ViewGroup parent) {
+        if (convertView == null) {
+            LayoutInflater inflater =
+                    (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.conversation_list_header, parent, false);
+        }
+
+        // get week for this position
+        int headerId = (int) getHeaderId(position);
+        PrettyTime.WeekBucket week = PrettyTime.WeekBucket.values()[headerId];
+
+        // convert to string and bind
+        TextView headerText = (TextView) convertView.findViewById(R.id.headerText);
+        String headerStr = new PrettyTime().formatWeekBucket(mContext, week);
+        if (headerText != null) {
+            headerText.setText(headerStr);
+        }
+
+        return convertView;
+    }
+
 }

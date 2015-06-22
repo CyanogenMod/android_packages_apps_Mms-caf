@@ -31,10 +31,20 @@
         <item name="android:actionBarStyle">@style/MmsActionBarStyle</item>
     </style>
 
-    <style name="MmsTheme.NoActionBar">
+    <style name="MmsTheme.NoActionBar" parent="android:Theme.Material.Light.DarkActionBar">
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:colorPrimary">@color/mms_next_theme_color</item>
+        <item name="android:colorPrimaryDark">@color/mms_next_theme_color_dark</item>
+        <item name="android:colorAccent">@color/mms_next_theme_color_accent</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:actionModeStyle">@style/MmsActionModeStyle</item>
+        <item name="android:actionModeBackground">?android:attr/colorBackground</item>
+    </style>
+
+    <style name="MmsActionModeStyle" parent="@android:Widget.Material.ActionMode">
+        <item name="android:height">@dimen/mms_next_toolbar_height</item>
     </style>
 
     <style name="ReceivedMessageTheme" parent="android:ThemeOverlay.Material.Dark">
@@ -42,11 +52,11 @@
     </style>
 
     <style name="HeaderTheme" parent="android:ThemeOverlay.Material.Dark.ActionBar">
-        <item name="android:colorAccent">?android:attr/textColorPrimary</item>
+        <item name="android:colorAccent">@color/mms_next_theme_color_accent</item>
         <item name="android:popupTheme">@android:style/ThemeOverlay.Material.Light</item>
         <item name="android:spinnerDropDownItemStyle">@style/HeaderSpinnerDropDown</item>
         <!-- All popups should have light background -->
-        <item name="android:colorBackground">@*android:color/background_material_light</item>
+        <item name="android:colorBackground">@color/mms_next_theme_color</item>
     </style>
 
     <style name="HeaderTabText" parent="android:style/Widget.Material.Light.ActionBar.TabText">

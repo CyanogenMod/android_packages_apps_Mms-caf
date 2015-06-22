@@ -31,4 +31,8 @@
         <!-- Case of 0 or 2 or more results. -->
         <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> conversations will be marked as read.</item>
     </plurals>
+    <plurals name="app_label_with_unread">
+        <item quantity="one">%d New Message</item>
+        <item quantity="other">%d New Messages</item>
+    </plurals>
 </resources>
