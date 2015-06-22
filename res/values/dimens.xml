@@ -28,7 +28,7 @@ All Rights Reserved. -->
     <dimen name="qm_message_height">210dp</dimen>
     <dimen name="qm_dialog_button_bar_height">48dip</dimen>
 
-    <!-- Bammer item spacing -->
+    <!-- Banner item spacing -->
     <dimen name="banner_s_space">4dip</dimen>
     <dimen name="banner_m_space">8dip</dimen>
 
@@ -37,9 +37,23 @@ All Rights Reserved. -->
     <dimen name="floating_action_button_width">56dp</dimen>
     <dimen name="floating_action_button_radius">28dp</dimen>
     <dimen name="floating_action_button_translation_z">5dp</dimen>
-    <dimen name="floating_action_button_margin_right">16dp</dimen>
-    <dimen name="floating_action_button_margin_bottom">16dp</dimen>
+    <dimen name="floating_action_button_margin_right">24dp</dimen>
+    <dimen name="floating_action_button_margin_bottom">24dp</dimen>
 
     <dimen name="action_bar_elevation">2dp</dimen>
+
+    <dimen name="iv_empty_container_size">120dp</dimen>
+    <dimen name="iv_empty_icon_size">48dp</dimen>
+    <dimen name="mms_next_empty_tv_marginTop">16dp</dimen>
+    <dimen name="mms_next_empty_circle_marginTop">158dp</dimen>
+    <dimen name="mms_next_empty_container_padding">45dp</dimen>
+    <dimen name="mms_next_toolbar_wrapper_height">84dp</dimen>
+    <dimen name="mms_next_toolbar_height">60dp</dimen>
+    <dimen name="mms_next_toolbar_paddingTop">24dp</dimen>
+    <dimen name="mms_next_toolbar_paddingBottom">20dp</dimen>
+    <dimen name="mms_next_toolbar_paddingStart">16dp</dimen>
+    <dimen name="mms_next_spinner_minHeight">48dp</dimen>
+    <dimen name="mms_next_spinner_margin">8dp</dimen>
+    <dimen name="mms_action_menu_top_padding">9dp</dimen>
 
 </resources>

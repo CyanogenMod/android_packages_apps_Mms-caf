@@ -18,42 +18,49 @@
  */
 -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/mms_next_toolbar_wrapper_height"
+        android:paddingTop="@dimen/mms_next_toolbar_paddingTop"
+        android:paddingBottom="0dp"
+        android:paddingStart="@dimen/mms_next_toolbar_paddingStart"
         android:orientation="vertical"
-        android:background="@color/mms_theme_color"
+        android:background="@color/mms_next_theme_color"
         android:elevation="@dimen/action_bar_elevation"
         android:theme="@style/HeaderTheme">
 
         <Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize" />
+            android:layout_height="@dimen/mms_next_toolbar_height"
+            android:gravity="center_vertical"
+            android:minHeight="?android:attr/actionBarSize"/>
 
         <Spinner
             android:id="@+id/filterSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:minHeight="48dip" />
+            android:layout_marginStart="@dimen/mms_next_spinner_margin"
+            android:layout_marginEnd="@dimen/mms_next_spinner_margin"
+            android:minHeight="@dimen/mms_next_spinner_minHeight"/>
 
     </LinearLayout>
 
-    <include layout="@layout/banner_sms_promo" />
+    <include layout="@layout/banner_sms_promo"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" >
+        android:layout_weight="1">
 
-        <ListView android:id="@android:id/list"
+        <se.emilsjolander.stickylistheaders.StickyListHeadersListView
+            android:id="@+id/mms_list"
             style="?android:attr/listViewWhiteStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -62,17 +69,45 @@
             android:drawSelectorOnTop="false"
             android:scrollbarStyle="insideOverlay"
             android:background="@color/background"
-            android:fadingEdgeLength="16dip" />
+            android:fadingEdgeLength="16dip"/>
 
-        <TextView android:id="@+id/empty"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+        <LinearLayout
+            android:id="@+id/ll_empty"
+            android:layout_marginTop="@dimen/mms_next_empty_circle_marginTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:gravity="center"
-            android:background="@color/background"
-            android:text="@string/loading_conversations"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:paddingStart="@dimen/mms_next_empty_container_padding"
+            android:paddingEnd="@dimen/mms_next_empty_container_padding"
+            android:layout_centerHorizontal="true">
 
-        <include layout="@layout/floating_action_button" />
+            <RelativeLayout
+                android:background="@drawable/empty_circle"
+                android:layout_width="@dimen/iv_empty_container_size"
+                android:layout_height="@dimen/iv_empty_container_size">
+                <ImageView
+                    android:id="@+id/iv_empty"
+                    android:layout_width="@dimen/iv_empty_icon_size"
+                    android:layout_height="@dimen/iv_empty_icon_size"
+                    android:tint="#AAAAAA"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_message_black_48dp"/>
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_empty"
+                android:layout_marginTop="@dimen/mms_next_empty_tv_marginTop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:background="@color/background"
+                android:textColor="@color/mms_next_empty_text"
+                android:text="@string/mms_next_empty_no_messages"
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
+        </LinearLayout>
+
+        <include layout="@layout/floating_action_button"/>
 
     </RelativeLayout>
 
