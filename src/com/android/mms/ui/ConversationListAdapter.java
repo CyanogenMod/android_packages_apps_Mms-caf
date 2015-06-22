@@ -26,15 +26,20 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.CursorAdapter;
 
+import android.widget.ListView;
+import android.widget.TextView;
 import com.android.mms.LogTag;
 import com.android.mms.R;
 import com.android.mms.data.Conversation;
+import com.android.mms.util.PrettyTime;
+import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 /**
  * The back-end data adapter for ConversationList.
  */
 //TODO: This should be public class ConversationListAdapter extends ArrayAdapter<Conversation>
-public class ConversationListAdapter extends CursorAdapter implements AbsListView.RecyclerListener {
+public class ConversationListAdapter extends CursorAdapter implements AbsListView
+        .RecyclerListener {
     private static final String TAG = LogTag.TAG;
     private static final boolean LOCAL_LOGV = false;
 
@@ -94,4 +99,5 @@ public class ConversationListAdapter extends CursorAdapter implements AbsListVie
             conv.setIsChecked(false);
         }
     }
+
 }
