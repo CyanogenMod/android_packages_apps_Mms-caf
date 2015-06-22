@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/mms_theme_color"
+        android:elevation="@dimen/action_bar_elevation"
+        android:theme="@style/HeaderTheme">
+
+        <Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize" />
+
+        <Spinner
+            android:id="@+id/filterSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:minHeight="48dip" />
+
+    </LinearLayout>
+
+    <include layout="@layout/banner_sms_promo" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+
+        <se.emilsjolander.stickylistheaders.StickyListHeadersListView
+            android:id="@+id/mms_list"
+            style="?android:attr/listViewWhiteStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            android:drawSelectorOnTop="false"
+            android:scrollbarStyle="insideOverlay"
+            android:background="@color/background"
+            android:fadingEdgeLength="16dip" />
+
+        <TextView android:id="@+id/empty"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:gravity="center"
+                  android:background="@color/background"
+                  android:text="@string/loading_conversations"
+                  android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <include layout="@layout/floating_action_button" />
+
+    </RelativeLayout>
+
+</LinearLayout>

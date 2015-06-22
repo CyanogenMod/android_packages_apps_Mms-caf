@@ -79,4 +79,9 @@
 
     <color name="actionbar_background_color">@color/mms_theme_color</color>
     <color name="floating_action_button_icon_color">#ffffff</color>
+
+    <!-- List headers -->
+    <color name="header_background_color">#F4F4F4</color>
+    <color name="header_border_color">#C4C4C4</color>
+    <color name="header_text_color">#7A7A7A</color>
 </resources>

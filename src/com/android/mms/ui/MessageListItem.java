@@ -274,6 +274,7 @@ public class MessageListItem extends ZoomMessageListItem implements
     }
 
     private void bindNotifInd() {
+        Log.i("TEST", "Here 1");
         showMmsView(false);
 
         mBodyTextView.setText(formatMessage(mMessageItem, null,
