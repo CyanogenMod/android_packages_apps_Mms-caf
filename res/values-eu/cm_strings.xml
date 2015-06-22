@@ -85,11 +85,11 @@
   <string name="alert_dialog_no">Ez</string>
   <string name="menu_as_unread">Irakurri gabe bezala markatu</string>
   <string name="menu_as_read">Markatu irakurrita gisa</string>
-  <string name="menu_all_as_unread">Denak ez irakurriak bezala markatu</string>
+  <string name="menu_all_as_unread">Markatu guztiak ez irakurrita gisa</string>
   <string name="menu_all_as_read">Markatu guztiak irakurrita gisa</string>
   <string name="confirm_mark_unread_dialog_title">Irakurri gabe bezala markatu?</string>
   <string name="confirm_mark_read_dialog_title">Markatu irakurrita gisa?</string>
-  <string name="confirm_mark_unread_all_conversations">Elkarrizketa guztiak ez irakurriak bezala markatuko dira.</string>
+  <string name="confirm_mark_unread_all_conversations">Hari guztiak ez irakurrita gisa markatuko dira.</string>
   <string name="confirm_mark_read_all_conversations">Hari guztiak irakurrita gisa markatuko dira.</string>
   <string name="select_recipients">Hartzaileak hautatu</string>
   <string name="groups_header">Taldeak</string>
