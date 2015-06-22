@@ -824,14 +824,17 @@ public class MessageUtils {
         }
     }
 
-    public static void selectCalendarEvents(Activity activity, int requestCode) {
+    public static Intent getSelectCalendarEventIntent() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType(TEXT_VCALENDAR);
         intent.putExtra("EXTRA_LIMIT_TO_ONE_EVENT", true);
         intent.addCategory(Intent.CATEGORY_APP_CALENDAR);
+        return intent;
+    }
 
+    public static void selectCalendarEvents(Activity activity, int requestCode) {
         try {
-            activity.startActivityForResult(intent, requestCode);
+            activity.startActivityForResult(getSelectCalendarEventIntent(), requestCode);
         } catch (ActivityNotFoundException e) {
             Toast.makeText(activity, activity.getResources().getString(
                     R.string.calendar_attachment_activity_not_found), Toast.LENGTH_SHORT)
