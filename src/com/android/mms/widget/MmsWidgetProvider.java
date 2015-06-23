@@ -35,6 +35,8 @@ import com.android.mms.ui.ConversationList;
 public class MmsWidgetProvider extends AppWidgetProvider {
     public static final String ACTION_NOTIFY_DATASET_CHANGED =
             "com.android.mms.intent.action.ACTION_NOTIFY_DATASET_CHANGED";
+    public static final String ACTION_TIME_SET =
+            "android.intent.action.TIME_SET";
 
     private static final String TAG = LogTag.TAG;
 
@@ -61,7 +63,7 @@ public class MmsWidgetProvider extends AppWidgetProvider {
         // we're looking for an intent sent by the messaging app when it knows a message has
         // been sent or received (or a conversation has been read) and is telling the widget it
         // needs to update.
-        if (ACTION_NOTIFY_DATASET_CHANGED.equals(action)) {
+        if (ACTION_NOTIFY_DATASET_CHANGED.equals(action) || ACTION_TIME_SET.equals(action)) {
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context,
                     MmsWidgetProvider.class));
