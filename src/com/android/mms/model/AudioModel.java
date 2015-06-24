@@ -65,7 +65,7 @@ public class AudioModel extends MediaModel {
         if (uri.getScheme().equals("file")) {
             initFromFile = true;
             c = cr.query(Audio.Media.EXTERNAL_CONTENT_URI, null,
-                    Audio.Media.DATA + "='" + uri.getPath() + "'", null, null);
+                    Audio.Media.DATA + "=?", new String[] { uri.getPath() }, null);
         } else {
             c = SqliteWrapper.query(mContext, cr, uri, null, null, null, null);
         }
