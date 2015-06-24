@@ -21,6 +21,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.provider.Telephony;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -206,11 +207,17 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
 
             if (contact.existsInDatabase()) {
                 mAvatarView.assignContactUri(contact.getUri());
-            } else if (MessageUtils.isWapPushNumber(contact.getNumber())) {
-                mAvatarView.assignContactFromPhone(
-                        MessageUtils.getWapPushNumber(contact.getNumber()), true);
+                mAvatarView.setImageDrawable(avatarDrawable);
             } else {
-                mAvatarView.assignContactFromPhone(contact.getNumber(), true);
+                // identify it is phone number or email address,handle it respectively
+                if (Telephony.Mms.isEmailAddress(contact.getNumber())) {
+                    mAvatarView.assignContactFromEmail(contact.getNumber(), true);
+                } else if (MessageUtils.isWapPushNumber(contact.getNumber())) {
+                    mAvatarView.assignContactFromPhone(
+                            MessageUtils.getWapPushNumber(contact.getNumber()), true);
+                } else {
+                    mAvatarView.assignContactFromPhone(contact.getNumber(), true);
+                }
             }
         } else {
             // TODO get a multiple recipients asset (or do something else)
