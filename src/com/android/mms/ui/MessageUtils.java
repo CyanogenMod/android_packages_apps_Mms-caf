@@ -648,7 +648,7 @@ public class MessageUtils {
                 }
             }
         }
-        return null;
+        return "";
     }
 
     public static int getAttachmentType(SlideshowModel model, MultimediaMessagePdu mmp) {
