@@ -22,7 +22,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:background="#ffffffff"
-    android:layout_height="96dip">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:orientation="vertical"
@@ -36,22 +36,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#ff000000"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:singleLine="true" />
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView android:id="@+id/status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#ff000000"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:singleLine="true" />
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView android:id="@+id/delivery_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#ff000000"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:singleLine="true" />
+            android:textAppearance="?android:attr/textAppearanceLarge" />
     </LinearLayout>
 
     <ImageView android:id="@+id/icon"
