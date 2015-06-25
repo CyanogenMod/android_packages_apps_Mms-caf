@@ -3471,12 +3471,14 @@ public class ComposeMessageActivity extends Activity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (view != null) {
-                    addAttachment((mCurrentAttachmentPager > DEFAULT_ATTACHMENT_PAGER ? position
-                            + mAttachmentPagerAdapter.PAGE_GRID_COUNT : position), replace);
+                    int index = mCurrentAttachmentPager > DEFAULT_ATTACHMENT_PAGER ? position
+                            + mAttachmentPagerAdapter.PAGE_GRID_COUNT : position;
                     if (mIsRTL) {
-                        addAttachment((mCurrentAttachmentPager > DEFAULT_ATTACHMENT_PAGER ? position
-                                : mAttachmentPagerAdapter.PAGE_GRID_COUNT + position), replace);
+                        index = mCurrentAttachmentPager > DEFAULT_ATTACHMENT_PAGER ? position
+                                : mAttachmentPagerAdapter.PAGE_GRID_COUNT + position;
                     }
+                    int type = mAttachmentPagerAdapter.getAttachmentTypeByIndex(index);
+                    addAttachment(type, replace);
                     mAttachmentSelector.setVisibility(View.GONE);
                 }
             }
