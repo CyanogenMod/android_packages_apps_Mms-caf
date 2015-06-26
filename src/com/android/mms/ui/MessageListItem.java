@@ -1056,8 +1056,10 @@ public class MessageListItem extends LinearLayout implements
         if (isSimCardMessage()) {
             // Hide delivery indicator for SIM message
             mDeliveredIndicator.setVisibility(GONE);
-            // Hide date view because SIM message does not contain sent date.
-            if (mMessageItem.isOutgoingMessage() || mMessageItem.mBoxId == Sms.MESSAGE_TYPE_SENT) {
+            // Hide date view because SIM message does not contain sent message
+            // and CDMA received message.
+            if (mMessageItem.isOutgoingMessage() || mMessageItem.mBoxId == Sms.MESSAGE_TYPE_SENT
+                    || mMessageItem.isCdmaInboxMessage()) {
                 mDateView.setVisibility(View.GONE);
             }
         }

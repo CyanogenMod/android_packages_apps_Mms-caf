@@ -27,6 +27,8 @@ import android.net.Uri;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.MmsSms;
 import android.provider.Telephony.Sms;
+import android.telephony.SubscriptionManager;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -234,13 +236,18 @@ public class MessageItem {
         }
     }
 
-    private String formatTimeStamp(Context context, boolean isSent) {
-        if (context.getResources().getBoolean(R.bool.config_display_sent_time)) {
-            return MessageUtils.formatTimeStampString(context, mDate);
+    public boolean isCdmaInboxMessage() {
+        int activePhone;
+        if (MessageUtils.isMultiSimEnabledMms()) {
+            int[] subId = SubscriptionManager.getSubId(mPhoneId);
+            activePhone = TelephonyManager.getDefault().getCurrentPhoneType(subId[0]);
         } else {
-            return String.format(context.getString(isSent ? R.string.sent_on
-                    : R.string.received_on), MessageUtils.formatTimeStampString(context, mDate));
+            activePhone = TelephonyManager.getDefault().getPhoneType();
         }
+
+        return ((mBoxId == Sms.MESSAGE_TYPE_INBOX
+                || mBoxId == Sms.MESSAGE_TYPE_ALL)
+                && (TelephonyManager.PHONE_TYPE_CDMA == activePhone));
     }
 
     private void interpretFrom(EncodedStringValue from, Uri messageUri) {
