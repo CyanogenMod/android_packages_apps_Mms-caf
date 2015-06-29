@@ -129,6 +129,7 @@ import android.view.ViewStub;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -4557,6 +4558,20 @@ public class ComposeMessageActivity extends Activity
                 if (view != null) {
                     ((MessageListItem) view).onMessageListItemClick();
                 }
+            }
+        });
+        mMsgListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem,
+                                 int visibleItemCount, int totalItemCount) {
+                if (mIsKeyboardOpen &&
+                        (firstVisibleItem + totalItemCount <= mMsgListAdapter.getCount()) {
+                    hideKeyboard();
+                }
+            }
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
             }
         });
         mMsgListView.setMultiChoiceModeListener(new ModeCallback());
