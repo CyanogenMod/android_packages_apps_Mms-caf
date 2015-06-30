@@ -18,19 +18,20 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="48dip"
+    android:minHeight="72dp"
+    android:paddingStart="72dp"
+    android:paddingEnd="24dp"
     android:orientation="horizontal"
-    android:paddingStart="8dp"
-    android:paddingEnd="8dp"
-    android:gravity="center_vertical"
+    android:paddingTop="10dp"
+    android:gravity="center"
     android:background="@drawable/chips_dropdown_background">
 
     <com.android.ex.chips.CircularImageView
         android:id="@android:id/icon"
         android:layout_width="@dimen/avatar_width_height"
         android:layout_height="@dimen/avatar_width_height"
+        android:layout_marginEnd="14dp"
         android:layout_gravity="center_vertical"
-        android:layout_marginEnd="16dp"
         android:src="@drawable/ic_contact_picture"
         android:cropToPadding="true"
         android:scaleType="centerCrop" />
@@ -38,7 +39,6 @@
     <RelativeLayout
         android:layout_width="0dip"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
         android:orientation="vertical"
         android:layout_weight="1">
 
@@ -47,8 +47,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            android:includeFontPadding="false"
             android:textAppearance="@android:style/TextAppearance.Material.Subhead"
             android:textColor="@drawable/list_item_font_primary"
+            android:layout_marginBottom="6dp"
             android:singleLine="true"
             android:ellipsize="end" />
 
@@ -67,9 +69,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@android:id/title"
-            android:layout_toEndOf="@android:id/text1"
+            android:layout_alignParentRight="true"
             android:layout_alignBaseline="@android:id/text1"
-            android:paddingStart="16dip"
+            android:paddingStart="70dip"
             android:textAppearance="@android:style/TextAppearance.Material.Caption"
             android:textColor="@drawable/list_item_font_secondary"
             android:textSize="10sp"

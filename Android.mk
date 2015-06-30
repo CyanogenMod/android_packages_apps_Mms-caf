@@ -19,6 +19,8 @@ LOCAL_RESOURCE_DIR := $(addprefix $(LOCAL_PATH)/, $(res_dirs))
 
 LOCAL_PACKAGE_NAME := Mms
 
+LOCAL_PROGUARD_ENABLED := disabled
+
 # Builds against the public SDK
 #LOCAL_SDK_VERSION := current
 
@@ -38,11 +40,11 @@ LOCAL_AAPT_FLAGS := \
 
 LOCAL_REQUIRED_MODULES := SoundRecorder
 
-LOCAL_PROGUARD_FLAG_FILES := proguard.flags
+#LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 
 LOCAL_PRIVILEGED_MODULE := true
 
 include $(BUILD_PACKAGE)
 
 # This finds and builds the test apk as well, so a single make does both.
-include $(call all-makefiles-under,$(LOCAL_PATH))
+#include $(call all-makefiles-under,$(LOCAL_PATH))

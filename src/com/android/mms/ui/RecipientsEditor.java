@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.drawable.StateListDrawable;
 import android.provider.Telephony.Mms;
 import android.telephony.PhoneNumberUtils;
 import android.text.Annotation;
@@ -38,10 +39,12 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
+import android.widget.TextView;
 
 import com.android.ex.chips.DropdownChipLayouter;
 import com.android.ex.chips.RecipientEditTextView;
@@ -135,6 +138,19 @@ public class RecipientsEditor extends RecipientEditTextView {
         });
 
         setDropdownChipLayouter(new DropdownChipLayouter(LayoutInflater.from(context), context) {
+            @Override
+            protected boolean highlightMatch() {
+                return true;
+            }
+            @Override
+            public View bindView(View convertView, ViewGroup parent, RecipientEntry entry, int position, AdapterType type, String constraint, StateListDrawable deleteDrawable) {
+                View resultView = super.bindView(convertView, parent, entry, position, type, constraint, deleteDrawable);
+                if (!entry.isFirstLevel()) {
+                    ViewHolder viewHolder = (ViewHolder) resultView.getTag();
+                    viewHolder.imageView.setVisibility(View.INVISIBLE);
+                }
+                return resultView;
+            }
             @Override
             protected int getItemLayoutResId(AdapterType type) {
                 return R.layout.mms_chips_recipient_dropdown_item;

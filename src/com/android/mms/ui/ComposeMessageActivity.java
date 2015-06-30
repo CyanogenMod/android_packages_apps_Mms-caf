@@ -77,6 +77,7 @@ import android.database.sqlite.SqliteWrapper;
 import android.drm.DrmStore;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -119,12 +120,14 @@ import android.view.ActionMode;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnCreateContextMenuListener;
 import android.view.View.OnKeyListener;
+import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -143,6 +146,8 @@ import android.widget.Toolbar;
 import com.android.contacts.common.util.MaterialColorMapUtils;
 import com.android.contacts.common.util.MaterialColorMapUtils.MaterialPalette;
 import com.android.contacts.common.util.PickupGestureDetector;
+import com.android.ex.chips.DropdownChipLayouter;
+import com.android.ex.chips.RecipientEntry;
 import com.android.internal.telephony.PhoneConstants;
 import com.android.internal.telephony.RILConstants;
 import com.android.internal.telephony.TelephonyIntents;
@@ -379,6 +384,7 @@ public class ComposeMessageActivity extends Activity
 
     private RecipientsEditor mRecipientsEditor;  // UI control for editing recipients
     private View mRecipientsSelector;            // UI control for recipients selector
+    private ListView mRecipientListView;
 
     // For HW keyboard, 'mIsKeyboardOpen' indicates if the HW keyboard is open.
     // For SW keyboard, 'mIsKeyboardOpen' should always be true.
@@ -1956,7 +1962,19 @@ public class ComposeMessageActivity extends Activity
 
         mRecipientsSelector.setOnClickListener(this);
 
-        mRecipientsEditor.setAdapter(new ChipsRecipientAdapter(this));
+        final ChipsRecipientAdapter adapter = new ChipsRecipientAdapter(this);
+        mRecipientListView = (ListView) findViewById(R.id.contact_list);
+        mRecipientListView.setVisibility(View.VISIBLE);
+        mRecipientListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mRecipientsEditor.onItemClick(parent, view, position, id);
+            }
+        });
+
+        mRecipientListView.setAdapter(adapter);
+        mRecipientsEditor.setAdapter(adapter);
+        mRecipientsEditor.setDropDownHeight(0);
         mRecipientsEditor.setText(null);
         mRecipientsEditor.populate(recipients);
         mRecipientsEditor.setOnCreateContextMenuListener(mRecipientsMenuCreateListener);
@@ -2797,6 +2815,9 @@ public class ComposeMessageActivity extends Activity
                 mRecipientsSelector.setVisibility(View.GONE);
             }
             hideOrShowTopPanel();
+        }
+        if (mRecipientListView != null) {
+            mRecipientListView.setVisibility(View.GONE);
         }
     }
 
@@ -4539,8 +4560,8 @@ public class ComposeMessageActivity extends Activity
         mMsgListAdapter.setMsgListItemHandler(mMessageListItemHandler);
         mMsgListView.setAdapter(mMsgListAdapter);
         mMsgListView.setItemsCanFocus(false);
-        mMsgListView.setVisibility((mSendDiscreetMode || MessageUtils.isMailboxMode())
-                ? View.INVISIBLE : View.VISIBLE);
+        mMsgListView.setVisibility((mConversation.getThreadId() <= 0 || mSendDiscreetMode ||
+                MessageUtils.isMailboxMode()) ? View.GONE : View.VISIBLE);
         mMsgListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -4797,6 +4818,8 @@ public class ComposeMessageActivity extends Activity
         mWorkingMessage.clearConversation(mConversation, false);
         mWorkingMessage = WorkingMessage.createEmpty(this);
         mWorkingMessage.setConversation(mConversation);
+
+        mMsgListView.setVisibility(View.VISIBLE);
 
         hideRecipientEditor();
         drawBottomPanel();

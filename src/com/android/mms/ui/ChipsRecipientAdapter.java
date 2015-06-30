@@ -17,17 +17,20 @@
 package com.android.mms.ui;
 
 import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.android.ex.chips.BaseRecipientAdapter;
+import com.android.ex.chips.DropdownChipLayouter;
+import com.android.ex.chips.RecipientEntry;
 import com.android.mms.R;
 
 public class ChipsRecipientAdapter extends BaseRecipientAdapter {
-    private static final int DEFAULT_PREFERRED_MAX_RESULT_COUNT = 10;
+    private static final int DEFAULT_PREFERRED_MAX_RESULT_COUNT = 50;
 
     public ChipsRecipientAdapter(Context context) {
         // The Chips UI is email-centric by default. By setting QUERY_TYPE_PHONE, the chips UI
         // will operate with phone numbers instead of emails.
         super(context, DEFAULT_PREFERRED_MAX_RESULT_COUNT, QUERY_TYPE_PHONE);
     }
-
 }

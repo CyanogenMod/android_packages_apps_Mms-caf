@@ -43,7 +43,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:inputType="textFilter|textMultiLine"
+            android:inputType="textMultiLine|textNoSuggestions"
             android:nextFocusRight="@+id/recipients_selector"
             chips:maxChips="@integer/max_chips_parsed" />
 
