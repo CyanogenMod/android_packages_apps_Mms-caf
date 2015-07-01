@@ -117,7 +117,7 @@
   <string name="summary_new_message_template">צור תבנית הודעה חדשה</string>
   <string name="dialog_editSMSTemplate_title">ערוך תבנית</string>
   <string name="import_message_template">הוסף תבנית</string>
-  <string name="template_full">טקסט התבנית הגיע לאורך המירבי.</string>
+  <string name="template_full">טקסט התבנית הגיע לאורך המרבי.</string>
   <string name="pref_sms_signature_title">חתימת SMS</string>
   <string name="pref_title_enable_signature">הוספת חתימה להודעות</string>
   <string name="pref_title_edit_signature">ערוך את טקסט החתימה</string>
