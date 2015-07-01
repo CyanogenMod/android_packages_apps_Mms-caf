@@ -50,7 +50,7 @@
   <string name="confirm_mark_unread_dialog_title">Marcați ca necitit?</string>
   <string name="confirm_mark_unread_all_conversations">Toate subiectele vor fi marcate ca necitite.</string>
   <string name="select_recipients">Selectați destinatarii</string>
-  <string name="no_recipients">Nici un contact găsit</string>
+  <string name="no_recipients">Niciun contact găsit</string>
   <string name="no_recipients_mobile_only">Nu am găsit contacte ce se potrivesc. Încercați fără filtrul „Numai numere mobile”</string>
   <string name="menu_done">Gata</string>
   <string name="menu_mobile">Numai numere mobile</string>

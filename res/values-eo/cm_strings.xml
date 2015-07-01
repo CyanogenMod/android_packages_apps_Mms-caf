@@ -28,6 +28,7 @@
   <string name="message_counter">%1$d de %2$d</string>
   <string name="button_close">Fermi</string>
   <string name="button_view">Montri</string>
+  <string name="button_templates">Ŝablonoj</string>
   <string name="type_to_reply_text_enter_to_send">Tajpu respondon</string>
   <string name="qm_mark_read">Legi</string>
   <string name="toast_sending_message">Sendado de la mesaĝo\u2026</string>
@@ -39,6 +40,7 @@
   <string name="send_delay_20seconds">20 sekundoj</string>
   <string name="send_delay_30seconds">30 sekundoj</string>
   <string name="sent_countdown">Retrokalkulo antaŭ liverado</string>
+  <string name="pref_extra_settings">Pliaj agordoj</string>
   <string name="blacklist_title">Listo de blokitaj alvokintoj</string>
   <string name="blacklist_summary_disabled">Malŝaltita</string>
   <string name="blacklist_summary">Vi ricevos neniun alvokon nek mesaĝon el telefonnumeroj en la listo de blokitaj alvokantoj</string>
@@ -46,9 +48,11 @@
   <string name="blacklist_notification_private_number">Blokis mesaĝon el privata numero</string>
   <string name="blacklist_notification_list_private">Privata</string>
   <string name="blacklist_notification_unknown_number">Blokis mesaĝon de nekonata numero %s</string>
+  <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> mesaĝoj estis blokitaj</string>
   <string name="unblock_number">Malbloki</string>
   <string name="add_to_blacklist">Aldoni al la listo de blokitaj alvokantoj</string>
   <string name="add_to_blacklist_message">Venontaj mesaĝoj de %s estos blokitaj</string>
+  <string name="alert_dialog_yes">Jes</string>
   <string name="alert_dialog_no">Ne</string>
   <string name="pref_title_unicode_stripping">Forigi unikodajn literojn</string>
   <string name="pref_unicode_stripping_leave_intact">Konservi ĉenon</string>
@@ -57,6 +61,7 @@
   <string name="menu_as_unread">Marki kiel ne-legita</string>
   <string name="menu_as_read">Marki kiel legita</string>
   <string name="menu_all_as_unread">Marki ĉion kiel ne-legita</string>
+  <string name="menu_all_as_read">Marki kiel ne-legita</string>
   <string name="menu_add_to_contacts_cm">Aldoni al kontaktuloj</string>
   <string name="confirm_mark_unread_dialog_title">Ĉu marki kiel ne-legita?</string>
   <string name="confirm_mark_unread_conversation">La dialogo estos markita kiel ne-legita.</string>
@@ -68,6 +73,8 @@
   <string name="select_recipients">Elekti ricevontojn</string>
   <string name="no_recipients">Neniu kontaktulo trovita</string>
   <string name="no_recipients_mobile_only">Neniu kontaktulo kongruas. Provu sen \"Nur poŝtelefona numero\" filtrilo</string>
+  <string name="menu_done">Finita</string>
+  <string name="menu_mobile">Nur poŝtelefonaj numeroj</string>
   <string name="menu_order_by_given_name">Ordigi laŭ antaŭnomo</string>
   <string name="menu_order_by_last_name">Ordigi laŭ familinomo</string>
   <string name="message_share">Komunigi</string>
@@ -78,6 +85,7 @@
   <string name="deleting_threads">Forigi dialogojn\u2026</string>
   <string name="menu_resend">Resendi</string>
   <string name="cancel_downloading">Rezigni</string>
+  <string name="confirm_cancel_downloading">MMS elŝutado estos nuligita.</string>
   <string name="send_by_slot1">Sendi per SIM 1</string>
   <string name="send_by_slot2">Sendi per SIM 2</string>
   <string name="select_phone_account_title">Sendi per</string>
@@ -98,6 +106,7 @@
   <string name="mms_too_large">Tiu mesaĝo tro grandas por elŝutado.</string>
   <string name="send_failed_retry">Sendo de mesaĝo fiaskis, reprovu\u2026</string>
   <string name="download_failed_retry">Elŝuto de mesaĝo fiaskis, reprovu\u2026</string>
+  <string name="system_audio_item">Sonoro</string>
   <string name="external_audio_item">Muziko</string>
   <string name="menu_connect_url">Malfermi URL-on</string>
   <string name="do_not_show_connect_warning">Ne plu montri tiun averton</string>
@@ -113,14 +122,15 @@
   <string name="pref_title_enable_signature">Aldoni subskribon al mesaĝoj</string>
   <string name="pref_title_edit_signature">Redakti subskriban tekston</string>
   <string name="menu_copy_to">Kopii</string>
-  <string name="operation_to_card_memory">Kopii mesaĝon al SIM karto</string>
+  <string name="operation_to_card_memory">Kopii mesaĝon al SIM-karto</string>
   <string name="pref_smsc_title">SMS serv-centro</string>
   <string name="pref_one_smcs">SMSC numero</string>
   <string name="pref_more_smcs">SIM <xliff:g id="slot_number">%d</xliff:g> SMSC numero</string>
   <string name="set_smsc_error">SMSC numero ne agordeblas</string>
   <string name="set_smsc_success">SMSC numero sukcese agordiĝis</string>
   <string name="set_smsc_confirm_message">Ŝanĝado de SMSC povas fiaskigi transakciojn. Ĉu vi certas ke vi volas daŭri?</string>
-  <string name="copy_to_sim">Kopii mesaĝon al SIM karto</string>
+  <string name="copy_to_sim">Kopii mesaĝon al SIM-karto</string>
+  <string name="copy_to_sim_success"><xliff:g id="count">%1$d</xliff:g> of <xliff:g id="total">%2$d</xliff:g> mesaĝojn konservitaj sur SIM-karto.</string>
   <string name="copy_to_sim_fail">Mesaĝo ne konserveblas</string>
   <string name="copy_to_phone_success">Konservita mesaĝo</string>
   <string name="copy_to_phone_fail">Mesaĝo ne konserveblas</string>
@@ -169,16 +179,17 @@
   <string name="type_sent">Senditaj</string>
   <string name="type_outbox">Elirkesto</string>
   <string name="type_draft">Malnetoj</string>
-  <string name="slot_type_select">Elekti SIM karton</string>
+  <string name="slot_type_select">Elekti SIM-karton</string>
   <string name="search_title">Serĉi mesaĝon</string>
   <string name="search_key">Serĉi ŝlosilvorton</string>
   <string name="search_mode">Reĝimo de serĉado</string>
+  <string name="search_as_name">Nomo</string>
   <string name="search_as_number">Numero</string>
   <string name="search_as_content">Ujo</string>
   <string name="search_as_subject">Temo</string>
   <string name="invalid_name_toast">Bonvolu entajpi validan nomon</string>
   <string name="sim_capacity_title">SIM kapacito</string>
-  <string name="sim_capacity"><xliff:g id="used">%1$d</xliff:g> elementoj el <xliff:g id="total">%2$d</xliff:g> de la SIM karto estas uzitaj</string>
+  <string name="sim_capacity"><xliff:g id="used">%1$d</xliff:g> elementoj el <xliff:g id="total">%2$d</xliff:g> de la SIM-karto estas uzitaj</string>
   <string name="pref_sim_card_full_save_to_phone">SIM karto estas plena, konservado de novaj mesaĝoj en la telefona memoro.</string>
   <string name="selected_all">Elekti ĉion</string>
   <string name="deselected_all">Malelekti ĉiujn</string>
@@ -191,8 +202,11 @@
   <string name="pref_summary_cdma_priority">Prioritato de la CDMA mesaĝoj</string>
   <string name="download_dialog_title">Ĉu elŝuti tiun MMS?</string>
   <string name="menu_email">Sendi retmesaĝon</string>
+  <string name="pref_title_sms_store">Plej ŝatata memoro</string>
+  <string name="pref_title_sms_store_card1">Plej ŝatata memoro por SIM 1</string>
+  <string name="pref_title_sms_store_card2">Plej ŝatata memoro por SIM 2</string>
   <string name="pref_sms_store_phone">Telefono</string>
-  <string name="pref_sms_store_card">SIM karto</string>
+  <string name="pref_sms_store_card">SIM-karto</string>
   <string name="mms_size_indicator"><xliff:g id="mms_size">%1$d</xliff:g>/<xliff:g id="all_size">%2$d</xliff:g> KB</string>
   <string name="pre_define_message_template_1">Mi alvokos vin poste.</string>
   <string name="pre_define_message_template_2">Mi partoprenas kunsidon. Mi alvokos vin poste.</string>
@@ -202,6 +216,7 @@
   <string name="menu_delete_sms">Forigi SMS</string>
   <string name="menu_delete_mms">Forigi MMS</string>
   <string name="import_sms_title">Importi el memoro</string>
+  <string name="export_sms_title">Eksporti al memoro</string>
   <string name="delete_sms_title">Forigi ekzistantan savkopion</string>
   <string name="pick_sms_backup_title">Elekti SMS savkopion</string>
   <string name="delete_sms_toast">Savkopio forigita.</string>
@@ -236,7 +251,13 @@
   <string name="menu_conversation_options">Opcioj de dialogoj</string>
   <string name="pref_title_reset_convopt_to_default">Restarigi al defaŭlta</string>
   <string name="pref_summary_reset_convopt_to_default">Restartigas la dialogajn agordojn al tiuj de la aplikaĵo</string>
+  <string name="pref_title_mms_full_timestamp">Ĉiuj tempindikoj</string>
+  <string name="pref_summary_mms_full_timestamp">Montri kaj daton kaj tempon en tempoindiko</string>
   <string name="pref_title_mms_use_sent_timestamp">Originala tempoindiko</string>
+  <string name="pref_summary_mms_use_sent_timestamp">Montri sendan tempoindikon anstataŭ riceva tempoindiko</string>
+  <string name="pref_title_mms_auto_enable_data">Aŭtomate ŝalti datumojn</string>
+  <string name="pref_summary_mms_auto_enable_data">Aŭtomate ŝalti  datumojn por MMS mesaĝoj</string>
   <string name="adding_selected_recipients_dialog_text">Aldono de kontaktuloj\u2026</string>
+  <string name="pref_title_mms_smart_dialer">Inteligenta alvoko</string>
   <string name="pref_summary_mms_smart_dialer">Aŭtomate alvoki kontaktulon proksimiĝante la telefonilon al via orelo</string>
 </resources>

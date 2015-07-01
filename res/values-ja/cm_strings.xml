@@ -41,13 +41,16 @@
   <string name="send_delay_30seconds">30秒</string>
   <string name="sent_countdown">メッセージ送信のカウントダウン</string>
   <string name="pref_extra_settings">その他の設定</string>
+  <string name="blacklist_title">着信拒否リスト</string>
   <string name="blacklist_summary_disabled">無効</string>
+  <string name="blacklist_summary">着信拒否リストにある電話番号からの着信やメッセージを受け取らないようになります</string>
   <string name="blacklist_notification">%sからのメッセージをブロックしました</string>
   <string name="blacklist_notification_private_number">非通知番号からのメッセージをブロックしました</string>
   <string name="blacklist_notification_list_private">非通知</string>
   <string name="blacklist_notification_unknown_number">不明な番号「%s」からのメッセージをブロックしました</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g>通のメッセージがブロックされました</string>
   <string name="unblock_number">ブロック解除</string>
+  <string name="add_to_blacklist">着信拒否リストに追加</string>
   <string name="add_to_blacklist_message">%sからのメッセージは今後ブロックされます</string>
   <string name="alert_dialog_yes">はい</string>
   <string name="alert_dialog_no">いいえ</string>
@@ -59,6 +62,7 @@
   <string name="menu_as_read">既読にする</string>
   <string name="menu_all_as_unread">すべて未読にする</string>
   <string name="menu_all_as_read">すべて既読にする</string>
+  <string name="menu_add_to_contacts_cm">連絡帳に追加</string>
   <string name="confirm_mark_unread_dialog_title">未読にしますか？</string>
   <string name="confirm_mark_unread_conversation">会話は未読になります。</string>
   <string name="confirm_mark_read_dialog_title">既読にしますか？</string>
@@ -84,6 +88,7 @@
   <string name="confirm_cancel_downloading">MMSのダウンロードはキャンセルされます。</string>
   <string name="send_by_slot1">SIM 1で送信</string>
   <string name="send_by_slot2">SIM 2で送信</string>
+  <string name="select_phone_account_title">別のアプリで送信</string>
   <string name="media_size_limit">メッセージサイズの上限を超えているため、メッセージを送信できません。</string>
   <string name="illegal_message_or_increase_size">無効なメッセージサイズです。</string>
   <string name="discard_message_reason_some_invalid">受信者のアドレスの一部が無効であるため、メッセージは破棄されます。</string>
@@ -162,6 +167,7 @@
   <string name="menu_reply">返信</string>
   <string name="slot1">SIM 1</string>
   <string name="slot2">SIM 2</string>
+  <string name="sim_spinner_active_item_postfix">SIM %d</string>
   <string name="cannot_play">スライドショーを表示できません。</string>
   <string name="confirm_delete_selected_messages">選択したメッセージは削除されます。</string>
   <string name="send_failure">メッセージを送信できませんでした。</string>
@@ -252,4 +258,6 @@
   <string name="pref_title_mms_auto_enable_data">データ通信を自動で有効化</string>
   <string name="pref_summary_mms_auto_enable_data">MMSメッセージを送受信するためにデータ通信を自動的に有効にする</string>
   <string name="adding_selected_recipients_dialog_text">連絡先を追加しています\u2026</string>
+  <string name="pref_title_mms_smart_dialer">スマートコール</string>
+  <string name="pref_summary_mms_smart_dialer">携帯電話を耳に近づけると連絡先に自動的に発信する</string>
 </resources>
