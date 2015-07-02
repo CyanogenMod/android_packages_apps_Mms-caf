@@ -799,7 +799,7 @@ public class Contact {
                     }
                     // If the number is a wap push number, keep it as original form.
                     // We will get the number through MessageUtils.getWapPushNumber.
-                    if (!MessageUtils.isWapPushNumber(c.mNumber)) {
+                    if (!MessageUtils.isWapPushNumber(c.mNumber) && !isSpecialPhoneNumber(c)) {
                         c.mNumber = entry.mNumber;
                     }
                     c.mLabel = entry.mLabel;
@@ -885,7 +885,7 @@ public class Contact {
         //    "#4#5#6#"  -> true   [it is considered to be the address "#4#5#6#"]
         //    "AB12"     -> true   [2 digits, it is considered to be the address "AB12"]
         //    "12"       -> true   [2 digits, it is considered to be the address "12"]
-        private boolean isAlphaNumber(String number) {
+        boolean isAlphaNumber(String number) {
             // TODO: PhoneNumberUtils.isWellFormedSmsAddress() only check if the number is a valid
             // GSM SMS address. If the address contains a dialable char, it considers it a well
             // formed SMS addr. CDMA doesn't work that way and has a different parser for SMS
@@ -1292,4 +1292,13 @@ public class Contact {
     private static void log(String msg) {
         Log.d(TAG, msg);
     }
+
+    private static boolean isSpecialPhoneNumber(Contact c) {
+        String num = c.getNumber();
+        if (c.isMe() || Mms.isEmailAddress(num) || sContactCache.isAlphaNumber(num)) {
+            return false;
+        }
+        return true;
+    }
+
 }
