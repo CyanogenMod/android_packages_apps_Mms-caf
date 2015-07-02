@@ -140,6 +140,7 @@ public class WorkingMessage {
     public static final int UNSUPPORTED_TYPE = -3;
     public static final int IMAGE_TOO_LARGE = -4;
     public static final int NEGATIVE_MESSAGE_OR_INCREASE_SIZE = -5;
+    public static final int FAILED_TO_QUERY_CONTACT = -6;
 
     public static final int UNSUPPORTED_TYPE_WARNING = -6;
     public static final int MESSAGE_SIZE_EXCEEDED_WARNING = -7;
@@ -2129,6 +2130,12 @@ public class WorkingMessage {
             values.put(Mms.PHONE_ID, SubscriptionManager.getPhoneId(
                     SubscriptionManager.getDefaultDataSubId()));
         }
+
+        if (mmsUri == null) {
+            mStatusListener.onAttachmentError(FAILED_TO_QUERY_CONTACT);
+            return;
+        }
+
         SqliteWrapper.update(mActivity, mContentResolver, mmsUri, values, null, null);
 
         MessageSender sender = new MmsMessageSender(mActivity, mmsUri,
