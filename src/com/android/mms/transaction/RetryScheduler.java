@@ -77,6 +77,7 @@ public class RetryScheduler implements Observer {
     }
 
     public void update(Observable observable) {
+        Uri uri = null;
         Transaction t = (Transaction) observable;
         try {
 
@@ -93,7 +94,7 @@ public class RetryScheduler implements Observer {
                 try {
                     TransactionState state = t.getState();
                     if (state.getState() == TransactionState.FAILED) {
-                        Uri uri = state.getContentUri();
+                        uri = state.getContentUri();
                         if (uri != null) {
                             scheduleRetry(mContext, uri);
                         }
@@ -105,7 +106,7 @@ public class RetryScheduler implements Observer {
         } finally {
             if (isMmsDataConnectivityPossible(t.getSubId()) || mContext
                     .getResources().getBoolean(R.bool.config_retry_always)) {
-                setRetryAlarm(mContext);
+                setRetryAlarm(mContext, uri);
             } else {
                 Log.d(TAG, "Retry alarm is not set");
             }
@@ -292,17 +293,22 @@ public class RetryScheduler implements Observer {
     }
 
     public static void setRetryAlarm(Context context) {
-        Cursor cursor = PduPersister.getPduPersister(context).getPendingMessages(
+        setRetryAlarm(context, null);
+    }
+
+    public static void setRetryAlarm(Context context, Uri mmsUrl) {
+        Cursor mmsCursor = PduPersister.getPduPersister(context).getPendingMessages(
                 Long.MAX_VALUE);
-        if (cursor != null) {
+        if (mmsCursor != null) {
             try {
-                if (cursor.moveToFirst()) {
+                Cursor cursor = getMmsCursor(mmsCursor, mmsUrl);
+                if (cursor != null) {
                     // The result of getPendingMessages() is order by due time.
                     long retryAt = cursor.getLong(cursor.getColumnIndexOrThrow(
                             PendingMessages.DUE_TIME));
 
                     Intent service = new Intent(TransactionService.ACTION_ONALARM,
-                                        null, context, TransactionService.class);
+                            null, context, TransactionService.class);
                     PendingIntent operation = PendingIntent.getService(
                             context, 0, service, PendingIntent.FLAG_ONE_SHOT);
                     AlarmManager am = (AlarmManager) context.getSystemService(
@@ -315,8 +321,39 @@ public class RetryScheduler implements Observer {
                     }
                 }
             } finally {
-                cursor.close();
+                mmsCursor.close();
             }
         }
+    }
+
+    private static Cursor getMmsCursor(Cursor cursor, Uri uri) {
+        if (uri == null) {
+            if (cursor.moveToFirst()) {
+                return cursor;
+            }
+            return null;
+        }
+
+        if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
+            Log.v(TAG, "Set alarm for " + uri);
+        }
+
+        int columnIndexOfMsgId = cursor.getColumnIndexOrThrow(PendingMessages.MSG_ID);
+        long msgId = ContentUris.parseId(uri);
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            long id = cursor.getLong(columnIndexOfMsgId);
+            if (id == msgId) {
+                if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
+                    Log.v(TAG, "Find out the MMS in pendingMessage table.");
+                }
+                break;
+            }
+        }
+
+        if (cursor.isAfterLast()) {
+            Log.e(TAG, "Can't not find the MMS in pendingMessage table.");
+            return null;
+        }
+        return cursor;
     }
 }

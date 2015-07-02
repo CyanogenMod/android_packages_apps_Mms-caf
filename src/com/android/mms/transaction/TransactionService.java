@@ -733,7 +733,7 @@ public class TransactionService extends Service implements Observer {
         // then set the toast type accordingly.
         if (getResources().getBoolean(R.bool.config_retry_always)) {
             RetryScheduler.scheduleRetry(getApplicationContext(), uri);
-            RetryScheduler.setRetryAlarm(getApplicationContext());
+            RetryScheduler.setRetryAlarm(getApplicationContext(), uri);
         }
 
         int toastType = TOAST_NONE;
