@@ -20,6 +20,8 @@ package com.android.mms.ui;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ListActivity;
+import android.app.LoaderManager;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
@@ -28,9 +30,11 @@ import android.content.AsyncQueryHandler;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -39,7 +43,9 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SqliteWrapper;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -49,6 +55,7 @@ import android.provider.Telephony;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Threads;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.ContextMenu;
@@ -57,6 +64,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MenuItem.OnActionExpandListener;
 import android.view.View;
 import android.view.View.OnCreateContextMenuListener;
 import android.view.View.OnKeyListener;
@@ -163,7 +171,6 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
     private Handler mHandler;
     private boolean mDoOnceAfterFirstQuery;
     private MenuItem mSearchItem;
-    private SearchView mSearchView;
     private View mSmsPromoBannerView;
     private int mSavedFirstVisiblePosition = AdapterView.INVALID_POSITION;
     private int mSavedFirstItemOffset;
@@ -176,6 +183,8 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
     private TextView mToolBarTitleView;
     private static String sAppTitle;
     private static String sAppTitleWithUnread;
+    private ListView mSearchList;
+    private SearchAdapter mSearchAdapter;
 
     // keys for extras and icicles
     private final static String LAST_LIST_POS = "last_list_pos";
@@ -214,7 +223,7 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.next_conversation_list_screen);
+        setContentView(R.layout.conversation_list_screen);
         if (MessageUtils.isMailboxMode()) {
             Intent modeIntent = new Intent(this, MailBoxMessageList.class);
             startActivityIfNeeded(modeIntent, -1);
@@ -617,17 +626,36 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
     SearchView.OnQueryTextListener mQueryTextListener = new SearchView.OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String query) {
-            Intent intent = new Intent();
-            intent.setClass(ConversationList.this, SearchActivity.class);
-            intent.putExtra(SearchManager.QUERY, query);
-            startActivity(intent);
-            mSearchItem.collapseActionView();
             return true;
         }
 
         @Override
         public boolean onQueryTextChange(String newText) {
-            return false;
+            if (!TextUtils.isEmpty(newText) && newText.length() > 1) {
+                mSearchAdapter.setQuery(newText);
+                getLoaderManager().restartLoader(1, null, mLoaderCallbacks);
+            }
+            return true;
+        }
+    };
+
+    private LoaderManager.LoaderCallbacks mLoaderCallbacks = new LoaderManager.LoaderCallbacks() {
+        @Override
+        public Loader onCreateLoader(int id, Bundle args) {
+            // don't pass a projection since the search uri ignores it
+            Uri uri = Telephony.MmsSms.SEARCH_URI.buildUpon()
+                    .appendQueryParameter("pattern", mSearchAdapter.getQuery()).build();
+            return new CursorLoader(ConversationList.this, uri, null, null, null, null);
+        }
+
+        @Override
+        public void onLoadFinished(Loader loader, Object data) {
+            mSearchAdapter.swapCursor((Cursor) data);
+        }
+
+        @Override
+        public void onLoaderReset(Loader loader) {
+            mSearchAdapter.swapCursor(null);
         }
     };
 
@@ -640,18 +668,52 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
         }
         getMenuInflater().inflate(R.menu.conversation_list_menu, menu);
 
+        mSearchList = (ListView) findViewById(R.id.search_list);
+        mSearchList.setEmptyView(findViewById(R.id.empty_search));
+        mSearchAdapter = new SearchAdapter(this);
+        mSearchList.setAdapter(mSearchAdapter);
+        mSearchList.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                    int position, long id) {
+                final Intent onClickIntent = new Intent(ConversationList.this,
+                        ComposeMessageActivity.class);
+                onClickIntent.putExtra("highlight", mSearchAdapter.getQuery());
+
+                Cursor c = (Cursor) mSearchAdapter.getItem(position);
+                onClickIntent.putExtra("select_id", c.getLong(c.getColumnIndex("_id")));
+
+                Conversation conv = Conversation.from(ConversationList.this, c);
+                onClickIntent.putExtra("thread_id", conv.getThreadId());
+                startActivity(onClickIntent);
+            }
+        });
         if (!getResources().getBoolean(R.bool.config_classify_search)) {
             mSearchItem = menu.findItem(R.id.search);
             mSearchItem.setActionView(new SearchView(this));
-            mSearchView = (SearchView) mSearchItem.getActionView();
-            mSearchView.setOnQueryTextListener(mQueryTextListener);
-            mSearchView.setQueryHint(getString(R.string.search_hint));
-            mSearchView.setIconifiedByDefault(true);
-            SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-
-            if (searchManager != null) {
-                SearchableInfo info = searchManager.getSearchableInfo(this.getComponentName());
-                mSearchView.setSearchableInfo(info);
+            mSearchItem.setOnActionExpandListener(new OnActionExpandListener() {
+                @Override
+                public boolean onMenuItemActionExpand(MenuItem item) {
+                    ((View)getListView().getParent()).setVisibility(View.GONE);
+                    ((View)mSearchList.getParent()).setVisibility(View.VISIBLE);
+                    return true;
+                }
+                @Override
+                public boolean onMenuItemActionCollapse(MenuItem item) {
+                    ((View)getListView().getParent()).setVisibility(View.VISIBLE);
+                    ((View)mSearchList.getParent()).setVisibility(View.INVISIBLE);
+                    return true;
+                }
+            });
+            SearchView searchView = (SearchView) mSearchItem.getActionView();
+            searchView.setOnQueryTextListener(mQueryTextListener);
+            searchView.setQueryHint(getString(R.string.search_hint));
+            searchView.setIconifiedByDefault(true);
+            int id = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+            TextView textView = (TextView) searchView.findViewById(id);
+            if (textView != null) {
+                textView.setTextColor(0xFFFFFFFF);
+                textView.setHintTextColor(0x80FFFFFF);
             }
         }
 

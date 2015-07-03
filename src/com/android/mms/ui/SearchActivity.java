@@ -108,7 +108,6 @@ public class SearchActivity extends ListActivity
             if (m.find(0)) {
                 startPos = m.start();
             }
-
             TextPaint tp = getPaint();
 
             float searchStringWidth = tp.measureText(mTargetString);
@@ -174,12 +173,7 @@ public class SearchActivity extends ListActivity
         }
 
         public void setText(String fullText, String target) {
-            // Use a regular expression to locate the target string
-            // within the full text.  The target string must be
-            // found as a word start so we use \b which matches
-            // word boundaries.
-            String patternString = "\\b" + Pattern.quote(target);
-            mPattern = Pattern.compile(patternString, Pattern.CASE_INSENSITIVE);
+            mPattern = Pattern.compile(target, Pattern.CASE_INSENSITIVE);
 
             mFullText = fullText;
             mTargetString = target;

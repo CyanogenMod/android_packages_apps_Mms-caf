@@ -16,7 +16,6 @@
         android:elevation="@dimen/action_bar_elevation"
         android:theme="@style/HeaderTheme">
 
-        <!--android:paddingBottom="@dimen/mms_next_toolbar_paddingBottom"-->
         <Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
