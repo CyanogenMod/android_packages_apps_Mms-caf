@@ -118,7 +118,7 @@ public class MailBoxMessageList extends ListActivity implements
         MailBoxMessageListAdapter.OnListContentChangedListener{
     private static final String TAG = "MailBoxMessageList";
     private static final String MAILBOX_URI = "content://mms-sms/mailbox/";
-    private static final Uri SEARCH_URI = Uri.parse("content://mms-sms/search-message");
+    public static final Uri SEARCH_URI = Uri.parse("content://mms-sms/search-message");
     private static final int MESSAGE_LIST_QUERY_TOKEN = 9001;
     private static final int MESSAGE_SEARCH_LIST_QUERY_TOKEN = 9002;
 

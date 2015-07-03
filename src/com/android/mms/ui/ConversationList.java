@@ -20,6 +20,8 @@ package com.android.mms.ui;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ListActivity;
+import android.app.LoaderManager;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
@@ -28,9 +30,11 @@ import android.content.AsyncQueryHandler;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -39,7 +43,9 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SqliteWrapper;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -49,6 +55,7 @@ import android.provider.Telephony;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Threads;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.ContextMenu;
@@ -57,15 +64,18 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MenuItem.OnActionExpandListener;
 import android.view.View;
 import android.view.View.OnCreateContextMenuListener;
 import android.view.View.OnKeyListener;
+import android.widget.AbsListView.RecyclerListener;
 import android.widget.ActionMenuView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
@@ -163,7 +173,6 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
     private Handler mHandler;
     private boolean mDoOnceAfterFirstQuery;
     private MenuItem mSearchItem;
-    private SearchView mSearchView;
     private View mSmsPromoBannerView;
     private int mSavedFirstVisiblePosition = AdapterView.INVALID_POSITION;
     private int mSavedFirstItemOffset;
@@ -176,6 +185,8 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
     private TextView mToolBarTitleView;
     private static String sAppTitle;
     private static String sAppTitleWithUnread;
+    private SearchAdapter mSearchAdapter;
+    private Menu mMenu;
 
     // keys for extras and icicles
     private final static String LAST_LIST_POS = "last_list_pos";
@@ -616,17 +627,38 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
     SearchView.OnQueryTextListener mQueryTextListener = new SearchView.OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String query) {
-            Intent intent = new Intent();
-            intent.setClass(ConversationList.this, SearchActivity.class);
-            intent.putExtra(SearchManager.QUERY, query);
-            startActivity(intent);
-            mSearchItem.collapseActionView();
             return true;
         }
 
         @Override
         public boolean onQueryTextChange(String newText) {
-            return false;
+            if (TextUtils.isEmpty(newText)) {
+                mSearchAdapter.changeCursor(null);
+            } else if (newText.length() > 1) {
+                mSearchAdapter.setQuery(newText);
+                getLoaderManager().restartLoader(1, null, mLoaderCallbacks);
+            }
+            return true;
+        }
+    };
+
+    private LoaderManager.LoaderCallbacks mLoaderCallbacks = new LoaderManager.LoaderCallbacks() {
+        @Override
+        public Loader onCreateLoader(int id, Bundle args) {
+            // don't pass a projection since the search uri ignores it
+            Uri uri = Telephony.MmsSms.SEARCH_URI.buildUpon()
+                    .appendQueryParameter("pattern", mSearchAdapter.getQuery()).build();
+            return new CursorLoader(ConversationList.this, uri, null, null, null, null);
+        }
+
+        @Override
+        public void onLoadFinished(Loader loader, Object data) {
+            mSearchAdapter.swapCursor((Cursor) data);
+        }
+
+        @Override
+        public void onLoaderReset(Loader loader) {
+            mSearchAdapter.swapCursor(null);
         }
     };
 
@@ -639,19 +671,26 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
         }
         getMenuInflater().inflate(R.menu.conversation_list_menu, menu);
 
+        mMenu = menu;
+
         if (!getResources().getBoolean(R.bool.config_classify_search)) {
             mSearchItem = menu.findItem(R.id.search);
-            mSearchItem.setActionView(new SearchView(this));
-            mSearchView = (SearchView) mSearchItem.getActionView();
-            mSearchView.setOnQueryTextListener(mQueryTextListener);
-            mSearchView.setQueryHint(getString(R.string.search_hint));
-            mSearchView.setIconifiedByDefault(true);
-            SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-
-            if (searchManager != null) {
-                SearchableInfo info = searchManager.getSearchableInfo(this.getComponentName());
-                mSearchView.setSearchableInfo(info);
-            }
+            mSearchItem.setOnActionExpandListener(new OnActionExpandListener() {
+                @Override
+                public boolean onMenuItemActionExpand(MenuItem item) {
+                    toggleSearchUi(true);
+                    return true;
+                }
+                @Override
+                public boolean onMenuItemActionCollapse(MenuItem item) {
+                    toggleSearchUi(false);
+                    return true;
+                }
+            });
+            SearchView searchView = (SearchView) mSearchItem.getActionView();
+            searchView.setOnQueryTextListener(mQueryTextListener);
+            searchView.setQueryHint(getString(R.string.mms_search_message_hint));
+            searchView.setIconifiedByDefault(true);
         }
 
         MenuItem item = menu.findItem(R.id.action_change_to_conversation_mode);
@@ -695,6 +734,27 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
             }
         }
         return true;
+    }
+
+    private void toggleSearchUi(boolean showSearch) {
+        if (mSearchAdapter == null) {
+            mSearchAdapter = new SearchAdapter(this);
+        }
+
+        ListAdapter adapter = showSearch ? mSearchAdapter : mListAdapter;
+        mListView.setAdapter(adapter);
+
+        RecyclerListener recyclerListener = showSearch ? null : mListAdapter;
+        mListView.setRecyclerListener(recyclerListener);
+
+        int emptyViewId = showSearch ? R.id.ll_search_empty : R.id.ll_empty;
+        mMenu.setGroupVisible(R.id.non_search_items, !showSearch);
+
+        View emptyView = mListView.getEmptyView();
+        if (emptyView != null) {
+            emptyView.setVisibility(View.GONE);
+        }
+        mListView.setEmptyView(findViewById(emptyViewId));
     }
 
     @Override
@@ -827,7 +887,14 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
             Log.d(TAG, "onListItemClick: pos=" + position + ", view=" + v + ", tid=" + tid);
         }
 
-        openThread(tid);
+        long selectId = -1;
+        String highlight = null;
+        if (mSearchItem.isActionViewExpanded()) {
+            selectId = cursor.getLong(cursor.getColumnIndex("_id"));
+            highlight = mSearchAdapter.getQuery();
+        }
+
+        openThread(tid, selectId, highlight);
     }
 
     private void createNewMessage() {
@@ -835,7 +902,18 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
     }
 
     private void openThread(long threadId) {
-        startActivity(ComposeMessageActivity.createIntent(this, threadId));
+        openThread(threadId, -1, null);
+    }
+
+    private void openThread(long threadId, long selectId, String highlight) {
+        Intent i = ComposeMessageActivity.createIntent(this, threadId);
+        if (highlight != null) {
+          i.putExtra("highlight", mSearchAdapter.getQuery());
+        }
+        if (selectId != -1) {
+            i.putExtra("select_id", selectId);
+        }
+        startActivity(i);
     }
 
     public static Intent createAddContactIntent(String address) {

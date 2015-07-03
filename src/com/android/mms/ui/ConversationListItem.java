@@ -66,7 +66,7 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
     private View mErrorIndicator;
     private CheckableQuickContactBadge mAvatarView;
 
-    static private RoundedBitmapDrawable sDefaultContactImage;
+    static RoundedBitmapDrawable sDefaultContactImage;
 
     // For posting UI update Runnables from other threads:
     private Handler mHandler = new Handler();

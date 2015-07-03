@@ -399,5 +399,6 @@
     <string name="pretty_format_x_days_ago"><xliff:g id="n_days">%d</xliff:g> days ago</string>
 
     <string name="mms_next_empty_no_messages">You have no new messages.</string>
+    <string name="mms_search_message_hint">Search</string>
 
 </resources>
