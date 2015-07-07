@@ -5941,6 +5941,7 @@ public class ComposeMessageActivity extends Activity
                         null);
             }
             mDeleteLockedMessages = false;
+            startMsgListQuery(MESSAGE_LIST_QUERY_AFTER_DELETE_TOKEN);
         }
 
         private void calculateSelectedMsgUri() {
