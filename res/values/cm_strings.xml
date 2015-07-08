@@ -68,7 +68,7 @@
     <string name="unblock_number">Unblock</string>
 
     <!-- Blacklist management -->
-    <string name="add_to_blacklist">Add to blocked caller list</string>
+    <string name="add_to_blacklist">Add to block list</string>
     <string name="add_to_blacklist_message">Future messages from %s will be blocked</string>
 
     <!-- Generic blacklist handling -->
@@ -165,6 +165,7 @@
 
     <string name="send_failed_retry">Failed to send message, retrying\u2026</string>
     <string name="download_failed_retry">Failed to download message, retrying\u2026</string>
+    <string name="tap_to_retry_sending_msg">Tap to try again</string>
 
     <string name="system_audio_item">Ringtone</string>
     <string name="external_audio_item">Music</string>
@@ -403,4 +404,7 @@
     <string name="mms_search_image_hint">Search your messages.</string>
     <string name="mms_search_message_hint">Search</string>
 
+    <!--Compose Message Screen-->
+    <string name="compose_message_hint_text">Enter message</string>
+    <string name="compose_menu_delete_conversation">Delete conversation</string>
 </resources>

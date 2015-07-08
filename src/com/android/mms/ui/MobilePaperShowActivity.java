@@ -345,7 +345,7 @@ public class MobilePaperShowActivity extends Activity {
             menu.add(0, MENU_REPLY, 0, R.string.menu_reply);
             if (MessageUtils.isRecipientCallable(mNumber)) {
                 menu.add(0, MENU_CALL, 0, R.string.menu_call)
-                        .setIcon(R.drawable.ic_menu_call)
+                        .setIcon(R.drawable.ic_call_white_24dp)
                         .setTitle(R.string.menu_call)
                         .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
             }
