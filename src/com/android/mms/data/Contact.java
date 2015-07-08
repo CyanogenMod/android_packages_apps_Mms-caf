@@ -321,6 +321,22 @@ public class Contact {
                 new DefaultImageRequest(getName(), getPhotoIdentifier(), true));
     }
 
+    public synchronized void getBitmap(Context context, int sizeHint,
+            final BitmapRequestCallback cb) {
+        // a valid callback needs to be present for a request to be made to ContactPhotoManager
+        if (cb == null) return;
+
+        // image view is the sentinel used to track the requests in the ContactPhotoManager
+        ImageView imgView = new ImageView(context);
+        sContactPhotoManager.getBitmapForContact(mPhotoId, imgView, sizeHint,
+                new ContactPhotoManager.PhotoFetcherCallback() {
+                    @Override
+                    public void onFetchComplete(Bitmap bitmap){
+                        cb.onBitmapAvailable(bitmap);
+                    }
+                });
+    }
+
     public synchronized int getPresenceResId() {
         return mPresenceResId;
     }
@@ -1323,5 +1339,9 @@ public class Contact {
 
     private static void log(String msg) {
         Log.d(TAG, msg);
+    }
+
+    public interface BitmapRequestCallback {
+        void onBitmapAvailable(Bitmap Photo);
     }
 }

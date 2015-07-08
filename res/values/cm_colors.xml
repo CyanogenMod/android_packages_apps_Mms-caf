@@ -15,11 +15,14 @@
      limitations under the License.
 -->
 <resources>
-    <color name="compose_message_background_color">#ffffffff</color>
+    <color name="compose_message_background_color">#ffffff</color>
     <color name="compose_message_text_color">#ff000000</color>
     <color name="compose_message_divider_color">#ffeeeeee</color>
+    <color name="compose_message_sent_bubble_color">#e4e7e8</color>
+
     <color name="message_link_text_color">#ffffffff</color>
     <color name="search_activity_background_color">@android:color/white</color>
+    <color name="message_list_item_date_text_color">#cccccc</color>
 
     <!-- MessagingNext Theme Colors -->
     <color name="mms_next_theme_color">#8227db</color>
@@ -28,4 +31,6 @@
     <color name="mms_next_empty_circle">#efefef</color>
     <color name="mms_next_empty_text">#aaaaaa</color>
 
+    <color name="action_mode_background_color">#424F53</color>
+    <color name="action_mode_status_bar_color">#343F42</color>
 </resources>
