@@ -2,14 +2,23 @@
 <!-- Copyright 2011 Google Inc.
 All Rights Reserved. -->
 <resources>
+    <dimen name="material_16dp_keyline">16dp</dimen>
+
+    <dimen name="recv_message_bubble_margin_end">28dp</dimen>
+    <dimen name="recv_message_bubble_layout_margin_start">46dp</dimen>
+
+    <dimen name="sent_message_bubble_margin_start">62dp</dimen>
+
     <dimen name="message_item_avatar_on_right_text_indent">50dip</dimen>
     <dimen name="message_bubble_padding_vertical">6dp</dimen>
     <dimen name="message_bubble_padding_horizontal">10dp</dimen>
     <dimen name="message_bubble_padding_horizontal_extra">20dp</dimen>
     <dimen name="message_item_text_padding_left_right">12dip</dimen>
     <dimen name="message_item_text_padding_top">5dip</dimen>
+    <dimen name="message_item_space_above_grouped">2dp</dimen>
+    <dimen name="message_item_space_above_non_grouped">12dp</dimen>
 
-    <dimen name="avatar_width_height">40dip</dimen>
+    <dimen name="avatar_width_height">36dp</dimen>
 
     <dimen name="input_text_height">48dip</dimen>
     <dimen name="input_text_height_adjusted">8dip</dimen>
@@ -52,5 +61,8 @@ All Rights Reserved. -->
     <dimen name="mms_next_toolbar_paddingStart">16dp</dimen>
     <dimen name="mms_next_spinner_minHeight">48dp</dimen>
     <dimen name="mms_next_spinner_margin">8dp</dimen>
+
+    <!-- Compose message -->
+    <dimen name="compose_message_normal_text_size">12sp</dimen>
 
 </resources>
