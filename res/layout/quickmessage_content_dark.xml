@@ -162,7 +162,7 @@
                 android:visibility="gone" />
 
             <ImageButton
-                android:id="@+id/send_button_sms"
+                android:id="@+id/send_button"
                 style="?android:attr/borderlessButtonStyle"
                 android:src="@drawable/send_button_selector_dark"
                 android:drawablePadding="0dip"
