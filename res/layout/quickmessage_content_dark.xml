@@ -132,7 +132,7 @@
             android:autoText="true"
             android:textSize="16sp"
             android:capitalize="sentences"
-            android:nextFocusRight="@+id/send_button"
+            android:nextFocusRight="@+id/send_button_sms"
             android:hint="@string/type_to_reply_text_enter_to_send"
             android:minHeight="@dimen/input_text_height"
             android:textColor="?android:attr/textColorPrimary"
