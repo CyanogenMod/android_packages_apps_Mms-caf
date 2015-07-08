@@ -20,8 +20,6 @@ import static com.android.mms.ui.MessageListAdapter.COLUMN_ID;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_MSG_TYPE;
 
 import com.android.mms.R;
-import com.android.mms.ui.ComposeMessageActivity;
-import com.android.mms.ui.RecipientsEditor;
 import com.android.mms.SmsTestRunner;
 
 import android.database.Cursor;
@@ -194,7 +192,7 @@ public class SmsTest
                 mRecipientsEditor.setText(mRecipient);
             }
             mTextEditor.setText(mMessage);
-            ImageButton send = (ImageButton)mActivity.findViewById(R.id.send_button_sms);
+            ImageButton send = (ImageButton)mActivity.findViewById(R.id.send_button);
             send.performClick();
         }
     };
