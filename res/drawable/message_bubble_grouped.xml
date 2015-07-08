@@ -19,15 +19,15 @@
     <item android:id="@+id/base_layer">
         <selector android:autoMirrored="true">
             <item android:state_selected="true">
-                <nine-patch android:src="@drawable/received_msg" />
+                <nine-patch android:src="@drawable/grouped_msg" />
             </item>
             <item>
-                <nine-patch android:src="@drawable/received_msg" />
+                <nine-patch android:src="@drawable/grouped_msg" />
             </item>
         </selector>
     </item>
     <item android:id="@android:id/mask">
-        <nine-patch android:src="@drawable/received_msg"
+        <nine-patch android:src="@drawable/grouped_msg"
             android:autoMirrored="true" />
     </item>
 </ripple>

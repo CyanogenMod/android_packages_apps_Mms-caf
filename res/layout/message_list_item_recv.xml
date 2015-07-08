@@ -23,134 +23,161 @@
     android:id="@+id/msg_list_item_recv"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="4dp"
-    android:paddingBottom="4dp"
     android:descendantFocusability="blocksDescendants"
-    android:orientation="horizontal">
+    android:orientation="vertical">
 
-    <LinearLayout android:id="@+id/mms_layout_view_parent"
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="start">
+        android:layout_height="0dp"
+        android:id="@+id/top_spacer" />
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
+    <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="4dp">
+            android:orientation="horizontal">
 
-            <com.android.contacts.common.widget.CheckableQuickContactBadge
-                android:id="@+id/avatar"
-                android:layout_width="@dimen/avatar_width_height"
-                android:layout_height="@dimen/avatar_width_height" />
+        <LinearLayout android:id="@+id/mms_layout_view_parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="start">
 
             <LinearLayout
-                android:id="@+id/message_block"
-                android:minHeight="@dimen/avatar_width_height"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/avatar"
-                android:paddingTop="@dimen/message_bubble_padding_vertical"
-                android:paddingBottom="@dimen/message_bubble_padding_vertical"
-                android:paddingStart="@dimen/message_bubble_padding_horizontal_extra"
-                android:paddingEnd="@dimen/message_bubble_padding_horizontal"
-                android:background="@drawable/message_bubble_incoming"
-                android:theme="@style/ReceivedMessageTheme"
-                android:orientation="vertical" >
+                android:layout_marginStart="64dp">
 
-                <TextView
-                    android:id="@+id/sim_message_address"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/message_item_text_padding_top"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:visibility="gone"/>
+                <TextView android:id="@+id/date_view"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:layout_gravity="center_vertical"
+                          android:paddingEnd="4dip"
+                          android:textSize="12sp"
+                        android:textColor="#CCCCCC"
+                          android:visibility="gone"
+                        />
 
-                <ViewStub android:id="@+id/mms_downloading_view_stub"
-                    android:layout="@layout/mms_downloading_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+            </LinearLayout>
 
-                <TextView android:id="@+id/text_view"
-                    android:autoLink="all"
-                    android:paddingTop="@dimen/message_item_text_padding_top"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:linksClickable="false"
-                    android:textColorLink="@color/message_link_text_color"
-                    android:textAppearance="@android:style/TextAppearance.Material.Body1" />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
-                <TextView android:id="@+id/mms_msg_size_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dip"
-                    android:visibility="gone"
-                    android:textAppearance="@android:style/TextAppearance.Material.Caption" />
+                <com.android.contacts.common.widget.CheckableQuickContactBadge
+                    android:id="@+id/avatar"
+                    android:layout_width="@dimen/avatar_width_height"
+                    android:layout_height="@dimen/avatar_width_height"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="4dp" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/side_spacer"
+                    android:layout_toEndOf="@id/avatar"
+                    android:background="@android:color/holo_red_light"/>
 
                 <LinearLayout
+                    android:id="@+id/message_block"
+                    android:minHeight="@dimen/avatar_width_height"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dip"
-                    android:orientation="horizontal" >
-
-                    <ImageView
-                        android:id="@+id/sim_indicator_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingEnd="4dip"
-                        android:visibility="gone"
-                        android:layout_gravity="center_vertical"/>
+                    android:layout_toEndOf="@id/side_spacer"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/message_bubble_incoming"
+                    android:theme="@style/ReceivedMessageTheme"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/sim_name"
+                        android:id="@+id/sim_message_address"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:paddingEnd="16dip"
+                        android:paddingTop="@dimen/message_item_text_padding_top"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:visibility="gone"/>
+
+                    <ViewStub android:id="@+id/mms_downloading_view_stub"
+                        android:layout="@layout/mms_downloading_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView android:id="@+id/text_view"
+                        android:autoLink="all"
+                        android:paddingTop="@dimen/message_item_text_padding_top"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:linksClickable="false"
+                        android:textColorLink="@color/message_link_text_color"
+                        android:textAppearance="@android:style/TextAppearance.Material.Body1"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"/>
+
+                    <TextView android:id="@+id/mms_msg_size_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dip"
                         android:visibility="gone"
                         android:textAppearance="@android:style/TextAppearance.Material.Caption" />
 
-                    <TextView android:id="@+id/date_view"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:paddingEnd="4dip"
-                        android:textAppearance="@android:style/TextAppearance.Material.Caption" />
+                        android:layout_marginTop="4dip"
+                        android:orientation="horizontal" >
 
-                    <ImageView
-                        android:id="@+id/locked_indicator"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:src="@drawable/ic_lock_message_sms"
-                        android:paddingEnd="4dip"
-                        android:visibility="gone" />
+                        <ImageView
+                            android:id="@+id/sim_indicator_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingEnd="4dip"
+                            android:visibility="gone"
+                            android:layout_gravity="center_vertical"/>
 
-                    <ImageView
-                        android:id="@+id/delivered_indicator"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:src="@drawable/ic_sms_mms_delivered"
-                        android:paddingEnd="4dip"
-                        android:visibility="gone" />
+                        <TextView
+                            android:id="@+id/sim_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:paddingEnd="16dip"
+                            android:visibility="gone"
+                            android:textAppearance="@android:style/TextAppearance.Material.Caption" />
 
-                    <ImageView
-                        android:id="@+id/details_indicator"
+
+                        <ImageView
+                            android:id="@+id/locked_indicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/ic_lock_message_sms"
+                            android:paddingEnd="4dip"
+                            android:visibility="gone" />
+
+                        <ImageView
+                            android:id="@+id/delivered_indicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/ic_sms_mms_delivered"
+                            android:paddingEnd="4dip"
+                            android:visibility="gone" />
+
+                        <ImageView
+                            android:id="@+id/details_indicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/ic_sms_mms_details"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                    <ViewStub android:id="@+id/mms_layout_view_stub"
+                        android:layout="@layout/mms_layout_view"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:src="@drawable/ic_sms_mms_details"
-                        android:visibility="gone" />
+                        android:layout_height="wrap_content"/>
                 </LinearLayout>
-
-                <ViewStub android:id="@+id/mms_layout_view_stub"
-                    android:layout="@layout/mms_layout_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-            </LinearLayout>
-        </RelativeLayout>
+            </RelativeLayout>
+        </LinearLayout>
     </LinearLayout>
 
 </com.android.mms.ui.MessageListItem>
