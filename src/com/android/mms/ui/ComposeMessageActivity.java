@@ -75,6 +75,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SqliteWrapper;
 import android.drm.DrmStore;
+import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
@@ -99,6 +100,7 @@ import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Sms;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.SubscriptionManager;
 import android.telephony.SmsManager;
@@ -169,7 +171,6 @@ import com.android.mms.ui.MessageUtils.ResizeImageResultCallback;
 import com.android.mms.ui.RecipientsEditor.RecipientContextMenuInfo;
 import com.android.mms.ui.zoom.ZoomGestureOverlayView;
 import com.android.mms.ui.zoom.ZoomGestureOverlayView.IZoomListener;
-import com.android.mms.ui.zoom.ZoomMessageListItem;
 import com.android.mms.util.DraftCache;
 import com.android.mms.util.IntentUtils;
 import com.android.mms.util.PhoneNumberFormatter;
@@ -177,6 +178,7 @@ import com.android.mms.util.SendingProgressTokenManager;
 import com.android.mms.util.SmileyParser;
 import com.android.mms.util.UnicodeFilter;
 import com.android.mms.widget.MmsWidgetProvider;
+import com.android.mms.widget.FluctuatingImageButton;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
 import com.google.android.mms.pdu.EncodedStringValue;
@@ -184,6 +186,8 @@ import com.google.android.mms.pdu.PduBody;
 import com.google.android.mms.pdu.PduPart;
 import com.google.android.mms.pdu.PduPersister;
 import com.google.android.mms.pdu.SendReq;
+
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 
 /**
  * This is the main UI for:
@@ -227,7 +231,7 @@ public class ComposeMessageActivity extends Activity
 
     // Menu ID
     private static final int MENU_ADD_SUBJECT           = 0;
-    private static final int MENU_DELETE_THREAD         = 1;
+    private static final int MENU_DELETE_CONVERSATION = 1;
     private static final int MENU_ADD_ATTACHMENT        = 2;
     private static final int MENU_DISCARD               = 3;
     private static final int MENU_SEND                  = 4;
@@ -332,7 +336,6 @@ public class ComposeMessageActivity extends Activity
         builder.appendPath("conversations");
         builder.appendPath("type");
         CONVERSATION_TYPE_URI = builder.build();
-        System.out.println("URI " + CONVERSATION_TYPE_URI);
     }
 
     private ContentResolver mContentResolver;
@@ -356,7 +359,7 @@ public class ComposeMessageActivity extends Activity
     private float mTextEditorFontSize;
     private TextView mTextCounter;          // Shows the number of characters used in text editor
     private TextView mSendButtonMms;        // Press to send mms
-    private ImageButton mSendButtonSms;     // Press to send sms
+    private FluctuatingImageButton mSendButtonSms;     // Press to send sms
     private LinearLayout mSubjectWrapper;   // Wrapp for subject and cancel button
     private EditText mSubjectTextEditor;    // Text editor for MMS subject
     private ImageView mSubjectRemoveButton; // Remove the subject and editor
@@ -370,6 +373,7 @@ public class ComposeMessageActivity extends Activity
     private ImageView mIndicatorForSimMmsFir, mIndicatorForSimSmsFir;
     private ImageView mIndicatorForSimMmsSec, mIndicatorForSimSmsSec;
     private ZoomGestureOverlayView mZoomGestureOverlayView; // overlay for handling zoom
+    private AsyncTask<Void, Void, Contact> mSendButtonContactImageTask;
 
     private AttachmentEditor mAttachmentEditor;
     private View mAttachmentEditorScrollView;
@@ -2490,6 +2494,32 @@ public class ComposeMessageActivity extends Activity
     protected void onResume() {
         super.onResume();
 
+        mSendButtonSms.setActionDrawable(getResources().getDrawable(R.drawable.send_button));
+        // Fetch contact info and contact bitmap
+        mSendButtonContactImageTask =
+        new AsyncTask<Void, Void, Contact>() {
+            @Override
+            protected Contact doInBackground(Void... params) {
+                return Contact.getMe(true);
+            }
+
+            @Override
+            protected void onPostExecute(Contact contact) {
+                contact.getBitmap(ComposeMessageActivity.this, mSendButtonSms.getWidth(),
+                        new Contact.BitmapRequestCallback() {
+                            @Override
+                            public void onBitmapAvailable(Bitmap photo) {
+                                RoundedBitmapDrawable drawable =
+                                        RoundedBitmapDrawableFactory.create(getResources(), photo);
+                                drawable.setCornerRadius(Math.min(
+                                        drawable.getMinimumWidth(), drawable.getMinimumHeight()));
+                                drawable.setAntiAlias(true);
+                                mSendButtonSms.setPlaceholderDrawable(drawable);
+                            }
+                        });
+            }
+        }.execute();
+
         // OLD: get notified of presence updates to update the titlebar.
         // NEW: we are using ContactHeaderWidget which displays presence, but updating presence
         //      there is out of our control.
@@ -2575,6 +2605,9 @@ public class ComposeMessageActivity extends Activity
     @Override
     protected void onStop() {
         super.onStop();
+        if (mSendButtonContactImageTask != null) {
+            mSendButtonContactImageTask.cancel(true);
+        }
 
         // No need to do the querying when finished this activity
         mBackgroundQueryHandler.cancelOperation(MESSAGE_LIST_QUERY_TOKEN);
@@ -2680,7 +2713,7 @@ public class ComposeMessageActivity extends Activity
                 mSubjectTextEditor.setFocusableInTouchMode(true);
             }
             mTextEditor.setFocusableInTouchMode(true);
-            mTextEditor.setHint(R.string.type_to_compose_text_enter_to_send);
+            mTextEditor.setHint(R.string.compose_message_hint_text);
         } else {
             if (mRecipientsEditor != null) {
                 mRecipientsEditor.setFocusable(false);
@@ -2916,10 +2949,10 @@ public class ComposeMessageActivity extends Activity
                 // TODO: relying on auto-requerying seems unreliable when priming an MMS into the
                 // outbox. Need to investigate.
 //                if (mMsgListAdapter.getCount() == 0) {
-                    if (LogTag.VERBOSE) {
-                        log("onMessageSent");
-                    }
-                    startMsgListQuery();
+                if (LogTag.VERBOSE) {
+                    log("onMessageSent");
+                }
+                startMsgListQuery();
 //                }
 
                 // The thread ID could have changed if this is a new message that we just inserted
@@ -2982,71 +3015,24 @@ public class ComposeMessageActivity extends Activity
             return true;
         }
 
-        // Don't show the call icon if the device don't support voice calling.
-        boolean voiceCapable =
-                getResources().getBoolean(com.android.internal.R.bool.config_voice_capable);
-        if (isRecipientCallable() && voiceCapable) {
-            MenuItem item = menu.add(0, MENU_CALL_RECIPIENT, 0, R.string.menu_call)
-                .setIcon(R.drawable.ic_menu_call)
-                .setTitle(R.string.menu_call);
-            if (!isRecipientsEditorVisible()) {
-                // If we're not composing a new message, show the call icon in the actionbar
-                item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-            }
-        }
+        buildAddAddressToContactMenuItem(menu);
 
         if (MmsConfig.getMmsEnabled() && mIsSmsEnabled) {
             if (!isSubjectEditorVisible()) {
                 menu.add(0, MENU_ADD_SUBJECT, 0, R.string.add_subject).setIcon(
                         R.drawable.ic_menu_edit);
             }
-            if (showAddAttachementMenu()) {
-                menu.add(0, MENU_ADD_ATTACHMENT, 0, R.string.add_attachment)
-                        .setIcon(R.drawable.ic_menu_attachment)
-                    .setTitle(R.string.add_attachment)
-                        .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);    // add to actionbar
-            }
+//            if (showAddAttachementMenu()) {
+//                menu.add(0, MENU_ADD_ATTACHMENT, 0, R.string.add_attachment)
+//                        .setIcon(R.drawable.ic_menu_attachment)
+//                    .setTitle(R.string.add_attachment)
+//                        .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);    // add to actionbar
+//            }
         }
 
-        if (isPreparedForSending() && mIsSmsEnabled) {
-           if (mShowTwoButtons) {
-                menu.add(0, MENU_SEND_BY_SLOT1, 0, R.string.send_by_slot1)
-                        .setIcon(android.R.drawable.ic_menu_send);
-                menu.add(0, MENU_SEND_BY_SLOT2, 0, R.string.send_by_slot2)
-                        .setIcon(android.R.drawable.ic_menu_send);
-            } else {
-                menu.add(0, MENU_SEND, 0, R.string.send).setIcon(android.R.drawable.ic_menu_send);
-            }
+        if (mConversation.getThreadId() > 0) {
+            menu.add(0, MENU_CONVERSATION_OPTIONS, 0, R.string.menu_conversation_options);
         }
-
-        if ((isSubjectEditorVisible() && mSubjectTextEditor.isFocused())
-                || !mWorkingMessage.hasSlideshow()) {
-            menu.add(0, MENU_IMPORT_TEMPLATE, 0, R.string.import_message_template);
-        }
-
-        if (!mWorkingMessage.hasSlideshow() && mIsSmsEnabled && mEnableEmoticons) {
-            menu.add(0, MENU_INSERT_SMILEY, 0, R.string.menu_insert_smiley).setIcon(
-                    R.drawable.ic_menu_emoticons);
-        }
-
-        if (getRecipients().size() > 1) {
-            menu.add(0, MENU_GROUP_PARTICIPANTS, 0, R.string.menu_group_participants);
-        }
-
-        if (mMsgListAdapter.getCount() > 0 && mIsSmsEnabled) {
-            // Removed search as part of b/1205708
-            //menu.add(0, MENU_SEARCH, 0, R.string.menu_search).setIcon(
-            //        R.drawable.ic_menu_search);
-            Cursor cursor = mMsgListAdapter.getCursor();
-            if ((null != cursor) && (cursor.getCount() > 0)) {
-                menu.add(0, MENU_DELETE_THREAD, 0, R.string.delete_thread).setIcon(
-                    android.R.drawable.ic_menu_delete);
-            }
-        } else if (mIsSmsEnabled) {
-            menu.add(0, MENU_DISCARD, 0, R.string.discard).setIcon(android.R.drawable.ic_menu_delete);
-        }
-
-        buildAddAddressToContactMenuItem(menu);
 
         // Add to Blacklist item (if enabled)
         if (BlacklistUtils.isBlacklistEnabled(this)) {
@@ -3055,12 +3041,37 @@ public class ComposeMessageActivity extends Activity
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
 
-        if (mConversation.getThreadId() > 0) {
-            menu.add(0, MENU_CONVERSATION_OPTIONS, 0, R.string.menu_conversation_options);
+        if (mMsgListAdapter.getCount() > 0 && mIsSmsEnabled) {
+            // Removed search as part of b/1205708
+            //menu.add(0, MENU_SEARCH, 0, R.string.menu_search).setIcon(
+            //        R.drawable.ic_menu_search);
+            Cursor cursor = mMsgListAdapter.getCursor();
+            if ((null != cursor) && (cursor.getCount() > 0)) {
+                menu.add(0, MENU_DELETE_CONVERSATION, 0, R.string.compose_menu_delete_conversation)
+                        .setIcon(android.R.drawable.ic_menu_delete);
+            }
+        } else if (mIsSmsEnabled) {
+            menu.add(0, MENU_DISCARD, 0, R.string.discard).setIcon(android.R.drawable.ic_menu_delete);
         }
 
-        menu.add(0, MENU_PREFERENCES, 0, R.string.menu_preferences).setIcon(
-                android.R.drawable.ic_menu_preferences);
+
+        // TODO : Evaluate whether to keep the options below
+        // Don't show the call icon if the device don't support voice calling.
+        boolean voiceCapable =
+                getResources().getBoolean(com.android.internal.R.bool.config_voice_capable);
+        if (isRecipientCallable() && voiceCapable) {
+            MenuItem item = menu.add(0, MENU_CALL_RECIPIENT, 0, R.string.menu_call)
+                .setIcon(R.drawable.ic_call_white_24dp)
+                .setTitle(R.string.menu_call);
+            if (!isRecipientsEditorVisible()) {
+                // If we're not composing a new message, show the call icon in the actionbar
+                item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            }
+        }
+
+        if (getRecipients().size() > 1) {
+            menu.add(0, MENU_GROUP_PARTICIPANTS, 0, R.string.menu_group_participants);
+        }
 
         if (LogTag.DEBUG_DUMP) {
             menu.add(0, MENU_DEBUG_DUMP, 0, R.string.menu_debug_dump);
@@ -3086,6 +3097,8 @@ public class ComposeMessageActivity extends Activity
             menu.add(0, MENU_ADD_ADDRESS_TO_CONTACTS, 0, R.string.menu_add_to_contacts_cm)
                 .setIcon(android.R.drawable.ic_menu_add)
                 .setIntent(intent);
+        } else {
+            menu.add(0, MENU_VIEW_CONTACT, 0, R.string.menu_view_contact);
         }
     }
 
@@ -3124,7 +3137,7 @@ public class ComposeMessageActivity extends Activity
             case MENU_SEARCH:
                 onSearchRequested();
                 break;
-            case MENU_DELETE_THREAD:
+            case MENU_DELETE_CONVERSATION:
                 boolean hasSms = mNumSms > 0;
                 boolean hasMms = mNumMms > 0;
                 if (!hasSms || !hasMms) {
@@ -4264,6 +4277,16 @@ public class ComposeMessageActivity extends Activity
                     return;
                 }
             }
+
+            // toggle drawable on Send Button as appropriate
+            if (mTextBefore.length() == 0 && count > 0) {
+                // if adding text to the message , show send action drawable on send button
+                mSendButtonSms.showActionDrawable(true);
+            } else if (mTextBefore.length() > 0 && count == 0) {
+                // if message doesn't contain text, then hide the send action drawable
+                mSendButtonSms.showActionDrawable(false);
+            }
+
             // This is a workaround for bug 1609057.  Since onUserInteraction() is
             // not called when the user touches the soft keyboard, we pretend it was
             // called when textfields changes.  This should be removed when the bug
@@ -4283,8 +4306,7 @@ public class ComposeMessageActivity extends Activity
         }
 
         @Override
-        public void afterTextChanged(Editable s) {
-        }
+        public void afterTextChanged(Editable s) {}
     };
 
     /**
@@ -4389,7 +4411,7 @@ public class ComposeMessageActivity extends Activity
             mTextEditorFontSize = mTextEditor.getTextSize();
             mTextCounter = (TextView) findViewById(R.id.text_counter);
             mSendButtonMms = (TextView) findViewById(R.id.send_button_mms);
-            mSendButtonSms = (ImageButton) findViewById(R.id.send_button_sms);
+            mSendButtonSms = (FluctuatingImageButton) findViewById(R.id.send_button_sms);
             mSendButtonMms.setOnClickListener(this);
             mSendButtonSms.setOnClickListener(this);
         }
@@ -4415,6 +4437,16 @@ public class ComposeMessageActivity extends Activity
         mAttachmentEditor = (AttachmentEditor) findViewById(R.id.attachment_editor);
         mAttachmentEditor.setHandler(mAttachmentEditorHandler);
         mAttachmentEditorScrollView = findViewById(R.id.attachment_editor_scroll_view);
+
+        // initialize attachment
+        findViewById(R.id.add_attachment).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ComposeMessageActivity.this.showAddAttachmentDialog(false);
+            }
+        });
+
+
     }
 
     private void initTwoSendButton() {
@@ -4424,7 +4456,7 @@ public class ComposeMessageActivity extends Activity
 
         mTextCounter = (TextView) findViewById(R.id.first_text_counter);
         mSendButtonMms = (TextView) findViewById(R.id.first_send_button_mms_view);
-        mSendButtonSms = (ImageButton) findViewById(R.id.first_send_button_sms_view);
+        mSendButtonSms = (FluctuatingImageButton) findViewById(R.id.first_send_button_sms_view);
         mSendLayoutMmsFir = findViewById(R.id.first_send_button_mms);
         mSendLayoutSmsFir = findViewById(R.id.first_send_button_sms);
         mIndicatorForSimMmsFir = (ImageView) findViewById(R.id.first_sim_card_indicator_mms);
@@ -5769,6 +5801,9 @@ public class ComposeMessageActivity extends Activity
                     item.setVisible(false);
                 }
             }
+
+            // TODO : set the status bar color to action mode bg color
+
             return true;
         }
 

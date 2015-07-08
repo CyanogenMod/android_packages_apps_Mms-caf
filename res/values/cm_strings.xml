@@ -68,7 +68,7 @@
     <string name="unblock_number">Unblock</string>
 
     <!-- Blacklist management -->
-    <string name="add_to_blacklist">Add to blocked caller list</string>
+    <string name="add_to_blacklist">Add to block list</string>
     <string name="add_to_blacklist_message">Future messages from %s will be blocked</string>
 
     <!-- Generic blacklist handling -->
@@ -386,4 +386,8 @@
     <!-- Smart Dialer -->
     <string name="pref_title_mms_smart_dialer">Smart call</string>
     <string name="pref_summary_mms_smart_dialer">Automatically call the contact by moving your phone to your ear</string>
+
+    <!--Compose Message Screen-->
+    <string name="compose_message_hint_text">Enter message</string>
+    <string name="compose_menu_delete_conversation">Delete conversation</string>
 </resources>
