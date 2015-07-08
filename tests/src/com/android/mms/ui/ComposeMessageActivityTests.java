@@ -17,8 +17,6 @@
 package com.android.mms.ui;
 
 import com.android.mms.R;
-import com.android.mms.ui.ComposeMessageActivity;
-import com.android.mms.ui.RecipientsEditor;
 import com.android.mms.data.ContactList;
 import com.android.mms.data.Conversation;
 import com.android.mms.data.WorkingMessage;
@@ -27,15 +25,11 @@ import com.android.mms.ui.MessageListAdapter.ColumnsMap;
 import android.content.Context;
 import android.database.Cursor;
 import android.test.ActivityInstrumentationTestCase2;
-import android.test.suitebuilder.annotation.MediumTest;
 import android.test.suitebuilder.annotation.SmallTest;
 import android.test.suitebuilder.annotation.LargeTest;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Button;
 import android.widget.ImageButton;
 
 /**
@@ -158,7 +152,7 @@ public class ComposeMessageActivityTests
                 checkFocused(mRecipientsEditor);
                 mRecipientsEditor.setText("2012130903");
                 mTextEditor.setText("This is a test message");
-                ImageButton send = (ImageButton)mActivity.findViewById(R.id.send_button_sms);
+                ImageButton send = (ImageButton)mActivity.findViewById(R.id.send_button);
                 send.performClick();
             }
         });
