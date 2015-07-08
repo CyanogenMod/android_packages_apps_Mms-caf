@@ -1175,7 +1175,7 @@ public class MessagingNotification {
         // Update the notification.
         noti.setContentTitle(title)
             .setContentIntent(pendingIntent)
-            .setColor(context.getResources().getColor(R.color.mms_theme_color))
+            .setColor(context.getResources().getColor(R.color.mms_next_theme_color))
             .setCategory(Notification.CATEGORY_MESSAGE)
             .setPriority(Notification.PRIORITY_DEFAULT);     // TODO: set based on contact coming
                                                              // from a favorite.
@@ -1271,11 +1271,11 @@ public class MessagingNotification {
             callIntent.setData(Uri.parse("tel:" + mostRecentNotification.mSender.getNumber()));
             PendingIntent callPendingIntent = PendingIntent.getActivity(context, 0, callIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT);
-            noti.addAction(R.drawable.ic_menu_call, callText, callPendingIntent);
+            noti.addAction(R.drawable.ic_call_white_24dp, callText, callPendingIntent);
 
             //Wearable
             noti.extend(wearableExtender.addAction( new NotificationCompat.Action.Builder(
-                R.drawable.ic_menu_call, callText, callPendingIntent).build()));
+                R.drawable.ic_call_white_24dp, callText, callPendingIntent).build()));
 
             //Set up remote input
             String replyLabel = context.getString(R.string.qm_wear_voice_reply);
