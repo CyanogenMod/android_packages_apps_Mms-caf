@@ -23,41 +23,50 @@
     android:id="@+id/msg_list_item_send"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="4dp"
-    android:paddingBottom="4dp"
     android:descendantFocusability="blocksDescendants"
-    android:orientation="horizontal">
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/top_spacer" />
 
     <LinearLayout android:id="@+id/mms_layout_view_parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:orientation="vertical"
+        android:layout_marginStart="@dimen/sent_message_bubble_margin_start"
         android:gravity="end">
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="4dp">
+            android:orientation="horizontal">
 
-            <com.android.contacts.common.widget.CheckableQuickContactBadge
-                android:id="@+id/avatar"
-                android:layout_alignParentEnd="true"
-                android:layout_width="@dimen/avatar_width_height"
-                android:layout_height="@dimen/avatar_width_height" />
+            <FrameLayout
+                android:id="@+id/arrowhead_container"
+                android:layout_width="@dimen/material_16dp_keyline"
+                android:layout_height="@dimen/avatar_width_height"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true">
+
+                <ImageButton
+                    android:id="@+id/message_bubble_arrowhead"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/message_bubble_sent_arrowhead"
+                    android:layout_gravity="start|center_vertical"/>
+
+            </FrameLayout>
 
             <LinearLayout
                 android:id="@+id/message_block"
-                android:minHeight="@dimen/avatar_width_height"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toStartOf="@id/avatar"
-                android:paddingTop="@dimen/message_bubble_padding_vertical"
-                android:paddingBottom="@dimen/message_bubble_padding_vertical"
-                android:paddingStart="@dimen/message_bubble_padding_horizontal"
-                android:paddingEnd="@dimen/message_bubble_padding_horizontal_extra"
                 android:background="@drawable/message_bubble_outgoing"
-                android:orientation="vertical" >
+                android:layout_alignParentTop="true"
+                android:layout_toStartOf="@id/arrowhead_container"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/sim_message_address"
@@ -79,7 +88,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:linksClickable="false"
-                    android:textAppearance="@android:style/TextAppearance.Material.Body1" />
+                    android:textAppearance="@android:style/TextAppearance.Material.Body1"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"/>
 
                 <TextView android:id="@+id/mms_msg_size_view"
                     android:layout_width="wrap_content"
@@ -134,21 +145,38 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:paddingEnd="16dip"
-                        android:textAppearance="@android:style/TextAppearance.Material.Caption" />
+                        android:textAppearance="@android:style/TextAppearance.Material.Caption"
+                        android:visibility="gone"/>
 
-                    <TextView android:id="@+id/date_view"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end|center_vertical"
-                        android:textAppearance="@android:style/TextAppearance.Material.Caption" />
                 </LinearLayout>
 
                 <ViewStub android:id="@+id/mms_layout_view_stub"
                     android:layout="@layout/mms_layout_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
+
             </LinearLayout>
+
+            <com.android.contacts.common.widget.CheckableQuickContactBadge
+                android:id="@+id/avatar"
+                android:layout_width="@dimen/avatar_width_height"
+                android:layout_height="@dimen/avatar_width_height"
+                android:layout_marginStart="8dp"
+                android:visibility="gone"/>
+
         </RelativeLayout>
+
+        <TextView
+            android:id="@+id/date_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/material_16dp_keyline"
+            android:gravity="end|center_vertical"
+            android:paddingEnd="4dip"
+            android:textSize="@dimen/compose_message_normal_text_size"
+            android:textColor="@color/message_list_item_date_text_color"
+            android:visibility="gone"/>
+
     </LinearLayout>
 
 </com.android.mms.ui.MessageListItem>

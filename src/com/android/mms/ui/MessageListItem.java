@@ -17,23 +17,19 @@
 
 package com.android.mms.ui;
 
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.sqlite.SqliteWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Paint.FontMetricsInt;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -42,20 +38,16 @@ import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.Browser;
 import android.provider.ContactsContract.Profile;
 import android.provider.Telephony.Sms;
-import android.provider.Telephony.Mms;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.telephony.PhoneNumberUtils;
 import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
-import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.LineHeightSpan;
 import android.text.style.StyleSpan;
@@ -63,15 +55,10 @@ import android.text.style.TextAppearanceSpan;
 import android.text.style.URLSpan;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Checkable;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -85,15 +72,14 @@ import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.data.Contact;
 import com.android.mms.data.WorkingMessage;
-import com.android.mms.model.LayoutModel;
 import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
 import com.android.mms.transaction.SmsReceiverService;
 import com.android.mms.transaction.Transaction;
 import com.android.mms.transaction.TransactionBundle;
 import com.android.mms.transaction.TransactionService;
-import com.android.mms.ui.WwwContextMenuActivity;
 import com.android.mms.ui.zoom.ZoomMessageListItem;
+import com.android.mms.util.AnimUtils;
 import com.android.mms.util.DownloadManager;
 import com.android.mms.util.ItemLoadedCallback;
 import com.android.mms.util.SmileyParser;
@@ -126,7 +112,9 @@ public class MessageListItem extends ZoomMessageListItem implements
 
     private boolean mIsCheck = false;
 
+    private View mTopSpacer;
     private View mMmsView;
+    private ImageButton mMessageBubbleArrowhead;
     private ImageView mImageView;
     private ImageView mLockedIndicator;
     private ImageView mDeliveredIndicator;
@@ -152,6 +140,7 @@ public class MessageListItem extends ZoomMessageListItem implements
     private ImageLoadedCallback mImageLoadedCallback;
     private boolean mMultiRecipients;
     private int mManageMode;
+    private Drawable mGroupedMessageBackground;
 
     public MessageListItem(Context context) {
         this(context, null);
@@ -171,6 +160,8 @@ public class MessageListItem extends ZoomMessageListItem implements
             sDefaultContactImage.setCornerRadius(
                     Math.max(defaultImage.getWidth() / 2, defaultImage.getHeight() / 2));
         }
+
+        mGroupedMessageBackground = context.getResources().getDrawable(R.drawable.grouped_msg);
     }
 
     @Override
@@ -189,6 +180,8 @@ public class MessageListItem extends ZoomMessageListItem implements
         mSimMessageAddress = (TextView) findViewById(R.id.sim_message_address);
         mMessageSizeView = (TextView) findViewById(R.id.mms_msg_size_view);
         mMmsLayout = (LinearLayout) findViewById(R.id.mms_layout_view_parent);
+        mTopSpacer = findViewById(R.id.top_spacer);
+        mMessageBubbleArrowhead = (ImageButton) findViewById(R.id.message_bubble_arrowhead);
 
         mAvatar.setOverlay(null);
 
@@ -198,6 +191,13 @@ public class MessageListItem extends ZoomMessageListItem implements
         addZoomableTextView(mSimMessageAddress);
         addZoomableTextView(mSimNameView);
         addZoomableTextView(mMessageSizeView);
+    }
+
+    public void adjustMessageBlockSpacing(int topSpace) {
+        LinearLayout.LayoutParams layoutParams =
+                (LinearLayout.LayoutParams) mTopSpacer.getLayoutParams();
+        layoutParams.height = topSpace;
+        mTopSpacer.setVisibility(View.VISIBLE);
     }
 
     public void bind(MessageItem msgItem, int accentColor,
@@ -228,23 +228,45 @@ public class MessageListItem extends ZoomMessageListItem implements
         }
 
         tintBackground(mMessageBlock.getBackground(), accentColor);
-        mMessageBlock.setSelected(selected);
-        mAvatar.setChecked(selected, sameItem);
+        setMessageBubbleArrowheadColor((StateListDrawable) mMessageBubbleArrowhead.getBackground(),
+                accentColor);
+        setChecked(selected);
         customSIMSmsView();
     }
 
-    private void tintBackground(Drawable background, int color) {
+    private int darkerColor(int color) {
+        float[] hsv = new float[3];
+        Color.colorToHSV(color, hsv);
+        hsv[2] =  Math.max(0f, hsv[2] - hsv[2] * 0.5f);
+        return Color.HSVToColor(Color.alpha(color), hsv);
+    }
+
+    private void tintBackground(Drawable background, int accentColor) {
         if (background instanceof LayerDrawable) {
             Drawable base = ((LayerDrawable) background).findDrawableByLayerId(R.id.base_layer);
             if (base instanceof StateListDrawable) {
                 StateListDrawable sld = (StateListDrawable) base;
                 base = sld.getStateDrawable(sld.getStateDrawableIndex(null));
 
+                // amend selector color
+                Drawable selector = sld.getStateDrawable(sld.getStateDrawableIndex(
+                        new int[] { android.R.attr.state_selected }));
+                selector.setTint(darkerColor(accentColor));
             }
             if (base != null) {
-                base.setTint(color);
+                base.setTint(accentColor);
             }
+        } else {
+            background.setTint(accentColor);
         }
+    }
+
+    private void setMessageBubbleArrowheadColor(StateListDrawable sld, int accentColor) {
+        sld.getStateDrawable(sld.getStateDrawableIndex(null)).setTint(accentColor);
+
+        Drawable selector = sld.getStateDrawable(sld.getStateDrawableIndex(
+                new int[] { android.R.attr.state_selected }));
+        selector.setTint(darkerColor(accentColor));
     }
 
     public void unbind() {
@@ -581,6 +603,14 @@ public class MessageListItem extends ZoomMessageListItem implements
         requestLayout();
     }
 
+    public void setAvatarVisbility(int visibility) {
+        mAvatar.setVisibility(visibility);
+    }
+
+    public void setBubbleArrowheadVisibility(int visibility) {
+        mMessageBubbleArrowhead.setVisibility(visibility);
+    }
+
     static private class ImageLoadedCallback implements ItemLoadedCallback<ImageLoaded> {
         private long mMessageId;
         private final MessageListItem mListItem;
@@ -816,7 +846,12 @@ public class MessageListItem extends ZoomMessageListItem implements
         // Check for links. If none, do nothing; if 1, open it; if >1, ask user to pick one
         final URLSpan[] spans = mBodyTextView.getUrls();
         if (spans.length == 0) {
-            sendMessage(mMessageItem, MSG_LIST_DETAILS);
+            // sendMessage(mMessageItem, MSG_LIST_DETAILS);
+            if (mDateView.getVisibility() != View.VISIBLE) {
+                AnimUtils.fadeIn(mDateView, 300);
+            } else {
+                AnimUtils.fadeOut(mDateView, 300);
+            }
         } else {
             MessageUtils.onMessageContentClick(mContext, mBodyTextView);
         }
@@ -1028,7 +1063,7 @@ public class MessageListItem extends ZoomMessageListItem implements
     public void setChecked(boolean checked) {
         mIsCheck = checked;
         mMessageBlock.setSelected(checked);
-        mAvatar.setChecked(checked, true);
+        mMessageBubbleArrowhead.setSelected(checked);
     }
 
     @Override

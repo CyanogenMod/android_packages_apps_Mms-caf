@@ -30,11 +30,8 @@ import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.android.mms.R;
-import com.android.mms.ui.ComposeMessageActivity;
-import com.android.mms.ui.RecipientsEditor;
 
 import java.io.FileInputStream;
 import java.util.ArrayList;
@@ -376,7 +373,7 @@ extends ActivityInstrumentationTestCase2<ComposeMessageActivity> {
             }
             mTextEditor.setText(generateMessage());
             final ComposeMessageActivity a = getActivity();
-            ImageButton send = (ImageButton)mActivity.findViewById(R.id.send_button_sms);
+            ImageButton send = (ImageButton)mActivity.findViewById(R.id.send_button);
             send.performClick();
         }
     };
