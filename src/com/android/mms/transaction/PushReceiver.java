@@ -143,7 +143,8 @@ public class PushReceiver extends BroadcastReceiver {
                             int.class, String.class);
                     Method mGetThreadID = mWapPushHandler.getDeclaredMethod("getThreadID");
                     Uri pushMsgUri = (Uri)mHandleWapPush.invoke(WapPushHandlerObj, bais,
-                            intent.getType(), mContext, intent.getIntExtra("subscription", 0),
+                            intent.getType(), mContext,
+                            intent.getIntExtra(PhoneConstants.PHONE_KEY, 0),
                             intent.getStringExtra("address") + WAP_PUSH);
 
                     if (pushMsgUri != null) {
