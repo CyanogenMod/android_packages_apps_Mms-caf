@@ -115,4 +115,7 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
+    <style name="Theme.QMPopUp" parent="android:Theme.Material.Dialog">
+        <item name="android:alertDialogTheme">@android:style/Theme.Material.Light.Dialog</item>
+    </style>
 </resources>
