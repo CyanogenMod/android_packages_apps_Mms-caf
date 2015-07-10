@@ -180,7 +180,7 @@ public class MessageItem {
                     if (0 == mDate) {
                         mDate = System.currentTimeMillis();
                     }
-                    mTimestamp = formatTimeStamp(context, true);
+                    mTimestamp = formatTimeStamp(context, true, mDate);
                 } else {
                     // Set "received" time stamp
                     mDate = cursor.getLong(context.getResources().getBoolean(
@@ -190,7 +190,7 @@ public class MessageItem {
                     if (0 == mDate) {
                         mDate = System.currentTimeMillis();
                     }
-                    mTimestamp = formatTimeStamp(context, false);
+                    mTimestamp = formatTimeStamp(context, false, mDate);
                 }
             }
 
@@ -233,6 +233,16 @@ public class MessageItem {
 
         } else {
             throw new MmsException("Unknown type of the message: " + type);
+        }
+    }
+
+    private String formatTimeStamp(Context context, boolean isSent, long timestamp) {
+        if (context.getResources().getBoolean(R.bool.config_display_sent_time)) {
+            return MessageUtils.formatTimeStampString(context, timestamp);
+        } else {
+            return String.format(context.getString(isSent ? R.string.sent_on
+                    : R.string.received_on), MessageUtils.formatTimeStampString(context,
+                    timestamp));
         }
     }
 
@@ -504,7 +514,8 @@ public class MessageItem {
                             MessageUtils.formatTimeStampString(mContext, timestamp));
                 } else {
                     // add judgement the Mms is sent or received and format mTimestamp
-                    mTimestamp = formatTimeStamp(mContext, mBoxId == Sms.MESSAGE_TYPE_SENT);
+                    mTimestamp = formatTimeStamp(mContext, mBoxId == Mms.MESSAGE_BOX_SENT,
+                            timestamp);
                 }
             }
             if (mPduLoadedCallback != null) {
