@@ -27,7 +27,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/mms_next_toolbar_wrapper_height"
-        android:paddingTop="@dimen/mms_next_toolbar_paddingTop"
         android:paddingBottom="0dp"
         android:paddingStart="@dimen/mms_next_toolbar_paddingStart"
         android:orientation="vertical"

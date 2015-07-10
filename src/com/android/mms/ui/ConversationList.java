@@ -282,6 +282,7 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
 
         View actionButton = findViewById(R.id.floating_action_button);
         actionButton.setOnClickListener(mComposeClickHandler);
+
     }
 
     @Override

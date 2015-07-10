@@ -38,7 +38,6 @@
         <item name="android:colorPrimary">@color/mms_next_theme_color</item>
         <item name="android:colorPrimaryDark">@color/mms_next_theme_color_dark</item>
         <item name="android:colorAccent">@color/mms_next_theme_color_accent</item>
-        <item name="android:windowTranslucentStatus">true</item>
         <item name="android:actionModeStyle">@style/MmsActionModeStyle</item>
         <item name="android:actionModeBackground">?android:attr/colorBackground</item>
     </style>

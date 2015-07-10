@@ -29,7 +29,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@color/mms_theme_color"
-        android:paddingTop="@dimen/mms_next_toolbar_paddingTop"
         android:elevation="@dimen/action_bar_elevation"
         android:theme="@style/HeaderTheme">
 
