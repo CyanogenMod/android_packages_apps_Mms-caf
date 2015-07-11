@@ -31,13 +31,21 @@ import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.conn.params.ConnRouteParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.http.AndroidHttpClient;
+import android.os.SystemClock;
+import android.os.SystemProperties;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Config;
@@ -74,6 +82,28 @@ public class HttpUtils {
 
     private static final String HDR_VALUE_ACCEPT =
         "*/*, application/vnd.wap.mms-message, application/vnd.wap.sic";
+
+    private static final String INTENT_HTTP_TIMEOUT_ALARM = "org.codeaurora.mms.http_timeout";
+    private static final String INTENT_EXTRA_TAG = "mmstag";
+    // 3min default timeout
+    private static final long HTTP_TIMEOUT =
+            SystemProperties.getLong("persist.radio.mms.http_timeout", 3 * 60 * 1000);
+    private static long sAlarmTag = 0;
+    private static HttpRequestBase sHttpReq = null;
+    private static PendingIntent sAlarmIntent = null;
+    private static IntentFilter sIntentFilter = new IntentFilter(INTENT_HTTP_TIMEOUT_ALARM);
+
+    private static BroadcastReceiver sIntentReceiver = new BroadcastReceiver () {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (INTENT_HTTP_TIMEOUT_ALARM.equals(intent.getAction())) {
+                long tag = intent.getLongExtra(INTENT_EXTRA_TAG, -1);
+                Log.d(TAG, "[HttpUtils] HTTP timeout alarm. tag = " + tag
+                        + " sAlarmTag = " + sAlarmTag);
+                abortHttpRequest(tag);
+            }
+        }
+    };
 
     private HttpUtils() {
         // To forbidden instantiate this class.
@@ -129,6 +159,7 @@ public class HttpUtils {
         AndroidHttpClient client = null;
 
         try {
+            startAlarmForTimeout(context);
             // Make sure to use a proxy which supports CONNECT.
             URI hostUrl = new URI(url);
             HttpHost target = new HttpHost(
@@ -146,7 +177,7 @@ public class HttpUtils {
             }
 
             client = createHttpClient(context);
-            HttpRequest req = null;
+            HttpRequestBase req = null;
             switch(method) {
                 case HTTP_POST_METHOD:
                     ProgressCallbackEntity entity = new ProgressCallbackEntity(
@@ -166,6 +197,9 @@ public class HttpUtils {
                             + ". Must be one of POST[" + HTTP_POST_METHOD
                             + "] or GET[" + HTTP_GET_METHOD + "].");
                     return null;
+            }
+            synchronized (HttpUtils.class) {
+                sHttpReq = req;
             }
 
             // Set route parameters for the request.
@@ -225,6 +259,8 @@ public class HttpUtils {
 
             HttpResponse response = client.execute(target, req);
             StatusLine status = response.getStatusLine();
+            Log.d(TAG, "HttpUtils: Http request. status = "
+                    + status.getStatusCode());
             if (status.getStatusCode() != 200) { // HTTP 200 is success.
                 throw new IOException("HTTP error: " + status.getReasonPhrase());
             }
@@ -309,6 +345,7 @@ public class HttpUtils {
             if (client != null) {
                 client.close();
             }
+            cancelTimeoutAlarm(context);
         }
         return null;
     }
@@ -393,5 +430,57 @@ public class HttpUtils {
                 builder.append(country);
             }
         }
+    }
+
+    private static synchronized void startAlarmForTimeout(Context context) {
+        if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
+            Log.d(TAG, "[HttpUtils] startAlarmForTimeout for " + HTTP_TIMEOUT);
+        }
+        Intent intent = new Intent(INTENT_HTTP_TIMEOUT_ALARM);
+        intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+        sAlarmTag++;
+        intent.putExtra(INTENT_EXTRA_TAG, sAlarmTag);
+        sAlarmIntent = PendingIntent.getBroadcast (context, 0,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        am.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                SystemClock.elapsedRealtime() + HTTP_TIMEOUT, sAlarmIntent);
+        context.registerReceiver(sIntentReceiver, sIntentFilter);
+
+    }
+
+    private static synchronized void cancelTimeoutAlarm(Context context) {
+        if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
+            Log.d(TAG, "HttpUtils: cancelTimeoutAlarm");
+        }
+        if (sAlarmIntent != null) {
+            context.unregisterReceiver(sIntentReceiver);
+            AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            am.cancel(sAlarmIntent);
+            sAlarmIntent = null;
+        }
+    }
+
+    private static void abortHttpRequest(final long tag) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized(HttpUtils.class) {
+                    Log.d(TAG, "[HttpUtils] abortHttpRequest. tag = " + tag
+                            + " sAlarmTag = " + sAlarmTag);
+                    if (tag == sAlarmTag && sHttpReq != null) {
+                        try {
+                            sHttpReq.abort();
+                        } catch (Exception e) {
+                            Log.w(TAG, "[HttpUtils] abortHttpRequest: Ex:" + e);
+                        }
+                    } else {
+                        Log.d(TAG, "[HttpUtils] Alarm tags not matching or no req. Ignore!");
+                    }
+                }
+            }
+        };
+        Thread abortThread = new Thread(runnable);
+        abortThread.start();
     }
 }
