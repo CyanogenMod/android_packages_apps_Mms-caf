@@ -142,7 +142,7 @@
   <string name="attach_add_contact_as_text">Kontaktuaren informazioa testu gisa</string>
   <string name="contact_info_text_as_name">Izena:</string>
   <string name="contact_info_text_as_phone">Tel:</string>
-  <string name="contact_info_text_as_email">Posta:</string>
+  <string name="contact_info_text_as_email">Eposta:</string>
   <string name="type_vcal">Egutegiko gertaera</string>
   <string name="pref_wap_push_title">Push zerbitzuko mezuak</string>
   <string name="pref_title_wap_push_enabled">WAP Push zerbitzua</string>
@@ -201,7 +201,7 @@
   <string name="pref_title_cdma_priority">Mezuaren lehentasuna</string>
   <string name="pref_summary_cdma_priority">CDMA mezuen lehentasuna</string>
   <string name="download_dialog_title">Deskargatu MMS mezu hau?</string>
-  <string name="menu_email">Bidali mezua</string>
+  <string name="menu_email">Bidali eposta</string>
   <string name="pref_title_sms_store">Biltegiratze hobetsia</string>
   <string name="pref_title_sms_store_card1">1. SIM txartelaren biltegiratze hobetsia</string>
   <string name="pref_title_sms_store_card2">2. SIM txartelaren biltegiratze hobetsia</string>
