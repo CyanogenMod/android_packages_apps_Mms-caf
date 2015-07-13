@@ -19,21 +19,50 @@ package com.android.mms.ui;
 import android.content.Context;
 import android.text.ClipboardManager;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ListView;
 import com.android.mms.ui.zoom.ZoomMessageListItem;
 import com.android.mms.ui.zoom.ZoomMessageListView;
 
 public final class MessageListView extends ZoomMessageListView {
+    private GestureDetector mGestureDetector;
     private OnSizeChangedListener mOnSizeChangedListener;
+    public boolean mLongPress;
 
     public MessageListView(Context context) {
         super(context);
+        mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public void onLongPress(MotionEvent e) {
+                mLongPress = true;
+            }
+
+            @Override
+            public boolean onDown(MotionEvent e) {
+                mLongPress = false;
+                return true;
+            }
+        });
     }
 
     public MessageListView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+
+            @Override
+            public void onLongPress(MotionEvent e) {
+                mLongPress = true;
+            }
+
+            @Override
+            public boolean onDown(MotionEvent e) {
+                mLongPress = false;
+                return true;
+            }
+        });
     }
 
     @Override
@@ -85,5 +114,21 @@ public final class MessageListView extends ZoomMessageListView {
         return INVALID_POSITION;
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (mLongPress) {
+            return false;
+        }
+        return super.onTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        mGestureDetector.onTouchEvent(ev);
+        if (mLongPress) {
+            return false;
+        }
+        return super.onInterceptTouchEvent(ev);
+    }
 }
 

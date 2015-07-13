@@ -19,14 +19,27 @@ package com.android.mms.model;
 
 import java.io.UnsupportedEncodingException;
 
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.StateListDrawable;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.widget.LinearLayout;
+import com.android.mms.ui.MessageUtils;
+import com.android.mms.views.SimpleAttachmentView;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.smil.ElementTime;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
-
+import android.view.ViewGroup;
+import android.widget.TextView;
+import com.android.mms.R;
 import com.android.mms.LogTag;
 import com.android.mms.dom.smil.SmilMediaElementImpl;
+import com.android.mms.ui.Presenter;
+
 import com.google.android.mms.pdu.CharacterSets;
 
 public class TextModel extends RegionMediaModel {
@@ -109,5 +122,39 @@ public class TextModel extends RegionMediaModel {
         }
 
         notifyModelChanged(false);
+    }
+
+    @Override
+    public Presenter getPresenter() {
+        //noinspection unchecked
+        return new Presenter(mContext, null) {
+            @Override
+            public void present(ViewGroup v, PresenterOptions presenterOptions) {
+                LayoutInflater inflater = LayoutInflater.from(getContext());
+                TextView textView = (TextView) inflater
+                        .inflate(R.layout.text_attachment_view, v, false);
+                v.addView(textView);
+                textView.setText(getText());
+                if (presenterOptions != null) {
+                    textView.setTextColor(presenterOptions.isIncomingMessage() ? Color.WHITE : Color.BLACK);
+                }
+                if (presenterOptions != null && presenterOptions.getAccentColor() != -1) {
+                    LayerDrawable background = (LayerDrawable) textView.getBackground();
+                    Drawable base = background.findDrawableByLayerId(R.id.base_layer);
+                    if (base instanceof StateListDrawable) {
+                        StateListDrawable sld = (StateListDrawable) base;
+                        base = sld.getStateDrawable(sld.getStateDrawableIndex(null));
+
+                        // amend selector color
+                        Drawable selector = sld.getStateDrawable(sld.getStateDrawableIndex(
+                                new int[] { android.R.attr.state_selected }));
+                        selector.setTint(MessageUtils.getDarkerColor(presenterOptions.getAccentColor()));
+                    }
+                    if (base != null) {
+                        base.setTint(presenterOptions.getAccentColor());
+                    }
+                }
+            }
+        };
     }
 }
