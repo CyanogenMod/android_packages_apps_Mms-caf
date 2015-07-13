@@ -30,14 +30,21 @@ import android.net.Uri;
 import android.provider.MediaStore.Audio;
 import android.provider.Telephony.Mms.Part;
 import android.text.TextUtils;
+import android.text.format.Formatter;
 import android.util.Log;
 
 import com.android.mms.ContentRestrictionException;
+import com.android.mms.R;
 import com.android.mms.dom.events.EventImpl;
 import com.android.mms.dom.smil.SmilMediaElementImpl;
+import com.android.mms.presenters.SimpleAttachmentPresenter;
+import com.android.mms.presenters.SimplePresenterModel;
+import com.android.mms.ui.Presenter;
+import com.android.mms.util.ItemLoadedCallback;
+
 import com.google.android.mms.MmsException;
 
-public class AudioModel extends MediaModel {
+public class AudioModel extends MediaModel implements SimplePresenterModel {
     private static final String TAG = MediaModel.TAG;
     private static final boolean DEBUG = false;
     private static final boolean LOCAL_LOGV = false;
@@ -155,5 +162,20 @@ public class AudioModel extends MediaModel {
     @Override
     protected boolean isPlayable() {
         return true;
+    }
+
+    @Override
+    public Presenter getPresenter() {
+        return new SimpleAttachmentPresenter(mContext, this);
+    }
+
+    @Override
+    public void loadData(ItemLoadedCallback<SimpleAttachmentPresenter.SimpleAttachmentLoaded> itemLoadedCallback) {
+        SimpleAttachmentPresenter.SimpleAttachmentLoaded loaded =
+                new SimpleAttachmentPresenter.SimpleAttachmentLoaded();
+        loaded.drawable = mContext.getResources().getDrawable(R.drawable.ic_video_attachment_play);
+        loaded.label1 = getSrc();
+        loaded.label2 = Formatter.formatShortElapsedTime(mContext,getDuration());
+        itemLoadedCallback.onItemLoaded(loaded, null);
     }
 }

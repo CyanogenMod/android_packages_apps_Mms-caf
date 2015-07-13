@@ -30,14 +30,25 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 
 import com.android.mms.ContentRestrictionException;
 import com.android.mms.ExceedMessageSizeException;
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
+import com.android.mms.data.PendingAttachmentDimensions;
 import com.android.mms.dom.smil.SmilMediaElementImpl;
+import com.android.mms.presenters.ImagePresenter;
+import com.android.mms.presenters.ImagePresenterModel;
+import com.android.mms.ui.Presenter;
+import com.android.mms.ui.SlideViewInterface;
 import com.android.mms.ui.UriImage;
 import com.android.mms.util.ItemLoadedCallback;
 import com.android.mms.util.ItemLoadedFuture;
@@ -47,7 +58,7 @@ import com.google.android.mms.pdu.PduPart;
 import com.google.android.mms.pdu.PduPersister;
 
 
-public class ImageModel extends RegionMediaModel {
+public class ImageModel extends RegionMediaModel implements ImagePresenterModel {
     private static final String TAG = LogTag.TAG;
     private static final boolean DEBUG = false;
     private static final boolean LOCAL_LOGV = false;
@@ -67,6 +78,7 @@ public class ImageModel extends RegionMediaModel {
     private int mHeight;
     private SoftReference<Bitmap> mFullSizeBitmapCache = new SoftReference<Bitmap>(null);
     private ItemLoadedFuture mItemLoadedFuture;
+    private boolean mDimensionsNeedsPersisting;
 
     public ImageModel(Context context, Uri uri, RegionModel region)
             throws MmsException {
@@ -76,9 +88,12 @@ public class ImageModel extends RegionMediaModel {
     }
 
     public ImageModel(Context context, String contentType, String src,
-            Uri uri, RegionModel region) throws MmsException {
+            Uri uri, RegionModel region, int width, int height) throws MmsException {
         super(context, SmilHelper.ELEMENT_TAG_IMAGE,
                 contentType, src, uri, region);
+        if (width == -1 || height == -1) {
+            mDimensionsNeedsPersisting = true;
+        }
         decodeImageBounds(uri);
     }
 
@@ -108,6 +123,9 @@ public class ImageModel extends RegionMediaModel {
 
         if (LOCAL_LOGV) {
             Log.v(TAG, "Image bounds: " + mWidth + "x" + mHeight);
+        }
+        if (mDimensionsNeedsPersisting) {
+            PendingAttachmentDimensions.queue(getUri(), mWidth, mHeight);
         }
     }
 
@@ -142,6 +160,19 @@ public class ImageModel extends RegionMediaModel {
         return mItemLoadedFuture;
     }
 
+    @Override
+    public void removeThumbnail() {
+        ThumbnailManager thumbnailManager = MmsApp.getApplication().getThumbnailManager();
+        thumbnailManager.removeThumbnail(getUri());
+        // HACK: the keys to the thumbnail cache are the part uris, such as mms/part/3
+        // Because the part table doesn't have auto-increment ids, the part ids are reused
+        // when a message or thread is deleted. For now, we're clearing the whole thumbnail
+        // cache so we don't retrieve stale images when part ids are reused. This will be
+        // fixed in the next release in the mms provider.
+        MmsApp.getApplication().getThumbnailManager().clearBackingStore();
+    }
+
+    @Override
     public void cancelThumbnailLoading() {
         if (mItemLoadedFuture != null && !mItemLoadedFuture.isDone()) {
             if (Log.isLoggable(LogTag.APP, Log.DEBUG)) {
@@ -250,5 +281,10 @@ public class ImageModel extends RegionMediaModel {
 
         Uri newUri = persister.persistPart(part, messageId, null);
         setUri(newUri);
+    }
+
+    @Override
+    public Presenter getPresenter() {
+        return new ImagePresenter(mContext, this);
     }
 }
