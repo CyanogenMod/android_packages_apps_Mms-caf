@@ -19,21 +19,61 @@ package com.android.mms.ui;
 import android.content.Context;
 import android.text.ClipboardManager;
 import android.util.AttributeSet;
-import android.view.KeyEvent;
-import android.view.View;
+import android.view.*;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import com.android.mms.ui.zoom.ZoomMessageListItem;
 import com.android.mms.ui.zoom.ZoomMessageListView;
 
 public final class MessageListView extends ZoomMessageListView {
+    private GestureDetector mGestureDetector;
     private OnSizeChangedListener mOnSizeChangedListener;
+    public boolean mLongPress;
+    private MultiChoiceModeListener mListener;
+    private int mState;
+    private OnScrollListener mScrollListener;
+    private boolean mActionMode;
 
     public MessageListView(Context context) {
-        super(context);
+        this(context, null);
+    }
+
+    @Override
+    public void setOnScrollListener(OnScrollListener l) {
+        mScrollListener = l;
     }
 
     public MessageListView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+
+            @Override
+            public void onLongPress(MotionEvent e) {
+                mLongPress = true;
+            }
+
+            @Override
+            public boolean onDown(MotionEvent e) {
+                mLongPress = false;
+                return true;
+            }
+        });
+        super.setOnScrollListener(new OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                mState = scrollState;
+                if (mScrollListener != null) {
+                    mScrollListener.onScrollStateChanged(view, scrollState);
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (mScrollListener != null) {
+                    mScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+                }
+            }
+        });
     }
 
     @Override
@@ -85,5 +125,84 @@ public final class MessageListView extends ZoomMessageListView {
         return INVALID_POSITION;
     }
 
+    @Override
+    public void setMultiChoiceModeListener(MultiChoiceModeListener listener) {
+        mListener = new ActionModeCallbackWrapper(listener);
+        super.setMultiChoiceModeListener(mListener);
+    }
+
+    public ActionMode startActionModeForChild(View originalView) {
+        return super.startActionModeForChild(originalView, mListener);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (mState == OnScrollListener.SCROLL_STATE_IDLE) {
+            if (mLongPress && ev.getAction() == MotionEvent.ACTION_UP && mActionMode) {
+                mLongPress = false;
+                return true;
+            }
+        }
+        return super.onTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (!mActionMode) {
+            mGestureDetector.onTouchEvent(ev);
+        }
+        return super.onInterceptTouchEvent(ev);
+    }
+
+    private class ActionModeCallbackWrapper implements MultiChoiceModeListener {
+        private final MultiChoiceModeListener mCallback;
+
+        ActionModeCallbackWrapper(MultiChoiceModeListener callback) {
+            mCallback = callback;
+        }
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            mActionMode = false;
+            if (mCallback != null) {
+                mActionMode = mCallback.onCreateActionMode(mode, menu);
+            }
+            return mActionMode;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            if (mCallback != null) {
+                return mCallback.onPrepareActionMode(mode, menu);
+            } else {
+                return false;
+            }
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            if (mCallback != null) {
+                return mCallback.onActionItemClicked(mode, item);
+            } else {
+                return false;
+            }
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            mActionMode = false;
+            if (mCallback != null) {
+                mCallback.onDestroyActionMode(mode);
+            }
+        }
+
+        @Override
+        public void onItemCheckedStateChanged(ActionMode mode, int position,
+                                              long id, boolean checked) {
+            if (mCallback != null) {
+                mCallback.onItemCheckedStateChanged(mode, position, id, checked);
+            }
+        }
+    }
 }
 

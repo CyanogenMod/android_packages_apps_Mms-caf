@@ -19,18 +19,21 @@ package com.android.mms.model;
 
 import java.io.UnsupportedEncodingException;
 
+import com.android.mms.presenters.TextPresenter;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.smil.ElementTime;
 
 import android.content.Context;
 import android.util.Log;
-
 import com.android.mms.LogTag;
 import com.android.mms.dom.smil.SmilMediaElementImpl;
+import com.android.mms.ui.Presenter;
+
 import com.google.android.mms.pdu.CharacterSets;
 
 public class TextModel extends RegionMediaModel {
     private static final String TAG = LogTag.TAG;
+    private final TextPresenter mPresenter;
 
     private CharSequence mText;
     private final int mCharset;
@@ -52,6 +55,7 @@ public class TextModel extends RegionMediaModel {
         mCharset = charset;
         mText = extractTextFromData(data);
         mSize = mText.toString().getBytes().length;
+        mPresenter = new TextPresenter(context, this);
     }
 
     private CharSequence extractTextFromData(byte[] data) {
@@ -109,5 +113,10 @@ public class TextModel extends RegionMediaModel {
         }
 
         notifyModelChanged(false);
+    }
+
+    @Override
+    public Presenter getPresenter() {
+        return mPresenter;
     }
 }

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="message_attachment_padding">12dp</dimen>
+    <dimen name="simple_attachment_height">39dp</dimen>
+    <dimen name="attachment_editor_item_height">48dp</dimen>
+    <dimen name="thumbnail_attachment_static_height">150dp</dimen>
+    <dimen name="thumbnail_attachment_corner_radius">5dp</dimen>
+</resources>

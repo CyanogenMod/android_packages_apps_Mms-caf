@@ -309,72 +309,66 @@ public class SmilHelper {
         SMILElement bodyElement = (SMILElement) document.createElement("body");
         smilElement.appendChild(bodyElement);
 
-        for (SlideModel slide : slideshow) {
+        for (MediaModel media : slideshow) {
             boolean txtRegionPresentInLayout = false;
             boolean imgRegionPresentInLayout = false;
 
             // Create PAR element.
             SMILParElement par = addPar(document);
-            par.setDur(slide.getDuration() / 1000f);
 
-            addParElementEventListeners((EventTarget) par, slide);
-
-            // Add all media elements.
-            for (MediaModel media : slide) {
-                SMILMediaElement sme = null;
-                String src = media.getSrc();
-                if (media instanceof TextModel) {
-                    TextModel text = (TextModel) media;
-                    if (TextUtils.isEmpty(text.getText())) {
-                        if (LOCAL_LOGV) {
-                            Log.v(TAG, "Empty text part ignored: " + text.getSrc());
-                        }
-                        continue;
+            SMILMediaElement sme = null;
+            String src = media.getSrc();
+            if (media instanceof TextModel) {
+                TextModel text = (TextModel) media;
+                if (TextUtils.isEmpty(text.getText())) {
+                    if (LOCAL_LOGV) {
+                        Log.v(TAG, "Empty text part ignored: " + text.getSrc());
                     }
-                    sme = SmilHelper.createMediaElement(SmilHelper.ELEMENT_TAG_TEXT, document, src);
-                    txtRegionPresentInLayout = setRegion((SMILRegionMediaElement) sme,
-                                                         smilRegions,
-                                                         layoutElement,
-                                                         LayoutModel.TEXT_REGION_ID,
-                                                         txtRegionPresentInLayout);
-                } else if (media instanceof ImageModel) {
-                    sme = SmilHelper.createMediaElement(SmilHelper.ELEMENT_TAG_IMAGE, document, src);
-                    imgRegionPresentInLayout = setRegion((SMILRegionMediaElement) sme,
-                                                         smilRegions,
-                                                         layoutElement,
-                                                         LayoutModel.IMAGE_REGION_ID,
-                                                         imgRegionPresentInLayout);
-                } else if (media instanceof VideoModel) {
-                    sme = SmilHelper.createMediaElement(SmilHelper.ELEMENT_TAG_VIDEO, document, src);
-                    imgRegionPresentInLayout = setRegion((SMILRegionMediaElement) sme,
-                                                         smilRegions,
-                                                         layoutElement,
-                                                         LayoutModel.IMAGE_REGION_ID,
-                                                         imgRegionPresentInLayout);
-                } else if (media instanceof AudioModel) {
-                    sme = SmilHelper.createMediaElement(SmilHelper.ELEMENT_TAG_AUDIO, document, src);
-                } else if (media instanceof VcardModel) {
-                    sme = SmilHelper.createMediaElement(SmilHelper.ELEMENT_TAG_REF, document, src);
-                } else if (media instanceof VCalModel) {
-                    sme = SmilHelper.createMediaElement(SmilHelper.ELEMENT_TAG_REF, document, src);
-                } else {
-                    Log.w(TAG, "Unsupport media: " + media);
                     continue;
                 }
-
-                // Set timing information.
-                int begin = media.getBegin();
-                if (begin != 0) {
-                    sme.setAttribute("begin", String.valueOf(begin / 1000));
-                }
-                int duration = media.getDuration();
-                if (duration != 0) {
-                    sme.setDur((float) duration / 1000);
-                }
-                par.appendChild(sme);
-
-                addMediaElementEventListeners((EventTarget) sme, media);
+                sme = SmilHelper.createMediaElement(SmilHelper.ELEMENT_TAG_TEXT, document, src);
+                txtRegionPresentInLayout = setRegion((SMILRegionMediaElement) sme,
+                        smilRegions,
+                        layoutElement,
+                        LayoutModel.TEXT_REGION_ID,
+                        txtRegionPresentInLayout);
+            } else if (media instanceof ImageModel) {
+                sme = SmilHelper.createMediaElement(SmilHelper.ELEMENT_TAG_IMAGE, document, src);
+                imgRegionPresentInLayout = setRegion((SMILRegionMediaElement) sme,
+                        smilRegions,
+                        layoutElement,
+                        LayoutModel.IMAGE_REGION_ID,
+                        imgRegionPresentInLayout);
+            } else if (media instanceof VideoModel) {
+                sme = SmilHelper.createMediaElement(SmilHelper.ELEMENT_TAG_VIDEO, document, src);
+                imgRegionPresentInLayout = setRegion((SMILRegionMediaElement) sme,
+                        smilRegions,
+                        layoutElement,
+                        LayoutModel.IMAGE_REGION_ID,
+                        imgRegionPresentInLayout);
+            } else if (media instanceof AudioModel) {
+                sme = SmilHelper.createMediaElement(SmilHelper.ELEMENT_TAG_AUDIO, document, src);
+            } else if (media instanceof VcardModel) {
+                sme = SmilHelper.createMediaElement(SmilHelper.ELEMENT_TAG_REF, document, src);
+            } else if (media instanceof VCalModel) {
+                sme = SmilHelper.createMediaElement(SmilHelper.ELEMENT_TAG_REF, document, src);
+            } else {
+                Log.w(TAG, "Unsupport media: " + media);
+                continue;
             }
+
+            // Set timing information.
+            int begin = media.getBegin();
+            if (begin != 0) {
+                sme.setAttribute("begin", String.valueOf(begin / 1000));
+            }
+            int duration = media.getDuration();
+            if (duration != 0) {
+                sme.setDur((float) duration / 1000);
+            }
+            par.appendChild(sme);
+
+            addMediaElementEventListeners((EventTarget) sme, media);
         }
 
         if (LOCAL_LOGV) {
@@ -418,13 +412,5 @@ public class SmilHelper {
         target.addEventListener(SMIL_MEDIA_END_EVENT, media, false);
         target.addEventListener(SMIL_MEDIA_PAUSE_EVENT, media, false);
         target.addEventListener(SMIL_MEDIA_SEEK_EVENT, media, false);
-    }
-
-    static void addParElementEventListeners(
-            EventTarget target, SlideModel slide) {
-        // To play the slide with SmilPlayer, we should add it
-        // as EventListener into an EventTarget.
-        target.addEventListener(SMIL_SLIDE_START_EVENT, slide, false);
-        target.addEventListener(SMIL_SLIDE_END_EVENT, slide, false);
     }
 }
