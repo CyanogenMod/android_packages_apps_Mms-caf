@@ -52,7 +52,7 @@ public class SlideshowPresenter extends Presenter {
     private static final boolean LOCAL_LOGV = false;
 
     protected int mLocation;
-    protected final int mSlideNumber;
+    protected int mSlideNumber;
 
     protected float mWidthTransformRatio = 1.0f;
     protected float mHeightTransformRatio = 1.0f;
@@ -63,9 +63,9 @@ public class SlideshowPresenter extends Presenter {
     protected final Handler mHandler = new Handler();
 
     public SlideshowPresenter(Context context, ViewInterface view, Model model) {
-        super(context, view, model);
+        super(context, model);
         mLocation = 0;
-        mSlideNumber = ((SlideshowModel) mModel).size();
+        //mSlideNumber = ((SlideshowModel) mModel).size();
 
         if (view instanceof AdaptableSlideViewInterface) {
             ((AdaptableSlideViewInterface) view).setOnSizeChangedListener(
@@ -76,11 +76,11 @@ public class SlideshowPresenter extends Presenter {
     private final OnSizeChangedListener mViewSizeChangedListener =
         new OnSizeChangedListener() {
         public void onSizeChanged(int width, int height) {
-            LayoutModel layout = ((SlideshowModel) mModel).getLayout();
-            mWidthTransformRatio = getWidthTransformRatio(
-                    width, layout.getLayoutWidth());
-            mHeightTransformRatio = getHeightTransformRatio(
-                    height, layout.getLayoutHeight());
+//            LayoutModel layout = ((SlideshowModel) mModel).getLayout();
+//            mWidthTransformRatio = getWidthTransformRatio(
+//                    width, layout.getLayoutWidth());
+//            mHeightTransformRatio = getHeightTransformRatio(
+//                    height, layout.getLayoutHeight());
             // The ratio indicates how to reduce the source to match the View,
             // so the larger one should be used.
             float ratio = mWidthTransformRatio > mHeightTransformRatio ?
@@ -116,12 +116,12 @@ public class SlideshowPresenter extends Presenter {
         return (int) (height / mHeightTransformRatio);
     }
 
-    @Override
-    public void present(ItemLoadedCallback callback) {
-        // This is called to show a full-screen slideshow. Presently, all parts of
-        // a slideshow (images, sounds, etc.) are loaded and displayed on the UI thread.
-        presentSlide((SlideViewInterface) mView, ((SlideshowModel) mModel).get(mLocation));
-    }
+//    @Override
+//    public void present(ItemLoadedCallback callback) {
+//        // This is called to show a full-screen slideshow. Presently, all parts of
+//        // a slideshow (images, sounds, etc.) are loaded and displayed on the UI thread.
+//        presentSlide((SlideViewInterface) mView, ((SlideshowModel) mModel).get(mLocation));
+//    }
 
     /**
      * @param view
@@ -329,7 +329,7 @@ public class SlideshowPresenter extends Presenter {
     }
 
     public void onModelChanged(final Model model, final boolean dataChanged) {
-        final SlideViewInterface view = (SlideViewInterface) mView;
+        final SlideViewInterface view = null;
 
         // FIXME: Should be optimized.
         if (model instanceof SlideshowModel) {
@@ -365,6 +365,16 @@ public class SlideshowPresenter extends Presenter {
         } else if (model instanceof RegionModel) {
             // TODO:
         }
+    }
+
+    @Override
+    public void present(SlideViewInterface view, SlideModel slide) {
+
+    }
+
+    @Override
+    public void present(SlideViewInterface view, SlideModel slide, ItemLoadedCallback callback) {
+
     }
 
     @Override

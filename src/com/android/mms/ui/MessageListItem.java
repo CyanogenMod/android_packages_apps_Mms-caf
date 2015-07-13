@@ -57,6 +57,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Checkable;
 import android.widget.ImageButton;
@@ -114,12 +115,12 @@ public class MessageListItem extends ZoomMessageListItem implements
     private View mTopSpacer;
     private View mMmsView;
     private ImageButton mMessageBubbleArrowhead;
-    private ImageView mImageView;
+    //private ImageView mImageView;
     private ImageView mLockedIndicator;
     private ImageView mDeliveredIndicator;
     private ImageView mDetailsIndicator;
     private ImageView mSimIndicatorView;
-    private ImageButton mSlideShowButton;
+    //private ImageButton mSlideShowButton;
     private TextView mSimMessageAddress;
     private TextView mBodyTextView;
     private TextView mMessageSizeView;
@@ -229,10 +230,11 @@ public class MessageListItem extends ZoomMessageListItem implements
         tintBackground(mMessageBlock.getBackground(), accentColor);
         setMessageBubbleArrowheadColor((StateListDrawable) mMessageBubbleArrowhead.getBackground(),
                 accentColor);
+        mAccentColor = accentColor;
         setChecked(selected);
         customSIMSmsView();
     }
-
+private int mAccentColor;
     private int darkerColor(int color) {
         float[] hsv = new float[3];
         Color.colorToHSV(color, hsv);
@@ -271,15 +273,15 @@ public class MessageListItem extends ZoomMessageListItem implements
     public void unbind() {
         // Clear all references to the message item, which can contain attachments and other
         // memory-intensive objects
-        if (mImageView != null) {
-            // Because #setOnClickListener may have set the listener to an object that has the
-            // message item in its closure.
-            mImageView.setOnClickListener(null);
-        }
-        if (mSlideShowButton != null) {
-            // Because #drawPlaybackButton sets the tag to mMessageItem
-            mSlideShowButton.setTag(null);
-        }
+//        if (mImageView != null) {
+//            // Because #setOnClickListener may have set the listener to an object that has the
+//            // message item in its closure.
+//            mImageView.setOnClickListener(null);
+//        }
+//        if (mSlideShowButton != null) {
+//            // Because #drawPlaybackButton sets the tag to mMessageItem
+//            mSlideShowButton.setTag(null);
+//        }
         // leave the presenter in case it's needed when rebound to a different MessageItem.
         if (mPresenter != null) {
             mPresenter.cancelBackgroundLoading();
@@ -521,7 +523,7 @@ public class MessageListItem extends ZoomMessageListItem implements
             if (mMessageItem.mSlideshow == null) {
                 debugText = "NULL slideshow";
             } else {
-                SlideModel slide = ((SlideshowModel) mMessageItem.mSlideshow).get(0);
+                SlideModel slide = (mMessageItem.mSlideshow).get(0);
                 if (slide == null) {
                     debugText = "NULL first slide";
                 } else if (!slide.hasImage()) {
@@ -584,18 +586,21 @@ public class MessageListItem extends ZoomMessageListItem implements
             } else {
                 if (mPresenter == null) {
                     mPresenter = PresenterFactory.getPresenter(
-                            "MmsThumbnailPresenter", mContext,
-                            this, mMessageItem.mSlideshow);
+                            "MmsThumbnailPresenter", mContext);
                 } else {
-                    mPresenter.setModel(mMessageItem.mSlideshow);
-                    mPresenter.setView(this);
+                    //mPresenter.setModel(mMessageItem.mSlideshow);
+                    //mPresenter.setView(this);
+                }
+                if (mMessageItem.mSlideshow.getPresenter() != null) {
+                    mPresenter = mMessageItem.mSlideshow.getPresenter();
+                    mPresenter.present((ViewGroup) findViewById(R.id.message_root) == null ? this : (ViewGroup) findViewById(R.id.message_root), mAccentColor);
                 }
                 if (mImageLoadedCallback == null) {
                     mImageLoadedCallback = new ImageLoadedCallback(this);
                 } else {
                     mImageLoadedCallback.reset(this);
                 }
-                mPresenter.present(mImageLoadedCallback);
+                //mPresenter.present((SlideViewInterface) mMmsView, mMessageItem.mSlideshow.get(0));
             }
         }
         drawRightStatusIndicator(mMessageItem);
@@ -676,8 +681,8 @@ public class MessageListItem extends ZoomMessageListItem implements
             RoundedBitmapDrawable drawable =
                     RoundedBitmapDrawableFactory.create(getResources(), bitmap);
             drawable.setCornerRadius(MmsConfig.getMmsCornerRadius());
-            mImageView.setImageDrawable(drawable);
-            mImageView.setVisibility(VISIBLE);
+//            mImageView.setImageDrawable(drawable);
+//            mImageView.setVisibility(VISIBLE);
         } catch (java.lang.OutOfMemoryError e) {
             Log.e(TAG, "setImage: out of memory: ", e);
         }
@@ -690,20 +695,20 @@ public class MessageListItem extends ZoomMessageListItem implements
 
             if (visible && mMmsView == null) {
                 //inflate the mms view_stub
-                View mmsStub = findViewById(R.id.mms_layout_view_stub);
-                mmsStub.setVisibility(View.VISIBLE);
-                mMmsView = findViewById(R.id.mms_view);
+//                View mmsStub = findViewById(R.id.mms_layout_view_stub);
+//                mmsStub.setVisibility(View.VISIBLE);
+                mMmsView = findViewById(R.id.message_root);
             }
         }
         if (mMmsView != null) {
-            if (mImageView == null) {
-                mImageView = (ImageView) findViewById(R.id.image_view);
-            }
-            if (mSlideShowButton == null) {
-                mSlideShowButton = (ImageButton) findViewById(R.id.play_slideshow_button);
-            }
+//            if (mImageView == null) {
+//                mImageView = (ImageView) findViewById(R.id.image_view);
+//            }
+//            if (mSlideShowButton == null) {
+//                mSlideShowButton = (ImageButton) findViewById(R.id.play_slideshow_button);
+//            }
             mMmsView.setVisibility(visible ? View.VISIBLE : View.GONE);
-            mImageView.setVisibility(visible ? View.VISIBLE : View.GONE);
+//            mImageView.setVisibility(visible ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -799,14 +804,14 @@ public class MessageListItem extends ZoomMessageListItem implements
             case WorkingMessage.AUDIO:
             case WorkingMessage.VIDEO:
                 // Show the 'Play' button and bind message info on it.
-                mSlideShowButton.setTag(msgItem);
+                //mSlideShowButton.setTag(msgItem);
                 // Set call-back for the 'Play' button.
-                mSlideShowButton.setOnClickListener(this);
-                mSlideShowButton.setVisibility(View.VISIBLE);
+                //mSlideShowButton.setOnClickListener(this);
+                //mSlideShowButton.setVisibility(View.VISIBLE);
                 setLongClickable(false);
                 break;
             default:
-                mSlideShowButton.setVisibility(View.GONE);
+                //mSlideShowButton.setVisibility(View.GONE);
                 break;
         }
     }
@@ -855,22 +860,22 @@ public class MessageListItem extends ZoomMessageListItem implements
             case WorkingMessage.VCAL:
             case WorkingMessage.IMAGE:
             case WorkingMessage.VIDEO:
-                mImageView.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        sendMessage(msgItem, MSG_LIST_PLAY);
-                    }
-                });
-                mImageView.setOnLongClickListener(new OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        return v.showContextMenu();
-                    }
-                });
+//                mImageView.setOnClickListener(new OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        sendMessage(msgItem, MSG_LIST_PLAY);
+//                    }
+//                });
+//                mImageView.setOnLongClickListener(new OnLongClickListener() {
+//                    @Override
+//                    public boolean onLongClick(View v) {
+//                        return v.showContextMenu();
+//                    }
+//                });
                 break;
 
             default:
-                mImageView.setOnClickListener(null);
+//                mImageView.setOnClickListener(null);
                 break;
             }
     }
@@ -952,8 +957,8 @@ public class MessageListItem extends ZoomMessageListItem implements
         showMmsView(true);
 
         try {
-            mImageView.setImageBitmap(bitmap);
-            mImageView.setVisibility(VISIBLE);
+//            mImageView.setImageBitmap(bitmap);
+//            mImageView.setVisibility(VISIBLE);
         } catch (java.lang.OutOfMemoryError e) {
             Log.e(TAG, "setVideo: out of memory: ", e);
         }
@@ -1026,8 +1031,8 @@ public class MessageListItem extends ZoomMessageListItem implements
         showMmsView(true);
 
         try {
-            mImageView.setImageResource(R.drawable.ic_attach_vcard);
-            mImageView.setVisibility(VISIBLE);
+//            mImageView.setImageResource(R.drawable.ic_attach_vcard);
+//            mImageView.setVisibility(VISIBLE);
         } catch (java.lang.OutOfMemoryError e) {
             // shouldn't be here.
             Log.e(TAG, "setVcard: out of memory: ", e);
@@ -1039,8 +1044,8 @@ public class MessageListItem extends ZoomMessageListItem implements
         showMmsView(true);
 
         try {
-            mImageView.setImageResource(R.drawable.ic_attach_event);
-            mImageView.setVisibility(VISIBLE);
+//            mImageView.setImageResource(R.drawable.ic_attach_event);
+//            mImageView.setVisibility(VISIBLE);
         } catch (java.lang.OutOfMemoryError e) {
             // shouldn't be here.
             Log.e(TAG, "setVCal: out of memory: ", e);
@@ -1057,6 +1062,12 @@ public class MessageListItem extends ZoomMessageListItem implements
         mIsCheck = checked;
         mMessageBlock.setSelected(checked);
         mMessageBubbleArrowhead.setSelected(checked);
+        if (findViewById(R.id.message_root) != null)
+        findViewById(R.id.message_root).setSelected(checked);
+    }
+
+    public void setAvatarVisibility(boolean visible) {
+        mAvatar.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Override

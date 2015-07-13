@@ -35,6 +35,9 @@ import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
 import com.android.mms.dom.events.EventImpl;
 import com.android.mms.dom.smil.SmilMediaElementImpl;
+import com.android.mms.presenters.VideoPresenter;
+import com.android.mms.presenters.VideoPresenterModel;
+import com.android.mms.ui.Presenter;
 import com.android.mms.util.ItemLoadedCallback;
 import com.android.mms.util.ItemLoadedFuture;
 import com.android.mms.util.ThumbnailManager;
@@ -42,7 +45,7 @@ import android.provider.Telephony.Mms.Part;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
 
-public class VideoModel extends RegionMediaModel {
+public class VideoModel extends RegionMediaModel implements VideoPresenterModel {
     private static final String TAG = MediaModel.TAG;
     private static final boolean DEBUG = true;
     private static final boolean LOCAL_LOGV = false;
@@ -216,5 +219,10 @@ public class VideoModel extends RegionMediaModel {
             mItemLoadedFuture.cancel(getUri());
             mItemLoadedFuture = null;
         }
+    }
+
+    @Override
+    public Presenter getPresenter() {
+        return new VideoPresenter(mContext, this);
     }
 }

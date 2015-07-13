@@ -396,9 +396,9 @@ public class SlideshowEditActivity extends ListActivity {
                          getQuantityString(R.plurals.slide_duration, dur, dur));
 
             Presenter presenter = PresenterFactory.getPresenter(
-                    "SlideshowPresenter", mContext, slideListItemView, mSlideshow);
+                    "SlideshowPresenter", mContext);
             ((SlideshowPresenter) presenter).setLocation(position);
-            presenter.present(null);
+            //presenter.present(null);
 
             return slideListItemView;
         }

@@ -34,128 +34,30 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.mms.R;
+import com.android.mms.model.SlideModel;
 
 import java.util.Map;
 
-public class VcardAttachmentView extends LinearLayout implements
-        SlideViewInterface {
+public class VcardAttachmentView extends IconAttachmentView {
 
-    private TextView mNameView;
-    private Button mViewButton;
-
-    public VcardAttachmentView(Context context) {
-        super(context);
-    }
-
-    public VcardAttachmentView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    public VcardAttachmentView(SlideModel slide, Context context) {
+        super(slide, context);
     }
 
     @Override
-    protected void onFinishInflate() {
-        mNameView = (TextView) findViewById(R.id.vcard_name);
-        mViewButton = (Button) findViewById(R.id.view_vcard_button);
+    public void setIcon() {
+        getIcon().setImageResource(R.drawable.ic_attach_vcard);
     }
 
     @Override
-    public void setVcard(Uri lookupUri, String name) {
-        synchronized (this) {
-            if (lookupUri != null && !TextUtils.isEmpty(lookupUri.toString())) {
-                mViewButton.setText(R.string.view);
-            } else {
-                mViewButton.setText(R.string.import_vcard);
-            }
-        }
-
-        mNameView.setText(name);
-    }
-
-    @Override
-    public void setVCal(Uri vcalUri, String name) {
-
-    }
-
-    @Override
-    public void reset() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setVisibility(boolean visible) {
-    }
-
-    @Override
-    public void setImage(String name, Bitmap bitmap) {
-    }
-
-    @Override
-    public void setImageRegionFit(String fit) {
-    }
-
-    @Override
-    public void setImageVisibility(boolean visible) {
-    }
-
-    @Override
-    public void setVideo(String name, Uri video) {
-    }
-
-    @Override
-    public void setVideoVisibility(boolean visible) {
-    }
-
-    @Override
-    public void startVideo() {
-    }
-
-    @Override
-    public void stopVideo() {
-    }
-
-    @Override
-    public void pauseVideo() {
-    }
-
-    @Override
-    public void seekVideo(int seekTo) {
-    }
-
-    @Override
-    public void setAudio(Uri audio, String name, Map<String, ?> extras) {
-    }
-
-    @Override
-    public void startAudio() {
-    }
-
-    @Override
-    public void stopAudio() {
-    }
-
-    @Override
-    public void pauseAudio() {
-    }
-
-    @Override
-    public void seekAudio(int seekTo) {
-    }
-
-    @Override
-    public void setText(String name, String text) {
-    }
-
-    @Override
-    public void setTextVisibility(boolean visible) {
-    }
-
-    @Override
-    public void setVideoThumbnail(String name, Bitmap bitmap) {
+    public int getViewMessageCode() {
+        return AttachmentEditor.MSG_VIEW_VCARD;
     }
 
 }

@@ -17,8 +17,12 @@
 
 package com.android.mms.model;
 
+import com.android.mms.ui.Presenter;
+import com.android.mms.ui.PresenterFactory;
+
 import java.util.concurrent.CopyOnWriteArrayList;
 
+//TODO make abstract to force getPresenter implementation
 public class Model {
     protected CopyOnWriteArrayList<IModelChangedObserver> mModelChangedObservers =
             new CopyOnWriteArrayList<IModelChangedObserver>();
@@ -58,5 +62,10 @@ public class Model {
 
     protected void unregisterAllModelChangedObserversInDescendants() {
         // Dummy method.
+    }
+
+    public Presenter getPresenter() {
+        return null;
+
     }
 }

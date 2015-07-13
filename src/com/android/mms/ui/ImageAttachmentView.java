@@ -17,25 +17,23 @@
 
 package com.android.mms.ui;
 
-import java.util.Map;
+import com.android.mms.LogTag;
+import com.android.mms.R;
+import com.android.mms.model.SlideModel;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-
-import com.android.mms.LogTag;
-import com.android.mms.R;
 
 /**
  * This class provides an embedded editor/viewer of picture attachment.
  */
-public class ImageAttachmentView extends LinearLayout implements SlideViewInterface {
+public class ImageAttachmentView extends AttachmentView {
+
     private ImageView mImageView;
     private static final String TAG = LogTag.TAG;
 
@@ -43,30 +41,18 @@ public class ImageAttachmentView extends LinearLayout implements SlideViewInterf
         super(context);
     }
 
-    public ImageAttachmentView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
     @Override
-    protected void onFinishInflate() {
+    public void setupView(ViewGroup root) {
+        View.inflate(getContext(), R.layout.image_attachment_view, root);
         mImageView = (ImageView) findViewById(R.id.image_content);
     }
 
-    public void startAudio() {
-        // TODO Auto-generated method stub
-
+    @Override
+    public int getViewMessageCode() {
+        return AttachmentEditor.MSG_VIEW_IMAGE;
     }
 
-    public void startVideo() {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void setAudio(Uri audio, String name, Map<String, ?> extras) {
-        // TODO Auto-generated method stub
-
-    }
-
+    @Override
     public void setImage(String name, Bitmap bitmap) {
         try {
             if (null == bitmap) {
@@ -79,83 +65,13 @@ public class ImageAttachmentView extends LinearLayout implements SlideViewInterf
         }
     }
 
-    public void setImageRegionFit(String fit) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void setImageVisibility(boolean visible) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void setText(String name, String text) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void setTextVisibility(boolean visible) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void setVideo(String name, Uri video) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void setVideoThumbnail(String name, Bitmap bitmap) {
-    }
-
-    public void setVideoVisibility(boolean visible) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void stopAudio() {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void stopVideo() {
-        // TODO Auto-generated method stub
-
-    }
-
+    @Override
     public void reset() {
         mImageView.setImageDrawable(null);
     }
 
+    @Override
     public void setVisibility(boolean visible) {
         setVisibility(visible ? View.VISIBLE : View.GONE);
-    }
-
-    public void pauseAudio() {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void pauseVideo() {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void seekAudio(int seekTo) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void seekVideo(int seekTo) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setVcard(Uri lookupUri, String name) {
-    }
-
-    @Override
-    public void setVCal(Uri vcalUri, String name) {
-
     }
 }

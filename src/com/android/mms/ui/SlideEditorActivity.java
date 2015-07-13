@@ -193,7 +193,7 @@ public class SlideEditorActivity extends Activity implements
             mSlideshowModel.registerModelChangedObserver(mModelChangedObserver);
             mSlideshowEditor = new SlideshowEditor(this, mSlideshowModel);
             mPresenter = (SlideshowPresenter) PresenterFactory.getPresenter(
-                    "SlideshowPresenter", this, mSlideView, mSlideshowModel);
+                    "SlideshowPresenter", this);
 
             // Sanitize mPosition
             if (mPosition >= mSlideshowModel.size()) {
@@ -840,7 +840,7 @@ public class SlideEditorActivity extends Activity implements
 
     private void showCurrentSlide() {
         mPresenter.setLocation(mPosition);
-        mPresenter.present(null);
+        //mPresenter.present(null);
         updateTitle();
 
         if (mSlideshowModel.get(mPosition).hasImage()) {

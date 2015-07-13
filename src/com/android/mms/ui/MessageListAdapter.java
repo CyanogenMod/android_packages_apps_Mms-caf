@@ -19,6 +19,9 @@
 
 package com.android.mms.ui;
 
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.HashMap;
 
@@ -26,7 +29,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.provider.BaseColumns;
 import android.provider.Telephony.Mms;
@@ -36,6 +38,7 @@ import android.provider.Telephony.Sms;
 import android.provider.Telephony.Sms.Conversations;
 import android.provider.Telephony.Threads;
 import android.provider.Telephony.TextBasedSmsColumns;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.LruCache;
 import android.view.LayoutInflater;
@@ -92,7 +95,8 @@ public class MessageListAdapter extends CursorAdapter {
         Mms.LOCKED,
         Mms.STATUS,
         Mms.TEXT_ONLY,
-        Mms.SUBSCRIPTION_ID
+        Mms.SUBSCRIPTION_ID,
+            "attachment_types", "dimens"
     };
 
     static final String[] MAILBOX_PROJECTION = new String[] {
@@ -180,8 +184,18 @@ public class MessageListAdapter extends CursorAdapter {
 
     public static final int MSG_TYPE_INCOMING_SMS = 0;
     public static final int MSG_TYPE_OUTGOING_SMS = 1;
-    public static final int MSG_TYPE_INCOMING_MMS = 2;
-    public static final int MSG_TYPE_OUTGOING_MMS = 3;
+    public static final int MSG_TYPE_INCOMING_IMAGE = 2;
+    public static final int MSG_TYPE_OUTGOING_IMAGE = 3;
+    public static final int MSG_TYPE_INCOMING_AUDIO = 4;
+    public static final int MSG_TYPE_OUTGOING_AUDIO = 5;
+    public static final int MSG_TYPE_INCOMING_VIDEO = 6;
+    public static final int MSG_TYPE_OUTGOING_VIDEO = 7;
+    public static final int MSG_TYPE_INCOMING_VCAL = 8;
+    public static final int MSG_TYPE_OUTGOING_VCAL = 9;
+    public static final int MSG_TYPE_INCOMING_SLIDESHOW = 10;
+    public static final int MSG_TYPE_OUTGOING_SLIDESHOW = 11;
+
+    private static int TOTAL_ITEM_TYPE = 12;
 
     protected LayoutInflater mInflater;
     private final ListView mListView;
@@ -236,11 +250,47 @@ public class MessageListAdapter extends CursorAdapter {
 
     }
 
+        class Dimens {
+                String mimeType;
+                int width, height;
+            }
+
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         if (view instanceof MessageListItem) {
             String type = cursor.getString(mColumnsMap.mColumnMsgType);
             long msgId = cursor.getLong(mColumnsMap.mColumnMsgId);
+            String dimens = cursor.getString(cursor.getColumnIndex("dimens"));
+//            if (dimens != null) {
+//                StringBuilder stringBuilder = new StringBuilder();
+//                ArrayList<Dimens> dimensArrayList = new ArrayList<Dimens>();
+//                Dimens dimensObject = new Dimens();
+//                for (int j = 0; j < dimens.length(); j++) {
+//                    char i = dimens.charAt(j);
+//                    if (i == '|') {
+//                        dimensObject.mimeType = stringBuilder.toString();
+//                        stringBuilder.setLength(0);
+//                    } else if (i == 'x') {
+//                        dimensObject.width = Integer.parseInt(stringBuilder.toString());
+//                        stringBuilder.setLength(0);
+//                    } else if (i == ',' || j == dimens.length() - 1) {
+//                        if (j == dimens.length() - 1) {
+//                            stringBuilder.append(i);
+//                        }
+//                        dimensObject.height = Integer.parseInt(stringBuilder.toString());
+//                        dimensArrayList.add(dimensObject);
+//                        stringBuilder.setLength(0);
+//                    } else {
+//                        stringBuilder.append(i);
+//                    }
+//                }
+//                System.out.println("Size " + dimensArrayList.size());
+//                ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+//                layoutParams.height = dimensArrayList.get(0).height;
+//                layoutParams.height = 400;
+//                System.out.println("Setting height " + layoutParams.height);
+//                view.setLayoutParams(layoutParams);
+//            }
 
             MessageItem msgItem = getCachedMessageItem(type, msgId, cursor);
             if (msgItem != null) {
@@ -250,11 +300,11 @@ public class MessageListAdapter extends CursorAdapter {
                     mli.setManageSelectMode(mMultiManageMode);
                 }
 
-                int boxType = getItemViewType(position);
+                int boxId = cursor.getInt(mColumnsMap.mColumnSmsType);
                 final Resources res = context.getResources();
                 final int accentColor;
 
-                if (isOutgoingMsgType(boxType)) {
+                if (isOutgoingMsgType(boxId)) {
                     accentColor = res.getColor(R.color.outgoing_message_bg);
                 } else if (mAccentColor != 0) {
                     accentColor = mAccentColor;
@@ -262,7 +312,8 @@ public class MessageListAdapter extends CursorAdapter {
                     accentColor = res.getColor(R.color.incoming_message_bg_default);
                 }
 
-                adjustViewForMessageType(mli, position, boxType);
+                String msgType = cursor.getString(mColumnsMap.mColumnMsgType);
+                adjustViewForMessageType(mli, position, boxId, msgType);
 
                 mli.bind(msgItem, accentColor, mIsGroupConversation, position,
                         mListView.isItemChecked(position));
@@ -335,8 +386,9 @@ public class MessageListAdapter extends CursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        int boxType = getItemViewType(cursor.getPosition());
-        boolean isIncoming = isIncomingMsgType(boxType);
+        int boxId = cursor.getInt(mColumnsMap.mColumnSmsType);
+        String msgType = cursor.getString(mColumnsMap.mColumnMsgType);
+        boolean isIncoming = isIncomingMsgType(boxId);
 
         int layoutResourceId = isIncoming
                 ? R.layout.message_list_item_recv : R.layout.message_list_item_sent;
@@ -344,8 +396,7 @@ public class MessageListAdapter extends CursorAdapter {
         MessageListItem listItem = (MessageListItem) view;
 
         boolean isGroupedMsg = isGroupedMessage(cursor.getPosition());
-        adjustNewViewForMessageType(context, listItem, boxType, isGroupedMsg);
-
+        adjustNewViewForMessageType(listItem, cursor);
         handleZoomForItem(view);
         return view;
     }
@@ -408,7 +459,7 @@ public class MessageListAdapter extends CursorAdapter {
      */
     @Override
     public int getViewTypeCount() {
-        return 4;   // Incoming and outgoing messages, both sms and mms
+        return TOTAL_ITEM_TYPE;   // Incoming and outgoing messages, both sms and mms
     }
 
     @Override
@@ -431,7 +482,7 @@ public class MessageListAdapter extends CursorAdapter {
 
         // reset cursor position
         CursorUtils.moveToPosition(getCursor(), currentPosition);
-        return isGrouped;
+        return false;
     }
 
     private boolean isEffectivelySameMsgType(int msgType1, int msgType2) {
@@ -439,27 +490,31 @@ public class MessageListAdapter extends CursorAdapter {
                 (isOutgoingMsgType(msgType1) && isOutgoingMsgType(msgType2));
     }
 
-    private void adjustNewViewForMessageType(Context context, MessageListItem mli, int msgType,
-            boolean isGroupedMsg) {
-
+    private void adjustNewViewForMessageType(MessageListItem mli, Cursor cursor) {
+        int boxId = cursor.getInt(mColumnsMap.mColumnSmsType);
+        String msgType = cursor.getString(mColumnsMap.mColumnMsgType);
         if (isMmsMsgType(msgType)) {
             // We've got an mms item, pre-inflate the mms portion of the view
             mli.findViewById(R.id.mms_layout_view_stub).setVisibility(View.VISIBLE);
+            // Hide message block for mms attachments
+            mli.findViewById(R.id.message_block).setVisibility(View.GONE);
         }
 
-        boolean isOutgoing = isOutgoingMsgType(msgType);
+        boolean isOutgoing = isOutgoingMsgType(boxId);
         mli.setAvatarVisbility(isOutgoing ? View.GONE : View.INVISIBLE);
     }
 
-    private void adjustViewForMessageType(MessageListItem mli, int position, int msgType) {
+    private void adjustViewForMessageType(MessageListItem mli, int position, int boxid, String msgType) {
         boolean isGrouped = isGroupedMessage(position);
-        boolean isIncoming = isIncomingMsgType(msgType);
+        boolean isIncoming = isIncomingMsgType(boxid);
 
         if (isIncoming) {
             mli.setAvatarVisbility(isGrouped ? View.INVISIBLE : View.VISIBLE);
         }
 
-        mli.setBubbleArrowheadVisibility(isGrouped ? View.INVISIBLE : View.VISIBLE);
+        boolean showArrowHead = !isGrouped && !isMmsMsgType(msgType);
+        showArrowHead = true;
+        mli.setBubbleArrowheadVisibility(showArrowHead ? View.VISIBLE : View.INVISIBLE);
 
         if (isGrouped) {
             mli.adjustMessageBlockSpacing(mSpaceAboveGroupedMessages);
@@ -491,9 +546,25 @@ public class MessageListAdapter extends CursorAdapter {
                     MSG_TYPE_INCOMING_SMS : MSG_TYPE_OUTGOING_SMS;
         } else {
             boxId = cursor.getInt(mColumnsMap.mColumnMmsMessageBox);
-            // Note that messages from the SIM card all have a boxId of zero: Mms.MESSAGE_BOX_ALL
-            return (boxId == Mms.MESSAGE_BOX_INBOX || boxId == Mms.MESSAGE_BOX_ALL) ?
-                    MSG_TYPE_INCOMING_MMS : MSG_TYPE_OUTGOING_MMS;
+            String attachmentTypeString = cursor.getString(cursor.getColumnIndex("attachment_types"));
+            boolean incoming = boxId == Mms.MESSAGE_BOX_INBOX || boxId == Mms.MESSAGE_BOX_ALL;
+            int viewType = incoming ? MSG_TYPE_INCOMING_SLIDESHOW : MSG_TYPE_INCOMING_SLIDESHOW;
+            if (!TextUtils.isEmpty(attachmentTypeString)) {
+                String[] attachmentTypes = TextUtils.split(",", attachmentTypeString);
+                if (attachmentTypes.length == 1) {
+                    if (attachmentTypeString.contains("image")) {
+                        viewType = incoming ? MSG_TYPE_INCOMING_IMAGE : MSG_TYPE_OUTGOING_IMAGE;
+                    } else if (attachmentTypeString.contains("video")) {
+                        viewType = incoming ? MSG_TYPE_INCOMING_VIDEO : MSG_TYPE_OUTGOING_VIDEO;
+                    } else if (attachmentTypeString.contains("audio")) {
+                        viewType = incoming ? MSG_TYPE_INCOMING_AUDIO : MSG_TYPE_OUTGOING_AUDIO;
+                    } else {
+                        // TODO this is under assumption text/* is ignored in the trigger that populates the attachment_types
+                        viewType = incoming ? MSG_TYPE_INCOMING_VCAL : MSG_TYPE_OUTGOING_VCAL;
+                    }
+                }
+            }
+            return viewType;
         }
     }
 
@@ -536,17 +607,17 @@ public class MessageListAdapter extends CursorAdapter {
     }
 
 
-    public static boolean isIncomingMsgType(int msgType) {
-        return msgType == MSG_TYPE_INCOMING_SMS || msgType == MSG_TYPE_INCOMING_MMS;
-
+    public static boolean isIncomingMsgType(int boxId) {
+        return boxId == TextBasedSmsColumns.MESSAGE_TYPE_INBOX ||
+                boxId == TextBasedSmsColumns.MESSAGE_TYPE_ALL;
     }
 
-    public static boolean isOutgoingMsgType(int msgType) {
-        return msgType == MSG_TYPE_OUTGOING_SMS || msgType == MSG_TYPE_OUTGOING_MMS;
+    public static boolean isOutgoingMsgType(int boxId) {
+        return !isIncomingMsgType(boxId);
     }
 
-    public static boolean isMmsMsgType(int msgType) {
-        return msgType == MSG_TYPE_INCOMING_MMS || msgType == MSG_TYPE_OUTGOING_MMS;
+    public static boolean isMmsMsgType(String type) {
+        return type.equals(MMS_TYPE);
     }
 
     public static class ColumnsMap {

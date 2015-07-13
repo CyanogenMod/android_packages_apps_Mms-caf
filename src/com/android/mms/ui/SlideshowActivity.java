@@ -183,7 +183,7 @@ public class SlideshowActivity extends Activity implements EventListener {
         }
 
         mSlideView = (SlideView) findViewById(R.id.slide_view);
-        PresenterFactory.getPresenter("SlideshowPresenter", this, mSlideView, model);
+        PresenterFactory.getPresenter("SlideshowPresenter", this);
 
         mHandler.post(new Runnable() {
             private boolean isRotating() {

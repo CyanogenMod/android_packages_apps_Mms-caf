@@ -75,10 +75,10 @@ public class SlideshowEditor {
         if (size < MmsConfig.getMaxSlideNumber()) {
             SlideModel slide = new SlideModel(mModel);
 
-            TextModel text = new TextModel(
-                    mContext, ContentType.TEXT_PLAIN, generateTextSrc(mModel, size),
-                    mModel.getLayout().getTextRegion());
-            slide.add(text);
+//            TextModel text = new TextModel(
+//                    mContext, ContentType.TEXT_PLAIN, generateTextSrc(mModel, size),
+//                    mModel.getLayout().getTextRegion());
+//            slide.add(text);
 
             mModel.add(position, slide);
             return true;
