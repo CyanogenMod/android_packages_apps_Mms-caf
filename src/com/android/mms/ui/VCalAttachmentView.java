@@ -37,115 +37,24 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.android.mms.R;
+import com.android.mms.model.SlideModel;
 
 import java.util.Map;
 
-public class VCalAttachmentView extends LinearLayout implements
-        SlideViewInterface {
+public class VCalAttachmentView extends IconAttachmentView {
 
-    private TextView mNameView;
-    private Button mViewButton;
-
-    public VCalAttachmentView(Context context) {
-        super(context);
-    }
-
-    public VCalAttachmentView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    public VCalAttachmentView(SlideModel slide, Context context) {
+        super(slide, context);
     }
 
     @Override
-    protected void onFinishInflate() {
-        mNameView = (TextView) findViewById(R.id.vcal_name);
-        mViewButton = (Button) findViewById(R.id.view_vcal_button);
-        mViewButton.setText(R.string.view);
+    public void setIcon() {
+        getIcon().setImageResource(R.drawable.ic_attach_event);
     }
 
     @Override
-    public void setVCal(Uri vcalUri, String name) {
-        mNameView.setText(name);
-    }
-
-    @Override
-    public void setVcard(Uri lookupUri, String name) {
-    }
-
-    @Override
-    public void reset() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setVisibility(boolean visible) {
-    }
-
-    @Override
-    public void setImage(String name, Bitmap bitmap) {
-    }
-
-    @Override
-    public void setImageRegionFit(String fit) {
-    }
-
-    @Override
-    public void setImageVisibility(boolean visible) {
-    }
-
-    @Override
-    public void setVideo(String name, Uri video) {
-    }
-
-    @Override
-    public void setVideoVisibility(boolean visible) {
-    }
-
-    @Override
-    public void startVideo() {
-    }
-
-    @Override
-    public void stopVideo() {
-    }
-
-    @Override
-    public void pauseVideo() {
-    }
-
-    @Override
-    public void seekVideo(int seekTo) {
-    }
-
-    @Override
-    public void setAudio(Uri audio, String name, Map<String, ?> extras) {
-    }
-
-    @Override
-    public void startAudio() {
-    }
-
-    @Override
-    public void stopAudio() {
-    }
-
-    @Override
-    public void pauseAudio() {
-    }
-
-    @Override
-    public void seekAudio(int seekTo) {
-    }
-
-    @Override
-    public void setText(String name, String text) {
-    }
-
-    @Override
-    public void setTextVisibility(boolean visible) {
-    }
-
-    @Override
-    public void setVideoThumbnail(String name, Bitmap bitmap) {
+    public int getViewMessageCode() {
+        return AttachmentEditor.MSG_VIEW_VCAL;
     }
 
 }

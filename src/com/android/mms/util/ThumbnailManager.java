@@ -256,7 +256,7 @@ public class ThumbnailManager extends BackgroundLoaderManager {
                 Log.e(TAG, "Couldn't load bitmap for " + mUri, e);
             }
             final Bitmap resultBitmap = bitmap;
-
+            System.out.println("Load bitmap " + resultBitmap);
             mCallbackHandler.post(new Runnable() {
                 @Override
                 public void run() {

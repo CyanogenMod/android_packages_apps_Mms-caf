@@ -29,49 +29,43 @@ import android.media.MediaPlayer.OnErrorListener;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.mms.LogTag;
 import com.android.mms.R;
+import com.android.mms.model.SlideModel;
 
 /**
  * This class provides an embedded editor/viewer of audio attachment.
  */
-public class AudioAttachmentView extends LinearLayout implements
-        SlideViewInterface {
+public class AudioAttachmentView extends IconAttachmentView {
     private static final String TAG = LogTag.TAG;
 
-    private final Resources mRes;
-    private TextView mNameView;
-    private TextView mAlbumView;
-    private TextView mArtistView;
-    private TextView mErrorMsgView;
     private Uri mAudioUri;
     private MediaPlayer mMediaPlayer;
     private boolean mIsPlaying;
 
-    public AudioAttachmentView(Context context) {
-        super(context);
-        mRes = context.getResources();
-    }
-
-    public AudioAttachmentView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        mRes = context.getResources();
+    public AudioAttachmentView(SlideModel slide, Context context) {
+        super(slide, context);
     }
 
     @Override
-    protected void onFinishInflate() {
-        mNameView = (TextView) findViewById(R.id.audio_name);
-        mAlbumView = (TextView) findViewById(R.id.album_name);
-        mArtistView = (TextView) findViewById(R.id.artist_name);
-        mErrorMsgView = (TextView) findViewById(R.id.audio_error_msg);
+    public void setIcon() {
+        getIcon().setImageResource(R.drawable.ic_audio_attachment_play);
+    }
+
+    @Override
+    public int getViewMessageCode() {
+        return AttachmentEditor.MSG_PLAY_AUDIO;
     }
 
     private void onPlaybackError() {
         Log.e(TAG, "Error occurred while playing audio.");
-        showErrorMessage(mRes.getString(R.string.cannot_play_audio));
         stopAudio();
     }
 
@@ -109,57 +103,10 @@ public class AudioAttachmentView extends LinearLayout implements
         }
     }
 
-    public void startVideo() {
-        // TODO Auto-generated method stub
-
-    }
-
     public void setAudio(Uri audio, String name, Map<String, ?> extras) {
         synchronized (this) {
             mAudioUri = audio;
         }
-
-        mNameView.setText(name);
-        mAlbumView.setText((String) extras.get("album"));
-        mArtistView.setText((String) extras.get("artist"));
-    }
-
-    public void setImage(String name, Bitmap bitmap) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void setImageRegionFit(String fit) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void setImageVisibility(boolean visible) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void setText(String name, String text) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void setTextVisibility(boolean visible) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void setVideo(String name, Uri video) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void setVideoThumbnail(String name, Bitmap bitmap) {
-    }
-
-    public void setVideoVisibility(boolean visible) {
-        // TODO Auto-generated method stub
-
     }
 
     synchronized public void stopAudio() {
@@ -170,56 +117,11 @@ public class AudioAttachmentView extends LinearLayout implements
         }
     }
 
-    public void stopVideo() {
-        // TODO Auto-generated method stub
-
-    }
-
     public void reset() {
         synchronized (this) {
             if (mIsPlaying) {
                 stopAudio();
             }
         }
-        mErrorMsgView.setVisibility(GONE);
-    }
-
-    public void setVisibility(boolean visible) {
-        // TODO Auto-generated method stub
-
-    }
-
-    private void showErrorMessage(String msg) {
-        mErrorMsgView.setText(msg);
-        mErrorMsgView.setVisibility(VISIBLE);
-    }
-
-    public void pauseAudio() {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void pauseVideo() {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void seekAudio(int seekTo) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void seekVideo(int seekTo) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setVcard(Uri lookupUri, String name) {
-    }
-
-    @Override
-    public void setVCal(Uri vcalUri, String name){
-
     }
 }

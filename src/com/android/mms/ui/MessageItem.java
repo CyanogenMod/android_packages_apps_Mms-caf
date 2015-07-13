@@ -235,7 +235,7 @@ public class MessageItem {
             // Start an async load of the pdu. If the pdu is already loaded, the callback
             // will get called immediately
             boolean loadSlideshow = mMessageType != PduHeaders.MESSAGE_TYPE_NOTIFICATION_IND;
-
+            mCur = System.currentTimeMillis();
             mItemLoadedFuture = MmsApp.getApplication().getPduLoaderManager()
                     .getPdu(mMessageUri, loadSlideshow,
                     new PduLoadedMessageItemCallback());
@@ -244,7 +244,7 @@ public class MessageItem {
             throw new MmsException("Unknown type of the message: " + type);
         }
     }
-
+private long mCur;
     private void interpretFrom(EncodedStringValue from, Uri messageUri) {
         if (from != null) {
             mAddress = from.getString();
@@ -503,6 +503,7 @@ public class MessageItem {
                     mTimestamp = formattedTimestamp;
                 }
             }
+            //System.out.println("Took " + (System.currentTimeMillis() - mCur));
             if (mPduLoadedCallback != null) {
                 mPduLoadedCallback.onPduLoaded(MessageItem.this);
             }

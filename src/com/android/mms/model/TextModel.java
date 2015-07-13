@@ -23,10 +23,15 @@ import org.w3c.dom.events.Event;
 import org.w3c.dom.smil.ElementTime;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.android.mms.LogTag;
 import com.android.mms.dom.smil.SmilMediaElementImpl;
+import com.android.mms.ui.Presenter;
+
 import com.google.android.mms.pdu.CharacterSets;
 
 public class TextModel extends RegionMediaModel {
@@ -109,5 +114,20 @@ public class TextModel extends RegionMediaModel {
         }
 
         notifyModelChanged(false);
+    }
+
+    @Override
+    public Presenter getPresenter() {
+        //noinspection unchecked
+        return new Presenter(mContext, null) {
+            @Override
+            public void present(ViewGroup v, int accentColor) {
+                TextView textView = new TextView(mContext);
+                textView.setBackgroundColor(Color.RED);
+                textView.setText(getText());
+                v.addView(textView, ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT);
+            }
+        };
     }
 }

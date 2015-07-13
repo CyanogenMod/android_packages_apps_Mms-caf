@@ -35,11 +35,17 @@ import android.util.Log;
 
 import com.android.mms.LogTag;
 import com.android.mms.MmsConfig;
+import com.android.mms.presenters.SimpleAttachmentPresenter;
+import com.android.mms.presenters.SimplePresenterModel;
+import com.android.mms.ui.Presenter;
+import com.android.mms.util.ItemLoadedCallback;
+import com.android.mms.util.ItemLoadedFuture;
+
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
 // TODO: remove dependency for SDK build
 
-public abstract class MediaModel extends Model implements EventListener {
+public abstract class MediaModel extends Model implements EventListener, SimplePresenterModel {
     protected static final String TAG = LogTag.TAG;
 
     protected Context mContext;
@@ -123,8 +129,33 @@ public abstract class MediaModel extends Model implements EventListener {
         return mTag;
     }
 
+    @Override
+    public ItemLoadedFuture loadThumbnailBitmap(ItemLoadedCallback callback) {
+        return null;
+    }
+
+    @Override
+    public int getHeight() {
+        return 0;
+    }
+
+    @Override
+    public int getWidth() {
+        return 0;
+    }
+
     public String getContentType() {
         return mContentType;
+    }
+
+    @Override
+    public String getLookupUri() {
+        return null;
+    }
+
+    @Override
+    public void loadData(ItemLoadedCallback<SimpleAttachmentPresenter.SimpleAttachmentLoaded> itemLoadedCallback) {
+
     }
 
     /**
@@ -318,5 +349,10 @@ public abstract class MediaModel extends Model implements EventListener {
      * @throws MmsException
      */
     protected void resizeMedia(int byteLimit, long messageId) throws MmsException {
+    }
+
+    @Override
+    public Presenter getPresenter() {
+        return new SimpleAttachmentPresenter(mContext, this);
     }
 }

@@ -24,67 +24,43 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.android.mms.LogTag;
+import com.android.mms.MmsConfig;
 import com.android.mms.R;
+import com.android.mms.model.SlideModel;
 // TODO: remove dependency for SDK build
 
 /**
  * This class provides an embedded editor/viewer of video attachment.
  */
-public class VideoAttachmentView extends LinearLayout implements
-        SlideViewInterface {
+public class VideoAttachmentView extends AttachmentView {
     private static final String TAG = LogTag.TAG;
 
     private ImageView mThumbnailView;
 
-    public VideoAttachmentView(Context context) {
-        super(context);
-    }
-
-    public VideoAttachmentView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    public VideoAttachmentView(SlideModel slide, Context context) {
+        super(slide, context);
     }
 
     @Override
-    protected void onFinishInflate() {
+    public void setupView(ViewGroup root) {
+        View.inflate(getContext(), R.layout.video_attachment_view, root);
         mThumbnailView = (ImageView) findViewById(R.id.video_thumbnail);
     }
 
-    public void startAudio() {
-        // TODO Auto-generated method stub
-    }
-
-    public void startVideo() {
-        // TODO Auto-generated method stub
-    }
-
-    public void setAudio(Uri audio, String name, Map<String, ?> extras) {
-        // TODO Auto-generated method stub
-    }
-
-    public void setImage(String name, Bitmap bitmap) {
-        // TODO Auto-generated method stub
-    }
-
-    public void setImageRegionFit(String fit) {
-        // TODO Auto-generated method stub
-    }
-
-    public void setImageVisibility(boolean visible) {
-        // TODO Auto-generated method stub
-    }
-
-    public void setText(String name, String text) {
-        // TODO Auto-generated method stub
-    }
-
-    public void setTextVisibility(boolean visible) {
-        // TODO Auto-generated method stub
+    @Override
+    public int getViewMessageCode() {
+        return AttachmentEditor.MSG_PLAY_VIDEO;
     }
 
     public void setVideo(String name, Uri video) {
@@ -94,14 +70,18 @@ public class VideoAttachmentView extends LinearLayout implements
                 bitmap = BitmapFactory.decodeResource(getResources(),
                         R.drawable.ic_missing_thumbnail_video);
             }
-            mThumbnailView.setImageBitmap(bitmap);
+            setVideoThumbnail(null, bitmap);
         } catch (java.lang.OutOfMemoryError e) {
             Log.e(TAG, "setVideo: out of memory: ", e);
         }
     }
 
     public void setVideoThumbnail(String name, Bitmap thumbnail) {
-        mThumbnailView.setImageBitmap(thumbnail);
+        RoundedBitmapDrawable bitmapDrawable = RoundedBitmapDrawableFactory
+                .create(getResources(), thumbnail);
+        bitmapDrawable.setAntiAlias(true);
+        bitmapDrawable.setCornerRadius(MmsConfig.getMmsCornerRadius());
+        mThumbnailView.setImageDrawable(bitmapDrawable);
     }
 
     public static Bitmap createVideoThumbnail(Context context, Uri uri) {
@@ -122,52 +102,4 @@ public class VideoAttachmentView extends LinearLayout implements
         return bitmap;
     }
 
-    public void setVideoVisibility(boolean visible) {
-        // TODO Auto-generated method stub
-    }
-
-    public void stopAudio() {
-        // TODO Auto-generated method stub
-    }
-
-    public void stopVideo() {
-        // TODO Auto-generated method stub
-    }
-
-    public void reset() {
-        // TODO Auto-generated method stub
-    }
-
-    public void setVisibility(boolean visible) {
-        // TODO Auto-generated method stub
-    }
-
-    public void pauseAudio() {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void pauseVideo() {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void seekAudio(int seekTo) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void seekVideo(int seekTo) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setVcard(Uri lookupUri, String name) {
-    }
-
-    @Override
-    public void setVCal(Uri vcalUri, String name) {
-
-    }
 }

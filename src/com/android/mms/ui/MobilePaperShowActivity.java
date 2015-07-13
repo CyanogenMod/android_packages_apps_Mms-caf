@@ -254,7 +254,7 @@ public class MobilePaperShowActivity extends Activity {
                     R.layout.mobile_paper_item, null);
             view.setLayoutModel(mSlideModel.getLayout().getLayoutType());
             mPresenter = (SlideshowPresenter) PresenterFactory.getPresenter("SlideshowPresenter",
-                    this, (SlideViewInterface) view, mSlideModel);
+                    this);
             TextView contentText = view.getContentText();
             contentText.setTextIsSelectable(true);
             mPresenter.presentSlide((SlideViewInterface) view, mSlideModel.get(index));
@@ -436,7 +436,7 @@ public class MobilePaperShowActivity extends Activity {
 
         boolean isSimple = (slideshow == null) ? false : slideshow.isSimple();
         if (isSimple || msgUri == null) {
-            MessageUtils.viewSimpleSlideshow(context, slideshow);
+            MessageUtils.viewSimpleSlideshow(context, slideshow.get(0));
         } else {
             Intent intent = new Intent(context, SlideshowActivity.class);
             intent.setData(msgUri);

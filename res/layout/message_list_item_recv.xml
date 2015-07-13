@@ -146,13 +146,12 @@
                         android:src="@drawable/ic_sms_mms_details"
                         android:visibility="gone" />
                 </LinearLayout>
-
-                <ViewStub android:id="@+id/mms_layout_view_stub"
-                    android:layout="@layout/mms_layout_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
             </LinearLayout>
 
+        <ViewStub android:id="@+id/mms_layout_view_stub"
+            android:layout="@layout/message_attachment_view"
+                            android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
             <ImageView
                 android:id="@+id/delivered_indicator"
                 android:layout_width="wrap_content"

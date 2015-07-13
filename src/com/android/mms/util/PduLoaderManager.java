@@ -180,12 +180,15 @@ public class PduLoaderManager extends BackgroundLoaderManager {
             GenericPdu pdu = null;
             SlideshowModel slideshow = null;
             Throwable exception = null;
+            long cur = System.currentTimeMillis();
             try {
                 pdu = mPduPersister.load(mUri);
+                System.out.println("Pdu load took " + (System.currentTimeMillis() - cur));
                 if (pdu != null && mRequestSlideshow) {
                     slideshow = SlideshowModel.createFromPduBody(mContext,
                             ((MultimediaMessagePdu)pdu).getBody());
                 }
+                System.out.println("Slideshow load took " + (System.currentTimeMillis() - cur));
             } catch (final MmsException e) {
                 Log.e(TAG, "MmsException loading uri: " + mUri, e);
                 exception = e;

@@ -31,89 +31,87 @@ import com.android.mms.model.SlideshowModel;
 import com.android.mms.model.VcardModel;
 import com.android.mms.model.VideoModel;
 import com.android.mms.util.ItemLoadedCallback;
-import com.android.mms.util.ItemLoadedFuture;
 import com.android.mms.util.ThumbnailManager.ImageLoaded;
 
 public class MmsThumbnailPresenter extends Presenter {
     private static final String TAG = LogTag.TAG;
-    private ItemLoadedCallback mOnLoadedCallback;
-    private ItemLoadedFuture mItemLoadedFuture;
 
-    public MmsThumbnailPresenter(Context context, ViewInterface view, Model model) {
-        super(context, view, model);
+    public MmsThumbnailPresenter(Context context) {
+        super(context, null);
     }
 
     @Override
-    public void present(ItemLoadedCallback callback) {
-        mOnLoadedCallback = callback;
-        SlideModel slide = ((SlideshowModel) mModel).get(0);
+    public void present(SlideViewInterface view, SlideModel slide) {
+        present(view, slide, null);
+    }
+
+    public void present(SlideViewInterface view, SlideModel slide, ItemLoadedCallback callback) {
+        if (callback == null) {
+            callback = new LoadedCallback(view, slide);
+        }
         if (slide != null) {
-            presentFirstSlide((SlideViewInterface) mView, slide);
+            presentSlide(view, slide, callback);
         }
     }
 
-    private void presentFirstSlide(SlideViewInterface view, SlideModel slide) {
+    private void presentSlide(SlideViewInterface view, SlideModel slide, ItemLoadedCallback callback) {
         view.reset();
 
         if (slide.hasImage()) {
-            presentImageThumbnail(view, slide.getImage());
+            presentImageThumbnail(slide.getImage(), callback);
         } else if (slide.hasVideo()) {
-            presentVideoThumbnail(view, slide.getVideo());
+            presentVideoThumbnail(slide.getVideo(), callback);
         } else if (slide.hasAudio()) {
-            presentAudioThumbnail(view, slide.getAudio());
+            presentAudioThumbnail(view, slide.getAudio(), callback);
         } else if (slide.hasVcard()) {
-            presentVcardThumbnail(view, slide.getVcard());
+            presentVcardThumbnail(view, slide.getVcard(), callback);
         } else if (slide.hasVCal()) {
-            presentVCalThumbnail(view, slide.getVCal());
+            presentVCalThumbnail(view, slide.getVCal(), callback);
         }
     }
 
-    private ItemLoadedCallback<ImageLoaded> mImageLoadedCallback =
-            new ItemLoadedCallback<ImageLoaded>() {
+    private static class LoadedCallback implements ItemLoadedCallback<ImageLoaded> {
+        SlideModel mSlide;
+        SlideViewInterface mView;
+        LoadedCallback(SlideViewInterface view, SlideModel slide) {
+            mSlide = slide;
+            mView = view;
+        }
+        @Override
         public void onItemLoaded(ImageLoaded imageLoaded, Throwable exception) {
             if (exception == null) {
-                if (mItemLoadedFuture != null) {
-                    synchronized(mItemLoadedFuture) {
-                        mItemLoadedFuture.setIsDone(true);
-                    }
-                }
-                if (mOnLoadedCallback != null) {
-                    mOnLoadedCallback.onItemLoaded(imageLoaded, exception);
-                } else {
-                    // Right now we're only handling image and video loaded callbacks.
-                    SlideModel slide = ((SlideshowModel) mModel).get(0);
-                    if (slide != null) {
-                        if (slide.hasVideo() && imageLoaded.mIsVideo) {
-                            ((SlideViewInterface)mView).setVideoThumbnail(null,
-                                    imageLoaded.mBitmap);
-                        } else if (slide.hasImage() && !imageLoaded.mIsVideo) {
-                            ((SlideViewInterface)mView).setImage(null, imageLoaded.mBitmap);
-                        }
+                if (mSlide != null) {
+                    if (mSlide.hasVideo() && imageLoaded.mIsVideo) {
+                        mView.setVideoThumbnail(null,
+                                imageLoaded.mBitmap);
+                    } else if (mSlide.hasImage() && !imageLoaded.mIsVideo) {
+                        mView.setImage(null, imageLoaded.mBitmap);
                     }
                 }
             }
         }
-    };
-
-    private void presentVideoThumbnail(SlideViewInterface view, VideoModel video) {
-        mItemLoadedFuture = video.loadThumbnailBitmap(mImageLoadedCallback);
     }
 
-    private void presentImageThumbnail(SlideViewInterface view, ImageModel image) {
-        mItemLoadedFuture = image.loadThumbnailBitmap(mImageLoadedCallback);
+
+    private void presentVideoThumbnail(VideoModel video, ItemLoadedCallback callback) {
+        video.loadThumbnailBitmap(callback);
     }
 
-    protected void presentAudioThumbnail(SlideViewInterface view, AudioModel audio) {
+    private void presentImageThumbnail(final ImageModel image, ItemLoadedCallback callback) {
+        image.loadThumbnailBitmap(callback);
+    }
+
+    protected void presentAudioThumbnail(SlideViewInterface view, AudioModel audio, ItemLoadedCallback callback) {
         view.setAudio(audio.getUri(), audio.getSrc(), audio.getExtras());
     }
 
-    protected void presentVcardThumbnail(SlideViewInterface view, VcardModel vcard) {
+    protected void presentVcardThumbnail(SlideViewInterface view, VcardModel vcard, ItemLoadedCallback callback) {
         view.setVcard(
                 TextUtils.isEmpty(vcard.getLookupUri()) ? null : Uri.parse(vcard.getLookupUri()),
                 vcard.getSrc());
     }
 
-    protected void presentVCalThumbnail(SlideViewInterface view, VCalModel vcalModel) {
+    protected void presentVCalThumbnail(SlideViewInterface view, VCalModel vcalModel, ItemLoadedCallback callback) {
         view.setVCal(vcalModel.getUri(), vcalModel.getSrc());
     }
 
@@ -124,10 +122,10 @@ public class MmsThumbnailPresenter extends Presenter {
     public void cancelBackgroundLoading() {
         // Currently we only support background loading of thumbnails. If we extend background
         // loading to other media types, we should add a cancelLoading API to Model.
-        SlideModel slide = ((SlideshowModel) mModel).get(0);
-        if (slide != null && slide.hasImage()) {
-            slide.getImage().cancelThumbnailLoading();
-        }
+//        SlideModel slide = ((SlideshowModel) mModel).get(0);
+//        if (slide != null && slide.hasImage()) {
+//            slide.getImage().cancelThumbnailLoading();
+//        }
     }
 
 }

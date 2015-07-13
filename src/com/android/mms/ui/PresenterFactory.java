@@ -33,8 +33,7 @@ public class PresenterFactory {
     private static final String TAG = LogTag.TAG;
     private static final String PRESENTER_PACKAGE = "com.android.mms.ui.";
 
-    public static Presenter getPresenter(String className, Context context,
-            ViewInterface view, Model model) {
+    public static Presenter getPresenter(String className, Context context) {
         try {
             if (className.indexOf(".") == -1) {
                 className = PRESENTER_PACKAGE + className;
@@ -42,8 +41,8 @@ public class PresenterFactory {
 
             Class c = Class.forName(className);
             Constructor constructor = c.getConstructor(
-                    Context.class, ViewInterface.class, Model.class);
-            return (Presenter) constructor.newInstance(context, view, model);
+                    Context.class);
+            return (Presenter) constructor.newInstance(context);
         } catch (ClassNotFoundException e) {
             Log.e(TAG, "Type not found: " + className, e);
         } catch (NoSuchMethodException e) {
