@@ -173,7 +173,7 @@ public class PduLoaderManager extends BackgroundLoaderManager {
             }
             if (DEBUG_LONG_WAIT) {
                 try {
-                    Thread.sleep(10000);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                 }
             }
@@ -184,7 +184,7 @@ public class PduLoaderManager extends BackgroundLoaderManager {
                 pdu = mPduPersister.load(mUri);
                 if (pdu != null && mRequestSlideshow) {
                     slideshow = SlideshowModel.createFromPduBody(mContext,
-                            ((MultimediaMessagePdu)pdu).getBody());
+                            ((MultimediaMessagePdu)pdu).getBody(), mUri.getLastPathSegment());
                 }
             } catch (final MmsException e) {
                 Log.e(TAG, "MmsException loading uri: " + mUri, e);
