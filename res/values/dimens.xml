@@ -64,4 +64,9 @@ All Rights Reserved. -->
     <!-- Compose message -->
     <dimen name="compose_message_normal_text_size">12sp</dimen>
 
+    <dimen name="message_attachment_padding">12dp</dimen>
+    <dimen name="simple_attachment_height">39dp</dimen>
+    <dimen name="attachment_editor_item_height">48dp</dimen>
+    <dimen name="thumbnail_attachment_static_height">150dp</dimen>
+    <dimen name="thumbnail_attachment_corner_radius">5dp</dimen>
 </resources>

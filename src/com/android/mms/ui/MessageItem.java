@@ -39,12 +39,11 @@ import com.android.mms.data.Contact;
 import com.android.mms.data.WorkingMessage;
 import com.android.mms.drm.DrmUtils;
 import com.android.mms.model.LayoutModel;
-import com.android.mms.model.SlideModel;
+import com.android.mms.model.MediaModel;
 import com.android.mms.model.SlideshowModel;
 import com.android.mms.model.TextModel;
 import com.android.mms.ui.MessageListAdapter.ColumnsMap;
 import com.android.mms.util.AddressUtils;
-import com.android.mms.util.DownloadManager;
 import com.android.mms.util.ItemLoadedCallback;
 import com.android.mms.util.ItemLoadedFuture;
 import com.android.mms.util.PduLoaderManager;
@@ -445,9 +444,9 @@ public class MessageItem {
                     timestamp = msg == null ? 0 : ((SendReq) msg).getDate() * 1000L;
                 }
 
-                SlideModel slide = mSlideshow == null ? null : mSlideshow.get(0);
-                if ((slide != null) && slide.hasText()) {
-                    TextModel tm = slide.getText();
+                MediaModel slide = mSlideshow == null ? null : mSlideshow.get(0);
+                if ((slide != null) && slide instanceof TextModel) {
+                    TextModel tm = (TextModel) slide;
                     mBody = tm.getText();
                     mTextContentType = tm.getContentType();
                 }

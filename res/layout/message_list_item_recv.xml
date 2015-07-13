@@ -65,11 +65,16 @@
             </RelativeLayout>
 
             <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content">
+
+            <LinearLayout
                 android:id="@+id/message_block"
                 android:minHeight="@dimen/avatar_width_height"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:background="@drawable/message_bubble_incoming"
                 android:theme="@style/ReceivedMessageTheme"
                 android:orientation="vertical">
@@ -146,11 +151,13 @@
                         android:src="@drawable/ic_sms_mms_details"
                         android:visibility="gone" />
                 </LinearLayout>
+            </LinearLayout>
 
-                <ViewStub android:id="@+id/mms_layout_view_stub"
-                    android:layout="@layout/mms_layout_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+            <ViewStub android:id="@+id/message_attachment_stub"
+                android:layout="@layout/message_attachment_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
             </LinearLayout>
 
             <ImageView

@@ -18,44 +18,79 @@
 package com.android.mms.ui;
 
 import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.android.mms.model.IModelChangedObserver;
+import com.android.mms.model.MediaModel;
 import com.android.mms.model.Model;
-import com.android.mms.util.ItemLoadedCallback;
 
 /**
  * An abstract message presenter.
  */
-public abstract class Presenter implements IModelChangedObserver {
-    protected final Context mContext;
-    protected ViewInterface mView;
-    protected Model mModel;
+public abstract class Presenter<M> implements IModelChangedObserver {
 
-    public Presenter(Context context, ViewInterface view, Model model) {
+    private final Context mContext;
+    private final M mModel;
+
+    public Presenter(Context context, M modelInterface) {
         mContext = context;
-        mView = view;
-
-        mModel = model;
-        mModel.registerModelChangedObserver(this);
+        mModel = modelInterface;
     }
 
-    public ViewInterface getView() {
-        return mView;
+    public Context getContext() {
+        return mContext;
     }
 
-    public void setView(ViewInterface view) {
-        mView = view;
-    }
-
-    public Model getModel() {
+    public M getModel() {
         return mModel;
     }
 
-    public void setModel(Model model) {
-        mModel = model;
+    public void onModelChanged(Model model, boolean dataChanged){}
+
+    public void unbind(){}
+
+    public abstract View present(ViewGroup v, PresenterOptions presenterOptions);
+
+    public void presentThumbnail(ViewGroup v, AttachmentPresenterOptions presenterOptions) {}
+
+    public boolean hideArrowHead() { return false; }
+
+    public static abstract class PresenterOptions {
+        /**
+         * Callback used by presenters to let MessageListItem
+         * act on a clickable item being long pressed
+         */
+        public abstract void onItemLongClick();
+        /**
+         * Presenters should use this when determining
+         * whether to recycle the current view in the passed viewgroup
+         */
+        public abstract boolean shouldRecycle();
+
+        /**
+         * Returns true if listview is currently in action mode
+         */
+        public abstract boolean isInActionMode();
+
+        /**
+         * Callback used by presenters to let
+         * SlideShowPresenter know of their total height
+         * post layout
+         */
+        public abstract void donePresenting(int height);
+
+        /**
+         * Get max width of MessageListItem
+         */
+        public abstract int getMaxWidth();
+        public abstract boolean isIncomingMessage();
+        public abstract int getAccentColor();
+        public abstract long getMessageId();
     }
 
-    public abstract void present(ItemLoadedCallback callback);
-
-    public abstract void cancelBackgroundLoading();
+    public abstract static class AttachmentPresenterOptions {
+        public abstract int getAttachmentWidth();
+        public abstract int getAttachmentHeight();
+    }
 }
