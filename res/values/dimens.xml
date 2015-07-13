@@ -74,4 +74,9 @@ All Rights Reserved. -->
     <dimen name="sim_selector_click_bounds">45dp</dimen>
     <dimen name="sim_selector_drawable_to_text_spacing">10dp</dimen>
 
+    <dimen name="message_attachment_padding">12dp</dimen>
+    <dimen name="simple_attachment_height">39dp</dimen>
+    <dimen name="attachment_editor_item_height">48dp</dimen>
+    <dimen name="thumbnail_attachment_static_height">150dp</dimen>
+    <dimen name="thumbnail_attachment_corner_radius">5dp</dimen>
 </resources>

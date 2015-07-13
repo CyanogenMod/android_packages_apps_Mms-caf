@@ -40,6 +40,7 @@ import com.android.mms.transaction.MessagingNotification;
 import com.android.mms.transaction.MmsSystemEventReceiver;
 import com.android.mms.transaction.SmsReceiver;
 import com.android.mms.transaction.SmsReceiverService;
+import com.android.mms.ui.MessageInfoCache;
 import com.android.mms.util.DownloadManager;
 import com.android.mms.util.DraftCache;
 import com.android.mms.util.PduLoaderManager;
@@ -77,6 +78,8 @@ public class MmsApp extends Application {
         }
 
         sMmsApp = this;
+
+        MessageInfoCache.DiskCache.initCache(this);
 
         // Load the default preference values
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
@@ -132,6 +135,7 @@ public class MmsApp extends Application {
     public void onTerminate() {
         mCountryDetector.removeCountryListener(mCountryListener);
         CMMmsDatabaseHelper.closeIfNecessary();
+        MessageInfoCache.DiskCache.closeCache();
     }
 
     @Override

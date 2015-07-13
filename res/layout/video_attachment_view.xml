@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /*
- * Copyright (C) 2006-2008 Esmertec AG.
- * Copyright (C) 2006-2008 The Android Open Source Project
+ * Copyright (C) 2015 The CyanogenMod Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,78 +16,9 @@
  * limitations under the License.
  */
 -->
-
-<com.android.mms.ui.VideoAttachmentView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/video_attachment_view"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:gravity="center_vertical"
-    android:paddingEnd="5dip"
-    android:background="@drawable/attachment_editor_bg">
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1" >
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center" >
-
-            <ImageView
-                android:id="@+id/video_thumbnail"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitCenter" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:src="@drawable/ic_gallery_video_overlay" />
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/mms_size_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|end"
-            android:alpha="0.5"
-            android:background="@android:color/black"
-            android:textColor="@android:color/white" />
-    </FrameLayout>
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:paddingEnd="8dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <Button
-            android:id="@+id/view_video_button"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="100dip"
-            android:layout_height="45dip"
-            android:textColor="@android:color/black"
-            android:text="@string/view" />
-
-        <Button
-            android:id="@+id/replace_video_button"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="100dip"
-            android:layout_height="45dip"
-            android:textColor="@android:color/black"
-            android:text="@string/replace" />
-
-        <Button
-            android:id="@+id/remove_video_button"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="100dip"
-            android:layout_height="45dip"
-            android:textColor="@android:color/black"
-            android:text="@string/remove" />
-
-    </LinearLayout>
-</com.android.mms.ui.VideoAttachmentView>
+<com.android.mms.views.VideoMessageView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:scaleType="center"
+    android:adjustViewBounds="true"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"/>

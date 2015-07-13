@@ -953,7 +953,8 @@ public class SmsReceiverService extends Service {
         ContentValues values = new ContentValues();
 
         values.put(Inbox.ADDRESS, MessageUtils.convertIdp(this, sms.getDisplayOriginatingAddress()));
-
+System.out.println("Originating " + sms.getOriginatingAddress());
+        System.out.println("Recipient " + sms.getRecipientAddress());
         // Use now for the timestamp to avoid confusion with clock
         // drift between the handset and the SMSC.
         // Check to make sure the system is giving us a non-bogus time.
