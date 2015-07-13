@@ -242,7 +242,7 @@ public class ThumbnailManager extends BackgroundLoaderManager {
             }
             if (DEBUG_LONG_WAIT) {
                 try {
-                    Thread.sleep(10000);
+                    Thread.sleep(3000);
                 } catch (InterruptedException e) {
                 }
             }

@@ -18,44 +18,85 @@
 package com.android.mms.ui;
 
 import android.content.Context;
+import android.view.ViewGroup;
 
 import com.android.mms.model.IModelChangedObserver;
 import com.android.mms.model.Model;
-import com.android.mms.util.ItemLoadedCallback;
 
 /**
  * An abstract message presenter.
  */
-public abstract class Presenter implements IModelChangedObserver {
-    protected final Context mContext;
-    protected ViewInterface mView;
-    protected Model mModel;
+public abstract class Presenter<M> implements IModelChangedObserver {
 
-    public Presenter(Context context, ViewInterface view, Model model) {
+    private final Context mContext;
+    private final M mModel;
+
+    public Presenter(Context context, M modelInterface) {
         mContext = context;
-        mView = view;
-
-        mModel = model;
-        mModel.registerModelChangedObserver(this);
+        mModel = modelInterface;
     }
 
-    public ViewInterface getView() {
-        return mView;
+    public Context getContext() {
+        return mContext;
     }
 
-    public void setView(ViewInterface view) {
-        mView = view;
-    }
-
-    public Model getModel() {
+    public M getModel() {
         return mModel;
     }
 
-    public void setModel(Model model) {
-        mModel = model;
+    public void onModelChanged(Model model, boolean dataChanged){}
+
+    public void cancelBackgroundLoading(){}
+
+    public void present(ViewGroup v, PresenterOptions presenterOptions) {}
+
+    public void presentThumbnail(ViewGroup v, PresenterOptions presenterOptions) {}
+
+    public boolean showsArrowHead() { return true; }
+
+    public static final class PresenterOptions {
+
+        public interface Callback {
+            void onItemLongClick();
+            long getMessageId();
+            void donePresenting(int height);
+        }
+
+        private boolean isIncomingMessage;
+        private int accentColor;
+        private boolean isThumbnail;
+        private Callback mCallback;
+
+        public boolean isIncomingMessage() {
+            return isIncomingMessage;
+        }
+
+        public void setIsIncomingMessage(boolean isIncomingMessage) {
+            this.isIncomingMessage = isIncomingMessage;
+        }
+
+        public int getAccentColor() {
+            return accentColor;
+        }
+
+        public void setAccentColor(int accentColor) {
+            this.accentColor = accentColor;
+        }
+
+        public boolean isThumbnail() {
+            return isThumbnail;
+        }
+
+        public void setIsThumbnail(boolean isThumbnail) {
+            this.isThumbnail = isThumbnail;
+        }
+
+        public Callback getCallback() {
+            return mCallback;
+        }
+
+        public void setCallback(Callback callback) {
+            mCallback = callback;
+        }
     }
-
-    public abstract void present(ItemLoadedCallback callback);
-
-    public abstract void cancelBackgroundLoading();
 }

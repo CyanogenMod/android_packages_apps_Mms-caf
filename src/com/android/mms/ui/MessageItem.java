@@ -39,12 +39,11 @@ import com.android.mms.data.Contact;
 import com.android.mms.data.WorkingMessage;
 import com.android.mms.drm.DrmUtils;
 import com.android.mms.model.LayoutModel;
-import com.android.mms.model.SlideModel;
+import com.android.mms.model.MediaModel;
 import com.android.mms.model.SlideshowModel;
 import com.android.mms.model.TextModel;
 import com.android.mms.ui.MessageListAdapter.ColumnsMap;
 import com.android.mms.util.AddressUtils;
-import com.android.mms.util.DownloadManager;
 import com.android.mms.util.ItemLoadedCallback;
 import com.android.mms.util.ItemLoadedFuture;
 import com.android.mms.util.PduLoaderManager;
@@ -68,6 +67,12 @@ import com.google.android.mms.pdu.SendReq;
  */
 public class MessageItem {
     private static String TAG = LogTag.TAG;
+    private final MessageInfoCache mMessageCache;
+    public MessageListItem mMe;
+
+    public void setMe(MessageListItem messageListItem) {
+        mMe = messageListItem;
+    }
 
     public enum DeliveryStatus  { NONE, INFO, FAILED, PENDING, RECEIVED }
 
@@ -138,13 +143,14 @@ public class MessageItem {
     }
 
     MessageItem(Context context, String type, final Cursor cursor,
-            final ColumnsMap columnsMap, Pattern highlight) throws MmsException {
+            final ColumnsMap columnsMap, Pattern highlight, MessageInfoCache messageInfoCache) throws MmsException {
         mContext = context;
         mMsgId = cursor.getLong(columnsMap.mColumnMsgId);
         mHighlight = highlight;
         mType = type;
         mCursor = cursor;
         mColumnsMap = columnsMap;
+        mMessageCache = messageInfoCache;
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mFullTimestamp = prefs.getBoolean(MessagingPreferenceActivity.FULL_TIMESTAMP, false);
@@ -212,6 +218,8 @@ public class MessageItem {
             mErrorType = cursor.getInt(columnsMap.mColumnMmsErrorType);
             String subject = cursor.getString(columnsMap.mColumnMmsSubject);
             mSubId = cursor.getInt(columnsMap.mColumnMmsSubId);
+//            mHelper = new MessageItemMetadataHelper(this, messageInfoCache);
+//            mHelper.populateMetadata();
 
             if (!TextUtils.isEmpty(subject)) {
                 EncodedStringValue v = new EncodedStringValue(
@@ -235,7 +243,6 @@ public class MessageItem {
             // Start an async load of the pdu. If the pdu is already loaded, the callback
             // will get called immediately
             boolean loadSlideshow = mMessageType != PduHeaders.MESSAGE_TYPE_NOTIFICATION_IND;
-
             mItemLoadedFuture = MmsApp.getApplication().getPduLoaderManager()
                     .getPdu(mMessageUri, loadSlideshow,
                     new PduLoadedMessageItemCallback());
@@ -304,6 +311,10 @@ public class MessageItem {
         boolean isFailedSms = isSms()
                             && (mBoxId == Sms.MESSAGE_TYPE_FAILED);
         return isFailedMms || isFailedSms;
+    }
+
+    public Context getContext() {
+        return mContext;
     }
 
     // Note: This is the only mutable field in this class.  Think of
@@ -445,9 +456,9 @@ public class MessageItem {
                     timestamp = msg == null ? 0 : ((SendReq) msg).getDate() * 1000L;
                 }
 
-                SlideModel slide = mSlideshow == null ? null : mSlideshow.get(0);
-                if ((slide != null) && slide.hasText()) {
-                    TextModel tm = slide.getText();
+                MediaModel slide = mSlideshow == null ? null : mSlideshow.get(0);
+                if ((slide != null) && slide instanceof TextModel) {
+                    TextModel tm = (TextModel) slide;
                     mBody = tm.getText();
                     mTextContentType = tm.getContentType();
                 }
@@ -503,6 +514,7 @@ public class MessageItem {
                     mTimestamp = formattedTimestamp;
                 }
             }
+            //System.out.println("Took " + (System.currentTimeMillis() - mCur));
             if (mPduLoadedCallback != null) {
                 mPduLoadedCallback.onPduLoaded(MessageItem.this);
             }
@@ -569,4 +581,5 @@ public class MessageItem {
     public SlideshowModel getSlideshow() {
         return mSlideshow;
     }
+
 }

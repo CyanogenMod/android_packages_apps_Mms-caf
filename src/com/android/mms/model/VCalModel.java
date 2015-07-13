@@ -30,6 +30,7 @@
 package com.android.mms.model;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 import com.google.android.mms.ContentType;
@@ -81,4 +82,13 @@ public class VCalModel extends MediaModel {
         mDuration = 0;
     }
 
+    @Override
+    public Intent getIntent() {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Uri vCalFileUri = getUri();
+        intent.setDataAndType(vCalFileUri, ContentType.TEXT_VCALENDAR.toLowerCase());
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        return intent;
+    }
 }

@@ -30,8 +30,6 @@ import com.android.mms.R;
  * An adapter to store icons and strings for attachment type list.
  */
 public class AttachmentTypeSelectorAdapter extends IconListAdapter {
-    public final static int MODE_WITH_SLIDESHOW    = 0;
-    public final static int MODE_WITHOUT_SLIDESHOW = 1;
 
     public final static int ADD_IMAGE               = 0;
     public final static int TAKE_PICTURE            = 1;
@@ -39,16 +37,15 @@ public class AttachmentTypeSelectorAdapter extends IconListAdapter {
     public final static int RECORD_VIDEO            = 3;
     public final static int ADD_SOUND               = 4;
     public final static int RECORD_SOUND            = 5;
-    public final static int ADD_SLIDESHOW           = 6;
-    public final static int ADD_CONTACT_AS_VCARD    = 7;
-    public final static int ADD_CONTACT_AS_TEXT     = 8;
-    public final static int ADD_CALENDAR_EVENTS     = 9;
+    public final static int ADD_CONTACT_AS_VCARD    = 6;
+    public final static int ADD_CONTACT_AS_TEXT     = 7;
+    public final static int ADD_CALENDAR_EVENTS     = 8;
 
     private boolean mShowMediaOnly = false;
     private static int mMediaCount;
 
-    public AttachmentTypeSelectorAdapter(Context context, int mode) {
-        super(context, getData(mode, context));
+    public AttachmentTypeSelectorAdapter(Context context) {
+        super(context, getData(context));
     }
 
     public int buttonToCommand(int whichButton) {
@@ -56,7 +53,7 @@ public class AttachmentTypeSelectorAdapter extends IconListAdapter {
         return item.getCommand();
     }
 
-    protected static List<IconListItem> getData(int mode, Context context) {
+    protected static List<IconListItem> getData(Context context) {
         mMediaCount = 0;
         List<IconListItem> data = new ArrayList<IconListItem>(7);
         addItem(data, context.getString(R.string.attach_image),
@@ -85,10 +82,6 @@ public class AttachmentTypeSelectorAdapter extends IconListAdapter {
                 R.drawable.ic_attach_capture_audio, RECORD_SOUND);
         mMediaCount ++;
 
-        if (mode == MODE_WITH_SLIDESHOW) {
-            addItem(data, context.getString(R.string.attach_slideshow),
-                    R.drawable.ic_attach_slideshow, ADD_SLIDESHOW);
-        }
         if (context.getResources().getBoolean(R.bool.config_vcard)) {
             addItem(data, context.getString(R.string.attach_add_contact_as_vcard),
                     R.drawable.ic_attach_vcard, ADD_CONTACT_AS_VCARD);
