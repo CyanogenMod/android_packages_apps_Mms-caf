@@ -20,6 +20,7 @@ package com.android.mms.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.graphics.drawable.Drawable;
 import org.w3c.dom.events.Event;
 
 import android.content.ContentResolver;
@@ -30,19 +31,27 @@ import android.net.Uri;
 import android.provider.MediaStore.Audio;
 import android.provider.Telephony.Mms.Part;
 import android.text.TextUtils;
+import android.text.format.Formatter;
 import android.util.Log;
 
 import com.android.mms.ContentRestrictionException;
+import com.android.mms.R;
 import com.android.mms.dom.events.EventImpl;
 import com.android.mms.dom.smil.SmilMediaElementImpl;
+import com.android.mms.presenters.SimpleAttachmentPresenter;
+import com.android.mms.presenters.SimplePresenterModel;
+import com.android.mms.ui.Presenter;
+import com.android.mms.util.ItemLoadedCallback;
+
 import com.google.android.mms.MmsException;
 
-public class AudioModel extends MediaModel {
+public class AudioModel extends MediaModel implements SimplePresenterModel {
     private static final String TAG = MediaModel.TAG;
     private static final boolean DEBUG = false;
     private static final boolean LOCAL_LOGV = false;
 
     private final HashMap<String, String> mExtras;
+    private final SimpleAttachmentPresenter mPresenter;
 
     public AudioModel(Context context, Uri uri) throws MmsException {
         this(context, null, null, uri);
@@ -53,6 +62,7 @@ public class AudioModel extends MediaModel {
     public AudioModel(Context context, String contentType, String src, Uri uri) throws MmsException {
         super(context, SmilHelper.ELEMENT_TAG_AUDIO, contentType, src, uri);
         mExtras = new HashMap<String, String>();
+        mPresenter = new SimpleAttachmentPresenter(mContext, this);
     }
 
     private void initModelFromUri(Uri uri) throws MmsException {
@@ -155,5 +165,28 @@ public class AudioModel extends MediaModel {
     @Override
     protected boolean isPlayable() {
         return true;
+    }
+
+    @Override
+    public Presenter getPresenter() {
+        return mPresenter;
+    }
+
+    @Override
+    public Drawable getPlaceHolder() {
+        return mContext.getResources().getDrawable(R.drawable.ic_video_attachment_play);
+    }
+
+    @Override
+    public void loadData(ItemLoadedCallback<SimpleAttachmentPresenter.SimpleAttachmentLoaded> itemLoadedCallback) {
+        SimpleAttachmentPresenter.SimpleAttachmentLoaded loaded =
+                new SimpleAttachmentPresenter.SimpleAttachmentLoaded();
+        loaded.title = getSrc();
+        loaded.subtitle = Formatter.formatShortElapsedTime(mContext,getDuration());
+        itemLoadedCallback.onItemLoaded(loaded, null);
+    }
+
+    @Override
+    public void cancelBackgroundLoading() {
     }
 }
