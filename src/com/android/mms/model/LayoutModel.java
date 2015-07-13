@@ -26,7 +26,7 @@ import com.android.mms.layout.LayoutManager;
 import com.android.mms.layout.LayoutParameters;
 
 public class LayoutModel extends Model {
-    private static final String TAG = SlideModel.TAG;
+    private static final String TAG = LayoutModel.class.getSimpleName();
     private static final boolean DEBUG = false;
     private static final boolean LOCAL_LOGV = DEBUG ? Config.LOGD : Config.LOGV;
 

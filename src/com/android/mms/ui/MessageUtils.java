@@ -59,6 +59,7 @@ import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SqliteWrapper;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.media.CamcorderProfile;
 import android.media.RingtoneManager;
@@ -117,10 +118,14 @@ import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.TempFileProvider;
 import com.android.mms.data.WorkingMessage;
+import com.android.mms.model.AudioModel;
+import com.android.mms.model.ImageModel;
 import com.android.mms.model.MediaModel;
-import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
+import com.android.mms.model.TextModel;
+import com.android.mms.model.VCalModel;
 import com.android.mms.model.VcardModel;
+import com.android.mms.model.VideoModel;
 import com.android.mms.transaction.MessagingNotification;
 import com.android.mms.transaction.MmsMessageSender;
 import com.android.mms.util.AddressUtils;
@@ -630,32 +635,28 @@ public class MessageUtils {
             return WorkingMessage.SLIDESHOW;
         } else if (numberOfSlides == 1) {
             // Only one slide in the slide-show.
-            SlideModel slide = model.get(0);
-            if (slide.hasVideo()) {
+            MediaModel slide = model.get(0);
+            if (slide instanceof VideoModel) {
                 return WorkingMessage.VIDEO;
             }
 
-            if (slide.hasAudio() && slide.hasImage()) {
-                return WorkingMessage.SLIDESHOW;
-            }
-
-            if (slide.hasAudio()) {
+            if (slide instanceof AudioModel) {
                 return WorkingMessage.AUDIO;
             }
 
-            if (slide.hasImage()) {
+            if (slide instanceof ImageModel) {
                 return WorkingMessage.IMAGE;
             }
 
-            if (slide.hasVcard()) {
+            if (slide instanceof VcardModel) {
                 return WorkingMessage.VCARD;
             }
 
-            if (slide.hasVCal()) {
+            if (slide instanceof VCalModel) {
                 return WorkingMessage.VCAL;
             }
 
-            if (slide.hasText()) {
+            if (slide instanceof TextModel) {
                 return WorkingMessage.TEXT;
             }
 
@@ -840,59 +841,6 @@ public class MessageUtils {
                     R.string.calendar_attachment_activity_not_found), Toast.LENGTH_SHORT)
                     .show();
         }
-    }
-
-    public static void viewSimpleSlideshow(Context context, SlideshowModel slideshow) {
-        if (!slideshow.isSimple()) {
-            throw new IllegalArgumentException(
-                    "viewSimpleSlideshow() called on a non-simple slideshow");
-        }
-        SlideModel slide = slideshow.get(0);
-        MediaModel mm = null;
-        if (slide.hasImage()) {
-            mm = slide.getImage();
-        } else if (slide.hasVideo()) {
-            mm = slide.getVideo();
-        } else if (slide.hasVcard()) {
-            mm = slide.getVcard();
-            String lookupUri = ((VcardModel) mm).getLookupUri();
-
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            if (!TextUtils.isEmpty(lookupUri) && lookupUri.contains("contacts")) {
-                // if the uri is from the contact, we suggest to view the contact.
-                intent.setData(Uri.parse(lookupUri));
-            } else {
-                // we need open the saved part.
-                intent.setDataAndType(mm.getUri(), ContentType.TEXT_VCARD.toLowerCase());
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            }
-            // distinguish view vcard from mms or contacts.
-            intent.putExtra(VIEW_VCARD, true);
-            context.startActivity(intent);
-            return;
-        } else if (slide.hasVCal()) {
-            mm = slide.getVCal();
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            Uri vCalFileUri = mm.getUri();
-            intent.setDataAndType(vCalFileUri, ContentType.TEXT_VCALENDAR.toLowerCase());
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            context.startActivity(intent);
-
-            return;
-        }
-
-        if (mm == null) {
-            return;
-        }
-
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        intent.putExtra("SingleItemOnly", true); // So we don't see "surrounding" images in Gallery
-
-        String contentType;
-        contentType = mm.getContentType();
-        intent.setDataAndType(mm.getUri(), contentType);
-        context.startActivity(intent);
     }
 
     public static void showErrorDialog(Activity activity,
@@ -1273,74 +1221,6 @@ public class MessageUtils {
             }
         }
         return null;
-    }
-
-    /**
-     * Play/view the message attachments.
-     * TOOD: We need to save the draft before launching another activity to view the attachments.
-     *       This is hacky though since we will do saveDraft twice and slow down the UI.
-     *       We should pass the slideshow in intent extra to the view activity instead of
-     *       asking it to read attachments from database.
-     * @param activity
-     * @param msgUri the MMS message URI in database
-     * @param slideshow the slideshow to save
-     * @param persister the PDU persister for updating the database
-     * @param sendReq the SendReq for updating the database
-     */
-    public static void viewMmsMessageAttachment(Activity activity, Uri msgUri,
-            SlideshowModel slideshow, AsyncDialog asyncDialog) {
-        viewMmsMessageAttachment(activity, msgUri, slideshow, 0, asyncDialog);
-    }
-
-    public static void viewMmsMessageAttachment(final Activity activity, final Uri msgUri,
-            final SlideshowModel slideshow, final int requestCode, AsyncDialog asyncDialog) {
-        boolean isSimple = (slideshow == null) ? false : slideshow.isSimple();
-        if (isSimple) {
-            // In attachment-editor mode, we only ever have one slide.
-            MessageUtils.viewSimpleSlideshow(activity, slideshow);
-        } else {
-            // The user wants to view the slideshow. We have to persist the slideshow parts
-            // in a background task. If the task takes longer than a half second, a progress dialog
-            // is displayed. Once the PDU persisting is done, another runnable on the UI thread get
-            // executed to start the SlideshowActivity.
-            asyncDialog.runAsync(new Runnable() {
-                @Override
-                public void run() {
-                    // If a slideshow was provided, save it to disk first.
-                    if (slideshow != null) {
-                        PduPersister persister = PduPersister.getPduPersister(activity);
-                        try {
-                            PduBody pb = slideshow.toPduBody();
-                            persister.updateParts(msgUri, pb, null);
-                            slideshow.sync(pb);
-                        } catch (MmsException e) {
-                            Log.e(TAG, "Unable to save message for preview");
-                            return;
-                        }
-                    }
-                }
-            }, new Runnable() {
-                @Override
-                public void run() {
-                    // Once the above background thread is complete, this runnable is run
-                    // on the UI thread to launch the slideshow activity.
-                    launchSlideshowActivity(activity, msgUri, requestCode);
-                }
-            }, R.string.building_slideshow_title);
-        }
-    }
-
-    public static void launchSlideshowActivity(Context context, Uri msgUri, int requestCode) {
-        // Launch the slideshow activity to play/view.
-        Intent intent = new Intent(context, MobilePaperShowActivity.class);
-        intent.setData(msgUri);
-        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        if (requestCode > 0 && context instanceof Activity) {
-            ((Activity)context).startActivityForResult(intent, requestCode);
-        } else {
-            context.startActivity(intent);
-        }
-
     }
 
     public static void showSmsMessageContent(Context context, long msgId) {
@@ -2812,5 +2692,12 @@ public class MessageUtils {
 
         SelectPhoneAccountDialogFragment.showAccountDialog(activity.getFragmentManager(),
                 R.string.select_phone_account_title, false /* canSetDefault */, handles, listener);
+    }
+
+    public static int getDarkerColor(int color) {
+        float[] hsv = new float[3];
+        Color.colorToHSV(color, hsv);
+        hsv[2] =  Math.max(0f, hsv[2] - hsv[2] * 0.5f);
+        return Color.HSVToColor(Color.alpha(color), hsv);
     }
 }

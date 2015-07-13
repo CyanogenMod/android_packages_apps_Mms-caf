@@ -84,8 +84,7 @@ import com.android.mms.data.Contact;
 import com.android.mms.data.Conversation;
 import com.android.mms.data.WorkingMessage;
 import com.android.mms.data.cm.CMConversationSettings;
-import com.android.mms.model.SlideModel;
-import com.android.mms.model.SlideshowModel;
+import com.android.mms.model.*;
 import com.android.mms.quickmessage.QmMarkRead;
 import com.android.mms.quickmessage.QuickMessagePopup;
 import com.android.mms.quickmessage.QuickMessageWear;
@@ -96,7 +95,6 @@ import com.android.mms.ui.MailBoxMessageList;
 import com.android.mms.ui.ManageSimMessages;
 import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.MessagingPreferenceActivity;
-import com.android.mms.ui.MobilePaperShowActivity;
 import com.android.mms.util.AddressUtils;
 import com.android.mms.util.DownloadManager;
 import com.android.mms.widget.MmsWidgetProvider;
@@ -829,16 +827,18 @@ public class MessagingNotification {
                     GenericPdu pdu = sPduPersister.load(msgUri);
                     if (pdu != null && pdu instanceof MultimediaMessagePdu) {
                         SlideshowModel slideshow = SlideshowModel.createFromPduBody(context,
-                                ((MultimediaMessagePdu)pdu).getBody());
+                                ((MultimediaMessagePdu) pdu).getBody());
                         attachmentType = getAttachmentType(slideshow);
-                        SlideModel firstSlide = slideshow.get(0);
+                        MediaModel firstSlide = slideshow.get(0);
                         if (firstSlide != null) {
-                            if (firstSlide.hasImage()) {
+                            if (firstSlide instanceof ImageModel) {
+                                ImageModel image = (ImageModel) firstSlide;
                                 int maxDim = dp2Pixels(MAX_BITMAP_DIMEN_DP);
-                                attachedPicture = firstSlide.getImage().getBitmap(maxDim, maxDim);
+                                attachedPicture = image.getBitmap(maxDim, maxDim);
                             }
-                            if (firstSlide.hasText()) {
-                                messageBody = firstSlide.getText().getText();
+                            if (firstSlide instanceof TextModel) {
+                                TextModel text = (TextModel) firstSlide;
+                                messageBody = text.getText();
                             }
                         }
                     }
@@ -877,12 +877,12 @@ public class MessagingNotification {
         } else if (slideCount > 1) {
             return WorkingMessage.SLIDESHOW;
         } else {
-            SlideModel slide = slideshow.get(0);
-            if (slide.hasImage()) {
+            MediaModel slide = slideshow.get(0);
+            if (slide instanceof ImageModel) {
                 return WorkingMessage.IMAGE;
-            } else if (slide.hasVideo()) {
+            } else if (slide instanceof VideoModel) {
                 return WorkingMessage.VIDEO;
-            } else if (slide.hasAudio()) {
+            } else if (slide instanceof AudioModel) {
                 return WorkingMessage.AUDIO;
             }
         }
@@ -1016,9 +1016,6 @@ public class MessagingNotification {
             intent.putExtra(MessageUtils.EXTRA_KEY_NEW_MESSAGE_NEED_RELOAD, true);
         } else if (isSms) {
             intent = new Intent(context, MailBoxMessageContent.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        } else if (DownloadManager.getInstance().isAuto()) {
-            intent = new Intent(context, MobilePaperShowActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         } else {
             // Else case: for MMS not downloaded.
@@ -1526,20 +1523,8 @@ public class MessagingNotification {
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         // Get failed intent by folder mode or conversation mode.
-        if (MessageUtils.isMailboxMode()) {
-            failedIntent = getFailedIntentFromFolderMode(context, totalFailedCount, isDownload);
-            if (failedIntent == null) {
-                return;
-            } else if (isDownload) {
-                // When isDownload is true, the valid threadId is passed into this function.
-                failedIntent.putExtra(FAILED_DOWNLOAD_FLAG, true);
-            } else {
-                failedIntent.putExtra(UNDELIVERED_FLAG, true);
-            }
-        } else {
-            failedIntent = getFailedIntentFromConversationMode(context,
-                    isDownload, threadId);
-        }
+        failedIntent = getFailedIntentFromConversationMode(context,
+             isDownload, threadId);
 
         taskStackBuilder.addNextIntent(failedIntent);
 
@@ -1603,71 +1588,6 @@ public class MessagingNotification {
             } else {
                 failedIntent = new Intent(context, ConversationList.class);
             }
-            return failedIntent;
-        } finally {
-            cursor.close();
-        }
-    }
-
-    /**
-     * Return the pending intent for failed messages in folder mode.
-     * @param context The context
-     * @param failedCount The failed messages' count
-     * @param isDownload Whether the messages is for received
-     */
-    private static Intent getFailedIntentFromFolderMode(Context context,
-            int failedCount, boolean isDownload) {
-        // Query the DB and return the cursor of the  undelivered messages
-        Cursor cursor = SqliteWrapper.query(context, context.getContentResolver(),
-                UNDELIVERED_URI, MAILBOX_PROJECTION, "read=0", null, null);
-        if (cursor == null) {
-            return null;
-        }
-
-        try {
-            int mailboxId = MailBoxMessageList.TYPE_INVALID;
-            Intent failedIntent;
-
-            if (failedCount > 1) {
-                if (isFailedMessagesInSameBox(cursor)) {
-                    mailboxId = getUndeliveredMessageBoxId(cursor);
-                } else {
-                    mailboxId = MailBoxMessageList.TYPE_INBOX;
-                }
-
-                failedIntent = new Intent(context, MailBoxMessageList.class);
-                failedIntent.putExtra(MessageUtils.MAIL_BOX_ID,
-                        mailboxId);
-                failedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                return failedIntent;
-            }
-
-            // The rest cases: the "failedCount" is 1.
-            Uri msgUri;
-            String type = getUndeliveredMessageType(cursor);
-            Long msgId = getUndeliveredMessageId(cursor);
-            if (TextUtils.isEmpty(type)) {
-                return null;
-            }
-            if (type.equals("sms")) {
-                failedIntent = new Intent(context, MailBoxMessageContent.class);
-                msgUri = Uri.withAppendedPath(Sms.CONTENT_URI, String.valueOf(msgId));
-                failedIntent.setData(msgUri);
-            } else {
-                // MMS type.
-                if (isDownload) {
-                    //  Download fail will jump to MailBoxMessageList INBOX.
-                    failedIntent = new Intent(context, MailBoxMessageList.class);
-                    mailboxId = MailBoxMessageList.TYPE_INBOX;
-                    failedIntent.putExtra(MessageUtils.MAIL_BOX_ID, mailboxId);
-                } else {
-                    failedIntent = new Intent(context, MobilePaperShowActivity.class);
-                    msgUri = Uri.withAppendedPath(Mms.CONTENT_URI, String.valueOf(msgId));
-                    failedIntent.setData(msgUri);
-                }
-            }
-            failedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
             return failedIntent;
         } finally {
             cursor.close();
