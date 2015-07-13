@@ -20,19 +20,9 @@ package com.android.mms.ui;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
-
 import com.android.mms.LogTag;
 import com.android.mms.MmsConfig;
-import com.android.mms.model.AudioModel;
-import com.android.mms.model.ImageModel;
-import com.android.mms.model.RegionModel;
-import com.android.mms.model.SlideModel;
-import com.android.mms.model.SlideshowModel;
-import com.android.mms.model.TextModel;
-import com.android.mms.model.VcardModel;
-import com.android.mms.model.VCalModel;
-import com.android.mms.model.VideoModel;
-import com.google.android.mms.ContentType;
+import com.android.mms.model.*;
 import com.google.android.mms.MmsException;
 
 /**
@@ -75,10 +65,10 @@ public class SlideshowEditor {
         if (size < MmsConfig.getMaxSlideNumber()) {
             SlideModel slide = new SlideModel(mModel);
 
-            TextModel text = new TextModel(
-                    mContext, ContentType.TEXT_PLAIN, generateTextSrc(mModel, size),
-                    mModel.getLayout().getTextRegion());
-            slide.add(text);
+//            TextModel text = new TextModel(
+//                    mContext, ContentType.TEXT_PLAIN, generateTextSrc(mModel, size),
+//                    mModel.getLayout().getTextRegion());
+//            slide.add(text);
 
             mModel.add(position, slide);
             return true;
@@ -86,38 +76,6 @@ public class SlideshowEditor {
             Log.w(TAG, "The limitation of the number of slides is reached.");
             return false;
         }
-    }
-
-    /**
-     * Generate an unique source for TextModel
-     *
-     * @param slideshow The current slideshow model
-     * @param position The expected position for the new model
-     * @return An unique source String
-     */
-    private String generateTextSrc(SlideshowModel slideshow, int position) {
-        final String prefix = "text_";
-        final String postfix = ".txt";
-
-        StringBuilder src = new StringBuilder(prefix).append(position).append(postfix);
-        boolean hasDupSrc = false;
-
-        do {
-            for (SlideModel model : slideshow) {
-                if (model.hasText()) {
-                    String testSrc = model.getText().getSrc();
-
-                    if (testSrc != null && testSrc.equals(src.toString())) {
-                        src = new StringBuilder(prefix).append(position + 1).append(postfix);
-                        hasDupSrc |= true;
-                        break;
-                    }
-                }
-                hasDupSrc = false;
-            }
-        } while (hasDupSrc);
-
-        return src.toString();
     }
 
     /**
@@ -156,52 +114,6 @@ public class SlideshowEditor {
         }
     }
 
-    /**
-     * Remove the text of the specified slide.
-     *
-     * @param position index of the slide
-     * @return true if success, false if no text in the slide.
-     */
-    public boolean removeText(int position) {
-        return mModel.get(position).removeText();
-    }
-
-    public boolean removeImage(int position) {
-        return mModel.get(position).removeImage();
-    }
-
-    public boolean removeVideo(int position) {
-        return mModel.get(position).removeVideo();
-    }
-
-    public boolean removeAudio(int position) {
-        return mModel.get(position).removeAudio();
-    }
-
-    public boolean removeVcard(int position) {
-        return mModel.get(position).removeVcard();
-    }
-
-    public boolean removeVCal(int position) {
-        return mModel.get(position).removeVCal();
-    }
-
-    public void changeText(int position, String newText) {
-        if (newText != null) {
-            SlideModel slide = mModel.get(position);
-            TextModel text = slide.getText();
-            if (text == null) {
-                text = new TextModel(mContext,
-                        ContentType.TEXT_PLAIN, generateTextSrc(mModel, position),
-                        mModel.getLayout().getTextRegion());
-                text.setText(newText);
-                slide.add(text);
-            } else if (!newText.equals(text.getText())) {
-                text.setText(newText);
-            }
-        }
-    }
-
     public void changeImage(int position, Uri newImage) throws MmsException {
         mModel.get(position).add(new ImageModel(
                 mContext, newImage, mModel.getLayout().getImageRegion()));
@@ -236,33 +148,7 @@ public class SlideshowEditor {
         slide.updateDuration(vcal.getDuration());
     }
 
-    public void moveSlideUp(int position) {
-        mModel.add(position - 1, mModel.remove(position));
-    }
-
-    public void moveSlideDown(int position) {
-        mModel.add(position + 1, mModel.remove(position));
-    }
-
-    public void changeDuration(int position, int dur) {
-        if (dur >= 0) {
-            mModel.get(position).setDuration(dur);
-        }
-    }
-
     public int getDuration(int position) {
         return mModel.get(position).getDuration();
-    }
-
-    public void changeLayout(int layout) {
-        mModel.getLayout().changeTo(layout);
-    }
-
-    public RegionModel getImageRegion() {
-        return mModel.getLayout().getImageRegion();
-    }
-
-    public RegionModel getTextRegion() {
-        return mModel.getLayout().getTextRegion();
     }
 }

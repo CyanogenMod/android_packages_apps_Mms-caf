@@ -96,7 +96,6 @@ import com.android.mms.ui.MailBoxMessageList;
 import com.android.mms.ui.ManageSimMessages;
 import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.MessagingPreferenceActivity;
-import com.android.mms.ui.MobilePaperShowActivity;
 import com.android.mms.util.AddressUtils;
 import com.android.mms.util.DownloadManager;
 import com.android.mms.widget.MmsWidgetProvider;
@@ -1018,8 +1017,9 @@ public class MessagingNotification {
             intent = new Intent(context, MailBoxMessageContent.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         } else if (DownloadManager.getInstance().isAuto()) {
-            intent = new Intent(context, MobilePaperShowActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent = new Intent();
+//            intent = new Intent(context, MobilePaperShowActivity.class);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         } else {
             // Else case: for MMS not downloaded.
             intent = new Intent(context, MailBoxMessageList.class);
@@ -1661,7 +1661,8 @@ public class MessagingNotification {
                     mailboxId = MailBoxMessageList.TYPE_INBOX;
                     failedIntent.putExtra(MessageUtils.MAIL_BOX_ID, mailboxId);
                 } else {
-                    failedIntent = new Intent(context, MobilePaperShowActivity.class);
+                    //failedIntent = new Intent(context, MobilePaperShowActivity.class);
+                    failedIntent = new Intent();
                     msgUri = Uri.withAppendedPath(Mms.CONTENT_URI, String.valueOf(msgId));
                     failedIntent.setData(msgUri);
                 }

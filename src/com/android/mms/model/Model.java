@@ -17,6 +17,8 @@
 
 package com.android.mms.model;
 
+import com.android.mms.ui.Presenter;
+
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Model {
@@ -58,5 +60,10 @@ public class Model {
 
     protected void unregisterAllModelChangedObserversInDescendants() {
         // Dummy method.
+    }
+
+    public Presenter getPresenter() {
+        return null;
+
     }
 }

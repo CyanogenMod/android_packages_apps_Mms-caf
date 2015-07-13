@@ -30,10 +30,16 @@ import org.w3c.dom.smil.ElementTime;
 import android.text.TextUtils;
 import android.util.Config;
 import android.util.Log;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.android.mms.ContentRestrictionException;
 import com.android.mms.LogTag;
 import com.android.mms.dom.smil.SmilParElementImpl;
+import com.android.mms.ui.Presenter;
+import com.android.mms.ui.SlideViewInterface;
+import com.android.mms.util.ItemLoadedCallback;
+import com.android.mms.util.ThumbnailManager;
 import com.google.android.mms.ContentType;
 
 public class SlideModel extends Model implements List<MediaModel>, EventListener {
@@ -105,6 +111,7 @@ public class SlideModel extends Model implements List<MediaModel>, EventListener
         }
 
         if (media.isText()) {
+            Thread.dumpStack();
             String contentType = media.getContentType();
             if (TextUtils.isEmpty(contentType) || ContentType.TEXT_PLAIN.equals(contentType)
                     || ContentType.TEXT_HTML.equals(contentType)) {
@@ -610,5 +617,11 @@ public class SlideModel extends Model implements List<MediaModel>, EventListener
                 || (mDuration == DEFAULT_SLIDE_DURATION)) {
             mDuration = duration;
         }
+    }
+
+    @Override
+    public Presenter getPresenter() {
+        System.out.println("First model " + mMedia.get(0).getClass().getName() + " " + mMedia.size());
+        return mMedia.get(0).getPresenter();
     }
 }

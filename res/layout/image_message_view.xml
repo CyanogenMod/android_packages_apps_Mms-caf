@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 /*
- * Copyright (C) 2008 Esmertec AG.
- * Copyright (C) 2008 The Android Open Source Project
+ * Copyright (C) 2015 The CyanogenMod Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +16,16 @@
  * limitations under the License.
  */
 -->
+<com.android.mms.ui.ImageMessageView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/message_root">
 
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+    <ImageView
+    	android:id="@+id/image"
+        android:scaleType="centerCrop"
+    	android:layout_width="match_parent"
+    	android:layout_height="214dp" />
 
-    <com.android.mms.ui.SlideView android:id="@+id/slide_view"
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-</merge>
+</com.android.mms.ui.ImageMessageView>

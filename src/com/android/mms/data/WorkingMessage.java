@@ -36,6 +36,7 @@ import android.database.sqlite.SqliteWrapper;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.MmsSms;
@@ -184,10 +185,11 @@ public class WorkingMessage {
          */
         void onProtocolChanged(boolean mms);
 
-        /**
-         * Called when an attachment on the message has changed.
-         */
-        void onAttachmentChanged();
+        void onAttachmentsRemoved();
+
+        void onAttachmentRemoved(SlideModel slideModel);
+
+        void onAttachmentAdded(SlideModel mediaModels);
 
         /**
          * Called just before the process of sending a message.
@@ -409,20 +411,53 @@ public class WorkingMessage {
     }
 
     public void removeAttachment(boolean notify) {
-        removeThumbnailsFromCache(mSlideshow);
-        mAttachmentType = TEXT;
-        mSlideshow = null;
-        if (mMessageUri != null) {
-            asyncDelete(mMessageUri, null, null);
-            mMessageUri = null;
+        removeAttachment(notify, null);
+    }
+
+    public void removeAttachment(boolean notify, Message msg) {
+        if (mSlideshow.size() > 1 && msg != null) {
+            SlideModel slideModel = (SlideModel) msg.obj;
+            removeThumbnailFromCache(slideModel);
+            mSlideshow.remove(slideModel);
+            if (notify) {
+                mStatusListener.onAttachmentRemoved(slideModel);
+            }
+        } else {
+            removeThumbnailsFromCache(mSlideshow);
+            mAttachmentType = TEXT;
+            mSlideshow = null;
+            if (mMessageUri != null) {
+                asyncDelete(mMessageUri, null, null);
+                mMessageUri = null;
+            }
+            // mark this message as no longer having an attachment
+            updateState(HAS_ATTACHMENT, false, notify);
+            if (notify) {
+                mStatusListener.onAttachmentsRemoved();
+            }
         }
-        // mark this message as no longer having an attachment
-        updateState(HAS_ATTACHMENT, false, notify);
-        if (notify) {
-            // Tell ComposeMessageActivity (or other listener) that the attachment has changed.
-            // In the case of ComposeMessageActivity, it will remove its attachment panel because
-            // this working message no longer has an attachment.
-            mStatusListener.onAttachmentChanged();
+    }
+
+    private static boolean removeThumbnail(SlideModel slideModel, ThumbnailManager thumbnailManager) {
+        if (slideModel.hasImage()) {
+            thumbnailManager.removeThumbnail(slideModel.getImage().getUri());
+            return true;
+        } else if (slideModel.hasVideo()) {
+            thumbnailManager.removeThumbnail(slideModel.getVideo().getUri());
+            return true;
+        }
+        return false;
+    }
+
+    public static void removeThumbnailFromCache(SlideModel slideModel) {
+        ThumbnailManager thumbnailManager = MmsApp.getApplication().getThumbnailManager();
+        if (removeThumbnail(slideModel, thumbnailManager)) {
+            // HACK: the keys to the thumbnail cache are the part uris, such as mms/part/3
+            // Because the part table doesn't have auto-increment ids, the part ids are reused
+            // when a message or thread is deleted. For now, we're clearing the whole thumbnail
+            // cache so we don't retrieve stale images when part ids are reused. This will be
+            // fixed in the next release in the mms provider.
+            MmsApp.getApplication().getThumbnailManager().clearBackingStore();
         }
     }
 
@@ -433,13 +468,7 @@ public class WorkingMessage {
             Iterator<SlideModel> iterator = slideshow.iterator();
             while (iterator.hasNext()) {
                 SlideModel slideModel = iterator.next();
-                if (slideModel.hasImage()) {
-                    thumbnailManager.removeThumbnail(slideModel.getImage().getUri());
-                    removedSomething = true;
-                } else if (slideModel.hasVideo()) {
-                    thumbnailManager.removeThumbnail(slideModel.getVideo().getUri());
-                    removedSomething = true;
-                }
+                removedSomething = removeThumbnail(slideModel, thumbnailManager);
             }
             if (removedSomething) {
                 // HACK: the keys to the thumbnail cache are the part uris, such as mms/part/3
@@ -507,8 +536,13 @@ public class WorkingMessage {
             }
         }
 
-        mStatusListener.onAttachmentChanged();  // have to call whether succeeded or failed,
-                                                // because a replace that fails, removes the slide
+        ;
+        if (mSlideshow != null) {
+            SlideModel slide = mSlideshow.get(mSlideshow.size() - 1);
+            System.out.println("Slideshow size " + mSlideshow.size());
+            mStatusListener.onAttachmentAdded(slide);  // have to call whether succeeded or failed,
+            // because a replace that fails, removes the slide
+        }
 
         if (!append && mAttachmentType == TEXT && type == TEXT) {
             int[] params = SmsMessage.calculateLength(getText(), false);
@@ -634,17 +668,7 @@ public class WorkingMessage {
         if (slideNum >= 1) {
             // Check the last slide. One silde can have a picture and an audio at the same time.
             SlideModel slide = mSlideshow.get(slideNum -1);
-            boolean hasImage = slide.hasImage();
-            boolean hasVideo = slide.hasVideo();
-            boolean hasAudio = slide.hasAudio();
-            if (hasVideo || (hasImage && hasAudio)
-                    || (hasImage && (type == IMAGE || type == VIDEO))
-                    || (hasAudio && (type == VIDEO))
-                    || (hasAudio && (type == AUDIO))) {
-                return true;
-            } else {
-                return false;
-            }
+            return slide.size() > 0;
         }
         return true;
     }
@@ -780,18 +804,18 @@ public class WorkingMessage {
         if (mSlideshow == null || mSlideshow.size() != 1)
             return;
 
-        SlideModel slide = mSlideshow.get(0);
-        TextModel text;
-        if (!slide.hasText()) {
-            // Add a TextModel to slide 0 if one doesn't already exist
-            text = new TextModel(mActivity, ContentType.TEXT_PLAIN, "text_0.txt",
-                                           mSlideshow.getLayout().getTextRegion());
-            slide.add(text);
-        } else {
-            // Otherwise just reuse the existing one.
-            text = slide.getText();
-        }
-        text.setText(mText);
+//        SlideModel slide = mSlideshow.get(0);
+//        TextModel text;
+//        if (!slide.hasText()) {
+//            // Add a TextModel to slide 0 if one doesn't already exist
+//            text = new TextModel(mActivity, ContentType.TEXT_PLAIN, "text_0.txt",
+//                                           mSlideshow.getLayout().getTextRegion());
+//            slide.add(text);
+//        } else {
+//            // Otherwise just reuse the existing one.
+//            text = slide.getText();
+//        }
+//        text.setText(mText);
     }
 
     /**

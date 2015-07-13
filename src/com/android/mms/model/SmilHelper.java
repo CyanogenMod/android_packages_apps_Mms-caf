@@ -72,19 +72,25 @@ public class SmilHelper {
     }
 
     public static SMILDocument getDocument(PduBody pb) {
+        long cur = System.currentTimeMillis();
         // Find SMIL part in the message.
         PduPart smilPart = findSmilPart(pb);
         SMILDocument document = null;
+        System.out.println("First took " + (System.currentTimeMillis() - cur));
 
+        cur = System.currentTimeMillis();
         // Try to load SMIL document from existing part.
         if (smilPart != null) {
             document = getSmilDocument(smilPart);
         }
+        System.out.println("second took " + (System.currentTimeMillis() - cur));
 
+        cur = System.currentTimeMillis();
         if (document == null) {
             // Create a new SMIL document.
             document = createSmilDocument(pb);
         }
+        System.out.println("Third took " + (System.currentTimeMillis() - cur));
 
         return document;
     }
