@@ -17,35 +17,37 @@
 
 package com.android.mms.model;
 
-import org.w3c.dom.events.Event;
-import org.w3c.dom.smil.ElementTime;
-
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SqliteWrapper;
 import android.net.Uri;
 import android.provider.MediaStore.Images;
+import android.provider.Telephony.Mms.Part;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
-
 import com.android.mms.ContentRestrictionException;
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
 import com.android.mms.dom.events.EventImpl;
 import com.android.mms.dom.smil.SmilMediaElementImpl;
+import com.android.mms.presenters.ThumbnailPresenterModel;
+import com.android.mms.presenters.VideoPresenter;
+import com.android.mms.ui.Presenter;
 import com.android.mms.util.ItemLoadedCallback;
 import com.android.mms.util.ItemLoadedFuture;
 import com.android.mms.util.ThumbnailManager;
-import android.provider.Telephony.Mms.Part;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
+import org.w3c.dom.events.Event;
+import org.w3c.dom.smil.ElementTime;
 
-public class VideoModel extends RegionMediaModel {
+public class VideoModel extends RegionMediaModel implements ThumbnailPresenterModel {
     private static final String TAG = MediaModel.TAG;
     private static final boolean DEBUG = true;
     private static final boolean LOCAL_LOGV = false;
+    private final VideoPresenter mPresenter;
     private ItemLoadedFuture mItemLoadedFuture;
 
     public VideoModel(Context context, Uri uri, RegionModel region)
@@ -58,6 +60,7 @@ public class VideoModel extends RegionMediaModel {
     public VideoModel(Context context, String contentType, String src,
             Uri uri, RegionModel region) throws MmsException {
         super(context, SmilHelper.ELEMENT_TAG_VIDEO, contentType, src, uri, region);
+        mPresenter = new VideoPresenter(mContext, this);
     }
 
     private void initModelFromUri(Uri uri) throws MmsException {
@@ -202,12 +205,13 @@ public class VideoModel extends RegionMediaModel {
         return true;
     }
 
-    public ItemLoadedFuture loadThumbnailBitmap(ItemLoadedCallback callback) {
+    public ItemLoadedFuture loadThumbnailBitmap(ItemLoadedCallback callback, int maxWidth) {
         ThumbnailManager thumbnailManager = MmsApp.getApplication().getThumbnailManager();
-        mItemLoadedFuture = thumbnailManager.getVideoThumbnail(getUri(), callback);
+        mItemLoadedFuture = thumbnailManager.getVideoThumbnail(getUri(), callback, maxWidth);
         return mItemLoadedFuture;
     }
 
+    @Override
     public void cancelThumbnailLoading() {
         if (mItemLoadedFuture != null && !mItemLoadedFuture.isDone()) {
             if (Log.isLoggable(LogTag.APP, Log.DEBUG)) {
@@ -216,5 +220,22 @@ public class VideoModel extends RegionMediaModel {
             mItemLoadedFuture.cancel(getUri());
             mItemLoadedFuture = null;
         }
+    }
+
+    @Override
+    public void removeThumbnail() {
+        ThumbnailManager thumbnailManager = MmsApp.getApplication().getThumbnailManager();
+        thumbnailManager.removeThumbnail(getUri());
+        // HACK: the keys to the thumbnail cache are the part uris, such as mms/part/3
+        // Because the part table doesn't have auto-increment ids, the part ids are reused
+        // when a message or thread is deleted. For now, we're clearing the whole thumbnail
+        // cache so we don't retrieve stale images when part ids are reused. This will be
+        // fixed in the next release in the mms provider.
+        MmsApp.getApplication().getThumbnailManager().clearBackingStore();
+    }
+
+    @Override
+    public Presenter getPresenter() {
+        return mPresenter;
     }
 }

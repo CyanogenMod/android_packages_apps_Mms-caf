@@ -70,8 +70,8 @@ import java.io.InputStream;
  */
 public class PushReceiver extends BroadcastReceiver {
     private static final String TAG = LogTag.TAG;
-    private static final boolean DEBUG = false;
-    private static final boolean LOCAL_LOGV = false;
+    private static final boolean DEBUG = true;
+    private static final boolean LOCAL_LOGV = true;
     private Context mContext;
     private static final String WAP_PUSH_MESSAGE = "pref_key_enable_wap_push";
     private static final String WAP_PUSH_TYPE_SIC = "application/vnd.wap.sic";
@@ -302,6 +302,7 @@ public class PushReceiver extends BroadcastReceiver {
         sb.append(Mms.MESSAGE_TYPE);
         sb.append('=');
         sb.append(PduHeaders.MESSAGE_TYPE_SEND_REQ);
+        System.out.println("Request " + sb.toString());
         // TODO ContentResolver.query() appends closing ')' to the selection argument
         // sb.append(')');
 
@@ -311,6 +312,7 @@ public class PushReceiver extends BroadcastReceiver {
         if (cursor != null) {
             try {
                 if ((cursor.getCount() == 1) && cursor.moveToFirst()) {
+                    System.out.println("Thread id " + cursor.getLong(0));
                     return cursor.getLong(0);
                 }
             } finally {

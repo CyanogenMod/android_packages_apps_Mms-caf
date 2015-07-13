@@ -31,22 +31,48 @@ package com.android.mms.model;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.*;
+import android.graphics.Bitmap.Config;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.provider.Telephony.Mms.Part;
 import android.text.TextUtils;
 import android.util.Log;
-
+import com.android.mms.R;
+import com.android.mms.presenters.SimpleAttachmentPresenter;
+import com.android.mms.presenters.SimpleAttachmentPresenter.SimpleAttachmentLoaded;
+import com.android.mms.presenters.SimplePresenterModel;
+import com.android.mms.ui.MessageUtils;
+import com.android.mms.ui.Presenter;
+import com.android.mms.util.ItemLoadedCallback;
+import com.android.vcard.*;
+import com.android.vcard.exception.VCardException;
+import com.android.vcard.exception.VCardNestedException;
+import com.android.vcard.exception.VCardVersionException;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
-
 import org.w3c.dom.events.Event;
 
-public class VcardModel extends MediaModel {
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+public class VcardModel extends MediaModel implements SimplePresenterModel {
     private static final String TAG = MediaModel.TAG;
+    private final String mViewMsg;
 
     private String mLookupUri = null;
+    private ExecutorService mExecutor = Executors.newSingleThreadExecutor();
+    private Future<?> mFutureTask;
+    private final Presenter mPresenter;
 
     public VcardModel(Context context, Uri uri) throws MmsException {
         this(context, ContentType.TEXT_VCARD, null, uri);
@@ -56,9 +82,11 @@ public class VcardModel extends MediaModel {
     public VcardModel(Context context, String contentType, String src, Uri uri)
             throws MmsException {
         super(context, SmilHelper.ELEMENT_TAG_REF, contentType, src, uri);
+        mPresenter = new SimpleAttachmentPresenter(mContext, this);
         if (!TextUtils.isEmpty(src)) {
             initLookupUri(uri);
         }
+        mViewMsg = context.getResources().getString(R.string.simple_attachment_tap_msg);
     }
 
     private void initModelFromUri(Uri uri) throws MmsException {
@@ -103,7 +131,7 @@ public class VcardModel extends MediaModel {
 
     private String getLookupUri(Uri uri, Cursor c) {
         if(isMmsUri(uri))
-            return getMmsLookupUri(uri,c);
+            return getMmsLookupUri(uri, c);
         return getExtraLookupUri(uri).toString();
     }
 
@@ -123,7 +151,7 @@ public class VcardModel extends MediaModel {
     private String getLookupSrc(Uri uri, Cursor c) throws MmsException {
         if(isMmsUri(uri))
             return getMmsLookupSrc(c);
-        return getExtraSrc(uri,c);
+        return getExtraSrc(uri, c);
     }
 
     private String getMmsLookupSrc(Cursor c) {
@@ -170,7 +198,6 @@ public class VcardModel extends MediaModel {
             } finally {
                 if (c != null) {
                     c.close();
-                    c = null;
                 }
             }
         }
@@ -192,6 +219,135 @@ public class VcardModel extends MediaModel {
     @Override
     protected void initMediaDuration() throws MmsException {
         mDuration = 0;
+    }
+
+    public static Bitmap getRoundedCornerBitmap(Bitmap bitmap) {
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
+            bitmap.getHeight(), Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(Color.WHITE);
+        canvas.drawCircle(bitmap.getWidth() / 2,  bitmap.getHeight() / 2, bitmap.getWidth() / 2, paint);
+       
+        paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+       
+        return output;
+   }
+
+    @Override
+    public void cancelBackgroundLoading() {
+        if (mFutureTask != null) {
+            mFutureTask.cancel(true);
+            mFutureTask = null;
+        }
+    }
+
+    @Override
+    public Drawable getPlaceHolder() {
+        return mContext.getResources().getDrawable(R.drawable.ic_generic_contacts);
+    }
+
+    @Override
+    public void loadData(
+            final ItemLoadedCallback<SimpleAttachmentLoaded> itemLoadedCallback) {
+        if (mFutureTask != null) {
+            mFutureTask.cancel(true);
+        }
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                if (Thread.currentThread().isInterrupted()) {
+                    return;
+                }
+                final ContentResolver resolver = mContext.getContentResolver();
+                VCardEntryConstructor constructor = new VCardEntryConstructor();
+                constructor.addEntryHandler(new VCardEntryHandler() {
+                    @Override
+                    public void onStart() {
+                    }
+
+                    @Override
+                    public void onEntryCreated(VCardEntry entry) {
+                        if (Thread.currentThread().isInterrupted()) {
+                            return;
+                        }
+                        SimpleAttachmentLoaded loaded = new SimpleAttachmentLoaded();
+                        List<VCardEntry.PhotoData> photoList = entry.getPhotoList();
+                        loaded.drawable = mContext.getResources()
+                                .getDrawable(R.drawable.ic_attach_contact_info);
+                        // TODO add support for showing photo for when a vcard
+                        // TODO has multiple contacts
+                        if (photoList != null && photoList.size() == 1) {
+                            byte[] photo = entry.getPhotoList().get(0).getBytes();
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(photo, 0, photo.length);
+                            loaded.icon = getRoundedCornerBitmap(bitmap);
+                        }
+                        loaded.title = entry.getDisplayName();
+                        loaded.subtitle = mViewMsg;
+                        itemLoadedCallback.onItemLoaded(loaded, null);
+                    }
+
+                    @Override
+                    public void onEnd() {
+
+                    }
+                });
+                try {
+                    InputStream is = resolver.openInputStream(getUri());
+                    VCardParser mVCardParser = new VCardParser_V21();
+                    try {
+                        mVCardParser.addInterpreter(constructor);
+                        if (Thread.currentThread().isInterrupted()) {
+                            return;
+                        }
+                        mVCardParser.parseOne(is);
+                    } catch (VCardVersionException e1) {
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        if (is != null) {
+                            try {
+                                is.close();
+                            } catch (IOException e) {
+                            }
+                        }
+                    }
+                } catch (VCardNestedException e) {
+                } catch (FileNotFoundException e) {
+                } catch (VCardException e) {
+                }
+            }
+        };
+        mFutureTask = mExecutor.submit(r);
+    }
+
+    @Override
+    public Intent getIntent() {
+        String lookupUri = getLookupUri();
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (!TextUtils.isEmpty(lookupUri) && lookupUri.contains("contacts")) {
+            // if the uri is from the contact, we suggest to view the contact.
+            intent.setData(Uri.parse(lookupUri));
+        } else {
+            // we need open the saved part.
+            intent.setDataAndType(getUri(), ContentType.TEXT_VCARD.toLowerCase());
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
+        // distinguish view vcard from mms or contacts.
+        intent.putExtra(MessageUtils.VIEW_VCARD, true);
+        return intent;
+    }
+
+    @Override
+    public Presenter getPresenter() {
+        return mPresenter;
     }
 
 }
