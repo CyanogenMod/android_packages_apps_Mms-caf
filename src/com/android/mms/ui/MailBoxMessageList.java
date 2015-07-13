@@ -330,12 +330,12 @@ public class MailBoxMessageList extends ListActivity implements
                             break;
                     }
                 } else {
-                    MessageUtils.viewMmsMessageAttachment(MailBoxMessageList.this, msgUri, null,
-                            new AsyncDialog(MailBoxMessageList.this));
-                    int hasRead = c.getInt(COLUMN_MMS_READ);
-                    if (hasRead == 0) {
-                        markAsRead(msgUri);
-                    }
+//                    MessageUtils.showSmsMessageContent(MailBoxMessageList.this, msgUri, null,
+//                            new AsyncDialog(MailBoxMessageList.this));
+//                    int hasRead = c.getInt(COLUMN_MMS_READ);
+//                    if (hasRead == 0) {
+//                        markAsRead(msgUri);
+//                    }
                 }
             }
         } catch (Exception e) {

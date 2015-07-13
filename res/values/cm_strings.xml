@@ -417,4 +417,5 @@
         selected messages, including all contacts in group messages?</string>
     <string name="block_dialog_report_spam">Report as spam to <xliff:g id="provider">%s</xliff:g></string>
 
+    <string name="simple_attachment_tap_msg">Tap to view</string>
 </resources>
