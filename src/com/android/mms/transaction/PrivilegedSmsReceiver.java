@@ -27,6 +27,7 @@ import android.content.Intent;
 public class PrivilegedSmsReceiver extends SmsReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
+        System.out.println("ON RECEIVE " + intent);
         // Pass the message to the base class implementation, noting that it
         // was permission-checked on the way in.
         onReceiveWithPrivilege(context, intent, true);

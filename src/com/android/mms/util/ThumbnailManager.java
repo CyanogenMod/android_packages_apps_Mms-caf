@@ -79,7 +79,7 @@ public class ThumbnailManager extends BackgroundLoaderManager {
     public static final int TYPE_THUMBNAIL = 1;
     public static final int TYPE_MICROTHUMBNAIL = 2;
 
-    public static final int THUMBNAIL_TARGET_SIZE = 640;
+    public static final int THUMBNAIL_SIZE = 640;
 
     public ThumbnailManager(final Context context) {
         super(context);
@@ -104,8 +104,8 @@ public class ThumbnailManager extends BackgroundLoaderManager {
      * @return
      */
     public ItemLoadedFuture getThumbnail(Uri uri,
-            final ItemLoadedCallback<ImageLoaded> callback) {
-        return getThumbnail(uri, false, callback);
+            final ItemLoadedCallback<ImageLoaded> callback, int maxWidth) {
+        return getThumbnail(uri, false, callback, maxWidth);
     }
 
     /**
@@ -116,12 +116,12 @@ public class ThumbnailManager extends BackgroundLoaderManager {
      * @return
      */
     public ItemLoadedFuture getVideoThumbnail(Uri uri,
-            final ItemLoadedCallback<ImageLoaded> callback) {
-        return getThumbnail(uri, true, callback);
+            final ItemLoadedCallback<ImageLoaded> callback, int maxWidth) {
+        return getThumbnail(uri, true, callback, maxWidth);
     }
 
     private ItemLoadedFuture getThumbnail(Uri uri, boolean isVideo,
-            final ItemLoadedCallback<ImageLoaded> callback) {
+            final ItemLoadedCallback<ImageLoaded> callback, int maxWidth) {
         if (uri == null) {
             throw new NullPointerException();
         }
@@ -155,7 +155,7 @@ public class ThumbnailManager extends BackgroundLoaderManager {
 
         if (newTaskRequired) {
             mPendingTaskUris.add(uri);
-            Runnable task = new ThumbnailTask(uri, isVideo);
+            Runnable task = new ThumbnailTask(uri, isVideo, maxWidth);
             mExecutor.execute(task);
         }
         return new ItemLoadedFuture() {
@@ -225,13 +225,19 @@ public class ThumbnailManager extends BackgroundLoaderManager {
     public class ThumbnailTask implements Runnable {
         private final Uri mUri;
         private final boolean mIsVideo;
+        private final int mMaxWidth;
 
-        public ThumbnailTask(Uri uri, boolean isVideo) {
+        public ThumbnailTask(Uri uri, boolean isVideo, int maxWidth) {
             if (uri == null) {
                 throw new NullPointerException();
             }
             mUri = uri;
             mIsVideo = isVideo;
+            if (maxWidth == 0) {
+                mMaxWidth = THUMBNAIL_SIZE;
+            } else {
+                mMaxWidth = maxWidth;
+            }
         }
 
         /** {@inheritDoc} */
@@ -242,7 +248,7 @@ public class ThumbnailManager extends BackgroundLoaderManager {
             }
             if (DEBUG_LONG_WAIT) {
                 try {
-                    Thread.sleep(10000);
+                    Thread.sleep(3000);
                 } catch (InterruptedException e) {
                 }
             }
@@ -346,7 +352,7 @@ public class ThumbnailManager extends BackgroundLoaderManager {
                     return null;
                 }
 
-                bitmap = resizeDownBySideLength(bitmap, THUMBNAIL_TARGET_SIZE, true);
+                bitmap = resizeDownBySideLength(bitmap, mMaxWidth, true);
 
                 if (!isTempFile) {
                     byte[] array = compressBitmap(bitmap);
@@ -436,7 +442,7 @@ public class ThumbnailManager extends BackgroundLoaderManager {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
 
-            return requestDecode(uri, options, THUMBNAIL_TARGET_SIZE);
+            return requestDecode(uri, options, mMaxWidth);
         }
 
         private void closeSilently(Closeable c) {

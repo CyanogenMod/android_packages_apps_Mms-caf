@@ -30,14 +30,26 @@
 package com.android.mms.model;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Log;
+import com.android.mms.presenters.SimpleAttachmentPresenter;
+import com.android.mms.presenters.SimplePresenterModel;
+import com.android.mms.ui.Presenter;
+import com.android.mms.util.ItemLoadedCallback;
+import com.android.vcard.VCardEntry;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
 import org.w3c.dom.events.Event;
 
-public class VCalModel extends MediaModel {
+import java.util.List;
+
+public class VCalModel extends MediaModel implements SimplePresenterModel {
     private static final String TAG = MediaModel.TAG;
+    private final SimpleAttachmentPresenter mPresenter;
 
     public VCalModel(Context context, Uri uri) throws MmsException {
         this(context, ContentType.TEXT_VCALENDAR, null, uri);
@@ -47,6 +59,7 @@ public class VCalModel extends MediaModel {
     public VCalModel(Context context, String contentType, String src, Uri uri)
             throws MmsException {
         super(context, SmilHelper.ELEMENT_TAG_REF, contentType, src, uri);
+        mPresenter = new SimpleAttachmentPresenter(context, this);
     }
 
     private void initModelFromUri(Uri uri) throws MmsException {
@@ -81,4 +94,35 @@ public class VCalModel extends MediaModel {
         mDuration = 0;
     }
 
+    @Override
+    public Presenter getPresenter() {
+        return mPresenter;
+    }
+
+    @Override
+    public Drawable getPlaceHolder() {
+        return null;
+    }
+
+    @Override
+    public void loadData(ItemLoadedCallback<SimpleAttachmentPresenter.SimpleAttachmentLoaded> itemLoadedCallback) {
+        SimpleAttachmentPresenter.SimpleAttachmentLoaded loaded = new SimpleAttachmentPresenter.SimpleAttachmentLoaded();
+        loaded.title = getSrc();
+        loaded.subtitle = "Tap to view";
+        itemLoadedCallback.onItemLoaded(loaded, null);
+    }
+
+    @Override
+    public Intent getIntent() {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Uri vCalFileUri = getUri();
+        intent.setDataAndType(vCalFileUri, ContentType.TEXT_VCALENDAR.toLowerCase());
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        return intent;
+    }
+
+    @Override
+    public void cancelBackgroundLoading() {
+    }
 }

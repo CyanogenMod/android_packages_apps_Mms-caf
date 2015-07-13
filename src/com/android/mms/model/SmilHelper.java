@@ -72,19 +72,25 @@ public class SmilHelper {
     }
 
     public static SMILDocument getDocument(PduBody pb) {
+        long cur = System.currentTimeMillis();
         // Find SMIL part in the message.
         PduPart smilPart = findSmilPart(pb);
         SMILDocument document = null;
+        System.out.println("First took " + (System.currentTimeMillis() - cur));
 
+        cur = System.currentTimeMillis();
         // Try to load SMIL document from existing part.
         if (smilPart != null) {
             document = getSmilDocument(smilPart);
         }
+        System.out.println("second took " + (System.currentTimeMillis() - cur));
 
+        cur = System.currentTimeMillis();
         if (document == null) {
             // Create a new SMIL document.
             document = createSmilDocument(pb);
         }
+        System.out.println("Third took " + (System.currentTimeMillis() - cur));
 
         return document;
     }
@@ -309,18 +315,18 @@ public class SmilHelper {
         SMILElement bodyElement = (SMILElement) document.createElement("body");
         smilElement.appendChild(bodyElement);
 
-        for (SlideModel slide : slideshow) {
+        for (MediaModel media : slideshow) {
             boolean txtRegionPresentInLayout = false;
             boolean imgRegionPresentInLayout = false;
 
             // Create PAR element.
             SMILParElement par = addPar(document);
-            par.setDur(slide.getDuration() / 1000f);
+            //par.setDur(slide.getDuration() / 1000f);
 
-            addParElementEventListeners((EventTarget) par, slide);
+            //addParElementEventListeners((EventTarget) par, slide);
 
             // Add all media elements.
-            for (MediaModel media : slide) {
+            //for (MediaModel media : slide) {
                 SMILMediaElement sme = null;
                 String src = media.getSrc();
                 if (media instanceof TextModel) {
@@ -374,7 +380,7 @@ public class SmilHelper {
                 par.appendChild(sme);
 
                 addMediaElementEventListeners((EventTarget) sme, media);
-            }
+//            }
         }
 
         if (LOCAL_LOGV) {
@@ -420,11 +426,11 @@ public class SmilHelper {
         target.addEventListener(SMIL_MEDIA_SEEK_EVENT, media, false);
     }
 
-    static void addParElementEventListeners(
-            EventTarget target, SlideModel slide) {
-        // To play the slide with SmilPlayer, we should add it
-        // as EventListener into an EventTarget.
-        target.addEventListener(SMIL_SLIDE_START_EVENT, slide, false);
-        target.addEventListener(SMIL_SLIDE_END_EVENT, slide, false);
-    }
+//    static void addParElementEventListeners(
+//            EventTarget target, SlideModel slide) {
+//        // To play the slide with SmilPlayer, we should add it
+//        // as EventListener into an EventTarget.
+//        target.addEventListener(SMIL_SLIDE_START_EVENT, slide, false);
+//        target.addEventListener(SMIL_SLIDE_END_EVENT, slide, false);
+//    }
 }
