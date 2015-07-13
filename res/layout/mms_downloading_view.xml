@@ -19,31 +19,44 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/mms_download_controls"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingTop="@dimen/message_item_text_padding_top"
+    android:layout_gravity="center_vertical"
     android:orientation="horizontal">
 
-    <Button android:id="@+id/btn_download_msg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ImageView android:id="@+id/download_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        android:layout_marginRight="8dp"
         android:layout_gravity="center_vertical"
-        android:text="@string/download"
-        android:visibility="gone" />
+        android:src="@drawable/emo_im_tongue_sticking_out" />
 
-    <Button android:id="@+id/btn_cancel_download"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:text="@string/cancel_downloading"
-        android:visibility="gone" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+            <TextView android:id="@+id/download_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:textSize="12sp" />
 
-    <TextView android:id="@+id/label_downloading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:textAppearance="@android:style/TextAppearance.Material.Subhead"
-        android:text="@string/downloading" 
-        android:visibility="gone" />
+            <ProgressBar
+                android:id="@+id/download_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:indeterminate="true"
+                android:visibility="gone" />
 
+            <TextView android:id="@+id/download_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:textSize="10sp" />
+    </LinearLayout>
 </LinearLayout>
 

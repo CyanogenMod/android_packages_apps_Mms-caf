@@ -94,7 +94,7 @@
          indicating that the download is in progress -->
     <string name="downloading">Downloading</string>
     <!-- Formatting for subject displayed inline, prepended to MMS message text -->
-    <string name="inline_subject">"&lt;Subject: <xliff:g id="subject">%s</xliff:g>&gt;"</string>
+    <string name="inline_subject">"Subject: <xliff:g id="subject">%s</xliff:g>"</string>
     <!-- Text to display when the actual text is inaccessible due to DRM protection -->
     <string name="drm_protected_text">"* DRM protected text *"</string>
     <!-- Error message to display when DRM rights are insufficient to access some data -->

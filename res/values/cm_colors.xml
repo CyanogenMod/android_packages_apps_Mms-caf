@@ -36,4 +36,7 @@
 
     <color name="action_mode_background_color">#424F53</color>
     <color name="action_mode_status_bar_color">#343F42</color>
+
+    <color name="simple_attachment_title_color">#CC000000</color>
+    <color name="simple_attachment_subtitle_color">#80000000</color>
 </resources>

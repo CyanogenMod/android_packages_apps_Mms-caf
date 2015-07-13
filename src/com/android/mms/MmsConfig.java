@@ -113,7 +113,7 @@ public class MmsConfig {
     // activity.
     private static boolean mEnableGroupMms = true;
 
-    private static int MAX_SLIDE_NUM = 10;
+    private static int MAX_SLIDE_NUM = 4;
 
     private static float sMmsCornerRadius = 5;
 
@@ -128,7 +128,6 @@ public class MmsConfig {
         loadMmsSettings(context);
 
         final Resources res = context.getResources();
-        MAX_SLIDE_NUM = res.getInteger(R.integer.max_slide_num);
         sMmsCornerRadius = res.getDimension(R.dimen.mms_image_corner_radius);
     }
 

@@ -18,19 +18,26 @@
 package com.android.mms.model;
 
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import com.android.mms.presenters.SlideShowPresenter;
+import com.google.android.mms.ContentType;
+import com.google.android.mms.MmsException;
+import com.google.android.mms.pdu.GenericPdu;
+import com.google.android.mms.pdu.MultimediaMessagePdu;
+import com.google.android.mms.pdu.PduBody;
+import com.google.android.mms.pdu.PduHeaders;
+import com.google.android.mms.pdu.PduPart;
+import com.google.android.mms.pdu.PduPersister;
+
+import com.android.mms.ContentRestrictionException;
+import com.android.mms.ExceedMessageSizeException;
+import com.android.mms.LogTag;
+import com.android.mms.MmsConfig;
+import com.android.mms.UnsupportContentTypeException;
+import com.android.mms.dom.smil.parser.SmilXmlSerializer;
+import com.android.mms.layout.LayoutManager;
+import com.android.mms.ui.Presenter;
 
 import org.w3c.dom.NodeList;
-import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.smil.SMILDocument;
 import org.w3c.dom.smil.SMILElement;
 import org.w3c.dom.smil.SMILLayoutElement;
@@ -46,59 +53,54 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.android.mms.ContentRestrictionException;
-import com.android.mms.ExceedMessageSizeException;
-import com.android.mms.LogTag;
-import com.android.mms.MmsConfig;
-import com.android.mms.dom.smil.parser.SmilXmlSerializer;
-import com.android.mms.layout.LayoutManager;
-import com.android.mms.ui.UriImage;
-import com.google.android.mms.ContentType;
-import com.google.android.mms.MmsException;
-import com.google.android.mms.pdu.GenericPdu;
-import com.google.android.mms.pdu.MultimediaMessagePdu;
-import com.google.android.mms.pdu.PduBody;
-import com.google.android.mms.pdu.PduHeaders;
-import com.google.android.mms.pdu.PduPart;
-import com.google.android.mms.pdu.PduPersister;
-import com.android.mms.UnsupportContentTypeException;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 public class SlideshowModel extends Model
-        implements List<SlideModel>, IModelChangedObserver {
+        implements List<MediaModel>, IModelChangedObserver {
     private static final String TAG = LogTag.TAG;
 
     private final LayoutModel mLayout;
-    private final ArrayList<SlideModel> mSlides;
+    private final ArrayList<MediaModel> mSlides;
     private SMILDocument mDocumentCache;
     private PduBody mPduBodyCache;
     private int mCurrentMessageSize;    // This is the current message size, not including
                                         // attachments that can be resized (such as photos)
     private int mTotalMessageSize;      // This is the computed total message size
     private int mSubjectSize;           // This is subject size
-    private Context mContext;
+    Context mContext;
 
     // amount of space to leave in a slideshow for overhead.
     public static final int SLIDESHOW_SLOP = 1024;
+    private final SlideShowPresenter mPresenter;
 
     private SlideshowModel(Context context) {
         mLayout = new LayoutModel();
-        mSlides = new ArrayList<SlideModel>();
+        mSlides = new ArrayList<MediaModel>();
         mContext = context;
+        mPresenter = new SlideShowPresenter(mContext, this);
     }
 
     private SlideshowModel (
-            LayoutModel layouts, ArrayList<SlideModel> slides,
+            LayoutModel layouts, ArrayList<MediaModel> slides,
             SMILDocument documentCache, PduBody pbCache,
             Context context) {
         mLayout = layouts;
         mSlides = slides;
         mContext = context;
-
         mDocumentCache = documentCache;
         mPduBodyCache = pbCache;
-        for (SlideModel slide : mSlides) {
-            increaseMessageSize(slide.getSlideSize());
-            slide.setParent(this);
+        mPresenter = new SlideShowPresenter(mContext, this);
+        for (MediaModel slide : mSlides) {
+            increaseMessageSize(slide.getMediaSize());
         }
     }
 
@@ -146,7 +148,7 @@ public class SlideshowModel extends Model
         SMILElement docBody = document.getBody();
         NodeList slideNodes = docBody.getChildNodes();
         int slidesNum = slideNodes.getLength();
-        ArrayList<SlideModel> slides = new ArrayList<SlideModel>(slidesNum);
+        ArrayList<MediaModel> slides = new ArrayList<MediaModel>(slidesNum);
         int totalMessageSize = 0;
 
         for (int i = 0; i < slidesNum; i++) {
@@ -157,61 +159,13 @@ public class SlideshowModel extends Model
             // Create media models for each slide.
             NodeList mediaNodes = par.getChildNodes();
             int mediaNum = mediaNodes.getLength();
-            ArrayList<MediaModel> mediaSet = new ArrayList<MediaModel>(mediaNum);
 
             for (int j = 0; j < mediaNum; j++) {
                 SMILMediaElement sme = (SMILMediaElement) mediaNodes.item(j);
                 try {
                     MediaModel media = MediaModelFactory.getMediaModel(
                             context, sme, layouts, pb);
-
-                    /*
-                    * This is for slide duration value set.
-                    * If mms server does not support slide duration.
-                    */
-                    if (!MmsConfig.getSlideDurationEnabled()) {
-                        int mediadur = media.getDuration();
-                        float dur = par.getDur();
-                        if (dur == 0) {
-                            mediadur = MmsConfig.getMinimumSlideElementDuration() * 1000;
-                            media.setDuration(mediadur);
-                        }
-
-                        if ((int)mediadur / 1000 != dur) {
-                            String tag = sme.getTagName();
-
-                            if (ContentType.isVideoType(media.mContentType)
-                              || tag.equals(SmilHelper.ELEMENT_TAG_VIDEO)
-                              || ContentType.isAudioType(media.mContentType)
-                              || tag.equals(SmilHelper.ELEMENT_TAG_AUDIO)) {
-                                /*
-                                * add 1 sec to release and close audio/video
-                                * for guaranteeing the audio/video playing.
-                                * because the mmsc does not support the slide duration.
-                                */
-                                par.setDur((float)mediadur / 1000 + 1);
-                            } else {
-                                /*
-                                * If a slide has an image and an audio/video element
-                                * and the audio/video element has longer duration than the image,
-                                * The Image disappear before the slide play done. so have to match
-                                * an image duration to the slide duration.
-                                */
-                                if ((int)mediadur / 1000 < dur) {
-                                    media.setDuration((int)dur * 1000);
-                                } else {
-                                    if ((int)dur != 0) {
-                                        media.setDuration((int)dur * 1000);
-                                    } else {
-                                        par.setDur((float)mediadur / 1000);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    SmilHelper.addMediaElementEventListeners(
-                            (EventTarget) sme, media);
-                    mediaSet.add(media);
+                    slides.add(media);
                     totalMessageSize += media.getMediaSize();
                 } catch (IOException e) {
                     Log.e(TAG, e.getMessage(), e);
@@ -221,11 +175,6 @@ public class SlideshowModel extends Model
                     Log.e(TAG, e.getMessage(), e);
                 }
             }
-
-            SlideModel slide = new SlideModel((int) (par.getDur() * 1000), mediaSet);
-            slide.setFill(par.getFill());
-            SmilHelper.addParElementEventListeners((EventTarget) par, slide);
-            slides.add(slide);
         }
 
         SlideshowModel slideshow = new SlideshowModel(layouts, slides, document, pb, context);
@@ -246,68 +195,66 @@ public class SlideshowModel extends Model
         PduBody pb = new PduBody();
 
         boolean hasForwardLock = false;
-        for (SlideModel slide : mSlides) {
-            for (MediaModel media : slide) {
-                PduPart part = new PduPart();
+        for (MediaModel media : mSlides) {
+            PduPart part = new PduPart();
 
-                if (media.isText()) {
-                    TextModel text = (TextModel) media;
-                    // Don't create empty text part.
-                    if (TextUtils.isEmpty(text.getText())) {
-                        continue;
-                    }
-                    // Set Charset if it's a text media.
-                    part.setCharset(text.getCharset());
+            if (media.isText()) {
+                TextModel text = (TextModel) media;
+                // Don't create empty text part.
+                if (TextUtils.isEmpty(text.getText())) {
+                    continue;
                 }
-
-                // Set Content-Type.
-                part.setContentType(media.getContentType().getBytes());
-
-                String src = media.getSrc();
-                String location;
-                boolean startWithContentId = src.startsWith("cid:");
-                if (startWithContentId) {
-                    location = src.substring("cid:".length());
-                } else {
-                    location = src;
-                }
-
-                // Set Content-Location.
-                part.setContentLocation(location.getBytes());
-
-                // Set Content-Id.
-                if (startWithContentId) {
-                    //Keep the original Content-Id.
-                    part.setContentId(location.getBytes());
-                }
-                else {
-                    int index = location.lastIndexOf(".");
-                    String contentId = (index == -1) ? location
-                            : location.substring(0, index);
-                    part.setContentId(contentId.getBytes());
-                }
-
-                if (media.isText()) {
-                    part.setData(((TextModel) media).getText().getBytes());
-                } else if (media.isImage() || media.isVideo() || media.isAudio()
-                           || media.isVcard() || media.isVCal()) {
-                    part.setDataUri(media.getUri());
-                    if (media.isVcard()) {
-                        part.setName(src.getBytes());
-                        if (!TextUtils.isEmpty(((VcardModel) media).getLookupUri())) {
-                            part.setContentDisposition(
-                                    ((VcardModel) media).getLookupUri().getBytes());
-                        }
-                    }
-                } else {
-                    if (media.getUri() != null) {
-                        part.setDataUri(media.getUri());
-                    }
-                    Log.w(TAG, "Unsupport media: " + media);
-                }
-
-                pb.addPart(part);
+                // Set Charset if it's a text media.
+                part.setCharset(text.getCharset());
             }
+
+            // Set Content-Type.
+            part.setContentType(media.getContentType().getBytes());
+
+            String src = media.getSrc();
+            String location;
+            boolean startWithContentId = src.startsWith("cid:");
+            if (startWithContentId) {
+                location = src.substring("cid:".length());
+            } else {
+                location = src;
+            }
+
+            // Set Content-Location.
+            part.setContentLocation(location.getBytes());
+
+            // Set Content-Id.
+            if (startWithContentId) {
+                //Keep the original Content-Id.
+                part.setContentId(location.getBytes());
+            }
+            else {
+                int index = location.lastIndexOf(".");
+                String contentId = (index == -1) ? location
+                        : location.substring(0, index);
+                part.setContentId(contentId.getBytes());
+            }
+
+            if (media.isText()) {
+                part.setData(((TextModel) media).getText().getBytes());
+            } else if (media.isImage() || media.isVideo() || media.isAudio()
+                    || media.isVcard() || media.isVCal()) {
+                part.setDataUri(media.getUri());
+                if (media.isVcard()) {
+                    part.setName(src.getBytes());
+                    if (!TextUtils.isEmpty(((VcardModel) media).getLookupUri())) {
+                        part.setContentDisposition(
+                                ((VcardModel) media).getLookupUri().getBytes());
+                    }
+                }
+            } else {
+                if (media.getUri() != null) {
+                    part.setDataUri(media.getUri());
+                }
+                Log.w(TAG, "Unsupport media: " + media);
+            }
+
+            pb.addPart(part);
         }
 
         // Create and insert SMIL part(as the first part) into the PduBody.
@@ -326,24 +273,22 @@ public class SlideshowModel extends Model
     public HashMap<Uri, InputStream> openPartFiles(ContentResolver cr) {
         HashMap<Uri, InputStream> openedFiles = null;     // Don't create unless we have to
 
-        for (SlideModel slide : mSlides) {
-            for (MediaModel media : slide) {
-                if (media.isText()) {
-                    continue;
-                }
-                Uri uri = media.getUri();
-                InputStream is;
-                try {
-                    is = cr.openInputStream(uri);
-                    if (is != null) {
-                        if (openedFiles == null) {
-                            openedFiles = new HashMap<Uri, InputStream>();
-                        }
-                        openedFiles.put(uri, is);
+        for (MediaModel media : mSlides) {
+            if (media.isText()) {
+                continue;
+            }
+            Uri uri = media.getUri();
+            InputStream is;
+            try {
+                is = cr.openInputStream(uri);
+                if (is != null) {
+                    if (openedFiles == null) {
+                        openedFiles = new HashMap<Uri, InputStream>();
                     }
-                } catch (FileNotFoundException e) {
-                    Log.e(TAG, "openPartFiles couldn't open: " + uri, e);
+                    openedFiles.put(uri, is);
                 }
+            } catch (FileNotFoundException e) {
+                Log.e(TAG, "openPartFiles couldn't open: " + uri, e);
             }
         }
         return openedFiles;
@@ -409,10 +354,8 @@ public class SlideshowModel extends Model
 
     public int getRemainMessageSize() {
         int totalMediaSize = 0;
-        for (SlideModel slide : mSlides) {
-            for (MediaModel media : slide) {
-                totalMediaSize += media.getMediaSize();
-            }
+        for (MediaModel media : mSlides) {
+            totalMediaSize += media.getMediaSize();
         }
         setTotalMessageSize(totalMediaSize);
         // The totalMediaSize include text size which inputting before.
@@ -436,10 +379,9 @@ public class SlideshowModel extends Model
     public int getTotalTextMessageSize() {
         int textSize = 0;
         if (mSlides.size() > 0) {
-            for (SlideModel slide : mSlides) {
-                TextModel textMode = slide.getText();
-                if (textMode != null) {
-                    textSize += textMode.getMediaSize();
+            for (MediaModel slide : mSlides) {
+                if (slide instanceof TextModel) {
+                    textSize += slide.getMediaSize();
                 }
             }
         }
@@ -465,8 +407,8 @@ public class SlideshowModel extends Model
     //
     // Implement List<E> interface.
     //
-    public boolean add(SlideModel object) {
-        int increaseSize = object.getSlideSize();
+    public boolean add(MediaModel object) {
+        int increaseSize = object.getMediaSize();
         checkMessageSize(increaseSize);
 
         if ((object != null) && mSlides.add(object)) {
@@ -481,13 +423,13 @@ public class SlideshowModel extends Model
         return false;
     }
 
-    public boolean addAll(Collection<? extends SlideModel> collection) {
+    public boolean addAll(Collection<? extends MediaModel> collection) {
         throw new UnsupportedOperationException("Operation not supported.");
     }
 
     public void clear() {
         if (mSlides.size() > 0) {
-            for (SlideModel slide : mSlides) {
+            for (MediaModel slide : mSlides) {
                 slide.unregisterModelChangedObserver(this);
                 for (IModelChangedObserver observer : mModelChangedObservers) {
                     slide.unregisterModelChangedObserver(observer);
@@ -511,14 +453,14 @@ public class SlideshowModel extends Model
         return mSlides.isEmpty();
     }
 
-    public Iterator<SlideModel> iterator() {
+    public Iterator<MediaModel> iterator() {
         return mSlides.iterator();
     }
 
     public boolean remove(Object object) {
         if ((object != null) && mSlides.remove(object)) {
-            SlideModel slide = (SlideModel) object;
-            decreaseMessageSize(slide.getSlideSize());
+            MediaModel slide = (MediaModel) object;
+            decreaseMessageSize(slide.getMediaSize());
             slide.unregisterAllModelChangedObservers();
             notifyModelChanged(true);
             return true;
@@ -546,9 +488,9 @@ public class SlideshowModel extends Model
         return mSlides.toArray(array);
     }
 
-    public void add(int location, SlideModel object) {
+    public void add(int location, MediaModel object) {
         if (object != null) {
-            int increaseSize = object.getSlideSize();
+            int increaseSize = object.getMediaSize();
             checkMessageSize(increaseSize);
 
             mSlides.add(location, object);
@@ -562,11 +504,11 @@ public class SlideshowModel extends Model
     }
 
     public boolean addAll(int location,
-            Collection<? extends SlideModel> collection) {
+            Collection<? extends MediaModel> collection) {
         throw new UnsupportedOperationException("Operation not supported.");
     }
 
-    public SlideModel get(int location) {
+    public MediaModel get(int location) {
         return (location >= 0 && location < mSlides.size()) ? mSlides.get(location) : null;
     }
 
@@ -578,31 +520,31 @@ public class SlideshowModel extends Model
         return mSlides.lastIndexOf(object);
     }
 
-    public ListIterator<SlideModel> listIterator() {
+    public ListIterator<MediaModel> listIterator() {
         return mSlides.listIterator();
     }
 
-    public ListIterator<SlideModel> listIterator(int location) {
+    public ListIterator<MediaModel> listIterator(int location) {
         return mSlides.listIterator(location);
     }
 
-    public SlideModel remove(int location) {
-        SlideModel slide = mSlides.remove(location);
+    public MediaModel remove(int location) {
+        MediaModel slide = mSlides.remove(location);
         if (slide != null) {
-            decreaseMessageSize(slide.getSlideSize());
+            decreaseMessageSize(slide.getMediaSize());
             slide.unregisterAllModelChangedObservers();
             notifyModelChanged(true);
         }
         return slide;
     }
 
-    public SlideModel set(int location, SlideModel object) {
-        SlideModel slide = mSlides.get(location);
+    public MediaModel set(int location, MediaModel object) {
+        MediaModel slide = mSlides.get(location);
         if (null != object) {
             int removeSize = 0;
-            int addSize = object.getSlideSize();
+            int addSize = object.getMediaSize();
             if (null != slide) {
-                removeSize = slide.getSlideSize();
+                removeSize = slide.getMediaSize();
             }
             if (addSize > removeSize) {
                 checkMessageSize(addSize - removeSize);
@@ -628,7 +570,7 @@ public class SlideshowModel extends Model
         return slide;
     }
 
-    public List<SlideModel> subList(int start, int end) {
+    public List<MediaModel> subList(int start, int end) {
         return mSlides.subList(start, end);
     }
 
@@ -637,7 +579,7 @@ public class SlideshowModel extends Model
             IModelChangedObserver observer) {
         mLayout.registerModelChangedObserver(observer);
 
-        for (SlideModel slide : mSlides) {
+        for (MediaModel slide : mSlides) {
             slide.registerModelChangedObserver(observer);
         }
     }
@@ -647,7 +589,7 @@ public class SlideshowModel extends Model
             IModelChangedObserver observer) {
         mLayout.unregisterModelChangedObserver(observer);
 
-        for (SlideModel slide : mSlides) {
+        for (MediaModel slide : mSlides) {
             slide.unregisterModelChangedObserver(observer);
         }
     }
@@ -656,7 +598,7 @@ public class SlideshowModel extends Model
     protected void unregisterAllModelChangedObserversInDescendants() {
         mLayout.unregisterAllModelChangedObservers();
 
-        for (SlideModel slide : mSlides) {
+        for (MediaModel slide : mSlides) {
             slide.unregisterAllModelChangedObservers();
         }
     }
@@ -669,12 +611,10 @@ public class SlideshowModel extends Model
     }
 
     public void sync(PduBody pb) {
-        for (SlideModel slide : mSlides) {
-            for (MediaModel media : slide) {
-                PduPart part = pb.getPartByContentLocation(media.getSrc());
-                if (part != null) {
-                    media.setUri(part.getDataUri());
-                }
+        for (MediaModel media : mSlides) {
+            PduPart part = pb.getPartByContentLocation(media.getSrc());
+            if (part != null) {
+                media.setUri(part.getDataUri());
             }
         }
     }
@@ -696,23 +636,19 @@ public class SlideshowModel extends Model
         if (size() != 1)
             return false;
 
-        SlideModel slide = get(0);
+        MediaModel slide = get(0);
         if (!isSlideValid(slide))
-            return false;
-
-        // No audio allowed.
-        if (slide.hasAudio())
             return false;
 
         return true;
     }
 
-    private boolean isSlideValid(SlideModel slide) {
+    private boolean isSlideValid(MediaModel slide) {
         // The slide must have either an image, video, vcard or vcal and only one of them.
-        boolean hasImage = slide.hasImage();
-        boolean hasVideo = slide.hasVideo();
-        boolean hasVcard = slide.hasVcard();
-        boolean hasVCal = slide.hasVCal();
+        boolean hasImage = slide instanceof ImageModel;
+        boolean hasVideo = slide instanceof VideoModel;
+        boolean hasVcard = slide instanceof VcardModel;
+        boolean hasVCal = slide instanceof VCalModel;
         int numAttachments = 0;
         if (hasImage) numAttachments++;
         if (hasVideo) numAttachments++;
@@ -726,10 +662,10 @@ public class SlideshowModel extends Model
      * in the message text box.
      */
     public void prepareForSend() {
-        if (size() == 1) {
-            TextModel text = get(0).getText();
-            if (text != null) {
-                text.cloneText();
+        if (size() >= 1) {
+            MediaModel text = get(0);
+            if (text instanceof TextModel) {
+                ((TextModel)text).cloneText();
             }
         }
     }
@@ -746,13 +682,11 @@ public class SlideshowModel extends Model
         // sizes of the items that can't be resized.
         int resizableCnt = 0;
         int fixedSizeTotal = 0;
-        for (SlideModel slide : mSlides) {
-            for (MediaModel media : slide) {
-                if (media.getMediaResizable()) {
-                    ++resizableCnt;
-                } else {
-                    fixedSizeTotal += media.getMediaSize();
-                }
+        for (MediaModel media : mSlides) {
+            if (media.getMediaResizable()) {
+                ++resizableCnt;
+            } else {
+                fixedSizeTotal += media.getMediaSize();
             }
         }
         if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
@@ -768,19 +702,15 @@ public class SlideshowModel extends Model
             long messageId = ContentUris.parseId(messageUri);
             int bytesPerMediaItem = remainingSize / resizableCnt;
             // Resize the resizable media items to fit within their byte limit.
-            for (SlideModel slide : mSlides) {
-                for (MediaModel media : slide) {
-                    if (media.getMediaResizable()) {
-                        media.resizeMedia(bytesPerMediaItem, messageId);
-                    }
+            for (MediaModel media : mSlides) {
+                if (media.getMediaResizable()) {
+                    media.resizeMedia(bytesPerMediaItem, messageId);
                 }
             }
             // One last time through to calc the real message size.
             int totalSize = 0;
-            for (SlideModel slide : mSlides) {
-                for (MediaModel media : slide) {
-                    totalSize += media.getMediaSize();
-                }
+            for (MediaModel media : mSlides) {
+                totalSize += media.getMediaSize();
             }
             if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
                 Log.v(TAG, "finalResize: new message size: " + totalSize);
@@ -802,10 +732,8 @@ public class SlideshowModel extends Model
 
     public void updateTotalMessageSize() {
         int totalSize = 0;
-        for (SlideModel slide : mSlides) {
-            for (MediaModel media : slide) {
-                totalSize += media.getMediaSize();
-            }
+        for (MediaModel media : mSlides) {
+            totalSize += media.getMediaSize();
         }
         if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
             Log.v(TAG, "updateTotalMessageSize: message size: " + totalSize);
@@ -814,5 +742,16 @@ public class SlideshowModel extends Model
         // is called by UI for displaying the size of the MMS message, so set
         // mTotalMessageSize here rather than mCurrentMessageSize.
         setTotalMessageSize(totalSize);
+    }
+
+    @Override
+    public Presenter getPresenter() {
+        return mPresenter;
+    }
+
+    public void cancelThumbnailLoading() {
+        for (MediaModel i : SlideshowModel.this) {
+            i.cancelThumbnailLoading();
+        }
     }
 }

@@ -42,6 +42,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 import java.util.Set;
 
@@ -131,6 +132,7 @@ import android.view.View.OnCreateContextMenuListener;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
@@ -169,8 +171,9 @@ import com.android.mms.data.Conversation.ConversationQueryHandler;
 import com.android.mms.data.WorkingMessage;
 import com.android.mms.data.WorkingMessage.MessageStatusListener;
 import com.android.mms.drm.DrmUtils;
-import com.android.mms.model.SlideModel;
+import com.android.mms.model.MediaModel;
 import com.android.mms.model.SlideshowModel;
+import com.android.mms.model.TextModel;
 import com.android.mms.transaction.MessagingNotification;
 import com.android.mms.transaction.SmsReceiverService;
 import com.android.mms.ui.MessageListView.OnSizeChangedListener;
@@ -289,6 +292,7 @@ public class ComposeMessageActivity extends Activity
     private static final int MESSAGE_LIST_QUERY_TOKEN = 9527;
     private static final int MESSAGE_LIST_QUERY_AFTER_DELETE_TOKEN = 9528;
     private static final int MESSAGE_LIST_TYPE_QUERY_TOKEN = 9529;
+    private static final int MESSAGE_POPULATE_CACHE_TOKEN = 9530;
 
     public static final int DELETE_MESSAGE_TOKEN  = 9700;
 
@@ -375,7 +379,6 @@ public class ComposeMessageActivity extends Activity
     private AsyncTask<Void, Void, Contact> mSendButtonContactImageTask;
 
     private AttachmentEditor mAttachmentEditor;
-    private View mAttachmentEditorScrollView;
 
     private MessageListView mMsgListView;        // ListView for messages in this conversation
     public MessageListAdapter mMsgListAdapter;  // and its corresponding ListAdapter
@@ -503,6 +506,7 @@ public class ComposeMessageActivity extends Activity
     private UnicodeFilter mUnicodeFilter = null;
 
     private AddNumbersTask mAddNumbersTask;
+    private MessageInfoCache mMessageInfoCache;
 
     private boolean mIsMsim;
     private SimDropdownDrawable mSimSelectionDrawable;
@@ -524,37 +528,6 @@ public class ComposeMessageActivity extends Activity
     // Inner classes
     //==========================================================
 
-    private void editSlideshow() {
-        final int subjectSize = mWorkingMessage.hasSubject()
-                    ? mWorkingMessage.getSubject().toString().getBytes().length : 0;
-        // The user wants to edit the slideshow. That requires us to persist the slideshow to
-        // disk as a PDU in saveAsMms. This code below does that persisting in a background
-        // task. If the task takes longer than a half second, a progress dialog is displayed.
-        // Once the PDU persisting is done, another runnable on the UI thread get executed to start
-        // the SlideshowEditActivity.
-        getAsyncDialog().runAsync(new Runnable() {
-            @Override
-            public void run() {
-                // This runnable gets run in a background thread.
-                mTempMmsUri = mWorkingMessage.saveAsMms(false);
-            }
-        }, new Runnable() {
-            @Override
-            public void run() {
-                // Once the above background thread is complete, this runnable is run
-                // on the UI thread.
-                if (mTempMmsUri == null) {
-                    return;
-                }
-                Intent intent = new Intent(ComposeMessageActivity.this,
-                        SlideshowEditActivity.class);
-                intent.setData(mTempMmsUri);
-                intent.putExtra(MSG_SUBJECT_SIZE, subjectSize);
-                startActivityForResult(intent, REQUEST_CODE_CREATE_SLIDESHOW);
-            }
-        }, R.string.building_slideshow_title);
-    }
-
     private void pickContacts(int mode, int requestCode) {
         Intent intent = new Intent(ComposeMessageActivity.this, SelectRecipientsList.class);
         // avoid initializing mRecipientsEditor wrong. Otherwise, this will
@@ -574,79 +547,14 @@ public class ComposeMessageActivity extends Activity
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case AttachmentEditor.MSG_EDIT_SLIDESHOW: {
-                    editSlideshow();
-                    break;
-                }
-                case AttachmentEditor.MSG_SEND_SLIDESHOW: {
-                    if (isPreparedForSending()) {
-                        ComposeMessageActivity.this.confirmSendMessageIfNeeded();
-                    }
-                    break;
-                }
-                case AttachmentEditor.MSG_VIEW_IMAGE:
-                case AttachmentEditor.MSG_PLAY_VIDEO:
-                case AttachmentEditor.MSG_PLAY_AUDIO:
-                case AttachmentEditor.MSG_PLAY_SLIDESHOW:
-                case AttachmentEditor.MSG_VIEW_VCAL:
-                case AttachmentEditor.MSG_VIEW_VCARD:
-                    if (mWorkingMessage.getSlideshow() != null) {
-                         viewMmsMessageAttachment(msg.what);
-                    }
-                    break;
-                case AttachmentEditor.MSG_REPLACE_IMAGE:
-                case AttachmentEditor.MSG_REPLACE_VIDEO:
-                case AttachmentEditor.MSG_REPLACE_AUDIO:
-                case AttachmentEditor.MSG_REPLACE_VCAL:
-                case AttachmentEditor.MSG_REPLACE_VCARD:
-                    showAddAttachmentDialog(true);
-                    break;
-
                 case AttachmentEditor.MSG_REMOVE_ATTACHMENT:
-                    mWorkingMessage.removeAttachment(true);
+                    mWorkingMessage.removeAttachment(true, msg);
                     break;
-
                 default:
                     break;
             }
         }
     };
-
-
-    private void viewMmsMessageAttachment(final int requestCode) {
-        SlideshowModel slideshow = mWorkingMessage.getSlideshow();
-        if (slideshow == null) {
-            throw new IllegalStateException("mWorkingMessage.getSlideshow() == null");
-        }
-        if (slideshow.isSimple()) {
-            MessageUtils.viewSimpleSlideshow(this, slideshow);
-        } else {
-            // The user wants to view the slideshow. That requires us to persist the slideshow to
-            // disk as a PDU in saveAsMms. This code below does that persisting in a background
-            // task. If the task takes longer than a half second, a progress dialog is displayed.
-            // Once the PDU persisting is done, another runnable on the UI thread get executed to
-            // start the SlideshowActivity.
-            getAsyncDialog().runAsync(new Runnable() {
-                @Override
-                public void run() {
-                    // This runnable gets run in a background thread.
-                    mTempMmsUri = mWorkingMessage.saveAsMms(false);
-                }
-            }, new Runnable() {
-                @Override
-                public void run() {
-                    // Once the above background thread is complete, this runnable is run
-                    // on the UI thread.
-                    if (mTempMmsUri == null) {
-                        return;
-                    }
-                    MessageUtils.launchSlideshowActivity(ComposeMessageActivity.this, mTempMmsUri,
-                            requestCode);
-                }
-            }, R.string.building_slideshow_title);
-        }
-    }
-
 
     private final Handler mMessageListItemHandler = new Handler() {
         @Override
@@ -656,26 +564,6 @@ public class ComposeMessageActivity extends Activity
                 switch (msg.what) {
                     case MessageListItem.MSG_LIST_DETAILS:
                         showMessageDetails(msgItem);
-                        break;
-
-                    case MessageListItem.MSG_LIST_EDIT:
-                        editMessageItem(msgItem);
-                        drawBottomPanel();
-                        break;
-
-                    case MessageListItem.MSG_LIST_PLAY:
-                        switch (msgItem.mAttachmentType) {
-                            case WorkingMessage.IMAGE:
-                            case WorkingMessage.VIDEO:
-                            case WorkingMessage.AUDIO:
-                            case WorkingMessage.VCARD:
-                            case WorkingMessage.VCAL:
-                            case WorkingMessage.SLIDESHOW:
-                                MessageUtils.viewMmsMessageAttachment(ComposeMessageActivity.this,
-                                        msgItem.mMessageUri, msgItem.mSlideshow,
-                                        getAsyncDialog());
-                                break;
-                        }
                         break;
 
                     default:
@@ -2640,6 +2528,7 @@ public class ComposeMessageActivity extends Activity
         }
 
         // No need to do the querying when finished this activity
+        mBackgroundQueryHandler.cancelOperation(MESSAGE_POPULATE_CACHE_TOKEN);
         mBackgroundQueryHandler.cancelOperation(MESSAGE_LIST_QUERY_TOKEN);
         mBackgroundQueryHandler.cancelOperation(MESSAGE_LIST_TYPE_QUERY_TOKEN);
 
@@ -2683,7 +2572,11 @@ public class ComposeMessageActivity extends Activity
         if (mZoomGestureOverlayView != null) {
             mZoomGestureOverlayView.removeZoomListener(this);
         }
-
+        // Set the adapter to null so that the views are removed
+        // and our listener for onViewRemoved is called and we can cancel
+        // any async tasks
+        mMsgListView.setAdapter(null);
+        mMessageInfoCache.cleanup();
         super.onDestroy();
     }
 
@@ -2874,14 +2767,39 @@ public class ComposeMessageActivity extends Activity
     }
 
     @Override
-    public void onAttachmentChanged() {
-        // Have to make sure we're on the UI thread. This function can be called off of the UI
-        // thread when we're adding multi-attachments
+    public void onAttachmentsRemoved() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 drawBottomPanel();
                 updateSendButtonState();
+                mAttachmentEditor.removeAllAttachments();
+                drawTopPanel(isSubjectEditorVisible());
+            }
+        });
+    }
+
+    @Override
+    public void onAttachmentRemoved(final MediaModel slideModel) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                drawBottomPanel();
+                updateSendButtonState();
+                boolean showingAttachment = mAttachmentEditor.removeAttachment(slideModel);
+                drawTopPanel(isSubjectEditorVisible());
+            }
+        });
+    }
+
+    @Override
+    public void onAttachmentAdded(final MediaModel slideModel) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                drawBottomPanel();
+                updateSendButtonState();
+                mAttachmentEditor.addAttachment(slideModel);
                 drawTopPanel(isSubjectEditorVisible());
             }
         });
@@ -3354,16 +3272,7 @@ public class ComposeMessageActivity extends Activity
         return slideNum;
     }
 
-    private boolean showAddAttachementMenu() {
-        if (!mShowAttachIcon) {
-            return !mWorkingMessage.hasAttachment();
-        } else {
-            return !mWorkingMessage.hasVcard()
-                    && getSlideNumber() < MmsConfig.getMaxSlideNumber();
-        }
-    }
-
-    private boolean isAppendRequest(int requestCode) {
+   private boolean isAppendRequest(int requestCode) {
         return (requestCode & REPLACE_ATTACHMENT_MASK) == 0;
     }
 
@@ -3385,8 +3294,8 @@ public class ComposeMessageActivity extends Activity
         SlideshowModel slideShow = mWorkingMessage.getSlideshow();
         if (replace && slideShow != null) {
             WorkingMessage.removeThumbnailsFromCache(slideShow);
-            SlideModel slide = slideShow.get(0);
-            currentSlideSize = slide.getSlideSize();
+            MediaModel slide = slideShow.get(0);
+            currentSlideSize = slide.getMediaSize();
         }
         switch (type) {
             case AttachmentTypeSelectorAdapter.ADD_IMAGE:
@@ -3427,10 +3336,6 @@ public class ComposeMessageActivity extends Activity
                 long sizeLimit = computeAttachmentSizeLimit(slideShow, currentSlideSize);
                 MessageUtils.recordSound(this,
                         getMakRequestCode(replace, REQUEST_CODE_RECORD_SOUND), sizeLimit);
-                break;
-
-            case AttachmentTypeSelectorAdapter.ADD_SLIDESHOW:
-                editSlideshow();
                 break;
 
             case AttachmentTypeSelectorAdapter.ADD_CONTACT_AS_TEXT:
@@ -3475,8 +3380,7 @@ public class ComposeMessageActivity extends Activity
         builder.setTitle(R.string.add_attachment);
 
         if (mAttachmentTypeSelectorAdapter == null) {
-            mAttachmentTypeSelectorAdapter = new AttachmentTypeSelectorAdapter(
-                    this, AttachmentTypeSelectorAdapter.MODE_WITH_SLIDESHOW);
+            mAttachmentTypeSelectorAdapter = new AttachmentTypeSelectorAdapter(this);
         }
 
         if (mShowAttachIcon) {
@@ -3539,24 +3443,12 @@ public class ComposeMessageActivity extends Activity
             return;
         }
 
-        switch (requestCode) {
-            case REQUEST_CODE_CREATE_SLIDESHOW:
-                if (data != null) {
-                    WorkingMessage newMessage = WorkingMessage.load(this, data.getData());
-                    if (newMessage != null) {
-                        // Here we should keep the subject from the old mWorkingMessage.
-                        setNewMessageSubject(newMessage);
-                        mWorkingMessage = newMessage;
-                        mWorkingMessage.setConversation(mConversation);
-                        updateThreadIdIfRunning();
-                        updateMmsSizeIndicator();
-                        drawTopPanel(false);
-                        drawBottomPanel();
-                        updateSendButtonState();
-                    }
-                }
-                break;
+        if (mWorkingMessage.getSlideshow() != null) {
+            mWorkingMessage.syncTextFromSlideshow();
+            mWorkingMessage.correctAttachmentState(false);
+        }
 
+        switch (requestCode) {
             case REQUEST_CODE_TAKE_PICTURE: {
                 // create a file based uri and pass to addImage(). We want to read the JPEG
                 // data directly from file (using UriImage) instead of decoding it into a Bitmap,
@@ -3637,7 +3529,7 @@ public class ComposeMessageActivity extends Activity
                     String extraVCard = data.getStringExtra(SelectRecipientsList.EXTRA_VCARD);
                     if (extraVCard != null) {
                         Uri vcard = Uri.parse(extraVCard);
-                        addVcard(vcard);
+                        addVcard(vcard, append);
                     }
                 }
                 break;
@@ -3656,7 +3548,7 @@ public class ComposeMessageActivity extends Activity
                     // since mms is lacking the ability to add multiple attachments, add the first
                     // and only event requested
                     if (uris.size() > 0) {
-                        addVCal(uris.get(0));
+                        addVCal(uris.get(0), append);
                     }
                 }
 
@@ -3687,7 +3579,14 @@ public class ComposeMessageActivity extends Activity
             if (mWorkingMessage.getSlideshow() != null) {
                 mWorkingMessage.getSlideshow().updateTotalMessageSize();
             }
-            mAttachmentEditor.update(mWorkingMessage);
+            mAttachmentEditor.removeAllAttachments();
+            if (mWorkingMessage.getSlideshow() != null) {
+                for (MediaModel b : mWorkingMessage.getSlideshow()) {
+                    if (!(b instanceof TextModel)) {
+                        mAttachmentEditor.addAttachment(b);
+                    }
+                }
+            }
         }
     };
 
@@ -3761,7 +3660,9 @@ public class ComposeMessageActivity extends Activity
                 try {
                     Uri dataUri = persister.persistPart(part,
                             ContentUris.parseId(messageUri), null);
-                    result = mWorkingMessage.setAttachment(WorkingMessage.IMAGE, dataUri, append);
+                    int maxWidth = mMessageInfoCache.getMaxItemWidth();
+                    result = mWorkingMessage.setAttachment(WorkingMessage.IMAGE, dataUri,
+                            append, maxWidth);
                     if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
                         log("ResizeImageResultCallback: dataUri=" + dataUri);
                     }
@@ -3846,7 +3747,8 @@ public class ComposeMessageActivity extends Activity
             log("addImage: append=" + append + ", uri=" + uri);
         }
 
-        int result = mWorkingMessage.setAttachment(WorkingMessage.IMAGE, uri, append);
+        int maxWidth = mMessageInfoCache.getMaxItemWidth();
+        int result = mWorkingMessage.setAttachment(WorkingMessage.IMAGE, uri, append, maxWidth);
 
         if (result == WorkingMessage.IMAGE_TOO_LARGE ||
             result == WorkingMessage.MESSAGE_SIZE_EXCEEDED) {
@@ -3887,13 +3789,13 @@ public class ComposeMessageActivity extends Activity
         }
     }
 
-    private void addVcard(Uri uri) {
-        int result = mWorkingMessage.setAttachment(WorkingMessage.VCARD, uri, false);
+    private void addVcard(Uri uri, boolean append) {
+        int result = mWorkingMessage.setAttachment(WorkingMessage.VCARD, uri, append);
         handleAddAttachmentError(result, R.string.type_vcard);
     }
 
-    private void addVCal(Uri uri) {
-        int result = mWorkingMessage.setAttachment(WorkingMessage.VCAL, uri, false);
+    private void addVCal(Uri uri, boolean append) {
+        int result = mWorkingMessage.setAttachment(WorkingMessage.VCAL, uri, append);
         handleAddAttachmentError(result, R.string.type_vcal);
     }
 
@@ -4011,10 +3913,10 @@ public class ComposeMessageActivity extends Activity
             } else if (this.getResources().getBoolean(R.bool.config_vcard)
                     && (type.equals("text/x-vcard")
                     || (wildcard && isVcardFile(uri)))) {
-                addVcard(uri);
+                addVcard(uri, append);
            } else if ((type.equals("text/x-vcalendar")
                        && isVCalFile(uri))) {
-                addVCal(uri);
+                addVCal(uri, append);
            }
         }
     }
@@ -4030,12 +3932,6 @@ public class ComposeMessageActivity extends Activity
     private void drawBottomPanel() {
         // Reset the counter for text editor.
         resetCounter();
-
-        if (mWorkingMessage.hasSlideshow()) {
-            mBottomPanel.setVisibility(View.GONE);
-            mAttachmentEditor.requestFocus();
-            return;
-        }
 
         if (LOCAL_LOGV) {
             Log.v(TAG, "CMA.drawBottomPanel");
@@ -4068,13 +3964,16 @@ public class ComposeMessageActivity extends Activity
     }
 
     private void drawTopPanel(boolean showSubjectEditor) {
-        boolean showingAttachment = mAttachmentEditor.update(mWorkingMessage);
-        mAttachmentEditorScrollView.setVisibility(showingAttachment ? View.VISIBLE : View.GONE);
+        boolean showingAttachment = mWorkingMessage.hasAttachment();
+        mAttachmentEditor.setVisibility(showingAttachment ? View.VISIBLE : View.GONE);
         showSubjectEditor(showSubjectEditor || mWorkingMessage.hasSubject());
         int subjectSize = mWorkingMessage.hasSubject()
                 ? mWorkingMessage.getSubject().toString().getBytes().length : 0;
         if (mWorkingMessage.getSlideshow()!= null) {
-            mWorkingMessage.getSlideshow().setSubjectSize(subjectSize);
+            SlideshowModel slideshow = mWorkingMessage.getSlideshow();
+            slideshow.setSubjectSize(subjectSize);
+            findViewById(R.id.add_attachment).setEnabled(slideshow.size()
+                    < MmsConfig.getMaxSlideNumber());
         }
 
         invalidateOptionsMenu();
@@ -4136,7 +4035,7 @@ public class ComposeMessageActivity extends Activity
                 return;
             }
             if (mWorkingMessage.hasAttachment()) {
-                if (!mAttachmentEditor.canAddTextForMms(s)) {
+                if (!mAttachmentEditor.canAddTextForMms(s, mWorkingMessage.getSlideshow())) {
                     if (mTextEditor != null) {
                         mIsChanged = true;
                         mTextEditor.setText(mTextBefore);
@@ -4144,7 +4043,7 @@ public class ComposeMessageActivity extends Activity
                         Toast.makeText(ComposeMessageActivity.this,
                                 R.string.cannot_add_text_anymore, Toast.LENGTH_SHORT).show();
                     }
-                    mAttachmentEditor.canAddTextForMms(mTextBefore);
+                    mAttachmentEditor.canAddTextForMms(mTextBefore, mWorkingMessage.getSlideshow());
                     return;
                 }
             }
@@ -4213,6 +4112,18 @@ public class ComposeMessageActivity extends Activity
 
         mMsgListView = (MessageListView) findViewById(R.id.history);
         mMsgListView.setDivider(null);      // no divider so we look like IM conversation.
+
+        mMsgListView.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                mMsgListView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                int msgBubbleMargin = getResources()
+                        .getDimensionPixelSize(R.dimen.recv_message_bubble_layout_margin_start);
+                int maxItemWidth = mMsgListView.getWidth() - msgBubbleMargin;
+                mMessageInfoCache.setMaxItemWidth(maxItemWidth);
+            }
+        });
 
         // called to enable us to show some padding between the message list and the
         // input field but when the message list is scrolled that padding area is filled
@@ -4296,7 +4207,6 @@ public class ComposeMessageActivity extends Activity
         mTopPanel.setFocusable(false);
         mAttachmentEditor = (AttachmentEditor) findViewById(R.id.attachment_editor);
         mAttachmentEditor.setHandler(mAttachmentEditorHandler);
-        mAttachmentEditorScrollView = findViewById(R.id.attachment_editor_scroll_view);
 
         // initialize attachment
         findViewById(R.id.add_attachment).setOnClickListener(new View.OnClickListener() {
@@ -4350,6 +4260,7 @@ public class ComposeMessageActivity extends Activity
     }
 
     private void startMsgListQuery() {
+        startMsgListQuery(MESSAGE_POPULATE_CACHE_TOKEN);
         startMsgListQuery(MESSAGE_LIST_QUERY_TOKEN);
         startMsgListQuery(MESSAGE_LIST_TYPE_QUERY_TOKEN);
     }
@@ -4367,6 +4278,9 @@ public class ComposeMessageActivity extends Activity
         Uri conversationUri = null;
         long threadId = mConversation.getThreadId();
 
+        String[] projection = PROJECTION, selectionArgs = null;
+        String selection = null, sortOrder = null;
+
         switch (token) {
             case MESSAGE_LIST_QUERY_TOKEN:
                 conversationUri = mConversation.getUri();
@@ -4374,6 +4288,13 @@ public class ComposeMessageActivity extends Activity
             case MESSAGE_LIST_TYPE_QUERY_TOKEN:
                 conversationUri = Uri.withAppendedPath(CONVERSATION_TYPE_URI,
                         String.valueOf(threadId));
+                break;
+            case MESSAGE_POPULATE_CACHE_TOKEN:
+                conversationUri = Uri.withAppendedPath(Telephony.Mms.CONTENT_URI, "part");
+                projection = new String[] {"mid", "ct", "text"};
+                selection = "seq != -1 and mid in (select _id from pdu where thread_id=?)";
+                selectionArgs = new String[] {String.valueOf(threadId)};
+                sortOrder = "mid desc";
                 break;
         }
 
@@ -4390,8 +4311,8 @@ public class ComposeMessageActivity extends Activity
                     token,
                     threadId /* cookie */,
                     conversationUri,
-                    PROJECTION,
-                    null, null, null);
+                    projection,
+                    selection, selectionArgs, sortOrder);
         } catch (SQLiteException e) {
             SqliteWrapper.checkSQLiteException(this, e);
         }
@@ -4407,8 +4328,10 @@ public class ComposeMessageActivity extends Activity
             ? null
             : Pattern.compile("\\b" + Pattern.quote(highlightString), Pattern.CASE_INSENSITIVE);
 
+        mMessageInfoCache = new MessageInfoCache(this, mConversation.getThreadId());
+
         // Initialize the list adapter with a null cursor.
-        mMsgListAdapter = new MessageListAdapter(this, null, mMsgListView, true, highlight);
+        mMsgListAdapter = new MessageListAdapter(this, null, mMsgListView, true, highlight, mMessageInfoCache);
         mMsgListAdapter.setOnDataSetChangedListener(mDataSetChangedListener);
         mMsgListAdapter.setMsgListItemHandler(mMessageListItemHandler);
         mMsgListView.setAdapter(mMsgListAdapter);
@@ -4428,15 +4351,16 @@ public class ComposeMessageActivity extends Activity
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem,
                                  int visibleItemCount, int totalItemCount) {
-              if (mIsKeyboardOpen && scrolling) {
-                  final int first = mMsgListView.getFirstVisiblePosition();
-                  final int last = mMsgListView.getLastVisiblePosition();
-                  final int count = mMsgListAdapter.getCount();
-                  if (count > (last - first + 1)) {
-                      hideKeyboard();
-                  }
-              }
+                if (mIsKeyboardOpen && scrolling) {
+                    final int first = mMsgListView.getFirstVisiblePosition();
+                    final int last = mMsgListView.getLastVisiblePosition();
+                    final int count = mMsgListAdapter.getCount();
+                    if (count > (last - first + 1)) {
+                        hideKeyboard();
+                    }
+                }
             }
+
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
                 scrolling = scrollState != AbsListView.OnScrollListener.SCROLL_STATE_IDLE;
@@ -4444,6 +4368,18 @@ public class ComposeMessageActivity extends Activity
         });
         mMsgListView.setMultiChoiceModeListener(new ModeCallback());
         mMsgListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        mMsgListView.setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
+            @Override
+            public void onChildViewAdded(View parent, View child) {
+            }
+
+            @Override
+            public void onChildViewRemoved(View parent, View child) {
+                if (child instanceof MessageListItem) {
+                    ((MessageListItem) child).unbind();
+                }
+            }
+        });
     }
 
     /**
@@ -4671,8 +4607,8 @@ public class ComposeMessageActivity extends Activity
         }
 
         // Make the attachment editor hide its view.
-        mAttachmentEditor.hideView();
-        mAttachmentEditorScrollView.setVisibility(View.GONE);
+        mAttachmentEditor.removeAllAttachments();
+        mAttachmentEditor.setVisibility(View.GONE);
 
         // Hide the subject editor.
         showSubjectEditor(false);
@@ -4720,20 +4656,7 @@ public class ComposeMessageActivity extends Activity
     }
 
     private void updateSendButtonState() {
-        boolean enable = false;
-        if (isPreparedForSending()) {
-            // When the type of attachment is slideshow, we should
-            // also hide the 'Send' button since the slideshow view
-            // already has a 'Send' button embedded.
-            if (!mWorkingMessage.hasSlideshow()) {
-                enable = true;
-            } else {
-                mAttachmentEditor.setCanSend(true);
-            }
-        } else if (null != mAttachmentEditor){
-            mAttachmentEditor.setCanSend(false);
-        }
-
+        boolean enable = isPreparedForSending();
         boolean requiresMms = mWorkingMessage.requiresMms();
         showSmsOrMmsSendButton(requiresMms);
         mSendButton.setEnabled(enable);
@@ -4962,6 +4885,9 @@ public class ComposeMessageActivity extends Activity
         @Override
         protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
             switch(token) {
+                case MESSAGE_POPULATE_CACHE_TOKEN:
+                    mMessageInfoCache.populateCache(cursor);
+                    break;
                 case MESSAGE_LIST_TYPE_QUERY_TOKEN:
                     mNumSms = mNumMms = -1;
                     if (cursor != null) {
@@ -5703,15 +5629,8 @@ public class ComposeMessageActivity extends Activity
         private void showMessageDetail() {
             Cursor c = (Cursor) getListView().getAdapter().getItem(
                     mSelectedPos.get(0));
-            String type = c.getString(COLUMN_MSG_TYPE);
-            if (type.equals("sms")) {
-                // this only for sms
-                MessageUtils.showSmsMessageContent(getContext(), c.getLong(COLUMN_ID));
-            } else if (type.equals("mms")) {
-                MessageUtils.viewMmsMessageAttachment(
-                        ComposeMessageActivity.this, mSelectedMsg.get(0), null,
-                        new AsyncDialog(ComposeMessageActivity.this));
-            }
+            // this only for sms
+            MessageUtils.showSmsMessageContent(getContext(), c.getLong(COLUMN_ID));
         }
 
         private void shareMessage() {

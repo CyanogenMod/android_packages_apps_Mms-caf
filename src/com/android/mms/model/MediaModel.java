@@ -319,4 +319,17 @@ public abstract class MediaModel extends Model implements EventListener {
      */
     protected void resizeMedia(int byteLimit, long messageId) throws MmsException {
     }
+
+    public void cancelThumbnailLoading() {}
+    public void removeThumbnail() {}
+
+    public Intent getIntent(){
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        // So we don't see "surrounding" images in Gallery
+        intent.putExtra("SingleItemOnly", true);
+        intent.setDataAndType(getUri(), getContentType());
+        return intent;
+    }
 }
