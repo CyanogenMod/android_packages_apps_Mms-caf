@@ -36,6 +36,7 @@ import android.database.sqlite.SqliteWrapper;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.MmsSms;
@@ -49,18 +50,12 @@ import android.util.Pair;
 
 import com.android.common.contacts.DataUsageStatUpdater;
 import com.android.common.userhappiness.UserHappinessSignals;
-import com.android.internal.telephony.PhoneConstants;
 import com.android.mms.ContentRestrictionException;
 import com.android.mms.ExceedMessageSizeException;
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
-import com.android.mms.ResolutionException;
-import com.android.mms.UnsupportContentTypeException;
-import com.android.mms.model.ImageModel;
-import com.android.mms.model.SlideModel;
-import com.android.mms.model.SlideshowModel;
-import com.android.mms.model.TextModel;
+import com.android.mms.model.*;
 import com.android.mms.transaction.MessageSender;
 import com.android.mms.transaction.MmsMessageSender;
 import com.android.mms.transaction.SmsMessageSender;
@@ -185,10 +180,11 @@ public class WorkingMessage {
          */
         void onProtocolChanged(boolean mms);
 
-        /**
-         * Called when an attachment on the message has changed.
-         */
-        void onAttachmentChanged();
+        void onAttachmentsRemoved();
+
+        void onAttachmentRemoved(MediaModel slideModel);
+
+        void onAttachmentAdded(MediaModel mediaModel);
 
         /**
          * Called just before the process of sending a message.
@@ -259,7 +255,7 @@ public class WorkingMessage {
         return null;
     }
 
-    private void correctAttachmentState(boolean showToast) {
+    public void correctAttachmentState(boolean showToast) {
         int slideCount = mSlideshow.size();
 
         // If we get an empty slideshow, tear down all MMS
@@ -269,16 +265,16 @@ public class WorkingMessage {
         } else if (slideCount > 1) {
             mAttachmentType = SLIDESHOW;
         } else {
-            SlideModel slide = mSlideshow.get(0);
-            if (slide.hasImage()) {
+            MediaModel slide = mSlideshow.get(0);
+            if (slide instanceof ImageModel) {
                 mAttachmentType = IMAGE;
-            } else if (slide.hasVideo()) {
+            } else if (slide instanceof VideoModel) {
                 mAttachmentType = VIDEO;
-            } else if (slide.hasAudio()) {
+            } else if (slide instanceof AudioModel) {
                 mAttachmentType = AUDIO;
-            } else if (slide.hasVcard()) {
+            } else if (slide instanceof VcardModel) {
                 mAttachmentType = VCARD;
-            } else if (slide.hasVCal()) {
+            } else if (slide instanceof  VCalModel) {
                 mAttachmentType = VCAL;
             }
         }
@@ -410,45 +406,40 @@ public class WorkingMessage {
     }
 
     public void removeAttachment(boolean notify) {
-        removeThumbnailsFromCache(mSlideshow);
-        mAttachmentType = TEXT;
-        mSlideshow = null;
-        if (mMessageUri != null) {
-            asyncDelete(mMessageUri, null, null);
-            mMessageUri = null;
-        }
-        // mark this message as no longer having an attachment
-        updateState(HAS_ATTACHMENT, false, notify);
-        if (notify) {
-            // Tell ComposeMessageActivity (or other listener) that the attachment has changed.
-            // In the case of ComposeMessageActivity, it will remove its attachment panel because
-            // this working message no longer has an attachment.
-            mStatusListener.onAttachmentChanged();
+        removeAttachment(notify, null);
+    }
+
+    public void removeAttachment(boolean notify, Message msg) {
+        if (mSlideshow.size() > 1 && msg != null) {
+            MediaModel slideModel = (MediaModel) msg.obj;
+            slideModel.removeThumbnail();
+            correctAttachmentState(notify);
+            mSlideshow.remove(slideModel);
+            if (notify) {
+                mStatusListener.onAttachmentRemoved(slideModel);
+            }
+        } else {
+            removeThumbnailsFromCache(mSlideshow);
+            mAttachmentType = TEXT;
+            mSlideshow = null;
+            if (mMessageUri != null) {
+                asyncDelete(mMessageUri, null, null);
+                mMessageUri = null;
+            }
+            // mark this message as no longer having an attachment
+            updateState(HAS_ATTACHMENT, false, notify);
+            if (notify) {
+                mStatusListener.onAttachmentsRemoved();
+            }
         }
     }
 
     public static void removeThumbnailsFromCache(SlideshowModel slideshow) {
         if (slideshow != null) {
-            ThumbnailManager thumbnailManager = MmsApp.getApplication().getThumbnailManager();
-            boolean removedSomething = false;
-            Iterator<SlideModel> iterator = slideshow.iterator();
+            Iterator<MediaModel> iterator = slideshow.iterator();
             while (iterator.hasNext()) {
-                SlideModel slideModel = iterator.next();
-                if (slideModel.hasImage()) {
-                    thumbnailManager.removeThumbnail(slideModel.getImage().getUri());
-                    removedSomething = true;
-                } else if (slideModel.hasVideo()) {
-                    thumbnailManager.removeThumbnail(slideModel.getVideo().getUri());
-                    removedSomething = true;
-                }
-            }
-            if (removedSomething) {
-                // HACK: the keys to the thumbnail cache are the part uris, such as mms/part/3
-                // Because the part table doesn't have auto-increment ids, the part ids are reused
-                // when a message or thread is deleted. For now, we're clearing the whole thumbnail
-                // cache so we don't retrieve stale images when part ids are reused. This will be
-                // fixed in the next release in the mms provider.
-                MmsApp.getApplication().getThumbnailManager().clearBackingStore();
+                MediaModel slideModel = iterator.next();
+                slideModel.removeThumbnail();
             }
         }
     }
@@ -467,68 +458,34 @@ public class WorkingMessage {
         int result = OK;
         SlideshowEditor slideShowEditor = new SlideshowEditor(mActivity, mSlideshow);
 
-        // Special case for deleting a slideshow. When ComposeMessageActivity gets told to
-        // remove an attachment (search for AttachmentEditor.MSG_REMOVE_ATTACHMENT), it calls
-        // this function setAttachment with a type of TEXT and a null uri. Basically, it's turning
-        // the working message from an MMS back to a simple SMS. The various attachment types
-        // use slide[0] as a special case. The call to ensureSlideshow below makes sure there's
-        // a slide zero. In the case of an already attached slideshow, ensureSlideshow will do
-        // nothing and the slideshow will remain such that if a user adds a slideshow again, they'll
-        // see their old slideshow they previously deleted. Here we really delete the slideshow.
-        if (type == TEXT && mAttachmentType == SLIDESHOW && mSlideshow != null && dataUri == null
-                && !append) {
-            slideShowEditor.removeAllSlides();
-        }
-
         // Make sure mSlideshow is set up and has a slide.
         ensureSlideshow();      // mSlideshow can be null before this call, won't be afterwards
         slideShowEditor.setSlideshow(mSlideshow);
 
         // Change the attachment
-        result = append ? appendMedia(type, dataUri, slideShowEditor)
-                : changeMedia(type, dataUri, slideShowEditor);
-
+        result = appendMedia(type, dataUri, slideShowEditor);
         // If we were successful, update mAttachmentType and notify
         // the listener than there was a change.
         if (result == OK) {
             mAttachmentType = type;
         }
         correctAttachmentState(true);   // this can remove the slideshow if there are no attachments
-
         if (mSlideshow != null && type == IMAGE) {
             // Prime the image's cache; helps A LOT when the image is coming from the network
             // (e.g. Picasa album). See b/5445690.
             int numSlides = mSlideshow.size();
             if (numSlides > 0) {
-                ImageModel imgModel = mSlideshow.get(numSlides - 1).getImage();
-                if (imgModel != null) {
+                MediaModel imgModel = mSlideshow.get(numSlides - 1);
+                if (imgModel instanceof ImageModel) {
                     cancelThumbnailLoading();
-                    imgModel.loadThumbnailBitmap(null);
+                    ((ImageModel) imgModel).loadThumbnailBitmap(null, ThumbnailManager.THUMBNAIL_SIZE);
                 }
             }
         }
 
-        mStatusListener.onAttachmentChanged();  // have to call whether succeeded or failed,
-                                                // because a replace that fails, removes the slide
-
-        if (!append && mAttachmentType == TEXT && type == TEXT) {
-            int[] params = SmsMessage.calculateLength(getText(), false);
-            /* SmsMessage.calculateLength returns an int[4] with:
-             *   int[0] being the number of SMS's required,
-             *   int[1] the number of code units used,
-             *   int[2] is the number of code units remaining until the next message.
-             *   int[3] is the encoding type that should be used for the message.
-             */
-            int smsSegmentCount = params[0];
-
-            if (!MmsConfig.getMultipartSmsEnabled()) {
-                // The provider doesn't support multi-part sms's so as soon as the user types
-                // an sms longer than one segment, we have to turn the message into an mms.
-                setLengthRequiresMms(smsSegmentCount > 1, false);
-            } else {
-                int threshold = MmsConfig.getSmsToMmsTextThreshold(mActivity);
-                setLengthRequiresMms(threshold > 0 && smsSegmentCount > threshold, false);
-            }
+        if (mSlideshow != null) {
+            MediaModel slide = mSlideshow.get(mSlideshow.size() - 1);
+            mStatusListener.onAttachmentAdded(slide);  // have to call whether succeeded or failed,
         }
         return result;
     }
@@ -553,12 +510,8 @@ public class WorkingMessage {
     }
 
     private void cancelThumbnailLoading() {
-        int numSlides = mSlideshow != null ? mSlideshow.size() : 0;
-        if (numSlides > 0) {
-            ImageModel imgModel = mSlideshow.get(numSlides - 1).getImage();
-            if (imgModel != null) {
-                imgModel.cancelThumbnailLoading();
-            }
+        if (mSlideshow != null) {
+            mSlideshow.cancelThumbnailLoading();
         }
     }
 
@@ -580,74 +533,7 @@ public class WorkingMessage {
             return;
         }
 
-        SlideshowModel slideshow = SlideshowModel.createNew(mActivity);
-        SlideModel slide = new SlideModel(slideshow);
-        slideshow.add(slide);
-
-        mSlideshow = slideshow;
-    }
-
-    /**
-     * Change the message's attachment to the data in the specified Uri.
-     * Used only for single-slide ("attachment mode") messages. If the attachment fails to
-     * attach, restore the slide to its original state.
-     */
-    private int changeMedia(int type, Uri uri, SlideshowEditor slideShowEditor) {
-        SlideModel originalSlide = mSlideshow.get(0);
-        if (originalSlide != null) {
-            slideShowEditor.removeSlide(0);     // remove the original slide
-        }
-        slideShowEditor.addNewSlide(0);
-        SlideModel slide = mSlideshow.get(0);   // get the new empty slide
-        int result = OK;
-
-        if (slide == null) {
-            Log.w(LogTag.TAG, "[WorkingMessage] changeMedia: no slides!");
-            return result;
-        }
-
-        // Clear the attachment type since we removed all the attachments. If this isn't cleared
-        // and the slide.add fails (for instance, a selected video could be too big), we'll be
-        // left in a state where we think we have an attachment, but it's been removed from the
-        // slide.
-        mAttachmentType = TEXT;
-
-        // If we're changing to text, just bail out.
-        if (type == TEXT) {
-            return result;
-        }
-
-        result = internalChangeMedia(type, uri, 0, slideShowEditor);
-        if (result != OK) {
-            slideShowEditor.removeSlide(0);             // remove the failed slide
-            if (originalSlide != null) {
-                slideShowEditor.addSlide(0, originalSlide); // restore the original slide.
-            }
-        }
-        return result;
-    }
-
-    private boolean needAddNewSlide(int type) {
-        // The first time this method is called, mSlideshow.size() is going to be
-        // one (a newly initialized slideshow has one empty slide). The first time we
-        // attach the picture/video to that first empty slide.
-        int slideNum = mSlideshow.size();
-        if (slideNum >= 1) {
-            // Check the last slide. One silde can have a picture and an audio at the same time.
-            SlideModel slide = mSlideshow.get(slideNum -1);
-            boolean hasImage = slide.hasImage();
-            boolean hasVideo = slide.hasVideo();
-            boolean hasAudio = slide.hasAudio();
-            if (hasVideo || (hasImage && hasAudio)
-                    || (hasImage && (type == IMAGE || type == VIDEO))
-                    || (hasAudio && (type == VIDEO))
-                    || (hasAudio && (type == AUDIO))) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-        return true;
+        mSlideshow = SlideshowModel.createNew(mActivity);
     }
 
     /**
@@ -661,57 +547,7 @@ public class WorkingMessage {
             return result;
         }
 
-        boolean addNewSlide = needAddNewSlide(type);
-        if (addNewSlide) {
-            if (!slideShowEditor.addNewSlide()) {
-                return result;
-            }
-        }
-        int slideNum = mSlideshow.size() - 1;
-        result = internalChangeMedia(type, uri, slideNum, slideShowEditor);
-        if (result != OK) {
-            // We added a new slide and what we attempted to insert on the slide failed.
-            // Delete that slide, otherwise we could end up with a bunch of blank slides.
-            // It's ok that we're removing the slide even if we didn't add it (because it was
-            // the first default slide). If adding the first slide fails, we want to remove it.
-            slideShowEditor.removeSlide(slideNum);
-        }
-        return result;
-    }
-
-    private int internalChangeMedia(int type, Uri uri, int slideNum,
-            SlideshowEditor slideShowEditor) {
-        int result = OK;
-        try {
-            if (type == IMAGE) {
-                slideShowEditor.changeImage(slideNum, uri);
-            } else if (type == VIDEO) {
-                slideShowEditor.changeVideo(slideNum, uri);
-            } else if (type == AUDIO) {
-                slideShowEditor.changeAudio(slideNum, uri);
-            } else if (type == VCARD) {
-                slideShowEditor.changeVcard(slideNum, uri);
-            } else if (type == VCAL) {
-                slideShowEditor.changeVCal(slideNum, uri);
-            } else {
-                result = UNSUPPORTED_TYPE;
-            }
-        } catch (MmsException e) {
-            Log.e(TAG, "internalChangeMedia:", e);
-            result = UNKNOWN_ERROR;
-        } catch (UnsupportContentTypeException e) {
-            Log.e(TAG, "internalChangeMedia:", e);
-            result = UNSUPPORTED_TYPE;
-        } catch (ExceedMessageSizeException e) {
-            Log.e(TAG, "internalChangeMedia:", e);
-            result = MESSAGE_SIZE_EXCEEDED;
-        } catch (ResolutionException e) {
-            Log.e(TAG, "internalChangeMedia:", e);
-            result = IMAGE_TOO_LARGE;
-        } catch (ContentRestrictionException e) {
-            Log.e(TAG, "internalChangeMedia:", e);
-            result = NEGATIVE_MESSAGE_OR_INCREASE_SIZE;
-        }
+        result = slideShowEditor.addNewSlide(type, uri);
         return result;
     }
 
@@ -720,10 +556,6 @@ public class WorkingMessage {
      */
     public boolean hasAttachment() {
         return (mAttachmentType > TEXT);
-    }
-
-    public boolean hasVcard() {
-        return mAttachmentType == VCARD;
     }
 
     /**
@@ -778,39 +610,39 @@ public class WorkingMessage {
      * the message is about to be sent or written to disk.
      */
     private void syncTextToSlideshow() {
-        if (mSlideshow == null || mSlideshow.size() != 1)
+        if (mSlideshow == null)
             return;
 
-        SlideModel slide = mSlideshow.get(0);
-        TextModel text;
-        if (!slide.hasText()) {
-            // Add a TextModel to slide 0 if one doesn't already exist
-            text = new TextModel(mActivity, ContentType.TEXT_PLAIN, "text_0.txt",
-                                           mSlideshow.getLayout().getTextRegion());
-            slide.add(text);
-        } else {
-            // Otherwise just reuse the existing one.
-            text = slide.getText();
+        if (mSlideshow.get(0) instanceof TextModel) {
+            TextModel textModel = (TextModel) mSlideshow.get(0);
+            if ("text_0.txt".equals(textModel.getSrc())) {
+                return;
+            }
         }
+        TextModel text = new TextModel(mActivity, ContentType.TEXT_PLAIN, "text_0.txt",
+                mSlideshow.getLayout().getTextRegion());
         text.setText(mText);
+        mSlideshow.add(0, text);
+
     }
 
     /**
      * Sets the message text out of the slideshow.  Should be called any time
      * a slideshow is loaded from disk.
      */
-    private void syncTextFromSlideshow() {
+    public void syncTextFromSlideshow() {
         // Don't sync text for real slideshows.
-        if (mSlideshow.size() != 1) {
+        if (mSlideshow == null || mSlideshow.size() == 0) {
             return;
         }
 
-        SlideModel slide = mSlideshow.get(0);
-        if (slide == null || !slide.hasText()) {
+        MediaModel slide = mSlideshow.get(0);
+        if (slide == null || !(slide instanceof TextModel)) {
             return;
         }
 
-        mText = slide.getText().getText();
+        mText = ((TextModel)slide).getText();
+        mSlideshow.remove(0);
     }
 
     /**

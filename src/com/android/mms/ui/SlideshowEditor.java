@@ -20,21 +20,12 @@ package com.android.mms.ui;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
+import com.android.mms.*;
+import com.android.mms.model.*;
 
-import com.android.mms.LogTag;
-import com.android.mms.MmsConfig;
-import com.android.mms.model.AudioModel;
-import com.android.mms.model.ImageModel;
-import com.android.mms.model.RegionModel;
-import com.android.mms.model.SlideModel;
-import com.android.mms.model.SlideshowModel;
-import com.android.mms.model.TextModel;
-import com.android.mms.model.VcardModel;
-import com.android.mms.model.VCalModel;
-import com.android.mms.model.VideoModel;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
-
+import static com.android.mms.data.WorkingMessage.*;
 /**
  * An utility to edit contents of a slide.
  */
@@ -58,9 +49,9 @@ public class SlideshowEditor {
      *
      * @return true if success, false if reach the max slide number.
      */
-    public boolean addNewSlide() {
+    public int addNewSlide(int type, Uri uri) {
         int position = mModel.size();
-        return addNewSlide(position);
+        return addNewSlide(position, type, uri);
     }
 
     /**
@@ -70,22 +61,49 @@ public class SlideshowEditor {
      * @throws IndexOutOfBoundsException - if position is out of range
      *         (position < 0 || position > size()).
      */
-    public boolean addNewSlide(int position) {
+    private int addNewSlide(int position, int type, Uri uri) {
         int size = mModel.size();
-        if (size < MmsConfig.getMaxSlideNumber()) {
-            SlideModel slide = new SlideModel(mModel);
-
-            TextModel text = new TextModel(
-                    mContext, ContentType.TEXT_PLAIN, generateTextSrc(mModel, size),
-                    mModel.getLayout().getTextRegion());
-            slide.add(text);
-
-            mModel.add(position, slide);
-            return true;
-        } else {
+        if (size >= MmsConfig.getMaxSlideNumber()) {
             Log.w(TAG, "The limitation of the number of slides is reached.");
-            return false;
+            return MESSAGE_SIZE_EXCEEDED;
         }
+
+        int result = OK;
+        try {
+            MediaModel model;
+            if (type == IMAGE) {
+                model = new ImageModel(mContext, uri,
+                        mModel.getLayout().getImageRegion());
+            } else if (type == VIDEO) {
+                model = new VideoModel(mContext, uri,
+                        mModel.getLayout().getImageRegion());
+            } else if (type == AUDIO) {
+                model = new AudioModel(mContext, uri);
+            } else if (type == VCARD) {
+                model = new VcardModel(mContext, uri);
+            } else if (type == VCAL) {
+                model = new VCalModel(mContext, uri);
+            } else {
+                throw new UnsupportContentTypeException();
+            }
+            mModel.add(position, model);
+        } catch (MmsException e) {
+            Log.e(TAG, "internalChangeMedia:", e);
+            result = UNKNOWN_ERROR;
+        } catch (UnsupportContentTypeException e) {
+            Log.e(TAG, "internalChangeMedia:", e);
+            result = UNSUPPORTED_TYPE;
+        } catch (ExceedMessageSizeException e) {
+            Log.e(TAG, "internalChangeMedia:", e);
+            result = MESSAGE_SIZE_EXCEEDED;
+        } catch (ResolutionException e) {
+            Log.e(TAG, "internalChangeMedia:", e);
+            result = IMAGE_TOO_LARGE;
+        } catch (ContentRestrictionException e) {
+            Log.e(TAG, "internalChangeMedia:", e);
+            result = NEGATIVE_MESSAGE_OR_INCREASE_SIZE;
+        }
+        return result;
     }
 
     /**
@@ -103,9 +121,9 @@ public class SlideshowEditor {
         boolean hasDupSrc = false;
 
         do {
-            for (SlideModel model : slideshow) {
-                if (model.hasText()) {
-                    String testSrc = model.getText().getSrc();
+            for (MediaModel model : slideshow) {
+                if (model instanceof TextModel) {
+                    String testSrc = model.getSrc();
 
                     if (testSrc != null && testSrc.equals(src.toString())) {
                         src = new StringBuilder(prefix).append(position + 1).append(postfix);
@@ -127,7 +145,7 @@ public class SlideshowEditor {
      * @throws IndexOutOfBoundsException - if position is out of range
      *         (position < 0 || position > size()).
      */
-    public boolean addSlide(int position, SlideModel slide) {
+    public boolean addSlide(int position, MediaModel slide) {
         int size = mModel.size();
         if (size < MmsConfig.getMaxSlideNumber()) {
             mModel.add(position, slide);
@@ -156,113 +174,7 @@ public class SlideshowEditor {
         }
     }
 
-    /**
-     * Remove the text of the specified slide.
-     *
-     * @param position index of the slide
-     * @return true if success, false if no text in the slide.
-     */
-    public boolean removeText(int position) {
-        return mModel.get(position).removeText();
-    }
-
-    public boolean removeImage(int position) {
-        return mModel.get(position).removeImage();
-    }
-
-    public boolean removeVideo(int position) {
-        return mModel.get(position).removeVideo();
-    }
-
-    public boolean removeAudio(int position) {
-        return mModel.get(position).removeAudio();
-    }
-
-    public boolean removeVcard(int position) {
-        return mModel.get(position).removeVcard();
-    }
-
-    public boolean removeVCal(int position) {
-        return mModel.get(position).removeVCal();
-    }
-
-    public void changeText(int position, String newText) {
-        if (newText != null) {
-            SlideModel slide = mModel.get(position);
-            TextModel text = slide.getText();
-            if (text == null) {
-                text = new TextModel(mContext,
-                        ContentType.TEXT_PLAIN, generateTextSrc(mModel, position),
-                        mModel.getLayout().getTextRegion());
-                text.setText(newText);
-                slide.add(text);
-            } else if (!newText.equals(text.getText())) {
-                text.setText(newText);
-            }
-        }
-    }
-
-    public void changeImage(int position, Uri newImage) throws MmsException {
-        mModel.get(position).add(new ImageModel(
-                mContext, newImage, mModel.getLayout().getImageRegion()));
-    }
-
-    public void changeAudio(int position, Uri newAudio) throws MmsException {
-        AudioModel audio = new AudioModel(mContext, newAudio);
-        SlideModel slide = mModel.get(position);
-        slide.add(audio);
-        slide.updateDuration(audio.getDuration());
-    }
-
-    public void changeVideo(int position, Uri newVideo) throws MmsException {
-        VideoModel video = new VideoModel(mContext, newVideo,
-                mModel.getLayout().getImageRegion());
-        SlideModel slide = mModel.get(position);
-        slide.add(video);
-        slide.updateDuration(video.getDuration());
-    }
-
-    public void changeVcard(int position, Uri newVcard) throws MmsException {
-        VcardModel vCard = new VcardModel(mContext, newVcard);
-        SlideModel slide = mModel.get(position);
-        slide.add(vCard);
-        slide.updateDuration(vCard.getDuration());
-    }
-
-    public void changeVCal(int position, Uri newIcal) throws MmsException {
-        VCalModel vcal = new VCalModel(mContext, newIcal);
-        SlideModel slide = mModel.get(position);
-        slide.add(vcal);
-        slide.updateDuration(vcal.getDuration());
-    }
-
-    public void moveSlideUp(int position) {
-        mModel.add(position - 1, mModel.remove(position));
-    }
-
-    public void moveSlideDown(int position) {
-        mModel.add(position + 1, mModel.remove(position));
-    }
-
-    public void changeDuration(int position, int dur) {
-        if (dur >= 0) {
-            mModel.get(position).setDuration(dur);
-        }
-    }
-
     public int getDuration(int position) {
         return mModel.get(position).getDuration();
-    }
-
-    public void changeLayout(int layout) {
-        mModel.getLayout().changeTo(layout);
-    }
-
-    public RegionModel getImageRegion() {
-        return mModel.getLayout().getImageRegion();
-    }
-
-    public RegionModel getTextRegion() {
-        return mModel.getLayout().getTextRegion();
     }
 }
