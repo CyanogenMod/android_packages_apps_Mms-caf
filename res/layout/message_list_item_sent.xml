@@ -134,12 +134,13 @@
 
                 </LinearLayout>
 
-                <ViewStub android:id="@+id/mms_layout_view_stub"
-                    android:layout="@layout/mms_layout_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
             </LinearLayout>
+
+        <ViewStub android:id="@+id/mms_layout_view_stub"
+            android:layout="@layout/message_attachment_view"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                android:layout_height="wrap_content"/>
 
             <FrameLayout
                 android:id="@+id/arrowhead_container"

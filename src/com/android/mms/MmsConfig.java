@@ -113,7 +113,7 @@ public class MmsConfig {
     // activity.
     private static boolean mEnableGroupMms = true;
 
-    private static int MAX_SLIDE_NUM = 10;
+    private static int MAX_SLIDE_NUM = 4;
 
     private static float sMmsCornerRadius = 5;
 

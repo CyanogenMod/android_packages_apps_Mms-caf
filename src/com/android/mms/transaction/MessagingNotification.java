@@ -84,7 +84,6 @@ import com.android.mms.data.Contact;
 import com.android.mms.data.Conversation;
 import com.android.mms.data.WorkingMessage;
 import com.android.mms.data.cm.CMConversationSettings;
-import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
 import com.android.mms.quickmessage.QmMarkRead;
 import com.android.mms.quickmessage.QuickMessagePopup;
@@ -96,7 +95,6 @@ import com.android.mms.ui.MailBoxMessageList;
 import com.android.mms.ui.ManageSimMessages;
 import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.MessagingPreferenceActivity;
-import com.android.mms.ui.MobilePaperShowActivity;
 import com.android.mms.util.AddressUtils;
 import com.android.mms.util.DownloadManager;
 import com.android.mms.widget.MmsWidgetProvider;
@@ -831,16 +829,16 @@ public class MessagingNotification {
                         SlideshowModel slideshow = SlideshowModel.createFromPduBody(context,
                                 ((MultimediaMessagePdu)pdu).getBody());
                         attachmentType = getAttachmentType(slideshow);
-                        SlideModel firstSlide = slideshow.get(0);
-                        if (firstSlide != null) {
-                            if (firstSlide.hasImage()) {
-                                int maxDim = dp2Pixels(MAX_BITMAP_DIMEN_DP);
-                                attachedPicture = firstSlide.getImage().getBitmap(maxDim, maxDim);
-                            }
-                            if (firstSlide.hasText()) {
-                                messageBody = firstSlide.getText().getText();
-                            }
-                        }
+//                        SlideModel firstSlide = slideshow.get(0);
+//                        if (firstSlide != null) {
+//                            if (firstSlide.hasImage()) {
+//                                int maxDim = dp2Pixels(MAX_BITMAP_DIMEN_DP);
+//                                attachedPicture = firstSlide.getImage().getBitmap(maxDim, maxDim);
+//                            }
+//                            if (firstSlide.hasText()) {
+//                                messageBody = firstSlide.getText().getText();
+//                            }
+//                        }
                     }
                 } catch (final MmsException e) {
                     Log.e(TAG, "MmsException loading uri: " + msgUri, e);
@@ -877,14 +875,14 @@ public class MessagingNotification {
         } else if (slideCount > 1) {
             return WorkingMessage.SLIDESHOW;
         } else {
-            SlideModel slide = slideshow.get(0);
-            if (slide.hasImage()) {
-                return WorkingMessage.IMAGE;
-            } else if (slide.hasVideo()) {
-                return WorkingMessage.VIDEO;
-            } else if (slide.hasAudio()) {
-                return WorkingMessage.AUDIO;
-            }
+//            SlideModel slide = slideshow.get(0);
+//            if (slide.hasImage()) {
+//                return WorkingMessage.IMAGE;
+//            } else if (slide.hasVideo()) {
+//                return WorkingMessage.VIDEO;
+//            } else if (slide.hasAudio()) {
+//                return WorkingMessage.AUDIO;
+//            }
         }
         return WorkingMessage.TEXT;
     }
@@ -1018,8 +1016,9 @@ public class MessagingNotification {
             intent = new Intent(context, MailBoxMessageContent.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         } else if (DownloadManager.getInstance().isAuto()) {
-            intent = new Intent(context, MobilePaperShowActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent = new Intent();
+//            intent = new Intent(context, MobilePaperShowActivity.class);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         } else {
             // Else case: for MMS not downloaded.
             intent = new Intent(context, MailBoxMessageList.class);
@@ -1661,7 +1660,8 @@ public class MessagingNotification {
                     mailboxId = MailBoxMessageList.TYPE_INBOX;
                     failedIntent.putExtra(MessageUtils.MAIL_BOX_ID, mailboxId);
                 } else {
-                    failedIntent = new Intent(context, MobilePaperShowActivity.class);
+                    //failedIntent = new Intent(context, MobilePaperShowActivity.class);
+                    failedIntent = new Intent();
                     msgUri = Uri.withAppendedPath(Mms.CONTENT_URI, String.valueOf(msgId));
                     failedIntent.setData(msgUri);
                 }

@@ -35,6 +35,9 @@ import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
 import com.android.mms.dom.events.EventImpl;
 import com.android.mms.dom.smil.SmilMediaElementImpl;
+import com.android.mms.presenters.VideoPresenter;
+import com.android.mms.presenters.VideoPresenterModel;
+import com.android.mms.ui.Presenter;
 import com.android.mms.util.ItemLoadedCallback;
 import com.android.mms.util.ItemLoadedFuture;
 import com.android.mms.util.ThumbnailManager;
@@ -42,7 +45,7 @@ import android.provider.Telephony.Mms.Part;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
 
-public class VideoModel extends RegionMediaModel {
+public class VideoModel extends RegionMediaModel implements VideoPresenterModel {
     private static final String TAG = MediaModel.TAG;
     private static final boolean DEBUG = true;
     private static final boolean LOCAL_LOGV = false;
@@ -208,6 +211,7 @@ public class VideoModel extends RegionMediaModel {
         return mItemLoadedFuture;
     }
 
+    @Override
     public void cancelThumbnailLoading() {
         if (mItemLoadedFuture != null && !mItemLoadedFuture.isDone()) {
             if (Log.isLoggable(LogTag.APP, Log.DEBUG)) {
@@ -216,5 +220,22 @@ public class VideoModel extends RegionMediaModel {
             mItemLoadedFuture.cancel(getUri());
             mItemLoadedFuture = null;
         }
+    }
+
+    @Override
+    public void removeThumbnail() {
+        ThumbnailManager thumbnailManager = MmsApp.getApplication().getThumbnailManager();
+        thumbnailManager.removeThumbnail(getUri());
+        // HACK: the keys to the thumbnail cache are the part uris, such as mms/part/3
+        // Because the part table doesn't have auto-increment ids, the part ids are reused
+        // when a message or thread is deleted. For now, we're clearing the whole thumbnail
+        // cache so we don't retrieve stale images when part ids are reused. This will be
+        // fixed in the next release in the mms provider.
+        MmsApp.getApplication().getThumbnailManager().clearBackingStore();
+    }
+
+    @Override
+    public Presenter getPresenter() {
+        return new VideoPresenter(mContext, this);
     }
 }

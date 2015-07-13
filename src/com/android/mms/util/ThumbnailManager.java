@@ -79,7 +79,7 @@ public class ThumbnailManager extends BackgroundLoaderManager {
     public static final int TYPE_THUMBNAIL = 1;
     public static final int TYPE_MICROTHUMBNAIL = 2;
 
-    public static final int THUMBNAIL_TARGET_SIZE = 640;
+    public static final int THUMBNAIL_TARGET_SIZE = 2000;
 
     public ThumbnailManager(final Context context) {
         super(context);

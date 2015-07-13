@@ -18,44 +18,59 @@
 package com.android.mms.ui;
 
 import android.content.Context;
+import android.view.ViewGroup;
 
 import com.android.mms.model.IModelChangedObserver;
 import com.android.mms.model.Model;
-import com.android.mms.util.ItemLoadedCallback;
 
 /**
  * An abstract message presenter.
  */
-public abstract class Presenter implements IModelChangedObserver {
-    protected final Context mContext;
-    protected ViewInterface mView;
-    protected Model mModel;
+public abstract class Presenter<I> implements IModelChangedObserver {
+    private final Context mContext;
+    private final I mModel;
 
-    public Presenter(Context context, ViewInterface view, Model model) {
-        mContext = context;
-        mView = view;
-
-        mModel = model;
-        mModel.registerModelChangedObserver(this);
+    public Context getContext() {
+        return mContext;
     }
 
-    public ViewInterface getView() {
-        return mView;
-    }
-
-    public void setView(ViewInterface view) {
-        mView = view;
-    }
-
-    public Model getModel() {
+    public I getModel() {
         return mModel;
     }
 
-    public void setModel(Model model) {
-        mModel = model;
+    public Presenter(Context context, I modelInterface) {
+        mContext = context;
+        mModel = modelInterface;
     }
 
-    public abstract void present(ItemLoadedCallback callback);
+    public void onModelChanged(Model model, boolean dataChanged){}
 
-    public abstract void cancelBackgroundLoading();
+    public void cancelBackgroundLoading(){}
+
+    public void present(ViewGroup v, PresenterOptions presenterOptions) {}
+
+    public void presentThumbnail(ViewGroup v) {}
+
+    public boolean showsArrowHead() { return true; }
+
+    public static final class PresenterOptions {
+        private boolean isIncomingMessage;
+        private int accentColor;
+
+        public boolean isIncomingMessage() {
+            return isIncomingMessage;
+        }
+
+        public void setIsIncomingMessage(boolean isIncomingMessage) {
+            this.isIncomingMessage = isIncomingMessage;
+        }
+
+        public int getAccentColor() {
+            return accentColor;
+        }
+
+        public void setAccentColor(int accentColor) {
+            this.accentColor = accentColor;
+        }
+    }
 }
