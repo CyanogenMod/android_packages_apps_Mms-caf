@@ -839,15 +839,17 @@ public class MessageUtils {
         }
     }
 
-    public static void viewSimpleSlideshow(Context context, SlideshowModel slideshow) {
-        if (!slideshow.isSimple()) {
-            throw new IllegalArgumentException(
-                    "viewSimpleSlideshow() called on a non-simple slideshow");
-        }
-        SlideModel slide = slideshow.get(0);
+    public static void viewSimpleSlideshow(Context context, SlideModel slide) {
+//        if (!slideshow.isSimple()) {
+//            throw new IllegalArgumentException(
+//                    "viewSimpleSlideshow() called on a non-simple slideshow");
+//        }
+        //SlideModel slide = slideshow.get(0);
         MediaModel mm = null;
         if (slide.hasImage()) {
             mm = slide.getImage();
+        } else if (slide.hasAudio()) {
+            mm = slide.getAudio();
         } else if (slide.hasVideo()) {
             mm = slide.getVideo();
         } else if (slide.hasVcard()) {
@@ -1291,40 +1293,40 @@ public class MessageUtils {
 
     public static void viewMmsMessageAttachment(final Activity activity, final Uri msgUri,
             final SlideshowModel slideshow, final int requestCode, AsyncDialog asyncDialog) {
-        boolean isSimple = (slideshow == null) ? false : slideshow.isSimple();
-        if (isSimple) {
-            // In attachment-editor mode, we only ever have one slide.
-            MessageUtils.viewSimpleSlideshow(activity, slideshow);
-        } else {
-            // The user wants to view the slideshow. We have to persist the slideshow parts
-            // in a background task. If the task takes longer than a half second, a progress dialog
-            // is displayed. Once the PDU persisting is done, another runnable on the UI thread get
-            // executed to start the SlideshowActivity.
-            asyncDialog.runAsync(new Runnable() {
-                @Override
-                public void run() {
-                    // If a slideshow was provided, save it to disk first.
-                    if (slideshow != null) {
-                        PduPersister persister = PduPersister.getPduPersister(activity);
-                        try {
-                            PduBody pb = slideshow.toPduBody();
-                            persister.updateParts(msgUri, pb, null);
-                            slideshow.sync(pb);
-                        } catch (MmsException e) {
-                            Log.e(TAG, "Unable to save message for preview");
-                            return;
-                        }
-                    }
-                }
-            }, new Runnable() {
-                @Override
-                public void run() {
-                    // Once the above background thread is complete, this runnable is run
-                    // on the UI thread to launch the slideshow activity.
-                    launchSlideshowActivity(activity, msgUri, requestCode);
-                }
-            }, R.string.building_slideshow_title);
-        }
+//        boolean isSimple = (slideshow == null) ? false : slideshow.isSimple();
+//        if (isSimple) {
+//            // In attachment-editor mode, we only ever have one slide.
+//            MessageUtils.viewSimpleSlideshow(activity, slideshow);
+//        } else {
+//            // The user wants to view the slideshow. We have to persist the slideshow parts
+//            // in a background task. If the task takes longer than a half second, a progress dialog
+//            // is displayed. Once the PDU persisting is done, another runnable on the UI thread get
+//            // executed to start the SlideshowActivity.
+//            asyncDialog.runAsync(new Runnable() {
+//                @Override
+//                public void run() {
+//                    // If a slideshow was provided, save it to disk first.
+//                    if (slideshow != null) {
+//                        PduPersister persister = PduPersister.getPduPersister(activity);
+//                        try {
+//                            PduBody pb = slideshow.toPduBody();
+//                            persister.updateParts(msgUri, pb, null);
+//                            slideshow.sync(pb);
+//                        } catch (MmsException e) {
+//                            Log.e(TAG, "Unable to save message for preview");
+//                            return;
+//                        }
+//                    }
+//                }
+//            }, new Runnable() {
+//                @Override
+//                public void run() {
+//                    // Once the above background thread is complete, this runnable is run
+//                    // on the UI thread to launch the slideshow activity.
+//                    launchSlideshowActivity(activity, msgUri, requestCode);
+//                }
+//            }, R.string.building_slideshow_title);
+//        }
     }
 
     public static void launchSlideshowActivity(Context context, Uri msgUri, int requestCode) {

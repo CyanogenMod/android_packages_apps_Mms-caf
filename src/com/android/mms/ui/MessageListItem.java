@@ -563,18 +563,17 @@ public class MessageListItem extends ZoomMessageListItem implements
             } else {
                 if (mPresenter == null) {
                     mPresenter = PresenterFactory.getPresenter(
-                            "MmsThumbnailPresenter", mContext,
-                            this, mMessageItem.mSlideshow);
+                            "MmsThumbnailPresenter", mContext);
                 } else {
-                    mPresenter.setModel(mMessageItem.mSlideshow);
-                    mPresenter.setView(this);
+                    //mPresenter.setModel(mMessageItem.mSlideshow);
+                    //mPresenter.setView(this);
                 }
                 if (mImageLoadedCallback == null) {
                     mImageLoadedCallback = new ImageLoadedCallback(this);
                 } else {
                     mImageLoadedCallback.reset(this);
                 }
-                mPresenter.present(mImageLoadedCallback);
+                //mPresenter.present(mImageLoadedCallback);
             }
         }
         drawRightStatusIndicator(mMessageItem);

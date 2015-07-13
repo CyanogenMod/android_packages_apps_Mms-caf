@@ -21,6 +21,7 @@ import android.content.Context;
 
 import com.android.mms.model.IModelChangedObserver;
 import com.android.mms.model.Model;
+import com.android.mms.model.SlideModel;
 import com.android.mms.util.ItemLoadedCallback;
 
 /**
@@ -28,34 +29,14 @@ import com.android.mms.util.ItemLoadedCallback;
  */
 public abstract class Presenter implements IModelChangedObserver {
     protected final Context mContext;
-    protected ViewInterface mView;
-    protected Model mModel;
 
-    public Presenter(Context context, ViewInterface view, Model model) {
+    public Presenter(Context context) {
         mContext = context;
-        mView = view;
-
-        mModel = model;
-        mModel.registerModelChangedObserver(this);
     }
 
-    public ViewInterface getView() {
-        return mView;
-    }
-
-    public void setView(ViewInterface view) {
-        mView = view;
-    }
-
-    public Model getModel() {
-        return mModel;
-    }
-
-    public void setModel(Model model) {
-        mModel = model;
-    }
-
-    public abstract void present(ItemLoadedCallback callback);
+    public abstract void present(SlideViewInterface view, SlideModel slide);
+    public abstract void present(SlideViewInterface view, SlideModel slide,
+                                 ItemLoadedCallback callback);
 
     public abstract void cancelBackgroundLoading();
 }
