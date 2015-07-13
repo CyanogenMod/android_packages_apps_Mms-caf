@@ -21,8 +21,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/compose_message_background_color">
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/header"
@@ -112,49 +111,12 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/attachment_editor_scroll_view"
-                android:layout_weight="1.0"
-                android:layout_width="match_parent"
-                android:layout_height="0dip">
-
-              <view class="com.android.mms.ui.AttachmentEditor"
-                  android:id="@+id/attachment_editor"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:orientation="vertical">
-
-                  <ViewStub android:id="@+id/image_attachment_view_stub"
-                      android:layout="@layout/image_attachment_view"
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"/>
-
-                  <ViewStub android:id="@+id/video_attachment_view_stub"
-                      android:layout="@layout/video_attachment_view"
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"/>
-
-                  <ViewStub android:id="@+id/audio_attachment_view_stub"
-                      android:layout="@layout/audio_attachment_view"
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"/>
-
-                  <ViewStub android:id="@+id/vcard_attachment_view_stub"
-                      android:layout="@layout/vcard_attachment_view"
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"/>
-
-                  <ViewStub android:id="@+id/vcal_attachment_view_stub"
-                      android:layout="@layout/vcal_attachment_view"
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"/>
-
-                  <ViewStub android:id="@+id/slideshow_attachment_view_stub"
-                      android:layout="@layout/slideshow_attachment_view"
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"/>
-              </view>
-            </ScrollView>
+            <view class="com.android.mms.ui.AttachmentEditor"
+              android:id="@+id/attachment_editor"
+              android:layout_marginStart="42dp"
+              android:layout_weight="1.0"
+              android:layout_width="match_parent"
+              android:layout_height="0dip" />
 
             <LinearLayout
                 android:id="@+id/bottom_panel"
