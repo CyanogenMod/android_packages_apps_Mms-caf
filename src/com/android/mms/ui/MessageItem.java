@@ -39,7 +39,7 @@ import com.android.mms.data.Contact;
 import com.android.mms.data.WorkingMessage;
 import com.android.mms.drm.DrmUtils;
 import com.android.mms.model.LayoutModel;
-import com.android.mms.model.SlideModel;
+import com.android.mms.model.MediaModel;
 import com.android.mms.model.SlideshowModel;
 import com.android.mms.model.TextModel;
 import com.android.mms.ui.MessageListAdapter.ColumnsMap;
@@ -235,7 +235,7 @@ public class MessageItem {
             // Start an async load of the pdu. If the pdu is already loaded, the callback
             // will get called immediately
             boolean loadSlideshow = mMessageType != PduHeaders.MESSAGE_TYPE_NOTIFICATION_IND;
-
+            mCur = System.currentTimeMillis();
             mItemLoadedFuture = MmsApp.getApplication().getPduLoaderManager()
                     .getPdu(mMessageUri, loadSlideshow,
                     new PduLoadedMessageItemCallback());
@@ -244,7 +244,7 @@ public class MessageItem {
             throw new MmsException("Unknown type of the message: " + type);
         }
     }
-
+private long mCur;
     private void interpretFrom(EncodedStringValue from, Uri messageUri) {
         if (from != null) {
             mAddress = from.getString();
@@ -445,9 +445,9 @@ public class MessageItem {
                     timestamp = msg == null ? 0 : ((SendReq) msg).getDate() * 1000L;
                 }
 
-                SlideModel slide = mSlideshow == null ? null : mSlideshow.get(0);
-                if ((slide != null) && slide.hasText()) {
-                    TextModel tm = slide.getText();
+                MediaModel slide = mSlideshow == null ? null : mSlideshow.get(0);
+                if ((slide != null) && slide instanceof TextModel) {
+                    TextModel tm = (TextModel) slide;
                     mBody = tm.getText();
                     mTextContentType = tm.getContentType();
                 }
@@ -503,6 +503,7 @@ public class MessageItem {
                     mTimestamp = formattedTimestamp;
                 }
             }
+            //System.out.println("Took " + (System.currentTimeMillis() - mCur));
             if (mPduLoadedCallback != null) {
                 mPduLoadedCallback.onPduLoaded(MessageItem.this);
             }

@@ -56,6 +56,7 @@ public abstract class MediaModel extends Model implements EventListener {
     protected boolean mMediaResizeable;
 
     private final ArrayList<MediaAction> mMediaActions;
+
     public static enum MediaAction {
         NO_ACTIVE_ACTION,
         START,
@@ -319,4 +320,7 @@ public abstract class MediaModel extends Model implements EventListener {
      */
     protected void resizeMedia(int byteLimit, long messageId) throws MmsException {
     }
+
+    public void cancelThumbnailLoading() {}
+    public void removeThumbnail() {}
 }

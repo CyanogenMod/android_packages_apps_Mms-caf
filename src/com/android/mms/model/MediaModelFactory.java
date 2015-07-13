@@ -18,6 +18,7 @@
 package com.android.mms.model;
 
 import java.io.IOException;
+import java.util.Random;
 
 import org.w3c.dom.smil.SMILMediaElement;
 import org.w3c.dom.smil.SMILRegionElement;
@@ -134,7 +135,7 @@ public class MediaModelFactory {
         MediaModel media = null;
         if (tag.equals(SmilHelper.ELEMENT_TAG_IMAGE)) {
             media = new ImageModel(context, contentType, src,
-                    part.getDataUri(), regionModel);
+                    part.getDataUri(), regionModel, 300, 300);
         } else if (tag.equals(SmilHelper.ELEMENT_TAG_VIDEO)) {
             media = new VideoModel(context, contentType, src,
                     part.getDataUri(), regionModel);
@@ -149,8 +150,10 @@ public class MediaModelFactory {
                 media = new TextModel(context, contentType, src,
                         part.getCharset(), part.getData(), regionModel);
             } else if (ContentType.isImageType(contentType)) {
+//                media = new ImageModel(context, contentType, src,
+//                        part.getDataUri(), regionModel, part.mWidth, part.mHeight);
                 media = new ImageModel(context, contentType, src,
-                        part.getDataUri(), regionModel);
+                      part.getDataUri(), regionModel, 300, 300);
             } else if (ContentType.isVideoType(contentType)) {
                 media = new VideoModel(context, contentType, src,
                         part.getDataUri(), regionModel);

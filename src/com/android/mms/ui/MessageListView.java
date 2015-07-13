@@ -20,6 +20,7 @@ import android.content.Context;
 import android.text.ClipboardManager;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ListView;
 import com.android.mms.ui.zoom.ZoomMessageListItem;
@@ -85,5 +86,10 @@ public final class MessageListView extends ZoomMessageListView {
         return INVALID_POSITION;
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        System.out.println("Listview " + ev);
+        return super.onTouchEvent(ev);
+    }
 }
 
