@@ -26,7 +26,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.provider.BaseColumns;
 import android.provider.Telephony.Mms;
@@ -180,8 +179,17 @@ public class MessageListAdapter extends CursorAdapter {
 
     public static final int MSG_TYPE_INCOMING_SMS = 0;
     public static final int MSG_TYPE_OUTGOING_SMS = 1;
-    public static final int MSG_TYPE_INCOMING_MMS = 2;
-    public static final int MSG_TYPE_OUTGOING_MMS = 3;
+    public static final int MSG_TYPE_INCOMING_IMAGE = 2;
+    public static final int MSG_TYPE_OUTGOING_IMAGE = 3;
+    public static final int MSG_TYPE_INCOMING_VIDEO = 4;
+    public static final int MSG_TYPE_OUTGOING_VIDEO = 5;
+    public static final int MSG_TYPE_INCOMING_SIMPLE = 6;
+    public static final int MSG_TYPE_OUTGOING_SIMPLE = 7;
+    public static final int MSG_TYPE_INCOMING_SLIDESHOW = 8;
+    public static final int MSG_TYPE_OUTGOING_SLIDESHOW = 9;
+
+    private static int TOTAL_ITEM_TYPE = 10;
+    private final MessageInfoCache mMessageCache;
 
     protected LayoutInflater mInflater;
     private final ListView mListView;
@@ -202,11 +210,11 @@ public class MessageListAdapter extends CursorAdapter {
 
     public MessageListAdapter(
             Context context, Cursor c, ListView listView,
-            boolean useDefaultColumnsMap, Pattern highlight) {
+            boolean useDefaultColumnsMap, Pattern highlight, MessageInfoCache messageInfoCache) {
         super(context, c, FLAG_REGISTER_CONTENT_OBSERVER);
         mContext = context;
         mHighlight = highlight;
-
+        mMessageCache = messageInfoCache;
         mInflater = (LayoutInflater) context.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
         mMessageItemCache = new MessageItemCache(CACHE_SIZE);
@@ -233,7 +241,17 @@ public class MessageListAdapter extends CursorAdapter {
                 .getDimensionPixelSize(R.dimen.message_item_space_above_grouped);
         mSpaceAboveNonGroupedMessages = context.getResources()
                 .getDimensionPixelSize(R.dimen.message_item_space_above_non_grouped);
+    }
 
+    private int getBoxId(Cursor cursor) {
+        int boxId;
+        String msgType = cursor.getString(mColumnsMap.mColumnMsgType);
+        if (isMmsMsgType(msgType)) {
+            boxId = cursor.getInt(mColumnsMap.mColumnMmsMessageBox);
+        } else {
+            boxId = cursor.getInt(mColumnsMap.mColumnSmsType);
+        }
+        return boxId;
     }
 
     @Override
@@ -250,11 +268,11 @@ public class MessageListAdapter extends CursorAdapter {
                     mli.setManageSelectMode(mMultiManageMode);
                 }
 
-                int boxType = getItemViewType(position);
                 final Resources res = context.getResources();
                 final int accentColor;
+                int boxId = getBoxId(cursor);
 
-                if (isOutgoingMsgType(boxType)) {
+                if (isOutgoingMsgType(boxId)) {
                     accentColor = res.getColor(R.color.outgoing_message_bg);
                 } else if (mAccentColor != 0) {
                     accentColor = mAccentColor;
@@ -262,10 +280,10 @@ public class MessageListAdapter extends CursorAdapter {
                     accentColor = res.getColor(R.color.incoming_message_bg_default);
                 }
 
-                adjustViewForMessageType(mli, position, boxType);
+                adjustViewForMessageType(mli, cursor);
 
                 mli.bind(msgItem, accentColor, mIsGroupConversation, position,
-                        mListView.isItemChecked(position));
+                        mListView, isIncomingMsgType(boxId));
                 mli.setMsgListItemHandler(mMsgListItemHandler);
 
                 mBodyCache.put(position, msgItem.mBody);
@@ -335,17 +353,15 @@ public class MessageListAdapter extends CursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        int boxType = getItemViewType(cursor.getPosition());
-        boolean isIncoming = isIncomingMsgType(boxType);
+        int boxId = getBoxId(cursor);
+        boolean isIncoming = isIncomingMsgType(boxId);
 
         int layoutResourceId = isIncoming
                 ? R.layout.message_list_item_recv : R.layout.message_list_item_sent;
         View view = mInflater.inflate(layoutResourceId, parent, false);
         MessageListItem listItem = (MessageListItem) view;
-
-        boolean isGroupedMsg = isGroupedMessage(cursor.getPosition());
-        adjustNewViewForMessageType(context, listItem, boxType, isGroupedMsg);
-
+        listItem.setMessageCache(mMessageCache);
+        adjustNewViewForMessageType(listItem, cursor);
         handleZoomForItem(view);
         return view;
     }
@@ -408,24 +424,52 @@ public class MessageListAdapter extends CursorAdapter {
      */
     @Override
     public int getViewTypeCount() {
-        return 4;   // Incoming and outgoing messages, both sms and mms
+        return TOTAL_ITEM_TYPE;   // Incoming and outgoing messages, both sms and mms
     }
 
     @Override
     public int getItemViewType(int position) {
-        return getIncomingOrOutgoingMsgType(position);
+        Cursor cursor = (Cursor) getItem(position);
+        String type = cursor.getString(mColumnsMap.mColumnMsgType);
+        int boxId = getBoxId(cursor);
+        if (!isMmsMsgType(type)) {
+            // Note that messages from the SIM card all have a boxId of zero.
+            return (boxId == TextBasedSmsColumns.MESSAGE_TYPE_INBOX ||
+                    boxId == TextBasedSmsColumns.MESSAGE_TYPE_ALL) ?
+                    MSG_TYPE_INCOMING_SMS : MSG_TYPE_OUTGOING_SMS;
+        } else {
+            boolean incoming = isIncomingMsgType(boxId);
+            long msgId = cursor.getLong(mColumnsMap.mColumnMsgId);
+            String[] mimeTypes = mMessageCache.getCachedMimeTypes(msgId);
+            if (mimeTypes != null) {
+                if (mimeTypes.length > 1) {
+                    return incoming ? MSG_TYPE_INCOMING_SLIDESHOW : MSG_TYPE_OUTGOING_SLIDESHOW;
+                } else {
+                    if (type.startsWith("image")) {
+                        return incoming ? MSG_TYPE_INCOMING_IMAGE : MSG_TYPE_OUTGOING_IMAGE;
+                    } else if (type.startsWith("video")) {
+                        return incoming ? MSG_TYPE_INCOMING_VIDEO : MSG_TYPE_OUTGOING_VIDEO;
+                    } else if (type.startsWith("audio") || type.equalsIgnoreCase("text/x-vCard")
+                            || type.equalsIgnoreCase("text/x-vCalendar")) {
+                        return incoming ? MSG_TYPE_INCOMING_SIMPLE : MSG_TYPE_OUTGOING_SIMPLE;
+                    }
+                }
+            }
+            return incoming ? MSG_TYPE_INCOMING_SLIDESHOW : MSG_TYPE_OUTGOING_SLIDESHOW;
+        }
     }
 
-    private boolean isGroupedMessage(int currentPosition) {
-        boolean isGrouped = false;
-        int currentItemType = getIncomingOrOutgoingMsgType(currentPosition);
+    private boolean isGroupedMessage(Cursor cursor) {
+        int currentPosition = cursor.getPosition();
+        int currentItemType = getBoxId(cursor);
         Cursor previousItem = null;
         if (currentPosition > 0) {
             previousItem = (Cursor) getItem(currentPosition - 1);
         }
 
+        boolean isGrouped = false;
         if (previousItem != null) {
-            int previousItemType = getIncomingOrOutgoingMsgType(previousItem);
+            int previousItemType = getBoxId(previousItem);
             isGrouped = isEffectivelySameMsgType(currentItemType, previousItemType);
         }
 
@@ -434,32 +478,28 @@ public class MessageListAdapter extends CursorAdapter {
         return isGrouped;
     }
 
-    private boolean isEffectivelySameMsgType(int msgType1, int msgType2) {
-        return (isIncomingMsgType(msgType1) && isIncomingMsgType(msgType2)) ||
-                (isOutgoingMsgType(msgType1) && isOutgoingMsgType(msgType2));
+    private boolean isEffectivelySameMsgType(int boxId1, int boxId2) {
+        return (isIncomingMsgType(boxId1) && isIncomingMsgType(boxId2)) ||
+                (isOutgoingMsgType(boxId1) && isOutgoingMsgType(boxId2));
     }
 
-    private void adjustNewViewForMessageType(Context context, MessageListItem mli, int msgType,
-            boolean isGroupedMsg) {
-
-        if (isMmsMsgType(msgType)) {
-            // We've got an mms item, pre-inflate the mms portion of the view
-            mli.findViewById(R.id.mms_layout_view_stub).setVisibility(View.VISIBLE);
-        }
-
-        boolean isOutgoing = isOutgoingMsgType(msgType);
+    private void adjustNewViewForMessageType(MessageListItem mli, Cursor cursor) {
+        int boxId = getBoxId(cursor);
+        boolean isOutgoing = isOutgoingMsgType(boxId);
         mli.setAvatarVisbility(isOutgoing ? View.GONE : View.INVISIBLE);
     }
 
-    private void adjustViewForMessageType(MessageListItem mli, int position, int msgType) {
-        boolean isGrouped = isGroupedMessage(position);
-        boolean isIncoming = isIncomingMsgType(msgType);
+    private void adjustViewForMessageType(MessageListItem mli, Cursor cursor) {
+        boolean isGrouped = isGroupedMessage(cursor);
+
+        int boxId = getBoxId(cursor);
+        boolean isIncoming = isIncomingMsgType(boxId);
 
         if (isIncoming) {
             mli.setAvatarVisbility(isGrouped ? View.INVISIBLE : View.VISIBLE);
         }
 
-        mli.setBubbleArrowheadVisibility(isGrouped ? View.INVISIBLE : View.VISIBLE);
+        mli.setBubbleArrowheadVisibility(!isGrouped ? View.VISIBLE : View.INVISIBLE);
 
         if (isGrouped) {
             mli.adjustMessageBlockSpacing(mSpaceAboveGroupedMessages);
@@ -474,27 +514,6 @@ public class MessageListAdapter extends CursorAdapter {
 
     private String getRecipients(Cursor cursor) {
         return cursor.getString(mColumnsMap.mColumnSmsAddress);
-    }
-
-    private int getIncomingOrOutgoingMsgType(int position) {
-        return getIncomingOrOutgoingMsgType((Cursor) getItem(position));
-    }
-
-    private int getIncomingOrOutgoingMsgType(Cursor cursor) {
-        String type = cursor.getString(mColumnsMap.mColumnMsgType);
-        int boxId;
-        if ("sms".equals(type)) {
-            boxId = cursor.getInt(mColumnsMap.mColumnSmsType);
-            // Note that messages from the SIM card all have a boxId of zero.
-            return (boxId == TextBasedSmsColumns.MESSAGE_TYPE_INBOX ||
-                    boxId == TextBasedSmsColumns.MESSAGE_TYPE_ALL) ?
-                    MSG_TYPE_INCOMING_SMS : MSG_TYPE_OUTGOING_SMS;
-        } else {
-            boxId = cursor.getInt(mColumnsMap.mColumnMmsMessageBox);
-            // Note that messages from the SIM card all have a boxId of zero: Mms.MESSAGE_BOX_ALL
-            return (boxId == Mms.MESSAGE_BOX_INBOX || boxId == Mms.MESSAGE_BOX_ALL) ?
-                    MSG_TYPE_INCOMING_MMS : MSG_TYPE_OUTGOING_MMS;
-        }
     }
 
     public boolean hasSmsInConversation(Cursor cursor) {
@@ -536,17 +555,17 @@ public class MessageListAdapter extends CursorAdapter {
     }
 
 
-    public static boolean isIncomingMsgType(int msgType) {
-        return msgType == MSG_TYPE_INCOMING_SMS || msgType == MSG_TYPE_INCOMING_MMS;
-
+    public static boolean isIncomingMsgType(int boxId) {
+        return boxId == TextBasedSmsColumns.MESSAGE_TYPE_INBOX ||
+                boxId == TextBasedSmsColumns.MESSAGE_TYPE_ALL;
     }
 
-    public static boolean isOutgoingMsgType(int msgType) {
-        return msgType == MSG_TYPE_OUTGOING_SMS || msgType == MSG_TYPE_OUTGOING_MMS;
+    public static boolean isOutgoingMsgType(int boxId) {
+        return !isIncomingMsgType(boxId);
     }
 
-    public static boolean isMmsMsgType(int msgType) {
-        return msgType == MSG_TYPE_INCOMING_MMS || msgType == MSG_TYPE_OUTGOING_MMS;
+    public static boolean isMmsMsgType(String type) {
+        return type.equals(MMS_TYPE);
     }
 
     public static class ColumnsMap {

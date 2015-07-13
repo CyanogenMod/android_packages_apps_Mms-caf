@@ -37,7 +37,7 @@ LOCAL_PACKAGE_NAME := Mms
 # Builds against the public SDK
 #LOCAL_SDK_VERSION := current
 
-LOCAL_JAVA_LIBRARIES += telephony-common
+LOCAL_JAVA_LIBRARIES += telephony-common okhttp
 LOCAL_STATIC_JAVA_LIBRARIES += android-common jsr305
 LOCAL_STATIC_JAVA_LIBRARIES += libchips
 LOCAL_STATIC_JAVA_LIBRARIES += com.android.vcard libphonenumber libgeocoding guava
@@ -61,7 +61,7 @@ LOCAL_AAPT_FLAGS := \
 LOCAL_REQUIRED_MODULES := SoundRecorder
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
-# LOCAL_PROGUARD_ENABLED := disabled
+LOCAL_PROGUARD_ENABLED := disabled
 
 LOCAL_PRIVILEGED_MODULE := true
 
@@ -75,4 +75,4 @@ LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := \
 include $(BUILD_MULTI_PREBUILT)
 
 # This finds and builds the test apk as well, so a single make does both.
-include $(call all-makefiles-under,$(LOCAL_PATH))
+# include $(call all-makefiles-under,$(LOCAL_PATH))

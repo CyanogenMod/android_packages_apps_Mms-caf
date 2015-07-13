@@ -17,7 +17,6 @@
 
 package com.android.mms.ui;
 
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,13 +28,11 @@ import android.content.res.Resources;
 import android.database.sqlite.SqliteWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Paint.FontMetricsInt;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.StateListDrawable;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.ContactsContract.Profile;
@@ -57,12 +54,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.Checkable;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.view.ViewGroup;
+import android.widget.*;
 
 import com.android.contacts.common.widget.CheckableQuickContactBadge;
 import com.android.internal.telephony.PhoneConstants;
@@ -72,17 +65,14 @@ import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.data.Contact;
 import com.android.mms.data.WorkingMessage;
-import com.android.mms.model.SlideModel;
-import com.android.mms.model.SlideshowModel;
+import com.android.mms.presenters.SlideShowPresenter;
 import com.android.mms.transaction.SmsReceiverService;
 import com.android.mms.transaction.Transaction;
 import com.android.mms.transaction.TransactionBundle;
 import com.android.mms.transaction.TransactionService;
 import com.android.mms.ui.zoom.ZoomMessageListItem;
 import com.android.mms.util.DownloadManager;
-import com.android.mms.util.ItemLoadedCallback;
 import com.android.mms.util.SmileyParser;
-import com.android.mms.util.ThumbnailManager.ImageLoaded;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
 import com.google.android.mms.pdu.NotificationInd;
@@ -93,7 +83,7 @@ import com.google.android.mms.pdu.PduPersister;
  * This class provides view of a message in the messages list.
  */
 public class MessageListItem extends ZoomMessageListItem implements
-        SlideViewInterface, OnClickListener, Checkable {
+        OnClickListener, Checkable {
     public static final String EXTRA_URLS = "com.android.mms.ExtraUrls";
 
     private static final String TAG = LogTag.TAG;
@@ -112,14 +102,12 @@ public class MessageListItem extends ZoomMessageListItem implements
     private boolean mIsCheck = false;
 
     private View mTopSpacer;
-    private View mMmsView;
+    private ViewGroup mMmsView;
     private ImageButton mMessageBubbleArrowhead;
-    private ImageView mImageView;
     private ImageView mLockedIndicator;
     private ImageView mDeliveredIndicator;
     private ImageView mDetailsIndicator;
     private ImageView mSimIndicatorView;
-    private ImageButton mSlideShowButton;
     private TextView mSimMessageAddress;
     private TextView mBodyTextView;
     private TextView mMessageSizeView;
@@ -134,12 +122,15 @@ public class MessageListItem extends ZoomMessageListItem implements
     public View mMessageBlock;
     private CheckableQuickContactBadge mAvatar;
     static private RoundedBitmapDrawable sDefaultContactImage;
-    private Presenter mPresenter;
+    private SlideShowPresenter mPresenter;
     private int mPosition;      // for debugging
-    private ImageLoadedCallback mImageLoadedCallback;
     private boolean mMultiRecipients;
     private int mManageMode;
     private Drawable mGroupedMessageBackground;
+    private boolean mIsIncoming;
+    private int mAccentColor;
+    private MessageListView mListView;
+    private MessageInfoCache mMessageInfoCache;
 
     public MessageListItem(Context context) {
         this(context, null);
@@ -199,8 +190,8 @@ public class MessageListItem extends ZoomMessageListItem implements
         mTopSpacer.setVisibility(View.VISIBLE);
     }
 
-    public void bind(MessageItem msgItem, int accentColor,
-            boolean convHasMultiRecipients, int position, boolean selected) {
+    public void bind(MessageItem msgItem, int accentColor, boolean convHasMultiRecipients,
+                     int position, ListView listView, boolean isIncoming) {
         if (DEBUG) {
             Log.v(TAG, "bind for item: " + position + " old: " +
                    (mMessageItem != null ? mMessageItem.toString() : "NULL" ) +
@@ -210,7 +201,15 @@ public class MessageListItem extends ZoomMessageListItem implements
         mMessageItem = msgItem;
         mPosition = position;
         mMultiRecipients = convHasMultiRecipients;
+        mAccentColor = accentColor;
+        mIsIncoming = isIncoming;
+        mListView = (MessageListView) listView;
 
+        if (!sameItem) {
+            unbind();
+        }
+
+        setChecked(false);
         setLongClickable(false);
         setClickable(false);    // let the list view handle clicks on the item normally. When
                                 // clickable is true, clicks bypass the listview and go straight
@@ -225,19 +224,11 @@ public class MessageListItem extends ZoomMessageListItem implements
                 bindCommonMessage(sameItem);
                 break;
         }
-
         tintBackground(mMessageBlock.getBackground(), accentColor);
         setMessageBubbleArrowheadColor((StateListDrawable) mMessageBubbleArrowhead.getBackground(),
                 accentColor);
-        setChecked(selected);
+        setChecked(mListView.isItemChecked(position));
         customSIMSmsView();
-    }
-
-    private int darkerColor(int color) {
-        float[] hsv = new float[3];
-        Color.colorToHSV(color, hsv);
-        hsv[2] =  Math.max(0f, hsv[2] - hsv[2] * 0.5f);
-        return Color.HSVToColor(Color.alpha(color), hsv);
     }
 
     private void tintBackground(Drawable background, int accentColor) {
@@ -250,7 +241,7 @@ public class MessageListItem extends ZoomMessageListItem implements
                 // amend selector color
                 Drawable selector = sld.getStateDrawable(sld.getStateDrawableIndex(
                         new int[] { android.R.attr.state_selected }));
-                selector.setTint(darkerColor(accentColor));
+                selector.setTint(MessageUtils.getDarkerColor(accentColor));
             }
             if (base != null) {
                 base.setTint(accentColor);
@@ -265,24 +256,17 @@ public class MessageListItem extends ZoomMessageListItem implements
 
         Drawable selector = sld.getStateDrawable(sld.getStateDrawableIndex(
                 new int[] { android.R.attr.state_selected }));
-        selector.setTint(darkerColor(accentColor));
+        selector.setTint(MessageUtils.getDarkerColor(accentColor));
     }
 
     public void unbind() {
-        // Clear all references to the message item, which can contain attachments and other
-        // memory-intensive objects
-        if (mImageView != null) {
-            // Because #setOnClickListener may have set the listener to an object that has the
-            // message item in its closure.
-            mImageView.setOnClickListener(null);
-        }
-        if (mSlideShowButton != null) {
-            // Because #drawPlaybackButton sets the tag to mMessageItem
-            mSlideShowButton.setTag(null);
-        }
         // leave the presenter in case it's needed when rebound to a different MessageItem.
         if (mPresenter != null) {
             mPresenter.cancelBackgroundLoading();
+        }
+        if (mMmsView != null) {
+            mMmsView.removeAllViews();
+            mMmsView.removeAllViewsInLayout();
         }
     }
 
@@ -515,23 +499,6 @@ public class MessageListItem extends ZoomMessageListItem implements
             mBodyTextView.setText(formattedMessage);
         }
         updateSimIndicatorView(mMessageItem.mSubId);
-        // Debugging code to put the URI of the image attachment in the body of the list item.
-        if (DEBUG) {
-            String debugText = null;
-            if (mMessageItem.mSlideshow == null) {
-                debugText = "NULL slideshow";
-            } else {
-                SlideModel slide = ((SlideshowModel) mMessageItem.mSlideshow).get(0);
-                if (slide == null) {
-                    debugText = "NULL first slide";
-                } else if (!slide.hasImage()) {
-                    debugText = "Not an image";
-                } else {
-                    debugText = slide.getImage().getUri().toString();
-                }
-            }
-            mBodyTextView.setText(mPosition + ": " + debugText);
-        }
 
         // If we're in the process of sending a message (i.e. pending), then we show a "SENDING..."
         // string in place of the timestamp.
@@ -544,24 +511,17 @@ public class MessageListItem extends ZoomMessageListItem implements
                     mContext.getResources().getString(sendingTextResId) :
                     mMessageItem.mTimestamp));
         }
-        if (mMessageItem.isSms()) {
+        if (mMessageItem.isSms() ||
+                (mMessageItem.mAttachmentType == WorkingMessage.TEXT && haveLoadedPdu)) {
             showMmsView(false);
             mMessageItem.setOnPduLoaded(null);
         } else {
+            showMmsView(true);
             if (DEBUG) {
                 Log.v(TAG, "bindCommonMessage for item: " + mPosition + " " +
                         mMessageItem.toString() +
                         " mMessageItem.mAttachmentType: " + mMessageItem.mAttachmentType +
                         " sameItem: " + sameItem);
-            }
-            if (mMessageItem.mAttachmentType != WorkingMessage.TEXT) {
-                if (!sameItem) {
-                    setImage(null, null);
-                }
-                setOnClickListener(mMessageItem);
-                drawPlaybackButton(mMessageItem);
-            } else {
-                showMmsView(false);
             }
             if (mMessageItem.mSlideshow == null) {
                 final int mCurrentAttachmentType = mMessageItem.mAttachmentType;
@@ -582,20 +542,9 @@ public class MessageListItem extends ZoomMessageListItem implements
                     }
                 });
             } else {
-                if (mPresenter == null) {
-                    mPresenter = PresenterFactory.getPresenter(
-                            "MmsThumbnailPresenter", mContext,
-                            this, mMessageItem.mSlideshow);
-                } else {
-                    mPresenter.setModel(mMessageItem.mSlideshow);
-                    mPresenter.setView(this);
-                }
-                if (mImageLoadedCallback == null) {
-                    mImageLoadedCallback = new ImageLoadedCallback(this);
-                } else {
-                    mImageLoadedCallback.reset(this);
-                }
-                mPresenter.present(mImageLoadedCallback);
+                mPresenter = (SlideShowPresenter) mMessageItem.getSlideshow().getPresenter();
+                mPresenter.setMessageListItem(this);
+                mPresenter.presentSlides(mMmsView);
             }
         }
         drawRightStatusIndicator(mMessageItem);
@@ -610,34 +559,8 @@ public class MessageListItem extends ZoomMessageListItem implements
         mMessageBubbleArrowhead.setVisibility(visibility);
     }
 
-    static private class ImageLoadedCallback implements ItemLoadedCallback<ImageLoaded> {
-        private long mMessageId;
-        private final MessageListItem mListItem;
-
-        public ImageLoadedCallback(MessageListItem listItem) {
-            mListItem = listItem;
-            mMessageId = listItem.getMessageItem().getMessageId();
-        }
-
-        public void reset(MessageListItem listItem) {
-            mMessageId = listItem.getMessageItem().getMessageId();
-        }
-
-        public void onItemLoaded(ImageLoaded imageLoaded, Throwable exception) {
-            if (DEBUG_DONT_LOAD_IMAGES) {
-                return;
-            }
-            // Make sure we're still pointing to the same message. The list item could have
-            // been recycled.
-            MessageItem msgItem = mListItem.mMessageItem;
-            if (msgItem != null && msgItem.getMessageId() == mMessageId) {
-                if (imageLoaded.mIsVideo) {
-                    mListItem.setVideoThumbnail(null, imageLoaded.mBitmap);
-                } else {
-                    mListItem.setImage(null, imageLoaded.mBitmap);
-                }
-            }
-        }
+    public boolean isBubbleArrowheadVisibile() {
+        return mMessageBubbleArrowhead.getVisibility() == View.VISIBLE;
     }
 
     DialogInterface.OnClickListener mCancelLinstener = new DialogInterface.OnClickListener() {
@@ -653,57 +576,35 @@ public class MessageListItem extends ZoomMessageListItem implements
         }
     };
 
-    @Override
-    public void startAudio() {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void startVideo() {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void setAudio(Uri audio, String name, Map<String, ?> extras) {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void setImage(String name, Bitmap bitmap) {
-        showMmsView(true);
-
-        try {
-            RoundedBitmapDrawable drawable =
-                    RoundedBitmapDrawableFactory.create(getResources(), bitmap);
-            drawable.setCornerRadius(MmsConfig.getMmsCornerRadius());
-            mImageView.setImageDrawable(drawable);
-            mImageView.setVisibility(VISIBLE);
-        } catch (java.lang.OutOfMemoryError e) {
-            Log.e(TAG, "setImage: out of memory: ", e);
-        }
-    }
-
-    private void showMmsView(boolean visible) {
+    public void showMmsView(boolean visible) {
         if (mMmsView == null) {
-            mMmsView = findViewById(R.id.mms_view);
+            mMmsView = (ViewGroup) findViewById(R.id.message_attachment_root);
             // if mMmsView is still null here, that mean the mms section hasn't been inflated
 
             if (visible && mMmsView == null) {
                 //inflate the mms view_stub
-                View mmsStub = findViewById(R.id.mms_layout_view_stub);
+                View mmsStub = findViewById(R.id.message_attachment_stub);
                 mmsStub.setVisibility(View.VISIBLE);
-                mMmsView = findViewById(R.id.mms_view);
+                mMmsView = (ViewGroup) findViewById(R.id.message_attachment_root);
             }
         }
         if (mMmsView != null) {
-            if (mImageView == null) {
-                mImageView = (ImageView) findViewById(R.id.image_view);
-            }
-            if (mSlideShowButton == null) {
-                mSlideShowButton = (ImageButton) findViewById(R.id.play_slideshow_button);
-            }
             mMmsView.setVisibility(visible ? View.VISIBLE : View.GONE);
-            mImageView.setVisibility(visible ? View.VISIBLE : View.GONE);
+            int totalHeight = mMessageInfoCache.getCachedTotalHeight(
+                    mContext, getMessageItem().getMessageId());
+            ViewGroup.LayoutParams params = mMmsView.getLayoutParams();
+            if (totalHeight != -1) {
+                params.height = totalHeight;
+            } else {
+                params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            }
+            mMmsView.setLayoutParams(params);
+        }
+        if (visible) {
+            boolean hasSubject = !TextUtils.isEmpty(mMessageItem.mSubject);
+            mMessageBlock.setVisibility(hasSubject ? View.VISIBLE : View.GONE);
+        } else {
+            mMessageBlock.setVisibility(View.VISIBLE);
         }
     }
 
@@ -793,24 +694,6 @@ public class MessageListItem extends ZoomMessageListItem implements
         mManageMode = manageMode;
     }
 
-    private void drawPlaybackButton(MessageItem msgItem) {
-        switch (msgItem.mAttachmentType) {
-            case WorkingMessage.SLIDESHOW:
-            case WorkingMessage.AUDIO:
-            case WorkingMessage.VIDEO:
-                // Show the 'Play' button and bind message info on it.
-                mSlideShowButton.setTag(msgItem);
-                // Set call-back for the 'Play' button.
-                mSlideShowButton.setOnClickListener(this);
-                mSlideShowButton.setVisibility(View.VISIBLE);
-                setLongClickable(false);
-                break;
-            default:
-                mSlideShowButton.setVisibility(View.GONE);
-                break;
-        }
-    }
-
     // OnClick Listener for the playback button
     @Override
     public void onClick(View v) {
@@ -847,32 +730,6 @@ public class MessageListItem extends ZoomMessageListItem implements
         if (spans.length != 0) {
             MessageUtils.onMessageContentClick(mContext, mBodyTextView);
         }
-    }
-
-    private void setOnClickListener(final MessageItem msgItem) {
-        switch(msgItem.mAttachmentType) {
-            case WorkingMessage.VCARD:
-            case WorkingMessage.VCAL:
-            case WorkingMessage.IMAGE:
-            case WorkingMessage.VIDEO:
-                mImageView.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        sendMessage(msgItem, MSG_LIST_PLAY);
-                    }
-                });
-                mImageView.setOnLongClickListener(new OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        return v.showContextMenu();
-                    }
-                });
-                break;
-
-            default:
-                mImageView.setOnClickListener(null);
-                break;
-            }
     }
 
     private void drawRightStatusIndicator(MessageItem msgItem) {
@@ -923,90 +780,6 @@ public class MessageListItem extends ZoomMessageListItem implements
         }
     }
 
-    @Override
-    public void setImageRegionFit(String fit) {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void setImageVisibility(boolean visible) {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void setText(String name, String text) {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void setTextVisibility(boolean visible) {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void setVideo(String name, Uri uri) {
-    }
-
-    @Override
-    public void setVideoThumbnail(String name, Bitmap bitmap) {
-        showMmsView(true);
-
-        try {
-            mImageView.setImageBitmap(bitmap);
-            mImageView.setVisibility(VISIBLE);
-        } catch (java.lang.OutOfMemoryError e) {
-            Log.e(TAG, "setVideo: out of memory: ", e);
-        }
-    }
-
-    @Override
-    public void setVideoVisibility(boolean visible) {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void stopAudio() {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void stopVideo() {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void reset() {
-    }
-
-    @Override
-    public void setVisibility(boolean visible) {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void pauseAudio() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void pauseVideo() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void seekAudio(int seekTo) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void seekVideo(int seekTo) {
-        // TODO Auto-generated method stub
-
-    }
-
     public void updateDelayCountDown() {
         if (mMessageItem.isSms() && mMessageItem.getCountDown() > 0 && mMessageItem.isSending()) {
             String content = mContext.getResources().getQuantityString(
@@ -1022,32 +795,6 @@ public class MessageListItem extends ZoomMessageListItem implements
     }
 
     @Override
-    public void setVcard(Uri lookupUri, String name) {
-        showMmsView(true);
-
-        try {
-            mImageView.setImageResource(R.drawable.ic_attach_vcard);
-            mImageView.setVisibility(VISIBLE);
-        } catch (java.lang.OutOfMemoryError e) {
-            // shouldn't be here.
-            Log.e(TAG, "setVcard: out of memory: ", e);
-        }
-    }
-
-    @Override
-    public void setVCal(Uri vcalUri, String name) {
-        showMmsView(true);
-
-        try {
-            mImageView.setImageResource(R.drawable.ic_attach_event);
-            mImageView.setVisibility(VISIBLE);
-        } catch (java.lang.OutOfMemoryError e) {
-            // shouldn't be here.
-            Log.e(TAG, "setVCal: out of memory: ", e);
-        }
-    }
-
-    @Override
     public boolean isChecked() {
         return mIsCheck;
     }
@@ -1057,6 +804,9 @@ public class MessageListItem extends ZoomMessageListItem implements
         mIsCheck = checked;
         mMessageBlock.setSelected(checked);
         mMessageBubbleArrowhead.setSelected(checked);
+        if (mMmsView != null) {
+            mMmsView.setSelected(checked);
+        }
     }
 
     @Override
@@ -1072,5 +822,25 @@ public class MessageListItem extends ZoomMessageListItem implements
                 mMessageStatus.setVisibility(View.GONE);
             }
         }
+    }
+
+    public void setMessageCache(MessageInfoCache messageCache) {
+        mMessageInfoCache = messageCache;
+    }
+
+    public int getAccentColor() {
+        return mAccentColor;
+    }
+
+    public boolean isIncoming() {
+        return mIsIncoming;
+    }
+
+    public void onItemLongClick() {
+        mListView.setItemChecked(mPosition, true);
+    }
+
+    public MessageInfoCache getMessageInfoCache() {
+        return mMessageInfoCache;
     }
 }

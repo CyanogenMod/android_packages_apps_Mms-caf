@@ -56,6 +56,7 @@ public abstract class MediaModel extends Model implements EventListener {
     protected boolean mMediaResizeable;
 
     private final ArrayList<MediaAction> mMediaActions;
+
     public static enum MediaAction {
         NO_ACTIVE_ACTION,
         START,
@@ -318,5 +319,20 @@ public abstract class MediaModel extends Model implements EventListener {
      * @throws MmsException
      */
     protected void resizeMedia(int byteLimit, long messageId) throws MmsException {
+    }
+
+    public void cancelThumbnailLoading() {}
+    public void removeThumbnail() {}
+
+    public Intent getIntent(){
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.putExtra("SingleItemOnly", true); // So we don't see "surrounding" images in Gallery
+
+        String contentType;
+        contentType = getContentType();
+        intent.setDataAndType(getUri(), contentType);
+        return intent;
     }
 }
