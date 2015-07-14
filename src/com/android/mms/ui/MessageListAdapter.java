@@ -46,6 +46,7 @@ import android.widget.CursorAdapter;
 import android.widget.ListView;
 
 import com.android.mms.LogTag;
+import com.android.mms.MmsApp;
 import com.android.mms.R;
 import com.android.mms.ui.zoom.ZoomMessageListItem;
 import com.android.mms.ui.zoom.ZoomMessageListView;
@@ -55,7 +56,7 @@ import com.google.android.mms.MmsException;
 /**
  * The back-end data adapter of a message list.
  */
-public class MessageListAdapter extends CursorAdapter {
+public class MessageListAdapter extends CursorAdapter implements MmsApp.PhoneNumberLookupListener {
     private static final String TAG = LogTag.TAG;
     private static final boolean LOCAL_LOGV = false;
 
@@ -233,7 +234,7 @@ public class MessageListAdapter extends CursorAdapter {
                 .getDimensionPixelSize(R.dimen.message_item_space_above_grouped);
         mSpaceAboveNonGroupedMessages = context.getResources()
                 .getDimensionPixelSize(R.dimen.message_item_space_above_non_grouped);
-
+        MmsApp.getApplication().addPhoneNumberLookupListener(this);
     }
 
     @Override
@@ -273,6 +274,11 @@ public class MessageListAdapter extends CursorAdapter {
 
             handleZoomForItem(view);
         }
+    }
+
+    @Override
+    public void onNewInfoAvailable() {
+        notifyDataSetChanged();
     }
 
     public interface OnDataSetChangedListener {

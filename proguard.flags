@@ -1,12 +1,12 @@
 -dontnote org.joda.**
+
+-dontwarn com.cyanogen.**
+-dontwarn com.squareup.**
+-dontwarn com.squareup.okhttp.**
 -dontwarn org.joda.**
 
- -keep class com.android.mms.ui.MmsThumbnailPresenter {
-*;
-}
-
--keep class com.android.mms.ui.SlideshowPresenter {
-*;
-}
-
+-keep class com.android.mms.ui.MmsThumbnailPresenter { *; }
+-keep class com.android.mms.ui.SlideshowPresenter { *; }
+-keep class com.cyanogen.** { *; }
+-keep class com.squareup.** { *; }
 -keep class net.danlew.android.** { *; }

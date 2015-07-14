@@ -43,7 +43,9 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <ImageView
+            <!-- Sent messages don't display an avatar , but need this element in place -->
+            <!-- as the MessageListItem is shared b/w sent and received messages -->
+            <QuickContactBadge
                 android:id="@+id/delivered_indicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

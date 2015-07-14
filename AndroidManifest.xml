@@ -63,6 +63,10 @@
     <!-- Auto enable mobile data -->
     <uses-permission android:name="android.permission.MODIFY_PHONE_STATE" />
 
+    <uses-sdk
+        android:minSdkVersion="21"
+        android:targetSdkVersion="21" />
+
     <application android:name="MmsApp"
             android:label="@string/app_label"
             android:icon="@mipmap/ic_launcher_smsmms"

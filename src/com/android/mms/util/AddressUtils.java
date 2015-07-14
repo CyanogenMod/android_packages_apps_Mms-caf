@@ -22,6 +22,7 @@ import android.database.sqlite.SqliteWrapper;
 import android.net.Uri;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Mms.Addr;
+import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 
 import com.android.i18n.phonenumbers.PhoneNumberUtil;
@@ -80,5 +81,10 @@ public class AddressUtils {
             mPhoneNumberUtil = PhoneNumberUtil.getInstance();
         }
         return mPhoneNumberUtil.isPossibleNumber(query, currentCountry);
+    }
+
+    public static String normalizePhoneNumber(String number) {
+        return PhoneNumberUtils.formatNumberToE164(number,
+                MmsApp.getApplication().getCurrentCountryIso());
     }
 }
