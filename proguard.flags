@@ -1,5 +1,6 @@
 -dontnote org.joda.**
 -dontwarn org.joda.**
+-dontwarn com.cyanogen.**
 
  -keep class com.android.mms.ui.MmsThumbnailPresenter {
 *;
