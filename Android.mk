@@ -8,6 +8,7 @@ contacts_common_dir := ../ContactsCommon
 phone_common_dir := ../PhoneCommon
 stickylistheaders_dir := ../../../external/emilsjolander/stickylistheaders/library
 android_joda_dir := android-joda
+#ambientsdk_dir := ../../../vendor/ambient/ambientsdk/release
 
 res_dirs := res \
 	$(chips_dir) \
@@ -15,6 +16,8 @@ res_dirs := res \
 	$(stickylistheaders_dir)/res \
 	$(android_joda_dir)/res \
 	$(phone_common_dir)/res
+
+#	$(ambientsdk_dir)/res \
 
 src_dirs := src \
 	$(contacts_common_dir)/src \
@@ -43,6 +46,7 @@ LOCAL_STATIC_JAVA_LIBRARIES += android-support-v13
 LOCAL_STATIC_JAVA_LIBRARIES += \
 	joda-time \
 	android-joda
+#	ambientsdk
 
 
 LOCAL_AAPT_FLAGS := \
@@ -52,6 +56,7 @@ LOCAL_AAPT_FLAGS := \
 	--extra-packages se.emilsjolander.stickylistheaders \
 	--extra-packages net.danlew.android.joda \
 	--extra-packages com.android.phone.common
+#	--extra-packages com.cyanogen.ambient
 
 LOCAL_REQUIRED_MODULES := SoundRecorder
 

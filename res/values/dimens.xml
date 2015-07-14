@@ -47,7 +47,6 @@ All Rights Reserved. -->
     <dimen name="mms_next_empty_tv_marginTop">16dp</dimen>
     <dimen name="mms_next_empty_circle_marginTop">158dp</dimen>
     <dimen name="mms_next_empty_container_padding">45dp</dimen>
-    <dimen name="mms_next_toolbar_height">56dp</dimen>
     <dimen name="mms_next_toolbar_paddingBottom">20dp</dimen>
     <dimen name="mms_next_toolbar_paddingStart">16dp</dimen>
     <dimen name="mms_next_spinner_minHeight">48dp</dimen>

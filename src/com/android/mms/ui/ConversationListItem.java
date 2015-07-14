@@ -103,7 +103,11 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         mAttachmentView = findViewById(R.id.attachment);
         mErrorIndicator = findViewById(R.id.error);
         mAvatarView = (CheckableQuickContactBadge) findViewById(R.id.avatar);
-        mAvatarView.setOverlay(null);
+        if (mAvatarView != null) {
+            mAvatarView.setCheckMarkCheckAlpha(255);
+            mAvatarView.setCheckMarkBackgroundColor(R.color.mms_next_theme_color_check);
+            mAvatarView.setOverlay(null);
+        }
     }
 
     public Conversation getConversation() {
@@ -305,7 +309,6 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
     public void setChecked(boolean checked) {
         mConversation.setIsChecked(checked);
         mAvatarView.setChecked(isChecked(), true);
-        setActivated(checked);
     }
 
     @Override
