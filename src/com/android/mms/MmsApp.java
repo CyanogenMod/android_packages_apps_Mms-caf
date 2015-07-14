@@ -17,6 +17,7 @@
 
 package com.android.mms;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +26,7 @@ import android.drm.DrmManagerClient;
 import android.location.Country;
 import android.location.CountryDetector;
 import android.location.CountryListener;
+import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.provider.SearchRecentSuggestions;
@@ -47,11 +49,18 @@ import com.android.mms.util.PduLoaderManager;
 import com.android.mms.util.RateController;
 import com.android.mms.util.SmileyParser;
 import com.android.mms.util.ThumbnailManager;
+import com.cyanogen.lookup.phonenumber.LookupHandlerThread;
+import com.cyanogen.lookup.phonenumber.request.LookupRequest;
+import com.cyanogen.lookup.phonenumber.response.LookupResponse;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashSet;
 import java.util.Locale;
+
 import net.danlew.android.joda.JodaTimeAndroid;
 
-public class MmsApp extends Application {
+public class MmsApp extends Application implements Application.ActivityLifecycleCallbacks,
+        LookupRequest.Callback {
     public static final String LOG_TAG = LogTag.TAG;
 
     private SearchRecentSuggestions mRecentSuggestions;
@@ -64,6 +73,12 @@ public class MmsApp extends Application {
     private ThumbnailManager mThumbnailManager;
     private ContactPhotoManager mContactPhotoManager;
     private DrmManagerClient mDrmManagerClient;
+
+    private short mActivityCount = 0;
+    private ConcurrentHashMap<String, LookupResponse> mPhoneNumberLookupCache;
+    private LookupHandlerThread mLookupHandlerThread;
+    private HashSet<PhoneNumberLookupListener> mLookupListeners;
+    private boolean isPhoneNumberLookupInitialized;
 
     @Override
     public void onCreate() {
@@ -110,6 +125,10 @@ public class MmsApp extends Application {
         MessagingNotification.init(this);
 
         activePendingMessages();
+
+        mPhoneNumberLookupCache = new ConcurrentHashMap<>();
+        mLookupListeners = new HashSet<>();
+        registerActivityLifecycleCallbacks(this);
     }
 
     /**
@@ -220,4 +239,138 @@ public class MmsApp extends Application {
         return mDrmManagerClient;
     }
 
+    @Override
+    public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+        mActivityCount++;
+    }
+
+    @Override
+    public void onActivityDestroyed(Activity activity) {
+        --mActivityCount;
+        if (mActivityCount == 0) {
+            if (isPhoneNumberLookupInitialized) {
+                // tear down the phone number lookup-cache and handler thread
+                tearDownPhoneLookup();
+            }
+        }
+    }
+
+    private void tearDownPhoneLookup() {
+        if (mLookupHandlerThread != null) {
+            mLookupHandlerThread.tearDown();
+            mLookupHandlerThread = null;
+        }
+        mPhoneNumberLookupCache.clear();
+        isPhoneNumberLookupInitialized = false;
+    }
+
+    @Override
+    public void onNewInfo(LookupRequest lookupRequest, LookupResponse response) {
+        // called from another thread
+        if (mPhoneNumberLookupCache != null) {
+            // TODO : evaluate if info is usable , name or spam count is present
+            // move ^ into lookup provider ?
+            mPhoneNumberLookupCache.put(lookupRequest.mPhoneNumber, response);
+        }
+
+        // notify listeners of new entry
+        for (PhoneNumberLookupListener listener : mLookupListeners) {
+            listener.onNewInfoAvailable();
+        }
+    }
+
+    /**
+     * Get contact info in the form of {@link LookupResponse}, if information
+     * has previously been requested and was available
+     * @param phoneNumber should be E-164 formatted
+     */
+    public LookupResponse getPhoneNumberLookupResponse(String phoneNumber) {
+        if (!isPhoneNumberLookupInitialized || phoneNumber == null) return null;
+        return mPhoneNumberLookupCache.get(phoneNumber);
+    }
+
+    /**
+     * Request lookup for contact info of a given phone number.
+     * If the cache already holds results, a new request isn't submitted.
+     * Use {@link MmsApp#lookupInfoForPhoneNumber(String, boolean)} to force a re-query
+     *
+     * @param phoneNumber should be E-164 formatted
+     */
+    public boolean lookupInfoForPhoneNumber(String phoneNumber) {
+        return lookupInfoForPhoneNumber(phoneNumber, false);
+    }
+
+
+    /**
+     * Request lookup for contact info of a given phone number.
+     * @param phoneNumber
+     * @param requery
+     * @return
+     */
+    public boolean lookupInfoForPhoneNumber(String phoneNumber, boolean requery) {
+        if (!isPhoneNumberLookupInitialized || phoneNumber == null) return false;
+
+        if (!requery && mPhoneNumberLookupCache.get(phoneNumber) != null) {
+            return false;
+        }
+
+        LookupRequest lookupRequest = new LookupRequest(phoneNumber, this);
+        // lookup handler thread should be initialized already due to onResume
+        return getLookupHandlerThread().fetchInfoForPhoneNumber(lookupRequest);
+    }
+
+    /**
+     * Registration mechanism for anyone interested in new contact info
+     * being available from an external provider. The updates aren't granular
+     * as of now - you will be notified of updates to all contact info requests
+     */
+    public void addPhoneNumberLookupListener(PhoneNumberLookupListener listener) {
+        mLookupListeners.add(listener);
+    }
+
+    /**
+     * Stop getting updates about newly added contact info
+     */
+    public void removePhoneNumberLookupListener(PhoneNumberLookupListener listener) {
+        mLookupListeners.remove(listener);
+    }
+
+    /**
+     * Callback for clients requesting phone number lookups
+     */
+    public interface PhoneNumberLookupListener {
+        // generic callback for when new info is available
+        void onNewInfoAvailable();
+        // TODO : include the number for which new info is available ?
+    }
+
+    @Override
+    public void onActivityStarted(Activity activity) {}
+
+    private LookupHandlerThread getLookupHandlerThread() {
+        if (mLookupHandlerThread == null) {
+            mLookupHandlerThread = new LookupHandlerThread("PhoneNumberLookupHandler", this);
+        }
+        return mLookupHandlerThread;
+    }
+
+    @Override
+    public void onActivityResumed(Activity activity) {
+        if (isPhoneNumberLookupInitialized && !getLookupHandlerThread().isProviderEnabled()) {
+            // tear down if transitioning to not enabled
+            tearDownPhoneLookup();
+            return;
+        }
+
+        isPhoneNumberLookupInitialized = getLookupHandlerThread().initialize();
+    }
+
+    @Override
+    public void onActivityPaused(Activity activity) {}
+
+    @Override
+    public void onActivityStopped(Activity activity) {}
+
+    @Override
+    public void onActivitySaveInstanceState(Activity activity, Bundle outState) {}
 }

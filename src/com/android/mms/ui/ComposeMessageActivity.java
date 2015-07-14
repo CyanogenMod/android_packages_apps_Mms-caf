@@ -2577,6 +2577,8 @@ public class ComposeMessageActivity extends Activity
         // any async tasks
         mMsgListView.setAdapter(null);
         mMessageInfoCache.cleanup();
+
+        MmsApp.getApplication().removePhoneNumberLookupListener(mMsgListAdapter);
         super.onDestroy();
     }
 
@@ -4334,6 +4336,8 @@ public class ComposeMessageActivity extends Activity
         mMsgListAdapter = new MessageListAdapter(this, null, mMsgListView, true, highlight, mMessageInfoCache);
         mMsgListAdapter.setOnDataSetChangedListener(mDataSetChangedListener);
         mMsgListAdapter.setMsgListItemHandler(mMessageListItemHandler);
+        MmsApp.getApplication().addPhoneNumberLookupListener(mMsgListAdapter);
+
         mMsgListView.setAdapter(mMsgListAdapter);
         mMsgListView.setItemsCanFocus(false);
         mMsgListView.setVisibility((mSendDiscreetMode || MessageUtils.isMailboxMode())

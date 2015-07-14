@@ -44,4 +44,5 @@
     <color name="section_header_text_color">#00adef</color>
     <color name="tab_accent_color">#7ed321</color>
 
+    <color name="action_mode_checkmark_color">#00b0f0</color>
 </resources>

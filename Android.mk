@@ -35,7 +35,7 @@ LOCAL_RESOURCE_DIR := $(addprefix $(LOCAL_PATH)/, $(res_dirs))
 LOCAL_PACKAGE_NAME := Mms
 
 # Builds against the public SDK
-#LOCAL_SDK_VERSION := current
+# LOCAL_SDK_VERSION := current
 
 LOCAL_JAVA_LIBRARIES += telephony-common
 LOCAL_STATIC_JAVA_LIBRARIES += android-common jsr305
@@ -47,6 +47,7 @@ LOCAL_STATIC_JAVA_LIBRARIES += android-support-v13
 LOCAL_STATIC_JAVA_LIBRARIES += \
 	joda-time-mms \
 	android-joda-mms \
+	mms-picaso \
 #	ambientsdk
 
 LOCAL_AAPT_FLAGS := \
@@ -60,6 +61,10 @@ LOCAL_AAPT_FLAGS := \
 
 LOCAL_REQUIRED_MODULES := SoundRecorder
 
+# utilize ContactsCommon's phone-number-based contact-info lookup
+CONTACTS_COMMON_LOOKUP_PROVIDER ?= $(LOCAL_PATH)/$(contacts_common_dir)/info_lookup
+include $(CONTACTS_COMMON_LOOKUP_PROVIDER)/phonenumber_lookup_provider.mk
+
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 LOCAL_PROGUARD_ENABLED := disabled
 
@@ -68,9 +73,11 @@ LOCAL_PRIVILEGED_MODULE := true
 include $(BUILD_PACKAGE)
 
 include $(CLEAR_VARS)
+
 LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := \
     joda-time-mms:libs/joda-time-2.7-no-tzdb.jar \
-    android-joda-mms:android-joda/classes.jar
+    android-joda-mms:android-joda/classes.jar \
+    mms-picaso:libs/picaso.jar
 
 include $(BUILD_MULTI_PREBUILT)
 
