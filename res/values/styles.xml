@@ -43,7 +43,7 @@
     </style>
 
     <style name="MmsActionModeStyle" parent="@android:Widget.Material.ActionMode">
-        <item name="android:height">@dimen/mms_next_toolbar_height</item>
+        <item name="android:height">?android:attr/actionBarSize</item>
     </style>
 
     <style name="ReceivedMessageTheme" parent="android:ThemeOverlay.Material.Dark">

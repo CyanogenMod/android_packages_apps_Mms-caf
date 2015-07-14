@@ -8,13 +8,17 @@ contacts_common_dir := ../ContactsCommon
 phone_common_dir := ../PhoneCommon
 stickylistheaders_dir := ../../../external/emilsjolander/stickylistheaders/library
 android_joda_dir := android-joda
+#ambientsdk_dir := ../../../vendor/ambient/ambientsdk/release
 
 res_dirs := res \
 	$(chips_dir) \
 	$(contacts_common_dir)/res \
 	$(stickylistheaders_dir)/res \
 	$(android_joda_dir)/res \
+	$(ambientsdk_dir)/res \
 	$(phone_common_dir)/res
+
+#	$(ambientsdk_dir)/res \
 
 src_dirs := src \
 	$(contacts_common_dir)/src \
@@ -41,9 +45,9 @@ LOCAL_STATIC_JAVA_LIBRARIES += android-support-v7-palette
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v4
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v13
 LOCAL_STATIC_JAVA_LIBRARIES += \
-	joda-time \
-	android-joda
-
+	joda-time-mms \
+	android-joda-mms \
+#	ambientsdk
 
 LOCAL_AAPT_FLAGS := \
 	--auto-add-overlay \
@@ -52,6 +56,7 @@ LOCAL_AAPT_FLAGS := \
 	--extra-packages se.emilsjolander.stickylistheaders \
 	--extra-packages net.danlew.android.joda \
 	--extra-packages com.android.phone.common
+#	--extra-packages com.cyanogen.ambient
 
 LOCAL_REQUIRED_MODULES := SoundRecorder
 
@@ -64,8 +69,8 @@ include $(BUILD_PACKAGE)
 
 include $(CLEAR_VARS)
 LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := \
-    joda-time:libs/joda-time-2.7-no-tzdb.jar \
-    android-joda:android-joda/classes.jar
+    joda-time-mms:libs/joda-time-2.7-no-tzdb.jar \
+    android-joda-mms:android-joda/classes.jar
 
 include $(BUILD_MULTI_PREBUILT)
 
