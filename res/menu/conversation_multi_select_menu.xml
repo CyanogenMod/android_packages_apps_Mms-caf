@@ -15,12 +15,17 @@
 -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/block"
+          android:title="@string/block"
+          android:icon="@drawable/ic_block_white_24px"
+          android:showAsAction="always|withText" />
     <item android:id="@+id/delete"
           android:title="@string/delete"
           android:icon="@drawable/ic_menu_delete"
           android:showAsAction="always|withText" />
     <item android:id="@+id/selection_toggle"
-          android:showAsAction="never|withText"
+          android:icon="@drawable/ic_select_all_white_24px"
+          android:showAsAction="always|withText"
           android:title="@string/selected_all" />
     <item android:id="@+id/markAsUnread"
           android:title="@string/menu_as_unread"

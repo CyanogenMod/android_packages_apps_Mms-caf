@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:orientation="vertical">
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="#80000000"
+            android:layout_marginTop="8dp"
+            android:text="@string/block_dialog_description"/>
+
+    <CheckBox
+            android:id="@+id/spamCheckbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="#A6A6A6"
+            android:checked="true"
+            android:layout_marginTop="24dp"/>
+</LinearLayout>
