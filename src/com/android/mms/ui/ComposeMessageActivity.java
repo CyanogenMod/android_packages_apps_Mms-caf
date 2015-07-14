@@ -2684,6 +2684,7 @@ public class ComposeMessageActivity extends Activity
             mZoomGestureOverlayView.removeZoomListener(this);
         }
 
+        MmsApp.getApplication().removePhoneNumberLookupListener(mMsgListAdapter);
         super.onDestroy();
     }
 
@@ -4411,6 +4412,8 @@ public class ComposeMessageActivity extends Activity
         mMsgListAdapter = new MessageListAdapter(this, null, mMsgListView, true, highlight);
         mMsgListAdapter.setOnDataSetChangedListener(mDataSetChangedListener);
         mMsgListAdapter.setMsgListItemHandler(mMessageListItemHandler);
+        MmsApp.getApplication().addPhoneNumberLookupListener(mMsgListAdapter);
+
         mMsgListView.setAdapter(mMsgListAdapter);
         mMsgListView.setItemsCanFocus(false);
         mMsgListView.setVisibility((mSendDiscreetMode || MessageUtils.isMailboxMode())

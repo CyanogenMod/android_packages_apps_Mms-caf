@@ -34,6 +34,7 @@ import android.graphics.Paint.FontMetricsInt;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.ScaleDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
 import android.os.Handler;
@@ -55,6 +56,8 @@ import android.text.style.TextAppearanceSpan;
 import android.text.style.URLSpan;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -62,15 +65,17 @@ import android.widget.Checkable;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.QuickContactBadge;
 import android.widget.TextView;
 
-import com.android.contacts.common.widget.CheckableQuickContactBadge;
 import com.android.internal.telephony.PhoneConstants;
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.data.Contact;
+import com.android.mms.data.ContactList;
+import com.android.mms.data.Conversation;
 import com.android.mms.data.WorkingMessage;
 import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
@@ -79,10 +84,13 @@ import com.android.mms.transaction.Transaction;
 import com.android.mms.transaction.TransactionBundle;
 import com.android.mms.transaction.TransactionService;
 import com.android.mms.ui.zoom.ZoomMessageListItem;
+import com.android.mms.util.AddressUtils;
 import com.android.mms.util.DownloadManager;
+import com.android.mms.util.ImageUtils;
 import com.android.mms.util.ItemLoadedCallback;
 import com.android.mms.util.SmileyParser;
 import com.android.mms.util.ThumbnailManager.ImageLoaded;
+import com.cyanogen.lookup.phonenumber.response.LookupResponse;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
 import com.google.android.mms.pdu.NotificationInd;
@@ -132,7 +140,7 @@ public class MessageListItem extends ZoomMessageListItem implements
     private TextView mMessageStatus;
     private TextView mSimNameView;
     public View mMessageBlock;
-    private CheckableQuickContactBadge mAvatar;
+    private QuickContactBadge mAvatar;
     static private RoundedBitmapDrawable sDefaultContactImage;
     private Presenter mPresenter;
     private int mPosition;      // for debugging
@@ -172,7 +180,7 @@ public class MessageListItem extends ZoomMessageListItem implements
         mLockedIndicator = (ImageView) findViewById(R.id.locked_indicator);
         mDeliveredIndicator = (ImageView) findViewById(R.id.delivered_indicator);
         mDetailsIndicator = (ImageView) findViewById(R.id.details_indicator);
-        mAvatar = (CheckableQuickContactBadge) findViewById(R.id.avatar);
+        mAvatar = (QuickContactBadge) findViewById(R.id.avatar);
         mSimIndicatorView = (ImageView) findViewById(R.id.sim_indicator_icon);
         mSimNameView = (TextView) findViewById(R.id.sim_name);
         mMessageBlock = findViewById(R.id.message_block);
@@ -450,9 +458,37 @@ public class MessageListItem extends ZoomMessageListItem implements
                     mAvatar.assignContactFromPhone(contact.getNumber(), true);
                 }
             }
+            checkForUnknownContact(contact);
         } else {
             mAvatar.setImageDrawable(sDefaultContactImage);
         }
+    }
+
+    private void checkForUnknownContact(Contact contact) {
+        if (!contact.existsInDatabase()) {
+            String number = AddressUtils.normalizePhoneNumber(contact.getNumber());
+            LookupResponse lookupResponse = MmsApp.getApplication().
+                    getPhoneNumberLookupResponse(number);
+            if (lookupResponse != null) {
+                updateView(lookupResponse);
+            } else {
+                // request info for this contact
+                MmsApp.getApplication().lookupInfoForPhoneNumber(number);
+            }
+        }
+    }
+
+    private void updateView(LookupResponse lookupResponse) {
+        // if url exists load into image
+        if (!TextUtils.isEmpty(lookupResponse.mPhotoUrl)) {
+            ImageUtils.loadBitampFromUrl(getContext(), lookupResponse.mPhotoUrl, mAvatar);
+        }
+
+        // add attribution to the contact image
+        ScaleDrawable attributionDrawable = new ScaleDrawable(lookupResponse.mAttributionLogo,
+                Gravity.BOTTOM | Gravity.RIGHT, 1.0f, 1.0f);
+        attributionDrawable.setLevel(3200);
+        mAvatar.setOverlay(attributionDrawable);
     }
 
     public TextView getBodyTextView() {

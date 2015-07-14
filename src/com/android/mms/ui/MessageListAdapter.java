@@ -27,7 +27,9 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Looper;
 import android.os.Handler;
+import android.os.Message;
 import android.provider.BaseColumns;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.MmsSms;
@@ -46,6 +48,7 @@ import android.widget.CursorAdapter;
 import android.widget.ListView;
 
 import com.android.mms.LogTag;
+import com.android.mms.MmsApp;
 import com.android.mms.R;
 import com.android.mms.ui.zoom.ZoomMessageListItem;
 import com.android.mms.ui.zoom.ZoomMessageListView;
@@ -55,7 +58,7 @@ import com.google.android.mms.MmsException;
 /**
  * The back-end data adapter of a message list.
  */
-public class MessageListAdapter extends CursorAdapter {
+public class MessageListAdapter extends CursorAdapter implements MmsApp.PhoneNumberLookupListener {
     private static final String TAG = LogTag.TAG;
     private static final boolean LOCAL_LOGV = false;
 
@@ -200,6 +203,9 @@ public class MessageListAdapter extends CursorAdapter {
 
     private HashMap<Integer, String> mBodyCache;
 
+    private Handler mHandler;
+    private static final int MSG_REDRAW = 0;
+
     public MessageListAdapter(
             Context context, Cursor c, ListView listView,
             boolean useDefaultColumnsMap, Pattern highlight) {
@@ -234,6 +240,16 @@ public class MessageListAdapter extends CursorAdapter {
         mSpaceAboveNonGroupedMessages = context.getResources()
                 .getDimensionPixelSize(R.dimen.message_item_space_above_non_grouped);
 
+        mHandler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message msg) {
+                switch(msg.what) {
+                    case MSG_REDRAW:
+                        notifyDataSetChanged();
+                        break;
+                }
+            }
+        };
     }
 
     @Override
@@ -272,6 +288,13 @@ public class MessageListAdapter extends CursorAdapter {
             }
 
             handleZoomForItem(view);
+        }
+    }
+
+    @Override
+    public void onNewInfoAvailable() {
+        if (!mHandler.hasMessages(MSG_REDRAW)) {
+            mHandler.sendEmptyMessageDelayed(MSG_REDRAW, 500);
         }
     }
 
