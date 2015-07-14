@@ -305,7 +305,6 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
     public void setChecked(boolean checked) {
         mConversation.setIsChecked(checked);
         mAvatarView.setChecked(isChecked(), true);
-        setActivated(checked);
     }
 
     @Override
