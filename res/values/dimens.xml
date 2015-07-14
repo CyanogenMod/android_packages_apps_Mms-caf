@@ -64,5 +64,6 @@ All Rights Reserved. -->
 
     <!-- Compose message -->
     <dimen name="compose_message_normal_text_size">12sp</dimen>
+    <dimen name="contact_photo_size">50dp</dimen>
 
 </resources>

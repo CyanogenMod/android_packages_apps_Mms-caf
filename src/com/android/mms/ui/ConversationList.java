@@ -577,7 +577,7 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        mListAdapter.destroy();
         MessageUtils.removeDialogs();
     }
 
@@ -600,8 +600,6 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
         // Run notifyDataSetChanged() on the main thread.
         mQueryHandler.post(new Runnable() {
             @Override
-
-
             public void run() {
                 if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
                     log("onDraftChanged: threadId=" + threadId + ", hasDraft=" + hasDraft);
