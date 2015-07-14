@@ -2593,6 +2593,7 @@ public class ComposeMessageActivity extends Activity
                 cursor.close();
             }
 
+            MmsApp.getApplication().removePhoneNumberLookupListener(mMsgListAdapter);
             mMsgListAdapter.changeCursor(null);
             mMsgListAdapter.cancelBackgroundLoading();
             // resets multi select mode

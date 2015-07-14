@@ -53,4 +53,6 @@ All Rights Reserved. -->
     <dimen name="mms_next_spinner_minHeight">48dp</dimen>
     <dimen name="mms_next_spinner_margin">8dp</dimen>
 
+    <dimen name="contact_photo_size">50dp</dimen>
+
 </resources>

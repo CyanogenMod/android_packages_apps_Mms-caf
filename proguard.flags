@@ -1,12 +1,9 @@
 -dontnote org.joda.**
+
+-dontwarn com.squareup.**
 -dontwarn org.joda.**
 
- -keep class com.android.mms.ui.MmsThumbnailPresenter {
-*;
-}
-
--keep class com.android.mms.ui.SlideshowPresenter {
-*;
-}
-
+-keep class com.android.mms.ui.MmsThumbnailPresenter { *; }
+-keep class com.android.mms.ui.SlideshowPresenter { *; }
+-keep class com.squareup.** { *; }
 -keep class net.danlew.android.** { *; }

@@ -40,7 +40,9 @@
             android:layout_height="wrap_content"
             android:padding="4dp">
 
-            <com.android.contacts.common.widget.CheckableQuickContactBadge
+            <!-- Sent messages don't display an avatar , but need this element in place -->
+            <!-- as the MessageListItem is shared b/w sent and received messages -->
+            <QuickContactBadge
                 android:id="@+id/avatar"
                 android:layout_alignParentEnd="true"
                 android:layout_width="@dimen/avatar_width_height"
