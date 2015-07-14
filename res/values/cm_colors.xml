@@ -36,4 +36,5 @@
 
     <color name="action_mode_background_color">#424F53</color>
     <color name="action_mode_status_bar_color">#343F42</color>
+    <color name="action_mode_checkmark_color">#00b0f0</color>
 </resources>

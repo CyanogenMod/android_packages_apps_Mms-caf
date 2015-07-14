@@ -45,7 +45,10 @@ import com.android.mms.R;
 import com.android.mms.data.Contact;
 import com.android.mms.data.ContactList;
 import com.android.mms.data.Conversation;
+import com.android.mms.util.ImageUtils;
 import com.android.mms.util.SmileyParser;
+import com.android.mms.widget.ContactBadgeWithAttribution;
+import com.cyanogen.lookup.phonenumber.response.LookupResponse;
 
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -64,7 +67,7 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
     private TextView mDateView;
     private View mAttachmentView;
     private View mErrorIndicator;
-    private CheckableQuickContactBadge mAvatarView;
+    private ContactBadgeWithAttribution mAvatarView;
 
     static RoundedBitmapDrawable sDefaultContactImage;
 
@@ -104,7 +107,7 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         mDateView = (TextView) findViewById(R.id.date);
         mAttachmentView = findViewById(R.id.attachment);
         mErrorIndicator = findViewById(R.id.error);
-        mAvatarView = (CheckableQuickContactBadge) findViewById(R.id.avatar);
+        mAvatarView = (ContactBadgeWithAttribution) findViewById(R.id.avatar);
         mAvatarView.setOverlay(null);
     }
 
@@ -292,6 +295,22 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
 
         updateAvatarView();
         mAvatarView.setChecked(isChecked(), sameItem);
+        mAvatarView.setAttributionDrawable(null);
+    }
+
+    public void updateView(LookupResponse lookupResponse) {
+        // add attribution to avatar
+        mAvatarView.setAttributionDrawable(lookupResponse.mAttributionLogo);
+
+        // add Name
+        if (!TextUtils.isEmpty(lookupResponse.mName)) {
+            mFromView.setText(lookupResponse.mName);
+        }
+
+        // if url exists load into image
+        if (!TextUtils.isEmpty(lookupResponse.mPhotoUrl)) {
+            ImageUtils.loadBitampFromUrl(getContext(), lookupResponse.mPhotoUrl, mAvatarView);
+        }
     }
 
     public final void unbind() {
