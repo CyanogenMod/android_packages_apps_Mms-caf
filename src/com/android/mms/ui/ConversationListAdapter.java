@@ -29,18 +29,25 @@ import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.android.mms.LogTag;
+import com.android.mms.MmsApp;
 import com.android.mms.R;
+import com.android.mms.data.ContactList;
 import com.android.mms.data.Conversation;
+
+import com.android.mms.util.AddressUtils;
 import com.android.mms.util.PrettyTime;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 import se.emilsjolander.stickylistheaders.WrapperView;
+
+import com.cyanogen.lookup.phonenumber.response.LookupResponse;
 
 /**
  * The back-end data adapter for ConversationList.
  */
 //TODO: This should be public class ConversationListAdapter extends ArrayAdapter<Conversation>
 public class ConversationListAdapter extends CursorAdapter implements AbsListView
-        .RecyclerListener, StickyListHeadersAdapter {
+        .RecyclerListener, StickyListHeadersAdapter, MmsApp.PhoneNumberLookupListener {
+
     private static final String TAG = LogTag.TAG;
     private static final boolean LOCAL_LOGV = false;
     private static final int DATE = 1;
@@ -64,6 +71,24 @@ public class ConversationListAdapter extends CursorAdapter implements AbsListVie
         ConversationListItem headerView = (ConversationListItem) view;
         Conversation conv = Conversation.from(context, cursor);
         headerView.bind(context, conv);
+
+        // if unknown contact, request info
+        checkForUnknownContact(conv, headerView);
+    }
+
+    private void checkForUnknownContact(Conversation conv, ConversationListItem listItem) {
+        ContactList recipients = conv.getRecipients();
+        if (recipients.size() == 1 && !recipients.get(0).existsInDatabase()) {
+            String number = AddressUtils.normalizePhoneNumber(recipients.get(0).getNumber());
+            LookupResponse lookupResponse = MmsApp.getApplication().
+                    getPhoneNumberLookupResponse(number);
+            if (lookupResponse != null) {
+                listItem.updateView(lookupResponse);
+            } else {
+                // request info for this contact
+                MmsApp.getApplication().lookupInfoForPhoneNumber(number);
+            }
+        }
     }
 
     public void onMovedToScrapHeap(View view) {
@@ -76,6 +101,11 @@ public class ConversationListAdapter extends CursorAdapter implements AbsListVie
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         if (LOCAL_LOGV) Log.v(TAG, "inflating new view");
         return mFactory.inflate(R.layout.conversation_list_item, parent, false);
+    }
+
+    @Override
+    public void onNewInfoAvailable() {
+        notifyDataSetChanged();
     }
 
     public interface OnContentChangedListener {
@@ -103,7 +133,6 @@ public class ConversationListAdapter extends CursorAdapter implements AbsListVie
             conv.setIsChecked(false);
         }
     }
-
 
     @Override
     public long getHeaderId(int position) {
@@ -138,5 +167,4 @@ public class ConversationListAdapter extends CursorAdapter implements AbsListVie
 
         return convertView;
     }
-
 }

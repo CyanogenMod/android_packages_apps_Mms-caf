@@ -85,6 +85,7 @@ import android.widget.Toolbar;
 
 import com.android.mms.blacklist.BlockCallerDialogFragment;
 import com.android.mms.LogTag;
+import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.blacklist.BlacklistData;
@@ -415,6 +416,8 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
         mListAdapter.setOnContentChangedListener(mContentChangedListener);
         mListHeadersListView.setAdapter(mListAdapter);
         getListView().getWrappedList().setRecyclerListener(mListAdapter);
+
+        MmsApp.getApplication().addPhoneNumberLookupListener(mListAdapter);
     }
 
     private void initSmsPromoBanner() {
@@ -592,7 +595,7 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        MmsApp.getApplication().removePhoneNumberLookupListener(mListAdapter);
         MessageUtils.removeDialogs();
     }
 
@@ -615,8 +618,6 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
         // Run notifyDataSetChanged() on the main thread.
         mQueryHandler.post(new Runnable() {
             @Override
-
-
             public void run() {
                 if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
                     log("onDraftChanged: threadId=" + threadId + ", hasDraft=" + hasDraft);
