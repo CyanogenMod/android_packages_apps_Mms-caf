@@ -43,7 +43,6 @@
     </style>
 
     <style name="MmsActionModeStyle" parent="@android:Widget.Material.ActionMode">
-        <item name="android:height">@dimen/mms_next_toolbar_height</item>
     </style>
 
     <style name="ReceivedMessageTheme" parent="android:ThemeOverlay.Material.Dark">
@@ -52,7 +51,7 @@
 
     <style name="HeaderTheme" parent="android:ThemeOverlay.Material.Dark.ActionBar">
         <item name="android:colorAccent">@color/mms_next_theme_color_accent</item>
-        <item name="android:popupTheme">@android:style/ThemeOverlay.Material.Light</item>
+        <item name="android:popupTheme">@style/HeaderPopupTheme</item>
         <item name="android:spinnerDropDownItemStyle">@style/HeaderSpinnerDropDown</item>
         <!-- All popups should have light background -->
         <item name="android:colorBackground">@color/mms_next_theme_color</item>
@@ -63,6 +62,17 @@
         <item name="android:textSize">@dimen/tab_text_size</item>
         <item name="android:fontFamily">@string/tab_font_family</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="HeaderPopupTheme" parent="android:ThemeOverlay.Material.Light">
+        <item name="android:actionBarStyle">@style/PopupActionBarStyle</item>
+    </style>
+
+     <style name="PopupActionBarStyle" parent="android:Widget.Material.Light.ActionBar.Solid">
+         <!--<item name="android:background">@color/mms_theme_color</item>-->
+         <item name="android:elevation">@dimen/action_bar_elevation</item>
+         <!-- Empty icon -->
+         <item name="android:icon">@android:color/transparent</item>
     </style>
 
     <style name="HeaderSpinnerDropDown" parent="android:Widget.Material.Light.DropDownItem.Spinner">

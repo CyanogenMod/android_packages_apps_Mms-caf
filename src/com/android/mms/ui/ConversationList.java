@@ -20,11 +20,8 @@ package com.android.mms.ui;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.app.ProgressDialog;
-import android.app.SearchManager;
-import android.app.SearchableInfo;
 import android.content.ActivityNotFoundException;
 import android.content.AsyncQueryHandler;
 import android.content.ComponentName;
@@ -43,7 +40,6 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SqliteWrapper;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -83,9 +79,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.android.mms.blacklist.BlockCallerDialogFragment;
 import com.android.mms.LogTag;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
+import com.android.mms.blacklist.BlacklistData;
+import com.android.mms.blacklist.CallBlacklistHelper;
 import com.android.mms.data.Contact;
 import com.android.mms.data.ContactList;
 import com.android.mms.data.Conversation;
@@ -95,6 +94,11 @@ import com.android.mms.transaction.SmsRejectedReceiver;
 import com.android.mms.util.DraftCache;
 import com.android.mms.util.Recycler;
 import com.android.mms.widget.MmsWidgetProvider;
+import com.cyanogen.ambient.callerinfo.CallerInfoServices;
+import com.cyanogen.ambient.common.api.AmbientApiClient;
+import com.cyanogen.ambient.common.api.PendingResult;
+import com.cyanogen.ambient.common.api.Result;
+import com.cyanogen.ambient.common.api.ResultCallback;
 import com.google.android.mms.pdu.PduHeaders;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
@@ -124,6 +128,16 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
     public static final int MENU_VIEW                 = 1;
     public static final int MENU_VIEW_CONTACT         = 2;
     public static final int MENU_ADD_TO_CONTACTS      = 3;
+
+    public static class BlockInfo {
+        private Collection<Long> mThreadIds;
+        public BlockInfo(Collection<Long> threadIds) {
+            this.mThreadIds = threadIds;
+        }
+        public Collection<Long> getThreadIds() {
+            return this.mThreadIds;
+        }
+    }
 
     public static class DeleteInfo {
 
@@ -1024,6 +1038,60 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
         }
     }
 
+    private boolean isBlocked(String[] numbers) {
+        if (mData == null) {
+            return false;
+        } else {
+            for (String number : numbers) {
+                if (!mData.isBlacklisted(number)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
+    private BlacklistData mData;
+    private AmbientApiClient mClient;
+    private CallBlacklistHelper mHelper;
+
+    public void confirmBlockUsersFromThreads(final String[] numbers) {
+        if (isBlocked(numbers)) {
+            for (String number : numbers) {
+                mHelper.removeFromBlacklist(number);
+            }
+            AmbientApiClient.Builder builder = new AmbientApiClient.Builder(this);
+            builder.addApi(CallerInfoServices.API);
+            builder.addConnectionCallbacks(new AmbientApiClient.ConnectionCallbacks() {
+                @Override
+                public void onConnected(Bundle connectionHint) {
+                    PendingResult<Result> result = null;
+                    for (String number : numbers) {
+                        result = CallerInfoServices.CallerInfoApi.unMarkAsSpam(mClient, number);
+                    }
+                    result.setResultCallback(new ResultCallback<Result>() {
+                        @Override
+                        public void onResult(final Result lookupByNumberResult) {
+                            mClient.disconnect();
+                        }
+                    });
+                }
+
+                @Override
+                public void onConnectionSuspended(int cause) {}
+            });
+            mClient = builder.build();
+            mClient.connect();
+        } else {
+            BlockCallerDialogFragment f = new BlockCallerDialogFragment();
+            Bundle bundle = new Bundle();
+            bundle.putStringArray(BlockCallerDialogFragment.NUMBERS_EXTRA, numbers);
+            bundle.putInt(BlockCallerDialogFragment.ORIGIN_EXTRA, BlockCallerDialogFragment.ORIGIN_CONTACT_CARD);
+            f.setArguments(bundle);
+            f.show(this.getFragmentManager(), "block_caller");
+        }
+    }
+
     /**
      * Start the process of putting up a dialog to confirm deleting a thread,
      * but first start a background query to see if any of the threads or thread
@@ -1524,11 +1592,13 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
 
     private class ModeCallback implements ListView.MultiChoiceModeListener {
         private HashSet<Long> mSelectedThreadIds;
+        private HashSet<String> mSelectedThreadNumbers;
 
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             MenuInflater inflater = getMenuInflater();
             mSelectedThreadIds = new HashSet<Long>();
+            mSelectedThreadNumbers = new HashSet<String>();
             inflater.inflate(R.menu.conversation_multi_select_menu, menu);
             if(mFilterSpinner.getVisibility() == View.VISIBLE){
                 mFilterSpinner.setEnabled(false);
@@ -1544,6 +1614,14 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
+                case R.id.block:
+                    if (mSelectedThreadIds.size() > 0) {
+                        String[] numbers = new String[mSelectedThreadNumbers.size()];
+                        mSelectedThreadNumbers.toArray(numbers);
+                        confirmBlockUsersFromThreads(numbers);
+                    }
+                    mode.finish();
+                    break;
                 case R.id.delete:
                     if (mSelectedThreadIds.size() > 0) {
                         confirmDeleteThreads(mSelectedThreadIds, mQueryHandler);
@@ -1587,6 +1665,7 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
             ConversationListAdapter adapter = (ConversationListAdapter)getListView().getAdapter();
             adapter.uncheckAll();
             mSelectedThreadIds = null;
+            mSelectedThreadNumbers = null;
             if(mFilterSpinner.getVisibility() == View.VISIBLE){
                 mFilterSpinner.setEnabled(true);
             }
@@ -1608,8 +1687,14 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
 
             if (checked) {
                 mSelectedThreadIds.add(threadId);
+                for (Contact contact : conv.getRecipients()) {
+                    mSelectedThreadNumbers.add(contact.getNumber());
+                }
             } else {
                 mSelectedThreadIds.remove(threadId);
+                for (Contact contact : conv.getRecipients()) {
+                    mSelectedThreadNumbers.remove(contact.getNumber());
+                }
             }
         }
 
