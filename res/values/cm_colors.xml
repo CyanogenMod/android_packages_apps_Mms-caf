@@ -25,6 +25,8 @@
     <color name="mms_next_theme_color">#8227db</color>
     <color name="mms_next_theme_color_dark">#681faf</color>
     <color name="mms_next_theme_color_accent">#00adef</color>
+    <color name="mms_next_theme_color_check">#00b0f0</color>
+    <color name="mms_next_theme_bulkedit_statusbar">#FF4f4f53</color>
     <color name="mms_next_empty_circle">#efefef</color>
     <color name="mms_next_empty_text">#aaaaaa</color>
 
