@@ -70,6 +70,7 @@
     <!-- Blacklist management -->
     <string name="add_to_blacklist">Add to block list</string>
     <string name="add_to_blacklist_message">Future messages from %s will be blocked</string>
+    <string name="block">Block</string>
 
     <!-- Generic blacklist handling -->
     <string name="alert_dialog_yes">Yes</string>
@@ -407,4 +408,13 @@
     <!--Compose Message Screen-->
     <string name="compose_message_hint_text">Enter message</string>
     <string name="compose_menu_delete_conversation">Delete conversation</string>
+
+    <!-- Blacklist -->
+    <string name="block_dialog_title">Block selected contacts</string>
+    <string name="block_dialog_positive">Block</string>
+    <string name="block_dialog_negative">Cancel</string>
+    <string name="block_dialog_description">Are you sure you want to block the contacts from all
+        selected messages, including all contacts in group messages?</string>
+    <string name="block_dialog_report_spam">Report as spam to <xliff:g id="provider">%s</xliff:g></string>
+
 </resources>
