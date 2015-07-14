@@ -26,7 +26,9 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/mms_next_toolbar_height"
+        android:layout_height="?android:attr/actionBarSize"
+        android:paddingBottom="0dp"
+        android:paddingStart="@dimen/mms_next_toolbar_paddingStart"
         android:orientation="vertical"
         android:background="@color/mms_next_theme_color"
         android:elevation="@dimen/action_bar_elevation"
@@ -35,8 +37,9 @@
         <Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/mms_next_toolbar_height"
-            android:gravity="center_vertical"/>
+            android:layout_height="?android:attr/actionBarSize"
+            android:gravity="center_vertical"
+            android:minHeight="?android:attr/actionBarSize"/>
 
         <Spinner
             android:id="@+id/filterSpinner"
