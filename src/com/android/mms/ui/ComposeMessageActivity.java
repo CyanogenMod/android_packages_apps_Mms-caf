@@ -6006,11 +6006,9 @@ public class ComposeMessageActivity extends Activity
                     new PopupList.OnPopupItemClickListener() {
                         @Override
                         public boolean onPopupItemClick(int itemId) {
-                            if (itemId == SelectionMenu.SELECT_OR_DESELECT) {
-                                boolean selectAll = getListView().getCheckedItemCount() <
-                                        getListView().getCount() ? true : false;
-                                checkAll(selectAll);
-                                mSelectionMenu.updateSelectAllMode(selectAll);
+                            if (itemId == RcsSelectionMenu.SELECT_OR_DESELECT) {
+                                checkAll(!allItemsSelected());
+                                mSelectionMenu.updateSelectAllMode(allItemsSelected());
                             }
                             return true;
                         }
@@ -6449,6 +6447,8 @@ public class ComposeMessageActivity extends Activity
                     R.string.selected_count, mCheckedCount));
             mSelectionMenu.updateSelectAllMode(getListView().getCount() == mCheckedCount);
 
+            mSelectionMenu.setTitle(getString(R.string.selected_count, mCheckedCount));
+            mSelectionMenu.updateSelectAllMode(allItemsSelected());
         }
 
         private void confirmDeleteDialog(final DeleteMessagesListener listener,
