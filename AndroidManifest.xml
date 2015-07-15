@@ -80,6 +80,7 @@
 
         <activity android:name=".ui.ConversationList"
                   android:label="@string/app_label"
+                  android:windowSoftInputMode="adjustResize"
                   android:configChanges="orientation|screenSize|keyboardHidden"
                   android:theme="@style/MmsTheme.NoActionBar"
                   android:uiOptions="splitActionBarWhenNarrow"
