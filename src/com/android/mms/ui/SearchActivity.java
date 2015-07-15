@@ -173,7 +173,7 @@ public class SearchActivity extends ListActivity
         }
 
         public void setText(String fullText, String target) {
-            mPattern = Pattern.compile(target, Pattern.CASE_INSENSITIVE);
+            mPattern = Pattern.compile(Pattern.quote(target), Pattern.CASE_INSENSITIVE);
 
             mFullText = fullText;
             mTargetString = target;

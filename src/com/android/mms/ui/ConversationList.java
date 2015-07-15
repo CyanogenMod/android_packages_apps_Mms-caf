@@ -167,7 +167,7 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
 
     private ThreadListQueryHandler mQueryHandler;
     private ConversationListAdapter mListAdapter;
-    private ListView mListView;
+    private ListView mListView, mSearchListView;
     private StickyListHeadersListView mListHeadersListView;
     private SharedPreferences mPrefs;
     private Handler mHandler;
@@ -187,6 +187,8 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
     private static String sAppTitleWithUnread;
     private SearchAdapter mSearchAdapter;
     private Menu mMenu;
+    private TextView mSearchHint;
+    private View mFabContainer, mSearchRoot;
 
     // keys for extras and icicles
     private final static String LAST_LIST_POS = "last_list_pos";
@@ -252,6 +254,9 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
         mEmptyView = (LinearLayout) findViewById(R.id.ll_empty);
         mListView.setEmptyView(mEmptyView);
         mEmptyTextView = (TextView) mEmptyView.findViewById(R.id.tv_empty);
+
+        mSearchRoot = findViewById(R.id.message_search_root);
+        mFabContainer = findViewById(R.id.floating_action_button_container);
 
         initListAdapter();
 
@@ -635,7 +640,9 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
         public boolean onQueryTextChange(String newText) {
             if (TextUtils.isEmpty(newText)) {
                 mSearchAdapter.changeCursor(null);
+                mSearchHint.setText(R.string.mms_search_image_hint);
             } else if (newText.length() > 1) {
+                mSearchHint.setText(R.string.mms_search_no_results);
                 mSearchAdapter.setQuery(newText);
                 getLoaderManager().restartLoader(1, null, mLoaderCallbacks);
             }
@@ -719,43 +726,30 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
                 cellBroadcastItem.setVisible(false);
             }
         }
-
-        // [NOTE][MSB]
-        // This code will adjust the padding of the ActionMenuView in the toolbar.
-        // I am not sure how this will affect declaring your own ActionMenuView in the layout xml
-        int childCount = mToolbar.getChildCount();
-        int topPadding = this.getResources().getDimensionPixelSize(
-                R.dimen.mms_action_menu_top_padding);
-        for (int i = 0; i < childCount; i++) {
-            View amv = mToolbar.getChildAt(i);
-            if (amv != null && amv instanceof ActionMenuView) {
-                amv.setPadding(amv.getPaddingLeft(), topPadding,
-                        amv.getPaddingRight(), amv.getPaddingBottom());
-                break;
-            }
-        }
         return true;
     }
 
     private void toggleSearchUi(boolean showSearch) {
-        if (mSearchAdapter == null) {
+        // Inflates the stub if necessary
+        mSearchRoot.setVisibility(showSearch ? View.VISIBLE : View.GONE);
+        if (mSearchListView == null) {
+            // Initialize the view/adapters
+            mSearchListView = (ListView) findViewById(R.id.mms_search_list);
+            mSearchHint = (TextView) findViewById(R.id.message_search_hint);
             mSearchAdapter = new SearchAdapter(this);
+            mSearchListView.setAdapter(mSearchAdapter);
+            mSearchListView.setEmptyView(findViewById(R.id.ll_search_empty));
         }
 
-        ListAdapter adapter = showSearch ? mSearchAdapter : mListAdapter;
-        mListView.setAdapter(adapter);
+        // Hide search icon hint if landscape
+        if (showSearch) {
+            updateSearchHintIconVisibility();
+        }
 
-        RecyclerListener recyclerListener = showSearch ? null : mListAdapter;
-        mListView.setRecyclerListener(recyclerListener);
-
-        int emptyViewId = showSearch ? R.id.ll_search_empty : R.id.ll_empty;
+        // Hide fab, menu button and conversation list if showing search
+        mFabContainer.setVisibility(showSearch ? View.GONE : View.VISIBLE);
+        mListHeadersListView.setVisibility(showSearch ? View.GONE : View.VISIBLE);
         mMenu.setGroupVisible(R.id.non_search_items, !showSearch);
-
-        View emptyView = mListView.getEmptyView();
-        if (emptyView != null) {
-            emptyView.setVisibility(View.GONE);
-        }
-        mListView.setEmptyView(findViewById(emptyViewId));
     }
 
     @Override
@@ -1011,6 +1005,16 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
 
         super.onConfigurationChanged(newConfig);
         if (DEBUG) Log.v(TAG, "onConfigurationChanged: " + newConfig);
+        updateSearchHintIconVisibility();
+    }
+
+    private void updateSearchHintIconVisibility() {
+        View icon = findViewById(R.id.message_search_hint_icon);
+        if (icon != null) {
+            boolean isLandscape = getResources().getConfiguration().orientation
+                    == Configuration.ORIENTATION_LANDSCAPE;
+            icon.setVisibility(isLandscape ? View.GONE : View.VISIBLE);
+        }
     }
 
     /**
