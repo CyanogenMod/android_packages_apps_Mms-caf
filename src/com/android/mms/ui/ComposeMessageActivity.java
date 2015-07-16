@@ -3658,6 +3658,7 @@ public class ComposeMessageActivity extends Activity
                 break;
 
             case REQUEST_CODE_ADD_RECIPIENTS:
+                mShouldLoadDraft = true;
                 mAddNumbersTask = new AddNumbersTask();
                 mAddNumbersTask.execute(
                         data.getStringArrayListExtra(SelectRecipientsList.EXTRA_RECIPIENTS));
@@ -4565,7 +4566,7 @@ public class ComposeMessageActivity extends Activity
      * Otherwise, call the async operation to load draft and return true.
      */
     private boolean loadDraft() {
-        if (mWorkingMessage.isWorthSaving()) {
+        if (mWorkingMessage.isWorthSaving() && !mShouldLoadDraft) {
             Log.w(TAG, "CMA.loadDraft: called with non-empty working message, bail");
             return false;
         }
