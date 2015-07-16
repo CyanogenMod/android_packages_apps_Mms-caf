@@ -8278,6 +8278,8 @@ public class ComposeMessageActivity extends Activity
                 }
 
                 mode.getMenu().findItem(R.id.report).setVisible(isDeliveryReportMsg(position));
+                mode.getMenu().findItem(R.id.resend).setVisible(isFailedMessage(position));
+
             }
         }
 
@@ -8315,6 +8317,14 @@ public class ComposeMessageActivity extends Activity
             }
 
             return msgItem.isSms() || (msgItem.isDownloaded() && msgItem.mIsForwardable);
+        }
+
+        private boolean isFailedMessage(int position) {
+            MessageItem msgItem = getMessageItemByPos(position);
+            if (msgItem == null) {
+                return false;
+            }
+            return msgItem.isFailedMessage();
         }
 
         @Override
