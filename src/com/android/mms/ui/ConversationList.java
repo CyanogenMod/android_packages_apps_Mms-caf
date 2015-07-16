@@ -1615,11 +1615,13 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
                 mFilterSpinner.setEnabled(false);
             }
 
-            MaterialPalette palette;
-            int color = getResources().getColor(R.color.mms_next_theme_bulkedit_statusbar);
+            int actionBarColor = getResources().getColor(R.color.mms_next_theme_bulkedit_actionbar);
+            int statusBarColor = getResources().getColor(R.color.mms_next_theme_bulkedit_statusbar);
+
             // Start with theme color
-            mStatusBarColor = color;
-            setStatusBarColor(color);
+            mStatusBarColor = actionBarColor;
+            setStatusBarColor(statusBarColor);
+
             return true;
         }
 
