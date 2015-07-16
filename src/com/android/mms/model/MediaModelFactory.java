@@ -132,10 +132,7 @@ public class MediaModelFactory {
 
         String contentType = new String(bytes);
         MediaModel media = null;
-        if (tag.equals(SmilHelper.ELEMENT_TAG_TEXT)) {
-            media = new TextModel(context, contentType, src,
-                    part.getCharset(), part.getData(), regionModel);
-        } else if (tag.equals(SmilHelper.ELEMENT_TAG_IMAGE)) {
+        if (tag.equals(SmilHelper.ELEMENT_TAG_IMAGE)) {
             media = new ImageModel(context, contentType, src,
                     part.getDataUri(), regionModel);
         } else if (tag.equals(SmilHelper.ELEMENT_TAG_VIDEO)) {
@@ -144,7 +141,8 @@ public class MediaModelFactory {
         } else if (tag.equals(SmilHelper.ELEMENT_TAG_AUDIO)) {
             media = new AudioModel(context, contentType, src,
                     part.getDataUri());
-        } else if (tag.equals(SmilHelper.ELEMENT_TAG_REF)) {
+        } else if (tag.equals(SmilHelper.ELEMENT_TAG_REF) ||
+                tag.equals(SmilHelper.ELEMENT_TAG_TEXT)) {
             if (ContentType.isTextType(contentType)
                 && !contentType.toLowerCase().equals(ContentType.TEXT_VCARD.toLowerCase())
                 && !contentType.toLowerCase().equals(ContentType.TEXT_VCALENDAR.toLowerCase())) {
