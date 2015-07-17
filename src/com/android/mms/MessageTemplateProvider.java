@@ -75,12 +75,12 @@ public class MessageTemplateProvider extends android.content.ContentProvider {
     final static String AUTHORITY = "com.android.mms.MessageTemplateProvider";
     final static String MESSAGEFILE_PATH = "/data/data/com.android.mms/files/message_template.xml";
     final static String MESSAGFILE = "message_template.xml";
-    final static int preDefineNum = 4;  // numbers of the pre-define template messages.
     private static final boolean DBG = true;
     private String mLocale = "";
     private static final int                MESSAGES                = 1;
     private static final int                MESSAGE_ID              = 2;
     private static final UriMatcher         sUriMatcher;
+    private int preDefineNum;  // numbers of the pre-define template messages.
 
     static
     {
@@ -179,6 +179,8 @@ public class MessageTemplateProvider extends android.content.ContentProvider {
 
     @Override
     public boolean onCreate() {
+        preDefineNum = ((String[])(getContext().getResources()
+                .getStringArray(R.array.pre_define_message_template))).length;
         return true;
     }
 
