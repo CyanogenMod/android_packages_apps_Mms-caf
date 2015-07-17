@@ -56,10 +56,17 @@ LOCAL_AAPT_FLAGS := \
 LOCAL_REQUIRED_MODULES := SoundRecorder
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
+# LOCAL_PROGUARD_ENABLED := disabled
 
 LOCAL_PRIVILEGED_MODULE := true
 
 include $(BUILD_PACKAGE)
+
+include $(CLEAR_VARS)
+LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := \
+    android-joda:android-joda/classes.jar
+
+include $(BUILD_MULTI_PREBUILT)
 
 # This finds and builds the test apk as well, so a single make does both.
 include $(call all-makefiles-under,$(LOCAL_PATH))
