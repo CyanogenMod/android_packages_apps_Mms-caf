@@ -45,6 +45,7 @@ import com.android.mms.LogTag;
 import com.android.mms.MmsConfig;
 import com.android.mms.ui.MessagingPreferenceActivity;
 import com.android.mms.util.Recycler;
+import com.android.mms.widget.MmsWidgetProvider;
 import com.android.mms.R;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
@@ -154,6 +155,7 @@ public class PushReceiver extends BroadcastReceiver {
                             (Long)mGetThreadID.invoke(WapPushHandlerObj));
                         MessagingNotification.blockingUpdateNewMessageIndicator(
                             mContext, (Long)mGetThreadID.invoke(WapPushHandlerObj), false);
+                        MmsWidgetProvider.notifyDatasetChanged(mContext);
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Wap Push Hander Error :" + e);
