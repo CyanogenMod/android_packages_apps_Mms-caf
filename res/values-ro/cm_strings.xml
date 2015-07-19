@@ -41,7 +41,10 @@
   <string name="pref_extra_settings">Setări suplimentare</string>
   <string name="blacklist_summary_disabled">Dezactivat</string>
   <string name="blacklist_notification">S-a blocat un mesaj de la %s</string>
+  <string name="blacklist_notification_private_number">S-a blocat un mesaj de la un nr privat</string>
   <string name="blacklist_notification_list_private">Privat</string>
+  <string name="blacklist_notification_unknown_number">S-a blocat un mesaj de la nr necunoscut %s</string>
+  <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> mesaje blocate</string>
   <string name="unblock_number">Deblocare</string>
   <string name="add_to_blacklist_message">Viitoarele mesaje de la %s vor fi blocate</string>
   <string name="alert_dialog_yes">Da</string>
@@ -51,6 +54,7 @@
   <string name="menu_as_unread">Marcare ca necitit</string>
   <string name="menu_all_as_unread">Marchează toate ca necitite</string>
   <string name="confirm_mark_unread_dialog_title">Marcați ca necitit?</string>
+  <string name="confirm_mark_read_dialog_title">Marcați ca citit?</string>
   <string name="confirm_mark_unread_all_conversations">Toate subiectele vor fi marcate ca necitite.</string>
   <string name="select_recipients">Selectați destinatarii</string>
   <string name="no_recipients">Niciun contact găsit</string>
@@ -87,6 +91,7 @@
   <string name="copy_to_sim">Copiază mesaj pe cartela SIM</string>
   <string name="copy_to_sim_fail">Imposibil de salvat mesajul</string>
   <string name="copy_to_phone_success">Mesaj salvat</string>
+  <string name="copy_to_phone_fail">Imposibil de salvat mesajul</string>
   <string name="type_vcard">vCard</string>
   <string name="import_vcard">Importaţi</string>
   <string name="attach_add_contact_as_vcard">Contact vCard</string>
@@ -109,9 +114,11 @@
   <string name="menu_reply">Răspunde</string>
   <string name="slot1">SIM 1</string>
   <string name="slot2">SIM 2</string>
+  <string name="sim_spinner_active_item_postfix">SIM %d</string>
   <string name="cannot_play">Slide show-ul nu poate fi prezentat.</string>
   <string name="message_detail">Detalii mesaj</string>
   <string name="no_message">Niciun mesaj.</string>
+  <string name="change_to_folder_mode">Vizualizare dosar</string>
   <string name="type_inbox">Mesaje primite</string>
   <string name="type_sent">Mesaje trimise</string>
   <string name="type_outbox">Mesaje de trimis</string>
@@ -138,9 +145,16 @@
   <string name="pref_title_sms_store">Stocarea preferată</string>
   <string name="pref_sms_store_phone">Telefon</string>
   <string name="pref_sms_store_card">Cartelă SIM</string>
+  <string name="pre_define_message_template_1">Te voi suna înapoi mai târziu.</string>
+  <string name="import_sms_toast">Mesaje importate.</string>
+  <string name="export_sms_toast">Mesaje exportate.</string>
+  <string name="copy_empty_string">Nu există text de copiat</string>
   <string name="pref_mms_notification_vibrate_normal">Normal</string>
   <string name="pref_mms_notification_vibrate_med_vib">Vibrare medie</string>
   <string name="pref_mms_notification_vibrate_long_vib">Vibrare lungă</string>
   <string name="pref_mms_notification_vibrate_mult_short">Mai multe și scurte</string>
   <string name="pref_mms_notification_vibrate_mult_long">Mai multe și prelungite</string>
+  <string name="pref_title_enable_emoticons">Suport emoticoane</string>
+  <string name="menu_conversation_options">Opțiuni conversație</string>
+  <string name="pref_title_mms_use_sent_timestamp">Marcaje de timp originale</string>
 </resources>
