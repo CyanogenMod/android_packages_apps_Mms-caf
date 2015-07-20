@@ -64,6 +64,7 @@ include $(BUILD_PACKAGE)
 
 include $(CLEAR_VARS)
 LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := \
+    joda-time:libs/joda-time-2.7-no-tzdb.jar \
     android-joda:android-joda/classes.jar
 
 include $(BUILD_MULTI_PREBUILT)
