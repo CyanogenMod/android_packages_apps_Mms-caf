@@ -49,6 +49,8 @@ import com.android.mms.util.ThumbnailManager;
 
 import java.util.Locale;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 public class MmsApp extends Application {
     public static final String LOG_TAG = LogTag.TAG;
 
@@ -66,6 +68,7 @@ public class MmsApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        // JodaTimeAndroid.init(this);
 
         if (Log.isLoggable(LogTag.STRICT_MODE_TAG, Log.DEBUG)) {
             // Log tag for enabling/disabling StrictMode violation log. This will dump a stack
@@ -105,6 +108,9 @@ public class MmsApp extends Application {
         MessagingNotification.init(this);
 
         activePendingMessages();
+
+
+
     }
 
     /**
