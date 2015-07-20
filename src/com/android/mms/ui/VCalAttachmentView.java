@@ -63,7 +63,7 @@ public class VCalAttachmentView extends LinearLayout implements
 
     @Override
     public void setVCal(Uri vcalUri, String name) {
-        mNameView.setText(name);
+        mNameView.setText(R.string.attach_add_calendar_events);
     }
 
     @Override
