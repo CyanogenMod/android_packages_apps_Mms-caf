@@ -8,3 +8,5 @@
 -keep class com.android.mms.ui.SlideshowPresenter {
 *;
 }
+
+-keep class net.danlew.android.** { *; }
