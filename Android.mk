@@ -50,8 +50,8 @@ LOCAL_AAPT_FLAGS := \
 	--extra-packages com.android.ex.chips \
 	--extra-packages com.android.contacts.common \
 	--extra-packages se.emilsjolander.stickylistheaders \
-	--extra-packages net.danlew.android.joda \
-	--extra-packages com.android.phone.common
+	--extra-packages com.android.phone.common \
+	--extra-packages net.danlew.android.joda
 
 LOCAL_REQUIRED_MODULES := SoundRecorder
 
@@ -64,7 +64,9 @@ include $(BUILD_PACKAGE)
 
 include $(CLEAR_VARS)
 LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := \
+	joda-time:libs/joda-time-2.7-no-tzdb.jar \
     android-joda:android-joda/classes.jar
+
 
 include $(BUILD_MULTI_PREBUILT)
 
