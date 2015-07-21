@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.os.Handler;
 import android.provider.Telephony.Mms;
 import android.telephony.PhoneNumberUtils;
 import android.text.Annotation;
@@ -64,6 +65,7 @@ public class RecipientsEditor extends RecipientEditTextView {
     private Runnable mOnSelectChipRunnable;
     private final AddressValidator mInternalValidator;
     private Context mContext;
+    private Handler mHandler;
 
     /** A noop validator that does not munge invalid texts and claims any address is valid */
     private class AddressValidator implements Validator {
@@ -88,6 +90,8 @@ public class RecipientsEditor extends RecipientEditTextView {
 
         // For the focus to move to the message body when soft Next is pressed
         setImeOptions(EditorInfo.IME_ACTION_NEXT);
+
+        mHandler = new Handler();
 
         setThreshold(1);    // pop-up the list after a single char is typed
 
@@ -348,21 +352,20 @@ public class RecipientsEditor extends RecipientEditTextView {
         if (list.size() == 0) {
             // The base class RecipientEditTextView will ignore empty text. That's why we need
             // this special case.
-            post(new Runnable() {
+            mHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     setText(null);
                 }
             });
         } else {
-            post(new Runnable() {
+            mHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     // Clear the recipient when add contact again
                     setText("");
                 }
             });
-
             for (Contact c : list) {
                 // Calling setText to set the recipients won't create chips,
                 // but calling append() will.
@@ -372,13 +375,12 @@ public class RecipientsEditor extends RecipientEditTextView {
                 final CharSequence charSequence = contactToToken(c);
 
                 if (charSequence != null && charSequence.length() > 0) {
-                    post(new Runnable() {
+                    mHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             append(charSequence + ", ");
                         }
                     });
-
                 }
             }
         }
