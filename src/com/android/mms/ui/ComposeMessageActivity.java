@@ -503,6 +503,8 @@ public class ComposeMessageActivity extends Activity
 
     private AddNumbersTask mAddNumbersTask;
 
+    boolean isNotProcessingNumbers = true;
+
     @SuppressWarnings("unused")
     public static void log(String logMsg) {
         Thread current = Thread.currentThread();
@@ -986,7 +988,7 @@ public class ComposeMessageActivity extends Activity
             // The recipients editor is still open. Make sure we use what's showing there
             // as the destination.
             ContactList contacts = mRecipientsEditor.constructContactsFromInput(false);
-            mDebugRecipients = contacts.serialize();
+            if (DEBUG) mDebugRecipients = contacts.serialize();
             sendMsimMessage(true, subIds[0]);
         }
     }
@@ -1016,7 +1018,7 @@ public class ComposeMessageActivity extends Activity
             // The recipients editor is still open. Make sure we use what's showing there
             // as the destination.
             ContactList contacts = mRecipientsEditor.constructContactsFromInput(false);
-            mDebugRecipients = contacts.serialize();
+            if (DEBUG) mDebugRecipients = contacts.serialize();
             if ((TelephonyManager.getDefault().getPhoneCount()) > 1) {
                 sendMsimMessage(true);
             } else {
@@ -1081,34 +1083,36 @@ public class ComposeMessageActivity extends Activity
                 return;
             }
 
-            mWorkingMessage.setWorkingRecipients(mRecipientsEditor.getNumbers());
-            mWorkingMessage.setHasEmail(mRecipientsEditor.containsEmail(), true);
+            if (isNotProcessingNumbers) {
+                mWorkingMessage.setWorkingRecipients(mRecipientsEditor.getNumbers());
+                mWorkingMessage.setHasEmail(mRecipientsEditor.containsEmail(), true);
 
-            checkForTooManyRecipients();
-            // If pick recipients from Contacts,
-            // then only update title once when process finished
-            if (mIsProcessPickedRecipients) {
-                 return;
+                checkForTooManyRecipients();
+                // If pick recipients from Contacts,
+                // then only update title once when process finished
+                if (mIsProcessPickedRecipients) {
+                     return;
+                }
+
+                if (mRecipientsPickList != null) {
+                    // Update UI with mRecipientsPickList, which is picked from
+                    // People.
+                    updateTitle(mRecipientsPickList);
+                    mRecipientsPickList = null;
+                } else {
+                    updateTitleForRecipientsChange(s);
+                }
+
+                // If we have gone to zero recipients, disable send button.
+                updateSendButtonState();
             }
-
-            if (mRecipientsPickList != null) {
-                // Update UI with mRecipientsPickList, which is picked from
-                // People.
-                updateTitle(mRecipientsPickList);
-                mRecipientsPickList = null;
-            } else {
-                updateTitleForRecipientsChange(s);
-            }
-
-            // If we have gone to zero recipients, disable send button.
-            updateSendButtonState();
         }
     };
 
     private void updateTitleForRecipientsChange(Editable s) {
         // If we have gone to zero recipients, we need to update the title.
         if (TextUtils.isEmpty(s.toString().trim())) {
-            constructContactAndUpdateTitle();
+            constructContactAndUpdateTitleBlocking();
         }
 
         // Walk backwards in the text box, skipping spaces. If the last
@@ -1119,7 +1123,7 @@ public class ComposeMessageActivity extends Activity
                 continue;
 
             if (c == ',') {
-                constructContactAndUpdateTitle();
+                constructContactAndUpdateTitleBlocking();
             }
             break;
         }
@@ -1129,6 +1133,48 @@ public class ComposeMessageActivity extends Activity
     private void constructContactAndUpdateTitle() {
         ContactList contacts = mRecipientsEditor.constructContactsFromInput(false);
         updateTitle(contacts);
+    }
+
+    private void constructContactAndUpdateTitleBlocking() {
+        // if process pick result that is pick recipients from Contacts
+        final Handler handler = new Handler();
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getText(R.string.adding_recipients));
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCancelable(false);
+
+        final Runnable showProgress = new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.show();
+            }
+        };
+        // Only show the progress dialog if we can not finish off parsing the return data in 1s,
+        // otherwise the dialog could flicker.
+        handler.postDelayed(showProgress, 1000);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final ContactList list;
+                try {
+                     list = mRecipientsEditor.constructContactsFromInput(true);
+                } finally {
+                    handler.removeCallbacks(showProgress);
+                }
+                final Runnable populateWorker = new Runnable() {
+                    @Override
+                    public void run() {
+                        if (list.size() > 0) {
+                            updateTitle(list);
+                        }
+                        // if process finished, then dismiss the progress dialog
+                        progressDialog.dismiss();
+                    }
+                };
+                handler.post(populateWorker);
+            }
+        }, "ComposeMessageActivity.processPickResult").start();
     }
 
     private void checkForTooManyRecipients() {
@@ -1799,7 +1845,7 @@ public class ComposeMessageActivity extends Activity
             }
             case 1: {
                 title = list.get(0).getName();      // get name returns the number if there's no
-                                                    // name available.
+                // name available.
                 String number = list.get(0).getNumber();
                 if (MessageUtils.isWapPushNumber(number)) {
                     String[] mTitleNumber = number.split(":");
@@ -1827,14 +1873,21 @@ public class ComposeMessageActivity extends Activity
                 }
                 break;
             }
-            default: {
+            case 2:
+            case 3:
                 // Handle multiple recipients
                 title = list.formatNames(", ");
-                subTitle = getResources().getQuantityString(R.plurals.recipient_count, cnt, cnt);
+                subTitle = getResources().getQuantityString(R.plurals.recipient_count, cnt,
+                        cnt);
                 break;
+            default: {
+                // Handle many recipients
+                title = getResources().getQuantityString(R.plurals.recipient_count, cnt,
+                        cnt);
+                subTitle = null;
             }
         }
-        mDebugRecipients = list.serialize();
+        if (DEBUG) mDebugRecipients = list.serialize();
 
         if (cnt > 0 && !mAccentColorLoaded && !mLoadingAccentColor) {
             final Contact contact = list.get(0);
@@ -2185,8 +2238,6 @@ public class ComposeMessageActivity extends Activity
             log("update title, mConversation=" + mConversation.toString());
         }
 
-        updateTitle(mConversation.getRecipients());
-
         if (isForwardedMessage && isRecipientsEditorVisible()) {
             // The user is forwarding the message to someone. Put the focus on the
             // recipient editor rather than in the message editor.
@@ -2418,8 +2469,6 @@ public class ComposeMessageActivity extends Activity
         if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
             log("update title, mConversation=" + mConversation.toString());
         }
-
-        updateTitle(mConversation.getRecipients());
 
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -3717,7 +3766,9 @@ public class ComposeMessageActivity extends Activity
             super.onPreExecute();
             mPD = new ProgressDialog(ComposeMessageActivity.this);
             mPD.setMessage(getString(R.string.adding_selected_recipients_dialog_text));
+            mPD.setCancelable(false);
             mPD.show();
+            isNotProcessingNumbers = false;
         }
 
         @Override
@@ -3739,6 +3790,7 @@ public class ComposeMessageActivity extends Activity
             if (mPD != null && mPD.isShowing()) {
                 mPD.dismiss();
             }
+            isNotProcessingNumbers = true;
         }
     }
 
@@ -4721,7 +4773,7 @@ public class ComposeMessageActivity extends Activity
         if (!mSendingMessage) {
             if (LogTag.SEVERE_WARNING) {
                 String sendingRecipients = mConversation.getRecipients().serialize();
-                if (!sendingRecipients.equals(mDebugRecipients)) {
+                if (DEBUG && !sendingRecipients.equals(mDebugRecipients)) {
                     String workingRecipients = mWorkingMessage.getWorkingRecipients();
                     if (!mDebugRecipients.equals(workingRecipients)) {
                         LogTag.warnPossibleRecipientMismatch("ComposeMessageActivity.sendMessage" +
@@ -4744,8 +4796,6 @@ public class ComposeMessageActivity extends Activity
             if (mWorkingMessage.getResendMultiRecipients()) {
                 // If resend sms recipient is more than one, use mResendSmsRecipient
                 mWorkingMessage.send(mResendSmsRecipient);
-            } else {
-                mWorkingMessage.send(mDebugRecipients);
             }
 
             mSentMessage = true;
@@ -4938,7 +4988,6 @@ public class ComposeMessageActivity extends Activity
                 }
             }
         }
-        addRecipientsListeners();
         updateThreadIdIfRunning();
 
         mSendDiscreetMode = intent.getBooleanExtra(KEY_EXIT_ON_SENT, false);
@@ -5436,7 +5485,9 @@ public class ComposeMessageActivity extends Activity
                     log("[CMA] onUpdate contact updated: " + updated);
                     log("[CMA] onUpdate recipients: " + recipients);
                 }
-                updateTitle(recipients);
+                if (recipients.size() > 0) {
+                    updateTitle(recipients);
+                }
 
                 // The contact information for one (or more) of the recipients has changed.
                 // Rebuild the message list so each MessageItem will get the last contact info.
