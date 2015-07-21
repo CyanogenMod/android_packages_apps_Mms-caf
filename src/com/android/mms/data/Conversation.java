@@ -18,7 +18,6 @@ import android.database.sqlite.SQLiteFullException;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.os.Message;
 import android.provider.BaseColumns;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.MmsSms;
@@ -27,12 +26,10 @@ import android.provider.Telephony.Sms.Conversations;
 import android.provider.Telephony.Threads;
 import android.provider.Telephony.ThreadsColumns;
 import android.telephony.PhoneNumberUtils;
-import android.telephony.SubscriptionManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.android.internal.telephony.PhoneConstants;
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
 import com.android.mms.R;
@@ -58,10 +55,20 @@ public class Conversation {
     public static final Uri sAllThreadsUri =
         Threads.CONTENT_URI.buildUpon().appendQueryParameter("simple", "true").build();
 
+    /**
+     * [XXX][MSB]
+     * This is hacky crap so we can release mmsnext in a simple OTA.  Please fix me when you can!
+     */
+    private static final String UNREAD_MESSAGE_COUNT = "unread_message_count";
+
+    /**
+     * WHATEVER YOU DO! DO NOT RE ORDER THESE BECAUSE SOMEONE THOUGHT IT WOULD BE A GOOD IDEA
+     * TO HARD CODE THEIR COLUMN INDEXES! *shakes fist*
+     */
     public static final String[] ALL_THREADS_PROJECTION = {
         Threads._ID, Threads.DATE, Threads.MESSAGE_COUNT, Threads.RECIPIENT_IDS,
         Threads.SNIPPET, Threads.SNIPPET_CHARSET, Threads.READ, Threads.ERROR,
-        Threads.HAS_ATTACHMENT
+        Threads.HAS_ATTACHMENT, UNREAD_MESSAGE_COUNT
     };
 
     public static final String[] ALL_THREADS_DELETE_PROJECTION = {
@@ -92,6 +99,7 @@ public class Conversation {
     private static final int READ           = 6;
     private static final int ERROR          = 7;
     private static final int HAS_ATTACHMENT = 8;
+    private static final int UNREAD_COUNT   = 9;
 
 
     private final Context mContext;
@@ -104,6 +112,7 @@ public class Conversation {
     private ContactList mRecipients;    // The current set of recipients.
     private long mDate;                 // The last update time.
     private int mMessageCount;          // Number of messages.
+    private int mUnreadMessageCount;    // Number of unread messages.
     private String mSnippet;            // Text of the most recent message.
     private boolean mHasUnreadMessages; // True if there are unread messages.
     private boolean mHasAttachment;     // True if any message has an attachment.
@@ -345,7 +354,7 @@ public class Conversation {
             Mms._ID, Mms.MESSAGE_ID, Mms.SUBSCRIPTION_ID
         };
         final Cursor c = SqliteWrapper.query(context, context.getContentResolver(),
-                        Mms.Inbox.CONTENT_URI, projection, selection, null, null);
+                Mms.Inbox.CONTENT_URI, projection, selection, null, null);
 
         try {
             if (c == null || c.getCount() == 0) {
@@ -635,6 +644,22 @@ public class Conversation {
      */
     public synchronized void setMessageCount(int cnt) {
         mMessageCount = cnt;
+    }
+
+    /**
+     * Returns the number of unread messages in this conversation, excluding the draft
+     * (if it exists).
+     */
+    public synchronized int getUnreadMessageCount() {
+        return mUnreadMessageCount;
+    }
+
+    /**
+     * Sets the number of unread messages in this conversation, excluding the draft
+     * (if it exists).
+     */
+    public synchronized void setUnreadMessageCount(int cnt) {
+        mUnreadMessageCount = cnt;
     }
 
     /**
@@ -1152,6 +1177,7 @@ public class Conversation {
             conv.mThreadId = c.getLong(ID);
             conv.mDate = c.getLong(DATE);
             conv.mMessageCount = c.getInt(MESSAGE_COUNT);
+            conv.mUnreadMessageCount = c.getInt(UNREAD_COUNT);
 
             // Replace the snippet with a default value if it's empty.
             String snippet = MessageUtils.cleanseMmsSubject(context,
