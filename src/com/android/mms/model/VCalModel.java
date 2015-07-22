@@ -63,7 +63,7 @@ public class VCalModel extends MediaModel {
     }
 
     private String getFileSrc(Uri uri) {
-        String path = uri.toString();
+        String path = Uri.decode(uri.toString());
         return path.substring(path.lastIndexOf('/') + 1);
     }
 
