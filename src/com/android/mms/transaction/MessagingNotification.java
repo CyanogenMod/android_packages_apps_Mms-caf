@@ -380,10 +380,9 @@ public class MessagingNotification {
     private static boolean isInCurrentConversation(long newMsgThreadId, Set<Long> threads) {
         if (MessageUtils.isMailboxMode()) {
             // For mail box mode, only message with the same tpye will not show the notification.
-            long newMsgType = (newMsgThreadId == THREAD_NONE) ?
-                    MailBoxMessageList.TYPE_INVALID : MailBoxMessageList.TYPE_INBOX;
             synchronized (sCurrentlyDisplayedMsgTypeLock) {
-                return newMsgType == sCurrentlyDisplayedMsgType;
+                return (sCurrentlyDisplayedMsgType == MailBoxMessageList.TYPE_INBOX) &&
+                        (newMsgThreadId != THREAD_NONE);
             }
         } else {
             // For conversation mode, only incomming unread message with the same valid thread id
