@@ -74,6 +74,8 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
     private Conversation mConversation;
 
     public static final StyleSpan STYLE_BOLD = new StyleSpan(Typeface.BOLD);
+    public static final Pattern RTL_CHARACTERS =
+        Pattern.compile("[\u0600-\u06FF\u0750-\u077F\u0590-\u05FF\uFE70-\uFEFF]");
 
     public ConversationListItem(Context context) {
         super(context);
@@ -118,6 +120,15 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         mSubjectView.setText(explain);
     }
 
+    /**
+     * Check if the given string is in RTL language - courtesy of VahidN, from:
+     * http://stackoverflow.com/questions/25381262/check-if-string-is-persian-or-english
+     */
+    public static boolean isRtl(String s) {
+        Matcher matcher = RTL_CHARACTERS.matcher(s);
+        return matcher.find();
+    }
+
     private CharSequence formatMessage() {
         final int color = android.R.styleable.Theme_textColorSecondary;
         String from = mConversation.getRecipients().formatNames(", ");
@@ -136,9 +147,7 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
                 == View.LAYOUT_DIRECTION_RTL);
         if (isLayoutRtl && from != null) {
             if (from.length() >= 1) {
-                Pattern pattern = Pattern.compile("[^أ-ي]+");
-                Matcher matcher = pattern.matcher(from);
-                isEnName = matcher.matches();
+                isEnName = !isRtl(from);
                 if (isEnName && from.charAt(0) != '\u202D') {
                     from = "\u202D" + from + "\u202C";
                 }
