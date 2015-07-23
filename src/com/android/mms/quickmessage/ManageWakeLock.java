@@ -23,29 +23,29 @@ import android.os.PowerManager;
 public class ManageWakeLock {
     private static String LOG_TAG = "ManageWakelock";
 
-    private static volatile PowerManager.WakeLock mWakeLock = null;
-    private static volatile  PowerManager.WakeLock mPartialWakeLock = null;
+    private static volatile PowerManager.WakeLock sWakeLock = null;
+    private static volatile  PowerManager.WakeLock sPartialWakeLock = null;
     private static final int TIMEOUT = 30;
 
     public static synchronized void acquireFull(Context context) {
-        if (mWakeLock != null) {
+        if (sWakeLock != null) {
             return;
         }
 
-        ManageKeyguard.disableKeyguard(context);
+        ManageKeyguard.disableKeyguard();
 
-        PowerManager mPm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        mWakeLock = mPm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        sWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK
                 | PowerManager.ACQUIRE_CAUSES_WAKEUP, LOG_TAG + ".full");
-        mWakeLock.setReferenceCounted(false);
-        mWakeLock.acquire();
+        sWakeLock.setReferenceCounted(false);
+        sWakeLock.acquire();
 
         // Set a receiver to remove all locks in "timeout" seconds
         ClearAllReceiver.setCancel(context, TIMEOUT);
     }
 
     public static synchronized void pokeWakeLock(Context context) {
-        if (mWakeLock == null) {
+        if (sWakeLock == null) {
             return;
         }
         // Reset the receiver to remove all locks in "timeout" seconds
@@ -53,27 +53,27 @@ public class ManageWakeLock {
     }
 
     public static synchronized void acquirePartial(Context mContext) {
-        if (mPartialWakeLock != null) {
+        if (sPartialWakeLock != null) {
             return;
         }
 
-        PowerManager mPm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
-        mPartialWakeLock = mPm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, LOG_TAG + ".partial");
-        mPartialWakeLock.setReferenceCounted(false);
-        mPartialWakeLock.acquire(300000); // set timeout to 5 mins
+        PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+        sPartialWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, LOG_TAG + ".partial");
+        sPartialWakeLock.setReferenceCounted(false);
+        sPartialWakeLock.acquire(300000); // set timeout to 5 mins
     }
 
     public static synchronized void releaseFull() {
-        if (mWakeLock != null) {
-            mWakeLock.release();
-            mWakeLock = null;
+        if (sWakeLock != null) {
+            sWakeLock.release();
+            sWakeLock = null;
         }
     }
 
     public static synchronized void releasePartial() {
-        if (mPartialWakeLock != null && mPartialWakeLock.isHeld()) {
-            mPartialWakeLock.release();
-            mPartialWakeLock = null;
+        if (sPartialWakeLock != null && sPartialWakeLock.isHeld()) {
+            sPartialWakeLock.release();
+            sPartialWakeLock = null;
         }
     }
 
