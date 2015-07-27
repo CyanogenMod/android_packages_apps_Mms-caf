@@ -41,13 +41,16 @@
   <string name="send_delay_30seconds">30 सेकंड</string>
   <string name="sent_countdown">संदेश सुपुर्दगी उल्टी गिनती</string>
   <string name="pref_extra_settings">अतिरिक्त सेटिंग</string>
+  <string name="blacklist_title">अवरुद्ध किए गए कॉलरों की सूची</string>
   <string name="blacklist_summary_disabled">अक्षम</string>
+  <string name="blacklist_summary">आपको अवरुद्ध किए गए कॉलरों की सूची में मौजूद फ़ोन नंबरों से कॉल और संदेश नहीं आया करेंगे</string>
   <string name="blacklist_notification">%s के एक संदेश को अवरुद्ध किया</string>
   <string name="blacklist_notification_private_number">एक निजी नंबर से आए संदेश को अवरुद्ध किया</string>
   <string name="blacklist_notification_list_private">निजी</string>
   <string name="blacklist_notification_unknown_number">अज्ञात नंबर %s से आने वाले संदेश को अवरुद्ध किया</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> संदेशों को अवरुद्ध किया गया</string>
   <string name="unblock_number">अनवरुद्ध करें</string>
+  <string name="add_to_blacklist">अवरुद्ध किए गए कॉलरों की सूची में जोड़ें</string>
   <string name="add_to_blacklist_message">%s के भावी संदेश अवरुद्ध किए जाएँगे</string>
   <string name="alert_dialog_yes">हाँ</string>
   <string name="alert_dialog_no">नहीं</string>
@@ -59,6 +62,7 @@
   <string name="menu_as_read">पढ़ लिया के रूप में चिह्नित करें</string>
   <string name="menu_all_as_unread">सबको पढ़ा नहीं है के रूप में चिह्नित करें</string>
   <string name="menu_all_as_read">सबको पढ़ लिया के रूप में चिह्नित करें</string>
+  <string name="menu_add_to_contacts_cm">संपर्कों में जोड़ें</string>
   <string name="confirm_mark_unread_dialog_title">पढ़ा नहीं है के रूप में चिह्नित कर दें?</string>
   <string name="confirm_mark_unread_conversation">इस वार्तालाप को पढ़ा नहीं है के रूप में चिह्नित किया जाएगा।</string>
   <string name="confirm_mark_read_dialog_title">पढ़ लिया के रूप में चिह्नित करें?</string>
@@ -84,6 +88,7 @@
   <string name="confirm_cancel_downloading">एमएमएस डाउनलोड को रद्द कर दिया जाएगा।</string>
   <string name="send_by_slot1">सिम 1 से भेजें</string>
   <string name="send_by_slot2">सिम 2 से भेजें</string>
+  <string name="select_phone_account_title">इससे भेजें</string>
   <string name="media_size_limit">संदेश आमाप सीमा तक पहुँच गए। संदेश नहीं भेज सकते।</string>
   <string name="illegal_message_or_increase_size">ग़लत संदेश आमाप।</string>
   <string name="discard_message_reason_some_invalid">आपके संदेश को त्याग दिया जाएगा क्योंकि कुछ प्राप्ती मान्य नहीं हैं।</string>
@@ -162,6 +167,7 @@
   <string name="menu_reply">उत्तर</string>
   <string name="slot1">सिम 1</string>
   <string name="slot2">सिम 2</string>
+  <string name="sim_spinner_active_item_postfix">सिम %d</string>
   <string name="cannot_play">स्लाइड शो प्रस्तुत नहीं कर सकते।</string>
   <string name="confirm_delete_selected_messages">चुने गए संदेशों को हटा दिया जाएगा।</string>
   <string name="send_failure">संदेश भेज नहीं सके।</string>
@@ -252,4 +258,6 @@
   <string name="pref_title_mms_auto_enable_data">डेटा को स्वतः सक्षम करें</string>
   <string name="pref_summary_mms_auto_enable_data">एमएमएस संदेशों के लिए अपने आप ही मोबाइल डेटा को सक्षम करें</string>
   <string name="adding_selected_recipients_dialog_text">संपर्क जोड़ रहे हैं\u2026</string>
+  <string name="pref_title_mms_smart_dialer">स्मार्ट कॉल</string>
+  <string name="pref_summary_mms_smart_dialer">अपने फ़ोन को अपने कान की तरफ़ ले जाकर अपने आप ही संपर्क को कॉल करें</string>
 </resources>

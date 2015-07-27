@@ -104,8 +104,8 @@
   <string name="status_deleted_unread">נמחק מבלי שנקרא</string>
   <string name="disk_storage_full_error">שגיאה: האחסון מלא.</string>
   <string name="mms_too_large">ההודעה גדולה מדי להורדה.</string>
-  <string name="send_failed_retry">שליחת הודעה נכשלה, מנסה שנית\u2026</string>
-  <string name="download_failed_retry">הורדת הודעה נכשלה, מנסה שנית\u2026</string>
+  <string name="send_failed_retry">שליחת ההודעה נכשלה, מנסה שנית\u2026</string>
+  <string name="download_failed_retry">הורדת ההודעה נכשלה, מנסה שנית\u2026</string>
   <string name="system_audio_item">צלצול</string>
   <string name="external_audio_item">מוזיקה</string>
   <string name="menu_connect_url">פתח כתובת קישור</string>
