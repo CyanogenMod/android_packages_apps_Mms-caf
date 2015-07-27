@@ -30,6 +30,7 @@
   <string name="button_templates">Șabloane</string>
   <string name="type_to_reply_text_enter_to_send">Introduceți text pentru a răspunde</string>
   <string name="qm_mark_read">Citește</string>
+  <string name="toast_sending_message">Se trimite mesajul\u2026</string>
   <string name="pref_title_send_delay">Întârziere la livrare</string>
   <string name="send_delay_immediate">Trimite imediat</string>
   <string name="send_delay_3seconds">3 secunde</string>
@@ -84,7 +85,7 @@
   <string name="external_audio_item">Muzică</string>
   <string name="pref_title_message_template">Şabloane de mesaje</string>
   <string name="title_new_message_template">Şablon nou</string>
-  <string name="dialog_editSMSTemplate_title">Editare şablon</string>
+  <string name="dialog_editSMSTemplate_title">Editare șablon</string>
   <string name="pref_sms_signature_title">Semnătura SMS</string>
   <string name="pref_smsc_title">Centrul de servicii SMS</string>
   <string name="set_smsc_error">Imposibil de setat numărul SMSC</string>
@@ -148,6 +149,8 @@
   <string name="pre_define_message_template_1">Te voi suna înapoi mai târziu.</string>
   <string name="import_sms_toast">Mesaje importate.</string>
   <string name="export_sms_toast">Mesaje exportate.</string>
+  <string name="perform_backup_title">Se exportă</string>
+  <string name="perform_restore_title">Se importă</string>
   <string name="copy_empty_string">Nu există text de copiat</string>
   <string name="pref_mms_notification_vibrate_normal">Normal</string>
   <string name="pref_mms_notification_vibrate_med_vib">Vibrare medie</string>
