@@ -124,7 +124,7 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
             throw new MmsException("Null message body or have multiple destinations.");
         }
         int [] subId = SubscriptionManager.getSubId(mPhoneId);
-        if (subId == null || subId.length == 0) {
+        if (subId == null || subId.length == 0 || !MessageUtils.isIccCardActivated(mPhoneId)) {
             return false;
         }
         Log.e(TAG, "send SMS phone Id = " + mPhoneId + " subId : = " + subId[0]);
