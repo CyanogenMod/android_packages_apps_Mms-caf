@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_toLeftOf="@+id/duration_text">
+            android:layout_toStartOf="@+id/duration_text">
 
             <TextView android:id="@+id/text_preview_bottom"
                 android:layout_width="wrap_content"
