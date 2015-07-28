@@ -2425,7 +2425,9 @@ public class ComposeMessageActivity extends Activity
 
             // Ensure the "to" label is hidden when Subject editor shows
             TextView toLabel = (TextView) findViewById(R.id.to_label);
-            toLabel.setVisibility(View.GONE);
+            if (toLabel != null) {
+                toLabel.setVisibility(View.GONE);
+            }
         } else {
             mSubjectTextEditor.removeTextChangedListener(mSubjectEditorWatcher);
         }
