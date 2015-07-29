@@ -1541,6 +1541,12 @@ public class WorkingMessage {
         } catch (MmsException e1) {
             error = UNKNOWN_ERROR;
         }
+
+        if (mmsUri == null) {
+            mStatusListener.onAttachmentError(FAILED_TO_QUERY_CONTACT);
+            return;
+        }
+
         if (error != 0) {
             markMmsMessageWithError(mmsUri);
             mStatusListener.onAttachmentError(error);
@@ -1550,11 +1556,6 @@ public class WorkingMessage {
         ContentValues values = new ContentValues(2);
         values.put(Mms.SUBSCRIPTION_ID, subId);
         values.put(Mms.PHONE_ID, SubscriptionManager.getPhoneId(subId));
-
-        if (mmsUri == null) {
-            mStatusListener.onAttachmentError(FAILED_TO_QUERY_CONTACT);
-            return;
-        }
 
         SqliteWrapper.update(mActivity, mContentResolver, mmsUri, values, null, null);
 
