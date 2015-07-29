@@ -5050,6 +5050,7 @@ public class ComposeMessageActivity extends Activity
                     title = res.getString(R.string.attach_add_contact_as_vcard);
                     message = res.getString(R.string.failed_to_add_media, title);
                     Toast.makeText(ComposeMessageActivity.this, message, Toast.LENGTH_SHORT).show();
+                    deleteLastMms();
                     return;
                 default:
                     throw new IllegalArgumentException("unknown error " + error);
@@ -8508,6 +8509,30 @@ public class ComposeMessageActivity extends Activity
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void deleteLastMms() {
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                // delete the last failed mms
+                Cursor cursor =
+                        (Cursor) mMsgListAdapter.getItem(mMsgListAdapter.getCount() - 1);
+                if (cursor != null) {
+                    long msgId = cursor.getLong(COLUMN_ID);
+                    cursor.close();
+                    Uri uri = ContentUris.withAppendedId(Mms.CONTENT_URI, msgId);
+                    try {
+                        SqliteWrapper.delete(ComposeMessageActivity.this,
+                                mContentResolver, uri, null, null);
+                    } catch (SQLiteException e) {
+                        Log.e(TAG, "Unable to delete unsent vcard mms", e);
+                    }
+                }
+            }
+        };
+        Thread t = new Thread(r);
+        t.run();
     }
 
     private void showProgressDialog(Context context, int progress, String title, int total) {
