@@ -243,6 +243,15 @@ public class MessageListAdapter extends CursorAdapter {
         }
     }
 
+    @Override
+    public long getItemId(int position) {
+        if (getCursor() != null) {
+            getCursor().moveToPosition(position);
+            return position;
+        }
+        return 0;
+    }
+
     public interface OnDataSetChangedListener {
         void onDataSetChanged(MessageListAdapter adapter);
         void onContentChanged(MessageListAdapter adapter);
