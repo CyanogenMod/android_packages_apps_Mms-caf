@@ -1067,7 +1067,7 @@
     <string name="import_sms_failed_toast">Unable to import messages</string>
     <string name="perform_backup_title">Exporting</string>
     <string name="perform_restore_title">Importing</string>
-    <string name="wait_progress_message">Please wait\2026</string>
+    <string name="wait_progress_message">Please wait\u2026</string>
     <string name="backup_file_name_message">Messages exported to \'%1$s\'</string>
     <string name="manage_sdcard_messages">Import/export messages</string>
     <string name="no_backups_found">No backups found</string>
