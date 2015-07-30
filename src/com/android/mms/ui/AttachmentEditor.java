@@ -84,7 +84,13 @@ public class AttachmentEditor extends LinearLayout {
         hideView();
         mView = null;
 
-        // If there's no attachment, we have nothing to do.
+        if (mSlideshow != null && !msg.hasAttachment()) {
+            // something existed before
+            // go get it
+            getOldSlideShow(msg);
+        }
+
+        // If there's no attachment and mSlideshow has nothing added, we have nothing to do.
         if (!msg.hasAttachment()) {
             return false;
         }
@@ -103,6 +109,32 @@ public class AttachmentEditor extends LinearLayout {
 
         mPresenter.present(null);
         return true;
+    }
+
+    // Only one slideshow can exist at a time,
+    // Sometimes when loading a recipient-less draft a slideshow might
+    // get lost. Check to see if a previous slideshow existed and apply it to
+    // the current draft working message.
+    public void getOldSlideShow(WorkingMessage msg) {
+        SlideModel sv = mSlideshow.get(0);
+        int attachmentType = WorkingMessage.TEXT;
+
+        if (sv.hasAudio()) {
+            attachmentType = WorkingMessage.AUDIO;
+        } else if (sv.hasImage()) {
+            attachmentType = WorkingMessage.IMAGE;
+        } else if (sv.hasVCal()) {
+            attachmentType = WorkingMessage.VCAL;
+        } else if (sv.hasVcard()) {
+            attachmentType = WorkingMessage.VCARD;
+        } else if (sv.hasVideo()) {
+            attachmentType = WorkingMessage.VIDEO;
+        }
+
+        if (attachmentType != WorkingMessage.TEXT) {
+            msg.setAttachment(attachmentType, sv.get(0).getUri(), true);
+        }
+
     }
 
     public void setHandler(Handler handler) {
