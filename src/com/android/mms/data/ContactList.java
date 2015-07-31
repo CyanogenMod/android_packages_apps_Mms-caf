@@ -92,7 +92,11 @@ public class ContactList extends ArrayList<Contact>  {
         String[] names = new String[size()];
         int i = 0;
         for (Contact c : this) {
-            names[i++] = c.getName();
+            String name = c.getName();
+            if (!TextUtils.isEmpty(name)) {
+                name = name.split(" ")[0];
+            }
+            names[i++] = name;
         }
         return TextUtils.join(separator, names);
     }
