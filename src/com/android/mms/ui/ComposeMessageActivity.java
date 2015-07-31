@@ -77,6 +77,8 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SqliteWrapper;
 import android.drm.DrmStore;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
@@ -121,6 +123,7 @@ import android.util.TypedValue;
 import android.view.ActionMode;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -1724,43 +1727,15 @@ public class ComposeMessageActivity extends Activity
         }
         mRecipients = list;
 
-        if (cnt > 0 && !mAccentColorLoaded && !mLoadingAccentColor) {
-            final Contact contact = list.get(0);
-            // first see whether there's a cached color already
-            int color = contact.getAccentColor(this, false);
-            if (color != 0) {
-                mAccentColorLoaded = true;
-                updateColorPalette(color);
-            } else {
-                mLoadingAccentColor = true;
-                new AsyncTask<Void, Void, Integer>() {
-                    @Override
-                    protected Integer doInBackground(Void... params) {
-                        return contact.getAccentColor(ComposeMessageActivity.this, true);
-                    }
-
-                    @Override
-                    protected void onPostExecute(Integer color) {
-                        if (mLoadingAccentColor) {
-                            mLoadingAccentColor = false;
-                            mAccentColorLoaded = true;
-                            updateColorPalette(color);
-                        }
-                    }
-                }.execute();
-            }
-        } else if (cnt == 0) {
-            mLoadingAccentColor = false;
-            if (mAccentColorLoaded) {
-                mAccentColorLoaded = false;
-                updateAccentColorFromTheme(false);
-            }
-        }
-
         // the cnt is already be added recipients count
         mExistsRecipientsCount = cnt;
-        mToolBar.setTitle(title);
-        mToolBar.setSubtitle(subTitle);
+
+        TextView titleView = (TextView) mToolBar.findViewById(R.id.tv_title);
+        TextView subtitleView = (TextView) mToolBar.findViewById(R.id.tv_subtitle);
+        titleView.setText(title);
+        subtitleView.setText(subTitle);
+        mToolBar.setTitle("");
+        mToolBar.setSubtitle("");
     }
 
     private void updateColorPalette(int color) {
@@ -1831,6 +1806,9 @@ public class ComposeMessageActivity extends Activity
         // returns empty recipients when the editor is visible.
         ContactList recipients = getRecipients();
 
+        View titleContainer = findViewById(R.id.grp_title_container);
+        titleContainer.setVisibility(View.GONE);
+
         ViewStub stub = (ViewStub)findViewById(R.id.recipients_editor_stub);
         if (stub != null) {
             View stubView = stub.inflate();
@@ -1847,6 +1825,21 @@ public class ComposeMessageActivity extends Activity
         mRecipientsEditor.setAdapter(new ChipsRecipientAdapter(this));
         mRecipientsEditor.setText(null);
         mRecipientsEditor.populate(recipients);
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+
+        // Get display width
+        int width = size.x;
+
+        // Get the difference between display width and dropdown width
+        int dropdownWidth = (int) getResources().getDimension(R.dimen.dropdown_width);
+        int offset = width - dropdownWidth;
+        // Divide that by two so now we have the size of each side
+        offset /= 2;
+        // Make it negative to shift left
+        offset = -offset;
+        mRecipientsEditor.setDropDownHorizontalOffset(offset);
         mRecipientsEditor.setOnCreateContextMenuListener(mRecipientsMenuCreateListener);
         // TODO : Remove the max length limitation due to the multiple phone picker is added and the
         // user is able to select a large number of recipients from the Contacts. The coming
@@ -2014,12 +2007,6 @@ public class ComposeMessageActivity extends Activity
 
         if (show) {
             mSubjectTextEditor.addTextChangedListener(mSubjectEditorWatcher);
-
-            // Ensure the "to" label is hidden when Subject editor shows
-            TextView toLabel = (TextView) findViewById(R.id.to_label);
-            if (toLabel != null) {
-                toLabel.setVisibility(View.GONE);
-            }
         } else {
             mSubjectTextEditor.removeTextChangedListener(mSubjectEditorWatcher);
         }
@@ -2461,7 +2448,7 @@ public class ComposeMessageActivity extends Activity
             @Override
             public void run() {
                 ContactList recipients = isRecipientsEditorVisible() ?
-                        mRecipientsEditor.constructContactsFromInput(false) : getRecipients();
+                        mRecipientsEditor.constructContactsFromInput(false, true) : getRecipients();
                 updateTitle(recipients);
             }
         }, 100);
@@ -2755,6 +2742,8 @@ public class ComposeMessageActivity extends Activity
                 mRecipientsSelector.setVisibility(View.GONE);
             }
             hideOrShowTopPanel();
+            View titleContainer = findViewById(R.id.grp_title_container);
+            titleContainer.setVisibility(View.VISIBLE);
         }
     }
 
@@ -4541,6 +4530,39 @@ public class ComposeMessageActivity extends Activity
         }
 
         String mCurrentRecipients = mRecipients.serialize();
+
+        // We need to update the title accent color if and only if we have 1 recipient
+        ContactList recipients = isRecipientsEditorVisible() ?
+                mRecipientsEditor.constructContactsFromInput(false) : getRecipients();
+        updateTitle(recipients);
+        if (recipients.size() == 1) {
+            if (!mAccentColorLoaded && !mLoadingAccentColor) {
+                final Contact contact = recipients.get(0);
+                // first see whether there's a cached color already
+                int color = contact.getAccentColor(this, false);
+                if (color != 0) {
+                    mAccentColorLoaded = true;
+                    updateColorPalette(color);
+                } else {
+                    mLoadingAccentColor = true;
+                    new AsyncTask<Void, Void, Integer>() {
+                        @Override
+                        protected Integer doInBackground(Void... params) {
+                            return contact.getAccentColor(ComposeMessageActivity.this, true);
+                        }
+
+                        @Override
+                        protected void onPostExecute(Integer color) {
+                            if (mLoadingAccentColor) {
+                                mLoadingAccentColor = false;
+                                mAccentColorLoaded = true;
+                                updateColorPalette(color);
+                            }
+                        }
+                    }.execute();
+                }
+            }
+        }
 
         if (!mSendingMessage) {
             if (LogTag.SEVERE_WARNING) {
