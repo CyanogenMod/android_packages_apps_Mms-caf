@@ -37,12 +37,10 @@ LOCAL_AAPT_FLAGS := \
     --extra-packages com.android.phone.common
 
 LOCAL_REQUIRED_MODULES := SoundRecorder
-
+LOCAL_PROGUARD_ENABLED := disabled
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 
 LOCAL_PRIVILEGED_MODULE := true
 
 include $(BUILD_PACKAGE)
 
-# This finds and builds the test apk as well, so a single make does both.
-include $(call all-makefiles-under,$(LOCAL_PATH))
