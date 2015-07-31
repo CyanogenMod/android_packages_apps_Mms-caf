@@ -64,6 +64,8 @@ All Rights Reserved. -->
     <!-- Compose message -->
     <dimen name="compose_message_normal_text_size">12sp</dimen>
     <dimen name="contact_photo_size">50dp</dimen>
+    <dimen name="recipients_editor_maxHeight">72dp</dimen>
+    <dimen name="dropdown_width">303dp</dimen>
 
     <!--Sim selection drop-down drawable-->
     <dimen name="sim_selector_width">24dp</dimen>

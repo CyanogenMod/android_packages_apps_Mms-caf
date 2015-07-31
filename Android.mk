@@ -15,7 +15,6 @@ res_dirs := res \
 	$(contacts_common_dir)/res \
 	$(stickylistheaders_dir)/res \
 	$(android_joda_dir)/res \
-	$(ambientsdk_dir)/res \
 	$(phone_common_dir)/res
 
 #	$(ambientsdk_dir)/res \
