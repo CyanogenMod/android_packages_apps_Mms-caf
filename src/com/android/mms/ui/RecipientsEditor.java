@@ -38,6 +38,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -76,7 +77,15 @@ public class RecipientsEditor extends RecipientEditTextView {
         }
     }
 
-    public RecipientsEditor(Context context, AttributeSet attrs) {
+    @Override
+    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int maxHeight = getResources().getDimensionPixelSize(R.dimen
+                .recipients_editor_maxHeight);
+        heightMeasureSpec = MeasureSpec.makeMeasureSpec(maxHeight, MeasureSpec.AT_MOST);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    public RecipientsEditor(final Context context, AttributeSet attrs) {
         super(context, attrs);
 
         mContext = context;
