@@ -430,7 +430,7 @@ public class ComposeMessageActivity extends Activity
 
     // To reduce janky interaction when message history + draft loads and keyboard opening
     // query the messages + draft after the keyboard opens. This controls that behavior.
-    private static final boolean DEFER_LOADING_MESSAGES_AND_DRAFT = false;
+    private static final boolean DEFER_LOADING_MESSAGES_AND_DRAFT = true;
 
     // The max amount of delay before we force load messages and draft.
     // 500ms is determined empirically. We want keyboard to have a chance to be shown before
@@ -2740,7 +2740,7 @@ public class ComposeMessageActivity extends Activity
         mMessagesAndDraftLoaded = false;
 
         CharSequence text = mWorkingMessage.getText();
-        if (!TextUtils.isEmpty(text)) {
+        if (text != null) {
             mTextEditor.setTextKeepState(text);
         }
         if (!DEFER_LOADING_MESSAGES_AND_DRAFT) {
@@ -5543,12 +5543,13 @@ public class ComposeMessageActivity extends Activity
         CharSequence text = mWorkingMessage.getText();
 
         // TextView.setTextKeepState() doesn't like null input.
-        // Initalized with "", so setting anything 0 length is pointless
-        if (!TextUtils.isEmpty(text) && mIsSmsEnabled) {
+        if (text != null && mIsSmsEnabled) {
             mTextEditor.setTextKeepState(text);
 
             // Set the edit caret to the end of the text.
             mTextEditor.setSelection(mTextEditor.length());
+        } else {
+            mTextEditor.setText("");
         }
         onKeyboardStateChanged();
     }
@@ -6098,14 +6099,6 @@ public class ComposeMessageActivity extends Activity
         // WorkingMessage.loadDraft() can return a new WorkingMessage object that doesn't
         // have its conversation set. Make sure it is set.
         mWorkingMessage.setConversation(mConversation);
-
-        // WorkingMessage.loadDraft() can return a new WorkingMessage object that does not
-        // have the logical mText. This happens when we have gone to select contacts to send
-        // A message to and have loaded the previous draft upon our return in instances where the
-        // user filled out a text message body before filling out any recipients.
-        if (!mWorkingMessage.getText().equals(mTextEditor.getText())) {
-            mWorkingMessage.setText(mTextEditor.getText());
-        }
 
         return true;
     }
