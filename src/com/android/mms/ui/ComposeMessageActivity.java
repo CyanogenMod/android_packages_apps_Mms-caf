@@ -4609,7 +4609,6 @@ public class ComposeMessageActivity extends Activity
                 break;
 
             case REQUEST_CODE_ADD_RECIPIENTS:
-                mShouldLoadDraft = true;
                 mAddNumbersTask = new AddNumbersTask();
                 mAddNumbersTask.execute(
                         data.getStringArrayListExtra(SelectRecipientsList.EXTRA_RECIPIENTS));
@@ -6070,11 +6069,10 @@ public class ComposeMessageActivity extends Activity
      * Load the draft
      *
      * If mWorkingMessage has content in memory that's worth saving, return false.
-     * If mShouldLoadDraft is true, force the previous draft to load no matter what.
      * Otherwise, call the async operation to load draft and return true.
      */
     private boolean loadDraft() {
-        if (mWorkingMessage.isWorthSaving() && !mShouldLoadDraft) {
+        if (mWorkingMessage.isWorthSaving()) {
             Log.w(TAG, "CMA.loadDraft: called with non-empty working message, bail");
             return false;
         }
