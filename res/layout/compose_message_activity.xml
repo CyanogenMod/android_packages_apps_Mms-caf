@@ -36,7 +36,13 @@
         <Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize" />
+            android:layout_height="wrap_content"
+            android:minHeight="?android:attr/actionBarSize">
+            <ViewStub android:id="@+id/recipients_editor_stub"
+                android:layout="@layout/recipients_editor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </Toolbar>
 
         <LinearLayout
             android:id="@+id/recipients_subject_linear"
@@ -45,11 +51,6 @@
             android:padding="8dip"
             android:orientation="vertical"
             android:visibility="gone">
-
-            <ViewStub android:id="@+id/recipients_editor_stub"
-                android:layout="@layout/recipients_editor"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
 
             <LinearLayout
                 android:id="@+id/subject_wrapper"
