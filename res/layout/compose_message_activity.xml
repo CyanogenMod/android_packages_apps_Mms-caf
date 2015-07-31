@@ -28,6 +28,7 @@
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="0dp"
         android:orientation="vertical"
         android:background="@color/mms_next_theme_color"
         android:elevation="@dimen/action_bar_elevation"
@@ -35,21 +36,24 @@
 
         <Toolbar
             android:id="@+id/toolbar"
+            android:padding="0dp"
             android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize" />
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+            <ViewStub android:id="@+id/recipients_editor_stub"
+                android:layout="@layout/recipients_editor"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_height="wrap_content"/>
+        </Toolbar>
 
         <LinearLayout
             android:id="@+id/recipients_subject_linear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8dip"
+            android:padding="0dp"
             android:orientation="vertical"
             android:visibility="gone">
-
-            <ViewStub android:id="@+id/recipients_editor_stub"
-                android:layout="@layout/recipients_editor"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
 
             <LinearLayout
                 android:id="@+id/subject_wrapper"

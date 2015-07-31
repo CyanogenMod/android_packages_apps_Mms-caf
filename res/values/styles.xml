@@ -31,7 +31,7 @@
         <item name="android:actionBarStyle">@style/MmsActionBarStyle</item>
     </style>
 
-    <style name="MmsTheme.NoActionBar" parent="android:Theme.Material.Light.DarkActionBar">
+    <style name="MmsTheme.NoActionBar">
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionModeOverlay">true</item>
@@ -127,4 +127,9 @@
     <style name="Theme.QMPopUp" parent="android:Theme.Material.Dialog">
         <item name="android:alertDialogTheme">@android:style/Theme.Material.Light.Dialog</item>
     </style>
+
+    <style name="RecipientPopupBackground" parent="@style/RecipientEditTextViewBase">
+        <item name="android:popupBackground">@drawable/recipient_autocomplete_background</item>
+    </style>
+
 </resources>
