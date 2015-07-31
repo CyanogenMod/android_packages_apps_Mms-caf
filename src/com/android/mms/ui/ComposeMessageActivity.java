@@ -76,6 +76,7 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SqliteWrapper;
 import android.drm.DrmStore;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
@@ -120,6 +121,7 @@ import android.util.TypedValue;
 import android.view.ActionMode;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -1931,6 +1933,21 @@ public class ComposeMessageActivity extends Activity
         mRecipientsEditor.setAdapter(new ChipsRecipientAdapter(this));
         mRecipientsEditor.setText(null);
         mRecipientsEditor.populate(recipients);
+        float density = getResources().getDisplayMetrics().density;
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+
+        // Get display width
+        int width = size.x;
+
+        // Get the difference between display width and dropdown width
+        int offset = width - (303 * (int)density);
+        // Divide that by two so now we have the size of each side
+        offset /= 2;
+        // Make it negative to shift left
+        offset = -offset;
+        mRecipientsEditor.setDropDownHorizontalOffset(offset);
         mRecipientsEditor.setOnCreateContextMenuListener(mRecipientsMenuCreateListener);
         // TODO : Remove the max length limitation due to the multiple phone picker is added and the
         // user is able to select a large number of recipients from the Contacts. The coming

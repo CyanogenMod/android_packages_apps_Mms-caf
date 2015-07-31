@@ -31,7 +31,7 @@
         <item name="android:actionBarStyle">@style/MmsActionBarStyle</item>
     </style>
 
-    <style name="MmsTheme.NoActionBar" parent="android:Theme.Material.Light.DarkActionBar">
+    <style name="MmsTheme.NoActionBar">
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionModeOverlay">true</item>
@@ -122,6 +122,10 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <style name="RecipientPopupBackground" parent="@style/RecipientEditTextViewBase">
+        <item name="android:popupBackground">@drawable/recipient_autocomplete_background</item>
     </style>
 
 </resources>
