@@ -326,7 +326,7 @@ public class RecipientsEditor extends RecipientEditTextView {
         return s;
     }
 
-    public void populate(ContactList list) {
+    public void populate(final ContactList list) {
         // Very tricky bug. In the recipient editor, we always leave a trailing
         // comma to make it easy for users to add additional recipients. When a
         // user types (or chooses from the dropdown) a new contact Mms has never
@@ -360,27 +360,21 @@ public class RecipientsEditor extends RecipientEditTextView {
                 public void run() {
                     // Clear the recipient when add contact again
                     setText("");
-                }
-            });
 
-            for (Contact c : list) {
-                // Calling setText to set the recipients won't create chips,
-                // but calling append() will.
+                    for (Contact c : list) {
+                        // Calling setText to set the recipients won't create chips,
+                        // but calling append() will.
 
-                // Need to judge  whether contactToToken(c) return valid data,if it is not,
-                // do not append it so that the comma can not be displayed.
-                final CharSequence charSequence = contactToToken(c);
+                        // Need to judge  whether contactToToken(c) return valid data,if it is not,
+                        // do not append it so that the comma can not be displayed.
+                        final CharSequence charSequence = contactToToken(c);
 
-                if (charSequence != null && charSequence.length() > 0) {
-                    post(new Runnable() {
-                        @Override
-                        public void run() {
+                        if (charSequence != null && charSequence.length() > 0) {
                             append(charSequence + ", ");
                         }
-                    });
-
+                    }
                 }
-            }
+            });
         }
     }
 
