@@ -31,7 +31,7 @@
         <item name="android:actionBarStyle">@style/MmsActionBarStyle</item>
     </style>
 
-    <style name="MmsTheme.NoActionBar" parent="android:Theme.Material.Light.DarkActionBar">
+    <style name="MmsTheme.NoActionBar">
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionModeOverlay">true</item>
@@ -56,6 +56,12 @@
         <item name="android:spinnerDropDownItemStyle">@style/HeaderSpinnerDropDown</item>
         <!-- All popups should have light background -->
         <item name="android:colorBackground">@color/mms_next_theme_color</item>
+        <item name="android:subtitleTextAppearance">@style/actionBarSubtitleText</item>
+    </style>
+
+    <style name="actionBarSubtitleText"
+           parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="HeaderTabText" parent="android:style/Widget.Material.Light.ActionBar.TabText">
@@ -127,4 +133,8 @@
     <style name="Theme.QMPopUp" parent="android:Theme.Material.Dialog">
         <item name="android:alertDialogTheme">@android:style/Theme.Material.Light.Dialog</item>
     </style>
+
+    <style name="RecipientPopupBackground" parent="@style/RecipientEditTextViewBase">
+    </style>
+
 </resources>
