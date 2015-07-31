@@ -20,8 +20,8 @@
     android:layout_height="wrap_content"
     android:minHeight="48dip"
     android:orientation="horizontal"
-    android:paddingStart="8dp"
-    android:paddingEnd="8dp"
+    android:paddingStart="15dp"
+    android:paddingEnd="24dp"
     android:gravity="center_vertical"
     android:background="@drawable/chips_dropdown_background">
 
@@ -30,8 +30,8 @@
         android:layout_width="@dimen/avatar_width_height"
         android:layout_height="@dimen/avatar_width_height"
         android:layout_gravity="center_vertical"
-        android:layout_marginEnd="16dp"
-        android:src="@drawable/ic_contact_picture"
+        android:layout_marginEnd="14dp"
+        android:src="@null"
         android:cropToPadding="true"
         android:scaleType="centerCrop" />
 
@@ -42,9 +42,9 @@
         android:orientation="vertical"
         android:layout_weight="1">
 
-        <TextView
+        <com.android.ex.chips.TextViewSnippet
             android:id="@android:id/title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:textAppearance="@android:style/TextAppearance.Material.Subhead"
@@ -64,15 +64,17 @@
 
         <TextView
             android:id="@android:id/text2"
+            android:gravity="end|center_vertical"
+            android:layout_alignParentEnd="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@android:id/title"
             android:layout_toEndOf="@android:id/text1"
+            android:layout_alignTop="@android:id/text1"
+            android:layout_alignBottom="@android:id/text1"
             android:layout_alignBaseline="@android:id/text1"
-            android:paddingStart="16dip"
-            android:textAppearance="@android:style/TextAppearance.Material.Caption"
+            android:textAppearance="@android:style/TextAppearance.Material.Body1"
             android:textColor="@drawable/list_item_font_secondary"
-            android:textSize="10sp"
             android:singleLine="true"
             android:ellipsize="end" />
 

@@ -40,12 +40,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
 
 import com.android.ex.chips.DropdownChipLayouter;
 import com.android.ex.chips.RecipientEditTextView;
-import com.android.ex.chips.RecipientEntry;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.data.Contact;
@@ -76,7 +74,15 @@ public class RecipientsEditor extends RecipientEditTextView {
         }
     }
 
-    public RecipientsEditor(Context context, AttributeSet attrs) {
+    @Override
+    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int maxHeight = getResources().getDimensionPixelSize(R.dimen
+                .recipients_editor_maxHeight);
+        heightMeasureSpec = MeasureSpec.makeMeasureSpec(maxHeight, MeasureSpec.AT_MOST);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    public RecipientsEditor(final Context context, AttributeSet attrs) {
         super(context, attrs);
 
         mContext = context;
@@ -198,6 +204,12 @@ public class RecipientsEditor extends RecipientEditTextView {
             list.add(contact);
         }
         return list;
+    }
+
+    @Override
+    protected int getAccentColorForContact(String number) {
+        Contact contact = Contact.get(number, true);
+        return contact.getAccentColor(mContext, true);
     }
 
     private boolean isValidAddress(String number, boolean isMms) {
