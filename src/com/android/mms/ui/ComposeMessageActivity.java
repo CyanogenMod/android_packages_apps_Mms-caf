@@ -500,6 +500,8 @@ public class ComposeMessageActivity extends Activity
 
     private boolean mSendMmsMobileDataOff = false;
 
+    private boolean isAvoidingSavingDraft = false;
+
     @SuppressWarnings("unused")
     public static void log(String logMsg) {
         Thread current = Thread.currentThread();
@@ -2668,12 +2670,16 @@ public class ComposeMessageActivity extends Activity
         if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
             log("save draft");
         }
-        saveDraft(true);
+        if(!isAvoidingSavingDraft)
+        {
+            saveDraft(true);
 
-        // set 'mShouldLoadDraft' to true, so when coming back to ComposeMessageActivity, we would
-        // load the draft, unless we are coming back to the activity after attaching a photo, etc,
-        // in which case we should set 'mShouldLoadDraft' to false.
-        mShouldLoadDraft = true;
+            // set 'mShouldLoadDraft' to true, so when coming back to ComposeMessageActivity, we would
+            // load the draft, unless we are coming back to the activity after attaching a photo, etc,
+            // in which case we should set 'mShouldLoadDraft' to false.
+            mShouldLoadDraft = true;
+            isAvoidingSavingDraft = false;
+        }
 
         // Cleanup the BroadcastReceiver.
         unregisterReceiver(mHttpProgressReceiver);
