@@ -40,12 +40,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
 
+import com.android.contacts.common.lettertiles.LetterTileDrawable;
 import com.android.ex.chips.DropdownChipLayouter;
 import com.android.ex.chips.RecipientEditTextView;
-import com.android.ex.chips.RecipientEntry;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.data.Contact;
@@ -76,9 +75,18 @@ public class RecipientsEditor extends RecipientEditTextView {
         }
     }
 
-    public RecipientsEditor(Context context, AttributeSet attrs) {
+    @Override
+    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int maxHeight = getResources().getDimensionPixelSize(R.dimen
+                .recipients_editor_maxHeight);
+        heightMeasureSpec = MeasureSpec.makeMeasureSpec(maxHeight, MeasureSpec.AT_MOST);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    public RecipientsEditor(final Context context, AttributeSet attrs) {
         super(context, attrs);
 
+        this.disableCopyDialog();
         mContext = context;
         mTokenizer = new RecipientsEditorTokenizer();
         setTokenizer(mTokenizer);
@@ -134,15 +142,30 @@ public class RecipientsEditor extends RecipientEditTextView {
             }
         });
 
-        setDropdownChipLayouter(new DropdownChipLayouter(LayoutInflater.from(context), context) {
+        setDropdownChipLayouter(new DropdownChipLayouter(LayoutInflater.from(context), context,
+                this) {
             @Override
             protected int getItemLayoutResId(AdapterType type) {
-                return R.layout.mms_chips_recipient_dropdown_item;
+                switch (type) {
+                    case BASE_RECIPIENT:
+                        return R.layout.mms_chips_recipient_dropdown_item;
+                    case RECIPIENT_ALTERNATES:
+                        return R.layout.mms_chips_recipient_dropdown_item_alternate;
+                    default:
+                        return super.getItemLayoutResId(type);
+                }
             }
 
             @Override
             protected int getAlternateItemLayoutResId(AdapterType type) {
-                return R.layout.mms_chips_recipient_dropdown_item;
+                switch (type) {
+                    case BASE_RECIPIENT:
+                        return R.layout.mms_chips_recipient_dropdown_item;
+                    case RECIPIENT_ALTERNATES:
+                        return R.layout.mms_chips_recipient_dropdown_item_alternate;
+                    default:
+                        return super.getItemLayoutResId(type);
+                }
             }
         });
     }
@@ -198,6 +221,19 @@ public class RecipientsEditor extends RecipientEditTextView {
             list.add(contact);
         }
         return list;
+    }
+
+    /**
+     * This blocks, only call from a background thread
+     *
+     * @param number {@link String}
+     * @return int
+     */
+    @Override
+    protected int getAccentColorForContact(String number) {
+        LetterTileDrawable lt = new LetterTileDrawable(getContext(), null);
+        lt.setContactDetails(null, number);
+        return lt.getColor();
     }
 
     private boolean isValidAddress(String number, boolean isMms) {
@@ -394,9 +430,15 @@ public class RecipientsEditor extends RecipientEditTextView {
         y += getScrollY();
 
         int line = layout.getLineForVertical(y);
-        int off = layout.getOffsetForHorizontal(line, x);
+        try {
+            int off = layout.getOffsetForHorizontal(line, x);
+            return off;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            e.printStackTrace();
+        }
 
-        return off;
+        return 0;
+
     }
 
     @Override
@@ -414,19 +456,6 @@ public class RecipientsEditor extends RecipientEditTextView {
 
     @Override
     protected ContextMenuInfo getContextMenuInfo() {
-        if ((mLongPressedPosition >= 0)) {
-            Spanned text = getText();
-            if (mLongPressedPosition <= text.length()) {
-                int start = mTokenizer.findTokenStart(text, mLongPressedPosition);
-                int end = mTokenizer.findTokenEnd(text, start);
-
-                if (end != start) {
-                    String number = getNumberAt(getText(), start, end, getContext());
-                    Contact c = Contact.get(number, false);
-                    return new RecipientContextMenuInfo(c);
-                }
-            }
-        }
         return null;
     }
 
