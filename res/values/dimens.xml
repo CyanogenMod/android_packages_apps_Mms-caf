@@ -63,5 +63,7 @@ All Rights Reserved. -->
 
     <!-- Compose message -->
     <dimen name="compose_message_normal_text_size">12sp</dimen>
+    <dimen name="recipients_editor_maxHeight">72dp</dimen>
+    <dimen name="dropdown_width">303dp</dimen>
 
 </resources>

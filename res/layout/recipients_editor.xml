@@ -21,39 +21,52 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:chips="http://schemas.android.com/apk/res/com.android.mms"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="?android:attr/actionBarSize"
     android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/to_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="4dp"
-        android:textAppearance="@android:style/TextAppearance.Material.Caption"
-        android:textAllCaps="true"
-        android:text="@string/to_hint" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:weightSum="1.0"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
         android:orientation="horizontal">
 
         <com.android.mms.ui.RecipientsEditor
             android:id="@+id/recipients_editor"
+            android:background="@null"
+            android:dropDownWidth="@dimen/dropdown_width"
+            android:dropDownVerticalOffset="2dp"
+            android:dropDownSelector="@drawable/recipient_autocomplete_selector"
+            android:popupBackground="@drawable/recipient_autocomplete_selector"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:minHeight="35dp"
+            android:layout_weight=".99"
+            android:textSize="20dp"
+            android:maxLines="2"
+            android:padding="0dp"
+            android:textAppearance="@android:style/TextAppearance.Material.Caption"
+            android:hint="@string/to_hint"
+            android:layout_gravity="start|center_vertical"
             android:inputType="textFilter|textMultiLine"
             android:nextFocusRight="@+id/recipients_selector"
-            chips:maxChips="@integer/max_chips_parsed" />
+            android:maxHeight="@dimen/recipients_editor_maxHeight"
+            chips:maxChips="@integer/max_chips_parsed"
+            chips:chipBackgroundPressed="@drawable/chip_selected_background"/>
 
         <ImageView
             android:id="@+id/recipients_selector"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|center_vertical"
-            android:padding="4dp"
-            android:src="@drawable/ic_person_add_tinted_24dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="end|top"
+            android:gravity="center"
+            android:layout_weight=".01"
+            android:layout_marginTop="8dp"
+            android:padding="0dp"
+            android:src="@drawable/ic_add_circle_white_24px"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:nextFocusLeft="@id/recipients_editor" />
 
