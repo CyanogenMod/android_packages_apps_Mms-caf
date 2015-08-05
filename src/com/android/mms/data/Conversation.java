@@ -971,7 +971,6 @@ public class Conversation {
             if (UNMARKDEBUG) {
                 Log.v(TAG,"Conversation startMarkAsUnread marking all as unread");
             }
-
             Cursor c = context.getContentResolver().query(sAllThreadsUri,
                 ALL_THREADS_PROJECTION, null, null, null);
             try {
