@@ -41,16 +41,16 @@
   <string name="send_delay_30seconds">30 secondi</string>
   <string name="sent_countdown">Conto alla rovescia invio</string>
   <string name="pref_extra_settings">Impostazioni aggiuntive</string>
-  <string name="blacklist_title">Elenco chiamanti bloccati</string>
+  <string name="blacklist_title">Elenco bloccati</string>
   <string name="blacklist_summary_disabled">Disattivata</string>
-  <string name="blacklist_summary">Non riceverai nessuna chiamata o messaggio da numeri nella lista dei chiamanti bloccati</string>
+  <string name="blacklist_summary">Non riceverai nessuna chiamata o messaggio da numeri nella lista bloccati</string>
   <string name="blacklist_notification">Bloccato un messaggio da %s</string>
   <string name="blacklist_notification_private_number">Bloccato un messaggio da un numero privato</string>
   <string name="blacklist_notification_list_private">Privato</string>
   <string name="blacklist_notification_unknown_number">Bloccato un messaggio da un numero sconosciuto: %s</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> messaggi sono stati bloccati</string>
   <string name="unblock_number">Sblocca</string>
-  <string name="add_to_blacklist">Aggiungi all\'elenco chiamanti bloccati</string>
+  <string name="add_to_blacklist">Aggiungi all\'elenco bloccati</string>
   <string name="add_to_blacklist_message">I futuri messaggi da %s saranno bloccati</string>
   <string name="alert_dialog_yes">Si</string>
   <string name="alert_dialog_no">No</string>
