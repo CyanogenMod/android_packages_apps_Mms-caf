@@ -198,8 +198,8 @@
   <string name="cdma_priority_interactive">상호작용</string>
   <string name="cdma_priority_urgent">긴급</string>
   <string name="cdma_priority_emergency">비상</string>
-  <string name="pref_title_cdma_priority">메시지 우선 순위</string>
-  <string name="pref_summary_cdma_priority">CDMA 메시지 우선 순위</string>
+  <string name="pref_title_cdma_priority">메시지 우선순위</string>
+  <string name="pref_summary_cdma_priority">CDMA 메시지 우선순위</string>
   <string name="download_dialog_title">이 MMS를 내려받습니까?</string>
   <string name="menu_email">이메일 보내기</string>
   <string name="pref_title_sms_store">선호되는 저장 공간</string>

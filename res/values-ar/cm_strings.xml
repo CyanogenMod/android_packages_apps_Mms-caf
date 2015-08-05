@@ -125,7 +125,7 @@
   <string name="operation_to_card_memory">نسخ الرسالة إلى شريحة SIM</string>
   <string name="pref_smsc_title">مركز خدمة الرسائل القصيرة</string>
   <string name="pref_one_smcs">رقم مركز خدمة الرسائل القصيرة</string>
-  <string name="pref_more_smcs">gشريحة SIM <xliff:g id="slot_number">%d</xliff:g> رقم مركز خدمة الرسائل القصيرة</string>
+  <string name="pref_more_smcs">شريحة SIM <xliff:g id="slot_number">%d</xliff:g> رقم مركز خدمة الرسائل القصيرة</string>
   <string name="set_smsc_error">تعذر تعيين رقم مركز خدمة الرسائل القصيرة</string>
   <string name="set_smsc_success">تم تعيين رقم مركز خدمة الرسائل القصيرة بنجاح</string>
   <string name="set_smsc_confirm_message">قد يؤدي تغيير رقم مركز خدمة الرسائل القصيرة إلى إخفاقات في حركة الرسالة القصيرة. هل أنت متأكد من أنك تريد المتابعة؟</string>
