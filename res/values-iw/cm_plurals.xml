@@ -17,8 +17,8 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <plurals name="remaining_delay_time">
-    <item quantity="one">שולח בעוד שנייה אחת, גע כדי לבטל.</item>
-    <item quantity="other">שולח בעוד %1$d שניות, גע כדי לבטל.</item>
+    <item quantity="one">שולח בעוד 1 שניות, גע לביטול.</item>
+    <item quantity="other">שולח בעוד %1$d שניות, גע לביטול.</item>
   </plurals>
   <plurals name="confirm_delete_messages">
     <item quantity="one">הודעה אחת תימחק.</item>
