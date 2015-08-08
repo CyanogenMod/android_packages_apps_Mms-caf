@@ -151,6 +151,7 @@
   <string name="export_sms_toast">Mesaje exportate.</string>
   <string name="perform_backup_title">Se exportă</string>
   <string name="perform_restore_title">Se importă</string>
+  <string name="qm_wear_voice_reply">Care este răspunsul dumneavoastră?</string>
   <string name="copy_empty_string">Nu există text de copiat</string>
   <string name="pref_mms_notification_vibrate_normal">Normal</string>
   <string name="pref_mms_notification_vibrate_med_vib">Vibrare medie</string>
