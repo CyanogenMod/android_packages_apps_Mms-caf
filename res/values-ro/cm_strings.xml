@@ -40,7 +40,9 @@
   <string name="send_delay_30seconds">30 de secunde</string>
   <string name="sent_countdown">Numărătoare inversă livrare mesaj</string>
   <string name="pref_extra_settings">Setări suplimentare</string>
+  <string name="blacklist_title">Lista apelanților blocați</string>
   <string name="blacklist_summary_disabled">Dezactivat</string>
+  <string name="blacklist_summary">Nu veți primi apeluri sau mesaje de la numere de telefon pe lista apelanților blocați</string>
   <string name="blacklist_notification">S-a blocat un mesaj de la %s</string>
   <string name="blacklist_notification_private_number">S-a blocat un mesaj de la un nr privat</string>
   <string name="blacklist_notification_list_private">Privat</string>
@@ -51,12 +53,18 @@
   <string name="alert_dialog_yes">Da</string>
   <string name="alert_dialog_no">Nu</string>
   <string name="pref_title_unicode_stripping">Elimină unicod</string>
+  <string name="pref_unicode_stripping_leave_intact">Lasă caracterele intacte</string>
+  <string name="pref_unicode_stripping_non_encodable">Elimină caracterele ne-codificabile</string>
   <string name="pref_unicode_stripping_all">Elimină toate caracterele unicod</string>
   <string name="menu_as_unread">Marcare ca necitit</string>
   <string name="menu_all_as_unread">Marchează toate ca necitite</string>
   <string name="confirm_mark_unread_dialog_title">Marcați ca necitit?</string>
+  <string name="confirm_mark_unread_conversation">Conversația va fi marcată ca necitită.</string>
   <string name="confirm_mark_read_dialog_title">Marcați ca citit?</string>
+  <string name="confirm_mark_read_conversation">Conversația va fi marcată ca citită.</string>
   <string name="confirm_mark_unread_all_conversations">Toate subiectele vor fi marcate ca necitite.</string>
+  <string name="confirm_mark_read_all_conversations">Toate subiectele vor fi marcate ca citite.</string>
+  <string name="loading">Încărcare\u2026</string>
   <string name="select_recipients">Selectați destinatarii</string>
   <string name="no_recipients">Niciun contact găsit</string>
   <string name="no_recipients_mobile_only">Nu am găsit contacte ce se potrivesc. Încercați fără filtrul „Numai numere mobile”</string>
@@ -67,13 +75,15 @@
   <string name="message_share">Distribuie</string>
   <string name="start_new_message_button">Mesaj nou</string>
   <string name="all_spinner_option">Toate</string>
-  <string name="deleting_threads">Ştergerea conversațiilor\u2026</string>
+  <string name="deleting_threads">Ștergerea conversațiilor\u2026</string>
   <string name="menu_resend">Retrimite</string>
   <string name="cancel_downloading">Revocare</string>
+  <string name="confirm_cancel_downloading">Descărcarea MMS va fi anulată.</string>
   <string name="send_by_slot1">Trimite prin SIM 1</string>
   <string name="send_by_slot2">Trimite prin SIM 2</string>
   <string name="media_size_limit">Mesajul a ajuns la limita de dimensiune, nu se poate trimite mesajul.</string>
   <string name="illegal_message_or_increase_size">Mărime mesaj incorectă.</string>
+  <string name="discard_message_reason_some_invalid">Mesajul se va anula deoarece unii din destinatarii nu sunt corecți.</string>
   <string name="cannot_add_text_anymore">Nu se poate adăuga mai mult text.</string>
   <string name="title_send_message">Trimitere mesaj</string>
   <string name="pref_title_manage_sim_messages_slot1">Gestionează mesajele SIM 1</string>
@@ -83,12 +93,15 @@
   <string name="mms_too_large">Mesajul este prea mare pentru a fi descărcat.</string>
   <string name="system_audio_item">Ton de apel</string>
   <string name="external_audio_item">Muzică</string>
+  <string name="do_not_show_connect_warning">Nu-mi arăta această avertizare din nou</string>
+  <string name="menu_add_to_label">Adăugare la marcaje</string>
   <string name="pref_title_message_template">Şabloane de mesaje</string>
   <string name="title_new_message_template">Şablon nou</string>
   <string name="dialog_editSMSTemplate_title">Editare șablon</string>
   <string name="pref_sms_signature_title">Semnătura SMS</string>
   <string name="pref_smsc_title">Centrul de servicii SMS</string>
   <string name="set_smsc_error">Imposibil de setat numărul SMSC</string>
+  <string name="set_smsc_success">Numărul SMSC stabilit cu succes</string>
   <string name="copy_to_sim">Copiază mesaj pe cartela SIM</string>
   <string name="copy_to_sim_fail">Imposibil de salvat mesajul</string>
   <string name="copy_to_phone_success">Mesaj salvat</string>
@@ -146,6 +159,7 @@
   <string name="pref_title_sms_store">Stocarea preferată</string>
   <string name="pref_sms_store_phone">Telefon</string>
   <string name="pref_sms_store_card">Cartelă SIM</string>
+  <string name="mms_size_indicator"><xliff:g id="mms_size">%1$d</xliff:g>/<xliff:g id="all_size">%2$d</xliff:g> KO</string>
   <string name="pre_define_message_template_1">Te voi suna înapoi mai târziu.</string>
   <string name="import_sms_toast">Mesaje importate.</string>
   <string name="export_sms_toast">Mesaje exportate.</string>
@@ -160,5 +174,9 @@
   <string name="pref_mms_notification_vibrate_mult_long">Mai multe și prelungite</string>
   <string name="pref_title_enable_emoticons">Suport emoticoane</string>
   <string name="menu_conversation_options">Opțiuni conversație</string>
+  <string name="pref_title_reset_convopt_to_default">Resetare la valori implicite</string>
+  <string name="pref_summary_reset_convopt_to_default">Resetează setările conversațiilor la setările de nivel ale aplicației</string>
+  <string name="pref_title_mms_full_timestamp">Marcaje de timp integrale</string>
   <string name="pref_title_mms_use_sent_timestamp">Marcaje de timp originale</string>
+  <string name="pref_title_mms_auto_enable_data">Auto-activează date</string>
 </resources>
