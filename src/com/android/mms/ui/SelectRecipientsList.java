@@ -127,6 +127,9 @@ public class SelectRecipientsList extends Activity implements
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setActionBar(toolbar);
 
+        getWindow().setStatusBarColor(
+                getResources().getColor(R.color.action_mode_status_bar_color));
+
         mTabPager = (ViewPager) findViewById(R.id.tab_pager);
         mTabPager.setAdapter(new ListTabAdapter());
         mTabPager.setOnPageChangeListener(new TabPagerListener());
@@ -600,7 +603,7 @@ public class SelectRecipientsList extends Activity implements
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return getString(position == 0 ? R.string.contactsList : R.string.groupsLabel);
+            return getString(position == 0 ? R.string.contactsListPeople : R.string.groupsLabel);
         }
     }
 
