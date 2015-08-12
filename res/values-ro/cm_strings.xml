@@ -145,7 +145,7 @@
   <string name="search_as_number">Număr</string>
   <string name="search_as_content">Conţinut</string>
   <string name="search_as_subject">Subiect</string>
-  <string name="invalid_name_toast">Va rugăm introduceţi un nume valid</string>
+  <string name="invalid_name_toast">Vă rugăm introduceți un nume valid</string>
   <string name="sim_capacity_title">Capacitate de SIM</string>
   <string name="selected_all">Selectare totală</string>
   <string name="deselected_all">Deselectați toate</string>
@@ -155,7 +155,6 @@
   <string name="cdma_priority_urgent">Urgent</string>
   <string name="cdma_priority_emergency">Urgență</string>
   <string name="pref_title_cdma_priority">Prioritate mesaj</string>
-  <string name="download_dialog_title">Descărcaţi acest MMS?</string>
   <string name="pref_title_sms_store">Stocarea preferată</string>
   <string name="pref_sms_store_phone">Telefon</string>
   <string name="pref_sms_store_card">Cartelă SIM</string>
@@ -163,20 +162,29 @@
   <string name="pre_define_message_template_1">Te voi suna înapoi mai târziu.</string>
   <string name="import_sms_toast">Mesaje importate.</string>
   <string name="export_sms_toast">Mesaje exportate.</string>
+  <string name="export_sms_failed_toast">Mesajele nu pot fi exportate</string>
+  <string name="import_sms_failed_toast">Mesajele nu pot fi importate</string>
   <string name="perform_backup_title">Se exportă</string>
   <string name="perform_restore_title">Se importă</string>
   <string name="qm_wear_voice_reply">Care este răspunsul dumneavoastră?</string>
+  <string name="qm_wear_reply_by_voice">Răspuns folosind voce</string>
   <string name="copy_empty_string">Nu există text de copiat</string>
+  <string name="pref_title_mms_notification_vibrate_pattern">Modelul de vibrare</string>
+  <string name="pref_summary_mms_notification_vibrate_pattern">Schimbare model de vibrare</string>
   <string name="pref_mms_notification_vibrate_normal">Normal</string>
   <string name="pref_mms_notification_vibrate_med_vib">Vibrare medie</string>
   <string name="pref_mms_notification_vibrate_long_vib">Vibrare lungă</string>
   <string name="pref_mms_notification_vibrate_mult_short">Mai multe și scurte</string>
   <string name="pref_mms_notification_vibrate_mult_long">Mai multe și prelungite</string>
+  <string name="menu_insert_smiley">Inserați un emoticon</string>
   <string name="pref_title_enable_emoticons">Suport emoticoane</string>
+  <string name="pref_summary_enable_emoticons">Substituie emoticoanele text cu echivalentele grafice</string>
   <string name="menu_conversation_options">Opțiuni conversație</string>
   <string name="pref_title_reset_convopt_to_default">Resetare la valori implicite</string>
   <string name="pref_summary_reset_convopt_to_default">Resetează setările conversațiilor la setările de nivel ale aplicației</string>
   <string name="pref_title_mms_full_timestamp">Marcaje de timp integrale</string>
   <string name="pref_title_mms_use_sent_timestamp">Marcaje de timp originale</string>
   <string name="pref_title_mms_auto_enable_data">Auto-activează date</string>
+  <string name="pref_summary_mms_auto_enable_data">Activează automat datele mobile pentru mesaje MMS</string>
+  <string name="pref_title_mms_smart_dialer">Apel inteligent</string>
 </resources>
