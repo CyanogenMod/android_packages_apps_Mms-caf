@@ -420,4 +420,6 @@
     <string name="simple_attachment_tap_msg">Tap to view</string>
     <string name="mms_start_download">MMS - %s</string>
     <string name="mms_start_download_hint">Tap to download</string>
+
+    <string name="contactsListPeople">People</string>
 </resources>

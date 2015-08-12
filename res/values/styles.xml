@@ -129,4 +129,10 @@
         <item name="android:alertDialogTheme">@android:style/Theme.Material.Light.Dialog</item>
         <item name="android:windowTranslucentStatus">true</item>
     </style>
+    <style name="SectionHeaderStyle" parent="@android:style/TextAppearance.Large">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/section_header_text_color</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
 </resources>
