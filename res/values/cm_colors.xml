@@ -33,6 +33,7 @@
     <color name="mms_next_theme_bulkedit_statusbar">#343F42</color>
     <color name="mms_next_empty_circle">#efefef</color>
     <color name="mms_next_empty_text">#aaaaaa</color>
+    <color name="mms_next_add_recipient_toolbar_background">#424f53</color>
 
     <color name="action_mode_background_color">#424F53</color>
     <color name="action_mode_status_bar_color">#343F42</color>
