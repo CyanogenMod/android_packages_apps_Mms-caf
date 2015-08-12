@@ -600,7 +600,7 @@ public class SelectRecipientsList extends Activity implements
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return getString(position == 0 ? R.string.contactsList : R.string.groupsLabel);
+            return getString(position == 0 ? R.string.contactsListPeople : R.string.groupsLabel);
         }
     }
 
