@@ -392,7 +392,7 @@ public class MessageListItem extends LinearLayout implements
                         intent.putExtra(TransactionBundle.URI, mMessageItem.mMessageUri.toString());
                         intent.putExtra(TransactionBundle.TRANSACTION_TYPE,
                                 Transaction.RETRIEVE_TRANSACTION);
-                        intent.putExtra(Mms.PHONE_ID, mMessageItem.mPhoneId); //destination Phone Id
+                        intent.putExtra("phone_id"/*Mms.PHONE_ID*/, mMessageItem.mPhoneId); //destination Phone Id
 
                         mContext.startService(intent);
 
@@ -755,7 +755,7 @@ public class MessageListItem extends LinearLayout implements
     ForegroundColorSpan mColorSpan = null;  // set in ctor
 
     private CharSequence formatMessage(MessageItem msgItem, String body,
-                                       int phoneId, String subject, Pattern highlight,
+                                       int subId, String subject, Pattern highlight,
                                        String contentType) {
         SpannableStringBuilder buf = new SpannableStringBuilder();
 
@@ -763,11 +763,11 @@ public class MessageListItem extends LinearLayout implements
             //SMS/MMS is operating on PhoneId which is 0, 1..
             //Sub ID will be 1, 2, ...
             SubscriptionInfo sir = SubscriptionManager.from(mContext)
-                    .getActiveSubscriptionInfoForSimSlotIndex(phoneId);
+                    .getActiveSubscriptionInfoForSimSlotIndex(subId);
             String displayName =
                     (sir != null) ? sir.getDisplayName().toString() : "";
 
-            Log.d(TAG, "PhoneID: " + phoneId + " displayName " + displayName);
+            Log.d(TAG, "subId: " + subId + " displayName " + displayName);
             buf.append(displayName);
             buf.append("\n");
         }

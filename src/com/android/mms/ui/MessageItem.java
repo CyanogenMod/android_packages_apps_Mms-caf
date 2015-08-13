@@ -170,7 +170,7 @@ public class MessageItem {
             }
             mBody = cursor.getString(columnsMap.mColumnSmsBody);
 
-            mPhoneId = cursor.getInt(columnsMap.mColumnPhoneId);
+            mPhoneId = cursor.getInt(columnsMap.mColumnSubId);
             // Unless the message is currently in the progress of being sent, it gets a time stamp.
             if (!isOutgoingMessage()) {
                 if (mBoxId == Sms.MESSAGE_TYPE_SENT) {
@@ -202,7 +202,7 @@ public class MessageItem {
             mMessageType = cursor.getInt(columnsMap.mColumnMmsMessageType);
             mErrorType = cursor.getInt(columnsMap.mColumnMmsErrorType);
             String subject = cursor.getString(columnsMap.mColumnMmsSubject);
-            mPhoneId = cursor.getInt(columnsMap.mColumnPhoneId);
+            mPhoneId = cursor.getInt(columnsMap.mColumnSubId);
 
             if (!TextUtils.isEmpty(subject)) {
                 EncodedStringValue v = new EncodedStringValue(

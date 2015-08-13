@@ -69,8 +69,8 @@ public class RetryScheduler implements Observer {
         TelephonyManager telephonyManager = (TelephonyManager)mContext
             .getSystemService(Context.TELEPHONY_SERVICE);
         if (telephonyManager != null) {
-            flag = telephonyManager.isDataPossibleForSubscription(subId,
-                    PhoneConstants.APN_TYPE_MMS);
+            /*flag = telephonyManager.isDataPossibleForSubscription(subId,
+                    PhoneConstants.APN_TYPE_MMS);*/
         }
         Log.d(TAG, "isMmsDataConnectivityPossible = " + flag + "subId = " + subId);
         return flag;

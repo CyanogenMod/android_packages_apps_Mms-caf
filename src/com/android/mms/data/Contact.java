@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import android.accounts.Account;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.ContentObserver;
@@ -29,13 +28,11 @@ import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.Presence;
 import android.provider.ContactsContract.Profile;
-import android.provider.ContactsContract.RawContacts;
 import android.provider.Telephony.Mms;
 import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.android.contacts.common.SimContactsConstants;
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
 import com.android.mms.R;
@@ -115,8 +112,6 @@ public class Contact {
     private boolean mIsMe;          // true if this contact is me!
     private boolean mSendToVoicemail;   // true if this contact should not put up notification
     private Uri mPeopleReferenceUri;
-    private String mAccountName;
-    private String mAccountType;
 
     public interface UpdateListener {
         public void onUpdate(Contact updated);
@@ -147,8 +142,6 @@ public class Contact {
         mPresenceResId = 0;
         mIsStale = true;
         mSendToVoicemail = false;
-        mAccountName = SimContactsConstants.PHONE_NAME;
-        mAccountType = SimContactsConstants.ACCOUNT_TYPE_PHONE;
     }
     @Override
     public String toString() {
@@ -314,17 +307,6 @@ public class Contact {
         return ContentUris.withAppendedId(Contacts.CONTENT_URI, mPersonId);
     }
 
-    public synchronized void bindAvatar(ImageView view) {
-        if (TextUtils.isEmpty(mAccountName) || TextUtils.isEmpty(mAccountType)) {
-            sContactPhotoManager.loadThumbnail(view, mPhotoId, false, true,
-                    new DefaultImageRequest(getName(), getPhotoIdentifier(), true));
-        } else {
-            Account account = new Account(mAccountName, mAccountType);
-            sContactPhotoManager.loadThumbnail(view, mPhotoId, account,
-                    false, true, new DefaultImageRequest(getName(), getPhotoIdentifier(), true));
-        }
-    }
-
     public synchronized int getPresenceResId() {
         return mPresenceResId;
     }
@@ -476,9 +458,7 @@ public class Contact {
                 Phone.NORMALIZED_NUMBER,        // 7
                 Phone.PHOTO_ID,                 // 8
                 Phone.LOOKUP_KEY,               // 9
-                Contacts.SEND_TO_VOICEMAIL,     // 10
-                RawContacts.ACCOUNT_NAME,       // 11
-                RawContacts.ACCOUNT_TYPE        // 12
+                Contacts.SEND_TO_VOICEMAIL      // 10
         };
 
         private static final int PHONE_ID_COLUMN = 0;
@@ -492,8 +472,6 @@ public class Contact {
         private static final int CONTACT_PHOTO_ID_COLUMN = 8;
         private static final int CONTACT_LOOKUP_KEY_COLUMN = 9;
         private static final int SEND_TO_VOICEMAIL = 10;
-        private static final int PHONE_ACCOUNT_NAME_COLUMN = 11;
-        private static final int PHONE_ACCOUNT_TYPE_COLUMN = 12;
 
         private static final String[] SELF_PROJECTION = new String[] {
                 Phone._ID,                      // 0
@@ -519,9 +497,7 @@ public class Contact {
                 Phone.DISPLAY_NAME,           // 4
                 Email.PHOTO_ID,               // 5
                 Email.LOOKUP_KEY,             // 6
-                Contacts.SEND_TO_VOICEMAIL,   // 7
-                RawContacts.ACCOUNT_NAME,     // 8
-                RawContacts.ACCOUNT_TYPE      // 9
+                Contacts.SEND_TO_VOICEMAIL    // 7
         };
         private static final int EMAIL_ID_COLUMN = 0;
         private static final int EMAIL_NAME_COLUMN = 1;
@@ -531,8 +507,6 @@ public class Contact {
         private static final int EMAIL_PHOTO_ID_COLUMN = 5;
         private static final int EMAIL_CONTACT_LOOKUP_KEY_COLUMN = 6;
         private static final int EMAIL_SEND_TO_VOICEMAIL_COLUMN = 7;
-        private static final int EMAIL_ACCOUNT_NAME_COLUMN = 8;
-        private static final int EMAIL_ACCOUNT_TYPE_COLUMN = 9;
 
         private final Context mContext;
 
@@ -814,8 +788,6 @@ public class Contact {
                     c.mName = entry.mName;
                     c.mSendToVoicemail = entry.mSendToVoicemail;
                     c.mPeopleReferenceUri = entry.mPeopleReferenceUri;
-                    c.mAccountName = entry.mAccountName;
-                    c.mAccountType = entry.mAccountType;
 
                     c.notSynchronizedUpdateNameAndNumber();
 
@@ -999,17 +971,6 @@ public class Contact {
                 contact.mNumberE164 = cursor.getString(PHONE_NORMALIZED_NUMBER);
                 contact.mSendToVoicemail = cursor.getInt(SEND_TO_VOICEMAIL) == 1;
 
-                String lookupKey = cursor.getString(CONTACT_LOOKUP_KEY_COLUMN);
-                contact.mLookupUri = Contacts.getLookupUri(contact.mPersonId, lookupKey);
-
-                String accountName = cursor.getString(PHONE_ACCOUNT_NAME_COLUMN);
-                if (!TextUtils.isEmpty(accountName)) {
-                    contact.mAccountName = accountName;
-                }
-                String accountType =  cursor.getString(PHONE_ACCOUNT_TYPE_COLUMN);
-                if (!TextUtils.isEmpty(accountType)) {
-                    contact.mAccountType = accountType;
-                }
                 if (Log.isLoggable(LogTag.CONTACT, Log.DEBUG)) {
                     log("fillPhoneTypeContact: name=" + contact.mName + ", number="
                             + contact.mNumber + ", presence=" + contact.mPresenceResId
@@ -1033,7 +994,6 @@ public class Contact {
                     log("fillSelfContact: name=" + contact.mName + ", number="
                             + contact.mNumber);
                 }
-                contact.mPhotoId = cursor.getLong(SELF_PHOTO_ID_COLUMN);
             }
             byte[] data = loadAvatarData(contact);
 
@@ -1052,11 +1012,6 @@ public class Contact {
             byte [] data = null;
 
             if ((!entry.mIsMe && entry.mPersonId == 0) || entry.mAvatar != null) {
-                return null;
-            }
-
-            if (SimContactsConstants.ACCOUNT_TYPE_SIM.equals(entry.mAccountType)) {
-                // No picture for SIM contacts
                 return null;
             }
 
@@ -1127,18 +1082,6 @@ public class Contact {
                             entry.mPersonId = cursor.getLong(EMAIL_CONTACT_ID_COLUMN);
                             entry.mSendToVoicemail =
                                     cursor.getInt(EMAIL_SEND_TO_VOICEMAIL_COLUMN) == 1;
-
-                            String lookupKey = cursor.getString(EMAIL_CONTACT_LOOKUP_KEY_COLUMN);
-                            entry.mLookupUri = Contacts.getLookupUri(entry.mPersonId, lookupKey);
-
-                            String accountName = cursor.getString(EMAIL_ACCOUNT_NAME_COLUMN);
-                            if (!TextUtils.isEmpty(accountName)) {
-                                entry.mAccountName = accountName;
-                            }
-                            String accountType =  cursor.getString(EMAIL_ACCOUNT_TYPE_COLUMN);
-                            if (!TextUtils.isEmpty(accountType)) {
-                                entry.mAccountType = accountType;
-                            }
 
                             String name = cursor.getString(EMAIL_NAME_COLUMN);
                             if (TextUtils.isEmpty(name)) {

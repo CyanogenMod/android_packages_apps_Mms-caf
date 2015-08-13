@@ -320,7 +320,7 @@ public class Conversation {
         }
 
         final Cursor c = SqliteWrapper.query(context, context.getContentResolver(),
-                        Mms.Inbox.CONTENT_URI, new String[] {Mms._ID, Mms.MESSAGE_ID, Mms.PHONE_ID},
+                        Mms.Inbox.CONTENT_URI, new String[] {Mms._ID, Mms.MESSAGE_ID, Mms.SUBSCRIPTION_ID},
                         selection, null, null);
 
         try {
@@ -336,7 +336,7 @@ public class Conversation {
                 }
                 MmsMessageSender.sendReadRec(context, AddressUtils.getFrom(context, uri),
                         c.getString(MessageUtils.MESSAGE_REPORT_COLUMN_MESSAGE_ID),
-                        c.getInt(MessageUtils.MESSAGE_REPORT_COLUMN_PHONE_ID), status);
+                        c.getInt(MessageUtils.MESSAGE_REPORT_COLUMN_SUB_ID), status);
             }
         } finally {
             if (c != null) {

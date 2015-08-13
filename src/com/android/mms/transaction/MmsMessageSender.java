@@ -50,7 +50,7 @@ public class MmsMessageSender implements MessageSender {
     private final Context mContext;
     private final Uri mMessageUri;
     private final long mMessageSize;
-    private int mPhoneId;
+    private int mSubId;
 
     // Default preference values
     private static final boolean DEFAULT_DELIVERY_REPORT_MODE  = false;
@@ -59,11 +59,11 @@ public class MmsMessageSender implements MessageSender {
     private static final int     DEFAULT_PRIORITY        = PduHeaders.PRIORITY_NORMAL;
     private static final String  DEFAULT_MESSAGE_CLASS   = PduHeaders.MESSAGE_CLASS_PERSONAL_STR;
 
-    public MmsMessageSender(Context context, Uri location, long messageSize, int phoneId) {
+    public MmsMessageSender(Context context, Uri location, long messageSize, int subId) {
         mContext = context;
         mMessageUri = location;
         mMessageSize = messageSize;
-        mPhoneId = phoneId;
+        mSubId = subId;
         if (mMessageUri == null) {
             throw new IllegalArgumentException("Null message URI.");
         }
@@ -124,7 +124,7 @@ public class MmsMessageSender implements MessageSender {
         // Start MMS transaction service
         SendingProgressTokenManager.put(messageId, token);
         Intent intent = new Intent(mContext, TransactionService.class);
-        intent.putExtra(Mms.PHONE_ID, mPhoneId); //destination phone id
+        intent.putExtra(Mms.SUBSCRIPTION_ID, mSubId);
         mContext.startService(intent);
 
         return true;
@@ -163,7 +163,7 @@ public class MmsMessageSender implements MessageSender {
         long expiryTime = 0;
         if (TelephonyManager.getDefault().isMultiSimEnabled()) {
             expiryTime = Long.parseLong(
-                    prefs.getString((mPhoneId == 0) ?
+                    prefs.getString((mSubId == 0) ?
                             MessagingPreferenceActivity.EXPIRY_TIME_SLOT1:
                             MessagingPreferenceActivity.EXPIRY_TIME_SLOT2, "0"));
         } else {
@@ -173,7 +173,7 @@ public class MmsMessageSender implements MessageSender {
         return expiryTime;
     }
 
-    public static void sendReadRec(Context context, String to, String messageId, int phoneId,
+    public static void sendReadRec(Context context, String to, String messageId, int subId,
             int status) {
         EncodedStringValue[] sender = new EncodedStringValue[1];
         sender[0] = new EncodedStringValue(to);
@@ -191,7 +191,7 @@ public class MmsMessageSender implements MessageSender {
             Uri uri = PduPersister.getPduPersister(context).persist(readRec, Mms.Outbox.CONTENT_URI,
                     true, MessagingPreferenceActivity.getIsGroupMmsEnabled(context), null);
             ContentValues values = new ContentValues(1);
-            values.put(Mms.PHONE_ID, phoneId);
+            values.put(Mms.SUBSCRIPTION_ID, subId);
             SqliteWrapper.update(context, context.getContentResolver(), uri, values, null, null);
             context.startService(new Intent(context, TransactionService.class));
         } catch (InvalidHeaderValueException e) {

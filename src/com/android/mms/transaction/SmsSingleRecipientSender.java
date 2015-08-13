@@ -37,8 +37,8 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
     private int mPriority = -1;
 
     public SmsSingleRecipientSender(Context context, String dest, String msgText, long threadId,
-            boolean requestDeliveryReport, Uri uri, int phoneId) {
-        super(context, null, msgText, threadId, phoneId);
+            boolean requestDeliveryReport, Uri uri, int subId) {
+        super(context, null, msgText, threadId, subId);
         mRequestDeliveryReport = requestDeliveryReport;
         mDest = dest;
         mUri = uri;
@@ -77,7 +77,7 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
                 mUri,
                 mContext,
                 SmsReceiver.class);
-        intent.putExtra(PhoneConstants.SUBSCRIPTION_KEY, mPhoneId);
+        intent.putExtra(PhoneConstants.SUBSCRIPTION_KEY, mSubId);
         int requestCode = 1;
         intent.putExtra(SmsReceiverService.EXTRA_MESSAGE_SENT_SEND_NEXT, true);
 
@@ -86,9 +86,9 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
         }
         PendingIntent sentIntent = PendingIntent.getBroadcast(mContext, requestCode, intent, 0);
 
-        int validityPeriod = getValidityPeriod(mPhoneId);
+        int validityPeriod = getValidityPeriod(mSubId);
         // Remove all attributes for CDMA international roaming.
-        if (MessageUtils.isCDMAInternationalRoaming(mPhoneId)) {
+        if (MessageUtils.isCDMAInternationalRoaming(mSubId)) {
             Log.v(TAG, "sendMessage during CDMA international roaming.");
             mPriority = -1;
             deliveryIntent = null;
@@ -97,7 +97,8 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
         try {
             ISms iccISms = ISms.Stub.asInterface(ServiceManager.getService("isms"));
             if (iccISms != null) {
-                iccISms.sendText(ActivityThread.currentPackageName(), mDest,
+                iccISms.sendTextForSubscriberWithSelfPermissions(SubscriptionManager.getSubId(
+                        mSubId)[0], ActivityThread.currentPackageName(), mDest,
                         mServiceCenter, "", sentIntent, deliveryIntent);
             }
         } catch (RemoteException ex) {
@@ -123,12 +124,8 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
             // one.
             throw new MmsException("Null message body or have multiple destinations.");
         }
-        int [] subId = SubscriptionManager.getSubId(mPhoneId);
-        if (subId == null || subId.length == 0 || !MessageUtils.isIccCardActivated(mPhoneId)) {
-            return false;
-        }
-        Log.e(TAG, "send SMS phone Id = " + mPhoneId + " subId : = " + subId[0]);
-        SmsManager smsManager = SmsManager.getSmsManagerForSubscriptionId(subId[0]);
+        Log.e(TAG, "send SMS subId = " + mSubId);
+        SmsManager smsManager = SmsManager.getSmsManagerForSubscriptionId(mSubId);
         ArrayList<String> messages = null;
         if ((MmsConfig.getEmailGateway() != null) &&
                 (Mms.isEmailAddress(mDest) || MessageUtils.isAlias(mDest))) {
@@ -143,7 +140,7 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
             // (e.g. "+8211-123-4567" -> "+82111234567")
             mDest = PhoneNumberUtils.stripSeparators(mDest);
             mDest = Conversation.verifySingleRecipient(mContext, mThreadId, mDest);
-            mDest = MessageUtils.checkIdp(mContext, mDest, subId[0]);
+            mDest = MessageUtils.checkIdp(mContext, mDest, mSubId);
         }
         int messageCount = messages.size();
 
@@ -204,11 +201,11 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
             sentIntents.add(PendingIntent.getBroadcast(mContext, requestCode, intent, 0));
         }
 
-        int validityPeriod = getValidityPeriod(mPhoneId);
+        int validityPeriod = getValidityPeriod(mSubId);
         Log.d(TAG, "sendMessage validityPeriod = "+validityPeriod);
         // Remove all attributes for CDMA international roaming.
         if (mContext.getResources().getBoolean(R.bool.config_ignore_sms_attributes) &&
-                MessageUtils.isCDMAInternationalRoaming(mPhoneId)) {
+                MessageUtils.isCDMAInternationalRoaming(mSubId)) {
             Log.v(TAG, "sendMessage during CDMA international roaming.");
             mPriority = -1;
             deliveryIntents = null;
@@ -216,7 +213,7 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
         }
         try {
             smsManager.sendMultipartTextMessage(mDest, mServiceCenter, messages,
-                    sentIntents, deliveryIntents, mPriority, false, validityPeriod);
+                    sentIntents, deliveryIntents/*, mPriority, false, validityPeriod*/);
         } catch (Exception ex) {
             Log.e(TAG, "SmsMessageSender.sendMessage: caught", ex);
             throw new MmsException("SmsMessageSender.sendMessage: caught " + ex +

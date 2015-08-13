@@ -182,9 +182,9 @@ public class RetrieveTransaction extends Transaction implements Runnable {
                 if (c != null) {
                     try {
                         if (c.moveToFirst()) {
-                            int phoneId = c.getInt(c.getColumnIndex(Mms.PHONE_ID));
-                            Log.d(TAG, "RetrieveTransaction: phoneId value is " + phoneId);
-                            values.put(Mms.PHONE_ID, phoneId);
+                            int subId = c.getInt(c.getColumnIndex(Mms.SUBSCRIPTION_ID));
+                            Log.d(TAG, "RetrieveTransaction: subId value is " + subId);
+                            values.put(Mms.SUBSCRIPTION_ID, subId);
                         }
                     } finally {
                         c.close();

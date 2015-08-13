@@ -33,7 +33,7 @@ import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_LOCKED;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_READ;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_STATUS;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_TYPE;
-import static com.android.mms.ui.MessageListAdapter.COLUMN_PHONE_ID;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_SUB_ID;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_THREAD_ID;
 import static com.android.mms.ui.MessageListAdapter.PROJECTION;
 
@@ -75,6 +75,7 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SqliteWrapper;
@@ -92,7 +93,10 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
+import android.os.RemoteException;
+import android.os.ServiceManager;
 import android.os.SystemProperties;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.QuickContact;
 import android.provider.DocumentsContract.Document;
@@ -111,6 +115,7 @@ import android.provider.Telephony.Sms;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.telephony.PhoneNumberUtils;
+import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
@@ -157,6 +162,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Button;
 
+import com.android.internal.telephony.IExtTelephony;
 import com.android.internal.telephony.PhoneConstants;
 import com.android.internal.telephony.RILConstants;
 import com.android.internal.telephony.TelephonyIntents;
@@ -950,11 +956,11 @@ public class ComposeMessageActivity extends Activity
         }
     }
 
-   private void processMsimSendMessage(int phoneId, final boolean bCheckEcmMode) {
+   private void processMsimSendMessage(int subId, final boolean bCheckEcmMode) {
         if (mMsimDialog != null) {
             mMsimDialog.dismiss();
         }
-        mWorkingMessage.setWorkingMessageSub(phoneId);
+        mWorkingMessage.setWorkingMessageSub(subId);
         sendMessage(bCheckEcmMode);
     }
 
@@ -999,21 +1005,23 @@ public class ComposeMessageActivity extends Activity
         Button[] smsBtns = new Button[phoneCount];
 
         for (int i = 0; i < phoneCount; i++) {
-            final int phoneId = i;
+            final int subId = i;
             smsBtns[i] = (Button) layout.findViewById(smsBtnIds[i]);
             smsBtns[i].setVisibility(View.VISIBLE);
-            List<SubInfoRecord> sir = SubscriptionManager.getSubInfoUsingSlotId(phoneId);
+            SubscriptionInfo sir = SubscriptionManager.from(getContext())
+                    .getActiveSubscriptionInfoForSimSlotIndex(subId);
 
-            String displayName = ((sir != null) && (sir.size() > 0)) ?
-                    sir.get(0).displayName : "SIM " + (i + 1);
+            String displayName = (sir != null) ?
+                    (i + 1) + ": " + sir.getDisplayName().toString() 
+                    : "SIM " + (i + 1);
 
-            Log.e(TAG, "PhoneID : " + phoneId + " displayName " + displayName);
+            Log.e(TAG, "PhoneID : " + subId + " displayName " + displayName);
             smsBtns[i].setText(displayName);
             smsBtns[i].setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View v) {
-                        Log.d(TAG, "Phone Id slected " + phoneId);
-                        processMsimSendMessage(phoneId, bCheckEcmMode);
+                        Log.d(TAG, "Phone Id slected " + subId);
+                        processMsimSendMessage(subId, bCheckEcmMode);
                 }
             });
         }
@@ -1026,13 +1034,18 @@ public class ComposeMessageActivity extends Activity
     }
 
     private void sendMsimMessage(boolean bCheckEcmMode) {
-        if (SubscriptionManager.isSMSPromptEnabled()) {
-            LaunchMsimDialog(bCheckEcmMode);
-        } else {
-            int subId = SubscriptionManager.getDefaultSmsSubId();
-            int phoneId = SubscriptionManager.getPhoneId(subId);
-            mWorkingMessage.setWorkingMessageSub(phoneId);
-            sendMessage(bCheckEcmMode);
+        IExtTelephony mExtTelephony = IExtTelephony.Stub.asInterface(ServiceManager
+                .getService("extphone"));
+        try {
+            if (mExtTelephony.isSMSPromptEnabled()) {
+                LaunchMsimDialog(bCheckEcmMode);
+            } else {
+                int subId = SubscriptionManager.getDefaultSmsSubId();
+                mWorkingMessage.setWorkingMessageSub(subId);
+                sendMessage(bCheckEcmMode);
+            }
+        } catch (RemoteException ex) {
+            Log.e(TAG, "error in getService ", ex);
         }
     }
 
@@ -1090,7 +1103,7 @@ public class ComposeMessageActivity extends Activity
                 MessageUtils.isMobileDataDisabled(getApplicationContext())) {
             showMobileDataDisabledDialog(subscription);
         } else {
-            if (getResources().getBoolean(com.android.internal.R.bool.config_regional_mms_via_wifi_enable)
+            if (false/*getResources().getBoolean(com.android.internal.R.bool.config_regional_mms_via_wifi_enable)*/
                     && !TextUtils.isEmpty(getString(R.string.mms_recipient_Limit))
                     && isMms
                     && checkForMmsRecipients(getString(R.string.mms_recipient_Limit), true)) {
@@ -1133,7 +1146,7 @@ public class ComposeMessageActivity extends Activity
                 MessageUtils.isMobileDataDisabled(getApplicationContext())) {
             showMobileDataDisabledDialog();
         } else {
-            if (getResources().getBoolean(com.android.internal.R.bool.config_regional_mms_via_wifi_enable)
+            if (false/*getResources().getBoolean(com.android.internal.R.bool.config_regional_mms_via_wifi_enable)*/
                     && !TextUtils.isEmpty(getString(R.string.mms_recipient_Limit))
                     && isMms
                     && checkForMmsRecipients(getString(R.string.mms_recipient_Limit), true)) {
@@ -1309,7 +1322,7 @@ public class ComposeMessageActivity extends Activity
     }
 
     private void checkForTooManyRecipients() {
-        if (getResources().getBoolean(com.android.internal.R.bool.config_regional_mms_via_wifi_enable)
+        if (false/*getResources().getBoolean(com.android.internal.R.bool.config_regional_mms_via_wifi_enable)*/
                 && !TextUtils.isEmpty(getString(R.string.mms_recipient_Limit))
                 && checkForMmsRecipients(getString(R.string.mms_recipient_Limit), false)) {
             return;
@@ -2187,8 +2200,8 @@ public class ComposeMessageActivity extends Activity
         // Create a new empty working message.
         mWorkingMessage = WorkingMessage.createEmpty(this);
 
-        mSendMmsMobileDataOff = getResources().getBoolean(
-                com.android.internal.R.bool.config_enable_mms_with_mobile_data_off);
+        mSendMmsMobileDataOff = false;/*getResources().getBoolean(
+                com.android.internal.R.bool.config_enable_mms_with_mobile_data_off);*/
 
         // Read parameters or previously saved state of this activity. This will load a new
         // mConversation
@@ -3435,13 +3448,13 @@ public class ComposeMessageActivity extends Activity
                 break;
 
             case AttachmentPagerAdapter.ADD_CONTACT_AS_TEXT:
-                pickContacts(SelectRecipientsList.MODE_INFO,
-                        REQUEST_CODE_ATTACH_ADD_CONTACT_INFO);
+                /*pickContacts(SelectRecipientsList.MODE_INFO,
+                        REQUEST_CODE_ATTACH_ADD_CONTACT_INFO);*/
                 break;
 
             case AttachmentPagerAdapter.ADD_CONTACT_AS_VCARD:
-                pickContacts(SelectRecipientsList.MODE_VCARD,
-                        REQUEST_CODE_ATTACH_ADD_CONTACT_VCARD);
+                /*pickContacts(SelectRecipientsList.MODE_VCARD,
+                        REQUEST_CODE_ATTACH_ADD_CONTACT_VCARD);*/
                 break;
 
             default:
@@ -3481,14 +3494,12 @@ public class ComposeMessageActivity extends Activity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (view != null) {
-                    int index = mCurrentAttachmentPager > DEFAULT_ATTACHMENT_PAGER ? position
-                            + mAttachmentPagerAdapter.PAGE_GRID_COUNT : position;
+                    addAttachment((mCurrentAttachmentPager > DEFAULT_ATTACHMENT_PAGER ? position
+                            + mAttachmentPagerAdapter.PAGE_GRID_COUNT : position), replace);
                     if (mIsRTL) {
-                        index = mCurrentAttachmentPager > DEFAULT_ATTACHMENT_PAGER ? position
-                                : mAttachmentPagerAdapter.PAGE_GRID_COUNT + position;
+                        addAttachment((mCurrentAttachmentPager > DEFAULT_ATTACHMENT_PAGER ? position
+                            : mAttachmentPagerAdapter.PAGE_GRID_COUNT + position), replace);
                     }
-                    int type = mAttachmentPagerAdapter.getAttachmentTypeByIndex(index);
-                    addAttachment(type, replace);
                     mAttachmentSelector.setVisibility(View.GONE);
                 }
             }
@@ -4474,8 +4485,8 @@ public class ComposeMessageActivity extends Activity
         } else if ((v == mSendButtonSmsViewSec || v == mSendButtonMmsViewSec) &&
                 mShowTwoButtons && isPreparedForSending()) {
             confirmSendMessageIfNeeded(PhoneConstants.SUB2);
-        } else if (v == mRecipientsSelector) {
-            pickContacts(SelectRecipientsList.MODE_DEFAULT, REQUEST_CODE_ADD_RECIPIENTS);
+        /*} else if (v == mRecipientsSelector) {
+            pickContacts(SelectRecipientsList.MODE_DEFAULT, REQUEST_CODE_ADD_RECIPIENTS);*/
         } else if ((v == mAddAttachmentButton)) {
             if (mAttachmentSelector.getVisibility() == View.VISIBLE && !mIsReplaceAttachment) {
                 mAttachmentSelector.setVisibility(View.GONE);
@@ -6012,9 +6023,11 @@ public class ComposeMessageActivity extends Activity
                     new PopupList.OnPopupItemClickListener() {
                         @Override
                         public boolean onPopupItemClick(int itemId) {
-                            if (itemId == RcsSelectionMenu.SELECT_OR_DESELECT) {
-                                checkAll(!allItemsSelected());
-                                mSelectionMenu.updateSelectAllMode(allItemsSelected());
+                            if (itemId == SelectionMenu.SELECT_OR_DESELECT) {
+                                boolean selectAll = getListView().getCheckedItemCount() <
+                                        getListView().getCount() ? true : false;
+                                checkAll(selectAll);
+                                mSelectionMenu.updateSelectAllMode(selectAll);
                             }
                             return true;
                         }
@@ -6203,10 +6216,6 @@ public class ComposeMessageActivity extends Activity
             }
 
             final MessageItem msgItem = mMessageItems.get(0);
-            if (mIsRcsEnabled && msgItem.mRcsId != 0) {
-                mRcsForwardId = msgItem.mRcsId;
-                return;
-            }
             getAsyncDialog().runAsync(new Runnable() {
                 @Override
                 public void run() {
@@ -6356,7 +6365,6 @@ public class ComposeMessageActivity extends Activity
                 if (mMmsSelected > 0) {
                     mode.getMenu().findItem(R.id.forward).setVisible(false);
                     mode.getMenu().findItem(R.id.copy_to_sim).setVisible(false);
-                    mode.getMenu().findItem(R.id.copy).setVisible(false);
                 } else {
                     if (getResources().getBoolean(R.bool.config_forwardconv)) {
                         mode.getMenu().findItem(R.id.forward).setVisible(true);
@@ -6366,8 +6374,8 @@ public class ComposeMessageActivity extends Activity
                     mode.getMenu().findItem(R.id.copy_to_sim).setVisible(true);
                 }
             } else {
-                menu.findItem(R.id.detail).setVisible(true);
-                menu.findItem(R.id.save_attachment).setVisible(!noMmsSelected);
+                mode.getMenu().findItem(R.id.detail).setVisible(true);
+                mode.getMenu().findItem(R.id.save_attachment).setVisible(mMmsSelected > 0);
 
                 if (mUnlockedCount == 0) {
                     mode.getMenu()
@@ -6387,7 +6395,6 @@ public class ComposeMessageActivity extends Activity
 
                 if (mMmsSelected > 0) {
                     mode.getMenu().findItem(R.id.copy_to_sim).setVisible(false);
-                    mode.getMenu().findItem(R.id.copy).setVisible(false);
                 } else {
                     mode.getMenu().findItem(R.id.copy_to_sim).setVisible(true);
                 }
@@ -6397,14 +6404,11 @@ public class ComposeMessageActivity extends Activity
         }
 
         private MessageItem getMessageItemByPos(int position) {
-            if (mMsgListAdapter.getItemViewType(position)
-                    != MessageListAdapter.GROUP_CHAT_ITEM_TYPE) {
-                Cursor cursor = (Cursor) mMsgListAdapter.getItem(position);
-                if (cursor != null) {
-                    return mMsgListAdapter.getCachedMessageItem(
-                            cursor.getString(COLUMN_MSG_TYPE),
-                            cursor.getLong(COLUMN_ID), cursor);
-                }
+            Cursor cursor = (Cursor) mMsgListAdapter.getItem(position);
+            if (cursor != null) {
+                return mMsgListAdapter.getCachedMessageItem(
+                        cursor.getString(COLUMN_MSG_TYPE),
+                        cursor.getLong(COLUMN_ID), cursor);
             }
             return null;
         }
@@ -6452,9 +6456,6 @@ public class ComposeMessageActivity extends Activity
             mSelectionMenu.setTitle(getApplicationContext().getString(
                     R.string.selected_count, mCheckedCount));
             mSelectionMenu.updateSelectAllMode(getListView().getCount() == mCheckedCount);
-
-            mSelectionMenu.setTitle(getString(R.string.selected_count, mCheckedCount));
-            mSelectionMenu.updateSelectAllMode(allItemsSelected());
         }
 
         private void confirmDeleteDialog(final DeleteMessagesListener listener,

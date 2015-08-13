@@ -214,12 +214,11 @@ public class PushReceiver extends BroadcastReceiver {
                         }
 
                         if (!isDuplicateNotification(mContext, nInd)) {
-                            int phoneId = intent.getIntExtra(PhoneConstants.SLOT_KEY, 0);
                             int subId = intent.getIntExtra(PhoneConstants.SUBSCRIPTION_KEY, 0);
                             //Phone ID will be updated in data base
-                            Log.d(TAG, "phoneId : " + phoneId + " subId : " + subId);
+                            Log.d(TAG, " subId : " + subId);
                             ContentValues values = new ContentValues(1);
-                            values.put(Mms.PHONE_ID, phoneId);
+                            values.put(Mms.SUBSCRIPTION_ID, subId);
                             Uri uri = p.persist(pdu, Inbox.CONTENT_URI,
                                     true,
                                     MessagingPreferenceActivity.getIsGroupMmsEnabled(mContext),
@@ -231,7 +230,7 @@ public class PushReceiver extends BroadcastReceiver {
                             svc.putExtra(TransactionBundle.URI, uri.toString());
                             svc.putExtra(TransactionBundle.TRANSACTION_TYPE,
                                     Transaction.NOTIFICATION_TRANSACTION);
-                            svc.putExtra(Mms.PHONE_ID, phoneId); //destination phone id
+                            svc.putExtra(Mms.SUBSCRIPTION_ID, subId);
                             mContext.startService(svc);
                         } else if (LOCAL_LOGV) {
                             Log.v(TAG, "Skip downloading duplicate message: "

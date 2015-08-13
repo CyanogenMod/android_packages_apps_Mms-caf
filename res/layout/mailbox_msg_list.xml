@@ -46,15 +46,13 @@
         android:orientation="vertical" >
 
         <TextView android:id="@+id/textName"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_toStartOf="@id/textViewDate"
-            android:layout_alignBaseline="@id/textViewDate"
-            android:layout_alignWithParentIfMissing="true"
-            android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+            android:gravity="center_vertical"
+            android:paddingStart="5dip"
             android:singleLine="true"
-            android:ellipsize="marquee" />
+            android:ellipsize="middle"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <LinearLayout
             android:id="@+id/line2"

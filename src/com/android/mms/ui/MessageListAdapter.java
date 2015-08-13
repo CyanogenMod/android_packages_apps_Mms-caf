@@ -60,7 +60,7 @@ public class MessageListAdapter extends CursorAdapter {
         // For SMS
         Sms.ADDRESS,
         Sms.BODY,
-        Sms.PHONE_ID,
+        Sms.SUBSCRIPTION_ID,
         Sms.DATE,
         Sms.DATE_SENT,
         Sms.READ,
@@ -92,7 +92,7 @@ public class MessageListAdapter extends CursorAdapter {
         // For SMS
         Sms.ADDRESS,
         Sms.BODY,
-        Sms.PHONE_ID,
+        Sms.SUBSCRIPTION_ID,
         Sms.DATE,
         Sms.DATE_SENT,
         Sms.READ,
@@ -114,7 +114,7 @@ public class MessageListAdapter extends CursorAdapter {
         Mms.LOCKED,
         Mms.STATUS,
         Mms.TEXT_ONLY,
-        Mms.PHONE_ID,   // add for DSDS
+        Mms.SUBSCRIPTION_ID,   // add for DSDS
         Threads.RECIPIENT_IDS  // add for obtaining address of MMS
     };
 
@@ -124,7 +124,7 @@ public class MessageListAdapter extends CursorAdapter {
         Conversations.THREAD_ID,
         Sms.ADDRESS,
         Sms.BODY,
-        Sms.PHONE_ID,
+        Sms.SUBSCRIPTION_ID,
         Sms.DATE,
         Sms.DATE_SENT,
         Sms.READ,
@@ -141,7 +141,7 @@ public class MessageListAdapter extends CursorAdapter {
     static final int COLUMN_THREAD_ID           = 2;
     static final int COLUMN_SMS_ADDRESS         = 3;
     static final int COLUMN_SMS_BODY            = 4;
-    static final int COLUMN_PHONE_ID            = 5;
+    static final int COLUMN_SUB_ID              = 5;
     static final int COLUMN_SMS_DATE            = 6;
     static final int COLUMN_SMS_DATE_SENT       = 7;
     static final int COLUMN_SMS_READ            = 8;
@@ -438,7 +438,7 @@ public class MessageListAdapter extends CursorAdapter {
         public int mColumnMsgId;
         public int mColumnSmsAddress;
         public int mColumnSmsBody;
-        public int mColumnPhoneId;
+        public int mColumnSubId;
         public int mColumnSmsDate;
         public int mColumnSmsDateSent;
         public int mColumnSmsRead;
@@ -467,7 +467,7 @@ public class MessageListAdapter extends CursorAdapter {
             mColumnMsgId              = COLUMN_ID;
             mColumnSmsAddress         = COLUMN_SMS_ADDRESS;
             mColumnSmsBody            = COLUMN_SMS_BODY;
-            mColumnPhoneId            = COLUMN_PHONE_ID;
+            mColumnSubId              = COLUMN_SUB_ID;
             mColumnSmsDate            = COLUMN_SMS_DATE;
             mColumnSmsDateSent        = COLUMN_SMS_DATE_SENT;
             mColumnSmsType            = COLUMN_SMS_TYPE;
@@ -517,7 +517,7 @@ public class MessageListAdapter extends CursorAdapter {
             }
 
             try {
-                mColumnPhoneId = cursor.getColumnIndexOrThrow(Sms.PHONE_ID);
+                mColumnSubId = cursor.getColumnIndexOrThrow(Sms.SUBSCRIPTION_ID);
             } catch (IllegalArgumentException e) {
                 Log.w("colsMap", e.getMessage());
             }
@@ -619,7 +619,7 @@ public class MessageListAdapter extends CursorAdapter {
             }
 
             try {
-                mColumnMmsSubId = cursor.getColumnIndexOrThrow(Mms.PHONE_ID);
+                mColumnMmsSubId = cursor.getColumnIndexOrThrow(Mms.SUBSCRIPTION_ID);
             } catch (IllegalArgumentException e) {
                 Log.w("colsMap", e.getMessage());
             }
