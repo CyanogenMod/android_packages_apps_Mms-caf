@@ -198,7 +198,7 @@
                         android:textSize="16sp"
                         android:paddingStart="12dp"
                         android:paddingEnd="12dp"
-                        android:paddingTop="5dp"
+                        android:paddingTop="7dp"
                         android:paddingBottom="5dp"
                         android:capitalize="sentences"
                         android:nextFocusRight="@+id/send_button"

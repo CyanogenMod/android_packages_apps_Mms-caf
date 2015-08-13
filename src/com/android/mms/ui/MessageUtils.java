@@ -95,8 +95,15 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.ListPopupWindow;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -1131,8 +1138,8 @@ public class MessageUtils {
         };
 
         confirmReadReportDialog(context, positiveListener,
-                                         negativeListener,
-                                         cancelListener);
+                negativeListener,
+                cancelListener);
     }
 
     private static void confirmReadReportDialog(Context context,
@@ -2810,4 +2817,59 @@ public class MessageUtils {
         SelectPhoneAccountDialogFragment.showAccountDialog(activity.getFragmentManager(),
                 R.string.select_phone_account_title, false /* canSetDefault */, handles, listener);
     }
+
+    public static SimInfo getDefaultDataSimInfo(Context context) {
+        SubscriptionManager subMgr = SubscriptionManager.from(context);
+        SubscriptionInfo subInfo = subMgr.getActiveSubscriptionInfo(
+                SubscriptionManager.getDefaultSubId());
+
+        SimInfo simInfo = new SimInfo();
+        simInfo.mSubId = subInfo.getSubscriptionId();
+        simInfo.mColor = subInfo.getIconTint();
+        simInfo.mName = subInfo.getDisplayName().toString();
+        simInfo.mSlotId = SubscriptionManager.getSlotId(simInfo.mSubId);
+        System.out.println("default sub id : " + simInfo.mSubId);
+        System.out.println("default slot id : " + simInfo.mSlotId);
+
+        return simInfo;
+    }
+
+
+    public static List<SimInfo> getSimInfoList(Context context, int lastItemSubId) {
+        final TelecomManager telecomMgr =
+                (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
+        final List<PhoneAccountHandle> accountHandles = telecomMgr.getCallCapablePhoneAccounts();
+        ArrayList<SimInfo> simInfoList = new ArrayList<SimInfo>();
+        SimInfo lastEntry = null;
+        for (PhoneAccountHandle accountHandle : accountHandles) {
+            PhoneAccount phoneAccount = telecomMgr.getPhoneAccount(accountHandle);
+            SimInfo simInfo = new SimInfo();
+            simInfo.mColor = phoneAccount.getHighlightColor();
+            simInfo.mName = phoneAccount.getLabel().toString();
+            simInfo.mSubId = Integer.parseInt(accountHandle.getId());
+            simInfo.mSlotId = SubscriptionManager.getSlotId(simInfo.mSubId);
+
+//            System.out.println("icon tint : " + phoneAccount.getIconTint());
+//            System.out.println("highlight color : " + phoneAccount.getHighlightColor());
+//            System.out.println("color : " + phoneAccount.getColor());
+
+            if (simInfo.mSubId != lastItemSubId) {
+                simInfoList.add(simInfo);
+            } else {
+                lastEntry = simInfo;
+            }
+        }
+        if (lastEntry != null) {
+            simInfoList.add(lastEntry);
+        }
+        return simInfoList;
+    }
+
+    public static class SimInfo {
+        public int mColor;
+        public String mName;
+        public int mSubId;
+        public int mSlotId;
+    }
+
 }
