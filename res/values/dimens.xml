@@ -64,4 +64,13 @@ All Rights Reserved. -->
     <!-- Compose message -->
     <dimen name="compose_message_normal_text_size">12sp</dimen>
 
+    <!--Sim drop-down drawable-->
+    <dimen name="sim_selector_width">24dp</dimen>
+    <dimen name="sim_selector_height">38dp</dimen>
+    <dimen name="sim_selector_popup_vertical_offset">48dp</dimen>
+    <dimen name="sim_selector_sim_icon_padding">1dp</dimen>
+    <dimen name="sim_selector_sim_icon_padding_bottom">3.3dp</dimen>
+    <dimen name="sim_selector_dropdown_icon_size">14dp</dimen>
+    <dimen name="sim_selector_click_bounds">45dp</dimen>
+
 </resources>

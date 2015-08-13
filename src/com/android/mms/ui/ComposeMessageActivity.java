@@ -121,20 +121,27 @@ import android.view.ActionMode;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnCreateContextMenuListener;
 import android.view.View.OnKeyListener;
+import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListPopupWindow;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -167,6 +174,7 @@ import com.android.mms.transaction.MessagingNotification;
 import com.android.mms.transaction.SmsReceiverService;
 import com.android.mms.ui.MessageListView.OnSizeChangedListener;
 import com.android.mms.ui.MessageUtils.ResizeImageResultCallback;
+import com.android.mms.ui.MessageUtils.SimInfo;
 import com.android.mms.ui.RecipientsEditor.RecipientContextMenuInfo;
 import com.android.mms.ui.zoom.ZoomGestureOverlayView;
 import com.android.mms.ui.zoom.ZoomGestureOverlayView.IZoomListener;
@@ -176,6 +184,7 @@ import com.android.mms.util.PhoneNumberFormatter;
 import com.android.mms.util.SendingProgressTokenManager;
 import com.android.mms.util.SmileyParser;
 import com.android.mms.util.UnicodeFilter;
+import com.android.mms.widget.SimDropdownDrawable;
 import com.android.mms.widget.MmsWidgetProvider;
 import com.android.mms.widget.FluctuatingImageButton;
 import com.google.android.mms.ContentType;
@@ -204,7 +213,7 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 public class ComposeMessageActivity extends Activity
         implements View.OnClickListener, TextView.OnEditorActionListener,
         MessageStatusListener, Contact.UpdateListener, IZoomListener,
-        PickupGestureDetector.PickupListener {
+        PickupGestureDetector.PickupListener, AdapterView.OnItemClickListener {
     public static final int REQUEST_CODE_ATTACH_IMAGE                   = 100;
     public static final int REQUEST_CODE_TAKE_PICTURE                   = 101;
     public static final int REQUEST_CODE_ATTACH_VIDEO                   = 102;
@@ -494,6 +503,11 @@ public class ComposeMessageActivity extends Activity
     private UnicodeFilter mUnicodeFilter = null;
 
     private AddNumbersTask mAddNumbersTask;
+
+    private boolean mIsMsim;
+    private SimDropdownDrawable mSimSelectionDrawable;
+    private SimInfo mCurrentSimInfo;
+    private ListPopupWindow mSimSelectionPopup;
 
     @SuppressWarnings("unused")
     public static void log(String logMsg) {
@@ -816,6 +830,15 @@ public class ComposeMessageActivity extends Activity
 
     private void showConvertToMmsToast() {
         Toast.makeText(this, R.string.converting_to_picture_message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        SimInfo simInfo = (SimInfo) parent.getItemAtPosition(position);
+        mCurrentSimInfo = simInfo;
+        mSimSelectionPopup.dismiss();
+        mSimSelectionPopup = null;
+        updateSimSelectionDrawable();
     }
 
     private class DeleteMessageListener implements OnClickListener {
@@ -1977,8 +2000,9 @@ public class ComposeMessageActivity extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mIsSmsEnabled = MmsConfig.isSmsEnabled(this);
+        mIsMsim = MessageUtils.isMsimIccCardActive();
+        mIsMsim = true;
         super.onCreate(savedInstanceState);
-
         resetConfiguration(getResources().getConfiguration());
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -2016,9 +2040,41 @@ public class ComposeMessageActivity extends Activity
 
         mPickupDetector = new PickupGestureDetector(ComposeMessageActivity.this, this);
 
+        if (mIsMsim || true)  {
+            //
+            SimInfo simInfo = MessageUtils.getDefaultDataSimInfo(this);
+            if (simInfo != null) {
+                mCurrentSimInfo = simInfo;
+                updateSimSelectionDrawable();
+            }
+        }
+
         if (TRACE) {
             android.os.Debug.startMethodTracing("compose");
         }
+    }
+
+    private void updateSimSelectionDrawable() {
+        if (mCurrentSimInfo != null) {
+            SimInfo simInfo = mCurrentSimInfo;
+            int simIconId = getResources().getIdentifier("ic_sim_" + (simInfo.mSlotId + 1), "drawable", getApplicationContext().getPackageName());
+            Drawable simDrawable =
+                    getDrawable(simIconId).mutate();
+            simDrawable.setTint(simInfo.mColor);
+
+            // create compound message drawable
+            mSimSelectionDrawable = new SimDropdownDrawable(this, simDrawable,
+                    getDrawable(R.drawable.ic_arrow_drop_down_black));
+            // compound drawable size .. 24 dp x 38 dp
+            Resources res = getResources();
+            mSimSelectionDrawable.setBounds(0, 0,
+                    res.getDimensionPixelSize(R.dimen.sim_selector_width),
+                    res.getDimensionPixelSize(R.dimen.sim_selector_height));
+
+            mTextEditor.setCompoundDrawablesRelative(mSimSelectionDrawable, null, null, null);
+            mTextEditor.setCompoundDrawablePadding(30);
+        }
+
     }
 
     @Override
@@ -4122,7 +4178,11 @@ public class ComposeMessageActivity extends Activity
     @Override
     public void onClick(View v) {
         if (v == mSendButton && isPreparedForSending()) {
-            confirmSendMessageIfNeeded();
+            if (mCurrentSimInfo == null) {
+                confirmSendMessageIfNeeded();
+            } else {
+                confirmSendMessageIfNeeded(mCurrentSimInfo.mSlotId);
+            }
         } else if (v == mRecipientsSelector) {
             pickContacts(SelectRecipientsList.MODE_DEFAULT, REQUEST_CODE_ADD_RECIPIENTS);
         }
@@ -4295,6 +4355,37 @@ public class ComposeMessageActivity extends Activity
                     new LengthFilter(getResources().getInteger(R.integer.slide_text_limit_size))});
         }
 
+        if (mIsMsim) {
+            System.out.println("adding touch listener");
+            mTextEditor.setOnTouchListener(new View.OnTouchListener() {
+                private int mClickBounds = ComposeMessageActivity.this.getResources()
+                        .getDimensionPixelSize(R.dimen.sim_selector_click_bounds);
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    int action = event.getAction();
+                    switch (action) {
+                        case MotionEvent.ACTION_DOWN:
+                        case MotionEvent.ACTION_MOVE:
+                            return true;
+
+                        case MotionEvent.ACTION_UP:
+                            if (event.getX() <= mClickBounds && event.getY() <= mClickBounds) {
+                                System.out.println("clicked on dat drawable");
+                                System.out.println("drawable bounds: " + mClickBounds);
+                                System.out.println("motion event : " + event);
+
+                                // build and launch sim select popup
+                                showSimSelectionPopup();
+                                return true;
+                            }
+                            break;
+                    }
+                    return false;
+                }
+            });
+        }
+
         mTopPanel = findViewById(R.id.recipients_subject_linear);
         mTopPanel.setFocusable(false);
         mAttachmentEditor = (AttachmentEditor) findViewById(R.id.attachment_editor);
@@ -4308,6 +4399,25 @@ public class ComposeMessageActivity extends Activity
                 ComposeMessageActivity.this.showAddAttachmentDialog(false);
             }
         });
+    }
+
+    private void showSimSelectionPopup() {
+        ListPopupWindow popupWindow = new ListPopupWindow(this);
+        ListAdapter adapter = new SimSelectionAdapter(this,
+                MessageUtils.getSimInfoList(this, mCurrentSimInfo.mSubId));
+        popupWindow.setAdapter(adapter);
+        popupWindow.setModal(true);
+        popupWindow.setAnchorView(mTextEditor);
+        popupWindow.setPromptPosition(ListPopupWindow.POSITION_PROMPT_ABOVE);
+        popupWindow.setContentWidth(measureContentWidth(adapter));
+        popupWindow.setInputMethodMode(ListPopupWindow.INPUT_METHOD_NOT_NEEDED);
+        popupWindow.setVerticalOffset(-1 *
+                getResources().getDimensionPixelSize(R.dimen.sim_selector_popup_vertical_offset));
+        // needs to offset by the height of 1 element
+        popupWindow.setOnItemClickListener(this);
+        popupWindow.show();
+
+        mSimSelectionPopup = popupWindow;
     }
 
     private void confirmDeleteDialog(OnClickListener listener, boolean locked) {
@@ -5475,6 +5585,46 @@ public class ComposeMessageActivity extends Activity
         return ComposeMessageActivity.this;
     }
 
+    /**
+     * kanged from MenuPopupHelper
+
+     */
+    private int measureContentWidth(ListAdapter adapter) {
+        // Menus don't tend to be long, so this is more sane than it looks.
+        int maxWidth = 0;
+        View itemView = null;
+        int itemType = 0;
+        ViewGroup mMeasureParent = null;
+        int mPopupMaxWidth = getResources().getDisplayMetrics().widthPixels / 2;
+
+        final int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        final int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        final int count = adapter.getCount();
+        for (int i = 0; i < count; i++) {
+            final int positionType = adapter.getItemViewType(i);
+            if (positionType != itemType) {
+                itemType = positionType;
+                itemView = null;
+            }
+
+            if (mMeasureParent == null) {
+                mMeasureParent = new FrameLayout(this);
+            }
+
+            itemView = adapter.getView(i, itemView, mMeasureParent);
+            itemView.measure(widthMeasureSpec, heightMeasureSpec);
+
+            final int itemWidth = itemView.getMeasuredWidth();
+            if (itemWidth >= mPopupMaxWidth) {
+                return mPopupMaxWidth;
+            } else if (itemWidth > maxWidth) {
+                maxWidth = itemWidth;
+            }
+        }
+        System.out.println("maxWidth : " + maxWidth);
+        return maxWidth;
+    }
+
     private class ModeCallback implements ListView.MultiChoiceModeListener {
         // need define variable to keep info of mms count, lock count, unlock
         // count.
@@ -6078,5 +6228,39 @@ public class ComposeMessageActivity extends Activity
             }
         }
     };
+
+    /**
+     * Adapter used to populate Sim selection options
+     */
+    private static class SimSelectionAdapter extends ArrayAdapter<SimInfo> {
+
+        private Context mContext;
+
+        public SimSelectionAdapter(Context context, List<SimInfo> objects) {
+            super(context, 0, objects);
+            mContext = context;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            SimInfo simInfo = getItem(position);
+            if (convertView == null) {
+                convertView = LayoutInflater.from(getContext())
+                        .inflate(R.layout.sim_selection_list_item, parent, false);
+            }
+
+            TextView msgTextView = (TextView) convertView.findViewById(R.id.name);
+            msgTextView.setText(simInfo.mName);
+
+            ImageView icon = (ImageView) convertView.findViewById(R.id.icon);
+            int simIconId = mContext.getResources()
+                    .getIdentifier("ic_sim_" + (simInfo.mSlotId + 1), "drawable",
+                            mContext.getApplicationContext().getPackageName());
+            icon.setImageResource(simIconId);
+            icon.getDrawable().setTint(simInfo.mColor);
+
+            return convertView;
+        }
+    }
 
 }
