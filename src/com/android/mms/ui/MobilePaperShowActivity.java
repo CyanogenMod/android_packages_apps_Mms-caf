@@ -185,15 +185,18 @@ public class MobilePaperShowActivity extends Activity {
                 setTitle("");
             }
 
-            String mailboxUri = MAILBOX_URI + mMailboxId;
-            mAsyncQueryHandler = new BackgroundQueryHandler(
-                    getContentResolver());
-            mAsyncQueryHandler.startQuery(QUERY_MESSAGE_TOKEN, 0,
-                    Uri.parse(mailboxUri),
-                    MessageListAdapter.MAILBOX_PROJECTION, "pdu._id= "
-                            + mUri.getLastPathSegment(), null,
-                    "normalized_date DESC");
-
+            if (mMailboxId != MailBoxMessageList.TYPE_DRAFTBOX) {
+                String mailboxUri = MAILBOX_URI + mMailboxId;
+                mAsyncQueryHandler = new BackgroundQueryHandler(
+                        getContentResolver());
+                mAsyncQueryHandler.startQuery(QUERY_MESSAGE_TOKEN, 0,
+                        Uri.parse(mailboxUri),
+                        MessageListAdapter.MAILBOX_PROJECTION, "pdu._id= "
+                                + mUri.getLastPathSegment(), null,
+                        "normalized_date DESC");
+            } else {
+                completeLoad();
+            }
         } catch (MmsException e) {
             Log.e(TAG, "Cannot present the slide show.", e);
             Toast.makeText(this, R.string.cannot_play, Toast.LENGTH_SHORT).show();
@@ -393,9 +396,13 @@ public class MobilePaperShowActivity extends Activity {
                 mCursor = cursor;
                 mCursor.moveToFirst();
             }
-            drawRootView();
-            invalidateOptionsMenu();
+            completeLoad();
         }
+    }
+
+    private void completeLoad() {
+        drawRootView();
+        invalidateOptionsMenu();
     }
 
     private void replyMessage(Context context, String number) {

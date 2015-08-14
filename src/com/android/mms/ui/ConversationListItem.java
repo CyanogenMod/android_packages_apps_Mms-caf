@@ -74,6 +74,8 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
     private Conversation mConversation;
 
     public static final StyleSpan STYLE_BOLD = new StyleSpan(Typeface.BOLD);
+    public static final Pattern RTL_CHARACTERS =
+        Pattern.compile("[\u0600-\u06FF\u0750-\u077F\u0590-\u05FF\uFE70-\uFEFF]");
 
     public ConversationListItem(Context context) {
         super(context);
@@ -136,9 +138,8 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
                 == View.LAYOUT_DIRECTION_RTL);
         if (isLayoutRtl && from != null) {
             if (from.length() >= 1) {
-                Pattern pattern = Pattern.compile("[^أ-ي]+");
-                Matcher matcher = pattern.matcher(from);
-                isEnName = matcher.matches();
+                Matcher matcher = RTL_CHARACTERS.matcher(from);
+                isEnName = !matcher.find();
                 if (isEnName && from.charAt(0) != '\u202D') {
                     from = "\u202D" + from + "\u202C";
                 }

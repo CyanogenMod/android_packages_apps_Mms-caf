@@ -62,6 +62,7 @@
   <string name="menu_as_read">Als gelies markéieren</string>
   <string name="menu_all_as_unread">All als ongelies markéieren</string>
   <string name="menu_all_as_read">All als gelies markéieren</string>
+  <string name="menu_add_to_contacts_cm">Bei d\'Kontakter dobäisetzen</string>
   <string name="confirm_mark_unread_dialog_title">Als ongelies markéieren?</string>
   <string name="confirm_mark_unread_conversation">D\'Konversatioun gëtt als ongelies markéiert.</string>
   <string name="confirm_mark_read_dialog_title">Als gelies markéieren?</string>

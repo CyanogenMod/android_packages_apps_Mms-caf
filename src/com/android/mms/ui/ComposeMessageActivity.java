@@ -131,6 +131,7 @@ import android.view.ViewStub;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -214,12 +215,11 @@ public class ComposeMessageActivity extends Activity
     public static final int REQUEST_CODE_CREATE_SLIDESHOW               = 106;
     public static final int REQUEST_CODE_ECM_EXIT_DIALOG                = 107;
     public static final int REQUEST_CODE_ADD_CONTACT                    = 108;
-    public static final int REQUEST_CODE_PICK                           = 109;
+    public static final int REQUEST_CODE_ADD_RECIPIENTS                 = 109;
     public static final int REQUEST_CODE_ATTACH_ADD_CONTACT_INFO        = 110;
     public static final int REQUEST_CODE_ATTACH_ADD_CONTACT_VCARD       = 111;
     public static final int REQUEST_CODE_ATTACH_REPLACE_CONTACT_INFO    = 112;
-    public static final int REQUEST_CODE_ADD_RECIPIENTS                 = 113;
-    public static final int REQUEST_CODE_ADD_CALENDAR_EVENTS            = 114;
+    public static final int REQUEST_CODE_ADD_CALENDAR_EVENTS            = 113;
 
     private static final String TAG = LogTag.TAG;
 
@@ -407,7 +407,7 @@ public class ComposeMessageActivity extends Activity
 
     private AsyncDialog mAsyncDialog;   // Used for background tasks.
 
-    private String mDebugRecipients;
+    private ContactList mRecipients;
 
     private boolean mEnableEmoticons;
 
@@ -957,8 +957,7 @@ public class ComposeMessageActivity extends Activity
         } else {
             // The recipients editor is still open. Make sure we use what's showing there
             // as the destination.
-            ContactList contacts = mRecipientsEditor.constructContactsFromInput(false);
-            mDebugRecipients = contacts.serialize();
+            mRecipients = mRecipientsEditor.constructContactsFromInput(false);
             sendMsimMessage(true, subIds[0]);
         }
     }
@@ -987,8 +986,7 @@ public class ComposeMessageActivity extends Activity
         } else {
             // The recipients editor is still open. Make sure we use what's showing there
             // as the destination.
-            ContactList contacts = mRecipientsEditor.constructContactsFromInput(false);
-            mDebugRecipients = contacts.serialize();
+            mRecipients = mRecipientsEditor.constructContactsFromInput(false);
             if ((TelephonyManager.getDefault().getPhoneCount()) > 1) {
                 sendMsimMessage(true);
             } else {
@@ -1060,7 +1058,7 @@ public class ComposeMessageActivity extends Activity
             // If pick recipients from Contacts,
             // then only update title once when process finished
             if (mIsProcessPickedRecipients) {
-                 return;
+                return;
             }
 
             if (mRecipientsPickList != null) {
@@ -1799,14 +1797,21 @@ public class ComposeMessageActivity extends Activity
                 }
                 break;
             }
-            default: {
+            case 2:
+            case 3:
                 // Handle multiple recipients
                 title = list.formatNames(", ");
-                subTitle = getResources().getQuantityString(R.plurals.recipient_count, cnt, cnt);
+                subTitle = getResources().getQuantityString(R.plurals.recipient_count, cnt,
+                        cnt);
                 break;
+            default: {
+                // Handle many recipients
+                title = getResources().getQuantityString(R.plurals.recipient_count, cnt,
+                        cnt);
+                subTitle = null;
             }
         }
-        mDebugRecipients = list.serialize();
+        mRecipients = list;
 
         if (cnt > 0 && !mAccentColorLoaded && !mLoadingAccentColor) {
             final Contact contact = list.get(0);
@@ -2065,6 +2070,12 @@ public class ComposeMessageActivity extends Activity
 
         if (show) {
             mSubjectTextEditor.addTextChangedListener(mSubjectEditorWatcher);
+
+            // Ensure the "to" label is hidden when Subject editor shows
+            TextView toLabel = (TextView) findViewById(R.id.to_label);
+            if (toLabel != null) {
+                toLabel.setVisibility(View.GONE);
+            }
         } else {
             mSubjectTextEditor.removeTextChangedListener(mSubjectEditorWatcher);
         }
@@ -2150,8 +2161,6 @@ public class ComposeMessageActivity extends Activity
         if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
             log("update title, mConversation=" + mConversation.toString());
         }
-
-        updateTitle(mConversation.getRecipients());
 
         if (isForwardedMessage && isRecipientsEditorVisible()) {
             // The user is forwarding the message to someone. Put the focus on the
@@ -2385,8 +2394,6 @@ public class ComposeMessageActivity extends Activity
             log("update title, mConversation=" + mConversation.toString());
         }
 
-        updateTitle(mConversation.getRecipients());
-
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
@@ -2494,7 +2501,8 @@ public class ComposeMessageActivity extends Activity
         mIsPickingContact = false;
         addRecipientsListeners();
 
-        if (isRecipientsEditorVisible()) {
+        if (isRecipientsEditorVisible() && (mAddNumbersTask == null ||
+                mAddNumbersTask.getStatus() == AsyncTask.Status.FINISHED)) {
             mRecipientsEditor.addTextChangedListener(mRecipientsWatcher);
         }
 
@@ -3444,10 +3452,6 @@ public class ComposeMessageActivity extends Activity
             mWorkingMessage.removeFakeMmsForDraft();
         }
 
-        if (requestCode == REQUEST_CODE_PICK) {
-            mWorkingMessage.asyncDeleteDraftSmsMessage(mConversation);
-        }
-
         if (requestCode == REQUEST_CODE_ADD_CONTACT) {
             // The user might have added a new contact. When we tell contacts to add a contact
             // and tap "Done", we're not returned to Messaging. If we back out to return to
@@ -3555,12 +3559,6 @@ public class ComposeMessageActivity extends Activity
                 }
                 break;
 
-            case REQUEST_CODE_PICK:
-                if (data != null) {
-                    processPickResult(data);
-                }
-                break;
-
             case REQUEST_CODE_ATTACH_REPLACE_CONTACT_INFO:
                 // Caused by user choose to replace the attachment, so we need remove
                 // the attachment and then add the contact info to text.
@@ -3587,6 +3585,7 @@ public class ComposeMessageActivity extends Activity
                 break;
 
             case REQUEST_CODE_ADD_RECIPIENTS:
+                mWorkingMessage.asyncDeleteDraftMessage(mConversation);
                 mAddNumbersTask = new AddNumbersTask();
                 mAddNumbersTask.execute(
                         data.getStringArrayListExtra(SelectRecipientsList.EXTRA_RECIPIENTS));
@@ -3641,7 +3640,9 @@ public class ComposeMessageActivity extends Activity
             super.onPreExecute();
             mPD = new ProgressDialog(ComposeMessageActivity.this);
             mPD.setMessage(getString(R.string.adding_selected_recipients_dialog_text));
+            mPD.setCancelable(false);
             mPD.show();
+            mRecipientsEditor.removeTextChangedListener(mRecipientsWatcher);
         }
 
         @Override
@@ -3663,43 +3664,9 @@ public class ComposeMessageActivity extends Activity
             if (mPD != null && mPD.isShowing()) {
                 mPD.dismiss();
             }
+            mRecipientsEditor.addTextChangedListener(mRecipientsWatcher);
+            mRecipientsWatcher.afterTextChanged(mRecipientsEditor.getText());
         }
-    }
-
-    private void processPickResult(final Intent data) {
-        // The EXTRA_PHONE_URIS stores the phone's urls that were selected by user in the
-        // multiple phone picker.
-        Bundle bundle = data.getExtras().getBundle("result");
-        final Set<String> keySet = bundle.keySet();
-        final int recipientCount = (keySet != null) ? keySet.size() : 0;
-
-        // If total recipients count > recipientLimit,
-        // then forbid add reipients to RecipientsEditor
-        final int recipientLimit = MmsConfig.getRecipientLimit();
-        int totalRecipientsCount = mExistsRecipientsCount + recipientCount;
-        if (recipientLimit != Integer.MAX_VALUE && totalRecipientsCount > recipientLimit) {
-            new AlertDialog.Builder(this)
-                    .setMessage(getString(R.string.too_many_recipients, totalRecipientsCount,
-                            recipientLimit))
-                    .setPositiveButton(android.R.string.ok, new OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // if already exists some recipients,
-                            // then new pick recipients with exists recipients count
-                            // can't more than recipient limit count.
-                            int newPickRecipientsCount = recipientLimit - mExistsRecipientsCount;
-                            if (newPickRecipientsCount <= 0) {
-                                return;
-                            }
-                            processAddRecipients(keySet, newPickRecipientsCount);
-                        }
-                    })
-                    .setNegativeButton(android.R.string.cancel, null)
-                    .create().show();
-            return;
-        }
-
-        processAddRecipients(keySet, recipientCount);
     }
 
     private Uri[] buildUris(final Set<String> keySet, final int newPickRecipientsCount) {
@@ -3714,70 +3681,6 @@ public class ComposeMessageActivity extends Activity
             }
         }
         return newUris;
-    }
-
-    private void processAddRecipients(final Set<String> keySet, final int newPickRecipientsCount) {
-        // if process pick result that is pick recipients from Contacts
-        mIsProcessPickedRecipients = true;
-        final Handler handler = new Handler();
-        final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle(getText(R.string.pick_too_many_recipients));
-        progressDialog.setMessage(getText(R.string.adding_recipients));
-        progressDialog.setIndeterminate(true);
-        progressDialog.setCancelable(false);
-
-        final Runnable showProgress = new Runnable() {
-            @Override
-            public void run() {
-                progressDialog.show();
-            }
-        };
-        // Only show the progress dialog if we can not finish off parsing the return data in 1s,
-        // otherwise the dialog could flicker.
-        handler.postDelayed(showProgress, 1000);
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final ContactList list;
-                try {
-                    list = ContactList.blockingGetByUris(buildUris(keySet, newPickRecipientsCount));
-                } finally {
-                    handler.removeCallbacks(showProgress);
-                }
-                if (mRecipientsEditor != null) {
-                    ContactList exsitList = mRecipientsEditor.constructContactsFromInput(true);
-                    // Remove the repeat recipients.
-                    if (exsitList.equals(list)) {
-                        exsitList.clear();
-                        list.addAll(0, exsitList);
-                    } else {
-                        list.removeAll(exsitList);
-                        list.addAll(0, exsitList);
-                    }
-                }
-                // TODO: there is already code to update the contact header
-                // widget and recipients
-                // editor if the contacts change. we can re-use that code.
-                final Runnable populateWorker = new Runnable() {
-                    @Override
-                    public void run() {
-                        mRecipientsEditor.populate(list);
-                        // Set value for mRecipientsPickList and
-                        // mRecipientsWatcher will update the UI.
-                        mRecipientsPickList = list;
-                        updateTitle(list);
-                        // if process finished, then dismiss the progress dialog
-                        progressDialog.dismiss();
-
-                        // if populate finished, then recipients pick process
-                        // end
-                        mIsProcessPickedRecipients = false;
-                    }
-                };
-                handler.post(populateWorker);
-            }
-        }, "ComoseMessageActivity.processPickResult").start();
     }
 
     private final ResizeImageResultCallback mResizeImageCallback = new ResizeImageResultCallback() {
@@ -3856,6 +3759,12 @@ public class ComposeMessageActivity extends Activity
                     title = res.getString(R.string.illegal_message_or_increase_size);
                     message = res.getString(R.string.failed_to_add_media, mediaType);
                     break;
+                case WorkingMessage.FAILED_TO_QUERY_CONTACT:
+                    title = res.getString(R.string.attach_add_contact_as_vcard);
+                    message = res.getString(R.string.failed_to_add_media, title);
+                    Toast.makeText(ComposeMessageActivity.this, message, Toast.LENGTH_SHORT).show();
+                    deleteLastMms();
+                    return;
                 default:
                     throw new IllegalArgumentException("unknown error " + error);
                 }
@@ -4408,6 +4317,25 @@ public class ComposeMessageActivity extends Activity
                 }
             }
         });
+        mMsgListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            private boolean scrolling = false;
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem,
+                                 int visibleItemCount, int totalItemCount) {
+              if (mIsKeyboardOpen && scrolling) {
+                  final int first = mMsgListView.getFirstVisiblePosition();
+                  final int last = mMsgListView.getLastVisiblePosition();
+                  final int count = mMsgListAdapter.getCount();
+                  if (count > (last - first + 1)) {
+                      hideKeyboard();
+                  }
+              }
+            }
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                scrolling = scrollState != AbsListView.OnScrollListener.SCROLL_STATE_IDLE;
+            }
+        });
         mMsgListView.setMultiChoiceModeListener(new ModeCallback());
         mMsgListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
     }
@@ -4566,15 +4494,17 @@ public class ComposeMessageActivity extends Activity
             }
         }
 
+        String mCurrentRecipients = mRecipients.serialize();
+
         if (!mSendingMessage) {
             if (LogTag.SEVERE_WARNING) {
                 String sendingRecipients = mConversation.getRecipients().serialize();
-                if (!sendingRecipients.equals(mDebugRecipients)) {
+                if (DEBUG && !sendingRecipients.equals(mCurrentRecipients)) {
                     String workingRecipients = mWorkingMessage.getWorkingRecipients();
-                    if (!mDebugRecipients.equals(workingRecipients)) {
+                    if (!mCurrentRecipients.equals(workingRecipients)) {
                         LogTag.warnPossibleRecipientMismatch("ComposeMessageActivity.sendMessage" +
                                 " recipients in window: \"" +
-                                mDebugRecipients + "\" differ from recipients from conv: \"" +
+                                mCurrentRecipients + "\" differ from recipients from conv: \"" +
                                 sendingRecipients + "\" and working recipients: " +
                                 workingRecipients, this);
                     }
@@ -4593,7 +4523,7 @@ public class ComposeMessageActivity extends Activity
                 // If resend sms recipient is more than one, use mResendSmsRecipient
                 mWorkingMessage.send(mResendSmsRecipient);
             } else {
-                mWorkingMessage.send(mDebugRecipients);
+                mWorkingMessage.send(mCurrentRecipients);
             }
 
             mSentMessage = true;
@@ -4768,7 +4698,6 @@ public class ComposeMessageActivity extends Activity
                 }
             }
         }
-        addRecipientsListeners();
         updateThreadIdIfRunning();
 
         mSendDiscreetMode = intent.getBooleanExtra(KEY_EXIT_ON_SENT, false);
@@ -5266,7 +5195,9 @@ public class ComposeMessageActivity extends Activity
                     log("[CMA] onUpdate contact updated: " + updated);
                     log("[CMA] onUpdate recipients: " + recipients);
                 }
-                updateTitle(recipients);
+                if (recipients.size() > 0) {
+                    updateTitle(recipients);
+                }
 
                 // The contact information for one (or more) of the recipients has changed.
                 // Rebuild the message list so each MessageItem will get the last contact info.
@@ -6079,4 +6010,27 @@ public class ComposeMessageActivity extends Activity
         }
     };
 
+    private void deleteLastMms() {
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                // delete the last failed mms
+                Cursor cursor =
+                        (Cursor) mMsgListAdapter.getItem(mMsgListAdapter.getCount() - 1);
+                if (cursor != null) {
+                    long msgId = cursor.getLong(COLUMN_ID);
+                    cursor.close();
+                    Uri uri = ContentUris.withAppendedId(Mms.CONTENT_URI, msgId);
+                    try {
+                        SqliteWrapper.delete(ComposeMessageActivity.this,
+                                mContentResolver, uri, null, null);
+                    } catch (SQLiteException e) {
+                        Log.e(TAG, "Unable to delete unsent vcard mms", e);
+                    }
+                }
+            }
+        };
+        Thread t = new Thread(r);
+        t.run();
+    }
 }
