@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2013-2015 The CyanogenMod Project
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+          http://www.apache.org/licenses/LICENSE-2.0
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
+    <string-array name="default_smiley_names">
+        <item>Счастливый</item>                   <!-- 0: :-) -->
+        <item>Грустный</item>                     <!-- 1: :-( -->
+        <item>Подмигивает</item>                 <!-- 2: ;-) -->
+        <item>Высовывает язык</item>     <!-- 3: :-P -->
+        <item>Удивление</item>               <!-- 4: =-O -->
+        <item>Поцелуй</item>                 <!-- 5: :-* -->
+        <item>Крик</item>                 <!-- 6: :O -->
+        <item>Класс</item>                    <!-- 7: B-) -->
+        <item>Деньги</item>             <!-- 8: :-$ -->
+        <item>Болтовня</item>           <!-- 9: :-! -->
+        <item>смущенный</item>             <!-- 10: :-[ -->
+        <item>Ангел</item>                   <!-- 11: O:-) -->
+        <item>Нерешительный</item>               <!-- 12: :-\\ -->
+        <item>Плач</item>                  <!-- 13: :\'( -->
+        <item>Молчание</item>         <!-- 14: :-X -->
+        <item>Смех</item>                <!-- 15: :-D -->
+        <item>Смущенный</item>                <!-- 16: o_O -->
+        <item>Сердце</item>                   <!-- 17: <3 -->
+        <item>Сумасшедший</item>                     <!-- 18: x-( -->
+        <item>Ухмылка</item>                   <!-- 19: :-/ -->
+        <item>Каменное лицо</item>              <!-- 20: :-I -->
+    </string-array>
+</resources>

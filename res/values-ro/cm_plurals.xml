@@ -22,8 +22,8 @@
     <item quantity="other">Trimit în %1$d secunde, apăsați pentru a anula.</item>
   </plurals>
   <plurals name="confirm_delete_messages">
-    <item quantity="one">Un mesaj va fi şters.</item>
-    <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> mesaje vor fi şterse.</item>
-    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> mesaje vor fi şterse.</item>
+    <item quantity="one">Un mesaj va fi șters.</item>
+    <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> mesaje vor fi șterse.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> mesaje vor fi șterse.</item>
   </plurals>
 </resources>
