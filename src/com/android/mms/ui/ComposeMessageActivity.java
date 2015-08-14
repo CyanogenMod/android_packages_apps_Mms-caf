@@ -122,9 +122,11 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnCreateContextMenuListener;
 import android.view.View.OnKeyListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewStub;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -375,6 +377,8 @@ public class ComposeMessageActivity extends Activity
 
     private MessageListView mMsgListView;        // ListView for messages in this conversation
     public MessageListAdapter mMsgListAdapter;  // and its corresponding ListAdapter
+    private long mLastMessageListTouched;
+    private static final long MINIMUM_TOUCH_DELTA_TIME_TO_HIDE_KB = 200L;
 
     private RecipientsEditor mRecipientsEditor;  // UI control for editing recipients
     private View mRecipientsSelector;            // UI control for recipients selector
@@ -4457,12 +4461,21 @@ public class ComposeMessageActivity extends Activity
                 }
             }
         });
+        mMsgListView.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mLastMessageListTouched = System.currentTimeMillis();
+                return false;
+            }
+        });
         mMsgListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             private boolean scrolling = false;
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem,
                                  int visibleItemCount, int totalItemCount) {
-              if (mIsKeyboardOpen && scrolling) {
+              boolean inTouchState = (System.currentTimeMillis() - mLastMessageListTouched)
+                      < MINIMUM_TOUCH_DELTA_TIME_TO_HIDE_KB;
+              if (mIsKeyboardOpen && scrolling && inTouchState) {
                   final int first = mMsgListView.getFirstVisiblePosition();
                   final int last = mMsgListView.getLastVisiblePosition();
                   final int count = mMsgListAdapter.getCount();
