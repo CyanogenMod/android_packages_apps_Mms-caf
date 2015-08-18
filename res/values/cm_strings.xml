@@ -32,7 +32,7 @@
     <!-- QM Dialog box buttons -->
     <string name="button_close">Close</string>
     <string name="button_view">View</string>
-    <string name="button_templates">Templates</string>
+    <string name="button_templates">Quick messages</string>
 
     <!-- Hint text in message body field when keyboard is exposed -->
     <string name="type_to_reply_text_enter_to_send">Type to reply</string>
@@ -179,12 +179,12 @@
     <string name="menu_add_to_label">Add to bookmarks</string>
     <string name="loadurlinfo_str">URLs from unknown senders could be phishing attempts. If you are unsure, do not open this address.</string>
     <!-- Message Template -->
-    <string name="pref_title_message_template">Message templates</string>
-    <string name="title_new_message_template">New template</string>
-    <string name="summary_new_message_template">Compose new message template</string>
-    <string name="dialog_editSMSTemplate_title">Edit template</string>
-    <string name="import_message_template">Insert template</string>
-    <string name="template_full">Template text reached maximum length.</string>
+    <string name="pref_title_message_template">Quick messages</string>
+    <string name="title_new_message_template">New quick message</string>
+    <string name="summary_new_message_template">Compose new quick message</string>
+    <string name="dialog_editSMSTemplate_title">Edit quick message</string>
+    <string name="import_message_template">Insert quick message</string>
+    <string name="template_full">Quick message text reached maximum length.</string>
     <string name="pref_sms_signature_title">SMS signature</string>
     <string name="pref_title_enable_signature">Add signature to messages</string>
     <string name="pref_title_edit_signature">Edit signature text</string>
