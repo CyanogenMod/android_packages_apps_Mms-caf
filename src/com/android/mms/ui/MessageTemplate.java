@@ -215,7 +215,7 @@ public class MessageTemplate extends Activity {
 
     @Override
     public void onCreateContextMenu(ContextMenu menu,View view,ContextMenuInfo menuInfo){
-        menu.setHeaderTitle(R.string.pref_title_message_template);
+        menu.setHeaderTitle(R.string.pref_title_quick_message);
         menu.add(0,0,0,R.string.delete)
             .setOnMenuItemClickListener(menuItemClickListener);
     }
@@ -227,8 +227,8 @@ public class MessageTemplate extends Activity {
 
         ListView lvTitle = (ListView)findViewById(R.id.listViewTitle);
         MatrixCursor curTitle = new MatrixCursor(new String[] {"_id","title","summary"});
-        Object[] obj = {0,this.getString(R.string.title_new_message_template),
-                  getString(R.string.summary_new_message_template)};
+        Object[] obj = {0,this.getString(R.string.title_new_quick_message),
+                  getString(R.string.summary_new_quick_message)};
         curTitle.addRow(obj);
 
         ListAdapter adapterTitle = new SimpleCursorAdapter(this,
@@ -350,8 +350,8 @@ public class MessageTemplate extends Activity {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             if (s.toString().length() >= TEMPLATE_MAX_LENGTH) {
-                Toast.makeText(MessageTemplate.this, R.string.template_full, Toast.LENGTH_SHORT)
-                        .show();
+                Toast.makeText(MessageTemplate.this, R.string.quick_message_full, Toast
+                        .LENGTH_SHORT).show();
             }
         }
 
@@ -372,7 +372,7 @@ public class MessageTemplate extends Activity {
             et.setSelection(message.length());
         }
         mNewDlg = new AlertDialog.Builder(MessageTemplate.this)
-            .setTitle(getText(R.string.dialog_editSMSTemplate_title))
+            .setTitle(getText(R.string.dialog_editSMSquick_message_title))
             .setView(view)
             .setPositiveButton(android.R.string.ok,newSmsTempClickOK)
             .setNegativeButton(android.R.string.cancel,
@@ -390,7 +390,7 @@ public class MessageTemplate extends Activity {
         et.setText(message);
         et.addTextChangedListener(mTemplateWatcher);
         mEditDlg = new AlertDialog.Builder(MessageTemplate.this)
-            .setTitle(getText(R.string.dialog_editSMSTemplate_title))
+            .setTitle(getText(R.string.dialog_editSMSquick_message_title))
             .setView(view)
             .setPositiveButton(R.string.yes,editSmsTempClickOK)
             .setNegativeButton(R.string.no,
