@@ -266,7 +266,7 @@ public class MessageTemplateProvider extends android.content.ContentProvider {
 
     private void updateXML() {
         String[] smsTempPreArray = getContext().getResources().getStringArray(
-                    R.array.pre_define_message_template);
+                    R.array.pre_define_quick_message);
         Document doc = getXMLDoc();
         if (doc == null) {
             if (DBG)
@@ -408,7 +408,7 @@ public class MessageTemplateProvider extends android.content.ContentProvider {
 
             // load the pre-define message template
             String[] smsTempPreArray = getContext().getResources().getStringArray(
-                    R.array.pre_define_message_template);
+                    R.array.pre_define_quick_message);
 
             for (int i = 0; i < smsTempPreArray.length; i++) {
                  serializer.startTag("","message");

@@ -33,11 +33,11 @@
         <item>@string/send_delay_30seconds</item>
     </string-array>
 
-    <string-array name="pre_define_message_template" translatable="false">
-        <item>@string/pre_define_message_template_1</item>
-        <item>@string/pre_define_message_template_2</item>
-        <item>@string/pre_define_message_template_3</item>
-        <item>@string/pre_define_message_template_4</item>
+    <string-array name="pre_define_quick_message" translatable="false">
+        <item>@string/pre_define_quick_message_1</item>
+        <item>@string/pre_define_quick_message_2</item>
+        <item>@string/pre_define_quick_message_3</item>
+        <item>@string/pre_define_quick_message_4</item>
     </string-array>
 
     <string-array name="box_type" translatable="false">

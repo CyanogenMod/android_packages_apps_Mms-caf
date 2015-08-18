@@ -120,7 +120,7 @@
             android:layout_height="40dip"
             android:layout_marginBottom="2dip"
             android:layout_gravity="bottom"
-            android:contentDescription="@string/button_templates"
+            android:contentDescription="@string/button_quick_messages"
             android:nextFocusRight="@+id/embedded_text_editor" />
 
         <EditText

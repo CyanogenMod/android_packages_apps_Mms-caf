@@ -32,7 +32,7 @@
     <!-- QM Dialog box buttons -->
     <string name="button_close">Close</string>
     <string name="button_view">View</string>
-    <string name="button_templates">Templates</string>
+    <string name="button_quick_messages">Quick messages</string>
 
     <!-- Hint text in message body field when keyboard is exposed -->
     <string name="type_to_reply_text_enter_to_send">Type to reply</string>
@@ -178,13 +178,13 @@
     <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
     <string name="menu_add_to_label">Add to bookmarks</string>
     <string name="loadurlinfo_str">URLs from unknown senders could be phishing attempts. If you are unsure, do not open this address.</string>
-    <!-- Message Template -->
-    <string name="pref_title_message_template">Message templates</string>
-    <string name="title_new_message_template">New template</string>
-    <string name="summary_new_message_template">Compose new message template</string>
-    <string name="dialog_editSMSTemplate_title">Edit template</string>
-    <string name="import_message_template">Insert template</string>
-    <string name="template_full">Template text reached maximum length.</string>
+    <!-- Quick Message -->
+    <string name="pref_title_quick_message">Quick messages</string>
+    <string name="title_new_quick_message">New quick message</string>
+    <string name="summary_new_quick_message">Compose new quick message</string>
+    <string name="dialog_editSMSquick_message_title">Edit quick message</string>
+    <string name="import_quick_message">Insert quick message</string>
+    <string name="quick_message_full">Quick message text reached maximum length.</string>
     <string name="pref_sms_signature_title">SMS signature</string>
     <string name="pref_title_enable_signature">Add signature to messages</string>
     <string name="pref_title_edit_signature">Edit signature text</string>
@@ -310,10 +310,10 @@
     <string name="pref_sms_store_card">SIM card</string>
     <string name="mms_size_indicator"><xliff:g id="mms_size">%1$d</xliff:g>/<xliff:g id="all_size">%2$d</xliff:g> KB</string>
 
-    <string name="pre_define_message_template_1">I\'ll call you back later.</string>
-    <string name="pre_define_message_template_2">I am in conference. I\'ll call you back later.</string>
-    <string name="pre_define_message_template_3">Please call me later.</string>
-    <string name="pre_define_message_template_4">Will you please call me back?</string>
+    <string name="pre_define_quick_message_1">I\'ll call you back later.</string>
+    <string name="pre_define_quick_message_2">I am in conference. I\'ll call you back later.</string>
+    <string name="pre_define_quick_message_3">Please call me later.</string>
+    <string name="pre_define_quick_message_4">Will you please call me back?</string>
     <string name="menu_delete_all_entries">Delete all</string>
     <string name="menu_delete_sms">Delete SMS</string>
     <string name="menu_delete_mms">Delete MMS</string>

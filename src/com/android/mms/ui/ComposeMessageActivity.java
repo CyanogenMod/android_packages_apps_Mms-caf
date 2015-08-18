@@ -2964,6 +2964,8 @@ public class ComposeMessageActivity extends Activity
             menu.add(0, MENU_CONVERSATION_OPTIONS, 0, R.string.menu_conversation_options);
         }
 
+        menu.add(0, MENU_IMPORT_TEMPLATE, 0, R.string.import_quick_message);
+
         // Add to Blacklist item (if enabled)
         if (BlacklistUtils.isBlacklistEnabled(this)) {
             menu.add(0, MENU_ADD_TO_BLACKLIST, 0, R.string.add_to_blacklist)
@@ -3202,7 +3204,7 @@ public class ComposeMessageActivity extends Activity
 
         TemplateSelectListener listener = new TemplateSelectListener(smsTempArray);
         return new AlertDialog.Builder(ComposeMessageActivity.this)
-                .setTitle(R.string.import_message_template)
+                .setTitle(R.string.import_quick_message)
                 .setItems(smsTempArray, listener)
                 .create();
     }
