@@ -96,7 +96,6 @@
         android:gravity="bottom">
 
         <view class="com.android.mms.ui.MessageListView"
-            style="?android:attr/listViewWhiteStyle"
             android:id="@+id/history"
             android:layout_width="match_parent"
             android:layout_height="0dip"

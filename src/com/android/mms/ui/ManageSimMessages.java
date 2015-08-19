@@ -209,7 +209,7 @@ public class ManageSimMessages extends Activity
                     //   mListAdapter.setOnDataSetChangedListener(mDataSetChangedListener);
                     // See ComposeMessageActivity for an example.
                     mListAdapter = new MessageListAdapter(
-                            mParent, mCursor, mSimList, false, null, null);
+                            mParent, mCursor, mSimList, false, null, null, null);
                     mSimList.setAdapter(mListAdapter);
                     mSimList.setOnCreateContextMenuListener(mParent);
                     mSimList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
