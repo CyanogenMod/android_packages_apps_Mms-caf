@@ -195,8 +195,8 @@
   <string name="cdma_priority_interactive">상호작용</string>
   <string name="cdma_priority_urgent">긴급</string>
   <string name="cdma_priority_emergency">비상</string>
-  <string name="pref_title_cdma_priority">메시지 우선 순위</string>
-  <string name="pref_summary_cdma_priority">CDMA 메시지 우선 순위</string>
+  <string name="pref_title_cdma_priority">메시지 우선순위</string>
+  <string name="pref_summary_cdma_priority">CDMA 메시지 우선순위</string>
   <string name="download_dialog_title">이 MMS를 내려받습니까?</string>
   <string name="menu_email">이메일 보내기</string>
   <string name="pref_title_sms_store">선호되는 저장 공간</string>
@@ -252,7 +252,7 @@
   <string name="pref_summary_mms_full_timestamp">타임스탬프에 날짜와 시간 모두 보이기</string>
   <string name="pref_title_mms_use_sent_timestamp">원본 타임스탬프</string>
   <string name="pref_summary_mms_use_sent_timestamp">타임스탬프에 받은 날짜 대신 보낸 날짜 표시</string>
-  <string name="pref_title_mms_auto_enable_data">데이터 통신 자동 연결</string>
-  <string name="pref_summary_mms_auto_enable_data">MMS 메시지 송수신을 위해 자동으로 데이터 통신을 활성화함</string>
+  <string name="pref_title_mms_auto_enable_data">모바일 데이터 자동 연결</string>
+  <string name="pref_summary_mms_auto_enable_data">MMS 메시지 송수신을 위해 자동으로 모바일 데이터를 활성화함</string>
   <string name="adding_selected_recipients_dialog_text">연락처 추가하는 중\u2026</string>
 </resources>
