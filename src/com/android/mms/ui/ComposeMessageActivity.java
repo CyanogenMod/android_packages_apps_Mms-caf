@@ -377,8 +377,6 @@ public class ComposeMessageActivity extends Activity
 
     private MessageListView mMsgListView;        // ListView for messages in this conversation
     public MessageListAdapter mMsgListAdapter;  // and its corresponding ListAdapter
-    private long mLastMessageListTouched;
-    private static final long MINIMUM_TOUCH_DELTA_TIME_TO_HIDE_KB = 200L;
 
     private RecipientsEditor mRecipientsEditor;  // UI control for editing recipients
     private View mRecipientsSelector;            // UI control for recipients selector
@@ -4461,34 +4459,31 @@ public class ComposeMessageActivity extends Activity
                 }
             }
         });
+
         mMsgListView.setOnTouchListener(new OnTouchListener() {
+            private final float mThreshold = 100.0f;
+            float mDownY = 0.0f;
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                mLastMessageListTouched = System.currentTimeMillis();
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        mDownY = event.getY();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                    case MotionEvent.ACTION_UP:
+                        float moveY = event.getY();
+                        float diff = Math.abs(moveY - mDownY);
+                        if (diff >= mThreshold) {
+                            if (mIsKeyboardOpen) {
+                                hideKeyboard();
+                            }
+                        }
+                        break;
+                }
                 return false;
             }
         });
-        mMsgListView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            private boolean scrolling = false;
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem,
-                                 int visibleItemCount, int totalItemCount) {
-              boolean inTouchState = (System.currentTimeMillis() - mLastMessageListTouched)
-                      < MINIMUM_TOUCH_DELTA_TIME_TO_HIDE_KB;
-              if (mIsKeyboardOpen && scrolling && inTouchState) {
-                  final int first = mMsgListView.getFirstVisiblePosition();
-                  final int last = mMsgListView.getLastVisiblePosition();
-                  final int count = mMsgListAdapter.getCount();
-                  if (count > (last - first + 1)) {
-                      hideKeyboard();
-                  }
-              }
-            }
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                scrolling = scrollState != AbsListView.OnScrollListener.SCROLL_STATE_IDLE;
-            }
-        });
+
         mMsgListView.setMultiChoiceModeListener(new ModeCallback());
         mMsgListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
     }
