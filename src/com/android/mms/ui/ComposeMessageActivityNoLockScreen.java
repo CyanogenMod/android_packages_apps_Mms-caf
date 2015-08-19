@@ -25,8 +25,14 @@ import android.view.WindowManager;
 public class ComposeMessageActivityNoLockScreen extends ComposeMessageActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
-                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onPause() {
+        // when the lockscreendismissed composemesssage pauses, kill it
+        super.onPause();
+        finish();
     }
 }
