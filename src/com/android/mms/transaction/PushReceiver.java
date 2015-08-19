@@ -174,6 +174,7 @@ public class PushReceiver extends BroadcastReceiver {
             PduPersister p = PduPersister.getPduPersister(mContext);
             ContentResolver cr = mContext.getContentResolver();
             int type = pdu.getMessageType();
+
             long threadId = -1;
 
             try {
