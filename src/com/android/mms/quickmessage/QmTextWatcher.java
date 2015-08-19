@@ -61,12 +61,6 @@ public class QmTextWatcher implements TextWatcher {
             s = mUnicodeFilter.filter(s);
         }
         getQuickReplyCounterText(s, mTextView, mSendButton);
-
-        // For performance, we will only poke the wakelock on the 1st and every 20th keystroke
-        if (s.length() == 1 || s.length() % 20 == 0) {
-            // If there is no active wakelock this will not do anything
-            ManageWakeLock.pokeWakeLock(mContext);
-        }
     }
 
     public static void getQuickReplyCounterText(CharSequence s, TextView textView,
