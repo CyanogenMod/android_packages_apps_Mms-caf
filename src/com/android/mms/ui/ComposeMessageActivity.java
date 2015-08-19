@@ -136,6 +136,8 @@ import android.view.View;
 import android.view.View.OnCreateContextMenuListener;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
+import android.view.View.OnTouchListener;
+import android.view.ViewConfiguration;
 import android.view.ViewStub;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
@@ -4415,26 +4417,32 @@ public class ComposeMessageActivity extends Activity
                 }
             }
         });
-        mMsgListView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            private boolean scrolling = false;
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem,
-                                 int visibleItemCount, int totalItemCount) {
-                if (mIsKeyboardOpen && scrolling) {
-                    final int first = mMsgListView.getFirstVisiblePosition();
-                    final int last = mMsgListView.getLastVisiblePosition();
-                    final int count = mMsgListAdapter.getCount();
-                    if (count > (last - first + 1)) {
-                        hideKeyboard();
-                    }
-                }
-            }
 
+        mMsgListView.setOnTouchListener(new OnTouchListener() {
+            private final float mThreshold = ViewConfiguration.get(ComposeMessageActivity.this)
+                    .getScaledTouchSlop();
+            float mDownY = 0.0f;
             @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                scrolling = scrollState != AbsListView.OnScrollListener.SCROLL_STATE_IDLE;
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        mDownY = event.getY();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                    case MotionEvent.ACTION_UP:
+                        float moveY = event.getY();
+                        float diff = Math.abs(moveY - mDownY);
+                        if (diff >= mThreshold) {
+                            if (mIsKeyboardOpen) {
+                                hideKeyboard();
+                            }
+                        }
+                        break;
+                }
+                return false;
             }
         });
+
         mMsgListView.setMultiChoiceModeListener(new ModeCallback());
         mMsgListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         mMsgListView.setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
