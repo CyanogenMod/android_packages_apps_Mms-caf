@@ -400,6 +400,7 @@
     <!-- Pretty formats -->
     <string name="pretty_format_yesterday">Yesterday at <xliff:g id="time">%s</xliff:g></string>
     <string name="pretty_format_x_days_ago"><xliff:g id="n_days">%d</xliff:g> days ago</string>
+    <string name="pretty_format_just_now">Just now</string>
 
     <string name="mms_next_empty_no_messages">You have no new messages.</string>
     <string name="mms_search_no_results">No results found for search.</string>

@@ -92,4 +92,11 @@ All Rights Reserved. -->
     <dimen name="qm_received_msg_height">134dp</dimen>
     <dimen name="qm_fading_edge_length">3dp</dimen>
     <dimen name="qm_received_msg_bubble_start">46dp</dimen>
+
+    <!-- New messages header -->
+    <dimen name="new_msgs_header_divider_line_width">2dp</dimen>
+    <item name="new_msgs_header_divider_line_alpha" format="float" type="dimen">0.12</item>
+    <dimen name="new_msgs_header_text_size">12sp</dimen>
+    <dimen name="new_msgs_header_text_margins">16dp</dimen>
+
 </resources>

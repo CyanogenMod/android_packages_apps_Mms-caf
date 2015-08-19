@@ -178,7 +178,13 @@ public class SlideShowPresenter extends Presenter<SlideshowModel> {
         if (getModel().isSimple()) {
             // Ensure recycling occurs for simple models
             MediaModel firstModel = getModel().get(0);
-            firstModel.getPresenter().present(parent, mPresenterOptions);
+            if (firstModel != null) {
+                if (firstModel.getPresenter().hideArrowHead() &&
+                        messageListItem.isBubbleArrowheadVisibile()) {
+                    messageListItem.setBubbleArrowheadVisibility(View.INVISIBLE);
+                }
+                firstModel.getPresenter().present(parent, mPresenterOptions);
+            }
         } else {
             mPresenterOptions.populateViewCache(parent);
             for (int c = 0; c < getModel().size(); c++) {

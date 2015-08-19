@@ -127,6 +127,7 @@ public class MessageItem {
     boolean mSentTimestamp;
 
     int mCountDown = 0;
+    boolean mIsUnread = true;
 
     public int getCountDown() {
         return mCountDown;
@@ -202,6 +203,8 @@ public class MessageItem {
                 mTimestamp = MessageUtils.formatTimeStampString(context, mDate, mFullTimestamp);
             }
 
+            mIsUnread = cursor.getInt(columnsMap.mColumnSmsRead) == 0;
+
             mLocked = cursor.getInt(columnsMap.mColumnSmsLocked) != 0;
             mErrorCode = cursor.getInt(columnsMap.mColumnSmsErrorCode);
         } else if ("mms".equals(type)) {
@@ -230,6 +233,7 @@ public class MessageItem {
             mMmsStatus = cursor.getInt(columnsMap.mColumnMmsStatus);
             mAttachmentType = cursor.getInt(columnsMap.mColumnMmsTextOnly) != 0 ?
                     WorkingMessage.TEXT : ATTACHMENT_TYPE_NOT_LOADED;
+            mIsUnread = cursor.getInt(columnsMap.mColumnMmsRead) == 0;
 
             // Start an async load of the pdu. If the pdu is already loaded, the callback
             // will get called immediately
@@ -493,6 +497,9 @@ public class MessageItem {
                     isForwardable(body);
                 }
             }
+
+            mDate = timestamp;
+
             if (!isOutgoingMessage()) {
                 String formattedTimestamp = MessageUtils.formatTimeStampString(mContext,
                         timestamp, mFullTimestamp);
