@@ -49,4 +49,8 @@
     <color name="widget_shadow_color_1">#0c000000</color>
     <color name="widget_shadow_color_2">#18000000</color>
     <color name="widget_background_color">#FAFAFA</color>
+
+    <!--New messages header-->
+    <color name="new_msgs_header_divider_line_color">#000000</color>
+    <color name="new_msgs_header_text_color">#cccccc</color>
 </resources>

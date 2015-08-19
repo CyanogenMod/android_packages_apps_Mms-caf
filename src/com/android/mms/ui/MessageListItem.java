@@ -85,6 +85,8 @@ import com.android.mms.util.AddressUtils;
 import com.android.mms.util.DownloadManager;
 import com.android.mms.util.ImageUtils;
 import com.android.mms.util.IntentUtils;
+import com.android.mms.util.ItemLoadedCallback;
+import com.android.mms.util.PrettyTime;
 import com.android.mms.util.SmileyParser;
 import com.android.mms.widget.ContactBadgeWithAttribution;
 import com.cyanogen.lookup.phonenumber.response.LookupResponse;
@@ -149,6 +151,9 @@ public class MessageListItem extends ZoomMessageListItem implements
     private TextView mDownloadTitle;
     private ProgressBar mDownloadProgressBar;
     private TextView mDownloadSubTitle;
+    private PrettyTime mPrettyTime;
+    private boolean mShowNewMessagesHeader;
+    private MessageListAdapter.Metadata mMetadata;
 
     private ContactBadgeWithAttribution.ContactBadgeClickListener mContactBadgeClickListener =
             new ContactBadgeWithAttribution.ContactBadgeClickListener() {
@@ -233,7 +238,8 @@ public class MessageListItem extends ZoomMessageListItem implements
     }
 
     public void bind(MessageItem msgItem, int accentColor, boolean convHasMultiRecipients,
-                     int position, ListView listView, boolean isIncoming) {
+            int position, ListView listView, MessageListAdapter.Metadata metadata,
+            PrettyTime prettyTime) {
         if (DEBUG) {
             Log.v(TAG, "bind for item: " + position + " old: " +
                    (mMessageItem != null ? mMessageItem.toString() : "NULL" ) +
@@ -244,8 +250,9 @@ public class MessageListItem extends ZoomMessageListItem implements
         mPosition = position;
         mMultiRecipients = convHasMultiRecipients;
         mAccentColor = accentColor;
-        mIsIncoming = isIncoming;
+        mIsIncoming = metadata.isIncoming;
         mListView = (MessageListView) listView;
+        mPrettyTime = prettyTime;
 
         if (!sameItem) {
             unbind();
@@ -271,6 +278,9 @@ public class MessageListItem extends ZoomMessageListItem implements
                 accentColor);
         setChecked(mListView.isItemChecked(position));
         customSIMSmsView();
+
+        toggleTimeStamp(hasCustomSpans() ? true : metadata.shouldShowTimestamp);
+        mMetadata = metadata;
     }
 
     private void setMessageBubbleArrowheadColor(StateListDrawable sld, int accentColor) {
@@ -279,6 +289,10 @@ public class MessageListItem extends ZoomMessageListItem implements
         Drawable selector = sld.getStateDrawable(sld.getStateDrawableIndex(
                 new int[] { android.R.attr.state_selected }));
         selector.setTint(MessageUtils.getDarkerColor(accentColor));
+    }
+
+    public TextView getTimestampView() {
+        return mMessageStatus;
     }
 
     public void unbind() {
@@ -305,11 +319,12 @@ public class MessageListItem extends ZoomMessageListItem implements
         mBodyTextView.setText("");
         mBodyTextView.setVisibility(View.GONE);
         mMessageSizeView.setVisibility(View.GONE);
-        mMessageStatus.setText(buildTimestampLine(mMessageItem.mTimestamp));
+        mMessageStatus.setText(buildTimestampLine(mPrettyTime.format(mMessageItem.mDate)));
+        mMessageStatus.setTag((Long) mMessageItem.mDate);
 
         updateSimIndicatorView(mMessageItem.mSubId);
 
-        switch (DownloadManager.STATE_TRANSIENT_FAILURE) {
+        switch (mMessageItem.getMmsDownloadStatus()) {
             case DownloadManager.STATE_PRE_DOWNLOADING:
             case DownloadManager.STATE_DOWNLOADING:
                 showDownloadingAttachment();
@@ -507,6 +522,29 @@ public class MessageListItem extends ZoomMessageListItem implements
         return mBodyTextView;
     }
 
+    public void setNewMessagesHeaderVisiblity(boolean showHeader) {
+        mShowNewMessagesHeader = showHeader;
+    }
+
+    public boolean isNewMessagesHeaderVisibile() {
+        return mShowNewMessagesHeader;
+    }
+
+    private void updateNewMessagesHeader() {
+        // Update the date in-case the header, if it has changed or has been asynchronously loaded.
+        // This is likely for an MMS msg where the pdu is asynchronously loaded
+        if (!mShowNewMessagesHeader) return;
+        TextView newMsgDateTime = (TextView) findViewById(R.id.new_msgs_date_time);
+        newMsgDateTime.setVisibility(View.VISIBLE);
+        newMsgDateTime.setText(mPrettyTime.format(mMessageItem.mDate));
+        newMsgDateTime.setTag(mMessageItem.mDate);
+    }
+
+    public TextView getNewMessagessHeaderTimestamp() {
+        if (!mShowNewMessagesHeader) return null;
+        return (TextView) findViewById(R.id.new_msgs_date_time);
+    }
+
     private void bindCommonMessage(final boolean sameItem) {
         if (mDownloadControls != null) {
             mDownloadControls.setVisibility(View.GONE);
@@ -531,6 +569,10 @@ public class MessageListItem extends ZoomMessageListItem implements
             boolean isSelf = Sms.isOutgoingFolder(mMessageItem.mBoxId);
             String addr = isSelf ? null : mMessageItem.mAddress;
             updateAvatarView(addr, isSelf);
+        }
+
+        if (haveLoadedPdu) {
+            updateNewMessagesHeader();
         }
 
         // Add SIM sms address above body.
@@ -573,7 +615,8 @@ public class MessageListItem extends ZoomMessageListItem implements
                     ? R.string.sent_countdown : R.string.sending_message;
             mMessageStatus.setText(buildTimestampLine(mMessageItem.isSending() ?
                     mContext.getResources().getString(sendingTextResId) :
-                    mMessageItem.mTimestamp));
+                    mPrettyTime.format(mMessageItem.mDate)));
+            mMessageStatus.setTag((Long) mMessageItem.mDate);
         }
         if (mMessageItem.isSms() ||
                 ((mMessageItem.mAttachmentType == WorkingMessage.TEXT || mMessageItem.mAttachmentType
@@ -627,18 +670,18 @@ public class MessageListItem extends ZoomMessageListItem implements
         return mMessageBubbleArrowhead.getVisibility() == View.VISIBLE;
     }
 
-//    DialogInterface.OnClickListener mCancelLinstener = new DialogInterface.OnClickListener() {
-//        @Override
-//        public void onClick(DialogInterface dialog, final int whichButton) {
-//            if (mDownloading.getVisibility() == View.VISIBLE) {
-//                Intent intent = new Intent(mContext, TransactionService.class);
-//                intent.putExtra(CANCEL_URI, mMessageItem.mMessageUri.toString());
-//                mContext.startService(intent);
-//                DownloadManager.getInstance().markState(mMessageItem.mMessageUri,
-//                        DownloadManager.STATE_TRANSIENT_FAILURE);
-//            }
-//        }
-//    };
+    public void toggleTimeStamp(boolean showTimeStamp) {
+        mMessageStatus.setVisibility(showTimeStamp ? View.VISIBLE : View.GONE);
+    }
+
+    public void toggleTimeStamp() {
+        boolean isVisible = mMessageStatus.getVisibility() == View.VISIBLE;
+        toggleTimeStamp(isVisible ? false : true);
+    }
+
+    public boolean hasCustomSpans() {
+        return mBodyTextView.getUrls().length > 0;
+    }
 
     public void showMmsView(boolean visible, boolean sameItem) {
         if (mMmsView == null) {
@@ -804,6 +847,8 @@ public class MessageListItem extends ZoomMessageListItem implements
         final URLSpan[] spans = mBodyTextView.getUrls();
         if (spans.length != 0) {
             MessageUtils.onMessageContentClick(mContext, mBodyTextView);
+        } else {
+            toggleTimeStamp();
         }
     }
 
@@ -826,6 +871,7 @@ public class MessageListItem extends ZoomMessageListItem implements
             mDeliveredIndicator.setVisibility(View.VISIBLE);
             mMessageStatus.setText(mContext.getResources().getString(
                     R.string.tap_to_retry_sending_msg));
+            mMessageStatus.setTag((Long) 0L);
         } else if (msgItem.isSms() &&
                 msgItem.mDeliveryStatus == MessageItem.DeliveryStatus.RECEIVED) {
             mDeliveredIndicator.setImageResource(R.drawable.ic_sms_mms_delivered);
@@ -862,10 +908,12 @@ public class MessageListItem extends ZoomMessageListItem implements
                 mMessageItem.getCountDown(), mMessageItem.getCountDown());
             Spanned spanned = Html.fromHtml(buildTimestampLine(content));
             mMessageStatus.setText(spanned);
+            mMessageStatus.setTag((Long) 0L);
         } else {
             mMessageStatus.setText(buildTimestampLine(mMessageItem.isSending()
                     ? mContext.getResources().getString(R.string.sending_message)
-                    : mMessageItem.mTimestamp));
+                    : mPrettyTime.format(mMessageItem.mDate)));
+            mMessageStatus.setTag((Long) mMessageItem.mDate);
         }
     }
 
@@ -921,5 +969,11 @@ public class MessageListItem extends ZoomMessageListItem implements
 
     public boolean isInActionMode() {
         return mListView.isInActionMode();
+    }
+
+    public MessageListAdapter.Metadata recycleMeatada() {
+        MessageListAdapter.Metadata metadata = mMetadata;
+        mMetadata = null;
+        return metadata;
     }
 }
