@@ -17,12 +17,15 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <plurals name="remaining_delay_time">
-    <item quantity="other">ارسال ظرف %1$d ثانیه، برای لغو لمس کنید.</item>
+    <item quantity="one">Sendado post 1 sekundo, tuŝu por nuligi.</item>
+    <item quantity="other">Sendado post %1$d sekundoj, tuŝu por nuligi.</item>
   </plurals>
   <plurals name="confirm_delete_messages">
-    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> پیام حذف خواهد شد.</item>
+    <item quantity="one">Unu mesaĝo estos nuligita.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> mesaĝoj estos nuligitaj.</item>
   </plurals>
   <plurals name="confirm_mark_read_conversation">
-    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> گفتگو به عنوان خوانده‌شده علامت زده خواهد شد.</item>
+    <item quantity="one">Unu dialogo estos markita kiel legita.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> dialogoj estos markitaj kiel legitaj.</item>
   </plurals>
 </resources>
