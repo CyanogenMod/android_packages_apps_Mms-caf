@@ -489,6 +489,17 @@ public class Conversation {
         }.execute();
     }
 
+    public void dismissNotification() {
+        System.out.println("dismiss notification for : " + mThreadId);
+        MessagingNotification.cancelNotification(mContext, MessagingNotification.NOTIFICATION_ID);
+        MessagingNotification.cancelNotification(mContext, MessagingNotification.FULL_NOTIFICATION_ID);
+        MessagingNotification.setCurrentlyDisplayedThreadId(mThreadId);
+        // Always update notifications regardless of the read state, which is usually
+        // canceling the notification of the thread that was just marked read.
+        MessagingNotification.blockingUpdateAllNotifications(mContext,
+                MessagingNotification.THREAD_NONE);
+    }
+
     /**
      * Call this with false to prevent marking messages as read. The code calls this so
      * the DB queries in markAsRead don't slow down the main query for messages. Once we've

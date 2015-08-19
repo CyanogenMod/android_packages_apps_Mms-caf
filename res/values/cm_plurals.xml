@@ -35,4 +35,10 @@
         <item quantity="one">%d New Message</item>
         <item quantity="other">%d New Messages</item>
     </plurals>
+
+    <plurals name="new_messages">
+        <item quantity="one">%d new message</item>
+        <item quantity="other">%d new messages</item>
+    </plurals>
+
 </resources>
