@@ -34,7 +34,6 @@ import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract.Profile;
 import android.support.v4.view.PagerAdapter;
@@ -87,6 +86,7 @@ import com.android.mms.data.Conversation;
 import com.android.mms.transaction.MessagingNotification;
 import com.android.mms.transaction.MessagingNotification.NotificationInfo;
 import com.android.mms.transaction.SmsMessageSender;
+import com.android.mms.ui.ComposeMessageActivityNoLockScreen;
 import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.MessagingPreferenceActivity;
 import com.android.mms.ui.MsimDialog;
@@ -101,6 +101,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.Iterator;
+
 
 public class QuickMessagePopup extends Activity {
     private static final String LOG_TAG = "QuickMessagePopup";
@@ -127,9 +129,6 @@ public class QuickMessagePopup extends Activity {
     // General items
     private Drawable mDefaultContactImage;
     private Context mContext;
-    private boolean mScreenUnlocked = false;
-    private KeyguardManager mKeyguardManager = null;
-    private PowerManager mPowerManager;
 
     // Message list items
     private ArrayList<QuickMessage> mMessageList;
@@ -156,8 +155,6 @@ public class QuickMessagePopup extends Activity {
         mContext = this;
         mMessageList = new ArrayList<QuickMessage>();
         mDefaultContactImage = getResources().getDrawable(R.drawable.ic_contact_picture);
-        mPowerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        mKeyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
 
         // Get the preferences
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -167,6 +164,12 @@ public class QuickMessagePopup extends Activity {
 
         // Set the window features and layout
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        if (mWakeAndUnlock) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
         setContentView(R.layout.dialog_quickmessage);
 
         // Turn on the Options Menu
@@ -230,26 +233,18 @@ public class QuickMessagePopup extends Activity {
         mViewButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                // Override the re-lock if the screen was unlocked
-                if (mScreenUnlocked) {
-                    // Cancel the receiver that will clear the wake locks
-                    ClearAllReceiver.removeCancel(getApplicationContext());
-                    ClearAllReceiver.clearAll(false);
-                    mScreenUnlocked = false;
-                }
-
                 // Trigger the view intent
                 mCurrentQm = mMessageList.get(mCurrentPage);
                 Intent vi = mCurrentQm.getViewIntent();
                 if (vi != null) {
                     mCurrentQm.saveReplyText();
+                    vi.setClass(getApplicationContext(), ComposeMessageActivityNoLockScreen.class);
                     vi.putExtra("sms_body", mCurrentQm.getReplyText());
-
                     startActivity(vi);
+
+                    clearNotification(true);
+                    finish();
                 }
-                clearNotification(false);
-                finish();
             }
         });
     }
@@ -302,35 +297,11 @@ public class QuickMessagePopup extends Activity {
 
         // Load and display the new message
         parseIntent(intent.getExtras(), true);
-        unlockScreen();
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        // Unlock the screen if needed
-        unlockScreen();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        if (mScreenUnlocked) {
-            // Cancel the receiver that will clear the wake locks
-            ClearAllReceiver.removeCancel(getApplicationContext());
-            ClearAllReceiver.clearAll(true);
-        }
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+    public void onCreateContextMenu(ContextMenu menu, View v,
+            ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
 
         menu.clear();
@@ -398,25 +369,6 @@ public class QuickMessagePopup extends Activity {
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(editView.getApplicationWindowToken(), 0);
             }
-        }
-    }
-
-    /**
-     * If 'Wake and unlock' is enabled, this method will unlock the screen
-     */
-    private void unlockScreen() {
-        // See if the lock screen should be disabled
-        if (!mWakeAndUnlock) {
-            return;
-        }
-
-        // See if the screen is locked or if no lock set and the screen is off
-        // and get the wake lock to turn on the screen.
-        boolean isScreenOn = mPowerManager.isScreenOn();
-        boolean inKeyguardRestrictedInputMode = mKeyguardManager.inKeyguardRestrictedInputMode();
-        if (inKeyguardRestrictedInputMode || ((!inKeyguardRestrictedInputMode) && !isScreenOn)) {
-            ManageWakeLock.acquireFull(mContext);
-            mScreenUnlocked = true;
         }
     }
 
