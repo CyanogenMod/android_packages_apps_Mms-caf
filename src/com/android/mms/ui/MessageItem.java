@@ -44,7 +44,6 @@ import com.android.mms.model.SlideshowModel;
 import com.android.mms.model.TextModel;
 import com.android.mms.ui.MessageListAdapter.ColumnsMap;
 import com.android.mms.util.AddressUtils;
-import com.android.mms.util.DownloadManager;
 import com.android.mms.util.ItemLoadedCallback;
 import com.android.mms.util.ItemLoadedFuture;
 import com.android.mms.util.PduLoaderManager;
@@ -128,6 +127,7 @@ public class MessageItem {
     boolean mSentTimestamp;
 
     int mCountDown = 0;
+    boolean mIsUnread = true;
 
     public int getCountDown() {
         return mCountDown;
@@ -203,6 +203,9 @@ public class MessageItem {
                 mTimestamp = MessageUtils.formatTimeStampString(context, mDate, mFullTimestamp);
             }
 
+            mIsUnread = cursor.getInt(columnsMap.mColumnSmsRead) == 0;
+            // System.out.println("readStatus : " + readStatus);
+
             mLocked = cursor.getInt(columnsMap.mColumnSmsLocked) != 0;
             mErrorCode = cursor.getInt(columnsMap.mColumnSmsErrorCode);
         } else if ("mms".equals(type)) {
@@ -231,6 +234,7 @@ public class MessageItem {
             mMmsStatus = cursor.getInt(columnsMap.mColumnMmsStatus);
             mAttachmentType = cursor.getInt(columnsMap.mColumnMmsTextOnly) != 0 ?
                     WorkingMessage.TEXT : ATTACHMENT_TYPE_NOT_LOADED;
+            mIsUnread = cursor.getInt(columnsMap.mColumnMmsRead) == 0;
 
             // Start an async load of the pdu. If the pdu is already loaded, the callback
             // will get called immediately
@@ -494,6 +498,10 @@ public class MessageItem {
                     isForwardable(body);
                 }
             }
+
+            // why aint this updated ??
+            mDate = timestamp;
+
             if (!isOutgoingMessage()) {
                 String formattedTimestamp = MessageUtils.formatTimeStampString(mContext,
                         timestamp, mFullTimestamp);

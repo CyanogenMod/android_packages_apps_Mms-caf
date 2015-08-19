@@ -81,6 +81,7 @@ import com.android.mms.transaction.TransactionService;
 import com.android.mms.ui.zoom.ZoomMessageListItem;
 import com.android.mms.util.DownloadManager;
 import com.android.mms.util.ItemLoadedCallback;
+import com.android.mms.util.PrettyTime;
 import com.android.mms.util.SmileyParser;
 import com.android.mms.util.ThumbnailManager.ImageLoaded;
 import com.google.android.mms.ContentType;
@@ -140,6 +141,7 @@ public class MessageListItem extends ZoomMessageListItem implements
     private boolean mMultiRecipients;
     private int mManageMode;
     private Drawable mGroupedMessageBackground;
+    private PrettyTime mPrettyTime;
 
     public MessageListItem(Context context) {
         this(context, null);
@@ -199,8 +201,8 @@ public class MessageListItem extends ZoomMessageListItem implements
         mTopSpacer.setVisibility(View.VISIBLE);
     }
 
-    public void bind(MessageItem msgItem, int accentColor,
-            boolean convHasMultiRecipients, int position, boolean selected) {
+    public void bind(MessageItem msgItem, int accentColor, boolean convHasMultiRecipients,
+            int position, boolean selected, PrettyTime prettyTime) {
         if (DEBUG) {
             Log.v(TAG, "bind for item: " + position + " old: " +
                    (mMessageItem != null ? mMessageItem.toString() : "NULL" ) +
@@ -210,6 +212,7 @@ public class MessageListItem extends ZoomMessageListItem implements
         mMessageItem = msgItem;
         mPosition = position;
         mMultiRecipients = convHasMultiRecipients;
+        mPrettyTime = prettyTime;
 
         setLongClickable(false);
         setClickable(false);    // let the list view handle clicks on the item normally. When
@@ -302,7 +305,7 @@ public class MessageListItem extends ZoomMessageListItem implements
                                             mMessageItem.mHighlight,
                                             mMessageItem.mTextContentType));
 
-        mMessageStatus.setText(buildTimestampLine(mMessageItem.mTimestamp));
+        mMessageStatus.setText(buildTimestampLine(mPrettyTime.format(mMessageItem.mDate)));
 
         final String msgSizeText = mContext.getString(R.string.message_size_label)
                 + String.valueOf((mMessageItem.mMessageSize + 1023) / 1024)
@@ -542,7 +545,7 @@ public class MessageListItem extends ZoomMessageListItem implements
                     ? R.string.sent_countdown : R.string.sending_message;
             mMessageStatus.setText(buildTimestampLine(mMessageItem.isSending() ?
                     mContext.getResources().getString(sendingTextResId) :
-                    mMessageItem.mTimestamp));
+                    mPrettyTime.format(mMessageItem.mDate)));
         }
         if (mMessageItem.isSms()) {
             showMmsView(false);
@@ -608,6 +611,19 @@ public class MessageListItem extends ZoomMessageListItem implements
 
     public void setBubbleArrowheadVisibility(int visibility) {
         mMessageBubbleArrowhead.setVisibility(visibility);
+    }
+
+    public void toggleTimeStamp(boolean showTimeStamp) {
+        mMessageStatus.setVisibility(showTimeStamp ? View.VISIBLE : View.GONE);
+    }
+
+    public void toggleTimeStamp() {
+        boolean isVisible = mMessageStatus.getVisibility() == View.VISIBLE;
+        toggleTimeStamp(isVisible ? false : true);
+    }
+
+    public boolean hasCustomSpans() {
+        return mBodyTextView.getUrls().length > 0;
     }
 
     static private class ImageLoadedCallback implements ItemLoadedCallback<ImageLoaded> {
@@ -846,6 +862,8 @@ public class MessageListItem extends ZoomMessageListItem implements
         final URLSpan[] spans = mBodyTextView.getUrls();
         if (spans.length != 0) {
             MessageUtils.onMessageContentClick(mContext, mBodyTextView);
+        } else {
+            toggleTimeStamp();
         }
     }
 
@@ -1017,7 +1035,7 @@ public class MessageListItem extends ZoomMessageListItem implements
         } else {
             mMessageStatus.setText(buildTimestampLine(mMessageItem.isSending()
                     ? mContext.getResources().getString(R.string.sending_message)
-                    : mMessageItem.mTimestamp));
+                    : mPrettyTime.format(mMessageItem.mDate)));
         }
     }
 

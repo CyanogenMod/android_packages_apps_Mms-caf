@@ -457,7 +457,7 @@ public class TransactionService extends Service implements Observer {
                             transactionType = getTransactionType(cursor
                                     .getInt(columnIndexOfMsgType));
                             Uri uri = ContentUris.withAppendedId(
-                                    Mms.CONTENT_URI,
+                                    Mms.CONTENT_URI,    
                                     cursor.getLong(columnIndexOfMsgId));
                             boolean inRetry = ACTION_ONALARM.equals(intent.getAction());
                             onNetworkUnavailable(serviceId, transactionType, uri, inRetry);
