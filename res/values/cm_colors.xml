@@ -36,4 +36,8 @@
 
     <color name="action_mode_background_color">#424F53</color>
     <color name="action_mode_status_bar_color">#343F42</color>
+
+    <!--New messages header-->
+    <color name="new_msgs_header_divider_line_color">#000000</color>
+    <color name="new_msgs_header_text_color">#cccccc</color>
 </resources>

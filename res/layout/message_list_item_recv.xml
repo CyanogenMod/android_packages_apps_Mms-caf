@@ -26,6 +26,12 @@
     android:descendantFocusability="blocksDescendants"
     android:orientation="vertical">
 
+    <ViewStub
+        android:id="@+id/new_msgs_header_stub"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout="@layout/message_list_new_msgs_header"/>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"

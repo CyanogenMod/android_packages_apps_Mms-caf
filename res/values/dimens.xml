@@ -64,4 +64,10 @@ All Rights Reserved. -->
     <!-- Compose message -->
     <dimen name="compose_message_normal_text_size">12sp</dimen>
 
+    <!-- New messages header -->
+    <dimen name="new_msgs_header_divider_line_width">2dp</dimen>
+    <item name="new_msgs_header_divider_line_alpha" format="float" type="dimen">0.12</item>
+    <dimen name="new_msgs_header_text_size">12sp</dimen>
+    <dimen name="new_msgs_header_text_margins">16dp</dimen>
+
 </resources>

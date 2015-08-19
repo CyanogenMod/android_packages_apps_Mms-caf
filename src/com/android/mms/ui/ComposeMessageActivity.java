@@ -174,6 +174,7 @@ import com.android.mms.ui.zoom.ZoomGestureOverlayView.IZoomListener;
 import com.android.mms.util.DraftCache;
 import com.android.mms.util.IntentUtils;
 import com.android.mms.util.PhoneNumberFormatter;
+import com.android.mms.util.PrettyTime;
 import com.android.mms.util.SendingProgressTokenManager;
 import com.android.mms.util.SmileyParser;
 import com.android.mms.util.UnicodeFilter;
@@ -971,6 +972,11 @@ public class ComposeMessageActivity extends Activity
             showDisableLTEOnlyDialog(slot);
             return;
         }
+
+        if (mMsgListAdapter != null) {
+            mMsgListAdapter.notifyOutgoingMessage();
+        }
+
         if (!isRecipientsEditorVisible()) {
             if ((TelephonyManager.getDefault().getPhoneCount()) > 1) {
                 sendMsimMessage(true);
@@ -2403,7 +2409,7 @@ public class ComposeMessageActivity extends Activity
         // the thread. Unblocking occurs when we're done querying for the conversation
         // items.
         mConversation.blockMarkAsRead(true);
-        mConversation.markAsRead(true);         // dismiss any notifications for this convo
+        mConversation.dismissNotification();
         startMsgListQuery();
         updateSendFailedNotification();
     }
@@ -2530,7 +2536,7 @@ public class ComposeMessageActivity extends Activity
 
         mIsRunning = true;
         updateThreadIdIfRunning();
-        mConversation.markAsRead(true);
+        mConversation.dismissNotification();
     }
 
     @Override
@@ -2581,6 +2587,10 @@ public class ComposeMessageActivity extends Activity
         super.onStop();
         if (mSendButtonContactImageTask != null) {
             mSendButtonContactImageTask.cancel(true);
+        }
+
+        if (mMsgListAdapter != null) {
+            mMsgListAdapter.clearCaches();
         }
 
         // No need to do the querying when finished this activity
@@ -4302,7 +4312,8 @@ public class ComposeMessageActivity extends Activity
             : Pattern.compile("\\b" + Pattern.quote(highlightString), Pattern.CASE_INSENSITIVE);
 
         // Initialize the list adapter with a null cursor.
-        mMsgListAdapter = new MessageListAdapter(this, null, mMsgListView, true, highlight);
+        mMsgListAdapter = new MessageListAdapter(this, null, mMsgListView, true, highlight,
+                getMainLooper());
         mMsgListAdapter.setOnDataSetChangedListener(mDataSetChangedListener);
         mMsgListAdapter.setMsgListItemHandler(mMessageListItemHandler);
         mMsgListView.setAdapter(mMsgListAdapter);
