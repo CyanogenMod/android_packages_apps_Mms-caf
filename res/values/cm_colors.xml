@@ -54,4 +54,9 @@
     <color name="qm_fading_edge_color">#eeeeee</color>
     <color name="qm_from_text_color">#2f2f2f</color>
     <color name="qm_recv_timestamp_text_color">#a79f9c</color>
+
+    <!--New messages header-->
+    <color name="new_msgs_header_divider_line_color">#000000</color>
+    <color name="new_msgs_header_text_color">#cccccc</color>
+
 </resources>

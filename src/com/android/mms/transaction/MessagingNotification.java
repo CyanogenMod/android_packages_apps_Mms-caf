@@ -343,7 +343,7 @@ public class MessagingNotification {
                             " but playing soft sound. threadId: " + newMsgThreadId);
                 }
                 playInConversationNotificationSound(context, newMsgThreadId);
-                return;
+                threads.remove(newMsgThreadId);
             }
             updateNotification(context, newMsgThreadId, threads.size(),
                     notificationSet);
@@ -795,6 +795,7 @@ public class MessagingNotification {
             while (cursor.moveToNext()) {
 
                 long msgId = cursor.getLong(COLUMN_MMS_ID);
+
                 Uri msgUri = Mms.CONTENT_URI.buildUpon().appendPath(
                         Long.toString(msgId)).build();
                 String address = AddressUtils.getFrom(context, msgUri);
@@ -811,6 +812,9 @@ public class MessagingNotification {
                 subject = MessageUtils.cleanseMmsSubject(context, subject);
 
                 long threadId = cursor.getLong(COLUMN_MMS_THREAD_ID);
+                if (threadId == sCurrentlyDisplayedThreadId) {
+                    break;
+                }
                 long timeMillis = cursor.getLong(COLUMN_MMS_DATE) * 1000;
                 int subId = cursor.getInt(COLUMN_MMS_SUB_ID);
 
@@ -950,6 +954,9 @@ public class MessagingNotification {
 
                 String message = cursor.getString(COLUMN_SMS_BODY);
                 long threadId = cursor.getLong(COLUMN_SMS_THREAD_ID);
+                if (threadId == sCurrentlyDisplayedThreadId) {
+                    break;
+                }
                 long timeMillis = cursor.getLong(COLUMN_SMS_DATE);
                 int subId = cursor.getInt(COLUMN_SMS_SUB_ID);
                 String msgId = cursor.getString(COLUMN_SMS_ID);
