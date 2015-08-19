@@ -126,5 +126,6 @@
 
     <style name="Theme.QMPopUp" parent="android:Theme.Material.Dialog">
         <item name="android:alertDialogTheme">@android:style/Theme.Material.Light.Dialog</item>
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 </resources>
