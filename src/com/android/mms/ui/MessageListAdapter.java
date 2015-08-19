@@ -20,6 +20,8 @@
 package com.android.mms.ui;
 
 import java.util.List;
+import java.util.Calendar;
+import java.util.HashSet;
 import java.util.regex.Pattern;
 import java.util.HashMap;
 
@@ -38,7 +40,6 @@ import android.provider.Telephony.Sms;
 import android.provider.Telephony.Sms.Conversations;
 import android.provider.Telephony.Threads;
 import android.provider.Telephony.TextBasedSmsColumns;
-import android.text.TextUtils;
 import android.util.Log;
 import android.util.LruCache;
 import android.view.LayoutInflater;
@@ -48,6 +49,7 @@ import android.widget.AbsListView;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 
+import android.widget.TextView;
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
 import com.android.mms.R;
@@ -55,12 +57,14 @@ import com.android.mms.data.MessageInfoCache;
 import com.android.mms.ui.zoom.ZoomMessageListItem;
 import com.android.mms.ui.zoom.ZoomMessageListView;
 import com.android.mms.util.CursorUtils;
+import com.android.mms.util.PrettyTime;
 import com.google.android.mms.MmsException;
 
 /**
  * The back-end data adapter of a message list.
  */
-public class MessageListAdapter extends CursorAdapter implements MmsApp.PhoneNumberLookupListener {
+public class MessageListAdapter extends CursorAdapter implements Handler.Callback,
+        MmsApp.PhoneNumberLookupListener {
     private static final String TAG = LogTag.TAG;
     private static final boolean LOCAL_LOGV = false;
 
@@ -199,6 +203,10 @@ public class MessageListAdapter extends CursorAdapter implements MmsApp.PhoneNum
     private static int TOTAL_ITEM_TYPE = 10;
     private final MessageInfoCache mMessageCache;
 
+    private static final int TIMESTAMP_UPDATE_FREQUENCY = 1 * 60 * 1000;  // 1 minute
+    private static final int HANDLER_MSG_REDRAW = 0;
+    private static final int HANDLER_MSG_UPDATE_TIME = 1;
+
     protected LayoutInflater mInflater;
     private final ListView mListView;
     private final MessageItemCache mMessageItemCache;
@@ -213,15 +221,18 @@ public class MessageListAdapter extends CursorAdapter implements MmsApp.PhoneNum
     private int mAccentColor = 0;
     private int mSpaceAboveGroupedMessages;
     private int mSpaceAboveNonGroupedMessages;
-
+    public PrettyTime mPrettyTime;
+    public Calendar mCalendar = Calendar.getInstance();
+    private int mCachedUnreadCount = -1;
+    private long mNewMsgsHeaderMsgId = -1;
+    private boolean mSeenRecentOutgoingMsg = false;
+    private HashSet<TextView> mTimestampViews = new HashSet<>();
     private HashMap<Integer, String> mBodyCache;
-
     private Handler mHandler;
-    private static final int MSG_REDRAW = 0;
 
     public MessageListAdapter(
-            Context context, Cursor c, ListView listView,
-            boolean useDefaultColumnsMap, Pattern highlight, MessageInfoCache messageInfoCache) {
+            Context context, Cursor c, ListView listView, boolean useDefaultColumnsMap,
+            Pattern highlight, MessageInfoCache messageInfoCache, Looper looper) {
         super(context, c, FLAG_REGISTER_CONTENT_OBSERVER);
         mContext = context;
         mHighlight = highlight;
@@ -242,6 +253,11 @@ public class MessageListAdapter extends CursorAdapter implements MmsApp.PhoneNum
             public void onMovedToScrapHeap(View view) {
                 if (view instanceof MessageListItem) {
                     MessageListItem mli = (MessageListItem) view;
+                    mTimestampViews.remove(mli.getTimestampView());
+                    // also remove the timestamp view in New Messages header, if applicable
+                    if (mli.isNewMessagesHeaderVisibile()) {
+                        mTimestampViews.remove(mli.getNewMessagessHeaderTimestamp());
+                    }
                     // Clear references to resources
                     mli.unbind();
                 }
@@ -253,16 +269,17 @@ public class MessageListAdapter extends CursorAdapter implements MmsApp.PhoneNum
         mSpaceAboveNonGroupedMessages = context.getResources()
                 .getDimensionPixelSize(R.dimen.message_item_space_above_non_grouped);
 
-        mHandler = new Handler(Looper.getMainLooper()) {
-            @Override
-            public void handleMessage(Message msg) {
-                switch(msg.what) {
-                    case MSG_REDRAW:
-                        notifyDataSetChanged();
-                        break;
-                }
-            }
-        };
+        mHandler = new Handler(looper, this);
+        boolean managedTimeInstance = looper != null;
+        mPrettyTime = new PrettyTime(managedTimeInstance ? mContext : null);
+        if (managedTimeInstance) {
+            mHandler.sendEmptyMessageDelayed(HANDLER_MSG_UPDATE_TIME, TIMESTAMP_UPDATE_FREQUENCY);
+        }
+    }
+
+
+    private int getBoxId(int position) {
+        return getBoxId((Cursor) getItem(position));
     }
 
     private int getBoxId(Cursor cursor) {
@@ -279,9 +296,13 @@ public class MessageListAdapter extends CursorAdapter implements MmsApp.PhoneNum
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         if (view instanceof MessageListItem) {
-            String type = cursor.getString(mColumnsMap.mColumnMsgType);
+            String msgType = cursor.getString(mColumnsMap.mColumnMsgType);
+            boolean isMms = isMmsMsgType(msgType);
+            int boxId = getBoxId(cursor);
+            boolean isIncoming = isIncomingMessage(boxId, isMms);
             long msgId = cursor.getLong(mColumnsMap.mColumnMsgId);
-            MessageItem msgItem = getCachedMessageItem(type, msgId, cursor);
+            MessageItem msgItem = getCachedMessageItem(msgType, msgId, cursor);
+
             if (msgItem != null) {
                 MessageListItem mli = (MessageListItem) view;
                 int position = cursor.getPosition();
@@ -291,9 +312,9 @@ public class MessageListAdapter extends CursorAdapter implements MmsApp.PhoneNum
 
                 final Resources res = context.getResources();
                 final int accentColor;
-                int boxId = getBoxId(cursor);
 
-                if (isOutgoingMsgType(boxId)) {
+
+                if (isOutgoingMsgType(boxId, isMms)) {
                     accentColor = res.getColor(R.color.outgoing_message_bg);
                 } else if (mAccentColor != 0) {
                     accentColor = mAccentColor;
@@ -301,13 +322,15 @@ public class MessageListAdapter extends CursorAdapter implements MmsApp.PhoneNum
                     accentColor = res.getColor(R.color.incoming_message_bg_default);
                 }
 
-                adjustViewForMessageType(mli, cursor);
+                adjustViewForMessageType(mli, msgItem, position, isIncoming, isMms);
 
                 mli.bind(msgItem, accentColor, mIsGroupConversation, position,
-                        mListView, isIncomingMsgType(boxId));
-                mli.setMsgListItemHandler(mMsgListItemHandler);
+                        mListView, isIncomingMessage(boxId, isMms), mPrettyTime);
 
+                mli.setMsgListItemHandler(mMsgListItemHandler);
+                adjustTimestamps(mli, position);
                 mBodyCache.put(position, msgItem.mBody);
+                mTimestampViews.add(mli.getTimestampView());
             }
 
             handleZoomForItem(view);
@@ -316,9 +339,51 @@ public class MessageListAdapter extends CursorAdapter implements MmsApp.PhoneNum
 
     @Override
     public void onNewInfoAvailable() {
-        if (!mHandler.hasMessages(MSG_REDRAW)) {
-            mHandler.sendEmptyMessageDelayed(MSG_REDRAW, 500);
+        if (!mHandler.hasMessages(HANDLER_MSG_REDRAW)) {
+            mHandler.sendEmptyMessageDelayed(HANDLER_MSG_REDRAW, 500);
         }
+    }
+
+    public boolean handleMessage(Message msg) {
+        boolean msgHandled = false;
+
+        switch (msg.what) {
+            case HANDLER_MSG_REDRAW:
+                notifyDataSetChanged();
+                msgHandled = true;
+                break;
+
+            case HANDLER_MSG_UPDATE_TIME:
+                mPrettyTime.updateReferenceTime();
+                updateTimestamps();
+                mHandler.sendEmptyMessageDelayed(HANDLER_MSG_UPDATE_TIME, TIMESTAMP_UPDATE_FREQUENCY);
+                msgHandled = true;
+        }
+
+        return msgHandled;
+    }
+
+    private void updateTimestamps() {
+        if (mTimestampViews == null || mTimestampViews.size() <= 0 ) {
+            return;
+        }
+
+        for (TextView timestampView : mTimestampViews) {
+            long timeStamp = timestampView.getTag() != null ? (Long) timestampView.getTag() : 0L;
+            if (timeStamp <= 0L ) break;
+            timestampView.setText(mPrettyTime.format(timeStamp));
+        }
+    }
+
+    public void clearCaches() {
+        mCachedUnreadCount = -1;
+        mNewMsgsHeaderMsgId = -1;
+        mSeenRecentOutgoingMsg = false;
+    }
+
+    public void notifyOutgoingMessage() {
+        // stop keeping new msg count
+        mSeenRecentOutgoingMsg = true;
     }
 
     public interface OnDataSetChangedListener {
@@ -382,7 +447,7 @@ public class MessageListAdapter extends CursorAdapter implements MmsApp.PhoneNum
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         int boxId = getBoxId(cursor);
-        boolean isIncoming = isIncomingMsgType(boxId);
+        boolean isIncoming = isIncomingMessage(boxId, isMmsMsgType(cursor));
 
         int layoutResourceId = isIncoming
                 ? R.layout.message_list_item_recv : R.layout.message_list_item_sent;
@@ -475,12 +540,180 @@ public class MessageListAdapter extends CursorAdapter implements MmsApp.PhoneNum
 
     @Override
     public int getItemViewType(int position) {
-        Cursor cursor = (Cursor) getItem(position);
+        return getIncomingOrOutgoingMsgType(position);
+    }
+
+    private boolean isGroupedMessage(Cursor cursor) {
+        int currentPosition = cursor.getPosition();
+        int currentItemBoxId = getBoxId(cursor);
+        boolean isCurrentItemMms = isMmsMsgType(cursor);
+        Cursor previousItem = null;
+        if (currentPosition > 0) {
+            previousItem = (Cursor) getItem(currentPosition - 1);
+        }
+
+        boolean isGrouped = false;
+        if (previousItem != null) {
+            int previousItemType = getBoxId(previousItem);
+            boolean isPreviousItemMms = isMmsMsgType(cursor);
+            isGrouped = isEffectivelySameMsgType(currentItemBoxId, isCurrentItemMms,
+                    previousItemType, isPreviousItemMms);
+        }
+
+        // reset cursor position
+        CursorUtils.moveToPosition(getCursor(), currentPosition);
+        return isGrouped;
+    }
+
+    private boolean isEffectivelySameMsgType(int boxId1, boolean isMms1, int boxId2,
+            boolean isMms2) {
+        return (isIncomingMessage(boxId1, isMms1) && isIncomingMessage(boxId2, isMms2)) ||
+                (isOutgoingMsgType(boxId1, isMms1) && isOutgoingMsgType(boxId2, isMms2));
+    }
+
+    private void adjustNewViewForMessageType(MessageListItem mli, Cursor cursor) {
+        int boxId = getBoxId(cursor);
+        boolean isOutgoing = isOutgoingMsgType(boxId, isMmsMsgType(cursor));
+        mli.setAvatarVisbility(isOutgoing ? View.GONE : View.INVISIBLE);
+    }
+
+    private void adjustViewForMessageType(MessageListItem mli, MessageItem msgItem, int position,
+            boolean isIncoming, boolean isMms) {
+        boolean isGrouped = isGroupedMessage((Cursor) getItem(position));
+        boolean shouldShowHeader = showNewMessagesHeader(position, !isMms);
+
+        if (isIncoming) {
+            mli.setAvatarVisbility(isGrouped ? View.INVISIBLE : View.VISIBLE);
+        }
+
+        mli.setBubbleArrowheadVisibility(!isGrouped ? View.VISIBLE : View.INVISIBLE);
+
+        if (isGrouped) {
+            mli.adjustMessageBlockSpacing(mSpaceAboveGroupedMessages);
+        } else {
+            mli.adjustMessageBlockSpacing(mSpaceAboveNonGroupedMessages);
+        }
+
+        View headerRoot = mli.findViewById(R.id.new_msgs_header_root);
+
+        if (shouldShowHeader && (mNewMsgsHeaderMsgId == -1 || (mNewMsgsHeaderMsgId == msgItem.mMsgId))) {
+            mli.setNewMessagesHeaderVisiblity(shouldShowHeader);
+
+            if (mNewMsgsHeaderMsgId == -1) {
+                mNewMsgsHeaderMsgId = msgItem.mMsgId;
+            }
+            if (headerRoot == null) {
+                // inflate the view stub
+                mli.findViewById(R.id.new_msgs_header_stub).setVisibility(View.VISIBLE);
+                headerRoot = mli.findViewById(R.id.new_msgs_header_root);
+            } else {
+                headerRoot.setVisibility(View.VISIBLE);
+            }
+
+            TextView msgCount = (TextView) headerRoot.findViewById(R.id.new_msgs_count);
+            if (!mSeenRecentOutgoingMsg) {
+                mCachedUnreadCount = getCount() - position;
+            }
+            msgCount.setText(mContext.getResources().getQuantityString(R.plurals.new_messages,
+                    mCachedUnreadCount, mCachedUnreadCount));
+
+            // punt off setting the time till after the pdu is loaded
+            TextView newMsgDateTime = (TextView) headerRoot.findViewById(R.id.new_msgs_date_time);
+            if (!isMms) {
+                newMsgDateTime.setVisibility(View.VISIBLE);
+                newMsgDateTime.setText(mPrettyTime.format(msgItem.mDate));
+            } else {
+                newMsgDateTime.setTag((Long) 0L);
+                newMsgDateTime.setVisibility(View.GONE);
+            }
+            // manage timestamp via the TimestampUpdater
+            mTimestampViews.add(newMsgDateTime);
+
+        } else {
+            if (headerRoot != null) {
+                headerRoot.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private boolean showNewMessagesHeader(int currentPosition, boolean isSms) {
+        Cursor currentItem = (Cursor) getItem(currentPosition);
+        boolean isCurrentUnread = currentItem.getInt(isSms ? COLUMN_SMS_READ : COLUMN_MMS_READ) == 0;
+        if (!isCurrentUnread) return false;
+
+        Cursor previousItem = null;
+        if (currentPosition > 0) {
+            previousItem = (Cursor) getItem(currentPosition - 1);
+            boolean isPreviousUnread =
+                    currentItem.getInt(isSms ? COLUMN_SMS_READ : COLUMN_MMS_READ) == 0;
+            if (isCurrentUnread && !isPreviousUnread) {
+                return true;
+            }
+        }
+
+        CursorUtils.moveToPosition(getCursor(), currentPosition);
+        return false;
+    }
+
+    private void adjustTimestamps(MessageListItem mli, int position) {
+        boolean showTimeStamp = true;
+        int currentItemBoxId = getBoxId(position);
+        boolean isCurrentItemMms = isMmsMsgType(position);
+        if (isMmsMsgType(position)) {
+            showTimeStamp = true;
+        } else {
+            long currentItemTimeStamp = getTimeStamp(position);
+            Cursor nextItem = null;
+            if (position < getCount() - 1) {
+                nextItem = (Cursor) getItem(position + 1);
+            }
+
+            if (nextItem != null) {
+                int nextItemBoxId = getBoxId(nextItem);
+                boolean isNextItemMms = isMmsMsgType(nextItem);
+                long nextItemTimeStamp = getTimeStamp(nextItem);
+                if (isEffectivelySameMsgType(currentItemBoxId, isCurrentItemMms, nextItemBoxId, isNextItemMms)) {
+
+                    if(PrettyTime.isWithinSameDay(mCalendar, currentItemTimeStamp,
+                            nextItemTimeStamp)) {
+                        if (nextItemTimeStamp - currentItemTimeStamp < 5 * 60 * 1000) {
+                            showTimeStamp = false;
+                        }
+                    } else {
+                        // not in the same day
+                        showTimeStamp = true;
+                    }
+
+                    if (!mli.hasCustomSpans()) {
+                        showTimeStamp = false;
+                    }
+                }
+            }
+        }
+
+        // reset cursor position
+        CursorUtils.moveToPosition(getCursor(), position);
+        mli.toggleTimeStamp(showTimeStamp);
+    }
+
+    private String getRecipients(int position) {
+        return getRecipients((Cursor) getItem(position));
+    }
+
+    private String getRecipients(Cursor cursor) {
+        return cursor.getString(mColumnsMap.mColumnSmsAddress);
+    }
+
+    private int getIncomingOrOutgoingMsgType(int position) {
+        return getIncomingOrOutgoingMsgType((Cursor) getItem(position));
+    }
+
+    private int getIncomingOrOutgoingMsgType(Cursor cursor) {
         String type = cursor.getString(mColumnsMap.mColumnMsgType);
         long msgId = cursor.getLong(mColumnsMap.mColumnMsgId);
         int boxId = getBoxId(cursor);
         if (isMmsMsgType(type)) {
-            boolean incoming = isIncomingMsgType(boxId);
+            boolean incoming = isIncomingMessage(boxId, isMmsMsgType(cursor));
             mMessageCache.primeCache(getIdsForCachePrime(cursor));
             List<String> mimeTypes = mMessageCache.getCachedMimeTypes(msgId);
             if (mimeTypes != null) {
@@ -506,61 +739,12 @@ public class MessageListAdapter extends CursorAdapter implements MmsApp.PhoneNum
                 MSG_TYPE_INCOMING_SMS : MSG_TYPE_OUTGOING_SMS;
     }
 
-    private boolean isGroupedMessage(Cursor cursor) {
-        int currentPosition = cursor.getPosition();
-        int currentItemType = getBoxId(cursor);
-        Cursor previousItem = null;
-        if (currentPosition > 0) {
-            previousItem = (Cursor) getItem(currentPosition - 1);
-        }
-
-        boolean isGrouped = false;
-        if (previousItem != null) {
-            int previousItemType = getBoxId(previousItem);
-            isGrouped = isEffectivelySameMsgType(currentItemType, previousItemType);
-        }
-
-        // reset cursor position
-        CursorUtils.moveToPosition(getCursor(), currentPosition);
-        return isGrouped;
+    private long getTimeStamp(int position) {
+        return getTimeStamp((Cursor) getItem(position));
     }
 
-    private boolean isEffectivelySameMsgType(int boxId1, int boxId2) {
-        return (isIncomingMsgType(boxId1) && isIncomingMsgType(boxId2)) ||
-                (isOutgoingMsgType(boxId1) && isOutgoingMsgType(boxId2));
-    }
-
-    private void adjustNewViewForMessageType(MessageListItem mli, Cursor cursor) {
-        int boxId = getBoxId(cursor);
-        boolean isOutgoing = isOutgoingMsgType(boxId);
-        mli.setAvatarVisbility(isOutgoing ? View.GONE : View.INVISIBLE);
-    }
-
-    private void adjustViewForMessageType(MessageListItem mli, Cursor cursor) {
-        boolean isGrouped = isGroupedMessage(cursor);
-
-        int boxId = getBoxId(cursor);
-        boolean isIncoming = isIncomingMsgType(boxId);
-
-        if (isIncoming) {
-            mli.setAvatarVisbility(isGrouped ? View.INVISIBLE : View.VISIBLE);
-        }
-
-        mli.setBubbleArrowheadVisibility(!isGrouped ? View.VISIBLE : View.INVISIBLE);
-
-        if (isGrouped) {
-            mli.adjustMessageBlockSpacing(mSpaceAboveGroupedMessages);
-        } else {
-            mli.adjustMessageBlockSpacing(mSpaceAboveNonGroupedMessages);
-        }
-    }
-
-    private String getRecipients(int position) {
-        return getRecipients((Cursor) getItem(position));
-    }
-
-    private String getRecipients(Cursor cursor) {
-        return cursor.getString(mColumnsMap.mColumnSmsAddress);
+    private long getTimeStamp(Cursor cursor) {
+        return cursor.getLong(mColumnsMap.mColumnSmsDate);
     }
 
     public boolean hasSmsInConversation(Cursor cursor) {
@@ -602,17 +786,29 @@ public class MessageListAdapter extends CursorAdapter implements MmsApp.PhoneNum
     }
 
 
-    public static boolean isIncomingMsgType(int boxId) {
-        return boxId == TextBasedSmsColumns.MESSAGE_TYPE_INBOX ||
-                boxId == TextBasedSmsColumns.MESSAGE_TYPE_ALL;
+    public static boolean isIncomingMessage(int boxId, boolean isMms) {
+        if (isMms) {
+            return boxId == Mms.MESSAGE_BOX_INBOX || boxId == Mms.MESSAGE_BOX_ALL;
+        } else {
+            return boxId == TextBasedSmsColumns.MESSAGE_TYPE_INBOX ||
+                    boxId == TextBasedSmsColumns.MESSAGE_TYPE_ALL;
+        }
     }
 
-    public static boolean isOutgoingMsgType(int boxId) {
-        return !isIncomingMsgType(boxId);
+    public static boolean isOutgoingMsgType(int boxId, boolean isMms) {
+        return !isIncomingMessage(boxId, isMms);
     }
 
-    public static boolean isMmsMsgType(String type) {
-        return type.equals(MMS_TYPE);
+    public static boolean isMmsMsgType(String msgType) {
+        return msgType.equals(MMS_TYPE);
+    }
+
+    public boolean isMmsMsgType(int position) {
+        return isMmsMsgType((Cursor) getItem(position));
+    }
+    public boolean isMmsMsgType(Cursor cursor) {
+        String msgType = cursor.getString(mColumnsMap.mColumnMsgType);
+        return isMmsMsgType(msgType);
     }
 
     public static class ColumnsMap {
@@ -652,12 +848,14 @@ public class MessageListAdapter extends CursorAdapter implements MmsApp.PhoneNum
             mColumnSmsSubId           = COLUMN_SMS_SUB_ID;
             mColumnSmsDate            = COLUMN_SMS_DATE;
             mColumnSmsDateSent        = COLUMN_SMS_DATE_SENT;
+            mColumnSmsRead            = COLUMN_SMS_READ;
             mColumnSmsType            = COLUMN_SMS_TYPE;
             mColumnSmsStatus          = COLUMN_SMS_STATUS;
             mColumnSmsLocked          = COLUMN_SMS_LOCKED;
             mColumnSmsErrorCode       = COLUMN_SMS_ERROR_CODE;
             mColumnMmsSubject         = COLUMN_MMS_SUBJECT;
             mColumnMmsSubjectCharset  = COLUMN_MMS_SUBJECT_CHARSET;
+            mColumnMmsRead            = COLUMN_MMS_READ;
             mColumnMmsMessageType     = COLUMN_MMS_MESSAGE_TYPE;
             mColumnMmsMessageBox      = COLUMN_MMS_MESSAGE_BOX;
             mColumnMmsDeliveryReport  = COLUMN_MMS_DELIVERY_REPORT;
