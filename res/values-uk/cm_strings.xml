@@ -84,7 +84,7 @@
   <string name="menu_copy_url">Скопіювати URL-адресу <xliff:g id="extractedurl">%s</xliff:g></string>
   <string name="deleting_threads">Видалення діалогів\u2026</string>
   <string name="menu_resend">Надіслати повторно</string>
-  <string name="cancel_downloading">Відмінити</string>
+  <string name="cancel_downloading">Скасувати</string>
   <string name="confirm_cancel_downloading">Завантаження MMS буде скасовано.</string>
   <string name="send_by_slot1">Надіслати за допомогою SIM 1</string>
   <string name="send_by_slot2">Надіслати за допомогою SIM 2</string>
