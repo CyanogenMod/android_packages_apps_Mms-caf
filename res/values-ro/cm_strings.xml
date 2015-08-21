@@ -86,9 +86,10 @@
   <string name="confirm_cancel_downloading">Descărcarea MMS va fi anulată.</string>
   <string name="send_by_slot1">Trimite prin SIM 1</string>
   <string name="send_by_slot2">Trimite prin SIM 2</string>
+  <string name="select_phone_account_title">Trimiteți cu</string>
   <string name="media_size_limit">Mesajul a ajuns la limita de dimensiune, nu se poate trimite mesajul.</string>
   <string name="illegal_message_or_increase_size">Mărime mesaj incorectă.</string>
-  <string name="discard_message_reason_some_invalid">Mesajul se va anula deoarece unii din destinatarii nu sunt corecți.</string>
+  <string name="discard_message_reason_some_invalid">Mesajul se va anula deoarece unii dintre destinatari nu sunt corecți.</string>
   <string name="cannot_add_text_anymore">Nu se poate adăuga mai mult text.</string>
   <string name="title_send_message">Trimitere mesaj</string>
   <string name="subject_full">Subiectul nu poate depăși <xliff:g id="length">%d</xliff:g> caractere.</string>
@@ -111,6 +112,7 @@
   <string name="pref_title_message_template">Şabloane de mesaje</string>
   <string name="title_new_message_template">Şablon nou</string>
   <string name="dialog_editSMSTemplate_title">Editare șablon</string>
+  <string name="import_message_template">Introduceți șablonul</string>
   <string name="pref_sms_signature_title">Semnătura SMS</string>
   <string name="pref_title_enable_signature">Adaugă semnătura la mesaje</string>
   <string name="pref_title_edit_signature">Editați textul semnăturii</string>
@@ -121,6 +123,7 @@
   <string name="pref_more_smcs">SIM <xliff:g id="slot_number">%d</xliff:g> numărul SMSC</string>
   <string name="set_smsc_error">Imposibil de setat numărul SMSC</string>
   <string name="set_smsc_success">Numărul SMSC stabilit cu succes</string>
+  <string name="set_smsc_confirm_message">Schimbarea SMSC poate cauza erori de tranzacție SMS. Sunteți sigur că doriți să continuați?</string>
   <string name="copy_to_sim">Copiază mesaj pe cartela SIM</string>
   <string name="copy_to_sim_success"><xliff:g id="count">%1$d</xliff:g> din <xliff:g id="total">%2$d</xliff:g> mesaje salvate pe cartela SIM.</string>
   <string name="copy_to_sim_fail">Imposibil de salvat mesajul</string>
@@ -129,7 +132,7 @@
   <string name="contact_app_not_found">Nu se poate deschide aplicația de Contacte</string>
   <string name="search_bar_hint">Caută contacte</string>
   <string name="type_vcard">vCard</string>
-  <string name="import_vcard">Importaţi</string>
+  <string name="import_vcard">Importați</string>
   <string name="attach_add_contact_as_vcard">Contact vCard</string>
   <string name="attach_add_contact_as_text">Informații de contact ca text</string>
   <string name="contact_info_text_as_name">Nume:</string>
@@ -160,9 +163,11 @@
   <string name="sim_spinner_active_item_postfix">SIM %d</string>
   <string name="cannot_play">Slide show-ul nu poate fi prezentat.</string>
   <string name="confirm_delete_selected_messages">Mesajele selectate vor fi șterse.</string>
+  <string name="send_failure">Imposibilitate de a trimite mesajul.</string>
   <string name="message_detail">Detalii mesaj</string>
   <string name="no_message">Niciun mesaj.</string>
   <string name="change_to_folder_mode">Vizualizare dosar</string>
+  <string name="change_to_conversation_mode">Vizualizare conversație</string>
   <string name="type_inbox">Mesaje primite</string>
   <string name="type_sent">Mesaje trimise</string>
   <string name="type_outbox">Mesaje de trimis</string>
@@ -187,6 +192,7 @@
   <string name="cdma_priority_emergency">Urgență</string>
   <string name="pref_title_cdma_priority">Prioritate mesaj</string>
   <string name="pref_summary_cdma_priority">Prioritate a mesajelor CDMA</string>
+  <string name="download_dialog_title">Descărcați acest MMS?</string>
   <string name="menu_email">Trimite E-mail</string>
   <string name="pref_title_sms_store">Stocarea preferată</string>
   <string name="pref_title_sms_store_card1">Stocare preferată pentru SIM 1</string>
@@ -205,6 +211,7 @@
   <string name="export_sms_title">Exportă în stocare</string>
   <string name="delete_sms_title">Ștergeți copie de rezervă existentă</string>
   <string name="pick_sms_backup_title">Selectează copia de rezervă a SMS</string>
+  <string name="delete_sms_toast">Copia de rezervă ștearsă.</string>
   <string name="import_sms_toast">Mesaje importate.</string>
   <string name="export_sms_toast">Mesaje exportate.</string>
   <string name="export_sms_failed_toast">Mesajele nu pot fi exportate</string>
@@ -217,6 +224,7 @@
   <string name="no_backups_found">Nu a fost găsită nicio copie de rezervă</string>
   <string name="remove_subject">Eliminați subiect</string>
   <string name="qm_wear_sending_message">Trimite răspunsul la <xliff:g id="name">%s</xliff:g>\u2026</string>
+  <string name="qm_wear_messaged_failed">Mesajul text către <xliff:g id="name">%s</xliff:g> nu a trimis, vă rugăm să încercați din nou.</string>
   <string name="qm_wear_voice_reply">Care este răspunsul dumneavoastră?</string>
   <string name="qm_wear_reply_by_voice">Răspuns folosind voce</string>
   <string name="copy_empty_string">Nu există text de copiat</string>
@@ -236,7 +244,9 @@
   <string name="pref_title_reset_convopt_to_default">Resetare la valori implicite</string>
   <string name="pref_summary_reset_convopt_to_default">Resetează setările conversațiilor la setările de nivel ale aplicației</string>
   <string name="pref_title_mms_full_timestamp">Marcaje de timp integrale</string>
+  <string name="pref_summary_mms_full_timestamp">Afișați atât data cât și ora în marcajul de timp</string>
   <string name="pref_title_mms_use_sent_timestamp">Marcaje de timp originale</string>
+  <string name="pref_summary_mms_use_sent_timestamp">Afișați data expedierii în loc de data primirii în marcajul de timp</string>
   <string name="pref_title_mms_auto_enable_data">Auto-activează date</string>
   <string name="pref_summary_mms_auto_enable_data">Activează automat datele mobile pentru mesaje MMS</string>
   <string name="adding_selected_recipients_dialog_text">Adăugând contacte\u2026</string>
