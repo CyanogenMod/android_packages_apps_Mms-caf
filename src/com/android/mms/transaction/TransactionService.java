@@ -875,7 +875,7 @@ public class TransactionService extends Service implements Observer {
         createWakeLock();
 
         boolean autoEnableData = isAutoEnableData();
-        if (mTelMgr != null && !mTelMgr.getDataEnabled() && autoEnableData) {
+        if (mTelMgr != null && !mTelMgr.getDataEnabled(subId) && autoEnableData) {
             Log.d(TAG, "autoEnableData: enabling mobile data");
             mDataEnabledByAuto = true;
             mTelMgr.setDataEnabledUsingSubId(subId, true);
