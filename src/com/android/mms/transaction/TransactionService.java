@@ -878,7 +878,7 @@ public class TransactionService extends Service implements Observer {
         if (mTelMgr != null && !mTelMgr.getDataEnabled() && autoEnableData) {
             Log.d(TAG, "autoEnableData: enabling mobile data");
             mDataEnabledByAuto = true;
-            mTelMgr.setDataEnabledUsingSubId(subId, true);
+            mTelMgr.setDataEnabled(subId, true);
         } else if (!autoEnableData) {
             mDataEnabledByAuto = false;
         }
