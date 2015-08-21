@@ -64,6 +64,7 @@
   <string name="confirm_mark_read_dialog_title">Marcați ca citit?</string>
   <string name="confirm_mark_read_conversation">Conversația va fi marcată ca citită.</string>
   <string name="confirm_mark_unread_all_conversations">Toate subiectele vor fi marcate ca necitite.</string>
+  <string name="confirm_mark_read_all_conversations">Toate subiectele vor fi marcate ca citite.</string>
   <string name="loading">Încărcare\u2026</string>
   <string name="select_recipients">Selectați destinatarii</string>
   <string name="no_recipients">Niciun contact găsit</string>
@@ -85,8 +86,10 @@
   <string name="send_by_slot2">Trimite prin SIM 2</string>
   <string name="media_size_limit">Mesajul a ajuns la limita de dimensiune, nu se poate trimite mesajul.</string>
   <string name="illegal_message_or_increase_size">Mărime mesaj incorectă.</string>
+  <string name="discard_message_reason_some_invalid">Mesajul se va anula deoarece unii dintre destinatari nu sunt corecți.</string>
   <string name="cannot_add_text_anymore">Nu se poate adăuga mai mult text.</string>
   <string name="title_send_message">Trimitere mesaj</string>
+  <string name="subject_full">Subiectul nu poate depăși <xliff:g id="length">%d</xliff:g> caractere.</string>
   <string name="pref_title_manage_sim_messages_slot1">Gestionează mesajele SIM 1</string>
   <string name="pref_title_manage_sim_messages_slot2">Gestionează mesajele SIM 2</string>
   <string name="prefs_title_export_sms_messages">Exportă mesajele SMS</string>
@@ -94,6 +97,7 @@
   <string name="status_deleted_unread">Șters fără a fi citit</string>
   <string name="disk_storage_full_error">Eroare: Spațiul de stocare este plin.</string>
   <string name="mms_too_large">Mesajul este prea mare pentru a fi descărcat.</string>
+  <string name="download_failed_retry">Nu s-a descărcat mesajul, se re-încearcă\u2026</string>
   <string name="system_audio_item">Ton de apel</string>
   <string name="external_audio_item">Muzică</string>
   <string name="menu_connect_url">Deschide URL-ul</string>
@@ -101,7 +105,9 @@
   <string name="menu_add_to_label">Adăugare la marcaje</string>
   <string name="pref_title_message_template">Şabloane de mesaje</string>
   <string name="title_new_message_template">Şablon nou</string>
+  <string name="summary_new_message_template">Compune nou mesaj șablon</string>
   <string name="dialog_editSMSTemplate_title">Editare șablon</string>
+  <string name="import_message_template">Introduceți șablonul</string>
   <string name="pref_sms_signature_title">Semnătura SMS</string>
   <string name="pref_title_enable_signature">Adaugă semnătura la mesaje</string>
   <string name="pref_title_edit_signature">Editați textul semnăturii</string>
@@ -110,19 +116,23 @@
   <string name="pref_smsc_title">Centrul de servicii SMS</string>
   <string name="pref_one_smcs">Numărul SMSC</string>
   <string name="set_smsc_error">Imposibil de setat numărul SMSC</string>
+  <string name="set_smsc_confirm_message">Schimbarea SMSC poate cauza erori de tranzacție SMS. Sunteți sigur că doriți să continuați?</string>
   <string name="copy_to_sim">Copiază mesaj pe cartela SIM</string>
   <string name="copy_to_sim_success"><xliff:g id="count">%1$d</xliff:g> din <xliff:g id="total">%2$d</xliff:g> mesaje salvate pe cartela SIM.</string>
   <string name="copy_to_sim_fail">Imposibil de salvat mesajul</string>
   <string name="copy_to_phone_success">Mesaj salvat</string>
   <string name="copy_to_phone_fail">Imposibil de salvat mesajul</string>
+  <string name="contact_app_not_found">Nu se poate deschide aplicația de Contacte</string>
   <string name="type_vcard">vCard</string>
-  <string name="import_vcard">Importaţi</string>
+  <string name="import_vcard">Importați</string>
   <string name="attach_add_contact_as_vcard">Contact vCard</string>
   <string name="attach_add_contact_as_text">Informații de contact ca text</string>
   <string name="contact_info_text_as_name">Nume:</string>
   <string name="contact_info_text_as_phone">Tel:</string>
   <string name="contact_info_text_as_email">Email:</string>
   <string name="type_vcal">Eveniment din Calendar</string>
+  <string name="pref_wap_push_title">Mesaje serviciu Push</string>
+  <string name="pref_title_wap_push_enabled">Serviciul WAP Push</string>
   <string name="memory_status_title">Stare memorie</string>
   <string name="pref_title_validity_period">Perioada de valabilitate</string>
   <string name="pref_title_validity_period_slot1">Perioada de valabilitate pentru SIM 1</string>
@@ -143,8 +153,10 @@
   <string name="slot2">SIM 2</string>
   <string name="cannot_play">Slide show-ul nu poate fi prezentat.</string>
   <string name="confirm_delete_selected_messages">Mesajele selectate vor fi șterse.</string>
+  <string name="send_failure">Imposibilitate de a trimite mesajul.</string>
   <string name="message_detail">Detalii mesaj</string>
   <string name="no_message">Niciun mesaj.</string>
+  <string name="change_to_conversation_mode">Vizualizare conversație</string>
   <string name="type_inbox">Mesaje primite</string>
   <string name="type_sent">Mesaje trimise</string>
   <string name="type_outbox">Mesaje de trimis</string>
@@ -185,6 +197,7 @@
   <string name="import_sms_title">Importă din stocare</string>
   <string name="export_sms_title">Exportă în stocare</string>
   <string name="delete_sms_title">Ștergeți copie de rezervă existentă</string>
+  <string name="delete_sms_toast">Copia de rezervă ștearsă.</string>
   <string name="import_sms_toast">Mesaje importate.</string>
   <string name="export_sms_toast">Mesaje exportate.</string>
   <string name="export_sms_failed_toast">Mesajele nu pot fi exportate</string>
@@ -192,7 +205,9 @@
   <string name="perform_backup_title">Se exportă</string>
   <string name="perform_restore_title">Se importă</string>
   <string name="wait_progress_message">Așteptați\u2026</string>
+  <string name="manage_sdcard_messages">Importă/exportă mesajele</string>
   <string name="remove_subject">Eliminați subiect</string>
+  <string name="qm_wear_messaged_failed">Mesajul text către <xliff:g id="name">%s</xliff:g> nu a trimis, vă rugăm să încercați din nou.</string>
   <string name="qm_wear_voice_reply">Ce este răspunsul dumneavoastră?</string>
   <string name="qm_wear_reply_by_voice">Răspuns folosind voce</string>
   <string name="copy_empty_string">Nu există text de copiat</string>
