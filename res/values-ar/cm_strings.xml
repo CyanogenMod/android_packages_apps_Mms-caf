@@ -71,7 +71,7 @@
   <string name="pref_title_mms_use_sent_timestamp">الطوابع الزمنية الأصلية</string>
   <string name="pref_summary_mms_use_sent_timestamp">عرض تاريخ المرسلة بدلاً من تاريخ تلقي في الطوابع الزمنية</string>
   <string name="pref_title_input_type">نوع لوحة المفاتيح ناعم</string>
-  <string name="pref_keyboard_emoji">إظهار مفتاح الرموز</string>
+  <string name="pref_keyboard_emoji">إظهار مفتاح رموز المشاعر</string>
   <string name="pref_keyboard_new_line">إظهار المفتاح Enter</string>
   <string name="pref_keyboard_unknown">غير معروف، الرجاء إعادة تحديد</string>
   <string name="pref_title_sms_split_counter">انقسام العداد</string>
@@ -111,8 +111,8 @@
   <string name="pref_mms_notification_vibrate_mult_short">قصيرة متعددة</string>
   <string name="pref_mms_notification_vibrate_mult_long">طويلة متعددة</string>
   <string name="menu_insert_smiley">إدخال وجه مبتسم</string>
-  <string name="pref_title_enable_emoticons">دعم الفيسات</string>
-  <string name="pref_summary_enable_emoticons">إستبدال انصه الفيسات بي المساويه لها جرافيكس</string>
+  <string name="pref_title_enable_emoticons">دعم رموز المشاعر</string>
+  <string name="pref_summary_enable_emoticons">إستبدال رموز المشاعر النصية برسوم معادلة</string>
   <string name="cannot_play">لا يمكن تقديم عرض الشرائح.</string>
   <string name="menu_conversation_options">خيارات المحادثة</string>
   <string name="pref_title_reset_convopt_to_default">إعادة التعيين إلى الافتراضي</string>

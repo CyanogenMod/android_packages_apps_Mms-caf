@@ -19,4 +19,7 @@
   <plurals name="template_confirm_delete_conversation">
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> پیام حذف خواهد شد.</item>
   </plurals>
+  <plurals name="remaining_delay_time">
+    <item quantity="other">ارسال ظرف %1$d ثانیه، برای لغو لمس کنید.</item>
+  </plurals>
 </resources>

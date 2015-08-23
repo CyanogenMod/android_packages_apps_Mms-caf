@@ -19,6 +19,8 @@
   <string name="menu_add_to_calendar">افزودن به تقویم</string>
   <string name="button_close">بستن</string>
   <string name="button_view">مشاهده</string>
+  <string name="pref_dark_theme_title">استفاده از تم تیره</string>
+  <string name="pref_dark_theme_summary">در صورت عدم انتخاب، از تم پیش‌فرض «روشن» استفاده خواهد شد</string>
   <string name="template_save">ذخیره</string>
   <string name="template_confirm_dialog_title">حذف؟</string>
   <string name="pref_mms_notification_vibrate_normal">عادی</string>

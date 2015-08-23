@@ -151,7 +151,7 @@
   <string name="memory_low_title">Späicher fir Textmessagen niddreg</string>
   <string name="memory_low_body">Et ass wéineg Späicher um Telefon disponibel. Läsch e puer al Messagë, fir genuch Späicher fir den Empfang vun neie Messagë fräizemaachen.</string>
   <string name="disk_storage_full_error">De Späicher vun dengem Telefon ass voll.</string>
-  <string name="mobile_data_disable">Déi mobil Date sinn ausgeschalt. Wëlls du d\'MMS wierklech <xliff:g id="action" example="download">%1$s</xliff:g>? Doduerch gëtt mobilen Dateverkéier generéiert.</string>
+  <string name="mobile_data_disable">Déi mobil Date sinn ausgeschalt. Wëlls du d\'MMS wierklech <xliff:g id="action" example="download">%1$s</xliff:g>? Doduerch gëtt mobillen Dateverkéier generéiert.</string>
   <string name="mobile_data_send">schécken</string>
   <string name="mobile_data_download">eroflueden</string>
   <string name="mms_too_large">De Message ass ze grouss fir erofgelueden ze ginn.</string>

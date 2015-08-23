@@ -73,7 +73,7 @@
   <string name="pref_title_input_type">소프트 키보드 유형</string>
   <string name="pref_keyboard_emoji">이모티콘 키 표시</string>
   <string name="pref_keyboard_new_line">Enter 키 표시</string>
-  <string name="pref_keyboard_unknown">알 수 없음, 다시 선택해주세요.</string>
+  <string name="pref_keyboard_unknown">알 수 없음, 다시 선택해 주십시오.</string>
   <string name="pref_title_sms_split_counter">분할 카운터</string>
   <string name="pref_summary_sms_split_counter">메시지에 카운터 추가 (예: 1/2)</string>
   <string name="blacklist_title">블랙리스트</string>
@@ -265,9 +265,9 @@
   <string name="cdma_priority_interactive">상호작용</string>
   <string name="cdma_priority_urgent">긴급</string>
   <string name="cdma_priority_emergency">비상</string>
-  <string name="pref_title_cdma_priority">메시지 우선 순위</string>
-  <string name="pref_summary_cdma_priority">CDMA 메시지 우선 순위</string>
-  <string name="prefDialogTitle_cdma_priority">우선 순위</string>
+  <string name="pref_title_cdma_priority">메시지 우선순위</string>
+  <string name="pref_summary_cdma_priority">CDMA 메시지 우선순위</string>
+  <string name="prefDialogTitle_cdma_priority">우선순위</string>
   <string name="forward_size_over">전달할 수 없습니다. 새 메시지의 용량이 300KB를 초과합니다.</string>
   <string name="menu_batch_delete">대화 전체 삭제</string>
   <string name="download_dialog_title">MMS를 다운로드하시겠습니까?</string>

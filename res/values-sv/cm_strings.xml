@@ -90,6 +90,7 @@
   <string name="confirm_mark_unread_dialog_title">Markera som oläst?</string>
   <string name="confirm_mark_read_dialog_title">Markera som läst?</string>
   <string name="confirm_mark_unread_all_conversations">Alla trådar kommer att markeras som oläst.</string>
+  <string name="confirm_mark_read_all_conversations">Alla konversationer kommer markeras som lästa.</string>
   <string name="select_recipients">Välj mottagare</string>
   <string name="groups_header">Grupper</string>
   <string name="no_recipients">Hittade inga kontakter</string>
@@ -128,6 +129,7 @@
   <string name="sub_no_sim">Inget SIM</string>
   <string name="pref_manage_subs_title">Hantera SIM-kort</string>
   <string name="deleting_threads">Ta bort trådar\u2026</string>
+  <string name="cell_broadcast_sender">Kanal för mobil sändning</string>
   <string name="sent_on">"Skickat: <xliff:g id="date">%s</xliff:g>"</string>
   <string name="received_on">"Mottaget: <xliff:g id="date">%s</xliff:g>"</string>
   <string name="menu_forward_conversation">Vidarebefordra samtal</string>
@@ -139,6 +141,7 @@
   <string name="unsupported_format">Formatet stöds inte.</string>
   <string name="media_size_limit">Max medelandestorlek nådd, kan inte skicka meddelande.</string>
   <string name="discard_message">Ignorera</string>
+  <string name="cannot_send_attach_reason">Bilaga kan inte nås, kan inte skicka meddelande.</string>
   <string name="converting_to_text_message">Konvertera till text meddelande\u2026</string>
   <string name="cannot_add_text_anymore">Kan inte lägga till mer text.</string>
   <string name="title_send_message">Skicka meddelande</string>
@@ -190,12 +193,17 @@
   <string name="copy_to_sim_fail">Det gick inte att spara meddelandet</string>
   <string name="pref_smsc_title">SMSC-inställningar</string>
   <string name="pref_smsc_number">SMSC-nummer</string>
+  <string name="set_smsc_error">Det går inte att ange SMSC-numret</string>
+  <string name="set_smsc_success">SMSC-numret angivet</string>
+  <string name="set_smsc_confirm_message">Ändringar i SMSC kan leda till att SMS inte levereras, är du säker på att du vill fortsätta?</string>
   <string name="menu_copy_url">Kopiera URL: <xliff:g id="extractedurl">%s</xliff:g></string>
   <string name="menu_reply">Svara</string>
   <string name="slot1">SIM 1</string>
   <string name="slot2">SIM 2</string>
   <string name="type_vcard">vCard</string>
   <string name="import_vcard">Importera</string>
+  <string name="attach_add_contact_as_text">Infoga kontaktinformation</string>
+  <string name="attach_add_contact_as_vcard">Kontakt vCard</string>
   <string name="contact_info_text_as_name">Namn:</string>
   <string name="contact_info_text_as_phone">Tel:</string>
   <string name="contact_info_text_as_email">E-post:</string>
@@ -204,8 +212,14 @@
   <string name="sms_phone_capacity">SMS-kapacitet:</string>
   <string name="mms_phone_used">MMS använda:</string>
   <string name="mms_phone_capacity">MMS kapacitet:</string>
+  <string name="pref_wap_push_title">PUSH servicemeddelanden</string>
+  <string name="pref_title_wap_push_enabled">Aktivera WAP-PUSH-tjänsten</string>
+  <string name="pref_summary_wap_push_enabled">Gör det möjligt att ta emot servicemeddelanden</string>
   <string name="open_wap_push_title">Mer information</string>
+  <string name="open_wap_push_body">Vill du öppna den webbplats som innehåller information om WAP-PUSH?</string>
+  <string name="confirm_delete_selected_messages">Markerade meddelanden tas bort.</string>
   <string name="menu_delete_msg">Ta bort</string>
+  <string name="send_failure">Misslyckad sticking!</string>
   <string name="message_detail">Meddelandeinfo</string>
   <string name="no_message">Inga meddelanden</string>
   <string name="change_mode">Ändra läge</string>
@@ -217,22 +231,29 @@
   <string name="type_all">Alla</string>
   <string name="type_slot1">SIM 1</string>
   <string name="type_slot2">SIM 2</string>
+  <string name="search_title">Sök i Meddelande</string>
   <string name="search_key">Sökord</string>
   <string name="search_mode">Sökläge</string>
   <string name="search_as_name">Namn</string>
   <string name="search_as_number">Nummer</string>
   <string name="search_as_content">Innehåll</string>
   <string name="search_as_subject">Ämne</string>
+  <string name="invalid_name_toast">Vänligen ange ett giltigt namn</string>
+  <string name="slot_type">Plats <xliff:g id="number">%s </xliff:g></string>
   <string name="sim_capacity_title">SIM-kapacitet</string>
   <string name="sim_capacity_used">Används: \u0020</string>
   <string name="sim_capacity">Kapacitet: \u0020</string>
   <string name="pref_title_mms_save_time">Giltighetstid för MMS</string>
   <string name="mms_two_days">Två dagar</string>
   <string name="mms_max">Maximalt</string>
+  <string name="save_description">Den period meddelandet lagras på servern</string>
   <string name="status_expired">MMS har löpt ut</string>
   <string name="pref_title_sms_store">Vald lagring</string>
+  <string name="pref_title_sms_store_card1">SIM-kortet 1 föredragen lagring</string>
+  <string name="pref_title_sms_store_card2">SIM-kort 2 föredragen lagring</string>
   <string name="pref_sms_store_phone">Telefon</string>
   <string name="pref_sms_store_card">SIM-kort</string>
+  <string name="pref_sim_card_full_save_to_phone">SIM-kortet är fullt, spara nya meddelanden på telefonen.</string>
   <string name="mms_size_indicator"><xliff:g id="mms_size">%1$s</xliff:g>KB/<xliff:g id="all_size">%2$s</xliff:g>KB</string>
   <string name="selected_all">Markera alla</string>
   <string name="deselected_all">Avmarkera alla</string>
@@ -241,6 +262,8 @@
   <string name="please_wait">Var god vänta\u2026</string>
   <string name="done_delete">Färdig</string>
   <string name="cdma_priority_normal">Normal</string>
+  <string name="cdma_priority_interactive">Interaktivt</string>
+  <string name="cdma_priority_urgent">Brådskande</string>
   <string name="cdma_priority_emergency">Nödmeddelanden</string>
   <string name="pref_title_cdma_priority">Prioritet för meddelande</string>
   <string name="pref_summary_cdma_priority">Prioritering av CDMA-meddelanden</string>
