@@ -206,7 +206,7 @@
   <string name="attach_add_contact_as_vcard">Kontaktuaren vCard txartela</string>
   <string name="contact_info_text_as_name">Izena:</string>
   <string name="contact_info_text_as_phone">Tel:</string>
-  <string name="contact_info_text_as_email">Posta:</string>
+  <string name="contact_info_text_as_email">Eposta:</string>
   <string name="memory_status_title">Memoriaren egoera</string>
   <string name="sms_phone_used">SMS erabilita:</string>
   <string name="sms_phone_capacity">SMS gaitasuna:</string>
