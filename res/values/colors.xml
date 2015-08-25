@@ -80,6 +80,7 @@
     <color name="mms_theme_color">#00ACC1</color>
     <color name="mms_theme_color_dark">#0097A7</color>
     <color name="mms_theme_color_accent">#00BCD4</color>
+    <color name="mms_popup_color_dark">#424242</color>
 
     <color name="actionbar_background_color">@color/mms_theme_color</color>
     <color name="floating_action_button_icon_color">#ffffff</color>
