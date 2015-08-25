@@ -37,12 +37,6 @@ public class QmTextWatcher implements TextWatcher {
         mSendButton = sendButton;
     }
 
-    public QmTextWatcher(Context context, TextView updateTextView) {
-        mContext = context;
-        mTextView = updateTextView;
-        mSendButton = null;
-    }
-
     @Override
     public void afterTextChanged(Editable s) {}
 
