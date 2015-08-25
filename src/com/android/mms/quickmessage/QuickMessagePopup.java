@@ -31,6 +31,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -185,17 +186,18 @@ public class QuickMessagePopup extends Activity {
     private void setupViews() {
 
         // Load the main views
+        View mainContainer = findViewById(R.id.QuickMessageMainlayout);
         mQmPagerArrow = (ImageView) findViewById(R.id.pager_arrow);
         mQmMessageCounter = (TextView) findViewById(R.id.message_counter);
         mCloseButton = (Button) findViewById(R.id.button_close);
         mViewButton = (Button) findViewById(R.id.button_view);
 
         // Set the theme color on the pager arrow
-        Resources res = getResources();
         if (mDarkTheme) {
-            mQmPagerArrow.setBackgroundColor(res.getColor(R.color.quickmessage_body_dark_bg));
+            mainContainer.setBackgroundColor(R.color.mms_popup_color_dark);
+            setTheme(R.style.Theme_QMPopUp_Dark);
         } else {
-            mQmPagerArrow.setBackgroundColor(res.getColor(R.color.quickmessage_body_light_bg));
+            setTheme(R.style.Theme_QMPopUp);
         }
 
         // ViewPager Support
@@ -378,6 +380,10 @@ public class QuickMessagePopup extends Activity {
     public void updateMessageCounter() {
         String separator = mContext.getString(R.string.message_counter_separator);
         mQmMessageCounter.setText((mCurrentPage + 1) + " " + separator + " " + mMessageList.size());
+
+        if (mDarkTheme) {
+            mQmMessageCounter.setTextColor(R.color.white);
+        }
 
         if (DEBUG)
             Log.d(LOG_TAG, "updateMessageCounter() called, counter text set to " + (mCurrentPage + 1)
@@ -720,12 +726,7 @@ public class QuickMessagePopup extends Activity {
 
             // Load the layout to be used
             LayoutInflater inflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View layout;
-            if (mDarkTheme) {
-                layout = inflater.inflate(R.layout.quickmessage_content_dark, null);
-            } else {
-                layout = inflater.inflate(R.layout.quickmessage_content_light, null);
-            }
+            View layout = inflater.inflate(R.layout.quickmessage_content, null);
 
             // Load the main views
             EditText qmReplyText = (EditText) layout.findViewById(R.id.embedded_text_editor);
@@ -735,6 +736,10 @@ public class QuickMessagePopup extends Activity {
             TextView qmFromName = (TextView) layout.findViewById(R.id.fromTextView);
             TextView qmTimestamp = (TextView) layout.findViewById(R.id.timestampTextView);
             QuickContactBadge qmContactBadge = (QuickContactBadge) layout.findViewById(R.id.contactBadge);
+
+            if (mDarkTheme) {
+                qmSendButton.setImageResource(R.drawable.send_button_selector_dark);
+            }
 
             // Retrieve the current message
             QuickMessage qm = mMessageList.get(position);
@@ -754,12 +759,6 @@ public class QuickMessagePopup extends Activity {
                 qmContactBadge.setOverlay(null);
                 updateContactBadge(qmContactBadge, qm.getFromNumber()[0], false);
                 qmMessageText.setText(qm.getMessageBody());
-
-                if (!mDarkTheme) {
-                    // We are using a holo.light background with a holo.dark activity theme
-                    // Override the EditText background to use the holo.light theme
-                    qmReplyText.setBackgroundResource(R.drawable.edit_text_holo_light);
-                }
 
                 // Set the remaining values
                 qmReplyText.setInputType(InputType.TYPE_CLASS_TEXT

@@ -52,17 +52,13 @@
                 android:autoLink="phone"
                 android:ellipsize="end"
                 android:gravity="center_vertical"
-                android:maxLines="2"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="?android:attr/textColorPrimary"
-                android:textColorLink="?android:attr/textColorPrimary" />
+                android:maxLines="2" />
 
             <TextView
                 android:id="@+id/timestampTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:textColor="?android:attr/textColorTertiary" />
+                android:textSize="12sp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -83,7 +79,6 @@
         android:fillViewport="true"
         android:minHeight="72dp"
         android:paddingTop="4dp"
-        android:background="@color/quickmessage_body_light_bg"
         android:paddingBottom="4dp" >
 
         <TextView
@@ -96,9 +91,7 @@
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="16sp"
-            android:textColor="?android:attr/textColorPrimaryInverse"
-            android:textColorLink="?android:attr/textColorPrimaryInverse" />
+            android:textSize="16sp" />
     </ScrollView>
 
     <!-- 'Tap to reply' editor, character counter and send button -->
@@ -107,22 +100,9 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/quickmessage_body_light_bg"
         android:paddingTop="4dp"
         android:paddingLeft="6dp"
         android:paddingBottom="2dp" >
-
-        <ImageButton
-            android:id="@+id/templates_button"
-            style="?android:attr/borderlessButtonStyle"
-            android:src="@drawable/ic_templates_holo_light"
-            android:drawablePadding="0dip"
-            android:layout_width="40dip"
-            android:layout_height="40dip"
-            android:layout_marginBottom="2dip"
-            android:layout_gravity="bottom"
-            android:contentDescription="@string/button_templates"
-            android:nextFocusRight="@+id/embedded_text_editor" />
 
         <EditText
             android:id="@+id/embedded_text_editor"
@@ -136,8 +116,6 @@
             android:nextFocusRight="@+id/send_button"
             android:hint="@string/type_to_reply_text_enter_to_send"
             android:minHeight="@dimen/input_text_height"
-            android:textColor="?android:attr/textColorPrimaryInverse"
-            android:textColorHint="?android:attr/textColorTertiary"
             android:textCursorDrawable = "@null"
             android:maxLines="3"
             android:imeOptions="actionSend|flagNoEnterAction"
@@ -156,7 +134,6 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal|bottom"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="?android:attr/textColorTertiary"
                 android:paddingLeft="3dip"
                 android:paddingRight="3dip"
                 android:paddingBottom="4dip"
