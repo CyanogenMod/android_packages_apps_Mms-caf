@@ -743,15 +743,14 @@ public class WorkingMessage {
 
     /**
      * Sets the MMS subject of the message.  Passing null indicates that there
-     * is no subject.  Passing "" will result in an empty subject being added
-     * to the message, possibly triggering a conversion to MMS.  This extra
-     * bit of state is needed to support ComposeMessageActivity converting to
-     * MMS when the user adds a subject.  An empty subject will be removed
-     * before saving to disk or sending, however.
+     * is no subject.  Passing "" will be ignored, resulting in an SMS if no attachment
+     * is present. This extra bit of state is needed to support
+     * ComposeMessageActivity converting to MMS when the user adds a subject.
+     * An empty subject will be removed before saving to disk or sending, however.
      */
     public void setSubject(CharSequence s, boolean notify) {
         mSubject = s;
-        updateState(HAS_SUBJECT, (s != null), notify);
+        updateState(HAS_SUBJECT, (s != null && s.length() > 0), notify);
         if (mSlideshow != null) {
             mSlideshow.setSubjectSize((s == null) ? 0 : s.toString().getBytes().length);
         }
