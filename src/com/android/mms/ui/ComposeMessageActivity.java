@@ -132,7 +132,6 @@ import android.view.ViewStub;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -242,39 +241,15 @@ public class ComposeMessageActivity extends Activity
     // Context menu ID
     private static final int MENU_VIEW_CONTACT          = 12;
     private static final int MENU_ADD_TO_CONTACTS       = 13;
-
-    private static final int MENU_EDIT_MESSAGE          = 14;
-    private static final int MENU_VIEW_SLIDESHOW        = 16;
-    private static final int MENU_VIEW_MESSAGE_DETAILS  = 17;
-    private static final int MENU_DELETE_MESSAGE        = 18;
     private static final int MENU_SEARCH                = 19;
-    private static final int MENU_DELIVERY_REPORT       = 20;
-    private static final int MENU_FORWARD_MESSAGE       = 21;
-    private static final int MENU_CALL_BACK             = 22;
-    private static final int MENU_SEND_EMAIL            = 23;
-    private static final int MENU_COPY_MESSAGE_TEXT     = 24;
-    private static final int MENU_COPY_TO_SDCARD        = 25;
     private static final int MENU_INSERT_SMILEY         = 26;
     private static final int MENU_ADD_ADDRESS_TO_CONTACTS = 27;
-    private static final int MENU_LOCK_MESSAGE          = 28;
-    private static final int MENU_UNLOCK_MESSAGE        = 29;
-    private static final int MENU_SAVE_RINGTONE         = 30;
     private static final int MENU_PREFERENCES           = 31;
     private static final int MENU_GROUP_PARTICIPANTS    = 32;
     private static final int MENU_IMPORT_TEMPLATE       = 33;
-    private static final int MENU_COPY_TO_SIM           = 34;
-    private static final int MENU_RESEND                = 35;
-    private static final int MENU_COPY_EXTRACT_URL      = 36;
     private static final int MENU_ADD_TO_BLACKLIST      = 37;
     private static final int MENU_CONVERSATION_OPTIONS  = 38;
 
-    private static final int DIALOG_TEMPLATE_SELECT     = 1;
-    private static final int DIALOG_TEMPLATE_NOT_AVAILABLE = 2;
-    private static final int LOAD_TEMPLATE_BY_ID        = 0;
-    private static final int LOAD_TEMPLATES             = 1;
-
-
-    private static final int RECIPIENTS_MAX_LENGTH = 312;
 
     private static final int MESSAGE_LIST_QUERY_TOKEN = 9527;
     private static final int MESSAGE_LIST_QUERY_AFTER_DELETE_TOKEN = 9528;
