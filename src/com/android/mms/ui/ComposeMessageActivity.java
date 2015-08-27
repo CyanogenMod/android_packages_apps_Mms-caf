@@ -2422,16 +2422,21 @@ public class ComposeMessageActivity extends Activity
             });
         }
 
+        TextView toLabel = (TextView) findViewById(R.id.to_label);
         if (show) {
             mSubjectTextEditor.addTextChangedListener(mSubjectEditorWatcher);
 
             // Ensure the "to" label is hidden when Subject editor shows
-            TextView toLabel = (TextView) findViewById(R.id.to_label);
             if (toLabel != null) {
                 toLabel.setVisibility(View.GONE);
             }
         } else {
             mSubjectTextEditor.removeTextChangedListener(mSubjectEditorWatcher);
+
+            // Ensure the "to" label is visible when Subject editor is hidden
+            if (toLabel != null) {
+                toLabel.setVisibility(View.VISIBLE);
+            }
         }
 
         mSubjectTextEditor.setOnKeyListener(show ? mSubjectKeyListener : null);
