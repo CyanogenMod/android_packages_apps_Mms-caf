@@ -30,12 +30,13 @@ public class SearchAdapter extends CursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        View view = View.inflate(context, R.layout.mms_search_list_item, null);
+        View view = View.inflate(context, R.layout.conversation_list_item, null);
         ViewHolder holder = new ViewHolder();
-        holder.name = (TextView) view.findViewById(R.id.name);
+        holder.name = (TextView) view.findViewById(R.id.from);
         holder.date = (TextView) view.findViewById(R.id.date);
-        holder.body = (SearchActivity.TextViewSnippet) view.findViewById(R.id.body);
-        holder.avatarView = (ImageView) view.findViewById(R.id.icon);
+        holder.body = (SearchActivity.TextViewSnippet) view.findViewById(R.id.subject);
+        holder.avatarView = (ImageView) view.findViewById(R.id.avatar);
+        holder.avatarView.setVisibility(View.VISIBLE);
         holder.attachment = view.findViewById(R.id.attachment);
         view.setTag(holder);
         return view;
