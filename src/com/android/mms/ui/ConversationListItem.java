@@ -35,6 +35,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Checkable;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -65,9 +66,11 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
     private TextView mSubjectView;
     private TextView mFromView;
     private TextView mDateView;
+    private TextView mUnreadCount;
     private View mAttachmentView;
     private View mErrorIndicator;
     private ContactBadgeWithAttribution mAvatarView;
+    private View mInfoRow, mInfoRoot;
 
     static RoundedBitmapDrawable sDefaultContactImage;
 
@@ -79,6 +82,8 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
     public static final StyleSpan STYLE_BOLD = new StyleSpan(Typeface.BOLD);
     public static final Pattern RTL_CHARACTERS =
         Pattern.compile("[\u0600-\u06FF\u0750-\u077F\u0590-\u05FF\uFE70-\uFEFF]");
+
+    private static ForegroundColorSpan sUnreadColorSpan;
 
     public ConversationListItem(Context context) {
         super(context);
@@ -95,15 +100,19 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
             sDefaultContactImage.setCornerRadius(
                     Math.max(defaultImage.getWidth() / 2, defaultImage.getHeight() / 2));
         }
+        int highlight_color = getResources().getColor(R.color.mms_next_theme_color_check);
+        sUnreadColorSpan = new ForegroundColorSpan(highlight_color);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
 
+        mUnreadCount = (TextView) findViewById(R.id.unread_count);
         mFromView = (TextView) findViewById(R.id.from);
         mSubjectView = (TextView) findViewById(R.id.subject);
-
+        mInfoRow = findViewById(R.id.info_row);
+        mInfoRoot = findViewById(R.id.info_root);
         mDateView = (TextView) findViewById(R.id.date);
         mAttachmentView = findViewById(R.id.attachment);
         mErrorIndicator = findViewById(R.id.error);
@@ -150,22 +159,6 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         }
 
         SpannableStringBuilder buf = new SpannableStringBuilder(from);
-
-        if (mConversation.getMessageCount() > 1) {
-            int before = buf.length();
-            if (isLayoutRtl && isEnName) {
-                buf.insert(1, mConversation.getMessageCount() + " ");
-                buf.setSpan(new ForegroundColorSpan(
-                        mContext.getResources().getColor(R.color.message_count_color)),
-                        1, buf.length() - before, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-            } else {
-                buf.append(mContext.getResources().getString(R.string.message_count_format,
-                        mConversation.getMessageCount()));
-                buf.setSpan(new ForegroundColorSpan(
-                        mContext.getResources().getColor(R.color.message_count_color)),
-                        before, buf.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-           }
-        }
         if (mConversation.hasDraft()) {
             if (isLayoutRtl && isEnName) {
                 int before = buf.length();
@@ -197,10 +190,10 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
                         before, buf.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
               }
         }
-
-        // Unread messages are shown in bold
         if (mConversation.hasUnreadMessages()) {
             buf.setSpan(STYLE_BOLD, 0, buf.length(),
+                    Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+            buf.setSpan(sUnreadColorSpan, 0, buf.length(),
                     Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
         }
         return buf;
@@ -251,17 +244,6 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
 
         mConversation = conversation;
 
-        LayoutParams attachmentLayout = (LayoutParams)mAttachmentView.getLayoutParams();
-        boolean hasError = conversation.hasError();
-        // When there's an error icon, the attachment icon is left of the error icon.
-        // When there is not an error icon, the attachment icon is left of the date text.
-        // As far as I know, there's no way to specify that relationship in xml.
-        if (hasError) {
-            attachmentLayout.addRule(RelativeLayout.LEFT_OF, R.id.error);
-        } else {
-            attachmentLayout.addRule(RelativeLayout.LEFT_OF, R.id.date);
-        }
-
         boolean hasAttachment = conversation.hasAttachment();
         mAttachmentView.setVisibility(hasAttachment ? VISIBLE : GONE);
 
@@ -282,20 +264,26 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         // Subject
         SmileyParser parser = SmileyParser.getInstance();
         final String snippet = conversation.getSnippet();
-        if (mConversation.hasUnreadMessages()) {
-            SpannableStringBuilder buf = new SpannableStringBuilder(parser.addSmileySpans(snippet));
-            buf.setSpan(STYLE_BOLD, 0, buf.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-            mSubjectView.setText(buf);
-        } else {
-            mSubjectView.setText(parser.addSmileySpans(snippet));
-        }
+        mSubjectView.setText(parser.addSmileySpans(snippet));
 
         // Transmission error indicator.
-        mErrorIndicator.setVisibility(hasError ? VISIBLE : GONE);
+        mErrorIndicator.setVisibility(conversation.hasError() ? VISIBLE : GONE);
 
         updateAvatarView();
         mAvatarView.setChecked(isChecked(), sameItem);
         mAvatarView.setAttributionDrawable(null);
+
+        if (mConversation.hasUnreadMessages() && mConversation.getUnreadMessageCount() > 0) {
+            int unreadCount = mConversation.getUnreadMessageCount();
+            String unreadLabel = String.valueOf(Math.min(unreadCount, 10));
+            if (unreadCount > 10) {
+                unreadLabel += "+";
+            }
+            mUnreadCount.setText(unreadLabel);
+            mUnreadCount.setVisibility(View.VISIBLE);
+        } else {
+            mUnreadCount.setVisibility(View.GONE);
+        }
     }
 
     public void updateView(LookupResponse lookupResponse) {
