@@ -892,14 +892,15 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
         // (ConversationListAdapter extends CursorAdapter, so getItemAtPosition() should
         // return the cursor object, which is moved to the position passed in)
         Cursor cursor;
+        long tid;
         if (mSearchItem.isActionViewExpanded()) {
             cursor = (Cursor) mSearchListView.getItemAtPosition(position);
+            tid = cursor.getInt(SearchAdapter.THREAD_ID_INDEX);
         } else {
             cursor = (Cursor) getListView().getItemAtPosition(position);
+            Conversation conv = Conversation.from(this, cursor);
+            tid = conv.getThreadId();
         }
-        Conversation conv = Conversation.from(this, cursor);
-
-        long tid = conv.getThreadId();
 
         if (LogTag.VERBOSE) {
             Log.d(TAG, "onListItemClick: pos=" + position + ", view=" + v + ", tid=" + tid);
