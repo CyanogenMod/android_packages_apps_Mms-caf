@@ -20,7 +20,6 @@
   <string name="pref_quickmessage_title">แสดงตอบกลับอย่างรวดเร็ว</string>
   <string name="pref_quickmessage_summary">เปิดป๊อปอัปตอบกลับอย่างรวดเร็วเมื่อมี SMS เข้า</string>
   <string name="pref_wake_unlock_title">ตื่นและปลดล็อค</string>
-  <string name="pref_wake_unlock_summary">ตื่นและปลดล็อคเมื่อมีข้อความเข้า (หน้าล็อคจอแบบไม่ปลอดภัยเท่านั้น)</string>
   <string name="pref_close_all_title">ปิดทั้งหมด</string>
   <string name="pref_close_all_summary">ปุ่มปิด เพื่อปิดข้อความทั้งหมด</string>
   <string name="pref_dark_theme_title">ใช้ธีมมืด</string>

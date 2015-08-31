@@ -20,7 +20,7 @@
   <string name="pref_quickmessage_title">ತ್ವರಿತಸಂದೇಶವನ್ನು ಪ್ರದರ್ಶಿಸು</string>
   <string name="pref_quickmessage_summary">ಒಳಬರುವ ಎಸ್ಎಂಎಸ್ ಸಂದೇಶಗಳಿಗೆ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ತ್ವರಿತಸಂದೇಶ ಪಾಪ್-ಅಪ್ ತೆರೆ</string>
   <string name="pref_wake_unlock_title">ಎಚ್ಚರ ಮತ್ತು ಅನ್‍ಲಾಕ್</string>
-  <string name="pref_wake_unlock_summary">ಸಂದೇಶ ಬಂದಾಗ ಸಾಧನವನ್ನು ಎಬ್ಬಿಸು ಮತ್ತು ಅನ್‍ಲಾಕ್ ಮಾಡು (ಅಸುರಕ್ಷಿತ ಲಾಕ್ ಪರದೆಗಳಿಗೆ ಮಾತ್ರ)</string>
+  <string name="pref_wake_unlock_summary">ಸಾಧನವನ್ನು ಎಬ್ಬಿಸು ಹಾಗು ತ್ವರಿತಸಂದೇಶ ಪಾಪ್-ಅಪ್ ಪ್ರದರ್ಶಿಸು</string>
   <string name="pref_close_all_title">ಎಲ್ಲವನ್ನು ಮುಚ್ಚು</string>
   <string name="pref_close_all_summary">ಮುಚ್ಚು ಬಟನ್ ಎಲ್ಲಾ ಸಂದೇಶಗಳನ್ನು ಮುಚ್ಚುತ್ತದೆ</string>
   <string name="pref_dark_theme_title">ದಟ್ಟ ಥೀಮ್ ಉಪಯೋಗಿಸು</string>

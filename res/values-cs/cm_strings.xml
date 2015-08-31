@@ -20,7 +20,7 @@
   <string name="pref_quickmessage_title">Zobrazit rychlé zprávy</string>
   <string name="pref_quickmessage_summary">Automaticky otevřít rychlou zprávu pro příchozí SMS zprávy</string>
   <string name="pref_wake_unlock_title">Probudit a odemknout</string>
-  <string name="pref_wake_unlock_summary">Probudí a odemkne zařízení při příchozí zprávě (pouze u obrazovky bez zabezpečení)</string>
+  <string name="pref_wake_unlock_summary">Probudit zařízení a zobrazit okno QuickMessage</string>
   <string name="pref_close_all_title">Zavřít vše</string>
   <string name="pref_close_all_summary">Tlačítko \u201aZavřít\u2018 zavře všechny zprávy</string>
   <string name="pref_dark_theme_title">Použít tmavý motiv</string>

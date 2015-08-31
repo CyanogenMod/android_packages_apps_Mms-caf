@@ -20,7 +20,7 @@
   <string name="pref_quickmessage_title">Быстрый ответ</string>
   <string name="pref_quickmessage_summary">Автоматически открывать окно быстрого ответа для новых сообщений</string>
   <string name="pref_wake_unlock_title">Автоматическая разблокировка</string>
-  <string name="pref_wake_unlock_summary">Включать экран и разблокировать устройство при входящем сообщении (если не установлен пароль)</string>
+  <string name="pref_wake_unlock_summary">Автоматически включать экран и отображать окно быстрого ответа</string>
   <string name="pref_close_all_title">Закрывать всё</string>
   <string name="pref_close_all_summary">Кнопка «Закрыть» закрывает все сообщения</string>
   <string name="pref_dark_theme_title">Тёмная тема</string>

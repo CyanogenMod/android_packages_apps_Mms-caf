@@ -20,7 +20,7 @@
   <string name="pref_quickmessage_title">Εμφάνιση αναδυόμενου παραθύρου</string>
   <string name="pref_quickmessage_summary">Αυτόματη εμφάνιση αναδυόμενου μηνύματος για τα εισερχόμενα SMS</string>
   <string name="pref_wake_unlock_title">Αφύπνιση και ξεκλείδωμα</string>
-  <string name="pref_wake_unlock_summary">Αφύπνιση και ξεκλείδωμα της συσκευής σε εισερχόμενο μήνυμα (μόνο για οθόνη κλειδώματος χωρίς ασφάλεια)</string>
+  <string name="pref_wake_unlock_summary">Αφύπνιση της συσκευής και εμφάνιση του αναδυόμενου μηνύματος</string>
   <string name="pref_close_all_title">Κλείσιμο όλων</string>
   <string name="pref_close_all_summary">Το κουμπί κλείσιμο κλείνει όλα τα μηνύματα</string>
   <string name="pref_dark_theme_title">Χρήση σκοτεινού θέματος</string>

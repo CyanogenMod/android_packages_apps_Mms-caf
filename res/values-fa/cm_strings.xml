@@ -19,8 +19,8 @@
   <string name="pref_quickmessage">پیام سریع و پاسخ</string>
   <string name="pref_quickmessage_title">نمایش پیام سریع</string>
   <string name="pref_quickmessage_summary">بازکردن خودکار بالاپر پیام سریع برای پیامک‌ها</string>
-  <string name="pref_wake_unlock_title">بیدارباش و بازکردن قفل</string>
-  <string name="pref_wake_unlock_summary">بیدارباش و بازکردن قفل دستگاه در پیام ورودی (تنها در صفحات قفل غیرایمن)</string>
+  <string name="pref_wake_unlock_title">روشن شدن و بازکردن قفل</string>
+  <string name="pref_wake_unlock_summary">بیدار شدن دستگاه و نمایش پنجره پیام سریع</string>
   <string name="pref_close_all_title">بستن همه</string>
   <string name="pref_close_all_summary">دکمه بستن تمام پیام‌ها را خواهد بست</string>
   <string name="pref_dark_theme_title">استفاده از تم تیره</string>
@@ -58,19 +58,19 @@
   <string name="pref_unicode_stripping_leave_intact">دست نزدن به نویسه‌ها</string>
   <string name="pref_unicode_stripping_non_encodable">برداشتن نویسه‌های غیرقابل‌کدگذاری</string>
   <string name="pref_unicode_stripping_all">برداشتن تمام نویسه‌های یونی‌کد</string>
-  <string name="menu_as_unread">علامت به عنوان خوانده نشده</string>
-  <string name="menu_as_read">علامت به عنوان خوانده شده</string>
-  <string name="menu_all_as_unread">علامت همه به عنوان خوانده نشده</string>
-  <string name="menu_all_as_read">علامت همه به عنوان خوانده شده</string>
+  <string name="menu_as_unread">خوانده نشده</string>
+  <string name="menu_as_read">خوانده شده</string>
+  <string name="menu_all_as_unread">همه خوانده نشده</string>
+  <string name="menu_all_as_read">همه خوانده شده</string>
   <string name="menu_add_to_contacts_cm">افزودن به مخاطبین</string>
-  <string name="confirm_mark_unread_dialog_title">علامت به عنوان خوانده نشده؟</string>
-  <string name="confirm_mark_unread_conversation">این گفتگو به عنوان خوانده نشده علامت‌گذاری خواهد شد.</string>
-  <string name="confirm_mark_read_dialog_title">علامت به عنوان خوانده شده؟</string>
-  <string name="confirm_mark_read_conversation">این گفتگو به عنوان خوانده شده علامت‌گذاری خواهد شد.</string>
+  <string name="confirm_mark_unread_dialog_title">علامت گذاری به عنوان خوانده نشده؟</string>
+  <string name="confirm_mark_unread_conversation">این مکالمه به عنوان خوانده نشده علامت گذاری خواهد شد.</string>
+  <string name="confirm_mark_read_dialog_title">علامت گذاری به عنوان خوانده شده؟</string>
+  <string name="confirm_mark_read_conversation">این مکالمه به عنوان خوانده شده علامت گذاری خواهد شد.</string>
   <string name="confirm_mark_unread_all_conversations">تمام ریسه‌ها به عنوان خوانده نشده علامت‌گذاری خواهند شد.</string>
   <string name="confirm_mark_read_all_conversations">تمام ریسه‌ها به عنوان خوانده شده علامت‌گذاری خواهند شد.</string>
   <string name="loading">در حال بارگذاری\u2026</string>
-  <string name="select_recipients">انتخاب دریافت‌کنندگان</string>
+  <string name="select_recipients">انتخاب گیرندگان</string>
   <string name="no_recipients">مخاطبی پیدا نشد</string>
   <string name="no_recipients_mobile_only">مخاطب مطابقی پیدا نشد. بدون فیلتر «تنها شماره‌های تلفن همراه» امتحان کنید</string>
   <string name="menu_done">انجام شد</string>
@@ -193,7 +193,7 @@
   <string name="pref_sim_card_full_save_to_phone">سیم کارت پر است، در حال ذخیره پیام‌های جدید در تلفن.</string>
   <string name="selected_all">انتخاب همه</string>
   <string name="deselected_all">لغو انتخاب همه</string>
-  <string name="selected_count"><xliff:g id="COUNT">%d</xliff:g> انتخاب شد</string>
+  <string name="selected_count"><xliff:g id="COUNT">%d</xliff:g> مورد انتخاب شد</string>
   <string name="cdma_priority_normal">عادی</string>
   <string name="cdma_priority_interactive">تعاملی</string>
   <string name="cdma_priority_urgent">فوری</string>
@@ -205,7 +205,7 @@
   <string name="pref_title_sms_store">حافظه مورد نظر</string>
   <string name="pref_title_sms_store_card1">حافظه مورد نظر برای سیمکارت ۱</string>
   <string name="pref_title_sms_store_card2">حافظه مورد نظر برای سیمکارت ۲</string>
-  <string name="pref_sms_store_phone">تلفن</string>
+  <string name="pref_sms_store_phone">گوشی</string>
   <string name="pref_sms_store_card">سیم‌کارت</string>
   <string name="mms_size_indicator"><xliff:g id="mms_size">%1$d</xliff:g>/<xliff:g id="all_size">%2$d</xliff:g> کیلوبایت</string>
   <string name="pre_define_message_template_1">بعداً با شما تماس می‌گیرم.</string>
@@ -249,8 +249,8 @@
   <string name="pref_title_enable_emoticons">پشتیبانی از شکلک‌ها</string>
   <string name="pref_summary_enable_emoticons">جایگزینی شکلک متنی با معادل گرافیکی آن</string>
   <string name="menu_conversation_options">گزینه‌های گفتگو</string>
-  <string name="pref_title_reset_convopt_to_default">بازنشانی به پیش‌فرض</string>
-  <string name="pref_summary_reset_convopt_to_default">بازنشانی تنظیمات گفتگو به تنظیمات سطح برنامه</string>
+  <string name="pref_title_reset_convopt_to_default">تنظیم مجدد به پیش‌فرض</string>
+  <string name="pref_summary_reset_convopt_to_default">تنظیم مجدد تنظیمات مکالمه به تنظیمات سطح برنامه</string>
   <string name="pref_title_mms_full_timestamp">مهرهای زمانی کامل</string>
   <string name="pref_summary_mms_full_timestamp">نمایش زمان و تاریخ در مهرهای زمانی</string>
   <string name="pref_title_mms_use_sent_timestamp">مهرهای زمانی اصل</string>

@@ -20,7 +20,7 @@
   <string name="pref_quickmessage_title">クイックメッセージを表示</string>
   <string name="pref_quickmessage_summary">SMSメッセージ受信時にクイックメッセージのポップアップを自動的に開く</string>
   <string name="pref_wake_unlock_title">スリープ解除とロック解除</string>
-  <string name="pref_wake_unlock_summary">メッセージ受信時に端末のスリープとロックを解除する（パスワードでロックされていない場合のみ）</string>
+  <string name="pref_wake_unlock_summary">端末をスリープ解除してクイックメッセージのポップアップを表示する</string>
   <string name="pref_close_all_title">すべて閉じる</string>
   <string name="pref_close_all_summary">閉じるボタンですべてのメッセージを閉じる</string>
   <string name="pref_dark_theme_title">ダークテーマを使用</string>

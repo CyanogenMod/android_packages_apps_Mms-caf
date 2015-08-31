@@ -20,7 +20,7 @@
   <string name="pref_quickmessage_title">Mostra \"Messaggi rapidi\"</string>
   <string name="pref_quickmessage_summary">Aprire automaticamente la finestra \"Messaggi rapidi\" per i messaggi SMS in arrivo</string>
   <string name="pref_wake_unlock_title">Accendi e sblocca</string>
-  <string name="pref_wake_unlock_summary">Accendi e sblocca il dispositivo all\'arrivo di un messaggio (solo con bloccaschermo senza sicurezza)</string>
+  <string name="pref_wake_unlock_summary">Risveglia il dispositivo quando appare il PopUp rapdio</string>
   <string name="pref_close_all_title">Chiudi tutto</string>
   <string name="pref_close_all_summary">Il pulsante \'Chiudi\' chiude tutti i messaggi</string>
   <string name="pref_dark_theme_title">Usa tema scuro</string>

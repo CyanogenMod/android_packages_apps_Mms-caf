@@ -20,7 +20,6 @@
   <string name="pref_quickmessage_title">Erakutsi mezu azkarra</string>
   <string name="pref_quickmessage_summary">Ireki automatikoki mezu azkarren laster-leihoa SMSak jasotzean</string>
   <string name="pref_wake_unlock_title">Esnatu eta desblokeatu</string>
-  <string name="pref_wake_unlock_summary">Esnatu eta desblokeatu gailua mezu bat jasotzean (segurtasunik gabeko blokeo-pantailak soilik)</string>
   <string name="pref_close_all_title">Dena itxi</string>
   <string name="pref_close_all_summary">Itxi sakatzean, mezu guztiak itxiko dira</string>
   <string name="pref_dark_theme_title">Gai iluna erabili</string>

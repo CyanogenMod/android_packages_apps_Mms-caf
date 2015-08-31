@@ -20,7 +20,7 @@
   <string name="pref_quickmessage_title">Schnellnachricht anzeigen</string>
   <string name="pref_quickmessage_summary">Pop-Up für eingehende SMS automatisch öffnen</string>
   <string name="pref_wake_unlock_title">Wecken und entsperren</string>
-  <string name="pref_wake_unlock_summary">Gerät bei Nachrichteneingang aufwecken und entsperren (Nicht bei Sicherheits-Bildschirmsperre möglich)</string>
+  <string name="pref_wake_unlock_summary">Weckt das Gerät auf und zeigt die Schnellnachricht an</string>
   <string name="pref_close_all_title">Alle schließen</string>
   <string name="pref_close_all_summary">Die Schließen-Taste schließt alle Nachrichten</string>
   <string name="pref_dark_theme_title">Dunkles Design verwenden</string>

@@ -20,7 +20,6 @@
   <string name="pref_quickmessage_title">Afficher QuickMessage</string>
   <string name="pref_quickmessage_summary">Ouvrir automatiquement la fenêtre QuickMessage pour les messages SMS entrants</string>
   <string name="pref_wake_unlock_title">Réveiller et déverrouiller</string>
-  <string name="pref_wake_unlock_summary">Réveiller et déverrouiller l\'appareil à la réception de messages (écran de verrouillage non sécurisé uniquement)</string>
   <string name="pref_close_all_title">Tout fermer</string>
   <string name="pref_close_all_summary">Le bouton \'Fermer\' ferme tous les messages</string>
   <string name="pref_dark_theme_title">Utiliser le thème noir</string>

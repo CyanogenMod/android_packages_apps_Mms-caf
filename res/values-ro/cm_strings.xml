@@ -20,7 +20,6 @@
   <string name="pref_quickmessage_title">Afișare Mesaj Rapid</string>
   <string name="pref_quickmessage_summary">Deschide automat MesajRapid pentru mesajele SMS</string>
   <string name="pref_wake_unlock_title">Trezire și deblocare</string>
-  <string name="pref_wake_unlock_summary">Trezește și deblochează dispozitivul la recepționarea unui mesaj (numai ecrane de blocare nesigure)</string>
   <string name="pref_close_all_title">Închideți toate</string>
   <string name="pref_close_all_summary">Butonul Închidere închide toate mesajele</string>
   <string name="pref_dark_theme_title">Utilizați tema întunecată</string>
@@ -50,6 +49,7 @@
   <string name="blacklist_notification_unknown_number">S-a blocat un mesaj de la nr necunoscut %s</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> mesaje blocate</string>
   <string name="unblock_number">Deblocare</string>
+  <string name="add_to_blacklist">Adăugare la lista apelanților blocați</string>
   <string name="add_to_blacklist_message">Viitoarele mesaje de la %s vor fi blocate</string>
   <string name="alert_dialog_yes">Da</string>
   <string name="alert_dialog_no">Nu</string>
@@ -111,6 +111,7 @@
   <string name="menu_add_to_label">Adăugare la marcaje</string>
   <string name="pref_title_message_template">Şabloane de mesaje</string>
   <string name="title_new_message_template">Şablon nou</string>
+  <string name="summary_new_message_template">Compune nou mesaj șablon</string>
   <string name="dialog_editSMSTemplate_title">Editare șablon</string>
   <string name="import_message_template">Introduceți șablonul</string>
   <string name="pref_sms_signature_title">Semnătura SMS</string>
@@ -139,7 +140,9 @@
   <string name="contact_info_text_as_phone">Tel:</string>
   <string name="contact_info_text_as_email">Email:</string>
   <string name="type_vcal">Eveniment din Calendar</string>
+  <string name="pref_wap_push_title">Mesaje serviciu Push</string>
   <string name="pref_title_wap_push_enabled">Serviciul WAP Push</string>
+  <string name="pref_summary_wap_push_enabled">Primește mesaje de serviciu al rețelei</string>
   <string name="memory_status_title">Stare memorie</string>
   <string name="sms_phone_memory_usage">SMS: <xliff:g id="used">%1$d </xliff:g> din <xliff:g id="total">%2$d </xliff:g> utilizate</string>
   <string name="mms_phone_memory_usage">MMS: <xliff:g id="used">%1$d </xliff:g> din <xliff:g id="total">%2$d </xliff:g> utilizate</string>

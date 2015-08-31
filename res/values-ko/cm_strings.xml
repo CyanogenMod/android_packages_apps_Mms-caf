@@ -20,7 +20,7 @@
   <string name="pref_quickmessage_title">QuickMessage 보기</string>
   <string name="pref_quickmessage_summary">SMS메시지를 받으면 자동으로 QuickMessage 보이기</string>
   <string name="pref_wake_unlock_title">잠금 해제</string>
-  <string name="pref_wake_unlock_summary">메시지 수신 시 잠금 해제 (암호가 걸려있지 않은 경우만)</string>
+  <string name="pref_wake_unlock_summary">장치를 깨우고 QuickMessage 팝업을 표시</string>
   <string name="pref_close_all_title">전부 닫기</string>
   <string name="pref_close_all_summary">닫기 버튼으로 모든 메시지를 닫습니다</string>
   <string name="pref_dark_theme_title">어두운 테마 사용</string>

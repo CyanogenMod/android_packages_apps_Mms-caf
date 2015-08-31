@@ -17,7 +17,6 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="pref_wake_unlock_title">නැගිට අගුළු අරින්න</string>
-  <string name="pref_wake_unlock_summary">පණිවිඩ පැමිණීමේදී උපාංගයේ අගුල ඇර ඇහැරවන්න (තිර අගුලක් නොමැතිවිට පමණි)</string>
   <string name="pref_close_all_title">සියල්ල වහන්න</string>
   <string name="pref_close_all_summary">වහන්න බොත්තම සියලුම පණිවිඩ වසා දමයි</string>
   <string name="pref_dark_theme_title">අඳුරු තේමාව භාවිතා කරන්න</string>

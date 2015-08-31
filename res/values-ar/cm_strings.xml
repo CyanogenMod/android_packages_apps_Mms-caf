@@ -16,11 +16,8 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="pref_quickmessage">رسالة سريعة ورد</string>
-  <string name="pref_quickmessage_title">عرض الرسالة السريعة</string>
   <string name="pref_quickmessage_summary">عرض إطار \" رسالة سريعة\" المنبثق تلقائياً للرسائل القصيرة الواردة</string>
   <string name="pref_wake_unlock_title">تنبيه وإطلاق العنان</string>
-  <string name="pref_wake_unlock_summary">تنبيه وفتح الجهاز على رسالة واردة (شاشات قفل غير الآمنة فقط)</string>
   <string name="pref_close_all_title">الكل اغلاق</string>
   <string name="pref_close_all_summary">الزر إغلاق إغلاق كافة الرسائل</string>
   <string name="pref_dark_theme_title">استخدام سمة الظلام</string>

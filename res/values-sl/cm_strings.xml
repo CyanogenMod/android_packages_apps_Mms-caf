@@ -16,11 +16,11 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="pref_quickmessage">QuickMessage in Odgovor</string>
-  <string name="pref_quickmessage_title">Prikaži QuickMessage</string>
-  <string name="pref_quickmessage_summary">Samodejno odpri pojavno okno QuickMessage za dohodna sporočila SMS</string>
+  <string name="pref_quickmessage">Hitro sporočilo in Odgovor</string>
+  <string name="pref_quickmessage_title">Prikaži Hitro sporočilo</string>
+  <string name="pref_quickmessage_summary">Samodejno odpri pojavno okno Hitrega sporočila za dohodna sporočila SMS</string>
   <string name="pref_wake_unlock_title">Zbudi in odkleni</string>
-  <string name="pref_wake_unlock_summary">Zbudi in odkleni napravo on dohodnem sporočilu (samo nezanesljivi zasloni za zaklepanje)</string>
+  <string name="pref_wake_unlock_summary">Zbudi napravo in prikaži pojavno okno Hitrega sporočila</string>
   <string name="pref_close_all_title">Zapri vse</string>
   <string name="pref_close_all_summary">Gumb Zapri zapre vsa sporočila</string>
   <string name="pref_dark_theme_title">Uporabi temno temo</string>

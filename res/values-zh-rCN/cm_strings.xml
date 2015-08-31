@@ -20,7 +20,7 @@
   <string name="pref_quickmessage_title">显示快速信息</string>
   <string name="pref_quickmessage_summary">为传入短信自动打开快速信息窗口</string>
   <string name="pref_wake_unlock_title">唤醒和解锁</string>
-  <string name="pref_wake_unlock_summary">收到消息时唤醒和解锁设备 (仅在非安全锁定屏幕时有效)</string>
+  <string name="pref_wake_unlock_summary">唤醒设备并且显示快速信息弹出窗口</string>
   <string name="pref_close_all_title">全部关闭</string>
   <string name="pref_close_all_summary">\'关闭\' 按钮将关闭所有的消息</string>
   <string name="pref_dark_theme_title">使用暗色主题</string>
