@@ -97,6 +97,10 @@ public class SearchActivity extends ListActivity
          */
         @Override
         protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+            if (mTargetString == null) {
+                super.onLayout(changed, left, top, right, bottom);
+                return;
+            }
             String fullTextLower = mFullText.toLowerCase();
             String targetStringLower = mTargetString.toLowerCase();
 
