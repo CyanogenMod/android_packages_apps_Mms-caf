@@ -3,6 +3,7 @@ package com.android.mms.ui;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
@@ -19,11 +20,13 @@ public class SearchAdapter extends CursorAdapter {
     public static final int THREAD_ID_INDEX = 1;
     private static final int BODY_INDEX = 3;
     private static final int DATE_INDEX = 4;
+    private final LayoutInflater mLayoutInflater;
 
     private String mQuery;
 
     public SearchAdapter(Context context) {
         super(context, null, 0);
+        mLayoutInflater = LayoutInflater.from(context);
     }
 
     private class ViewHolder {
@@ -36,12 +39,13 @@ public class SearchAdapter extends CursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        View view = View.inflate(context, R.layout.mms_search_list_item, null);
+        View view = mLayoutInflater.inflate(R.layout.conversation_list_item, parent, false);
         ViewHolder holder = new ViewHolder();
-        holder.name = (TextView) view.findViewById(R.id.name);
+        holder.name = (TextView) view.findViewById(R.id.from);
         holder.date = (TextView) view.findViewById(R.id.date);
-        holder.body = (SearchActivity.TextViewSnippet) view.findViewById(R.id.body);
-        holder.avatarView = (ImageView) view.findViewById(R.id.icon);
+        holder.body = (SearchActivity.TextViewSnippet) view.findViewById(R.id.subject);
+        holder.avatarView = (ImageView) view.findViewById(R.id.avatar);
+        holder.avatarView.setVisibility(View.VISIBLE);
         holder.attachment = view.findViewById(R.id.attachment);
         view.setTag(holder);
         return view;
