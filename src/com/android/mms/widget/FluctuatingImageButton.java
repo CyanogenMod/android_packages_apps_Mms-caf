@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.ImageButton;
-import com.android.mms.R;
 
 /**
  * An ImageButton that animates between different background drawables as dictated. There is a
@@ -17,7 +16,7 @@ public class FluctuatingImageButton extends ImageButton {
 
     private static int ANIMATION_DURATION = 200; // ms
 
-    public FluctuatingRevealDrawable mDrawable;
+    public FluctuatingRevealDrawable mBackgroundDrawable;
 
     public FluctuatingImageButton(Context context) {
         super(context);
@@ -38,47 +37,27 @@ public class FluctuatingImageButton extends ImageButton {
 
     @Override
     public void setBackground(Drawable background) {
-        if (background != null && background instanceof FluctuatingRevealDrawable) {
-            mDrawable = (FluctuatingRevealDrawable) background;
+        if (mBackgroundDrawable == null) {
+            mBackgroundDrawable = new FluctuatingRevealDrawable(background, null, ANIMATION_DURATION);
+        } else {
+            mBackgroundDrawable.setPlaceholderDrawable(background, true /* force re-draw */);
         }
-        super.setBackground(background);
+        super.setBackground(mBackgroundDrawable);
     }
 
     public void setActionDrawable(Drawable actionDrawable) {
-        Drawable backgroundDrawable = getBackground();
-        if (backgroundDrawable == null) return;
-
-        Drawable placeholderDrawable;
-        if (backgroundDrawable instanceof FluctuatingRevealDrawable) {
-            placeholderDrawable = ((FluctuatingRevealDrawable) backgroundDrawable).getPlaceHolder();
-        } else {
-            placeholderDrawable = backgroundDrawable;
-        }
-
-        mDrawable = new FluctuatingRevealDrawable(placeholderDrawable, actionDrawable,
-                ANIMATION_DURATION);
-        super.setBackground(mDrawable);
+        mBackgroundDrawable.setActionDrawable(actionDrawable, true /* force re-draw */);
+        super.setBackground(mBackgroundDrawable);
     }
 
     public void setPlaceholderDrawable(Drawable placeholderDrawable) {
-        Drawable backgroundDrawable = getBackground();
-        if (backgroundDrawable == null) return;
-
-        Drawable actionDrawable;
-        if (backgroundDrawable instanceof FluctuatingRevealDrawable) {
-            actionDrawable = ((FluctuatingRevealDrawable) backgroundDrawable).getActionDrawable();
-        } else {
-            actionDrawable = backgroundDrawable;
-        }
-
-        mDrawable = new FluctuatingRevealDrawable(placeholderDrawable, actionDrawable,
-                ANIMATION_DURATION);
-        super.setBackground(mDrawable);
+        mBackgroundDrawable.setPlaceholderDrawable(placeholderDrawable, true /* force re-draw */);
+        super.setBackground(mBackgroundDrawable);
     }
 
     public void showActionDrawable(boolean show) {
-        if (mDrawable != null) {
-            mDrawable.showAction(show);
+        if (mBackgroundDrawable != null) {
+            mBackgroundDrawable.showAction(show);
         }
     }
 }

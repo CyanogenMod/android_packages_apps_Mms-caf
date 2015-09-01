@@ -3,6 +3,7 @@ package com.android.mms.widget;
 import android.animation.ValueAnimator;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
+import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
@@ -22,15 +23,8 @@ public class FluctuatingRevealDrawable extends Drawable implements Drawable.Call
     private boolean mIsActionDrawableShowing;
 
     public FluctuatingRevealDrawable(Drawable placeholder, Drawable action, int revealDuration) {
-        if (placeholder == null || action == null) {
-            throw new IllegalArgumentException("placeholder and action drawables cannot be null ");
-        }
-
-        mPlaceholder = placeholder;
-        mAction  = action;
-
-        mPlaceholder.setCallback(this);
-        mAction.setCallback(this);
+        setActionDrawable(action);
+        setPlaceholderDrawable(placeholder);
         mAnimDuration = revealDuration;
 
         mScaleAnimator = ValueAnimator.ofFloat(0, NORMAL_SIZE)
@@ -49,15 +43,41 @@ public class FluctuatingRevealDrawable extends Drawable implements Drawable.Call
         reset();
     }
 
+    public void setActionDrawable(Drawable drawable) {
+        setActionDrawable(drawable, false);
+    }
+
+    public void setActionDrawable(Drawable drawable, boolean forceRedraw) {
+        if (drawable != null) {
+            mAction = drawable;
+            mAction.setCallback(this);
+            mAction.setBounds(getBounds());
+            if (forceRedraw) invalidateSelf();
+        }
+    }
+
+    public void setPlaceholderDrawable(Drawable drawable) {
+        setPlaceholderDrawable(drawable, false);
+    }
+
+    public void setPlaceholderDrawable(Drawable drawable, boolean forceRedraw) {
+        if (drawable != null) {
+            mPlaceholder = drawable;
+            mPlaceholder.setCallback(this);
+            mPlaceholder.setBounds(getBounds());
+            if (forceRedraw) invalidateSelf();
+        }
+    }
+
     @Override
     protected void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
         if (bounds.isEmpty()) {
-            mPlaceholder.setBounds(0, 0, 0, 0);
-            mAction.setBounds(0, 0, 0, 0);
+            if (mPlaceholder !=null) mPlaceholder.setBounds(0, 0, 0, 0);
+            if (mAction != null) mAction.setBounds(0, 0, 0, 0);
         } else {
-            mPlaceholder.setBounds(bounds);
-            mAction.setBounds(bounds);
+            if (mPlaceholder !=null) mPlaceholder.setBounds(bounds);
+            if (mAction != null) mAction.setBounds(bounds);
         }
     }
 
@@ -83,26 +103,28 @@ public class FluctuatingRevealDrawable extends Drawable implements Drawable.Call
             return;
         }
 
-        mPlaceholder.draw(canvas);
+        if (mPlaceholder != null) mPlaceholder.draw(canvas);
         canvas.scale(mCurrentScale, mCurrentScale, bounds.exactCenterX(), bounds.exactCenterY());
-        mAction.draw(canvas);
+        if (mAction != null) mAction.draw(canvas);
     }
 
     @Override
     public void setAlpha(int alpha) {
-        mPlaceholder.setAlpha(alpha);
-        mAction.setAlpha(alpha);
+        if (mPlaceholder != null) mPlaceholder.setAlpha(alpha);
+        if (mAction != null) mAction.setAlpha(alpha);
     }
 
     @Override
     public void setColorFilter(ColorFilter cf) {
-        mPlaceholder.setColorFilter(cf);
-        mAction.setColorFilter(cf);
+        if (mPlaceholder != null) mPlaceholder.setColorFilter(cf);
+        if (mAction != null) mAction.setColorFilter(cf);
     }
 
     @Override
     public int getOpacity() {
-        return resolveOpacity(mPlaceholder.getOpacity(), mAction.getOpacity());
+        return resolveOpacity(
+                mPlaceholder != null ? mPlaceholder.getOpacity() : PixelFormat.UNKNOWN,
+                mAction != null ? mAction.getOpacity() : PixelFormat.UNKNOWN );
     }
 
     public void reset() {
@@ -117,11 +139,6 @@ public class FluctuatingRevealDrawable extends Drawable implements Drawable.Call
 
     public Drawable getPlaceHolder() {
         return mPlaceholder;
-    }
-
-    public void setActionDrawable(Drawable drawable) {
-        mAction = drawable;
-        mAction.setCallback(this);
     }
 
     public void showAction(boolean show) {
