@@ -42,7 +42,7 @@ import com.android.mms.transaction.MessagingNotification;
 import com.android.mms.transaction.MmsSystemEventReceiver;
 import com.android.mms.transaction.SmsReceiver;
 import com.android.mms.transaction.SmsReceiverService;
-import com.android.mms.ui.MessageInfoCache;
+import com.android.mms.data.MessageInfoCache;
 import com.android.mms.util.DownloadManager;
 import com.android.mms.util.DraftCache;
 import com.android.mms.util.PduLoaderManager;
@@ -94,7 +94,7 @@ public class MmsApp extends Application implements Application.ActivityLifecycle
 
         sMmsApp = this;
 
-        MessageInfoCache.DiskCache.initCache(this);
+        MessageInfoCache.init(this);
 
         // Load the default preference values
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
@@ -154,7 +154,6 @@ public class MmsApp extends Application implements Application.ActivityLifecycle
     public void onTerminate() {
         mCountryDetector.removeCountryListener(mCountryListener);
         CMMmsDatabaseHelper.closeIfNecessary();
-        MessageInfoCache.DiskCache.closeCache();
     }
 
     @Override
@@ -163,6 +162,7 @@ public class MmsApp extends Application implements Application.ActivityLifecycle
 
         mPduLoaderManager.onLowMemory();
         mThumbnailManager.onLowMemory();
+        MessageInfoCache.getInstance().onLowMemory();
     }
 
     @Override
@@ -252,6 +252,7 @@ public class MmsApp extends Application implements Application.ActivityLifecycle
                 // tear down the phone number lookup-cache and handler thread
                 tearDownPhoneLookup();
             }
+            MessageInfoCache.getInstance().closeCache(this);
         }
     }
 

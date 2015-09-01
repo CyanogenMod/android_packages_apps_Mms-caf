@@ -76,6 +76,7 @@ import com.android.mms.R;
 import com.android.mms.data.Contact;
 import com.android.mms.data.ContactList;
 import com.android.mms.data.Conversation;
+import com.android.mms.data.MessageInfoCache;
 import com.android.mms.data.WorkingMessage;
 import com.android.mms.presenters.SlideShowPresenter;
 import com.android.mms.transaction.SmsReceiverService;

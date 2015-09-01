@@ -27,7 +27,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Looper;
 import android.os.Handler;
 import android.os.Message;
@@ -51,6 +50,7 @@ import android.widget.ListView;
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
 import com.android.mms.R;
+import com.android.mms.data.MessageInfoCache;
 import com.android.mms.ui.zoom.ZoomMessageListItem;
 import com.android.mms.ui.zoom.ZoomMessageListView;
 import com.android.mms.util.CursorUtils;
@@ -278,7 +278,6 @@ public class MessageListAdapter extends CursorAdapter implements MmsApp.PhoneNum
         if (view instanceof MessageListItem) {
             String type = cursor.getString(mColumnsMap.mColumnMsgType);
             long msgId = cursor.getLong(mColumnsMap.mColumnMsgId);
-
             MessageItem msgItem = getCachedMessageItem(type, msgId, cursor);
             if (msgItem != null) {
                 MessageListItem mli = (MessageListItem) view;
@@ -466,6 +465,7 @@ public class MessageListAdapter extends CursorAdapter implements MmsApp.PhoneNum
         } else {
             boolean incoming = isIncomingMsgType(boxId);
             long msgId = cursor.getLong(mColumnsMap.mColumnMsgId);
+            mMessageCache.primeCache(msgId);
             List<String> mimeTypes = mMessageCache.getCachedMimeTypes(msgId);
             if (mimeTypes != null && mimeTypes.size() == 1) {
                 if (type.startsWith("image")) {
