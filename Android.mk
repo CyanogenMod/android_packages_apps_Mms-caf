@@ -38,7 +38,7 @@ LOCAL_PACKAGE_NAME := Mms
 
 LOCAL_JAVA_LIBRARIES += telephony-common
 LOCAL_STATIC_JAVA_LIBRARIES += android-common jsr305
-LOCAL_STATIC_JAVA_LIBRARIES += libchips okhttp-static
+LOCAL_STATIC_JAVA_LIBRARIES += libchips
 LOCAL_STATIC_JAVA_LIBRARIES += com.android.vcard libphonenumber libgeocoding guava
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v7-palette
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v4
@@ -65,7 +65,7 @@ CONTACTS_COMMON_LOOKUP_PROVIDER ?= $(LOCAL_PATH)/$(contacts_common_dir)/info_loo
 include $(CONTACTS_COMMON_LOOKUP_PROVIDER)/phonenumber_lookup_provider.mk
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
-LOCAL_PROGUARD_ENABLED := disabled
+# LOCAL_PROGUARD_ENABLED := disabled
 
 LOCAL_PRIVILEGED_MODULE := true
 
@@ -81,4 +81,4 @@ LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := \
 include $(BUILD_MULTI_PREBUILT)
 
 # This finds and builds the test apk as well, so a single make does both.
-# include $(call all-makefiles-under,$(LOCAL_PATH))
+include $(call all-makefiles-under,$(LOCAL_PATH))
