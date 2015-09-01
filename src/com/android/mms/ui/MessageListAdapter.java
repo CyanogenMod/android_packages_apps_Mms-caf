@@ -27,7 +27,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Looper;
 import android.os.Handler;
 import android.os.Message;
@@ -51,6 +50,7 @@ import android.widget.ListView;
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
 import com.android.mms.R;
+import com.android.mms.data.MessageInfoCache;
 import com.android.mms.ui.zoom.ZoomMessageListItem;
 import com.android.mms.ui.zoom.ZoomMessageListView;
 import com.android.mms.util.CursorUtils;
@@ -62,6 +62,8 @@ import com.google.android.mms.MmsException;
 public class MessageListAdapter extends CursorAdapter implements MmsApp.PhoneNumberLookupListener {
     private static final String TAG = LogTag.TAG;
     private static final boolean LOCAL_LOGV = false;
+
+    private static final int PRIME_CACHE_WINDOW = 4;
 
     public static final String MMS_TYPE = "mms";
     public static final String SMS_TYPE = "sms";
@@ -278,7 +280,6 @@ public class MessageListAdapter extends CursorAdapter implements MmsApp.PhoneNum
         if (view instanceof MessageListItem) {
             String type = cursor.getString(mColumnsMap.mColumnMsgType);
             long msgId = cursor.getLong(mColumnsMap.mColumnMsgId);
-
             MessageItem msgItem = getCachedMessageItem(type, msgId, cursor);
             if (msgItem != null) {
                 MessageListItem mli = (MessageListItem) view;
@@ -453,6 +454,24 @@ public class MessageListAdapter extends CursorAdapter implements MmsApp.PhoneNum
         return TOTAL_ITEM_TYPE;   // Incoming and outgoing messages, both sms and mms
     }
 
+    private long[] getIdsForCachePrime(Cursor cursor) {
+        int startPosition = cursor.getPosition();
+
+        int start = Math.max(0, startPosition - PRIME_CACHE_WINDOW);
+        int end = Math.min(cursor.getCount() - 1, startPosition + PRIME_CACHE_WINDOW);
+        long[] result = new long[end - start + 1];
+        for (int i = start; i <= end; i++) {
+            if (!cursor.moveToPosition(i)) {
+                break;
+            }
+            long msgId = cursor.getLong(mColumnsMap.mColumnMsgId);
+            result[i - start] = msgId;
+        }
+        // Restore cursor position
+        cursor.moveToPosition(startPosition);
+        return result;
+    }
+
     @Override
     public int getItemViewType(int position) {
         Cursor cursor = (Cursor) getItem(position);
@@ -466,6 +485,7 @@ public class MessageListAdapter extends CursorAdapter implements MmsApp.PhoneNum
         } else {
             boolean incoming = isIncomingMsgType(boxId);
             long msgId = cursor.getLong(mColumnsMap.mColumnMsgId);
+            mMessageCache.primeCache(getIdsForCachePrime(cursor));
             List<String> mimeTypes = mMessageCache.getCachedMimeTypes(msgId);
             if (mimeTypes != null && mimeTypes.size() == 1) {
                 if (type.startsWith("image")) {
