@@ -1,4 +1,4 @@
-package com.android.mms.ui;
+package com.android.mms.data;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -9,128 +9,84 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.text.TextPaint;
-import android.text.TextUtils;
 import android.util.LruCache;
+
 import com.android.mms.MmsApp;
 import com.android.mms.R;
 import com.android.mms.presenters.ImagePresenter;
 import com.android.mms.presenters.SimpleAttachmentPresenter;
 import com.android.mms.presenters.VideoPresenter;
 import com.android.mms.util.ThumbnailManager;
-import com.android.mms.util.DiskLruCache;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class MessageInfoCache {
 
     private static final String TAG = MessageInfoCache.class.getSimpleName();
     private static final boolean DEBUG = false;
+    private static MessageInfoCache sInstance;
+
     private int mMaxWidth = ThumbnailManager.THUMBNAIL_SIZE;
     public static final int HEIGHT_UNDETERMINED = -1;
+    private static final int PRIME_CACHE_WINDOW = 4;
 
-    private final Context mContext;
-    private final long mThreadId;
-    private final Paint mPaint;
-    public ConcurrentHashMap<Long, Integer> mMessageIdPositionMap =
-            new ConcurrentHashMap<Long, Integer>();
-    private LruCache<Long, List<String>> mMimeTypeCache =
-            new LruCache<Long, List<String>>(100);
+    /**
+     * Stores msgIds -> cursorPosition (in parts cursor)
+     */
+    private SortedMap<Long, Integer> mMessageIdPositionMap;
+
+    /**
+     *
+     */
+    private ArrayList<Long> mMessageIds;
+
+    /**
+     * Stores msgIds -> mimeType
+     */
+    private LruCache<Long, List<String>> mMimeTypeCache;
+
+    private Paint mPaint;
     public Cursor mMessagePartsCursor;
     private PopulateCacheTask mPopulateTask;
+    private final MessageInfoDiskCache mDiskCache;
 
-    public static class DiskCache {
-        private static DiskLruCache sLruCache;
-        private static final int TOTAL_HEIGHT_INDEX = 0;
-        private static final int MIMETYPE_INDEX = 1;
-
-        private static CacheInfo getCacheInfo(String msgId, List<String> newMimeTypes) {
-            return getCacheInfo(msgId, TextUtils.join(",", newMimeTypes));
-        }
-
-        private static CacheInfo getCacheInfo(String msgId, String newMimeTypes) {
-            try {
-                DiskLruCache.Snapshot item = sLruCache.get(msgId);
-                if (item != null) {
-                    int totalHeight = Integer.parseInt(item.getString(TOTAL_HEIGHT_INDEX));
-                    String cachedMimeType = item.getString(MIMETYPE_INDEX);
-                    if (newMimeTypes.equals(cachedMimeType)) {
-                        return new CacheInfo(totalHeight, newMimeTypes);
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        public static void persistCacheInfo(String messageId, CacheInfo cacheInfo) {
-            try {
-                CacheInfo existingInfo = getCacheInfo(messageId, cacheInfo.mimeTypes);
-                if (existingInfo != null) {
-                    return;
-                }
-                DiskLruCache.Editor edit = sLruCache.edit(messageId);
-                edit.set(TOTAL_HEIGHT_INDEX, String.valueOf(cacheInfo.totalHeight));
-                edit.set(MIMETYPE_INDEX, cacheInfo.mimeTypes);
-                edit.commit();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-        }
-
-        private static final class CacheInfo {
-            public final int totalHeight;
-            private final String mimeTypes;
-
-            private CacheInfo(int totalHeight, List<String> mimeTypes) {
-                this(totalHeight, TextUtils.join(",", mimeTypes));
-            }
-
-            private CacheInfo(int totalHeight, String mimeTypes) {
-                this.totalHeight = totalHeight;
-                this.mimeTypes = mimeTypes;
-            }
-        }
-
-        public static void closeCache() {
-            if (sLruCache != null) {
-                try {
-                    sLruCache.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        public static void initCache(MmsApp mmsApp) {
-            if (sLruCache == null) {
-                File path = new File(mmsApp.getCacheDir(), "metadata-cache");
-                try {
-                    // Warning: If # of args is changed, existing cache will be dropped
-                    sLruCache = DiskLruCache.open(path, 0, 2, 5 * 1000 * 1000);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+    /**
+     * Called from Application context to initialize
+     * cache
+     */
+    public static void init(MmsApp app) {
+        if (sInstance == null) {
+            sInstance = new MessageInfoCache(app);
         }
     }
 
-    public MessageInfoCache(Context context, long threadId) {
-        mContext = context;
-        mThreadId = threadId;
+    public static MessageInfoCache getInstance() {
+        return sInstance;
+    }
 
+    private MessageInfoCache(Context context) {
+        initTextPaint(context);
+        mMessageIdPositionMap = Collections.synchronizedSortedMap(
+                new TreeMap<Long, Integer>());
+        mMimeTypeCache = new LruCache<Long, List<String>>(30);
+        mMessageIds = new ArrayList<Long>();
+        mDiskCache = new MessageInfoDiskCache(context);
+    }
+
+    private void initTextPaint(Context context) {
         // The attributes you want retrieved
         int[] attrs = {android.R.attr.textSize, android.R.attr.fontFamily,
                 android.R.attr.typeface, android.R.attr.textStyle};
 
-        Resources.Theme theme = mContext.getResources().newTheme();
+        Resources.Theme theme = context.getResources().newTheme();
         theme.applyStyle(android.R.style.TextAppearance_Material_Body1, true);
         TypedArray ta = theme.obtainStyledAttributes(android.R.style.TextAppearance, attrs);
-        int textSize = ta.getDimensionPixelSize(com.android.internal.R.styleable.TextAppearance_textSize, 0);
+        int textSize = ta.getDimensionPixelSize(
+                com.android.internal.R.styleable.TextAppearance_textSize, 0);
         ta.recycle();
 
         mPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG);
@@ -138,11 +94,16 @@ public class MessageInfoCache {
         mPaint.setTypeface(Typeface.SANS_SERIF);
     }
 
-    public AsyncTask populateCache(Cursor cursor) {
+
+    /**
+     * Called to populate cache from cursor
+     */
+    public void populateCache(Cursor cursor) {
         cleanup();
+        mMessageIds.clear();
+        mMessageIdPositionMap.clear();
         mPopulateTask = new PopulateCacheTask();
         mPopulateTask.execute(cursor);
-        return mPopulateTask;
     }
 
     public void cleanup() {
@@ -150,13 +111,33 @@ public class MessageInfoCache {
             mPopulateTask.cancel(true);
             mPopulateTask = null;
         }
-        mMimeTypeCache.evictAll();
-        mMessageIdPositionMap.clear();
         if (mMessagePartsCursor != null) {
             mMessagePartsCursor.close();
             mMessagePartsCursor = null;
         }
     }
+
+    /**
+     * Caches a window around the msgId
+     */
+    public void primeCache(long msgId) {
+        if (mMessageIds.contains(msgId)) {
+            int index = mMessageIds.indexOf(msgId);
+            List<Long> subList = mMessageIds.subList(Math.max(index - PRIME_CACHE_WINDOW, 0),
+                    Math.min(index + PRIME_CACHE_WINDOW + 1, mMessageIds.size()));
+            mDiskCache.primeCache(subList);
+        }
+    }
+
+    public void onLowMemory() {
+        mMimeTypeCache.evictAll();
+        mDiskCache.onLowMemory();
+    }
+
+    public void closeCache(MmsApp app) {
+        mDiskCache.closeCache();
+    }
+
 
     private class PopulateCacheTask extends AsyncTask<Cursor, Void, Void> {
         @Override
@@ -175,6 +156,7 @@ public class MessageInfoCache {
             }
             if (mMessagePartsCursor != null && mMessagePartsCursor.moveToFirst()) {
                 long prevId = -1;
+                int mimeTypeCacheIter = 0;
                 do {
                     long id = mMessagePartsCursor.getLong(0);
                     if (prevId == id) {
@@ -182,14 +164,27 @@ public class MessageInfoCache {
                     }
                     prevId = id;
                     mMessageIdPositionMap.put(id, mMessagePartsCursor.getPosition());
+                    mMessageIds.add(id);
 
-                    if (mMimeTypeCache.size() != mMimeTypeCache.maxSize()) {
+                    // We don't clear cache when exiting conversations.
+                    // Make sure to only add an entry into the lru if
+                    // 1) Its the nth item in the cursor where N < cacheSize. This
+                    // is so that we don't trash the cache
+                    // 2) Not already in the cache. Avoids additional cursor
+                    // iterations.
+                    if (mimeTypeCacheIter < mMimeTypeCache.maxSize() &&
+                            mMimeTypeCache.get(id) == null) {
                         int cursorPosition = mMessagePartsCursor.getPosition();
                         List<String> mimeTypes = getMimeTypesForCursorAtPosition(
                                 mMessagePartsCursor, cursorPosition);
                         mMimeTypeCache.put(id, mimeTypes);
+
+                        // Single getMimeTypesForCursorAtPosition moves the cursor
+                        // one past the old msgId, we need to move it one back for
+                        // next iteration
                         mMessagePartsCursor.moveToPrevious();
                     }
+                    mimeTypeCacheIter++;
 
                     if (isCancelled()) {
                         return null;
@@ -201,13 +196,10 @@ public class MessageInfoCache {
     }
 
     public int getCachedTotalHeight(Context context, long msgId) {
-        List<String> mimeTypes = getCachedMimeTypes(msgId);
-        if (mimeTypes != null) {
-            String msgIdString = String.valueOf(msgId);
-            DiskCache.CacheInfo cached = DiskCache.getCacheInfo(msgIdString, mimeTypes);
-            if (cached != null) {
-                return cached.totalHeight;
-            }
+        String msgIdString = String.valueOf(msgId);
+        MessageInfoDiskCache.CacheInfo cached = mDiskCache.getCacheInfo(msgIdString);
+        if (cached != null) {
+            return cached.totalHeight;
         }
 
         if (mMessagePartsCursor == null || !mMessageIdPositionMap.containsKey(msgId)) {
@@ -282,10 +274,12 @@ public class MessageInfoCache {
     }
 
     public List<String> getCachedMimeTypes(long msgId) {
+        // Check two level cache first
         List<String> mimeTypes = mMimeTypeCache.get(msgId);
         if (mimeTypes != null) {
             return mimeTypes;
         }
+        // Fall back to getting mimetypes from cursor
         int position = getCursorRowIdForMsgId(msgId);
         if (position != -1) {
             mimeTypes = getMimeTypesForCursorAtPosition(
@@ -315,8 +309,9 @@ public class MessageInfoCache {
         String mid = String.valueOf(messageId);
         List<String> mimeTypes = getCachedMimeTypes(messageId);
         if (mimeTypes != null) {
-            DiskCache.CacheInfo cacheInfo = new DiskCache.CacheInfo(height, mimeTypes);
-            DiskCache.persistCacheInfo(mid, cacheInfo);
+            MessageInfoDiskCache.CacheInfo cacheInfo =
+                    new MessageInfoDiskCache.CacheInfo(height, mimeTypes);
+            mDiskCache.persistCacheInfo(mid, cacheInfo);
         }
     }
 
