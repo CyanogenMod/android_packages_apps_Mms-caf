@@ -26,6 +26,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -71,6 +72,7 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
     private View mErrorIndicator;
     private ContactBadgeWithAttribution mAvatarView;
     private View mInfoRow, mInfoRoot;
+    private TextView mFromCount;
 
     static RoundedBitmapDrawable sDefaultContactImage;
 
@@ -110,6 +112,7 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
 
         mUnreadCount = (TextView) findViewById(R.id.unread_count);
         mFromView = (TextView) findViewById(R.id.from);
+        mFromCount = (TextView) findViewById(R.id.from_count);
         mSubjectView = (TextView) findViewById(R.id.subject);
         mInfoRow = findViewById(R.id.info_row);
         mInfoRoot = findViewById(R.id.info_root);
@@ -124,17 +127,9 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         return mConversation;
     }
 
-    /**
-     * Only used for header binding.
-     */
-    public void bind(String title, String explain) {
-        mFromView.setText(title);
-        mSubjectView.setText(explain);
-    }
-
-    private CharSequence formatMessage() {
+    private CharSequence formatMessage(String recipientNames) {
         final int color = android.R.styleable.Theme_textColorSecondary;
-        String from = mConversation.getRecipients().formatNames(", ");
+        String from = recipientNames;
         if (MessageUtils.isWapPushNumber(from)) {
             String[] mAddresses = from.split(":");
             from = mAddresses[mContext.getResources().getInteger(
@@ -222,8 +217,33 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
     }
 
     private void updateFromView() {
-        mFromView.setText(formatMessage());
+        String recipientNames = mConversation.getRecipients().formatNames(", ");
+        mFromView.setText(formatMessage(recipientNames));
+        updateFromCount();
         updateAvatarView();
+    }
+
+    private void updateFromCount() {
+        mFromView.post(new Runnable() {
+            @Override
+            public void run() {
+                Layout layout = mFromView.getLayout();
+                CharSequence fromText = mFromView.getText();
+                int ellipsisCount = layout.getEllipsisCount(0);
+                if (ellipsisCount == 0) {
+                    mFromCount.setVisibility(View.GONE);
+                } else {
+                    String displayed = fromText.toString().substring(0, fromText.length() - ellipsisCount);
+                    int recipientsPending = fromText.toString().split(",").length - displayed.split(",").length;
+                    if (recipientsPending > 0) {
+                        mFromCount.setVisibility(View.VISIBLE);
+                        String unreadLabel = "+";
+                        unreadLabel += String.valueOf(Math.min(recipientsPending, 10));
+                        mFromCount.setText(unreadLabel);
+                    }
+                }
+            }
+        });
     }
 
     public void onUpdate(Contact updated) {
@@ -237,7 +257,8 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         });
     }
 
-    public final void bind(Context context, final Conversation conversation) {
+    public final void bind(Context context, final Conversation conversation,
+                           LookupResponse lookupResponse) {
         //if (DEBUG) Log.v(TAG, "bind()");
         boolean sameItem = mConversation != null
                 && mConversation.getThreadId() == conversation.getThreadId();
@@ -250,11 +271,15 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         // Date
         mDateView.setText(MessageUtils.formatTimeStampString(context, conversation.getDate()));
 
+        String recipientNames;
+        if (lookupResponse != null && !TextUtils.isEmpty(lookupResponse.mName)) {
+            recipientNames = lookupResponse.mName;
+        } else {
+            recipientNames = mConversation.getRecipients().formatNames(", ");
+        }
         // From.
-        mFromView.setText(formatMessage());
-
-        // Register for updates in changes of any of the contacts in this conversation.
-        ContactList contacts = conversation.getRecipients();
+        mFromView.setText(formatMessage(recipientNames));
+        updateFromCount();
 
         if (Log.isLoggable(LogTag.CONTACT, Log.DEBUG)) {
             Log.v(TAG, "bind: contacts.addListeners " + this);
@@ -286,7 +311,7 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         }
     }
 
-    public void updateView(LookupResponse lookupResponse) {
+    private void updateView(LookupResponse lookupResponse) {
         // add attribution to avatar
         mAvatarView.setAttributionDrawable(lookupResponse.mAttributionLogo);
 

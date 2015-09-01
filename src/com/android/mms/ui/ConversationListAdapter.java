@@ -70,25 +70,26 @@ public class ConversationListAdapter extends CursorAdapter implements AbsListVie
 
         ConversationListItem headerView = (ConversationListItem) view;
         Conversation conv = Conversation.from(context, cursor);
-        headerView.bind(context, conv);
 
         // if unknown contact, request info
-        checkForUnknownContact(conv, headerView);
+        LookupResponse lookupResponse = checkForUnknownContact(conv, headerView);
+        headerView.bind(context, conv, lookupResponse);
     }
 
-    private void checkForUnknownContact(Conversation conv, ConversationListItem listItem) {
+    private LookupResponse checkForUnknownContact(Conversation conv, ConversationListItem listItem) {
         ContactList recipients = conv.getRecipients();
         if (recipients.size() == 1 && !recipients.get(0).existsInDatabase()) {
             String number = AddressUtils.normalizePhoneNumber(recipients.get(0).getNumber());
             LookupResponse lookupResponse = MmsApp.getApplication().
                     getPhoneNumberLookupResponse(number);
             if (lookupResponse != null) {
-                listItem.updateView(lookupResponse);
+                return lookupResponse;
             } else {
                 // request info for this contact
                 MmsApp.getApplication().lookupInfoForPhoneNumber(number);
             }
         }
+        return null;
     }
 
     public void onMovedToScrapHeap(View view) {
