@@ -17,7 +17,7 @@ import com.android.mms.presenters.ImagePresenter;
 import com.android.mms.presenters.SimpleAttachmentPresenter;
 import com.android.mms.presenters.VideoPresenter;
 import com.android.mms.util.ThumbnailManager;
-import com.squareup.okhttp.internal.DiskLruCache;
+import com.android.mms.util.DiskLruCache;
 
 import java.io.File;
 import java.io.IOException;
