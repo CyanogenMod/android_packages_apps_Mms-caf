@@ -42,7 +42,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 import java.util.Set;
 
@@ -77,7 +76,6 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SqliteWrapper;
 import android.drm.DrmStore;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -171,6 +169,7 @@ import com.android.mms.data.Contact;
 import com.android.mms.data.ContactList;
 import com.android.mms.data.Conversation;
 import com.android.mms.data.Conversation.ConversationQueryHandler;
+import com.android.mms.data.MessageInfoCache;
 import com.android.mms.data.WorkingMessage;
 import com.android.mms.data.WorkingMessage.MessageStatusListener;
 import com.android.mms.drm.DrmUtils;
@@ -1201,6 +1200,12 @@ public class ComposeMessageActivity extends Activity
             // For messages with bad addresses, let the user re-edit the recipients.
             initRecipientsEditor();
         }
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mMessageInfoCache.onLowMemory();
     }
 
     private void editSmsMessageItem(MessageItem msgItem) {
@@ -4312,7 +4317,7 @@ public class ComposeMessageActivity extends Activity
             ? null
             : Pattern.compile("\\b" + Pattern.quote(highlightString), Pattern.CASE_INSENSITIVE);
 
-        mMessageInfoCache = new MessageInfoCache(this, mConversation.getThreadId());
+        mMessageInfoCache = MessageInfoCache.getInstance();
 
         // Initialize the list adapter with a null cursor.
         mMsgListAdapter = new MessageListAdapter(this, null, mMsgListView, true, highlight, mMessageInfoCache);
