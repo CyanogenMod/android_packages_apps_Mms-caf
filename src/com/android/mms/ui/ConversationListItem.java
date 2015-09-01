@@ -22,10 +22,10 @@ import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -35,16 +35,13 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.Checkable;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.android.contacts.common.widget.CheckableQuickContactBadge;
 import com.android.mms.LogTag;
 import com.android.mms.R;
 import com.android.mms.data.Contact;
-import com.android.mms.data.ContactList;
 import com.android.mms.data.Conversation;
 import com.android.mms.util.ImageUtils;
 import com.android.mms.util.SmileyParser;
@@ -71,6 +68,7 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
     private View mErrorIndicator;
     private ContactBadgeWithAttribution mAvatarView;
     private View mInfoRow, mInfoRoot;
+    private TextView mFromCount;
 
     static RoundedBitmapDrawable sDefaultContactImage;
 
@@ -110,6 +108,7 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
 
         mUnreadCount = (TextView) findViewById(R.id.unread_count);
         mFromView = (TextView) findViewById(R.id.from);
+        mFromCount = (TextView) findViewById(R.id.from_count);
         mSubjectView = (TextView) findViewById(R.id.subject);
         mInfoRow = findViewById(R.id.info_row);
         mInfoRoot = findViewById(R.id.info_root);
@@ -124,17 +123,9 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         return mConversation;
     }
 
-    /**
-     * Only used for header binding.
-     */
-    public void bind(String title, String explain) {
-        mFromView.setText(title);
-        mSubjectView.setText(explain);
-    }
-
-    private CharSequence formatMessage() {
+    private CharSequence formatMessage(String recipientNames) {
         final int color = android.R.styleable.Theme_textColorSecondary;
-        String from = mConversation.getRecipients().formatNames(", ");
+        String from = recipientNames;
         if (MessageUtils.isWapPushNumber(from)) {
             String[] mAddresses = from.split(":");
             from = mAddresses[mContext.getResources().getInteger(
@@ -199,8 +190,12 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         return buf;
     }
 
-    private void updateAvatarView() {
-        Drawable avatarDrawable;
+    private void updateAvatarView(LookupResponse lookupResponse) {
+        if (lookupResponse != null && !TextUtils.isEmpty(lookupResponse.mPhotoUrl)) {
+            // if url exists load into image
+            ImageUtils.loadBitampFromUrl(getContext(), lookupResponse.mPhotoUrl, mAvatarView);
+            return;
+        }
         if (mConversation.getRecipients().size() == 1) {
             Contact contact = mConversation.getRecipients().get(0);
             contact.bindAvatar(mAvatarView);
@@ -222,8 +217,33 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
     }
 
     private void updateFromView() {
-        mFromView.setText(formatMessage());
-        updateAvatarView();
+        String recipientNames = mConversation.getRecipients().formatNames(", ");
+        mFromView.setText(formatMessage(recipientNames));
+        updateFromCount();
+        updateAvatarView(null);
+    }
+
+    private void updateFromCount() {
+        mFromView.post(new Runnable() {
+            @Override
+            public void run() {
+                Layout layout = mFromView.getLayout();
+                CharSequence fromText = mFromView.getText();
+                int ellipsisCount = layout.getEllipsisCount(0);
+                if (ellipsisCount == 0) {
+                    mFromCount.setVisibility(View.GONE);
+                } else {
+                    String displayed = fromText.toString().substring(0, fromText.length() - ellipsisCount);
+                    int recipientsPending = fromText.toString().split(",").length - displayed.split(",").length;
+                    if (recipientsPending > 0) {
+                        mFromCount.setVisibility(View.VISIBLE);
+                        String unreadLabel = "+";
+                        unreadLabel += String.valueOf(Math.min(recipientsPending, 10));
+                        mFromCount.setText(unreadLabel);
+                    }
+                }
+            }
+        });
     }
 
     public void onUpdate(Contact updated) {
@@ -237,7 +257,8 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         });
     }
 
-    public final void bind(Context context, final Conversation conversation) {
+    public final void bind(Context context, final Conversation conversation,
+                           LookupResponse lookupResponse) {
         //if (DEBUG) Log.v(TAG, "bind()");
         boolean sameItem = mConversation != null
                 && mConversation.getThreadId() == conversation.getThreadId();
@@ -250,11 +271,15 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         // Date
         mDateView.setText(MessageUtils.formatTimeStampString(context, conversation.getDate()));
 
+        String recipientNames;
+        if (lookupResponse != null && !TextUtils.isEmpty(lookupResponse.mName)) {
+            recipientNames = lookupResponse.mName;
+        } else {
+            recipientNames = mConversation.getRecipients().formatNames(", ");
+        }
         // From.
-        mFromView.setText(formatMessage());
-
-        // Register for updates in changes of any of the contacts in this conversation.
-        ContactList contacts = conversation.getRecipients();
+        mFromView.setText(formatMessage(recipientNames));
+        updateFromCount();
 
         if (Log.isLoggable(LogTag.CONTACT, Log.DEBUG)) {
             Log.v(TAG, "bind: contacts.addListeners " + this);
@@ -269,9 +294,14 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         // Transmission error indicator.
         mErrorIndicator.setVisibility(conversation.hasError() ? VISIBLE : GONE);
 
-        updateAvatarView();
+        updateAvatarView(lookupResponse);
         mAvatarView.setChecked(isChecked(), sameItem);
-        mAvatarView.setAttributionDrawable(null);
+        if (lookupResponse != null) {
+            // add attribution to avatar
+            mAvatarView.setAttributionDrawable(lookupResponse.mAttributionLogo);
+        } else {
+            mAvatarView.setAttributionDrawable(null);
+        }
 
         if (mConversation.hasUnreadMessages() && mConversation.getUnreadMessageCount() > 0) {
             int unreadCount = mConversation.getUnreadMessageCount();
@@ -283,21 +313,6 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
             mUnreadCount.setVisibility(View.VISIBLE);
         } else {
             mUnreadCount.setVisibility(View.GONE);
-        }
-    }
-
-    public void updateView(LookupResponse lookupResponse) {
-        // add attribution to avatar
-        mAvatarView.setAttributionDrawable(lookupResponse.mAttributionLogo);
-
-        // add Name
-        if (!TextUtils.isEmpty(lookupResponse.mName)) {
-            mFromView.setText(lookupResponse.mName);
-        }
-
-        // if url exists load into image
-        if (!TextUtils.isEmpty(lookupResponse.mPhotoUrl)) {
-            ImageUtils.loadBitampFromUrl(getContext(), lookupResponse.mPhotoUrl, mAvatarView);
         }
     }
 

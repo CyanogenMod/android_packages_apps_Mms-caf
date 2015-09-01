@@ -31,7 +31,8 @@
         android:layout_centerVertical="true"
         android:layout_marginEnd="16dp"
         android:layout_width="@dimen/contact_photo_size"
-        android:layout_height="@dimen/contact_photo_size"/>
+        android:layout_height="@dimen/contact_photo_size"
+        style="?android:attr/quickContactBadgeStyleSmallWindowMedium" />
 
     <com.android.mms.ui.ConversationListItemInfo
         android:id="@+id/info_root"
@@ -57,6 +58,14 @@
             android:layout_alignTop="@id/from"
             android:layout_alignBottom="@id/from"
             android:layout_toEndOf="@id/from">
+            <TextView android:id="@+id/from_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="1dp"
+                android:layout_toEndOf="@id/from"
+                android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+                android:singleLine="true"  />
+
             <TextView android:id="@+id/unread_count"
                 android:layout_width="wrap_content"
                 android:layout_height="16dp"
