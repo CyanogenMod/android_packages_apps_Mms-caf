@@ -168,6 +168,8 @@ import com.android.mms.data.Contact;
 import com.android.mms.data.ContactList;
 import com.android.mms.data.Conversation;
 import com.android.mms.data.Conversation.ConversationQueryHandler;
+import com.android.mms.data.MessageInfoCache;
+import com.android.mms.data.MessageInfoDiskCache;
 import com.android.mms.data.WorkingMessage;
 import com.android.mms.data.WorkingMessage.MessageStatusListener;
 import com.android.mms.drm.DrmUtils;
@@ -1197,6 +1199,12 @@ public class ComposeMessageActivity extends Activity
             // For messages with bad addresses, let the user re-edit the recipients.
             initRecipientsEditor();
         }
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mMessageInfoCache.onLowMemory();
     }
 
     private void editSmsMessageItem(MessageItem msgItem) {
@@ -2577,6 +2585,7 @@ public class ComposeMessageActivity extends Activity
         // any async tasks
         mMsgListView.setAdapter(null);
         mMessageInfoCache.cleanup();
+        MessageInfoDiskCache.clearQueue();
 
         MmsApp.getApplication().removePhoneNumberLookupListener(mMsgListAdapter);
         super.onDestroy();

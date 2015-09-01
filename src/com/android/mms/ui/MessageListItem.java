@@ -76,6 +76,7 @@ import com.android.mms.R;
 import com.android.mms.data.Contact;
 import com.android.mms.data.ContactList;
 import com.android.mms.data.Conversation;
+import com.android.mms.data.MessageInfoCache;
 import com.android.mms.data.WorkingMessage;
 import com.android.mms.presenters.SlideShowPresenter;
 import com.android.mms.transaction.SmsReceiverService;
@@ -616,8 +617,10 @@ public class MessageListItem extends ZoomMessageListItem implements
         if (mMmsView != null) {
             mMmsView.setVisibility(visible ? View.VISIBLE : View.GONE);
             if (!sameItem) {
+                long cur = System.currentTimeMillis();
                 int totalHeight = mMessageInfoCache.getCachedTotalHeight(
                         mContext, getMessageItem().getMessageId());
+                System.out.println("getCachedTotalHeight took " + (System.currentTimeMillis() - cur));
                 ViewGroup.LayoutParams params = mMmsView.getLayoutParams();
                 if (totalHeight != MessageInfoCache.HEIGHT_UNDETERMINED) {
                     params.height = totalHeight;

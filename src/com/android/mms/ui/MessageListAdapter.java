@@ -19,6 +19,7 @@
 
 package com.android.mms.ui;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.HashMap;
@@ -51,6 +52,8 @@ import android.widget.ListView;
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
 import com.android.mms.R;
+import com.android.mms.data.MessageInfoCache;
+import com.android.mms.data.MessageInfoDiskCache;
 import com.android.mms.ui.zoom.ZoomMessageListItem;
 import com.android.mms.ui.zoom.ZoomMessageListView;
 import com.android.mms.util.CursorUtils;
@@ -278,7 +281,7 @@ public class MessageListAdapter extends CursorAdapter implements MmsApp.PhoneNum
         if (view instanceof MessageListItem) {
             String type = cursor.getString(mColumnsMap.mColumnMsgType);
             long msgId = cursor.getLong(mColumnsMap.mColumnMsgId);
-
+            mMessageCache.primeCache(msgId);
             MessageItem msgItem = getCachedMessageItem(type, msgId, cursor);
             if (msgItem != null) {
                 MessageListItem mli = (MessageListItem) view;
