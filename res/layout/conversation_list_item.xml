@@ -36,11 +36,11 @@
 
     <com.android.mms.ui.ConversationListItemInfo
         android:id="@+id/info_root"
+        android:layout_toStartOf="@+id/msg_error"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toEndOf="@id/avatar"
-        android:layout_alignParentEnd="true" >
+        android:layout_toEndOf="@id/avatar" >
 
         <TextView android:id="@+id/from"
             android:layout_width="wrap_content"
@@ -77,13 +77,6 @@
                 android:singleLine="true"
                 android:ellipsize="marquee"  />
 
-            <ImageView android:id="@+id/error"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginStart="3dip"
-                android:visibility="gone"
-                android:src="@drawable/ic_list_alert_sms_failed" />
-
             <ImageView android:id="@+id/attachment"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
@@ -116,4 +109,16 @@
 
     </com.android.mms.ui.ConversationListItemInfo>
 
+    <ImageView
+        android:layout_marginStart="16dp"
+        android:visibility="gone"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:padding="7dp"
+        android:id="@+id/error"
+        android:background="#16ff0606"
+        android:src="@drawable/ic_error"
+        android:scaleType="fitXY"
+        android:layout_width="40dp"
+        android:layout_height="40dp"/>
 </com.android.mms.ui.ConversationListItem>

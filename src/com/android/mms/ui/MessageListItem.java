@@ -310,7 +310,6 @@ public class MessageListItem extends ZoomMessageListItem implements
             case DownloadManager.STATE_TRANSIENT_FAILURE:
             case DownloadManager.STATE_PERMANENT_FAILURE:
             default:
-                //mDeliveredIndicator.setImageResource(R.drawable.ic_sms_mms_delivered);
                 mDeliveredIndicator.setVisibility(View.VISIBLE);
                 setLongClickable(true);
                 inflateDownloadControls();
