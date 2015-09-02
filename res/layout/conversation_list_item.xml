@@ -31,8 +31,7 @@
         android:layout_centerVertical="true"
         android:layout_marginEnd="16dp"
         android:layout_width="@dimen/contact_photo_size"
-        android:layout_height="@dimen/contact_photo_size"
-        style="?android:attr/quickContactBadgeStyleSmallWindowMedium" />
+        android:layout_height="@dimen/contact_photo_size" />
 
     <com.android.mms.ui.ConversationListItemInfo
         android:id="@+id/info_root"
@@ -76,6 +75,20 @@
                 android:gravity="center"
                 android:singleLine="true"
                 android:ellipsize="marquee"  />
+
+            <ImageView android:id="@+id/block"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_marginStart="3dip"
+                android:visibility="gone"
+                android:src="@drawable/ic_blocked_small" />
+
+            <ImageView android:id="@+id/error"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="3dip"
+                android:visibility="gone"
+                android:src="@drawable/ic_list_alert_sms_failed" />
 
             <ImageView android:id="@+id/attachment"
                 android:layout_width="16dp"

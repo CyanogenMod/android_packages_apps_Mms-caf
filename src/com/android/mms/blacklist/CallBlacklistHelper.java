@@ -23,13 +23,13 @@ public class CallBlacklistHelper {
     public void setBlacklisted(String number, boolean isBlacklisted) {
         String nn = PhoneNumberUtils.normalizeNumber(number);
         BlacklistUtils.addOrUpdate(mContext, nn,
-                isBlacklisted ? BlacklistUtils.BLOCK_CALLS | BlacklistUtils.BLOCK_MESSAGES
-                        : 0, BlacklistUtils.BLOCK_CALLS | BlacklistUtils.BLOCK_MESSAGES);
+                isBlacklisted ? BlacklistUtils.BLOCK_MESSAGES
+                        : 0, BlacklistUtils.BLOCK_MESSAGES);
     }
 
     public boolean isBlacklisted(String number) {
         String nn = PhoneNumberUtils.normalizeNumber(number);
-        return BlacklistUtils.isListed(mContext, nn, BlacklistUtils.BLOCK_CALLS)
+        return BlacklistUtils.isListed(mContext, nn, BlacklistUtils.BLOCK_MESSAGES)
                 != BlacklistUtils.MATCH_NONE;
     }
 }

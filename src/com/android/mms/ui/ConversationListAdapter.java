@@ -19,6 +19,7 @@ package com.android.mms.ui;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,11 +27,13 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.CursorAdapter;
 
-import android.widget.ListView;
 import android.widget.TextView;
+import com.android.internal.telephony.util.BlacklistUtils;
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
 import com.android.mms.R;
+import com.android.mms.blacklist.CallBlacklistHelper;
+import com.android.mms.data.Contact;
 import com.android.mms.data.ContactList;
 import com.android.mms.data.Conversation;
 
@@ -40,6 +43,8 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 import se.emilsjolander.stickylistheaders.WrapperView;
 
 import com.cyanogen.lookup.phonenumber.response.LookupResponse;
+
+import java.lang.ref.WeakReference;
 
 /**
  * The back-end data adapter for ConversationList.
@@ -71,9 +76,58 @@ public class ConversationListAdapter extends CursorAdapter implements AbsListVie
         ConversationListItem headerView = (ConversationListItem) view;
         Conversation conv = Conversation.from(context, cursor);
 
+        FetchBlacklistInfo blacklistInfo = (FetchBlacklistInfo) view.getTag();
+        if (blacklistInfo != null) {
+            blacklistInfo.cancel(true);
+        }
+        blacklistInfo = new FetchBlacklistInfo(headerView, conv.getRecipients());
+        view.setTag(blacklistInfo);
+        blacklistInfo.execute();
+
         // if unknown contact, request info
         LookupResponse lookupResponse = checkForUnknownContact(conv);
         headerView.bind(context, conv, lookupResponse);
+    }
+
+    private static class FetchBlacklistInfo extends AsyncTask<Void, Void, Boolean> {
+        private final WeakReference<ConversationListItem> mViewReference;
+        private final ContactList mRecipientList;
+        private final CallBlacklistHelper mHelper;
+
+        FetchBlacklistInfo(ConversationListItem view, ContactList recipientList) {
+            mViewReference = new WeakReference<ConversationListItem>(view);
+            mRecipientList = recipientList;
+            mHelper = new CallBlacklistHelper(view.getContext());
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            View view = mViewReference.get();
+            boolean result = true;
+            if (view != null) {
+                for (Contact contact : mRecipientList) {
+                    if (!mHelper.isBlacklisted(contact.getNumber())) {
+                        result = false;
+                        break;
+                    }
+                }
+            }
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean isBlocked) {
+            if (isCancelled()) {
+                return;
+            }
+            ConversationListItem view = mViewReference.get();
+            if (view != null) {
+                FetchBlacklistInfo fetchBlacklistInfo = (FetchBlacklistInfo) view.getTag();
+                if (fetchBlacklistInfo == this) {
+                    view.updateBlockedState(isBlocked);
+                }
+            }
+        }
     }
 
     private LookupResponse checkForUnknownContact(Conversation conv) {
