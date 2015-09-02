@@ -122,6 +122,7 @@ public class Conversation {
     private boolean mMarkAsReadBlocked;
     private boolean mMarkAsReadWaiting;
     private AsyncTask mMarkAsUnreadTask;
+    private boolean mIsBlocked;
 
     private static Handler sToastHandler = new Handler();
 
@@ -1050,6 +1051,14 @@ public class Conversation {
 
             CMConversationSettings.deleteAll(app);
         }
+    }
+
+    public void setIsBlocked(Boolean isBlocked) {
+        mIsBlocked = isBlocked;
+    }
+
+    public boolean isBlocked() {
+        return mIsBlocked;
     }
 
     public static class ConversationQueryHandler extends AsyncQueryHandler {

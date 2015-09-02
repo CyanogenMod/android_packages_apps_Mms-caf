@@ -19,7 +19,6 @@ package com.android.mms.ui;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.LoaderManager;
@@ -39,11 +38,10 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
-import android.content.res.Resources;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SqliteWrapper;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -68,14 +66,11 @@ import android.view.MenuItem.OnActionExpandListener;
 import android.view.View;
 import android.view.View.OnCreateContextMenuListener;
 import android.view.View.OnKeyListener;
-import android.widget.AbsListView.RecyclerListener;
-import android.widget.ActionMenuView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
@@ -88,7 +83,6 @@ import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
-import com.android.mms.blacklist.BlacklistData;
 import com.android.mms.blacklist.CallBlacklistHelper;
 import com.android.mms.data.Contact;
 import com.android.mms.data.ContactList;
@@ -109,7 +103,10 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This activity provides a list view of existing conversations.
@@ -331,6 +328,7 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
         View firstChild = mListHeadersListView.getChildAt(0);
         mSavedFirstItemOffset = (firstChild == null) ? 0 : firstChild.getTop();
         mIsRunning = false;
+        unregisterBlacklistObserver();
     }
 
     @Override
@@ -357,8 +355,26 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
             mSmsPromoBannerView.setVisibility(View.VISIBLE);
         }
 
+        registerBlacklistObserver();
         mListAdapter.setOnContentChangedListener(mContentChangedListener);
         mIsRunning = true;
+    }
+
+    private ContentObserver mBlacklistObserver = new ContentObserver(mHandler) {
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            mListAdapter.notifyDataSetInvalidated();
+        }
+    };
+
+    private void registerBlacklistObserver() {
+        getContentResolver().registerContentObserver(
+                Telephony.Blacklist.CONTENT_MESSAGE_URI,
+                true, mBlacklistObserver);
+    }
+
+    private void unregisterBlacklistObserver() {
+        getContentResolver().unregisterContentObserver(mBlacklistObserver);
     }
 
     private void setupActionBar() {
@@ -1041,27 +1057,13 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
         }
     }
 
-    private boolean isBlocked(String[] numbers) {
-        if (mData == null) {
-            return false;
-        } else {
-            for (String number : numbers) {
-                if (!mData.isBlacklisted(number)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
-
-    private BlacklistData mData;
 //    private AmbientApiClient mClient;
-    private CallBlacklistHelper mHelper;
 
-    public void confirmBlockUsersFromThreads(final String[] numbers) {
-        if (isBlocked(numbers)) {
+    public void confirmBlockUsersFromThreads(final String[] numbers, boolean isBlocked) {
+        if (isBlocked) {
+            CallBlacklistHelper helper = new CallBlacklistHelper(this);
             for (String number : numbers) {
-                mHelper.removeFromBlacklist(number);
+                helper.removeFromBlacklist(number);
             }
 //            AmbientApiClient.Builder builder = new AmbientApiClient.Builder(this);
 //            builder.addApi(CallerInfoServices.API);
@@ -1604,12 +1606,14 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
     private class ModeCallback implements ListView.MultiChoiceModeListener {
         private HashSet<Long> mSelectedThreadIds;
         private HashSet<String> mSelectedThreadNumbers;
+        private HashMap<Long, Boolean> mSelectedThreadBlacklistStatus;
 
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             MenuInflater inflater = getMenuInflater();
             mSelectedThreadIds = new HashSet<Long>();
             mSelectedThreadNumbers = new HashSet<String>();
+            mSelectedThreadBlacklistStatus = new HashMap<Long, Boolean>();
             inflater.inflate(R.menu.conversation_multi_select_menu, menu);
             if(mFilterSpinner.getVisibility() == View.VISIBLE){
                 mFilterSpinner.setEnabled(false);
@@ -1635,9 +1639,16 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
             switch (item.getItemId()) {
                 case R.id.block:
                     if (mSelectedThreadIds.size() > 0) {
+                        boolean isBlocked = true;
+                        for (Boolean blocked : mSelectedThreadBlacklistStatus.values()) {
+                            if (!blocked) {
+                                isBlocked = false;
+                                break;
+                            }
+                        }
                         String[] numbers = new String[mSelectedThreadNumbers.size()];
                         mSelectedThreadNumbers.toArray(numbers);
-                        confirmBlockUsersFromThreads(numbers);
+                        confirmBlockUsersFromThreads(numbers, isBlocked);
                     }
                     mode.finish();
                     break;
@@ -1684,7 +1695,8 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
             ConversationListAdapter adapter = (ConversationListAdapter)getListView().getAdapter();
             adapter.uncheckAll();
             mSelectedThreadIds = null;
-            mSelectedThreadNumbers = null;
+            mSelectedThreadNumbers = new HashSet<String>();
+            mSelectedThreadBlacklistStatus = null;
             setStatusBarColor(getResources().getColor(R.color.mms_next_theme_color_dark));
             if(mFilterSpinner.getVisibility() == View.VISIBLE){
                 mFilterSpinner.setEnabled(true);
@@ -1710,11 +1722,13 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
                 for (Contact contact : conv.getRecipients()) {
                     mSelectedThreadNumbers.add(contact.getNumber());
                 }
+                mSelectedThreadBlacklistStatus.put(threadId, conv.isBlocked());
             } else {
                 mSelectedThreadIds.remove(threadId);
                 for (Contact contact : conv.getRecipients()) {
-                    mSelectedThreadNumbers.remove(contact.getNumber());
+                    mSelectedThreadBlacklistStatus.remove(contact.getNumber());
                 }
+                mSelectedThreadBlacklistStatus.remove(threadId);
             }
         }
 

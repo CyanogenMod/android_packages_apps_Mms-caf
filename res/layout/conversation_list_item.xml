@@ -77,6 +77,13 @@
                 android:singleLine="true"
                 android:ellipsize="marquee"  />
 
+            <ImageView android:id="@+id/block"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_marginStart="3dip"
+                android:visibility="gone"
+                android:src="@drawable/ic_blocked_small" />
+
             <ImageView android:id="@+id/error"
                 android:layout_width="16dp"
                 android:layout_height="16dp"

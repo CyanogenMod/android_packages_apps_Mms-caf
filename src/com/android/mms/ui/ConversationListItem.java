@@ -19,6 +19,7 @@ package com.android.mms.ui;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -69,6 +70,7 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
     private ContactBadgeWithAttribution mAvatarView;
     private View mInfoRow, mInfoRoot;
     private TextView mFromCount;
+    private View mBlock;
 
     static RoundedBitmapDrawable sDefaultContactImage;
 
@@ -82,6 +84,8 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         Pattern.compile("[\u0600-\u06FF\u0750-\u077F\u0590-\u05FF\uFE70-\uFEFF]");
 
     private static ForegroundColorSpan sUnreadColorSpan;
+    private static ForegroundColorSpan sBlockColorSpan;
+    private boolean mBlocked;
 
     public ConversationListItem(Context context) {
         super(context);
@@ -100,6 +104,7 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         }
         int highlight_color = getResources().getColor(R.color.mms_next_theme_color_check);
         sUnreadColorSpan = new ForegroundColorSpan(highlight_color);
+        sBlockColorSpan = new ForegroundColorSpan(Color.RED);
     }
 
     @Override
@@ -117,6 +122,7 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         mErrorIndicator = findViewById(R.id.error);
         mAvatarView = (ContactBadgeWithAttribution) findViewById(R.id.avatar);
         mAvatarView.setOverlay(null);
+        mBlock = findViewById(R.id.block);
     }
 
     public Conversation getConversation() {
@@ -150,7 +156,7 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         }
 
         SpannableStringBuilder buf = new SpannableStringBuilder(from);
-        if (mConversation.hasDraft()) {
+        if (!mBlocked && mConversation.hasDraft()) {
             if (isLayoutRtl && isEnName) {
                 int before = buf.length();
                 buf.insert(1,'\u202E'
@@ -181,10 +187,14 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
                         before, buf.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
               }
         }
-        if (mConversation.hasUnreadMessages()) {
+        if (!mBlocked && mConversation.hasUnreadMessages()) {
             buf.setSpan(STYLE_BOLD, 0, buf.length(),
                     Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
             buf.setSpan(sUnreadColorSpan, 0, buf.length(),
+                    Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        }
+        if (mBlocked) {
+            buf.setSpan(sBlockColorSpan, 0, buf.length(),
                     Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
         }
         return buf;
@@ -257,6 +267,20 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         });
     }
 
+    private void updateSubjectView() {
+        // Subject
+        SmileyParser parser = SmileyParser.getInstance();
+        final String snippet = mConversation.getSnippet();
+        if (mBlocked) {
+            SpannableStringBuilder buf = new SpannableStringBuilder(parser.addSmileySpans(snippet));
+            buf.setSpan(sBlockColorSpan, 0, buf.length(),
+                    Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+            mSubjectView.setText(buf);
+        } else {
+            mSubjectView.setText(parser.addSmileySpans(snippet));
+        }
+    }
+
     public final void bind(Context context, final Conversation conversation,
                            LookupResponse lookupResponse) {
         //if (DEBUG) Log.v(TAG, "bind()");
@@ -287,9 +311,7 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         Contact.addListener(this);
 
         // Subject
-        SmileyParser parser = SmileyParser.getInstance();
-        final String snippet = conversation.getSnippet();
-        mSubjectView.setText(parser.addSmileySpans(snippet));
+        updateSubjectView();
 
         // Transmission error indicator.
         mErrorIndicator.setVisibility(conversation.hasError() ? VISIBLE : GONE);
@@ -313,6 +335,16 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
             mUnreadCount.setVisibility(View.VISIBLE);
         } else {
             mUnreadCount.setVisibility(View.GONE);
+        }
+
+        updateBlockVisibility();
+    }
+
+    private void updateBlockVisibility() {
+        if (mConversation.isBlocked()) {
+            mBlock.setVisibility(View.VISIBLE);
+        } else {
+            mBlock.setVisibility(View.GONE);
         }
     }
 
@@ -338,5 +370,19 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
     @Override
     public void toggle() {
         mConversation.setIsChecked(!mConversation.isChecked());
+    }
+
+    public void updateBlockedState(Boolean isBlocked) {
+        if (mBlocked != isBlocked) {
+            mConversation.setIsBlocked(isBlocked);
+            mBlocked = isBlocked;
+            updateFromView();
+            updateSubjectView();
+            updateBlockVisibility();
+        }
+    }
+
+    public boolean isBlocked() {
+        return mBlocked;
     }
 }
