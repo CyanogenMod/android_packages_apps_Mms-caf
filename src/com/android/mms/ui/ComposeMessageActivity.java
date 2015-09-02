@@ -36,6 +36,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,6 +49,7 @@ import java.util.Set;
 import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -82,6 +84,7 @@ import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -141,6 +144,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EdgeEffect;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -1771,9 +1775,14 @@ public class ComposeMessageActivity extends Activity
         if (colorPrimary != 0 && colorPrimaryDark != 0) {
             if (!loadOnly) {
                 updateThemeColors(colorPrimary, colorPrimaryDark);
+            } else {
+                // update overscroll edge glow
+                setEdgeEffect(mMsgListView, colorPrimary);
             }
+
             mAccentColor = colorPrimary;
             mStatusBarColor = colorPrimaryDark;
+
         }
     }
 
@@ -1797,7 +1806,30 @@ public class ComposeMessageActivity extends Activity
             mMsgListAdapter.setAccentColor(accentColor);
         }
 
+        // Need this in two places, because it isn't always called in the same call chain
+        // update overscroll edge glow
+        setEdgeEffect(mMsgListView, accentColor);
+
         setTaskDescription(new ActivityManager.TaskDescription(null, null, accentColor));
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private static void setEdgeEffect(View scrollableView, int color) {
+        final String[] edgeGlows = {"mEdgeGlowTop", "mEdgeGlowBottom", "mEdgeGlowLeft", "mEdgeGlowRight"};
+        for (String edgeGlow : edgeGlows) {
+            Class<?> clazz = scrollableView.getClass();
+            while (clazz != null) {
+                try {
+                    final Field edgeGlowField = clazz.getDeclaredField(edgeGlow);
+                    edgeGlowField.setAccessible(true);
+                    final EdgeEffect edgeEffect = (EdgeEffect) edgeGlowField.get(scrollableView);
+                    edgeEffect.setColor(color);
+                    break;
+                } catch (Exception e) {
+                    clazz = clazz.getSuperclass();
+                }
+            }
+        }
     }
 
     // Get the recipients editor ready to be displayed onscreen.
