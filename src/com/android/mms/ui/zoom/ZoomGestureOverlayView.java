@@ -104,7 +104,9 @@ public class ZoomGestureOverlayView extends GestureOverlayView {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-        Log.v(TAG, "dispatchTouchEvent(" + event + ")");
+        if (Log.isLoggable(TAG, Log.VERBOSE)) {
+            Log.v(TAG, "dispatchTouchEvent(" + event + ")");
+        }
         logDebug("mCanZoom = " + mCanZoom);
         logDebug("mOldDistance = " + mOldDistance);
         final int action = event.getAction() & MotionEvent.ACTION_MASK;
