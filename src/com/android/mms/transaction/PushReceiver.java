@@ -220,6 +220,11 @@ public class PushReceiver extends BroadcastReceiver {
                             ContentValues values = new ContentValues(2);
                             values.put(Mms.PHONE_ID, phoneId);
                             values.put(Mms.SUBSCRIPTION_ID, subId);
+                            // this is so that we don't incorrectly toggle the wrong thread into
+                            // an unread status before fetching the full pdu and discovering that
+                            // the message actually belongs to a different thread as there are
+                            // additional recipients for the message aka group msg
+                            values.put(Mms.READ, 1);
                             Uri uri = p.persist(pdu, Inbox.CONTENT_URI,
                                     true,
                                     MessagingPreferenceActivity.getIsGroupMmsEnabled(mContext),

@@ -422,4 +422,12 @@
     <string name="mms_start_download_hint">Tap to download</string>
 
     <string name="contactsListPeople">People</string>
+
+    <!-- Confirm phone number -->
+    <string name="confirm_phone_number_message">To ensure your message is sent properly, please confirm your phone number.</string>
+    <string name="confirm_phone_number_title">Confirm your phone number</string>
+    <string name="enter_phone_number">Enter your phone number</string>
+    <string name="enter_phone_number_hint">(555) 555-5555</string>
+    <string name="confirm_phone_number_send">SEND</string>
+    <string name="confirm_phone_number_cancel">CANCEL</string>
 </resources>
