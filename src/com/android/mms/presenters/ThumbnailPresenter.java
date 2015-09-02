@@ -20,12 +20,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import java.lang.ref.WeakReference;
+
 @SuppressWarnings("ConstantConditions")
 public abstract class ThumbnailPresenter<V extends ThumbnailMessageView, M extends ThumbnailPresenterModel> extends
         RecyclePresenter<V, M> implements OnClickListener {
 
     private final int mCornerRadius;
-    private V mView;
 
     public ThumbnailPresenter(Context context, M modelInterface) {
         super(context, modelInterface);
@@ -35,7 +36,6 @@ public abstract class ThumbnailPresenter<V extends ThumbnailMessageView, M exten
 
     @Override
     protected final void bindMessageAttachmentView(final V viewInterface, final PresenterOptions presenterOptions) {
-        mView = viewInterface;
         viewInterface.setScaleType(ImageView.ScaleType.CENTER_CROP);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -105,17 +105,16 @@ public abstract class ThumbnailPresenter<V extends ThumbnailMessageView, M exten
     }
 
     @Override
-    public void unbind() {
+    public void unbindView(V view) {
         getModel().cancelThumbnailLoading();
-        if (mView != null) {
-            mView.setOnClickListener(null);
-            mView.setClickable(false);
-            mView.setOnLongClickListener(null);
-            mView.setLongClickable(false);
+        if (view != null) {
+            view.setOnClickListener(null);
+            view.setClickable(false);
+            view.setOnLongClickListener(null);
+            view.setLongClickable(false);
             // TODO This is done so in action mode when the view is
             // unbound we don't see a flicker due to image -> null -> image
-            //mView.setImage(null);
-            mView = null;
+//            view.setImage(null);
         }
     }
 }

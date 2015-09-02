@@ -257,6 +257,9 @@ public class MessageInfoCache {
                 }
 
                 String mimeType = cursor.getString(1);
+                if (mimeType.equalsIgnoreCase("application/smil")) {
+                    continue;
+                }
                 mimeTypes.add(mimeType);
             } while (cursor.moveToNext());
             mimeTypes.trimToSize();
