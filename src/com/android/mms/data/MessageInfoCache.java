@@ -257,6 +257,11 @@ public class MessageInfoCache {
                 }
 
                 String mimeType = cursor.getString(1);
+                // Skip smil mimeType since messages with only a
+                // smil part are treated as sms
+                if (mimeType.equalsIgnoreCase("application/smil")) {
+                    continue;
+                }
                 mimeTypes.add(mimeType);
             } while (cursor.moveToNext());
             mimeTypes.trimToSize();
