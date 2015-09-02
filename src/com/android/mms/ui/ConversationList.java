@@ -40,6 +40,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SqliteWrapper;
@@ -331,6 +332,7 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
         View firstChild = mListHeadersListView.getChildAt(0);
         mSavedFirstItemOffset = (firstChild == null) ? 0 : firstChild.getTop();
         mIsRunning = false;
+        unregisterBlacklistObserver();
     }
 
     @Override
@@ -357,8 +359,26 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
             mSmsPromoBannerView.setVisibility(View.VISIBLE);
         }
 
+        registerBlacklistObserver();
         mListAdapter.setOnContentChangedListener(mContentChangedListener);
         mIsRunning = true;
+    }
+
+    private ContentObserver mBlacklistObserver = new ContentObserver(mHandler) {
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            mListAdapter.notifyDataSetInvalidated();
+        }
+    };
+
+    private void registerBlacklistObserver() {
+        getContentResolver().registerContentObserver(
+                Telephony.Blacklist.CONTENT_MESSAGE_URI,
+                true, mBlacklistObserver);
+    }
+
+    private void unregisterBlacklistObserver() {
+        getContentResolver().unregisterContentObserver(mBlacklistObserver);
     }
 
     private void setupActionBar() {
@@ -1054,45 +1074,15 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
         }
     }
 
-    private BlacklistData mData;
 //    private AmbientApiClient mClient;
-    private CallBlacklistHelper mHelper;
 
     public void confirmBlockUsersFromThreads(final String[] numbers) {
-        if (isBlocked(numbers)) {
-            for (String number : numbers) {
-                mHelper.removeFromBlacklist(number);
-            }
-//            AmbientApiClient.Builder builder = new AmbientApiClient.Builder(this);
-//            builder.addApi(CallerInfoServices.API);
-//            builder.addConnectionCallbacks(new AmbientApiClient.ConnectionCallbacks() {
-//                @Override
-//                public void onConnected(Bundle connectionHint) {
-//                    PendingResult<Result> result = null;
-//                    for (String number : numbers) {
-//                        result = CallerInfoServices.CallerInfoApi.unMarkAsSpam(mClient, number);
-//                    }
-//                    result.setResultCallback(new ResultCallback<Result>() {
-//                        @Override
-//                        public void onResult(final Result lookupByNumberResult) {
-//                            mClient.disconnect();
-//                        }
-//                    });
-//                }
-//
-//                @Override
-//                public void onConnectionSuspended(int cause) {}
-//            });
-//            mClient = builder.build();
-//            mClient.connect();
-        } else {
-            BlockCallerDialogFragment f = new BlockCallerDialogFragment();
-            Bundle bundle = new Bundle();
-            bundle.putStringArray(BlockCallerDialogFragment.NUMBERS_EXTRA, numbers);
-            bundle.putInt(BlockCallerDialogFragment.ORIGIN_EXTRA, BlockCallerDialogFragment.ORIGIN_CONTACT_CARD);
-            f.setArguments(bundle);
-            f.show(this.getFragmentManager(), "block_caller");
-        }
+        BlockCallerDialogFragment f = new BlockCallerDialogFragment();
+        Bundle bundle = new Bundle();
+        bundle.putStringArray(BlockCallerDialogFragment.NUMBERS_EXTRA, numbers);
+        bundle.putInt(BlockCallerDialogFragment.ORIGIN_EXTRA, BlockCallerDialogFragment.ORIGIN_CONTACT_CARD);
+        f.setArguments(bundle);
+        f.show(this.getFragmentManager(), "block_caller");
     }
 
     /**
