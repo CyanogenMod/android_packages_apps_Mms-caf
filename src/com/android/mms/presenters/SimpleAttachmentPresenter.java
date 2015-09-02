@@ -19,12 +19,13 @@ import android.widget.RelativeLayout;
 
 import com.android.mms.R;
 
+import java.lang.ref.WeakReference;
+
 public final class SimpleAttachmentPresenter extends RecyclePresenter<SimpleAttachmentView, SimplePresenterModel>
         implements OnClickListener {
 
     private final Handler mHandler;
     private final int mTitleColor, mSubTitleColor;
-    private SimpleAttachmentView mView;
 
     public SimpleAttachmentPresenter(Context context, SimplePresenterModel model) {
         super(context, model);
@@ -61,13 +62,11 @@ public final class SimpleAttachmentPresenter extends RecyclePresenter<SimpleAtta
     @Override
     protected void bindMessageAttachmentView(final SimpleAttachmentView viewInterface,
                                              final PresenterOptions presenterOptions) {
-        mView = viewInterface;
         if (!presenterOptions.isInActionMode()) {
-            mView.setOnClickListener(this);
-            mView.setOnLongClickListener(new View.OnLongClickListener() {
+            viewInterface.setOnClickListener(this);
+            viewInterface.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    // TODO Leaked reference ?
                     presenterOptions.onItemLongClick();
                     return true;
                 }
@@ -121,13 +120,13 @@ public final class SimpleAttachmentPresenter extends RecyclePresenter<SimpleAtta
     }
 
     @Override
-    public void unbind() {
+    public void unbindView(SimpleAttachmentView view) {
         getModel().cancelBackgroundLoading();
-        if (mView != null) {
-            mView.setOnClickListener(null);
-            mView.setOnLongClickListener(null);
-            mView.setIconBitmap(null);
-            mView.setIconDrawable(null);
+        if (view != null) {
+            view.setOnClickListener(null);
+            view.setOnLongClickListener(null);
+            view.setIconBitmap(null);
+            view.setIconDrawable(null);
         }
     }
 

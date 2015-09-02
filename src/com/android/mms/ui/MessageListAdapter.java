@@ -38,6 +38,7 @@ import android.provider.Telephony.Sms;
 import android.provider.Telephony.Sms.Conversations;
 import android.provider.Telephony.Threads;
 import android.provider.Telephony.TextBasedSmsColumns;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.LruCache;
 import android.view.LayoutInflater;
@@ -456,29 +457,31 @@ public class MessageListAdapter extends CursorAdapter implements MmsApp.PhoneNum
     public int getItemViewType(int position) {
         Cursor cursor = (Cursor) getItem(position);
         String type = cursor.getString(mColumnsMap.mColumnMsgType);
+        long msgId = cursor.getLong(mColumnsMap.mColumnMsgId);
         int boxId = getBoxId(cursor);
-        if (!isMmsMsgType(type)) {
-            // Note that messages from the SIM card all have a boxId of zero.
-            return (boxId == TextBasedSmsColumns.MESSAGE_TYPE_INBOX ||
-                    boxId == TextBasedSmsColumns.MESSAGE_TYPE_ALL) ?
-                    MSG_TYPE_INCOMING_SMS : MSG_TYPE_OUTGOING_SMS;
-        } else {
+        if (isMmsMsgType(type)) {
             boolean incoming = isIncomingMsgType(boxId);
-            long msgId = cursor.getLong(mColumnsMap.mColumnMsgId);
             mMessageCache.primeCache(msgId);
             List<String> mimeTypes = mMessageCache.getCachedMimeTypes(msgId);
-            if (mimeTypes != null && mimeTypes.size() == 1) {
-                if (type.startsWith("image")) {
+            if (mimeTypes.size() > 1) {
+                return incoming ? MSG_TYPE_INCOMING_SLIDESHOW : MSG_TYPE_OUTGOING_SLIDESHOW;
+            } else if (mimeTypes.size() == 1) {
+                String mimeType = mimeTypes.get(0);
+                if (mimeType.startsWith("image")) {
                     return incoming ? MSG_TYPE_INCOMING_IMAGE : MSG_TYPE_OUTGOING_IMAGE;
-                } else if (type.startsWith("video")) {
+                } else if (mimeType.startsWith("video")) {
                     return incoming ? MSG_TYPE_INCOMING_VIDEO : MSG_TYPE_OUTGOING_VIDEO;
-                } else if (type.startsWith("audio") || type.equalsIgnoreCase("text/x-vCard")
-                        || type.equalsIgnoreCase("text/x-vCalendar")) {
+                } else if (mimeType.startsWith("audio") || mimeType.equalsIgnoreCase("text/x-vCard")
+                        || mimeType.equalsIgnoreCase("text/x-vCalendar")) {
                     return incoming ? MSG_TYPE_INCOMING_SIMPLE : MSG_TYPE_OUTGOING_SIMPLE;
                 }
             }
-            return incoming ? MSG_TYPE_INCOMING_SLIDESHOW : MSG_TYPE_OUTGOING_SLIDESHOW;
         }
+
+        // Note that messages from the SIM card all have a boxId of zero.
+        return (boxId == TextBasedSmsColumns.MESSAGE_TYPE_INBOX ||
+                boxId == TextBasedSmsColumns.MESSAGE_TYPE_ALL) ?
+                MSG_TYPE_INCOMING_SMS : MSG_TYPE_OUTGOING_SMS;
     }
 
     private boolean isGroupedMessage(Cursor cursor) {
