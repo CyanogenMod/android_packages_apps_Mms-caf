@@ -3,8 +3,10 @@ package com.android.mms.blacklist;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +33,7 @@ public class BlockCallerDialogFragment extends DialogFragment
     public static final int ORIGIN_INCALL_NOTIFICATION = 0;
     public static final int ORIGIN_INCALL_ACTIVITY = 1;
     public static final int ORIGIN_CONTACT_CARD = 2;
+    private String PROGRESS_MESSAGE;
 
     private CheckBox mCheckBox;
     private String[] mNumbers;
@@ -46,6 +49,8 @@ public class BlockCallerDialogFragment extends DialogFragment
             mNumbers = bundle.getStringArray(NUMBERS_EXTRA);
             mOrigin = bundle.getInt(ORIGIN_EXTRA, ORIGIN_UNKNOWN);
         }
+
+        PROGRESS_MESSAGE = getResources().getString(R.string.block_dialog_progress_message);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -133,11 +138,7 @@ public class BlockCallerDialogFragment extends DialogFragment
 //        }
         MetricsHelper.sendEvent(MetricsHelper.Categories.BLOCKED_CALLS,
                 action, state, field);
-        CallBlacklistHelper helper = new CallBlacklistHelper(getActivity());
-        for (String number : mNumbers) {
-            helper.addToBlacklist(number);
-        }
-        dismiss();
+        new BlacklistAsyncTask(mNumbers.length).execute(mNumbers);
     }
 
     public interface FinishListener {
@@ -146,5 +147,55 @@ public class BlockCallerDialogFragment extends DialogFragment
 
     public void setFinishListener(FinishListener listener) {
         mFinishListener = listener;
+    }
+
+    private class BlacklistAsyncTask extends AsyncTask<String, Integer, Void> {
+
+        private ProgressDialog mProgressDialog;
+        private int mCount;
+        private String mCurrentNumber;
+        private BlacklistAsyncTask(int count) {
+            mCount = count;
+        }
+
+        @Override
+        public void onPreExecute() {
+            mProgressDialog = new ProgressDialog(getActivity());
+            mProgressDialog.setTitle(R.string.block_dialog_title);
+            mProgressDialog.setIndeterminate(false);
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            mProgressDialog.setMessage(String.format(PROGRESS_MESSAGE, "..."));
+            mProgressDialog.setMax(mCount);
+            mProgressDialog.show();
+        }
+
+        @Override
+        public void onProgressUpdate(Integer... args) {
+            if (args.length > 0) {
+                int progress = args[0];
+                mProgressDialog.setProgress(progress);
+                mProgressDialog.setMessage(String.format(PROGRESS_MESSAGE, mCurrentNumber));
+            }
+        }
+
+        @Override
+        protected Void doInBackground(String... numbers) {
+            CallBlacklistHelper helper = new CallBlacklistHelper(getActivity());
+            int i = 0;
+            for (String number : numbers) {
+                helper.addToBlacklist(number);
+                i++;
+                mCurrentNumber = number;
+                this.publishProgress(i);
+            }
+            return null;
+        }
+
+        @Override
+        public void onPostExecute(Void result) {
+            mProgressDialog.dismiss();
+            dismiss();
+        }
+
     }
 }
