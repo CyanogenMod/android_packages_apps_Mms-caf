@@ -1733,7 +1733,12 @@ public class ComposeMessageActivity extends Activity
         TextView titleView = (TextView) mToolBar.findViewById(R.id.tv_title);
         TextView subtitleView = (TextView) mToolBar.findViewById(R.id.tv_subtitle);
         titleView.setText(title);
-        subtitleView.setText(subTitle);
+        if (TextUtils.isEmpty(subTitle)) {
+            subtitleView.setVisibility(View.GONE);
+        } else {
+            subtitleView.setVisibility(View.VISIBLE);
+            subtitleView.setText(subTitle);
+        }
         mToolBar.setTitle("");
         mToolBar.setSubtitle("");
     }
