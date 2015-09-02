@@ -104,6 +104,7 @@ import android.provider.Settings.SettingNotFoundException;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Sms;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.SubscriptionManager;
 import android.telephony.SmsManager;
@@ -3984,13 +3985,58 @@ public class ComposeMessageActivity extends Activity
     @Override
     public void onClick(View v) {
         if (v == mSendButton && isPreparedForSending()) {
-            if (mCurrentSimInfo == null) {
-                confirmSendMessageIfNeeded();
+            // Ensure current phone number can be obtained from Telephony or was entered by the user
+            int slotId = mCurrentSimInfo != null ? mCurrentSimInfo.mSlotId : MessageUtils.SLOT1;
+            if (MessageUtils.isPhoneNumberAttainable(this, slotId)) {
+                // continue sending message
+                sendCurrentMessage();
+
             } else {
-                confirmSendMessageIfNeeded(mCurrentSimInfo.mSlotId);
+                // show dialog to disambiguate phone number
+                showDialogToConfirmPhoneNumber(slotId);
             }
+
         } else if (v == mRecipientsSelector) {
             pickContacts(SelectRecipientsList.MODE_DEFAULT, REQUEST_CODE_ADD_RECIPIENTS);
+        }
+    }
+
+    private void showDialogToConfirmPhoneNumber(final int slotId) {
+        View view = getLayoutInflater().inflate(R.layout.confirm_phone_number, null);
+        final EditText phoneNumber = (EditText) view.findViewById(R.id.phone_number);
+        phoneNumber.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.confirm_phone_number_title))
+                .setView(view)
+                .setPositiveButton(getString(R.string.confirm_phone_number_send),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                MessagingPreferenceActivity.setCurrentPhoneNumber(
+                                        ComposeMessageActivity.this,
+                                        phoneNumber.getText().toString(),
+                                        slotId);
+                                sendCurrentMessage();
+                            }
+                        })
+
+                .setNegativeButton(getString(R.string.confirm_phone_number_cancel),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+
+                .show();
+    }
+
+    private void sendCurrentMessage() {
+        if (mCurrentSimInfo == null) {
+            confirmSendMessageIfNeeded();
+        } else {
+            confirmSendMessageIfNeeded(mCurrentSimInfo.mSlotId);
         }
     }
 

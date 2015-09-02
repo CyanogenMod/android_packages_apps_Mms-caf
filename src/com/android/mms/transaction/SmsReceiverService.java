@@ -519,7 +519,7 @@ public class SmsReceiverService extends Service {
                 boolean saveSuccess = saveMessageToIcc(sms);
                 if (saveSuccess) {
                     int subId = TelephonyManager.getDefault().isMultiSimEnabled()
-                            ? sms.getSubId() : MessageUtils.SUB_INVALID;
+                            ? sms.getSubId() : MessageUtils.SLOT_INVALID;
                     String address = MessageUtils.convertIdp(this,
                             sms.getDisplayOriginatingAddress());
                     MessagingNotification.blockingUpdateNewIccMessageIndicator(

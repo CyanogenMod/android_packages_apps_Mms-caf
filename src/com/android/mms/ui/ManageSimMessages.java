@@ -170,9 +170,9 @@ public class ManageSimMessages extends Activity
     private void init() {
         MessagingNotification.cancelNotification(getApplicationContext(),
                 SIM_FULL_NOTIFICATION_ID);
-        mSlot = getIntent().getIntExtra(PhoneConstants.PHONE_KEY, MessageUtils.SUB_INVALID);
+        mSlot = getIntent().getIntExtra(PhoneConstants.PHONE_KEY, MessageUtils.SLOT_INVALID);
 
-        mSubscription = MessageUtils.SUB_INVALID;
+        mSubscription = MessageUtils.SLOT_INVALID;
         int[] subIds = SubscriptionManager.getSubId(mSlot);
         if (subIds != null && subIds.length > 0) {
             mSubscription = subIds[0];

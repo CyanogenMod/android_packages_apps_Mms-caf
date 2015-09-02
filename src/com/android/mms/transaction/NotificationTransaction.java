@@ -45,6 +45,7 @@ import com.android.mms.util.DownloadManager;
 import com.android.mms.util.Recycler;
 import com.android.mms.widget.MmsWidgetProvider;
 import com.google.android.mms.MmsException;
+import com.google.android.mms.pdu.EncodedStringValue;
 import com.google.android.mms.pdu.GenericPdu;
 import com.google.android.mms.pdu.NotificationInd;
 import com.google.android.mms.pdu.NotifyRespInd;
@@ -54,6 +55,8 @@ import com.google.android.mms.pdu.PduParser;
 import com.google.android.mms.pdu.PduPersister;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 
 /**
  * The NotificationTransaction is responsible for handling multimedia
@@ -199,6 +202,79 @@ public class NotificationTransaction extends Transaction implements Runnable {
                     mTransactionState.setState(FAILED);
                     status = STATUS_UNRECOGNIZED;
                 } else {
+
+                    /**
+                     * Modifying group messaging parsing. This has to be done here as we can't
+                     * modify the framework nor external dependencies for this release - we are
+                     * updating just the app through the Updater. Pdu parsing utilities are in
+                     * framework/opt and are hence subject to the limitations outlined earlier.
+                     *
+                     * 1. MessagingPreferenceActivity#getIsGroupMmsEnabled 's behavior has been
+                     *    modified to not check whether the sim holds its phone number. Instead,
+                     *    the phone number for the sim should be obtained from
+                     *    MessageUtils#getPhoneNumber.
+                     *
+                     * 2. The number of address entries in PduHeaders.TO and PduHeaders.CC *MUST* be
+                     *    greater than or equal to 2 - artificially boost the address field count
+                     *    if need be. This is to circumvent the shortcut in
+                     *    PduPersister#loadRecipients, wherein an incorrect assumption is made, that
+                     *    if the address field only contains 1 entry, then it is the current user's
+                     *    phone number.
+                     */
+
+                    Method getHeaderMethod = GenericPdu.class.getDeclaredMethod("getPduHeaders",
+                            null);
+                    Method getEncodedStringValuesMethod = PduHeaders.class.
+                            getDeclaredMethod("getEncodedStringValues", int.class);
+                    Method setEncodedStringValuesMethod = PduHeaders.class.
+                            getDeclaredMethod("setEncodedStringValues", EncodedStringValue[].class,
+                                    int.class);
+
+                    getHeaderMethod.setAccessible(true);
+                    getEncodedStringValuesMethod.setAccessible(true);
+                    setEncodedStringValuesMethod.setAccessible(true);
+
+                    String simPhoneNumber = MessageUtils.getPhoneNumber(mContext, mSubId);
+                    PduHeaders pduHeaders = (PduHeaders) getHeaderMethod.invoke(pdu, null);
+
+                    EncodedStringValue[] toAddresses = (EncodedStringValue[])
+                            getEncodedStringValuesMethod.invoke(pduHeaders, PduHeaders.TO);
+                    EncodedStringValue[] ccAddresses = (EncodedStringValue[])
+                            getEncodedStringValuesMethod.invoke(pduHeaders, PduHeaders.CC);
+                    EncodedStringValue[] modifiedAddresses;
+
+                    int numOfAddresses = (toAddresses != null ? toAddresses.length : 0) +
+                            (ccAddresses != null ? ccAddresses.length : 0);
+
+                    if (numOfAddresses > 1) {   // could be a group msg
+
+                        // filter TO addresses
+                        ArrayList<EncodedStringValue> filteredAddresses = removeSelfFromAddressList(
+                                toAddresses, simPhoneNumber);
+
+                        if (filteredAddresses != null) {
+                            // *need* to do this , see comment 2 in the comment block above
+                            if (filteredAddresses.size() <= 1) filteredAddresses.add(pdu.getFrom());
+                            modifiedAddresses = filteredAddresses.toArray(
+                                    new EncodedStringValue[filteredAddresses.size()]);
+                            // add the "new" addresses to the pdu header
+                            setEncodedStringValuesMethod.invoke(pduHeaders, modifiedAddresses,
+                                    PduHeaders.TO);
+                        }
+
+                        // filter CC addresses
+                        filteredAddresses = removeSelfFromAddressList(ccAddresses, simPhoneNumber);
+                        if (filteredAddresses != null) {
+                            // *need* to do this , see comment 2 in the comment block above
+                            if (filteredAddresses.size() <= 1) filteredAddresses.add(pdu.getFrom());
+                            modifiedAddresses = filteredAddresses.toArray(
+                                    new EncodedStringValue[filteredAddresses.size()]);
+                            // add the "new" addresses to the pdu header
+                            setEncodedStringValuesMethod.invoke(pduHeaders, modifiedAddresses,
+                                    PduHeaders.CC);
+                        }
+                    }
+
                     // Save the received PDU (must be a M-RETRIEVE.CONF).
                     PduPersister p = PduPersister.getPduPersister(mContext);
                     Uri uri = p.persist(pdu, Inbox.CONTENT_URI, true,
@@ -267,6 +343,19 @@ public class NotificationTransaction extends Transaction implements Runnable {
             }
             notifyObservers();
         }
+    }
+
+    private ArrayList<EncodedStringValue> removeSelfFromAddressList(EncodedStringValue[] addressList
+            , String myNumber) {
+        if (addressList == null) return null;
+        ArrayList<EncodedStringValue> modifiedAddressList = new ArrayList<>();
+        for (EncodedStringValue encodedStringValue : addressList) {
+            if (!encodedStringValue.getString().equals(myNumber)) {
+                modifiedAddressList.add(encodedStringValue);
+            }
+        }
+
+        return modifiedAddressList;
     }
 
     private void sendNotifyRespInd(int status) throws MmsException, IOException {

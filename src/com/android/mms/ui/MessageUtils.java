@@ -171,9 +171,9 @@ public class MessageUtils {
     private static final int SELECT_SYSTEM = 0;
     private static final int SELECT_EXTERNAL = 1;
     private static final boolean DEBUG = false;
-    public static final int SUB_INVALID = -1;  //  for single card product
-    public static final int SUB1 = 0;  // for DSDS product of slot one
-    public static final int SUB2 = 1;  // for DSDS product of slot two
+    public static final int SLOT_INVALID = -1;  //  for single card product
+    public static final int SLOT1 = 0;  // for DSDS product of slot one
+    public static final int SLOT2 = 1;  // for DSDS product of slot two
     public static final int MESSAGE_READ = 1;
     public static final int MESSAGE_SEEN = 1;
     // add manage mode of multi select action
@@ -1527,9 +1527,9 @@ public class MessageUtils {
         //String multiSimName = Settings.System.getString(context.getContentResolver(),
         //        MULTI_SIM_NAME + (subscription + 1));
         //if (multiSimName == null) {
-            if (slot == SUB1) {
+            if (slot == SLOT1) {
                 return context.getString(R.string.slot1);
-            } else if (slot == SUB2) {
+            } else if (slot == SLOT2) {
                 return context.getString(R.string.slot2);
             }
         //}
@@ -1675,7 +1675,7 @@ public class MessageUtils {
 
     public static boolean isMsimIccCardActive() {
         if (isMultiSimEnabledMms()) {
-            if (isIccCardActivated(MessageUtils.SUB1) && isIccCardActivated(MessageUtils.SUB2)) {
+            if (isIccCardActivated(MessageUtils.SLOT1) && isIccCardActivated(MessageUtils.SLOT2)) {
                 return true;
             }
         }
@@ -1785,9 +1785,9 @@ public class MessageUtils {
      */
     public static Uri getIccUriBySlot(int slot) {
         switch (slot) {
-            case SUB1:
+            case SLOT1:
                 return ICC1_URI;
-            case SUB2:
+            case SLOT2:
                 return ICC2_URI;
             default:
                 return ICC_URI;
@@ -2172,7 +2172,7 @@ public class MessageUtils {
         int preferStore = PREFER_SMS_STORE_PHONE;
 
         if (isMultiSimEnabledMms()) {
-            if (phoneId == SUB1) {
+            if (phoneId == SLOT1) {
                 preferStore = Integer.parseInt(prefsms.getString("pref_key_sms_store_card1", "0"));
             } else {
                 preferStore = Integer.parseInt(prefsms.getString("pref_key_sms_store_card2", "0"));
@@ -2676,6 +2676,52 @@ public class MessageUtils {
         bos.close();
 
         return new File(filePath);
+    }
+
+    public static String getPhoneNumber(Context context, int subId) {
+        int slotId = SubscriptionManager.getSlotId(subId);
+        String localNumber = MessageUtils.getLocalNumber(slotId);
+        if (TextUtils.isEmpty(localNumber)) {
+            return MessagingPreferenceActivity.getStoredPhoneNumber(context, slotId);
+        } else {
+            return localNumber;
+        }
+    }
+    public static boolean isPhoneNumberAttainable(Context context, int slotId) {
+        // check to see if the phone number can be inferred from the SIM
+        String simPhoneNumber = MessageUtils.getLocalNumber(slotId);
+
+        if(TextUtils.isEmpty(simPhoneNumber)) {
+            // get phone number from shared prefs
+            String storedPhoneNumber = MessagingPreferenceActivity.
+                    getStoredPhoneNumber(context, slotId);
+
+            String storedSimIccId = MessagingPreferenceActivity.getStoredSimIccId(context, slotId);
+            String currentSimIccId = getCurrentSimIccId(context, slotId);
+            // stored phone number shouldn't be empty AND
+            // the current sim icc_id should match what's stored in the shared prefs
+            return (!TextUtils.isEmpty(storedPhoneNumber) &&
+                    TextUtils.equals(storedSimIccId, currentSimIccId));
+
+        } else {
+            return true;
+        }
+    }
+
+    public static String getCurrentSimIccId(Context context, int slotId) {
+        Cursor cursor = context.getContentResolver().query(SubscriptionManager.CONTENT_URI,
+                new String[] { SubscriptionManager.ICC_ID },
+                "sim_id = ?",
+                new String[] { Integer.toString(slotId) },
+                null );
+
+        if (cursor != null && cursor.moveToFirst()) {
+            String iccId = cursor.getString(0);
+            cursor.close();
+            return iccId;
+        } else {
+            return null;
+        }
     }
 
     public interface OnSimSelectedCallback {
