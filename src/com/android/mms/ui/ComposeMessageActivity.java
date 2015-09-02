@@ -388,6 +388,7 @@ public class ComposeMessageActivity extends Activity
 
     private RecipientsEditor mRecipientsEditor;  // UI control for editing recipients
     private View mRecipientsSelector;            // UI control for recipients selector
+    private View mRecipientsEditorParent;
 
     // For HW keyboard, 'mIsKeyboardOpen' indicates if the HW keyboard is open.
     // For SW keyboard, 'mIsKeyboardOpen' should always be true.
@@ -1730,12 +1731,8 @@ public class ComposeMessageActivity extends Activity
         // the cnt is already be added recipients count
         mExistsRecipientsCount = cnt;
 
-        TextView titleView = (TextView) mToolBar.findViewById(R.id.tv_title);
-        TextView subtitleView = (TextView) mToolBar.findViewById(R.id.tv_subtitle);
-        titleView.setText(title);
-        subtitleView.setText(subTitle);
-        mToolBar.setTitle("");
-        mToolBar.setSubtitle("");
+        mToolBar.setTitle(title);
+        mToolBar.setSubtitle(subTitle);
     }
 
     private void updateColorPalette(int color) {
@@ -1806,16 +1803,14 @@ public class ComposeMessageActivity extends Activity
         // returns empty recipients when the editor is visible.
         ContactList recipients = getRecipients();
 
-        View titleContainer = findViewById(R.id.grp_title_container);
-        titleContainer.setVisibility(View.GONE);
-
         ViewStub stub = (ViewStub)findViewById(R.id.recipients_editor_stub);
         if (stub != null) {
             View stubView = stub.inflate();
+            mRecipientsEditorParent = stubView;
             mRecipientsEditor = (RecipientsEditor) stubView.findViewById(R.id.recipients_editor);
         } else {
             mRecipientsEditor = (RecipientsEditor)findViewById(R.id.recipients_editor);
-            mRecipientsEditor.setVisibility(View.VISIBLE);
+            mRecipientsEditorParent.setVisibility(View.VISIBLE);
         }
         mRecipientsSelector = findViewById(R.id.recipients_selector);
         mRecipientsSelector.setVisibility(View.VISIBLE);
@@ -2737,13 +2732,11 @@ public class ComposeMessageActivity extends Activity
     private void hideRecipientEditor() {
         if (mRecipientsEditor != null) {
             mRecipientsEditor.removeTextChangedListener(mRecipientsWatcher);
-            mRecipientsEditor.setVisibility(View.GONE);
+            mRecipientsEditorParent.setVisibility(View.GONE);
             if (mRecipientsSelector != null) {
                 mRecipientsSelector.setVisibility(View.GONE);
             }
             hideOrShowTopPanel();
-            View titleContainer = findViewById(R.id.grp_title_container);
-            titleContainer.setVisibility(View.VISIBLE);
         }
     }
 
