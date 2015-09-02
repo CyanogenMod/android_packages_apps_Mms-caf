@@ -57,6 +57,7 @@ import android.provider.SearchRecentSuggestions;
 import android.provider.Settings;
 import android.provider.Telephony;
 import android.telephony.SmsManager;
+import android.telephony.PhoneNumberUtils;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
@@ -115,6 +116,10 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     public static final String GROUP_MMS_MODE           = "pref_key_mms_group_mms";
     public static final String SMS_CDMA_PRIORITY        = "pref_key_sms_cdma_priority";
     public static final String ENABLE_EMOTICONS         = "pref_key_enable_emoticons";
+    private static final String SIM_1_PHONE_NUMBER      = "pref_key_sim_1_phone_number";
+    private static final String SIM_2_PHONE_NUMBER      = "pref_key_sim_2_phone_number";
+    private static final String SIM_1_ICC_ID            = "pref_key_sim_1_icc_id";
+    private static final String SIM_2_ICC_ID            = "pref_key_sim_2_icc_id";
 
     // Unicode
     public static final String UNICODE_STRIPPING            = "pref_key_unicode_stripping_value";
@@ -416,10 +421,10 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         } else {
             if (TelephonyManager.getDefault().isMultiSimEnabled()) {
                 mSmsPrefCategory.removePreference(mSmsDeliveryReportPref);
-                if (!MessageUtils.isIccCardActivated(MessageUtils.SUB1)) {
+                if (!MessageUtils.isIccCardActivated(MessageUtils.SLOT1)) {
                     mSmsDeliveryReportPrefSub1.setEnabled(false);
                 }
-                if (!MessageUtils.isIccCardActivated(MessageUtils.SUB2)) {
+                if (!MessageUtils.isIccCardActivated(MessageUtils.SLOT2)) {
                     mSmsDeliveryReportPrefSub2.setEnabled(false);
                 }
             } else {
@@ -438,10 +443,10 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                     (PreferenceCategory)findPreference("pref_key_storage_settings");
                 storageOptions.removePreference(mSmsStorePref);
 
-                if (!MessageUtils.isIccCardActivated(MessageUtils.SUB1)) {
+                if (!MessageUtils.isIccCardActivated(MessageUtils.SLOT1)) {
                     mSmsStoreCard1Pref.setEnabled(false);
                 }
-                if (!MessageUtils.isIccCardActivated(MessageUtils.SUB2)) {
+                if (!MessageUtils.isIccCardActivated(MessageUtils.SLOT2)) {
                     mSmsStoreCard2Pref.setEnabled(false);
                 }
             } else {
@@ -505,8 +510,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                 mMmsPrefCategory.removePreference(mMmsReadReportPref);
             }
             // If the phone's SIM doesn't know it's own number, disable group mms.
-            if (!MmsConfig.getGroupMmsEnabled() ||
-                    TextUtils.isEmpty(MessageUtils.getLocalNumber())) {
+            if (!MmsConfig.getGroupMmsEnabled()) {
                 mMmsPrefCategory.removePreference(mMmsGroupMmsPref);
             }
         }
@@ -590,10 +594,10 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
     private void updateSIMSMSPref() {
         if (MessageUtils.isMultiSimEnabledMms()) {
-            if (!MessageUtils.isIccCardActivated(MessageUtils.SUB1)) {
+            if (!MessageUtils.isIccCardActivated(MessageUtils.SLOT1)) {
                 mManageSim1Pref.setEnabled(false);
             }
-            if (!MessageUtils.isIccCardActivated(MessageUtils.SUB2)) {
+            if (!MessageUtils.isIccCardActivated(MessageUtils.SLOT2)) {
                 mManageSim2Pref.setEnabled(false);
             }
             mSmsPrefCategory.removePreference(mManageSimPref);
@@ -665,10 +669,10 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                 (PreferenceCategory)findPreference("pref_key_mms_settings");
         if (MessageUtils.isMultiSimEnabledMms()) {
             mmsSettings.removePreference(mMmsExpiryPref);
-            if (!MessageUtils.isIccCardActivated(MessageUtils.SUB1)) {
+            if (!MessageUtils.isIccCardActivated(MessageUtils.SLOT1)) {
                 mMmsExpiryCard1Pref.setEnabled(false);
             }
-            if (!MessageUtils.isIccCardActivated(MessageUtils.SUB2)) {
+            if (!MessageUtils.isIccCardActivated(MessageUtils.SLOT2)) {
                 mMmsExpiryCard2Pref.setEnabled(false);
             }
         } else {
@@ -736,11 +740,11 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             manageSMS();
         } else if (preference == mManageSim1Pref) {
             Intent intent = new Intent(this, ManageSimMessages.class);
-            intent.putExtra(PhoneConstants.PHONE_KEY, MessageUtils.SUB1);
+            intent.putExtra(PhoneConstants.PHONE_KEY, MessageUtils.SLOT1);
             startActivity(intent);
         } else if (preference == mManageSim2Pref) {
             Intent intent = new Intent(this, ManageSimMessages.class);
-            intent.putExtra(PhoneConstants.PHONE_KEY, MessageUtils.SUB2);
+            intent.putExtra(PhoneConstants.PHONE_KEY, MessageUtils.SLOT2);
             startActivity(intent);
         } else if (preference == mClearHistoryPref) {
             showDialog(CONFIRM_CLEAR_SEARCH_HISTORY_DIALOG);
@@ -1434,16 +1438,52 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         return actualSMSC;
     }
 
+    private static void validateSlotId(int slotId) {
+        if (slotId != MessageUtils.SLOT1 && slotId != MessageUtils.SLOT2) {
+            throw new IllegalArgumentException("incorrect slotId : " + slotId);
+        }
+    }
+
+    public static String getStoredPhoneNumber(Context context, int slotId) {
+        validateSlotId(slotId);
+        String prefKey = slotId == MessageUtils.SLOT1 ? SIM_1_PHONE_NUMBER : SIM_2_PHONE_NUMBER;
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getString(prefKey, "");
+    }
+
+    public static String getStoredSimIccId(Context context, int slotId) {
+        validateSlotId(slotId);
+        String prefKey = slotId == MessageUtils.SLOT1 ? SIM_1_ICC_ID : SIM_2_ICC_ID;
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getString(prefKey, "");
+    }
+
+    public static void setCurrentPhoneNumber(Context context, String phoneNumber, int slotId) {
+        validateSlotId(slotId);
+        String phoneNumberPrefKey = slotId == MessageUtils.SLOT1 ?
+                SIM_1_PHONE_NUMBER : SIM_2_PHONE_NUMBER;
+        String simIccIdPrefKey = slotId == MessageUtils.SLOT1 ?
+                SIM_1_ICC_ID : SIM_2_ICC_ID;
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        String formattedNumber = PhoneNumberUtils.formatNumberToE164(phoneNumber,
+                MmsApp.getApplication().getCurrentCountryIso());
+
+        String currentSimIccId = MessageUtils.getCurrentSimIccId(context, slotId);
+        editor.putString(phoneNumberPrefKey, formattedNumber);
+        editor.putString(simIccIdPrefKey, currentSimIccId);
+        editor.apply();
+    }
+
     // For the group mms feature to be enabled, the following must be true:
     //  1. the feature is enabled in mms_config.xml (currently on by default)
     //  2. the feature is enabled in the mms settings page
-    //  3. the SIM knows its own phone number
     public static boolean getIsGroupMmsEnabled(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         boolean groupMmsPrefOn = prefs.getBoolean(
                 MessagingPreferenceActivity.GROUP_MMS_MODE, true);
         return MmsConfig.getGroupMmsEnabled() &&
-                groupMmsPrefOn &&
-                !TextUtils.isEmpty(MessageUtils.getLocalNumber());
+                groupMmsPrefOn ;
     }
 }
