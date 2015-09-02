@@ -20,7 +20,7 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@*android:id/progressContainer"
+        android:id="@+id/progressContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -43,7 +43,8 @@
     </LinearLayout>
 
     <FrameLayout
-        android:id="@*android:id/listContainer"
+        android:id="@+id/listContainer"
+        android:background="@color/background"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -51,17 +52,11 @@
             android:id="@android:id/list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            style="?android:attr/listViewWhiteStyle"
-            android:listSelector="@android:color/transparent"
             android:drawSelectorOnTop="false"
-            android:scrollbarStyle="outsideOverlay"
             android:background="@color/background"
             android:cacheColorHint="@color/background"
             android:divider="@null"
-            android:dividerHeight="0dp"
-            android:fadingEdgeLength="16dip"
-            android:paddingStart="16dip"
-            android:paddingEnd="16dip" />
+            android:dividerHeight="0dp"/>
 
         <TextView
             android:id="@android:id/empty"

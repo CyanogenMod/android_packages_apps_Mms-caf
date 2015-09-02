@@ -100,7 +100,7 @@
 
     <!-- Multi recipients -->
     <string name="loading">Loading\u2026</string>
-    <string name="select_recipients">Select recipients</string>
+    <string name="select_recipients">Select contacts</string>
     <string name="no_recipients">No contacts found</string>
     <string name="no_recipients_mobile_only">No matching contacts found. Try without the \'Mobile numbers only\' filter</string>
     <string name="menu_done">Done</string>
