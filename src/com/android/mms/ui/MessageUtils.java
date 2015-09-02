@@ -69,8 +69,8 @@ import android.os.Bundle;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.StatFs;
-import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.CommonDataKinds.StructuredName;
 import android.provider.MediaStore;
@@ -2209,31 +2209,31 @@ public class MessageUtils {
                 @Override
                 public View getView(int position, View convertView, ViewGroup parent) {
                     View v = super.getView(position, convertView, parent);
-                    try {
-                        URLSpan span = getItem(position);
-                        String url = span.getURL();
-                        Uri uri = Uri.parse(url);
-                        TextView tv = (TextView) v;
-                        Drawable d = context.getPackageManager().getActivityIcon(
-                                new Intent(Intent.ACTION_VIEW, uri));
-                        if (d != null) {
-                            d.setBounds(0, 0, d.getIntrinsicHeight(),
-                                    d.getIntrinsicHeight());
-                            tv.setCompoundDrawablePadding(10);
-                            tv.setCompoundDrawables(d, null, null, null);
-                        }
-                        String tmpUrl = null;
-                        if (url != null) {
-                            if (url.startsWith(MAIL_TO_PREFIX)) {
-                                url = url.substring(MAIL_TO_PREFIX.length());
-                            }
-                            tmpUrl = url.replaceAll("tel:", "");
-                        }
-                        tv.setText(tmpUrl);
-                    } catch (android.content.pm.PackageManager.NameNotFoundException ex) {
-                        // it's ok if we're unable to set the drawable for this view - the user
-                        // can still use it.
+                    URLSpan span = getItem(position);
+                    String url = span.getURL();
+                    Uri uri = Uri.parse(url);
+                    TextView tv = (TextView) v;
+                    final ResolveInfo resolveInfo = context.getPackageManager()
+                            .resolveActivity(new Intent(Intent.ACTION_VIEW, uri),
+                                    PackageManager.MATCH_DEFAULT_ONLY);
+                    Drawable d;
+                    if (resolveInfo != null) {
+                        d = resolveInfo.loadIcon(context.getPackageManager());
+                    } else {
+                        d = context.getPackageManager().getDefaultActivityIcon();
                     }
+                    d.setBounds(0, 0, d.getIntrinsicHeight(),
+                            d.getIntrinsicHeight());
+                    tv.setCompoundDrawablePadding(10);
+                    tv.setCompoundDrawables(d, null, null, null);
+                    String tmpUrl = null;
+                    if (url != null) {
+                        if (url.startsWith(MAIL_TO_PREFIX)) {
+                            url = url.substring(MAIL_TO_PREFIX.length());
+                        }
+                        tmpUrl = url.replaceAll("tel:", "");
+                    }
+                    tv.setText(tmpUrl);
                     return v;
                 }
             };
