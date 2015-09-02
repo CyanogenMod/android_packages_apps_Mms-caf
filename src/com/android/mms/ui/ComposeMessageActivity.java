@@ -4281,7 +4281,7 @@ public class ComposeMessageActivity extends Activity
             case MESSAGE_POPULATE_CACHE_TOKEN:
                 conversationUri = Uri.withAppendedPath(Telephony.Mms.CONTENT_URI, "part");
                 projection = new String[] {"mid", "ct", "text"};
-                selection = "seq != -1 and mid in (select _id from pdu where thread_id=?)";
+                selection = "mid in (select _id from pdu where thread_id=?)";
                 selectionArgs = new String[] {String.valueOf(threadId)};
                 sortOrder = "mid desc";
                 break;
