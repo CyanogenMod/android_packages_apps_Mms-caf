@@ -126,11 +126,11 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
 
         if (!isDraft && MessageUtils.isMsimIccCardActive()) {
             if (isMms) {
-                overlayResId = slot == MessageUtils.SUB1
+                overlayResId = slot == MessageUtils.SLOT1
                         ? R.drawable.quickcontact_overlay_sim1_mms
                         : R.drawable.quickcontact_overlay_sim2_mms;
             } else {
-                overlayResId = slot == MessageUtils.SUB1
+                overlayResId = slot == MessageUtils.SLOT1
                         ? R.drawable.quickcontact_overlay_sim1
                         : R.drawable.quickcontact_overlay_sim2;
             }

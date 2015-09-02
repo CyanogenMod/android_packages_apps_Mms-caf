@@ -150,13 +150,13 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         String valitidyPeriod = null;
         switch (slot) {
-            case MessageUtils.SUB_INVALID:
+            case MessageUtils.SLOT_INVALID:
                 valitidyPeriod = prefs.getString("pref_key_sms_validity_period", null);
                 break;
-            case MessageUtils.SUB1:
+            case MessageUtils.SLOT1:
                 valitidyPeriod = prefs.getString("pref_key_sms_validity_period_slot1", null);
                 break;
-            case MessageUtils.SUB2:
+            case MessageUtils.SLOT2:
                 valitidyPeriod = prefs.getString("pref_key_sms_validity_period_slot2", null);
                 break;
             default:
