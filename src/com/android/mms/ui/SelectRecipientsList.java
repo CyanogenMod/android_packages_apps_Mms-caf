@@ -651,7 +651,6 @@ public class SelectRecipientsList extends Activity implements
             listView.setChoiceMode(mode == MODE_VCARD
                     ? ListView.CHOICE_MODE_SINGLE : ListView.CHOICE_MODE_NONE);
             listView.setFastScrollEnabled(!isGroup);
-            listView.setFastScrollAlwaysVisible(!isGroup);
             listView.setEmptyView(getView().findViewById(android.R.id.empty));
             listView.setOnItemClickListener(this);
 
