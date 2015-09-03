@@ -76,4 +76,11 @@
 
     <!-- The default value for pref_key_ringtone -->
     <string name="pref_defaultValue_notification_ringtone">"content://settings/system/notification_sound"</string>
+
+    <bool name="show_edit_smsc">false</bool>
+
+    <bool name="auto_delete_message">true</bool>
+
+    <bool name="enablePlugger">false</bool>
+
 </resources>

@@ -52,6 +52,7 @@ import com.android.mms.LogTag;
 import com.android.mms.MmsConfig;
 import com.android.mms.dom.smil.parser.SmilXmlSerializer;
 import com.android.mms.layout.LayoutManager;
+import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.UriImage;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
@@ -148,6 +149,7 @@ public class SlideshowModel extends Model
         int slidesNum = slideNodes.getLength();
         ArrayList<SlideModel> slides = new ArrayList<SlideModel>(slidesNum);
         int totalMessageSize = 0;
+        boolean isClassCastFailed = false;
 
         for (int i = 0; i < slidesNum; i++) {
             // FIXME: This is NOT compatible with the SMILDocument which is
@@ -160,7 +162,16 @@ public class SlideshowModel extends Model
             ArrayList<MediaModel> mediaSet = new ArrayList<MediaModel>(mediaNum);
 
             for (int j = 0; j < mediaNum; j++) {
-                SMILMediaElement sme = (SMILMediaElement) mediaNodes.item(j);
+                SMILMediaElement sme = null;
+                try {
+                    sme = (SMILMediaElement) mediaNodes.item(j);
+                } catch (ClassCastException e) {
+                    // The node may not be a SMILMediaElement but a SMILElement or else
+                    // in other mobile phones. So catch the exception and handle it later.
+                    isClassCastFailed = true;
+                    Log.e(TAG, e.getMessage());
+                    continue;
+                }
                 try {
                     MediaModel media = MediaModelFactory.getMediaModel(
                             context, sme, layouts, pb);
@@ -222,6 +233,45 @@ public class SlideshowModel extends Model
                 }
             }
 
+            // Add vcard when receive from other products without ref target in smil.
+            int partsNum = pb.getPartsNum();
+            if (needAddUnrecognizedPart(slidesNum,
+                    mediaNum, partsNum, isClassCastFailed)) {
+                for (int k = 0; k < partsNum; k++) {
+                    PduPart part = pb.getPart(k);
+                    String contentType = (new String(part.getContentType())).toLowerCase();
+                    if (MessageUtils.OCT_STREAM.equals(contentType)) {
+                        byte[] name = part.getName();
+                        if (name == null) {
+                            name = part.getContentLocation();
+                        }
+                        if (name != null) {
+                            // Convert content type application/oct-stream (which is a vcard) to
+                            // application/X-vcard so that this mms can be recognized.
+                            contentType = MessageUtils.convertToVcardType(new String(name));
+                        }
+                    }
+                    if (ContentType.TEXT_VCARD.toLowerCase().equals(contentType) ||
+                            ContentType.TEXT_VCALENDAR.toLowerCase().equals(contentType)) {
+                        byte[] data = part.getContentLocation();
+                        if (data == null) {
+                            data = part.getName();
+                        }
+                        MediaModel vMedia = null;
+                        if (ContentType.TEXT_VCARD.toLowerCase().equals(contentType)) {
+                            vMedia = new VcardModel(context, contentType,
+                                    new String(data), part.getDataUri());
+                        } else {
+                            vMedia = new VCalModel(context, contentType,
+                                    new String(data), part.getDataUri());
+                        }
+                        mediaSet.add(vMedia);
+                        totalMessageSize += vMedia.getMediaSize();
+                        break;
+                    }
+                }
+            }
+
             SlideModel slide = new SlideModel((int) (par.getDur() * 1000), mediaSet);
             slide.setFill(par.getFill());
             SmilHelper.addParElementEventListeners((EventTarget) par, slide);
@@ -234,6 +284,19 @@ public class SlideshowModel extends Model
         return slideshow;
     }
 
+     private static boolean needAddUnrecognizedPart(
+             int slidesNum, int mediaNum, int partsNum, boolean castFailed) {
+         if (slidesNum != 1) {
+             return false;
+         }
+
+         if (mediaNum != partsNum || castFailed) {
+             // Some part is not recognized as a media, need add.
+             return true;
+         } else {
+             return false;
+         }
+    }
     public PduBody toPduBody() {
         if (mPduBodyCache == null) {
             mDocumentCache = SmilHelper.getDocument(this);
@@ -679,6 +742,16 @@ public class SlideshowModel extends Model
         }
     }
 
+    public ArrayList<Uri> getAttachFileUri() {
+        ArrayList<Uri> uris = new ArrayList<Uri>();
+        for (SlideModel slide : mSlides) {
+            for (MediaModel media : slide) {
+                uris.add(media.getUri());
+            }
+        }
+        return uris;
+    }
+
     public void checkMessageSize(int increaseSize) throws ContentRestrictionException {
         ContentRestriction cr = ContentRestrictionFactory.getContentRestriction();
         cr.checkMessageSize(mCurrentMessageSize, increaseSize, mContext.getContentResolver());
@@ -705,6 +778,21 @@ public class SlideshowModel extends Model
             return false;
 
         return true;
+    }
+
+    public boolean isSimpleAudio() {
+        // There must be one (and only one) slide.
+        if (size() != 1)
+            return false;
+
+        SlideModel slide = get(0);
+
+        // Only one audio allowed.
+        if (slide.hasAudio() && !slide.hasImage() && !slide.hasVcard()) {
+            return true;
+        }
+
+        return false;
     }
 
     private boolean isSlideValid(SlideModel slide) {

@@ -103,7 +103,8 @@ public class RetryScheduler implements Observer {
                 }
             }
         } finally {
-            if (isMmsDataConnectivityPossible(t.getSubId())) {
+            if (isMmsDataConnectivityPossible(t.getSubId()) || mContext
+                    .getResources().getBoolean(R.bool.config_retry_always)) {
                 setRetryAlarm(mContext);
             } else {
                 Log.d(TAG, "Retry alarm is not set");
@@ -301,7 +302,7 @@ public class RetryScheduler implements Observer {
                             context, 0, service, PendingIntent.FLAG_ONE_SHOT);
                     AlarmManager am = (AlarmManager) context.getSystemService(
                             Context.ALARM_SERVICE);
-                    am.set(AlarmManager.RTC, retryAt, operation);
+                    am.setExact(AlarmManager.RTC, retryAt, operation);
 
                     if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
                         Log.v(TAG, "Next retry is scheduled at"

@@ -37,8 +37,11 @@ import com.android.mms.model.SlideshowModel;
 import com.android.mms.model.TextModel;
 import com.android.mms.model.VcardModel;
 import com.android.mms.model.VideoModel;
+import com.android.mms.R;
 import com.android.mms.ui.AdaptableSlideViewInterface.OnSizeChangedListener;
 import com.android.mms.util.ItemLoadedCallback;
+import com.android.mms.util.ItemLoadedFuture;
+import com.android.mms.util.ThumbnailManager.ImageLoaded;
 import android.net.Uri;
 import android.text.TextUtils;
 
@@ -49,6 +52,9 @@ public class SlideshowPresenter extends Presenter {
     private static final String TAG = LogTag.TAG;
     private static final boolean DEBUG = false;
     private static final boolean LOCAL_LOGV = false;
+
+    private Context mContext;
+    private ItemLoadedFuture mItemLoadedFuture;
 
     protected int mLocation;
     protected final int mSlideNumber;
@@ -63,6 +69,7 @@ public class SlideshowPresenter extends Presenter {
 
     public SlideshowPresenter(Context context, ViewInterface view, Model model) {
         super(context, view, model);
+        mContext = context;
         mLocation = 0;
         mSlideNumber = ((SlideshowModel) mModel).size();
 
@@ -190,7 +197,14 @@ public class SlideshowPresenter extends Presenter {
     protected void presentText(SlideViewInterface view, TextModel text,
             RegionModel r, boolean dataChanged) {
         if (dataChanged) {
-            view.setText(text.getSrc(), text.getText());
+            int text_limit = mContext.getResources().getInteger(R.integer.slide_text_limit_size);
+            if ((text_limit > 0) && (text.getText().length() > text_limit)) {
+                // It will drop the extra characters in slideview once text
+                // exceeds the size of text_limit.
+                view.setText(text.getSrc(), text.getText().substring(0, text_limit));
+            } else {
+                view.setText(text.getSrc(), text.getText());
+            }
         }
 
         if (view instanceof AdaptableSlideViewInterface) {
@@ -272,13 +286,14 @@ public class SlideshowPresenter extends Presenter {
         if (dataChanged) {
             view.setVideo(video.getSrc(), video.getUri());
         }
-
-            if (view instanceof AdaptableSlideViewInterface) {
+        if (view instanceof AdaptableSlideViewInterface) {
             ((AdaptableSlideViewInterface) view).setVideoRegion(
                     transformWidth(r.getLeft()),
                     transformHeight(r.getTop()),
                     transformWidth(r.getWidth()),
                     transformHeight(r.getHeight()));
+        } else if (view instanceof SlideListItemView) {
+            mItemLoadedFuture = video.loadThumbnailBitmap(mItemLoadedCallback);
         }
         view.setVideoVisibility(video.isVisible());
 
@@ -293,6 +308,27 @@ public class SlideshowPresenter extends Presenter {
             view.seekVideo(video.getSeekTo());
         }
     }
+
+    private ItemLoadedCallback<ImageLoaded> mItemLoadedCallback =
+            new ItemLoadedCallback<ImageLoaded>() {
+        public void onItemLoaded(ImageLoaded imageLoaded, Throwable exception) {
+            if (exception == null) {
+                if (mItemLoadedFuture != null) {
+                    synchronized(mItemLoadedFuture) {
+                        mItemLoadedFuture.setIsDone(true);
+                    }
+                    mItemLoadedFuture = null;
+                }
+                SlideModel slide = ((SlideshowModel) mModel).get(mLocation);
+                if (slide != null) {
+                    if (slide.hasVideo() && imageLoaded.mIsVideo) {
+                        ((SlideViewInterface)mView).setVideoThumbnail(null,
+                                imageLoaded.mBitmap);
+                    }
+                }
+            }
+        }
+    };
 
     public void setLocation(int location) {
         mLocation = location;
@@ -355,6 +391,11 @@ public class SlideshowPresenter extends Presenter {
 
     @Override
     public void cancelBackgroundLoading() {
-        // For now, the SlideshowPresenter does no background loading so there is nothing to cancel.
+        SlideModel slide = ((SlideshowModel) mModel).get(mLocation);
+        if (slide != null && slide.hasVideo()) {
+            slide.getVideo().cancelThumbnailLoading();
+        }
+        mItemLoadedFuture = null;
+        mModel.unregisterModelChangedObserver(this);
     }
 }

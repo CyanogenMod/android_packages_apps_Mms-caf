@@ -85,6 +85,8 @@
     <string name="add_attachment" msgid="7103751293360532684">"附件"</string>
     <string name="add_subject" msgid="7616134948428265870">"添加主题"</string>
     <string name="discard" msgid="1624800293064498479">"舍弃"</string>
+    <string name="add_another_attachment">添加另一附件</string>
+    <string name="replace_current_attachment">替换当前附件</string>
     <string name="view" msgid="7929667761715467136">"查看"</string>
     <string name="replace" msgid="7587904998114459388">"替换"</string>
     <string name="remove" msgid="4625444913256213175">"删除"</string>
@@ -100,11 +102,12 @@
     <string name="compose_disabled_toast" msgid="1838175321052707875">"无法写短信，因为此应用不是默认的短信应用。"</string>
     <string name="compressing" msgid="1961357529661045180">"图片过大。正在压缩…"</string>
     <string name="unsupported_media_format" msgid="1350489690977363764">"不支持<xliff:g id="NAME">%1$s</xliff:g>格式。"</string>
+    <string name="unsupported_format">不支持的格式.</string>
     <string name="select_different_media" msgid="6241623357299382183">"选择其他<xliff:g id="NAME">%1$s</xliff:g>。"</string>
     <string name="exceed_message_size_limitation" msgid="6027753647094742437">"已达到信息大小上限。"</string>
     <string name="message_too_big_for_video" msgid="2639367545165352543">"该短信太大，无法附加视频。"</string>
     <string name="media_size_limit" msgid="7207464170168708486">"已达到信息大小上限，无法发送。"</string>
-    <string name="failed_to_add_media" msgid="7207464170168708485">"您无法将此<xliff:g id="NAME">%1$s</xliff:g>添加到短信中。"</string>
+    <string name="failed_to_add_media" msgid="7207464170168708485">"您无法将此<xliff:g id="NAME">%1$s</xliff:g>添加到信息中。"</string>
     <string name="failed_to_resize_image" msgid="5608354151631833669">"未调整图片大小。"</string>
     <string name="illegal_message_or_increase_size">信息或所添加附件大小非法。</string>
     <string name="resize_image_error_information" msgid="3783200130776554475">"重新调整大小后，此照片仍然过大，因此无法发送。"</string>
@@ -122,7 +125,9 @@
     <string name="cannot_send_message" msgid="3414307479833622644">"无法发送短信"</string>
     <string name="cannot_send_message_reason" msgid="8745080126044054343">"您的信息没有有效的接收者。"</string>
     <string name="cannot_forward_drm_obj" msgid="5047623751430559077">"无法转发该短信中包含的 DRM 对象。"</string>
+    <string name="cannot_send_attach_reason">"信息附件无法访问，无法发送。"</string>
     <string name="converting_to_picture_message" msgid="2980023239017588627">"正在转换为彩信…"</string>
+    <string name="converting_to_text_message" >"正在转换为短信…"</string>
     <!-- Brief message that appears when the maximum size of slides has been reached -->
     <string name="cannot_add_text_anymore">"无法再添加文字。"</string>
     <string name="cannot_add_slide_anymore" msgid="4631404749618820994">"无法再添加幻灯片。"</string>
@@ -224,7 +229,7 @@
     <string name="confirm_delete_locked_message" msgid="7203411948190100955">"要删除锁定的短信吗？"</string>
     <string name="confirm_delete_all_SIM_messages" msgid="8693652297557966665">"系统会删除SIM卡上的所有短信。"</string>
     <string name="confirm_delete_SIM_message" msgid="8535128079045452425">"系统会删除SIM卡上的这条短信。"</string>
-    <string name="delete_unlocked" msgid="7545321606698162261">"删除锁定短信"</string>
+    <string name="delete_unlocked" msgid="7545321606698162261">"删除锁定信息"</string>
     <string name="delete" msgid="1409973060081564612">"删除"</string>
     <string name="select_conversations" msgid="7816517565640002844">"选择会话"</string>
     <string name="no_conversations" msgid="6773767655149258445">"无会话。"</string>
@@ -289,6 +294,8 @@
     <string name="sim_full_body" msgid="6241664980790322925">"删除部分信息以腾出更多空间。"</string>
     <string name="sms_full_title" msgid="6041287140125011854">"短信内存已满"</string>
     <string name="sms_full_body" msgid="4885861852397651868">"存储空间已满，无法发送和接收短信，请删除部分旧短信。"</string>
+    <string name="memory_low_title">"存储空间低"</string>
+    <string name="memory_low_body">"存储空间快要满了，请删除一些旧数据以确保能接收到新信息。"</string>
     <string name="inform_data_off">"移动数据已关闭， 请在系统设定中开启后重试。"</string>
     <string name="mms_too_large">"彩信过大，无法下载。"</string>
     <string name="sms_rejected_title" msgid="8548394922491529811">"短信遭拒"</string>
@@ -504,6 +511,7 @@
     <string name="set_smsc_success">设置短消息中心号码成功</string>
     <string name="set_smsc_confirm_message">修改短消息中心号码可能导致短信发送失败，确认修改吗？</string>
 
+    <string name="audio_picker_app_not_found">"找不到选择音频的应用"</string>
     <string name="contact_app_not_found">"找不到联系人应用"</string>
     <string name="search_bar_hint">"搜索联系人"</string>
     <string name="select_all">"全选"</string>
@@ -518,7 +526,7 @@
     <!-- select contact group -->
     <string name="no_contact_group">没有任何群组</string>
 
-    <string name="sim_capacity_title">"Sim卡容量"</string>
+    <string name="sim_capacity_title">"SIM卡容量"</string>
     <string name="sim_capacity_used">"已使用:"</string>
     <string name="sim_capacity">"总容量:"</string>
 
@@ -553,4 +561,9 @@
     <string name="sms_phone_capacity">"短信容量:"</string>
     <string name="mms_phone_used">"已用彩信:"</string>
     <string name="mms_phone_capacity">"彩信容量:"</string>
+
+    <!-- ConfigurationClient -->
+    <string name="omacp_configuration">OMACP配置</string>
+    <string name="configuration_message_key">配置短信</string>
+    <string name="configuration_message_key_activity">触摸即可配置您的OMACP短信</string>
 </resources>

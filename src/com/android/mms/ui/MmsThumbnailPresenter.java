@@ -73,9 +73,11 @@ public class MmsThumbnailPresenter extends Presenter {
                     synchronized(mItemLoadedFuture) {
                         mItemLoadedFuture.setIsDone(true);
                     }
+                    mItemLoadedFuture = null;
                 }
                 if (mOnLoadedCallback != null) {
                     mOnLoadedCallback.onItemLoaded(imageLoaded, exception);
+                    mOnLoadedCallback = null;
                 } else {
                     // Right now we're only handling image and video loaded callbacks.
                     SlideModel slide = ((SlideshowModel) mModel).get(0);
@@ -121,6 +123,10 @@ public class MmsThumbnailPresenter extends Presenter {
         if (slide != null && slide.hasImage()) {
             slide.getImage().cancelThumbnailLoading();
         }
+
+        mItemLoadedFuture = null;
+        mOnLoadedCallback = null;
+        mModel.unregisterModelChangedObserver(this);
     }
 
 }

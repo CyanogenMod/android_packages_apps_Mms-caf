@@ -49,6 +49,7 @@ import android.database.sqlite.SqliteWrapper;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -58,9 +59,10 @@ import android.provider.BaseColumns;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.MmsSms;
 import android.provider.Telephony.Sms;
-import android.telephony.TelephonyManager;
+import android.telephony.PhoneStateListener;
 import android.telephony.SubscriptionManager;
 import android.telephony.SubInfoRecord;
+import android.telephony.TelephonyManager;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -218,7 +220,18 @@ public class MessagingNotification {
 
     private static final int MAX_MESSAGES_TO_SHOW = 8;  // the maximum number of new messages to
                                                         // show in a single notification.
+    private static int mPhoneState;
+    private static PhoneStateListener mPhoneStateListener = new PhoneStateListener() {
+        @Override
+        public void onCallStateChanged(int state, String ignored) {
+            mPhoneState = state;
+        }
+    };
 
+    public static final AudioAttributes AUDIO_ATTRIBUTES_ALARM = new AudioAttributes.Builder()
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .setUsage(AudioAttributes.USAGE_ALARM)
+            .build();
 
     private MessagingNotification() {
     }
@@ -236,6 +249,9 @@ public class MessagingNotification {
         sNotificationOnDeleteIntent = new Intent(NOTIFICATION_DELETED_ACTION);
 
         sScreenDensity = context.getResources().getDisplayMetrics().density;
+
+        TelephonyManager.getDefault().listen(mPhoneStateListener,
+                PhoneStateListener.LISTEN_CALL_STATE);
     }
 
     /**
@@ -439,7 +455,12 @@ public class MessagingNotification {
         }
         String ringtoneStr = sp.getString(MessagingPreferenceActivity.NOTIFICATION_RINGTONE,
                 null);
-        noti.setSound(TextUtils.isEmpty(ringtoneStr) ? null : Uri.parse(ringtoneStr));
+        if (isInCall()) {
+            noti.setSound(TextUtils.isEmpty(ringtoneStr) ? null : Uri.parse(ringtoneStr),
+                    AUDIO_ATTRIBUTES_ALARM);
+        } else {
+            noti.setSound(TextUtils.isEmpty(ringtoneStr) ? null : Uri.parse(ringtoneStr));
+        }
         Log.d(TAG, "blockingUpdateNewIccMessageIndicator: adding sound to the notification");
 
         defaults |= Notification.DEFAULT_LIGHTS;
@@ -687,9 +708,6 @@ public class MessagingNotification {
     // Return a formatted string with all the sender names separated by commas.
     private static CharSequence formatSenders(Context context,
             ArrayList<NotificationInfo> senders) {
-        final TextAppearanceSpan notificationSenderSpan = new TextAppearanceSpan(
-                context, R.style.NotificationPrimaryText);
-
         String separator = context.getString(R.string.enumeration_comma);   // ", "
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
         int len = senders.size();
@@ -699,8 +717,7 @@ public class MessagingNotification {
             }
             spannableStringBuilder.append(senders.get(i).mSender.getName());
         }
-        spannableStringBuilder.setSpan(notificationSenderSpan, 0,
-                spannableStringBuilder.length(), 0);
+
         return spannableStringBuilder;
     }
 
@@ -1180,7 +1197,12 @@ public class MessagingNotification {
 
             String ringtoneStr = sp.getString(MessagingPreferenceActivity.NOTIFICATION_RINGTONE,
                     null);
-            noti.setSound(TextUtils.isEmpty(ringtoneStr) ? null : Uri.parse(ringtoneStr));
+            if (isInCall()) {
+                noti.setSound(TextUtils.isEmpty(ringtoneStr) ? null : Uri.parse(ringtoneStr),
+                        AUDIO_ATTRIBUTES_ALARM);
+            } else {
+                noti.setSound(TextUtils.isEmpty(ringtoneStr) ? null : Uri.parse(ringtoneStr));
+            }
             Log.d(TAG, "updateNotification: new message, adding sound to the notification");
         }
 
@@ -1824,9 +1846,9 @@ public class MessagingNotification {
      * @param context the context to use
      * @param isFull if notify a full icon, it should be true, otherwise, false.
      */
-    public static void updateSmsMessageFullIndicator(Context context, boolean isFull) {
+    public static void updateMessageFullIndicator(Context context, boolean isSms, boolean isFull) {
         if (isFull) {
-            sendFullNotification(context);
+            sendFullNotification(context, isSms);
         } else {
             cancelNotification(context, FULL_NOTIFICATION_ID);
         }
@@ -1836,12 +1858,14 @@ public class MessagingNotification {
      * This method sends a notification to NotificationManager to display
      * an dialog indicating the message memory is full.
      */
-    private static void sendFullNotification(Context context) {
+    private static void sendFullNotification(Context context, boolean isSms) {
         NotificationManager nm = (NotificationManager)context.getSystemService(
                 Context.NOTIFICATION_SERVICE);
 
-        String title = context.getString(R.string.sms_full_title);
-        String description = context.getString(R.string.sms_full_body);
+        String title = context.getString(isSms ? R.string.sms_full_title
+                : R.string.memory_low_title);
+        String description = context.getString(isSms ? R.string.sms_full_body
+                : R.string.memory_low_body);
         PendingIntent intent = PendingIntent.getActivity(context, 0,  new Intent(), 0);
         Notification notification = new Notification();
         notification.icon = R.drawable.stat_notify_sms_failed;
@@ -1869,4 +1893,11 @@ public class MessagingNotification {
         return intent;
     }
 
+    /**
+     * This method check whether phone is in call status
+     */
+    protected static boolean isInCall() {
+        return mPhoneState == TelephonyManager.CALL_STATE_RINGING
+                || mPhoneState == TelephonyManager.CALL_STATE_OFFHOOK;
+    }
 }

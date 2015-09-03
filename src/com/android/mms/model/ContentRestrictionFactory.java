@@ -16,16 +16,47 @@
  */
 package com.android.mms.model;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
+import com.android.mms.MmsApp;
+import com.android.mms.ui.MessagingPreferenceActivity;
+
 public class ContentRestrictionFactory {
     private static ContentRestriction sContentRestriction;
+
+    private static int sCreationMode;
 
     private ContentRestrictionFactory() {
     }
 
+    public static void initContentRestriction(int creationMode) {
+        sContentRestriction = new CarrierContentRestriction(creationMode);
+        sCreationMode = creationMode;
+    }
+
     public static ContentRestriction getContentRestriction() {
+        Context context = MmsApp.getApplication().getApplicationContext();
+        SharedPreferences preferences = PreferenceManager
+                .getDefaultSharedPreferences(context);
+        int creationMode = Integer.parseInt(preferences.getString(
+                MessagingPreferenceActivity.MMS_CREATION_MODE,
+                MessagingPreferenceActivity.CREATION_MODE_FREE + ""));
         if (null == sContentRestriction) {
-            sContentRestriction = new CarrierContentRestriction();
+            sContentRestriction = new CarrierContentRestriction(creationMode);
         }
+        sCreationMode = creationMode;
         return sContentRestriction;
     }
+
+
+    public static void reset() {
+        sContentRestriction = null;
+    }
+
+    public static int getUsedCreationMode() {
+        return sCreationMode;
+    }
+
 }

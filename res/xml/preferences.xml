@@ -47,7 +47,7 @@
                       android:title="@string/pref_mms_clear_search_history_title"
                       android:summary="@string/pref_mms_clear_search_history_summary" />
 -->
-     <CheckBoxPreference android:defaultValue="true"
+     <CheckBoxPreference android:defaultValue="@bool/auto_delete_message"
                       android:key="pref_key_auto_delete"
                       android:summary="@string/pref_summary_auto_delete"
                       android:title="@string/pref_title_auto_delete" />
@@ -188,6 +188,15 @@
                     android:entries="@array/save_time"
                     android:entryValues="@array/save_time_values"
                     android:defaultValue="0" />
+
+    <ListPreference android:key="pref_key_creation_mode"
+                    android:defaultValue="3"
+                    android:title="@string/pref_title_notification_creation_mode"
+                    android:entries="@array/pref_entries_creation_mode"
+                    android:entryValues="@array/pref_entries_creation_mode"
+                    android:dialogTitle="@string/pref_dialog_title_creation_mode"
+                    android:summary="@string/pref_summary_creation_mode" />
+
   </PreferenceCategory>
   <PreferenceCategory android:title="@string/pref_notification_settings_title"
                       android:key="pref_key_notification_settings">
@@ -213,4 +222,13 @@
                         android:summary="@string/pref_summary_wap_push_enabled"
                         android:defaultValue="@bool/def_wap_push_enabled" />
   </PreferenceCategory>
+  <!-- ConfigurationClient -->
+    <PreferenceCategory
+        android:key="pref_key_sms_omacp_configuration"
+        android:title="@string/omacp_configuration" >
+        <Preference
+            android:key="pref_key_configuration_message"
+            android:summary="@string/configuration_message_key_activity"
+            android:title="@string/configuration_message_key" />
+    </PreferenceCategory>
 </PreferenceScreen>

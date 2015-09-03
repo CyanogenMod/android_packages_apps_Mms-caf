@@ -26,6 +26,7 @@ import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
+import android.content.ActivityNotFoundException;
 import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -411,6 +412,8 @@ public class MailBoxMessageList extends ListActivity implements
         // Cancel failed notification.
         MessageUtils.cancelFailedToDeliverNotification(intent, this);
         MessageUtils.cancelFailedDownloadNotification(intent, this);
+
+        Conversation.markAllConversationsAsSeen(MailBoxMessageList.this);
     }
 
     @Override
@@ -627,7 +630,6 @@ public class MailBoxMessageList extends ListActivity implements
             setProgressBarIndeterminateVisibility(false);
             mQueryDone = true;
             MessagingNotification.setCurrentlyDisplayedMsgType(mQueryBoxType);
-            Conversation.markAllConversationsAsSeen(MailBoxMessageList.this);
         }
     }
 
@@ -748,6 +750,12 @@ public class MailBoxMessageList extends ListActivity implements
             case R.id.action_memory_status:
                 MessageUtils.showMemoryStatusDialog(this);
                 break;
+            case R.id.action_cell_broadcasts:
+                try {
+                    startActivity(MessageUtils.getCellBroadcastIntent());
+                } catch (ActivityNotFoundException e) {
+                    Log.e(TAG, "ActivityNotFoundException for CellBroadcastListActivity");
+                }
             default:
                 return true;
         }

@@ -23,6 +23,7 @@ package com.android.mms.ui;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
@@ -40,6 +41,7 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -54,6 +56,8 @@ import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.database.sqlite.SqliteWrapper;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
 import android.graphics.drawable.Drawable;
 import android.media.CamcorderProfile;
 import android.media.RingtoneManager;
@@ -65,6 +69,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.StatFs;
+import android.os.UserHandle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.Contacts;
@@ -72,8 +77,10 @@ import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.CommonDataKinds.StructuredName;
 import android.provider.ContactsContract.Data;
 import android.provider.MediaStore;
+import android.provider.MediaStore.Audio;
 import android.provider.Settings;
 import android.provider.Telephony.Mms;
+import android.provider.Telephony.Mms.Part;
 import android.provider.Telephony.Sms;
 import android.provider.Telephony.Threads;
 import android.telecom.PhoneAccount;
@@ -95,22 +102,16 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.internal.telephony.EncodeException;
-import com.android.internal.telephony.GsmAlphabet;
 import com.android.internal.telephony.PhoneConstants;
-import com.android.internal.telephony.SmsHeader;
-import com.android.internal.telephony.cdma.sms.BearerData;
-import com.android.internal.telephony.cdma.sms.CdmaSmsAddress;
-import com.android.internal.telephony.cdma.sms.SmsEnvelope;
-import com.android.internal.telephony.cdma.sms.UserData;
-import com.android.internal.telephony.uicc.IccUtils;
-
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.TempFileProvider;
 import com.android.mms.data.WorkingMessage;
+import com.android.mms.model.ContentRestriction;
+import com.android.mms.model.ContentRestrictionFactory;
+import com.android.mms.model.ImageModel;
 import com.android.mms.model.MediaModel;
 import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
@@ -131,14 +132,6 @@ import com.google.android.mms.pdu.PduPart;
 import com.google.android.mms.pdu.PduPersister;
 import com.google.android.mms.pdu.RetrieveConf;
 import com.google.android.mms.pdu.SendReq;
-
-import static android.telephony.SmsMessage.ENCODING_7BIT;
-import static android.telephony.SmsMessage.ENCODING_8BIT;
-import static android.telephony.SmsMessage.ENCODING_16BIT;
-import static android.telephony.SmsMessage.ENCODING_UNKNOWN;
-import static android.telephony.SmsMessage.MAX_USER_DATA_BYTES;
-import static android.telephony.SmsMessage.MAX_USER_DATA_BYTES_WITH_HEADER;
-import static android.telephony.SmsMessage.MAX_USER_DATA_SEPTETS;
 
 /**
  * An utility class for managing messages.
@@ -185,6 +178,10 @@ public class MessageUtils {
     public static final int PREFER_SMS_STORE_PHONE = 0;
     public static final int PREFER_SMS_STORE_CARD = 1;
     private static final Uri BOOKMARKS_URI = Uri.parse("content://browser/bookmarks");
+
+    // Consider oct-strean as the content type of vCard
+    public static final String OCT_STREAM = "application/oct-stream";
+    public static final String VCARD = "vcf";
 
     // distinguish view vcard from mms but not from contacts.
     public static final String VIEW_VCARD = "VIEW_VCARD_FROM_MMS";
@@ -298,12 +295,27 @@ public class MessageUtils {
     // Save the thread id for same recipient forward mms
     public static ArrayList<Long> sSameRecipientList = new ArrayList<Long>();
 
+    private static final String PREF_SHOW_URL_WARNING = "pref_should_show_url_warning";
+    private static final boolean PREF_SHOULD_SHOW_URL_WARNING = true;
+
+    private static final String CELL_BROADCAST_PACKAGE_NAME =
+            "com.android.cellbroadcastreceiver";
+    private static final String CELL_BROADCAST_ACTIVITY_NAME =
+            "com.android.cellbroadcastreceiver.CellBroadcastListActivity";
+    private static final long COMPRESSION_FACTOR = 3;
+
     static {
         for (int i = 0; i < NUMERIC_CHARS_SUGAR.length; i++) {
             numericSugarMap.put(NUMERIC_CHARS_SUGAR[i], NUMERIC_CHARS_SUGAR[i]);
         }
     }
 
+    private static final int OFFSET_ADDRESS_LENGTH = 0;
+    private static final int OFFSET_TOA = 1;
+    private static final int OFFSET_ADDRESS_VALUE = 2;
+
+    public static final String SMS_BOX_ID = "box_id";
+    public static final String COPY_SMS_INTO_SIM_SUCCESS = "success";
 
     private MessageUtils() {
         // Forbidden being instantiated.
@@ -615,6 +627,19 @@ public class MessageUtils {
         }
     }
 
+    public static String convertToVcardType(String src) {
+        if (!TextUtils.isEmpty(src)) {
+            int index = src.lastIndexOf('.');
+            if (index > 0) {
+                String extension = src.substring(index + 1, src.length());
+                if (extension.toLowerCase().equals(VCARD)) {
+                    return ContentType.TEXT_VCARD.toLowerCase();
+                }
+            }
+        }
+        return null;
+    }
+
     public static int getAttachmentType(SlideshowModel model, MultimediaMessagePdu mmp) {
         if (model == null || mmp == null) {
             return MessageItem.ATTACHMENT_TYPE_NOT_LOADED;
@@ -729,7 +754,13 @@ public class MessageUtils {
                                 audioIntent.setData(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
                                 break;
                         }
-                        activity.startActivityForResult(audioIntent, requestCode);
+                        // Add try here is to avoid monkey test failure.
+                        try {
+                            activity.startActivityForResult(audioIntent, requestCode);
+                        } catch (ActivityNotFoundException ex) {
+                            Toast.makeText(activity, R.string.audio_picker_app_not_found,
+                                    Toast.LENGTH_SHORT).show();
+                        }
                     }
                 })
                 .create();
@@ -897,7 +928,7 @@ public class MessageUtils {
     public static final int MESSAGE_OVERHEAD = 5000;
 
     public static void resizeImageAsync(final Context context,
-            final Uri imageUri, final Handler handler,
+            final Uri imageUri, final int currentMsgSize, final Handler handler,
             final ResizeImageResultCallback cb,
             final boolean append) {
 
@@ -931,10 +962,23 @@ public class MessageUtils {
                         heightLimit = temp;
                     }
 
+                   int maxSize = MmsConfig.getMaxRestrictedMessageSize();
+                   ContentRestriction cr = ContentRestrictionFactory.getContentRestriction();
+                   int creationMode = ContentRestrictionFactory.getUsedCreationMode();
+                   switch (creationMode) {
+                   case MmsConfig.CREATIONMODE_RESTRICTED:
+                   case MmsConfig.CREATIONMODE_WARNING:
+                        maxSize = MmsConfig.getMaxRestrictedMessageSize();
+                        break;
+                   case MmsConfig.CREATIONMODE_FREE:
+                   default:
+                        maxSize = MmsConfig.getMaxMessageSize();
+                        break;
+                    }
                     part = image.getResizedImageAsPart(
                         widthLimit,
                         heightLimit,
-                        MmsConfig.getMaxMessageSize() - MESSAGE_OVERHEAD);
+                        MmsConfig.getMaxMessageSize() - currentMsgSize - MESSAGE_OVERHEAD);
                 } finally {
                     // Cancel pending show of the progress toast if necessary.
                     handler.removeCallbacks(showProgress);
@@ -1486,7 +1530,8 @@ public class MessageUtils {
     }
 
     public static boolean isPhoneFeatureEnabled(Context context) {
-        return context.getContentResolver().acquireProvider(URI_PHONE_FEATURE) != null;
+        return (UserHandle.myUserId() == UserHandle.USER_OWNER &&
+                context.getContentResolver().acquireProvider(URI_PHONE_FEATURE) != null);
     }
 
     private static Bundle callBinder(Context context, String method, Bundle extras) {
@@ -1872,293 +1917,6 @@ public class MessageUtils {
         }
     }
 
-    private static boolean isCDMAPhone(long subscription) {
-        boolean isCDMA = false;
-        int activePhone = isMultiSimEnabledMms()
-                ? TelephonyManager.getDefault().getCurrentPhoneType(subscription)
-                        : TelephonyManager.getDefault().getPhoneType();
-        if (TelephonyManager.PHONE_TYPE_CDMA == activePhone) {
-            isCDMA = true;
-        }
-        return isCDMA;
-    }
-
-    /**
-     * Generate a Delivery PDU byte array. see getSubmitPdu for reference.
-     */
-    public static byte[] getDeliveryPdu(String scAddress, String destinationAddress, String message,
-            long date, long subscription) {
-        if (isCDMAPhone(subscription)) {
-            return getCDMADeliveryPdu(scAddress, destinationAddress, message, date);
-        } else {
-            return getDeliveryPdu(scAddress, destinationAddress, message, date, null,
-                    ENCODING_UNKNOWN);
-        }
-    }
-
-    public static byte[] getCDMADeliveryPdu(String scAddress, String destinationAddress,
-            String message, long date) {
-        // Perform null parameter checks.
-        if (message == null || destinationAddress == null) {
-            Log.d(TAG, "getCDMADeliveryPdu,message =null");
-            return null;
-        }
-
-        // according to submit pdu encoding as written in privateGetSubmitPdu
-
-        // MTI = SMS-DELIVERY, UDHI = header != null
-        byte[] header = null;
-        byte mtiByte = (byte) (0x00 | (header != null ? 0x40 : 0x00));
-        ByteArrayOutputStream headerStream = getDeliveryPduHeader(destinationAddress, mtiByte);
-
-        ByteArrayOutputStream byteStream = new ByteArrayOutputStream(MAX_USER_DATA_BYTES + 40);
-
-        DataOutputStream dos = new DataOutputStream(byteStream);
-        // int status,Status of message. See TS 27.005 3.1, "<stat>"
-
-        /* 0 = "REC UNREAD" */
-        /* 1 = "REC READ" */
-        /* 2 = "STO UNSENT" */
-        /* 3 = "STO SENT" */
-
-        try {
-            // int uTeleserviceID;
-            int uTeleserviceID = 0; //.TELESERVICE_CT_WAP;// int
-            dos.writeInt(uTeleserviceID);
-
-            // unsigned char bIsServicePresent
-            byte bIsServicePresent = 0;// byte
-            dos.writeInt(bIsServicePresent);
-
-            // uServicecategory
-            int uServicecategory = 0;// int
-            dos.writeInt(uServicecategory);
-
-            // RIL_CDMA_SMS_Address
-            // digit_mode
-            // number_mode
-            // number_type
-            // number_plan
-            // number_of_digits
-            // digits[]
-            CdmaSmsAddress destAddr = CdmaSmsAddress.parse(PhoneNumberUtils
-                    .cdmaCheckAndProcessPlusCode(destinationAddress));
-            if (destAddr == null)
-                return null;
-            dos.writeByte(destAddr.digitMode);// int
-            dos.writeByte(destAddr.numberMode);// int
-            dos.writeByte(destAddr.ton);// int
-            Log.d(TAG, "message type=" + destAddr.ton + "destination add=" + destinationAddress
-                    + "message=" + message);
-            dos.writeByte(destAddr.numberPlan);// int
-            dos.writeByte(destAddr.numberOfDigits);// byte
-            dos.write(destAddr.origBytes, 0, destAddr.origBytes.length); // digits
-
-            // RIL_CDMA_SMS_Subaddress
-            // Subaddress is not supported.
-            dos.writeByte(0); // subaddressType int
-            dos.writeByte(0); // subaddr_odd byte
-            dos.writeByte(0); // subaddr_nbr_of_digits byte
-
-            SmsHeader smsHeader = new SmsHeader().fromByteArray(headerStream.toByteArray());
-            UserData uData = new UserData();
-            uData.payloadStr = message;
-            // uData.userDataHeader = smsHeader;
-            uData.msgEncodingSet = true;
-            uData.msgEncoding = UserData.ENCODING_UNICODE_16;
-
-            BearerData bearerData = new BearerData();
-            bearerData.messageType = BearerData.MESSAGE_TYPE_DELIVER;
-
-            bearerData.deliveryAckReq = false;
-            bearerData.userAckReq = false;
-            bearerData.readAckReq = false;
-            bearerData.reportReq = false;
-
-            bearerData.userData = uData;
-
-            byte[] encodedBearerData = BearerData.encode(bearerData);
-            if (null != encodedBearerData) {
-                // bearer data len
-                dos.writeByte(encodedBearerData.length);// int
-                Log.d(TAG, "encodedBearerData length=" + encodedBearerData.length);
-
-                // aBearerData
-                dos.write(encodedBearerData, 0, encodedBearerData.length);
-            } else {
-                dos.writeByte(0);
-            }
-
-        } catch (IOException e) {
-            Log.e(TAG, "Error writing dos", e);
-        } finally {
-            try {
-                if (null != byteStream) {
-                    byteStream.close();
-                }
-
-                if (null != dos) {
-                    dos.close();
-                }
-
-                if (null != headerStream) {
-                    headerStream.close();
-                }
-            } catch (IOException e) {
-                Log.e(TAG, "Error close dos", e);
-            }
-        }
-
-        return byteStream.toByteArray();
-    }
-
-    /**
-     * Generate a Delivery PDU byte array. see getSubmitPdu for reference.
-     */
-    public static byte[] getDeliveryPdu(String scAddress, String destinationAddress, String message,
-            long date, byte[] header, int encoding) {
-        // Perform null parameter checks.
-        if (message == null || destinationAddress == null) {
-            return null;
-        }
-
-        // MTI = SMS-DELIVERY, UDHI = header != null
-        byte mtiByte = (byte)(0x00 | (header != null ? 0x40 : 0x00));
-        ByteArrayOutputStream bo = getDeliveryPduHeader(destinationAddress, mtiByte);
-        // User Data (and length)
-        byte[] userData;
-        if (encoding == ENCODING_UNKNOWN) {
-            // First, try encoding it with the GSM alphabet
-            encoding = ENCODING_7BIT;
-        }
-        try {
-            if (encoding == ENCODING_7BIT) {
-                userData = GsmAlphabet.stringToGsm7BitPackedWithHeader(message, header, 0, 0);
-            } else { //assume UCS-2
-                try {
-                    userData = encodeUCS2(message, header);
-                } catch (UnsupportedEncodingException uex) {
-                    Log.e("GSM", "Implausible UnsupportedEncodingException ",
-                            uex);
-                    return null;
-                }
-            }
-        } catch (EncodeException ex) {
-            // Encoding to the 7-bit alphabet failed. Let's see if we can
-            // encode it as a UCS-2 encoded message
-            try {
-                userData = encodeUCS2(message, header);
-                encoding = ENCODING_16BIT;
-            } catch (UnsupportedEncodingException uex) {
-                Log.e("GSM", "Implausible UnsupportedEncodingException ",
-                            uex);
-                return null;
-            }
-        }
-
-        if (encoding == ENCODING_7BIT) {
-            if ((0xff & userData[0]) > MAX_USER_DATA_SEPTETS) {
-                // Message too long
-                return null;
-            }
-            bo.write(0x00);
-        } else { //assume UCS-2
-            if ((0xff & userData[0]) > MAX_USER_DATA_BYTES) {
-                // Message too long
-                return null;
-            }
-            // TP-Data-Coding-Scheme
-            // Class 3, UCS-2 encoding, uncompressed
-            bo.write(0x0b);
-        }
-        byte[] timestamp = getTimestamp(date);
-        bo.write(timestamp, 0, timestamp.length);
-
-        bo.write(userData, 0, userData.length);
-        return bo.toByteArray();
-    }
-
-    private static ByteArrayOutputStream getDeliveryPduHeader(
-            String destinationAddress, byte mtiByte) {
-        ByteArrayOutputStream bo = new ByteArrayOutputStream(
-                MAX_USER_DATA_BYTES + 40);
-        bo.write(mtiByte);
-
-        byte[] daBytes;
-        daBytes = PhoneNumberUtils.networkPortionToCalledPartyBCD(destinationAddress);
-
-        // destination address length in BCD digits, ignoring TON byte and pad
-        // TODO Should be better.
-        bo.write((daBytes.length - 1) * 2
-                - ((daBytes[daBytes.length - 1] & 0xf0) == 0xf0 ? 1 : 0));
-
-        // destination address
-        bo.write(daBytes, 0, daBytes.length);
-
-        // TP-Protocol-Identifier
-        bo.write(0);
-        return bo;
-    }
-
-    private static byte[] encodeUCS2(String message, byte[] header)
-        throws UnsupportedEncodingException {
-        byte[] userData, textPart;
-        textPart = message.getBytes("utf-16be");
-
-        if (header != null) {
-            // Need 1 byte for UDHL
-            userData = new byte[header.length + textPart.length + 1];
-
-            userData[0] = (byte)header.length;
-            System.arraycopy(header, 0, userData, 1, header.length);
-            System.arraycopy(textPart, 0, userData, header.length + 1, textPart.length);
-        }
-        else {
-            userData = textPart;
-        }
-        byte[] ret = new byte[userData.length+1];
-        ret[0] = (byte) (userData.length & 0xff );
-        System.arraycopy(userData, 0, ret, 1, userData.length);
-        return ret;
-    }
-
-    private static byte[] getTimestamp(long time) {
-        // See TS 23.040 9.2.3.11
-        byte[] timestamp = new byte[TIMESTAMP_LENGTH];
-        SimpleDateFormat sdf = new SimpleDateFormat("yyMMddkkmmss:Z", Locale.US);
-        String[] date = sdf.format(time).split(":");
-        // generate timezone value
-        String timezone = date[date.length - 1];
-        String signMark = timezone.substring(0, 1);
-        int hour = Integer.parseInt(timezone.substring(1, 3));
-        int min = Integer.parseInt(timezone.substring(3));
-        int timezoneValue = hour * 4 + min / 15;
-        // append timezone value to date[0] (time string)
-        String timestampStr = date[0] + timezoneValue;
-
-        int digitCount = 0;
-        for (int i = 0; i < timestampStr.length(); i++) {
-            char c = timestampStr.charAt(i);
-            int shift = ((digitCount & 0x01) == 1) ? 4 : 0;
-            timestamp[(digitCount >> 1)] |= (byte)((charToBCD(c) & 0x0F) << shift);
-            digitCount++;
-        }
-
-        if (signMark.equals("-")) {
-            timestamp[timestamp.length - 1] = (byte) (timestamp[timestamp.length - 1] | 0x08);
-        }
-
-        return timestamp;
-    }
-
-    private static int charToBCD(char c) {
-        if (c >= '0' && c <= '9') {
-            return c - '0';
-        } else {
-            throw new RuntimeException ("invalid char for BCD " + c);
-        }
-    }
-
     public static void onMessageContentClick(final Context context, final TextView contentText) {
         // Check for links. If none, do nothing; if 1, open it; if >1, ask user to pick one
         final URLSpan[] spans = contentText.getUrls();
@@ -2305,9 +2063,17 @@ public class MessageUtils {
         return false;
     }
 
+    // Used for check whether have memory for save SMS.
     public static boolean checkIsPhoneMessageFull(Context context) {
         boolean isFull = isPhoneMemoryFull() || isPhoneSmsCountFull(context);
-        MessagingNotification.updateSmsMessageFullIndicator(context, isFull);
+        MessagingNotification.updateMessageFullIndicator(context, true, isFull);
+        return isFull;
+    }
+
+    // Used for check whether have memory for save MMS.
+    public static boolean checkIsPhoneMemoryFull(Context context) {
+        boolean isFull = isPhoneMemoryFull();
+        MessagingNotification.updateMessageFullIndicator(context, false, isFull);
         return isFull;
     }
 
@@ -2636,6 +2402,15 @@ public class MessageUtils {
         builder.show();
     }
 
+    public static Intent getCellBroadcastIntent() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setComponent(new ComponentName(
+                CELL_BROADCAST_PACKAGE_NAME,
+                CELL_BROADCAST_ACTIVITY_NAME));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        return intent;
+    }
+
     public static String convertIdp(Context context, String number) {
         if (context.getResources().getBoolean(R.bool.customize_env_phone_checkidp)) {
             if (number.indexOf(IDP_PREFIX) == 0) {
@@ -2653,5 +2428,60 @@ public class MessageUtils {
             }
         }
         return number;
+    }
+
+    public static boolean isTooLargeFile(final Context ctx, final Uri uri) {
+        boolean isTooLarge = false;
+        InputStream input = null;
+
+        try {
+            input = ctx.getContentResolver().openInputStream(uri);
+            if (input.available() / COMPRESSION_FACTOR > MmsConfig
+                    .getMaxMessageSize() * KILOBYTE_SIZE) {
+                isTooLarge = true;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
+        } finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    Log.e(TAG, e.getMessage(), e);
+                }
+            }
+        }
+        return isTooLarge;
+    }
+
+    public static String getFilePath(final Context context, final Uri uri) {
+        String path = null;
+        if (uri.toString().contains("content://")) {
+            Cursor c = SqliteWrapper.query(context, context
+                    .getContentResolver(), uri, null, null, null, null);
+            try {
+                if (c != null && c.moveToFirst()) {
+                    if (ImageModel.isMmsUri(uri)) {
+                        path = c.getString(c.getColumnIndexOrThrow(Part._DATA));
+
+                    } else if ("media".equals(uri.getAuthority())) {
+                        path = c.getString(c
+                                .getColumnIndexOrThrow(Audio.Media.DATA));
+                    }
+                } else {
+                    return null;
+                }
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage());
+            } finally {
+                if (c != null) {
+                    c.close();
+                }
+            }
+        } else if (uri.getScheme().equals("file")) {
+            path = uri.getSchemeSpecificPart();
+        }
+
+        return path;
     }
 }

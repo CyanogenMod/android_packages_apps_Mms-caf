@@ -21,6 +21,7 @@ import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
+import android.content.ActivityNotFoundException;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -98,6 +99,11 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     public static final String AUTO_DELETE              = "pref_key_auto_delete";
     public static final String GROUP_MMS_MODE           = "pref_key_mms_group_mms";
     public static final String SMS_CDMA_PRIORITY        = "pref_key_sms_cdma_priority";
+    // ConfigurationClient
+    public static final String OMACP_CONFIGURATION_CATEGORY =
+            "pref_key_sms_omacp_configuration";
+    public static final String CONFIGURATION_MESSAGE    = "pref_key_configuration_message";
+
 
     // Expiry of MMS
     private final static String EXPIRY_ONE_WEEK = "604800"; // 7 * 24 * 60 * 60
@@ -128,9 +134,11 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private Preference mManageSim1Pref;
     private Preference mManageSim2Pref;
     private Preference mClearHistoryPref;
+    private Preference mConfigurationmessage;
     private CheckBoxPreference mVibratePref;
     private CheckBoxPreference mEnableNotificationsPref;
     private CheckBoxPreference mMmsAutoRetrievialPref;
+    private ListPreference mMmsCreationModePref;
     private ListPreference mMmsExpiryPref;
     private ListPreference mMmsExpiryCard1Pref;
     private ListPreference mMmsExpiryCard2Pref;
@@ -162,17 +170,29 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private static final String EXTRA_EXCEPTION = "exception";
     private static SmscHandler mHandler = null;
 
+    public static final String MMS_CREATION_MODE = "pref_key_creation_mode";
+    public static final int CREATION_MODE_RESTRICTED = 1;
+    public static final int CREATION_MODE_WARNING = 2;
+    public static final int CREATION_MODE_FREE = 3;
+
+    // ConfigurationClient
+    private static final String ACTION_CONFIGURE_MESSAGE =
+            "org.codeaurora.CONFIGURE_MESSAGE";
+
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
+            PreferenceCategory smsCategory =
+                    (PreferenceCategory) findPreference("pref_key_sms_settings");
             if (TelephonyIntents.ACTION_SIM_STATE_CHANGED.equals(action)) {
-                    PreferenceCategory smsCategory =
-                            (PreferenceCategory)findPreference("pref_key_sms_settings");
-                    if (smsCategory != null) {
-                        updateSIMSMSPref();
-                    }
+                if (smsCategory != null) {
+                    updateSIMSMSPref();
+                }
             } else if (Intent.ACTION_AIRPLANE_MODE_CHANGED.equals(action)) {
-                    updateSMSCPref();
+                updateSMSCPref();
+                if (smsCategory != null) {
+                    updateSIMSMSPref();
+                }
             }
         }
     };
@@ -264,6 +284,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mMmsExpiryPref = (ListPreference) findPreference("pref_key_mms_expiry");
         mMmsExpiryCard1Pref = (ListPreference) findPreference("pref_key_mms_expiry_slot1");
         mMmsExpiryCard2Pref = (ListPreference) findPreference("pref_key_mms_expiry_slot2");
+        mMmsCreationModePref = (ListPreference) findPreference("pref_key_creation_mode");
         mSmsSignaturePref = (CheckBoxPreference) findPreference("pref_key_enable_signature");
         mSmsSignatureEditPref = (EditTextPreference) findPreference("pref_key_edit_signature");
         mVibratePref = (CheckBoxPreference) findPreference(NOTIFICATION_VIBRATE);
@@ -282,6 +303,15 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             = (ListPreference) findPreference("pref_key_sms_validity_period_slot1");
         mSmsValidityCard2Pref
             = (ListPreference) findPreference("pref_key_sms_validity_period_slot2");
+        // ConfigurationClient
+        if((MmsConfig.isOMACPEnabled())){
+            mConfigurationmessage = findPreference(CONFIGURATION_MESSAGE);
+        }else {
+            PreferenceScreen prefRoot = (PreferenceScreen) findPreference("pref_key_root");
+            PreferenceCategory OMACPConCategory =
+                    (PreferenceCategory) findPreference(OMACP_CONFIGURATION_CATEGORY);
+            prefRoot.removePreference(OMACPConCategory);
+        }
 
         setMessagePreferences();
     }
@@ -421,6 +451,9 @@ public class MessagingPreferenceActivity extends PreferenceActivity
                     TextUtils.isEmpty(MessageUtils.getLocalNumber())) {
                 mMmsPrefCategory.removePreference(mMmsGroupMmsPref);
             }
+            if (!MmsConfig.isCreationModeEnabled()) {
+                mMmsPrefCategory.removePreference(mMmsCreationModePref);
+            }
         }
 
         if (TelephonyManager.getDefault().isMultiSimEnabled()) {
@@ -490,20 +523,22 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             final Preference pref = new Preference(this);
             pref.setKey(String.valueOf(i));
             pref.setTitle(getSMSCDialogTitle(count, i));
-
-            pref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    MyEditDialogFragment dialog = MyEditDialogFragment.newInstance(
+            if (getResources().getBoolean(R.bool.show_edit_smsc)) {
+                pref.setOnPreferenceClickListener(null);
+            } else {
+                pref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        MyEditDialogFragment dialog = MyEditDialogFragment.newInstance(
                             MessagingPreferenceActivity.this,
                             preference.getTitle(),
                             preference.getSummary(),
                             Integer.valueOf(preference.getKey()));
-                    dialog.show(getFragmentManager(), "dialog");
-                    return true;
-                }
-            });
-
+                        dialog.show(getFragmentManager(), "dialog");
+                        return true;
+                    }
+                });
+            }
             mSmscPrefCate.addPreference(pref);
             mSmscPrefList.add(pref);
         }
@@ -512,16 +547,22 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
     private void updateSIMSMSPref() {
         if (MessageUtils.isMultiSimEnabledMms()) {
-            if (!MessageUtils.isIccCardActivated(MessageUtils.SUB1)) {
-                mManageSim1Pref.setEnabled(false);
+            if (isAirPlaneModeOn() || !MessageUtils.isIccCardActivated(MessageUtils.SUB1)) {
+                mSmsPrefCategory.removePreference(mManageSim1Pref);
+            } else {
+                mSmsPrefCategory.addPreference(mManageSim1Pref);
             }
-            if (!MessageUtils.isIccCardActivated(MessageUtils.SUB2)) {
-                mManageSim2Pref.setEnabled(false);
+            if (isAirPlaneModeOn() || !MessageUtils.isIccCardActivated(MessageUtils.SUB2)) {
+                mSmsPrefCategory.removePreference(mManageSim2Pref);
+            } else {
+                mSmsPrefCategory.addPreference(mManageSim2Pref);
             }
             mSmsPrefCategory.removePreference(mManageSimPref);
         } else {
-            if (!MessageUtils.hasIccCard()) {
-                mManageSimPref.setEnabled(false);
+            if (isAirPlaneModeOn() || !MessageUtils.hasIccCard()) {
+                mSmsPrefCategory.removePreference(mManageSimPref);
+            } else {
+                mSmsPrefCategory.addPreference(mManageSimPref);
             }
             mSmsPrefCategory.removePreference(mManageSim1Pref);
             mSmsPrefCategory.removePreference(mManageSim2Pref);
@@ -785,6 +826,14 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         } else if (preference == mMmsAutoRetrievialPref) {
             if (mMmsAutoRetrievialPref.isChecked()) {
                 startMmsDownload();
+            }
+        // ConfigurationClient
+        } else if (preference == mConfigurationmessage) {
+            try {
+                Intent intent = new Intent(ACTION_CONFIGURE_MESSAGE);
+                startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                Log.e(TAG,"Activity not found : "+e);
             }
         }
 

@@ -31,6 +31,7 @@ import android.util.Log;
 
 import com.android.mms.LogTag;
 import com.android.mms.MmsConfig;
+import com.android.mms.R;
 import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.MessagingPreferenceActivity;
 import com.android.mms.util.DownloadManager;
@@ -158,9 +159,12 @@ public class RetrieveTransaction extends Transaction implements Runnable {
             }
 
             Uri msgUri = null;
-            if (isDuplicateMessage(mContext, retrieveConf)) {
+            if (isDuplicateMessage(mContext, retrieveConf, mContentLocation)) {
                 // Mark this transaction as failed to prevent duplicate
                 // notification to user.
+                if (Log.isLoggable(LogTag.TRANSACTION, Log.DEBUG)) {
+                    Log.v(TAG, "RetrieveTransaction DuplicateMessage !!");
+                }
                 mTransactionState.setState(TransactionState.FAILED);
                 mTransactionState.setContentUri(mUri);
             } else {
@@ -231,13 +235,14 @@ public class RetrieveTransaction extends Transaction implements Runnable {
         }
     }
 
-    private static boolean isDuplicateMessage(Context context, RetrieveConf rc) {
+    private static boolean isDuplicateMessage(Context context, RetrieveConf rc, String location) {
         byte[] rawMessageId = rc.getMessageId();
         if (rawMessageId != null) {
             String messageId = new String(rawMessageId);
             String selection = "(" + Mms.MESSAGE_ID + " = ? AND "
+                                   + Mms.CONTENT_LOCATION + " = ? AND "
                                    + Mms.MESSAGE_TYPE + " = ?)";
-            String[] selectionArgs = new String[] { messageId,
+            String[] selectionArgs = new String[] { messageId, location,
                     String.valueOf(PduHeaders.MESSAGE_TYPE_RETRIEVE_CONF) };
 
             Cursor cursor = SqliteWrapper.query(
@@ -339,8 +344,11 @@ public class RetrieveTransaction extends Transaction implements Runnable {
         DownloadManager downloadManager = DownloadManager.getInstance();
         mTransactionState.setState(TransactionState.FAILED);
         mTransactionState.setContentUri(mUri);
-
-        downloadManager.markState(mUri, DownloadManager.STATE_SKIP_RETRYING);
+        if (mContext.getResources().getBoolean(R.bool.config_retry_always)) {
+            downloadManager.markState(mUri, DownloadManager.STATE_PERMANENT_FAILURE);
+        } else {
+            downloadManager.markState(mUri, DownloadManager.STATE_SKIP_RETRYING);
+        }
         notifyObservers();
     }
 

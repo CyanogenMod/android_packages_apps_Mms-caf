@@ -58,6 +58,7 @@ import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
 import com.android.mms.ResolutionException;
 import com.android.mms.UnsupportContentTypeException;
+import com.android.mms.model.ContentRestrictionFactory;
 import com.android.mms.model.ImageModel;
 import com.android.mms.model.SlideModel;
 import com.android.mms.model.SlideshowModel;
@@ -88,6 +89,7 @@ public class WorkingMessage {
     private static final String TAG = LogTag.TAG;
     private static final boolean DEBUG = false;
 
+    private static final int INVALID_MMS_SIZE = -1;
     // Public intents
     public static final String ACTION_SENDING_SMS = "android.intent.action.SENDING_SMS";
 
@@ -119,6 +121,9 @@ public class WorkingMessage {
     public static final int UNSUPPORTED_TYPE = -3;
     public static final int IMAGE_TOO_LARGE = -4;
     public static final int NEGATIVE_MESSAGE_OR_INCREASE_SIZE = -5;
+
+    public static final int UNSUPPORTED_TYPE_WARNING = -6;
+    public static final int MESSAGE_SIZE_EXCEEDED_WARNING = -7;
 
     // Attachment types
     public static final int TEXT = 0;
@@ -650,7 +655,7 @@ public class WorkingMessage {
         }
         int slideNum = mSlideshow.size() - 1;
         result = internalChangeMedia(type, uri, slideNum, slideShowEditor);
-        if (result != OK) {
+        if (result != OK && addNewSlide) {
             // We added a new slide and what we attempted to insert on the slide failed.
             // Delete that slide, otherwise we could end up with a bunch of blank slides.
             // It's ok that we're removing the slide even if we didn't add it (because it was
@@ -681,9 +686,35 @@ public class WorkingMessage {
         } catch (UnsupportContentTypeException e) {
             Log.e(TAG, "internalChangeMedia:", e);
             result = UNSUPPORTED_TYPE;
+            if (MmsConfig.isCreationModeEnabled()) {
+                String contentType = e.getContentType();
+                if (!TextUtils.isEmpty(contentType)) {
+                    int creationMode = ContentRestrictionFactory
+                            .getUsedCreationMode();
+                    if ((creationMode == MessagingPreferenceActivity.CREATION_MODE_WARNING)
+                            && (ContentType.getSupportedTypes()
+                                    .contains(contentType))
+                            && (mActivity != null && !mActivity.isFinishing())) {
+                        result = UNSUPPORTED_TYPE_WARNING;
+                    }
+                }
+            }
         } catch (ExceedMessageSizeException e) {
             Log.e(TAG, "internalChangeMedia:", e);
             result = MESSAGE_SIZE_EXCEEDED;
+            if (MmsConfig.isCreationModeEnabled()) {
+                int messageSize = e.getMmsSize();
+                if (messageSize != INVALID_MMS_SIZE) {
+                    int creationMode = ContentRestrictionFactory
+                            .getUsedCreationMode();
+                    if ((creationMode == MessagingPreferenceActivity.CREATION_MODE_WARNING)
+                            && (messageSize > 0 && messageSize < MmsConfig
+                                    .getMaxMessageSize())
+                            && (mActivity != null && !mActivity.isFinishing())) {
+                        result = MESSAGE_SIZE_EXCEEDED_WARNING;
+                    }
+                }
+            }
         } catch (ResolutionException e) {
             Log.e(TAG, "internalChangeMedia:", e);
             result = IMAGE_TOO_LARGE;
@@ -825,6 +856,18 @@ public class WorkingMessage {
             mConversation.setRecipients(recipients);    // resets the threadId to zero
             setHasMultipleRecipients(recipients.size() > 1, true);
             mWorkingRecipients = null;
+        }
+    }
+
+    private void checkConversationHasRecipients(String recipientsInUI) {
+        if (mConversation.getRecipients().size() == 0) {
+            LogTag.debug("mConversation do not has Recipients: " + recipientsInUI);
+            String[] dests = TextUtils.split(recipientsInUI, ";");
+            List<String> list = Arrays.asList(dests);
+            ContactList recipients = ContactList.getByNumbers(list, false);
+            // resets the threadId to zero
+            mConversation.setRecipients(recipients);
+            setHasMultipleRecipients(recipients.size() > 1, true);
         }
     }
 
@@ -1227,6 +1270,9 @@ public class WorkingMessage {
 
         // Get ready to write to disk.
         prepareForSave(true /* notify */);
+
+        // Make sure the mConversation has Recipients
+        checkConversationHasRecipients(recipientsInUI);
 
         // We need the recipient list for both SMS and MMS.
         final Conversation conv = mConversation;

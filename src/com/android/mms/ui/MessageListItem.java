@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -261,6 +260,12 @@ public class MessageListItem extends LinearLayout implements
         }
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        unbind();
+        super.onDetachedFromWindow();
+    }
+
     public MessageItem getMessageItem() {
         return mMessageItem;
     }
@@ -371,8 +376,12 @@ public class MessageListItem extends LinearLayout implements
                 break;
         }
 
-        // Hide the indicators.
-        mLockedIndicator.setVisibility(View.GONE);
+        if (mMessageItem.mLocked) {
+            mLockedIndicator.setImageResource(R.drawable.ic_lock_message_sms);
+            mLockedIndicator.setVisibility(View.VISIBLE);
+        } else {
+            mLockedIndicator.setVisibility(View.GONE); // Hide the indicators.
+        }
         mDeliveredIndicator.setVisibility(View.GONE);
         mDetailsIndicator.setVisibility(View.GONE);
         updateAvatarView(mMessageItem.mAddress, false);

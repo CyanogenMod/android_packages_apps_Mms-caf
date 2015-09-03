@@ -54,6 +54,8 @@
     <uses-permission android:name="android.permission.GET_TASKS"/>
     <uses-permission android:name="android.permission.RECEIVE_WAP_PUSH" />
     <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
+    <!-- Needed for OMA Client Provisioning -->
+    <uses-permission android:name="org.codeaurora.omacp.permission.SHOW_CONFIGURATION_MESSAGE" />
 
     <application android:name="MmsApp"
             android:label="@string/app_label"
@@ -144,6 +146,7 @@
                <action android:name="android.intent.action.SEND" />
                <category android:name="android.intent.category.DEFAULT" />
                <data android:mimeType="image/*" />
+               <data android:mimeType="audio/*" />
                <data android:mimeType="video/*" />
            </intent-filter>
            <intent-filter>
@@ -155,6 +158,7 @@
                <action android:name="android.intent.action.SEND_MULTIPLE" />
                <category android:name="android.intent.category.DEFAULT" />
                <data android:mimeType="image/*" />
+               <data android:mimeType="audio/*" />
                <data android:mimeType="video/*" />
            </intent-filter>
         </activity>
@@ -297,6 +301,14 @@
             android:permission="android.permission.BROADCAST_SMS">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_DELIVER" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Require the sender to have this permission to prevent third party spoofing -->
+        <receiver android:name=".transaction.PrivilegedCbReceiver"
+            android:permission="android.permission.RECEIVE_EMERGENCY_BROADCAST">
+            <intent-filter>
+                <action android:name="android.cellbroadcastreceiver.CB_AREA_INFO_RECEIVED" />
             </intent-filter>
         </receiver>
 
@@ -446,7 +458,26 @@
 
         <!-- Message Template Content Provider -->
         <provider android:name="MessageTemplateProvider"
-                android:authorities="com.android.mms.MessageTemplateProvider" >
-        </provider>
+                android:authorities="com.android.mms.MessageTemplateProvider" />
+
+       <activity android:name=".transaction.MmsNoConfirmationSendActivity"
+           android:label="@string/plugger"
+           android:enabled="@bool/enablePlugger"
+           android:icon="@drawable/icon_of_plugger">
+           <intent-filter>
+              <action android:name="android.intent.action.SEND" />
+              <category android:name="android.intent.category.DEFAULT" />
+              <data android:mimeType="image/*" />
+              <data android:mimeType="video/*" />
+              <data android:mimeType="vnd.android/mms" />
+            </intent-filter>
+        </activity>
+
+        <service android:name="com.android.mms.transaction.MmsNoConfirmationSendService">
+            <intent-filter>
+                <action android:name="com.android.mms.transaction.MmsNoConfirmationSendService"/>
+            </intent-filter>
+        </service>
+
     </application>
 </manifest>

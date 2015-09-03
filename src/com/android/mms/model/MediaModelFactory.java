@@ -30,6 +30,7 @@ import android.util.Log;
 
 import com.android.mms.LogTag;
 import com.android.mms.MmsConfig;
+import com.android.mms.ui.MessageUtils;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
 import com.google.android.mms.pdu.PduBody;
@@ -145,6 +146,12 @@ public class MediaModelFactory {
             media = new AudioModel(context, contentType, src,
                     part.getDataUri());
         } else if (tag.equals(SmilHelper.ELEMENT_TAG_REF)) {
+            if (MessageUtils.OCT_STREAM.equals(contentType.toLowerCase())) {
+                // Convert content type application/oct-stream (which is a vcard) to
+                // application/X-vcard so that this mms can be recognized.
+                contentType = MessageUtils.convertToVcardType(src);
+            }
+
             if (ContentType.isTextType(contentType)
                     && !contentType.toLowerCase().equals(ContentType.TEXT_VCARD.toLowerCase())) {
                 media = new TextModel(context, contentType, src,

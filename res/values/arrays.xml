@@ -110,4 +110,17 @@
         <item>@string/search_as_number</item>
         <item>@string/search_as_subject</item>
     </string-array>
+
+    <string-array name="pref_entries_creation_mode">
+        <item>Restricted</item>
+        <item>Warning</item>
+        <item>Free</item>
+    </string-array>
+
+    <string-array name="pref_values_creation_mode">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
 </resources>

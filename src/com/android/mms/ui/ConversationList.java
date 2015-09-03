@@ -78,6 +78,7 @@ import com.android.mms.data.Contact;
 import com.android.mms.data.ContactList;
 import com.android.mms.data.Conversation;
 import com.android.mms.data.Conversation.ConversationQueryHandler;
+import com.android.mms.data.RecipientIdCache;
 import com.android.mms.transaction.MessagingNotification;
 import com.android.mms.transaction.SmsRejectedReceiver;
 import com.android.mms.ui.PopupList;
@@ -140,6 +141,8 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Cache recipients information in a background thread in advance.
+        RecipientIdCache.init(getApplication());
 
         setContentView(R.layout.conversation_list_screen);
         if (MessageUtils.isMailboxMode()) {
@@ -431,22 +434,18 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         // Simply setting the choice mode causes the previous choice mode to finish and we exit
         // multi-select mode (if we're in it) and remove all the selections.
         getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-
-        // Close the cursor in the ListAdapter if the activity stopped.
-        Cursor cursor = mListAdapter.getCursor();
-
-        if (cursor != null && !cursor.isClosed()) {
-            cursor.close();
-        }
-
-        mListAdapter.changeCursor(null);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
+        if (mListAdapter != null) {
+            mListAdapter.changeCursor(null);
+        }
+
         MessageUtils.removeDialogs();
+        Contact.clearListener();
     }
 
     private void unbindListeners(final Collection<Long> threadIds) {
@@ -658,14 +657,9 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                 MessageUtils.showMemoryStatusDialog(this);
                 break;
             case R.id.action_cell_broadcasts:
-                Intent cellBroadcastIntent = new Intent(Intent.ACTION_MAIN);
-                cellBroadcastIntent.setComponent(new ComponentName(
-                        "com.android.cellbroadcastreceiver",
-                        "com.android.cellbroadcastreceiver.CellBroadcastListActivity"));
-                cellBroadcastIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 try {
-                    startActivity(cellBroadcastIntent);
-                } catch (ActivityNotFoundException ignored) {
+                    startActivity(MessageUtils.getCellBroadcastIntent());
+                } catch (ActivityNotFoundException e) {
                     Log.e(TAG, "ActivityNotFoundException for CellBroadcastListActivity");
                 }
                 return true;
@@ -1068,7 +1062,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                 if (threadId == -1) {
                     // Rebuild the contacts cache now that all threads and their associated unique
                     // recipients have been deleted.
-                    Contact.init(ConversationList.this);
+                    Contact.init(getApplication());
                 } else {
                     // Remove any recipients referenced by this single thread from the
                     // contacts cache. It's possible for two or more threads to reference
@@ -1102,6 +1096,10 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
             case DELETE_OBSOLETE_THREADS_TOKEN:
                 if (DEBUGCLEANUP) {
                     LogTag.debug("onQueryComplete finished DELETE_OBSOLETE_THREADS_TOKEN");
+                }
+
+                if (result > 0) {
+                    startAsyncQuery();
                 }
                 break;
             }

@@ -327,6 +327,13 @@ public class Contact {
         }
     }
 
+    public static void clearListener() {
+        synchronized (mListeners) {
+            if (mListeners != null)
+                mListeners.clear();
+            }
+    }
+
     public static void dumpListeners() {
         synchronized (mListeners) {
             int i = 0;
@@ -754,8 +761,11 @@ public class Contact {
                     if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
                         log("updateContact: contact changed for " + entry.mName);
                     }
-
-                    c.mNumber = entry.mNumber;
+                    // If the number is a wap push number, keep it as original form.
+                    // We will get the number through MessageUtils.getWapPushNumber.
+                    if (!MessageUtils.isWapPushNumber(c.mNumber)) {
+                        c.mNumber = entry.mNumber;
+                    }
                     c.mLabel = entry.mLabel;
                     c.mPersonId = entry.mPersonId;
                     c.mPresenceResId = entry.mPresenceResId;

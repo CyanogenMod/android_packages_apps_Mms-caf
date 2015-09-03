@@ -303,6 +303,12 @@ public class SlideListItemView extends LinearLayout implements SlideViewInterfac
     }
 
     public void setVideoThumbnail(String name, Bitmap thumbnail) {
+        try {
+            mImagePreview.setImageBitmap(thumbnail);
+            mImagePreview.setVisibility(VISIBLE);
+        } catch (java.lang.OutOfMemoryError e) {
+            Log.e(TAG, "setVideo: out of memory: ", e);
+        }
     }
 
     public void setVideoVisibility(boolean visible) {
