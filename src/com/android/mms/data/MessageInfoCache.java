@@ -120,6 +120,7 @@ public class MessageInfoCache {
 
     public void closeCache(MmsApp app) {
         mDiskCache.closeCache();
+        sInstance = null;
     }
 
     private void advanceToNextMsgId(Cursor cursor) {

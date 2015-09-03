@@ -241,6 +241,7 @@ public class MmsApp extends Application implements Application.ActivityLifecycle
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+        MessageInfoCache.init(this);
         mActivityCount++;
     }
 
