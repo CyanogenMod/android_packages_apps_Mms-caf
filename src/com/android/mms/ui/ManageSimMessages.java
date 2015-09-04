@@ -524,10 +524,10 @@ public class ManageSimMessages extends Activity
         capacityMessage.append(getString(R.string.sim_capacity));
         int iccCapacityAll = -1;
         if (MessageUtils.isMultiSimEnabledMms()) {
-            iccCapacityAll = SmsManager.getSmsManagerForSubscriptionId(mSubscription)
-                    .getSmsCapacityOnIcc();
+            iccCapacityAll = 0;/*SmsManager.getSmsManagerForSubscriptionId(subId[0])
+                    .getSmsCapacityOnIcc();*/
         } else {
-            iccCapacityAll = SmsManager.getDefault().getSmsCapacityOnIcc();
+            iccCapacityAll = 0;/*SmsManager.getDefault().getSmsCapacityOnIcc();*/
         }
 
         capacityMessage.append(" " + iccCapacityAll);

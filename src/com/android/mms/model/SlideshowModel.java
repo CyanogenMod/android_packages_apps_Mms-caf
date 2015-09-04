@@ -261,9 +261,6 @@ public class SlideshowModel extends Model
                         if (ContentType.TEXT_VCARD.toLowerCase().equals(contentType)) {
                             vMedia = new VcardModel(context, contentType,
                                     new String(data), part.getDataUri());
-                        } else {
-                            vMedia = new VCalModel(context, contentType,
-                                    new String(data), part.getDataUri());
                         }
                         mediaSet.add(vMedia);
                         totalMessageSize += vMedia.getMediaSize();

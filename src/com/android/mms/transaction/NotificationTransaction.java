@@ -212,8 +212,8 @@ public class NotificationTransaction extends Transaction implements Runnable {
                     if (c != null) {
                         try {
                             if (c.moveToFirst()) {
-                                int phoneId = c.getInt(c.getColumnIndex(Mms.PHONE_ID));
-                                values.put(Mms.PHONE_ID, phoneId);
+                                int subId = c.getInt(c.getColumnIndex(Mms.SUBSCRIPTION_ID));
+                                values.put(Mms.SUBSCRIPTION_ID, subId);
                             }
                         } catch (Exception ex) {
                             Log.e(TAG, "Exception:" + ex);

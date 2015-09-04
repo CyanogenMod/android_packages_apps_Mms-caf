@@ -113,12 +113,12 @@ public class MmsSystemEventReceiver extends BroadcastReceiver {
                         .getDefaultSharedPreferences(context);
                 SharedPreferences.Editor prefsEditor = prefs.edit();
                 prefsEditor.putString(MessagingPreferenceActivity.SMSC_DEFAULT,
-                        SmsManager.getDefault().getSmscAddressFromIcc());
+                        ""/*SmsManager.getDefault().getSmscAddressFromIcc()*/);
                 prefsEditor.apply();
                 prefsEditor.commit();
             }
 
-        } else if (action.equals(TelephonyIntents.ACTION_SUBSCRIPTION_SET_UICC_RESULT)) {
+        /*} else if (action.equals(TelephonyIntents.ACTION_SUBSCRIPTION_SET_UICC_RESULT)) {
 
             int status = intent.getIntExtra(TelephonyIntents.EXTRA_RESULT, PhoneConstants.FAILURE);
             int state = intent.getIntExtra(TelephonyIntents.EXTRA_NEW_SUB_STATE,
@@ -129,7 +129,7 @@ public class MmsSystemEventReceiver extends BroadcastReceiver {
             // Scan and send pending Mms if subscription is activated
             if (status == PhoneConstants.SUCCESS && state == SubscriptionManager.ACTIVE) {
                 wakeUpService(context);
-            }
+            }*/
         } else if (action.equals(Intent.ACTION_AIRPLANE_MODE_CHANGED)) {
             boolean apm = intent.getBooleanExtra("state", false);
             if (!apm) {

@@ -101,7 +101,7 @@ import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_SUBJECT;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_MMS_SUBJECT_CHARSET;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_ADDRESS;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_BODY;
-import static com.android.mms.ui.MessageListAdapter.COLUMN_PHONE_ID;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_SUB_ID;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_DATE;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_READ;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_TYPE;
@@ -300,7 +300,7 @@ public class MailBoxMessageList extends ListActivity implements
                 }
 
                 Uri msgUri = ContentUris.withAppendedId(Mms.CONTENT_URI, msgId);
-                int subId = c.getInt(COLUMN_PHONE_ID);
+                int subId = c.getInt(COLUMN_SUB_ID);
                 int mmsStatus = c.getInt(MessageListAdapter.COLUMN_MMS_STATUS);
                 int downloadStatus = MessageUtils.getMmsDownloadStatus(mmsStatus);
                 if (PduHeaders.MESSAGE_TYPE_NOTIFICATION_IND == c.getInt(COLUMN_MMS_MESSAGE_TYPE)) {
@@ -353,7 +353,7 @@ public class MailBoxMessageList extends ListActivity implements
         intent.putExtra(TransactionBundle.URI, uri.toString());
         intent.putExtra(TransactionBundle.TRANSACTION_TYPE,
                 Transaction.RETRIEVE_TRANSACTION);
-        intent.putExtra(Mms.PHONE_ID, subId); //destination subId
+        intent.putExtra(Mms.SUBSCRIPTION_ID, subId); //destination subId
         intent.putExtra(ORIGIN_SUB_ID,
                 SubscriptionManager.getDefaultDataSubId());
         startService(intent);

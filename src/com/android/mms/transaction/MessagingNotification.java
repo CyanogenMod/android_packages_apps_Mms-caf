@@ -124,11 +124,11 @@ public class MessagingNotification {
 
     // This must be consistent with the column constants below.
     private static final String[] MMS_STATUS_PROJECTION = new String[] {
-        Mms.THREAD_ID, Mms.DATE, Mms._ID, Mms.SUBJECT, Mms.SUBJECT_CHARSET, Mms.PHONE_ID };
+        Mms.THREAD_ID, Mms.DATE, Mms._ID, Mms.SUBJECT, Mms.SUBJECT_CHARSET, Mms.SUBSCRIPTION_ID };
 
     // This must be consistent with the column constants below.
     private static final String[] SMS_STATUS_PROJECTION = new String[] {
-        Sms.THREAD_ID, Sms.DATE, Sms.ADDRESS, Sms.BODY, Sms.PHONE_ID, Sms._ID };
+        Sms.THREAD_ID, Sms.DATE, Sms.ADDRESS, Sms.BODY, Sms.SUBSCRIPTION_ID, Sms._ID };
 
     private static final int[] NEW_ICC_NOTIFICATION_ID = new int[] {
         ICC_NOTIFICATION_ID_SLOT1, ICC_NOTIFICATION_ID_SLOT2
@@ -395,8 +395,8 @@ public class MessagingNotification {
     }
 
     public static void blockingUpdateNewIccMessageIndicator(Context context, String address,
-            String message, int phoneId, long timeMillis) {
-        if (MessageUtils.getSimThreadByPhoneId(phoneId) == sCurrentlyDisplayedThreadId) {
+            String message, int subId, long timeMillis) {
+        if (MessageUtils.getSimThreadByPhoneId(subId) == sCurrentlyDisplayedThreadId) {
             // We are already diplaying the messages list view, no need to send notification.
             // Just play notification sound.
             Log.d(TAG, "blockingUpdateNewIccMessageIndicator displaying sim messages now");
@@ -406,7 +406,7 @@ public class MessagingNotification {
         final Notification.Builder noti = new Notification.Builder(context).setWhen(timeMillis);
         Contact contact = Contact.get(address, false);
         NotificationInfo info = getNewIccMessageNotificationInfo(context, true /* isSms */,
-                address, message, null /* subject */, phoneId, timeMillis,
+                address, message, null /* subject */, subId, timeMillis,
                 null /* attachmentBitmap */, contact, WorkingMessage.TEXT);
         noti.setSmallIcon(R.drawable.stat_notify_sms);
         NotificationManager nm = (NotificationManager)
@@ -415,13 +415,13 @@ public class MessagingNotification {
 //        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         // Update the notification.
         PendingIntent pendingIntent;
-        if (phoneId == MessageUtils.SUB_INVALID) {
+        if (subId == MessageUtils.SUB_INVALID) {
             pendingIntent = PendingIntent.getActivity(context, 0, info.mClickIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT);
         } else {
             // Use requestCode to avoid updating all intents of previous notifications
             pendingIntent = PendingIntent.getActivity(context,
-                    NEW_ICC_NOTIFICATION_ID[phoneId], info.mClickIntent,
+                    NEW_ICC_NOTIFICATION_ID[subId], info.mClickIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT);
         }
         String title = info.mTitle;
@@ -491,10 +491,10 @@ public class MessagingNotification {
 
         notifyUserIfFullScreen(context, title);
 
-        if (phoneId == MessageUtils.SUB_INVALID) {
+        if (subId == MessageUtils.SUB_INVALID) {
             nm.notify(ICC_NOTIFICATION_ID, notification);
         } else {
-            nm.notify(NEW_ICC_NOTIFICATION_ID[phoneId], notification);
+            nm.notify(NEW_ICC_NOTIFICATION_ID[subId], notification);
         }
 
     }
@@ -793,7 +793,7 @@ public class MessagingNotification {
 
                 long threadId = cursor.getLong(COLUMN_MMS_THREAD_ID);
                 long timeMillis = cursor.getLong(COLUMN_MMS_DATE) * 1000;
-                int phoneId = cursor.getInt(COLUMN_MMS_SUB_ID);
+                int subId = cursor.getInt(COLUMN_MMS_SUB_ID);
 
                 if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
                     Log.d(TAG, "addMmsNotificationInfos: count=" + cursor.getCount() +
@@ -830,7 +830,7 @@ public class MessagingNotification {
                         false /* isSms */,
                         address,
                         messageBody, subject,
-                        threadId, phoneId,
+                        threadId, subId,
                         timeMillis,
                         attachedPicture,
                         contact,
@@ -930,7 +930,7 @@ public class MessagingNotification {
                 String message = cursor.getString(COLUMN_SMS_BODY);
                 long threadId = cursor.getLong(COLUMN_SMS_THREAD_ID);
                 long timeMillis = cursor.getLong(COLUMN_SMS_DATE);
-                int phoneId = cursor.getInt(COLUMN_SMS_SUB_ID);
+                int subId = cursor.getInt(COLUMN_SMS_SUB_ID);
                 String msgId = cursor.getString(COLUMN_SMS_ID);
 
                 if (Log.isLoggable(LogTag.APP, Log.VERBOSE))
@@ -942,7 +942,7 @@ public class MessagingNotification {
 
                 NotificationInfo info = getNewMessageNotificationInfo(context, true /* isSms */,
                         address, message, null /* subject */,
-                        threadId, phoneId, timeMillis, null /* attachmentBitmap */,
+                        threadId, subId, timeMillis, null /* attachmentBitmap */,
                         contact, WorkingMessage.TEXT);
                 if (MessageUtils.isMailboxMode()) {
                     info.mClickIntent.setData(
@@ -965,7 +965,7 @@ public class MessagingNotification {
             String message,
             String subject,
             long threadId,
-            int phoneId,
+            int subId,
             long timeMillis,
             Bitmap attachmentBitmap,
             Contact contact,
@@ -973,11 +973,11 @@ public class MessagingNotification {
         Intent clickIntent = getClickIntent(context, isSms, threadId);
 
         String senderInfo = buildTickerMessage(
-                context, address, null, null, phoneId).toString();
+                context, address, null, null, subId).toString();
         String senderInfoName = senderInfo.substring(
                 0, senderInfo.length());
         CharSequence ticker = buildTickerMessage(
-                context, address, subject, message, phoneId);
+                context, address, subject, message, subId);
 
         return new NotificationInfo(isSms,
                 clickIntent, message, subject, ticker, timeMillis,
@@ -1016,7 +1016,7 @@ public class MessagingNotification {
             String address,
             String message,
             String subject,
-            int phoneId,
+            int subId,
             long timeMillis,
             Bitmap attachmentBitmap,
             Contact contact,
@@ -1026,13 +1026,13 @@ public class MessagingNotification {
                 | Intent.FLAG_ACTIVITY_SINGLE_TOP
                 | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        clickIntent.putExtra(MessageUtils.SUBSCRIPTION_KEY, phoneId);
+        clickIntent.putExtra(MessageUtils.SUBSCRIPTION_KEY, subId);
         String senderInfo = buildTickerMessage(
-                context, address, null, null, phoneId).toString();
+                context, address, null, null, subId).toString();
         String senderInfoName = senderInfo.substring(
                 0, senderInfo.length());
         CharSequence ticker = buildTickerMessage(
-                context, address, subject, message, phoneId);
+                context, address, subject, message, subId);
 
         return new NotificationInfo(isSms,
                 clickIntent, message, subject, ticker, timeMillis,
@@ -1320,7 +1320,7 @@ public class MessagingNotification {
     }
 
     protected static CharSequence buildTickerMessage(
-            Context context, String address, String subject, String body, int phoneId) {
+            Context context, String address, String subject, String body, int subId) {
         String displayAddress = Contact.get(address, true).getName();
 
         StringBuilder buf = new StringBuilder(
@@ -1332,11 +1332,11 @@ public class MessagingNotification {
         if ((TelephonyManager.getDefault().getPhoneCount()) > 1) {
             //SMS/MMS is operating based of PhoneId which is 0, 1..
             SubscriptionInfo sir = SubscriptionManager.from(context)
-                    .getActiveSubscriptionInfoForSimSlotIndex(phoneId);
+                    .getActiveSubscriptionInfoForSimSlotIndex(subId);
 
             String displayName = (sir != null) ? sir.getDisplayName().toString() : "";
 
-            Log.e(TAG, "PhoneID : " + phoneId + " displayName " + displayName);
+            Log.e(TAG, "PhoneID : " + subId + " displayName " + displayName);
             buf.append(displayName);
             buf.append("-");
         }

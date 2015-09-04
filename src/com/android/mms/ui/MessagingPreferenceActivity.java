@@ -71,6 +71,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -87,7 +89,13 @@ import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.transaction.TransactionService;
 import com.android.mms.util.Recycler;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 
 
 /**
@@ -129,6 +137,12 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private final static String EXPIRY_ONE_WEEK = "604800"; // 7 * 24 * 60 * 60
     private final static String EXPIRY_TWO_DAYS = "172800"; // 2 * 24 * 60 * 60
 
+    //Chat wallpaper
+    public static final String CHAT_WALLPAPER            = "chat_wallpaper";
+
+    private static final int  PICK_FROM_CAMERA        = 0;
+    private static final int  PICK_FROM_GALLERY       = 1;
+
     public static final String CELL_BROADCAST            = "pref_key_cell_broadcast";
     //Fontsize
     public static final String FONT_SIZE_SETTING         = "pref_key_message_font_size";
@@ -146,6 +160,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private PreferenceCategory mNotificationPrefCategory;
     private PreferenceCategory mSmscPrefCate;
 
+    private Preference mChatWallpaperPref;
     private Preference mSmsLimitPref;
     private Preference mSmsDeliveryReportPref;
     private Preference mSmsDeliveryReportPrefSub1;
@@ -573,7 +588,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             pref.setKey(String.valueOf(i));
             pref.setTitle(getSMSCDialogTitle(count, i));
             if (getResources().getBoolean(R.bool.show_edit_smsc)
-                || getResources().getBoolean(com.android.internal.R.bool.config_regional_smsc_editable)) {
+                || false/*getResources().getBoolean(com.android.internal.R.bool.config_regional_smsc_editable)*/) {
                 pref.setOnPreferenceClickListener(null);
             } else {
                 pref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
@@ -1469,7 +1484,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private void updateSmscFromPreference(int sub) {
         String smsc = PreferenceManager.getDefaultSharedPreferences(this)
                 .getString(SMSC_DEFAULT,
-                        SmsManager.getDefault().getSmscAddressFromIcc());
+                        ""/*SmsManager.getDefault().getSmscAddressFromIcc()*/);
         if (sub != -1) {
             mSmscPrefList.get(sub).setSummary(smsc);
         }

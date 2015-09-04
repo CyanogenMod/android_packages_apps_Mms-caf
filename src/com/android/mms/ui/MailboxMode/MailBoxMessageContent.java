@@ -124,7 +124,7 @@ public class MailBoxMessageContent extends Activity {
         Sms.DATE,
         Sms.ADDRESS,
         Sms.BODY,
-        Sms.PHONE_ID,
+        "phone_id"/*Sms.PHONE_ID*/,
         Sms.LOCKED,
         Sms.DATE_SENT,
         Sms.TYPE,
@@ -342,7 +342,7 @@ public class MailBoxMessageContent extends Activity {
 
     private void resendShortMessage(long threadId, Uri uri) {
         Cursor cursor = SqliteWrapper.query(this, getContentResolver(), uri, new String[] {
-                Sms.ADDRESS, Sms.BODY, Sms.PHONE_ID
+                Sms.ADDRESS, Sms.BODY, "phone_id"/*Sms.PHONE_ID*/
         }, null, null, null);
 
         if (cursor != null) {

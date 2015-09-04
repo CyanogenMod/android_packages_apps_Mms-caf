@@ -213,18 +213,17 @@ public class MmsNoConfirmationSendService extends NoConfirmationSendService {
         }
         Uri mmsuri = null;
         try {
-            int mCurrentConvPhoneID = PhoneConstants.PHONE_ID1;
+            int mCurrentConvSubID = 0;
             PduPersister persister = PduPersister.getPduPersister(context);
             mmsuri = persister.persist(req, Mms.Draft.CONTENT_URI, true,
                     MessagingPreferenceActivity.getIsGroupMmsEnabled(context),
                     null);
             ContentValues values = new ContentValues();
-            values.put(Mms.PHONE_ID, SubscriptionManager
-                    .getPhoneId(SubscriptionManager.getDefaultDataSubId()));
+            values.put(Mms.SUBSCRIPTION_ID, SubscriptionManager.getDefaultDataSubId());
             SqliteWrapper.update(context, context.getContentResolver(), mmsuri,
                     values, null, null);
             MessageSender msgSender = new MmsMessageSender(context, mmsuri,
-                    PduHeaders.PRIORITY_NORMAL, mCurrentConvPhoneID);
+                    PduHeaders.PRIORITY_NORMAL, mCurrentConvSubID);
             Cursor c = context.getContentResolver().query(mmsuri, null, null,
                     null, null);
             long threadId = 0;

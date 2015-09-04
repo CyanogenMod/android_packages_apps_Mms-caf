@@ -188,9 +188,9 @@ public abstract class Transaction extends Observable {
         if (pdu == null) {
             throw new MmsException();
         }
-        if (mContext.getResources().getBoolean(
+        if (false/*mContext.getResources().getBoolean(
                 com.android.internal.R.bool.
-                config_regional_mms_via_wifi_enable)) {
+                config_regional_mms_via_wifi_enable)*/) {
             boolean useWifi = MessageUtils.shouldHandleMmsViaWifi(mContext);
             if (!useWifi) ensureRouteToHost(mmscUrl, mTransactionSettings);
             return HttpUtils.httpConnection(
@@ -222,9 +222,9 @@ public abstract class Transaction extends Observable {
      *         an HTTP error code(>=400) returned from the server.
      */
     protected byte[] getPdu(String url) throws IOException {
-        if (mContext.getResources().getBoolean(
+        if (false/*mContext.getResources().getBoolean(
                 com.android.internal.R.bool.
-                config_regional_mms_via_wifi_enable)) {
+                config_regional_mms_via_wifi_enable)*/) {
             boolean useWifi = MessageUtils.shouldHandleMmsViaWifi(mContext);
             if (!useWifi) ensureRouteToHost(url, mTransactionSettings);
             return HttpUtils.httpConnection(

@@ -50,13 +50,6 @@
                       android:title="@string/pref_sms_settings_title" >
   <PreferenceCategory android:title="@string/pref_sms_settings_title"
                       android:key="pref_key_sms_settings" >
-    <ListPreference   android:key="pref_key_send_delay"
-                      android:persistent="true"
-                      android:dialogTitle="@string/pref_title_send_delay"
-                      android:title="@string/pref_title_send_delay"
-                      android:entries="@array/send_delay_duration_entries"
-                      android:entryValues="@array/send_delay_duration_values"
-                      android:defaultValue="0"/>
     <CheckBoxPreference android:defaultValue="@bool/def_sms_delivery_reports"
                       android:key="pref_key_sms_delivery_reports"
                       android:summary="@string/pref_summary_sms_delivery_reports"
@@ -78,8 +71,6 @@
                       android:title="@string/pref_title_manage_sim_messages_slot1" />
     <Preference android:key="pref_key_manage_sim_messages_slot2"
                       android:title="@string/pref_title_manage_sim_messages_slot2" />
-    <Preference android:key="pref_key_manage_sdcard_messages"
-                      android:title="@string/manage_sdcard_messages" />
     <ListPreference
         android:defaultValue="-1"
         android:dialogTitle="@string/pref_title_sms_validity_period"
@@ -208,52 +199,6 @@
                         android:defaultValue="@bool/def_wap_push_enabled" />
   </PreferenceCategory>
   </PreferenceScreen>
-  <!-- QuickMessage settings -->
-  <PreferenceCategory android:title="@string/pref_quickmessage">
-      <CheckBoxPreference
-              android:key="pref_dark_theme"
-              android:title="@string/pref_dark_theme_title"
-              android:summary="@string/pref_dark_theme_summary"
-              android:defaultValue="false" />
-
-      <CheckBoxPreference
-              android:key="pref_key_quickmessage"
-              android:title="@string/pref_quickmessage_title"
-              android:dependency="pref_key_enable_notifications"
-              android:summary="@string/pref_quickmessage_summary"
-              android:defaultValue="false" />
-
-      <CheckBoxPreference
-              android:key="pref_key_qm_lockscreen"
-              android:title="@string/pref_wake_unlock_title"
-              android:summary="@string/pref_wake_unlock_summary"
-              android:layout="?android:attr/preferenceLayoutChild"
-              android:dependency="pref_key_quickmessage"
-              android:defaultValue="false" />
-
-      <CheckBoxPreference
-              android:key="pref_key_close_all"
-              android:title="@string/pref_close_all_title"
-              android:summary="@string/pref_close_all_summary"
-              android:layout="?android:attr/preferenceLayoutChild"
-              android:dependency="pref_key_quickmessage"
-              android:defaultValue="false" />
-    </PreferenceCategory>
-
-    <!-- Extra Settings -->
-    <PreferenceCategory
-            android:key="pref_key_extra_settings"
-            android:title="@string/pref_extra_settings">
-
-        <PreferenceScreen
-                android:key="pref_blacklist"
-                android:title="@string/blacklist_title"
-                android:persistent="false">
-            <intent android:action="android.intent.action.MAIN"
-                    android:targetPackage="com.android.settings"
-                    android:targetClass="com.android.settings.Settings$BlacklistSettingsActivity" />
-        </PreferenceScreen>
-    </PreferenceCategory>
   <!-- ConfigurationClient -->
     <PreferenceCategory
         android:key="pref_key_sms_omacp_configuration"

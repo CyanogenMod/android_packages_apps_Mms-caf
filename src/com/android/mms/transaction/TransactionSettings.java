@@ -65,7 +65,7 @@ public class TransactionSettings {
             Log.v(TAG, "TransactionSettings: apnName: " + apnName +
                     "subId: " + subId);
         }
-        String numeric = TelephonyManager.getDefault().getIccOperatorNumeric(subId);
+        String numeric = null;//TelephonyManager.getDefault().getIccOperatorNumeric(subId);
         String selection = "numeric=" + numeric;
         String[] selectionArgs = null;
         Uri contentUri = Uri.withAppendedPath(Telephony.Carriers.CONTENT_URI, "/subId/" + subId);

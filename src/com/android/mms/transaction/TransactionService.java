@@ -349,16 +349,16 @@ public class TransactionService extends Service implements Observer {
         return Service.START_NOT_STICKY;
     }
 
-    private int[] getSubIdFromDb(Uri uri) {
-        int phoneId = 0;
+    private int getSubIdFromDb(Uri uri) {
+        int subId = 0;
         Cursor c = getApplicationContext().getContentResolver().query(uri,
                 null, null, null, null);
         Log.d(TAG, "Cursor= " + DatabaseUtils.dumpCursorToString(c));
         if (c != null) {
             try {
                 if (c.moveToFirst()) {
-                    phoneId = c.getInt(c.getColumnIndex(Mms.PHONE_ID));
-                    Log.d(TAG, "phoneId in db = " + phoneId );
+                    subId = c.getInt(c.getColumnIndex(Mms.SUBSCRIPTION_ID));
+                    Log.d(TAG, "subId in db = " + subId );
                     c.close();
                     c = null;
                 }
@@ -368,13 +368,13 @@ public class TransactionService extends Service implements Observer {
                 }
             }
         }
-        // If client does not update the DB with phoneId, use default sms
-        // phoneId
-        if (!SubscriptionManager.isValidSlotId(phoneId)) {
-            phoneId = SubscriptionManager.from(getApplicationContext()).getDefaultSmsPhoneId();
+        // If client does not update the DB with subId, use default sms
+        // subId
+        if (!SubscriptionManager.isValidSlotId(subId)) {
+            subId = SubscriptionManager.from(getApplicationContext()).getDefaultSmsPhoneId();
         }
-        Log.d(TAG, "Destination Phone Id = " + phoneId);
-        return (SubscriptionManager.getSubId(phoneId));
+        Log.d(TAG, "Destination subId = " + subId);
+        return subId;
     }
 
     private boolean isMmsAllowed() {
@@ -410,10 +410,10 @@ public class TransactionService extends Service implements Observer {
         boolean flag = false;
         TelephonyManager telephonyManager = (TelephonyManager)getApplicationContext()
                 .getSystemService(Context.TELEPHONY_SERVICE);
-        if (telephonyManager != null) {
+        /*if (telephonyManager != null) {
             flag = telephonyManager.isDataPossibleForSubscription(subId,
                     PhoneConstants.APN_TYPE_MMS);
-        }
+        }*/
         Log.d(TAG, "isMmsDataConnectivityPossible = " + flag + "subId = " + subId);
         return flag;
     }
@@ -431,8 +431,8 @@ public class TransactionService extends Service implements Observer {
             return;
         }
         boolean noNetwork = false;
-        if (getResources().getBoolean(
-                com.android.internal.R.bool.config_regional_mms_via_wifi_enable)) {
+        if (false/*getResources().getBoolean(
+                com.android.internal.R.bool.config_regional_mms_via_wifi_enable)*/) {
             NetworkInfo ni = mConnMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE_MMS);
             boolean shouldUseWifi = MessageUtils.shouldHandleMmsViaWifi(getApplicationContext());
             noNetwork = !shouldUseWifi && (!mConnMgr.getMobileDataEnabled()
@@ -560,19 +560,14 @@ public class TransactionService extends Service implements Observer {
                                // fall-through
                             default:
 
-                                int [] subId = getSubIdFromDb(uri);
-                                // subId is null. Bail out.
-                                if (subId == null) {
-                                    Log.e(TAG, "SMS subId is null. Bail out");
-                                    break;
-                                }
+                                int subId = getSubIdFromDb(uri);
 
-                                Log.d(TAG, "destination Sub Id = " + subId[0]);
-                                if (subId[0] < 0) {
+                                Log.d(TAG, "destination Sub Id = " + subId);
+                                if (subId < 0) {
                                     Log.d(TAG, "Subscriptions are not yet ready.");
                                     int defSmsSubId = getDefaultSmsSubId();
                                     // We dont have enough info about subId. We dont know if the
-                                    // phoneId as persent in DB actually would match the subId of
+                                    // subId as persent in DB actually would match the subId of
                                     // defaultSmsSubId. We can not also ignore this transaction
                                     // since no retry would be scheduled if we return from here. The
                                     // only option is to do best effort try on current default sms
@@ -580,10 +575,10 @@ public class TransactionService extends Service implements Observer {
                                     // processing that retry attempt we would be able to get correct
                                     // subId from subscription manager.
                                     Log.d(TAG, "Override with default Sms subId = " + defSmsSubId);
-                                    subId[0] = defSmsSubId;
+                                    subId = defSmsSubId;
                                 }
 
-                                if ((!isMmsDataConnectivityPossible(subId[0]) || !isMmsAllowed())
+                                if ((!isMmsDataConnectivityPossible(subId) || !isMmsAllowed())
                                         && !getResources().getBoolean(R.bool.config_retry_always)) {
                                     Log.d(TAG, "mobileData off or no mms apn or APM, Abort");
                                     if (transactionType == Transaction.RETRIEVE_TRANSACTION) {
@@ -595,7 +590,7 @@ public class TransactionService extends Service implements Observer {
                                 }
 
                                 TransactionBundle args = new TransactionBundle(transactionType,
-                                        uri.toString(), subId[0]);
+                                        uri.toString(), subId);
                                 // FIXME: We use the same startId for all MMs.
                                 if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
                                     Log.v(TAG, "onNewIntent: launchTransaction uri=" + uri);
@@ -632,21 +627,15 @@ public class TransactionService extends Service implements Observer {
             String uriStr = intent.getStringExtra("uri");
             Uri uri = Uri.parse(uriStr);
 
-            int [] subId = getSubIdFromDb(uri);
-            // subId is null. Bail out.
-            if (subId == null) {
-                Log.e(TAG, "SMS subId is null. Bail out");
-                return;
-            }
-
-            Log.d(TAG, "destination Sub Id = " + subId[0]);
-            if (subId[0] < 0) {
+            int subId = getSubIdFromDb(uri);
+            Log.d(TAG, "destination Sub Id = " + subId);
+            if (subId < 0) {
                int defSmsSubId = getDefaultSmsSubId();
                 Log.d(TAG, "Override with default Sms subId = " + defSmsSubId);
-                subId[0] = defSmsSubId;
+                subId = defSmsSubId;
             }
 
-            if ((!isMmsDataConnectivityPossible(subId[0]) || !isMmsAllowed())
+            if ((!isMmsDataConnectivityPossible(subId) || !isMmsAllowed())
                     && !getResources().getBoolean(R.bool.config_retry_always)) {
                 Log.d(TAG, "Either mobile data is off or apn not present, Abort");
 
@@ -660,7 +649,7 @@ public class TransactionService extends Service implements Observer {
             }
 
             Bundle bundle = intent.getExtras();
-            bundle.putInt(PhoneConstants.SUBSCRIPTION_KEY, subId[0]);
+            bundle.putInt(PhoneConstants.SUBSCRIPTION_KEY, subId);
             // For launching NotificationTransaction and test purpose.
             TransactionBundle args = new TransactionBundle(bundle);
             launchTransaction(serviceId, args, noNetwork);
@@ -1010,15 +999,15 @@ public class TransactionService extends Service implements Observer {
         }
         // Take a wake lock so we don't fall asleep before the message is downloaded.
         createWakeLock();
-        if (getResources().getBoolean(
-                com.android.internal.R.bool.config_regional_mms_via_wifi_enable)) {
+        if (false/*getResources().getBoolean(
+                com.android.internal.R.bool.config_regional_mms_via_wifi_enable)*/) {
             if (MessageUtils.shouldHandleMmsViaWifi(getApplicationContext())){
                 return PhoneConstants.APN_ALREADY_ACTIVE;
             }
         }
 
-        int result = mConnMgr.startUsingNetworkFeatureForSubscription(
-                ConnectivityManager.TYPE_MOBILE, Phone.FEATURE_ENABLE_MMS, subId);
+        int result = 1;/*mConnMgr.startUsingNetworkFeatureForSubscription(
+                ConnectivityManager.TYPE_MOBILE, Phone.FEATURE_ENABLE_MMS, subId);*/
 
         if (mMmsNetworkRequest == null) {
             mMmsNetworkRequest = buildNetworkRequest(subId);
@@ -1065,7 +1054,7 @@ public class TransactionService extends Service implements Observer {
     }
 
     protected void endMmsConnectivity() {
-        int subId = SubscriptionManager.getOnDemandDataSubId();
+        int subId = 0;//SubscriptionManager.getOnDemandDataSubId();
         endMmsConnectivity(Integer.toString(subId));
     }
 
@@ -1080,9 +1069,9 @@ public class TransactionService extends Service implements Observer {
             if (mConnMgr != null) {
                 releaseNetworkRequest();
 
-                mConnMgr.stopUsingNetworkFeatureForSubscription(
+                /*mConnMgr.stopUsingNetworkFeatureForSubscription(
                         ConnectivityManager.TYPE_MOBILE,
-                        Phone.FEATURE_ENABLE_MMS, subId);
+                        Phone.FEATURE_ENABLE_MMS, subId);*/
             }
         } finally {
             releaseWakeLock();
@@ -1158,7 +1147,7 @@ public class TransactionService extends Service implements Observer {
                     }
 
                     try {
-                        int subId = SubscriptionManager.getOnDemandDataSubId();
+                        int subId = 0;//SubscriptionManager.getOnDemandDataSubId();
                         if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
                             Log.v(TAG, "renew PDP connection for subscription: " + subId);
                         }

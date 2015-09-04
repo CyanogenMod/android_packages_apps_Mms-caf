@@ -330,7 +330,7 @@ public class MessageUtils {
 
     public static final int MESSAGE_REPORT_COLUMN_ID         = 0;
     public static final int MESSAGE_REPORT_COLUMN_MESSAGE_ID = 1;
-    public static final int MESSAGE_REPORT_COLUMN_PHONE_ID   = 2;
+    public static final int MESSAGE_REPORT_COLUMN_SUB_ID   = 2;
 
     private MessageUtils() {
         // Forbidden being instantiated.
@@ -1093,7 +1093,7 @@ public class MessageUtils {
         }
 
         final Cursor c = SqliteWrapper.query(context, context.getContentResolver(),
-                        Mms.Inbox.CONTENT_URI, new String[] {Mms._ID, Mms.MESSAGE_ID, Mms.PHONE_ID},
+                        Mms.Inbox.CONTENT_URI, new String[] {Mms._ID, Mms.MESSAGE_ID, "phone_id"/*Mms.PHONE_ID*/},
                         selectionBuilder.toString(), null, null);
 
         if (c == null) {
@@ -1116,7 +1116,7 @@ public class MessageUtils {
                 addressMap.put(c.getString(MESSAGE_REPORT_COLUMN_MESSAGE_ID),
                         AddressUtils.getFrom(context, uri));
                 phoneIdMap.put(c.getString(MESSAGE_REPORT_COLUMN_MESSAGE_ID),
-                        c.getInt(MESSAGE_REPORT_COLUMN_PHONE_ID));
+                        c.getInt(MESSAGE_REPORT_COLUMN_SUB_ID));
             }
         } finally {
             c.close();
@@ -1625,7 +1625,7 @@ public class MessageUtils {
         }
         final PhoneAccount account = telecomManager
                 .getPhoneAccount(phoneAccountHandle);
-        return account.createIconDrawable(context);
+        return null;//account.createIconDrawable(context);
     }
 
     private static void log(String msg) {
@@ -2056,12 +2056,12 @@ public class MessageUtils {
         }
     }
 
-    public static int getSmsPreferStoreLocation(Context context, int phoneId) {
+    public static int getSmsPreferStoreLocation(Context context, int subId) {
         SharedPreferences prefsms = PreferenceManager.getDefaultSharedPreferences(context);
         int preferStore = PREFER_SMS_STORE_PHONE;
 
         if (isMultiSimEnabledMms()) {
-            if (phoneId == SUB1) {
+            if (subId == SUB1) {
                 preferStore = Integer.parseInt(prefsms.getString("pref_key_sms_store_card1", "0"));
             } else {
                 preferStore = Integer.parseInt(prefsms.getString("pref_key_sms_store_card2", "0"));
@@ -2567,9 +2567,9 @@ public class MessageUtils {
 
     public static boolean isCarrierSimCard(Context ctx) {
         boolean isCarrierSimCard = false;
-        String[] carrierMccMncs = ctx.getResources().getStringArray(
+        String[] carrierMccMncs = null/*ctx.getResources().getStringArray(
                 com.android.internal.R.array.
-                config_regional_carrier_operator_list);
+                config_regional_carrier_operator_list)*/;
         TelephonyManager tm = (TelephonyManager)ctx.getSystemService(
         Context.TELEPHONY_SERVICE);
         String simOperator = tm.getSimOperator();

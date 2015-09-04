@@ -28,7 +28,7 @@ import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_ADDRESS;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_BODY;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_DATE;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_READ;
-import static com.android.mms.ui.MessageListAdapter.COLUMN_PHONE_ID;
+import static com.android.mms.ui.MessageListAdapter.COLUMN_SUB_ID;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_TYPE;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_STATUS;
 import static com.android.mms.ui.MessageListAdapter.COLUMN_SMS_DATE_SENT;
@@ -71,7 +71,7 @@ public class BoxMessageItem {
             mDate = cursor.getLong(COLUMN_SMS_DATE);
             mStatus = cursor.getInt(COLUMN_SMS_STATUS);
             mRead = cursor.getInt(COLUMN_SMS_READ);
-            mSubID = cursor.getInt(COLUMN_PHONE_ID);
+            mSubID = cursor.getInt(COLUMN_SUB_ID);
             mDateSent = cursor.getLong(COLUMN_SMS_DATE_SENT);
             mSmsType = cursor.getInt(COLUMN_SMS_TYPE);
             mLocked = cursor.getInt(COLUMN_SMS_LOCKED) != 0;

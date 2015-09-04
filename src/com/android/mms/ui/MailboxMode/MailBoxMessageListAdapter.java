@@ -188,9 +188,7 @@ public class MailBoxMessageListAdapter extends CursorAdapter implements Contact.
 
         mHandler.post(new Runnable() {
             public void run() {
-                updateAvatarView();
-                mName = Contact.get(mAddress, true).getName();
-                formatNameView(mAddress, mName);
+                notifyDataSetChanged();
             }
         });
     }

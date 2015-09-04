@@ -46,7 +46,7 @@ public class SmsMessageSender implements MessageSender {
     protected final long mThreadId;
     protected long mTimestamp;
     private static final String TAG = LogTag.TAG;
-    protected int mPhoneId;
+    protected int mSubId;
 
     // Default preference values
     private static final boolean DEFAULT_DELIVERY_REPORT_MODE  = false;
@@ -60,7 +60,7 @@ public class SmsMessageSender implements MessageSender {
     private static final int COLUMN_SERVICE_CENTER     = 1;
 
     public SmsMessageSender(Context context, String[] dests,
-                 String msgText, long threadId, int phoneId) {
+                 String msgText, long threadId, int subId) {
         mContext = context;
         mMessageText = msgText;
         if (dests != null) {
@@ -74,7 +74,7 @@ public class SmsMessageSender implements MessageSender {
         mTimestamp = System.currentTimeMillis();
         mThreadId = threadId;
         mServiceCenter = getOutgoingServiceCenter(mThreadId);
-        mPhoneId = phoneId;
+        mSubId = subId;
     }
 
     public boolean sendMessage(long token) throws MmsException {
@@ -95,7 +95,7 @@ public class SmsMessageSender implements MessageSender {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         boolean requestDeliveryReport = false;
         if (TelephonyManager.getDefault().isMultiSimEnabled()) {
-            requestDeliveryReport = prefs.getBoolean((mPhoneId == 0) ?
+            requestDeliveryReport = prefs.getBoolean((mSubId == 0) ?
                     MessagingPreferenceActivity.SMS_DELIVERY_REPORT_SUB1 :
                     MessagingPreferenceActivity.SMS_DELIVERY_REPORT_SUB2,
                     DEFAULT_DELIVERY_REPORT_MODE);
@@ -123,17 +123,13 @@ public class SmsMessageSender implements MessageSender {
                 if (MessageUtils.checkIsPhoneMessageFull(mContext)) {
                     break;
                 }
-                log("updating Database with phoneId = " + mPhoneId);
-                int [] subId = SubscriptionManager.getSubId(mPhoneId);
-                if (subId == null && subId.length == 0) {
-                    return false;
-                }
-                Sms.addMessageToUri(subId[0], mContext.getContentResolver(),
+                log("updating Database with subId = " + mSubId);
+                Sms.addMessageToUri(mSubId, mContext.getContentResolver(),
                         Uri.parse("content://sms/queued"), mDests[i],
                         mMessageText, null, mTimestamp,
                         true /* read */,
                         requestDeliveryReport,
-                        mThreadId, priority);
+                        mThreadId/*, priority*/);
             } catch (SQLiteException e) {
                 if (LogTag.DEBUG_SEND) {
                     Log.e(TAG, "queueMessage SQLiteException", e);

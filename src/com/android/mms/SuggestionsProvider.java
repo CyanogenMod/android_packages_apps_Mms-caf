@@ -427,5 +427,8 @@ public class SuggestionsProvider extends android.content.ContentProvider {
         public void unregisterDataSetObserver(DataSetObserver observer) {
             mDatabaseCursor.unregisterDataSetObserver(observer);
         }
+
+        public void setExtras(Bundle bundle) {
+        }
     }
 }
