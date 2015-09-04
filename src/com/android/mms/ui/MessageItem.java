@@ -27,6 +27,8 @@ import android.net.Uri;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.MmsSms;
 import android.provider.Telephony.Sms;
+import android.telephony.SubscriptionManager;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -178,17 +180,17 @@ public class MessageItem {
                     if (0 == mDate) {
                         mDate = System.currentTimeMillis();
                     }
-                    mTimestamp = String.format(context.getString(R.string.sent_on),
-                            MessageUtils.formatTimeStampString(context, mDate));
+                    mTimestamp = formatTimeStamp(context, true, mDate);
                 } else {
                     // Set "received" time stamp
-                    mDate = cursor.getLong(columnsMap.mColumnSmsDate);
+                    mDate = cursor.getLong(context.getResources().getBoolean(
+                                R.bool.config_display_sent_time) ? columnsMap.mColumnSmsDateSent
+                                : columnsMap.mColumnSmsDate);
                     //cdma sms stored in UIM card don not have timestamp
                     if (0 == mDate) {
                         mDate = System.currentTimeMillis();
                     }
-                    mTimestamp = String.format(context.getString(R.string.received_on),
-                            MessageUtils.formatTimeStampString(context, mDate));
+                    mTimestamp = formatTimeStamp(context, false, mDate);
                 }
             }
 
@@ -232,6 +234,30 @@ public class MessageItem {
         } else {
             throw new MmsException("Unknown type of the message: " + type);
         }
+    }
+
+    private String formatTimeStamp(Context context, boolean isSent, long timestamp) {
+        if (context.getResources().getBoolean(R.bool.config_display_sent_time)) {
+            return MessageUtils.formatTimeStampString(context, timestamp);
+        } else {
+            return String.format(context.getString(isSent ? R.string.sent_on
+                    : R.string.received_on), MessageUtils.formatTimeStampString(context,
+                    timestamp));
+        }
+    }
+
+    public boolean isCdmaInboxMessage() {
+        int activePhone;
+        if (MessageUtils.isMultiSimEnabledMms()) {
+            int[] subId = SubscriptionManager.getSubId(mPhoneId);
+            activePhone = TelephonyManager.getDefault().getCurrentPhoneType(subId[0]);
+        } else {
+            activePhone = TelephonyManager.getDefault().getPhoneType();
+        }
+
+        return ((mBoxId == Sms.MESSAGE_TYPE_INBOX
+                || mBoxId == Sms.MESSAGE_TYPE_ALL)
+                && (TelephonyManager.PHONE_TYPE_CDMA == activePhone));
     }
 
     private void interpretFrom(EncodedStringValue from, Uri messageUri) {
@@ -488,13 +514,8 @@ public class MessageItem {
                             MessageUtils.formatTimeStampString(mContext, timestamp));
                 } else {
                     // add judgement the Mms is sent or received and format mTimestamp
-                    if (mBoxId == Sms.MESSAGE_TYPE_SENT) {
-                        mTimestamp = String.format(mContext.getString(R.string.sent_on),
-                                MessageUtils.formatTimeStampString(mContext, timestamp));
-                    } else {
-                        mTimestamp = String.format(mContext.getString(R.string.received_on),
-                                MessageUtils.formatTimeStampString(mContext, timestamp));
-                    }
+                    mTimestamp = formatTimeStamp(mContext, mBoxId == Mms.MESSAGE_BOX_SENT,
+                            timestamp);
                 }
             }
             if (mPduLoadedCallback != null) {

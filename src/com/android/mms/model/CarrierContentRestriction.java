@@ -34,6 +34,7 @@ public class CarrierContentRestriction implements ContentRestriction {
     private static ArrayList<String> sSupportedAudioTypes;
     private static ArrayList<String> sSupportedVideoTypes;
     private static final String IMAGE_BMP = "image/bmp";
+    private static final String AUDIO_WAVE_2CH_LPCM = "audio/wave_2ch_lpcm";
 
     private static int mCreationMode;
 
@@ -45,7 +46,11 @@ public class CarrierContentRestriction implements ContentRestriction {
         if (!sSupportedImageTypes.contains(IMAGE_BMP)) {
             sSupportedImageTypes.add(IMAGE_BMP);
         }
+
         sSupportedAudioTypes = ContentType.getAudioTypes();
+        if (!sSupportedAudioTypes.contains(AUDIO_WAVE_2CH_LPCM)) {
+            sSupportedAudioTypes.add(AUDIO_WAVE_2CH_LPCM);
+        }
         sSupportedVideoTypes = ContentType.getVideoTypes();
     }
 
@@ -71,9 +76,10 @@ public class CarrierContentRestriction implements ContentRestriction {
             break;
         case MmsConfig.CREATIONMODE_FREE:
         default:
-            sSupportedImageTypes = ContentType.getImageTypes();
             sSupportedAudioTypes = ContentType.getAudioTypes();
-            sSupportedVideoTypes = ContentType.getVideoTypes();
+            if (!sSupportedAudioTypes.contains(AUDIO_WAVE_2CH_LPCM)) {
+                sSupportedAudioTypes.add(AUDIO_WAVE_2CH_LPCM);
+            }
             break;
         }
     }

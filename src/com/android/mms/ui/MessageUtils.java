@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -62,6 +63,7 @@ import android.graphics.drawable.Drawable;
 import android.media.CamcorderProfile;
 import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
@@ -69,6 +71,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.StatFs;
+import android.os.SystemProperties;
 import android.os.UserHandle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
@@ -108,6 +111,7 @@ import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.TempFileProvider;
+import com.android.mms.data.Contact;
 import com.android.mms.data.WorkingMessage;
 import com.android.mms.model.ContentRestriction;
 import com.android.mms.model.ContentRestrictionFactory;
@@ -120,6 +124,7 @@ import com.android.mms.transaction.MessagingNotification;
 import com.android.mms.transaction.MmsMessageSender;
 import com.android.mms.util.AddressUtils;
 import com.android.mms.util.DownloadManager;
+import com.android.mms.widget.MmsWidgetProvider;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
 import com.google.android.mms.pdu.CharacterSets;
@@ -193,6 +198,7 @@ public class MessageUtils {
     // the remaining space , format as MB
     public static final long MIN_AVAILABLE_SPACE_MMS = 2 * 1024 * 1024;
     private static final long KILOBYTE_SIZE = 1024;
+    private static final int DEFAULT_FONT_SIZE = 18;
 
     // add for query message count from iccsms table
     public static final Uri ICC_SMS_URI = Uri.parse("content://sms/iccsms");
@@ -289,8 +295,13 @@ public class MessageUtils {
     private static final int MIN_MMS_SIZE = 3;
     private static final int DECIMAL_FORMATTOR_GROUPING_SIZE = 3;
 
+    private static final String INTERNATIONAL_PREFIX_ENABLE = "international_prefix_enable";
+    private static final String INTERNATIONAL_PREFIX_NUMBER = "international_prefix_number";
     private static final String IDP_PLUS = "+";
-    private static final String IDP_PREFIX = "01033";
+    private static final String IDP_IDN = "+62";
+    private static final String IDP_ZERO = "0";
+    private static final String IDP_DEFAULT_PREFIX = "01033";
+    private static final int IDP_ENABLE = 1;
 
     // Save the thread id for same recipient forward mms
     public static ArrayList<Long> sSameRecipientList = new ArrayList<Long>();
@@ -316,6 +327,10 @@ public class MessageUtils {
 
     public static final String SMS_BOX_ID = "box_id";
     public static final String COPY_SMS_INTO_SIM_SUCCESS = "success";
+
+    public static final int MESSAGE_REPORT_COLUMN_ID         = 0;
+    public static final int MESSAGE_REPORT_COLUMN_MESSAGE_ID = 1;
+    public static final int MESSAGE_REPORT_COLUMN_PHONE_ID   = 2;
 
     private MessageUtils() {
         // Forbidden being instantiated.
@@ -569,7 +584,7 @@ public class MessageUtils {
         }
 
         // Sent: ***
-        if (smsType == Sms.MESSAGE_TYPE_SENT) {
+        if (smsType == Sms.MESSAGE_TYPE_INBOX) {
             long date_sent = cursor.getLong(cursor.getColumnIndexOrThrow(Sms.DATE_SENT));
             if (date_sent > 0) {
                 details.append('\n');
@@ -637,7 +652,7 @@ public class MessageUtils {
                 }
             }
         }
-        return null;
+        return "";
     }
 
     public static int getAttachmentType(SlideshowModel model, MultimediaMessagePdu mmp) {
@@ -1026,7 +1041,7 @@ public class MessageUtils {
         return getLocalNumber(SubscriptionManager.getDefaultDataSubId());
     }
 
-    public static String getLocalNumber(long subId) {
+    public static String getLocalNumber(int subId) {
         sLocalNumber = MmsApp.getApplication().getTelephonyManager()
             .getLine1NumberForSubscriber(subId);
         return sLocalNumber;
@@ -1078,14 +1093,15 @@ public class MessageUtils {
         }
 
         final Cursor c = SqliteWrapper.query(context, context.getContentResolver(),
-                        Mms.Inbox.CONTENT_URI, new String[] {Mms._ID, Mms.MESSAGE_ID},
+                        Mms.Inbox.CONTENT_URI, new String[] {Mms._ID, Mms.MESSAGE_ID, Mms.PHONE_ID},
                         selectionBuilder.toString(), null, null);
 
         if (c == null) {
             return;
         }
 
-        final Map<String, String> map = new HashMap<String, String>();
+        final Map<String, String> addressMap = new HashMap<String, String>();
+        final Map<String, Integer> phoneIdMap = new HashMap<String, Integer>();
         try {
             if (c.getCount() == 0) {
                 if (callback != null) {
@@ -1095,8 +1111,12 @@ public class MessageUtils {
             }
 
             while (c.moveToNext()) {
-                Uri uri = ContentUris.withAppendedId(Mms.CONTENT_URI, c.getLong(0));
-                map.put(c.getString(1), AddressUtils.getFrom(context, uri));
+                Uri uri = ContentUris.withAppendedId(Mms.CONTENT_URI,
+                        c.getLong(MESSAGE_REPORT_COLUMN_ID));
+                addressMap.put(c.getString(MESSAGE_REPORT_COLUMN_MESSAGE_ID),
+                        AddressUtils.getFrom(context, uri));
+                phoneIdMap.put(c.getString(MESSAGE_REPORT_COLUMN_MESSAGE_ID),
+                        c.getInt(MESSAGE_REPORT_COLUMN_PHONE_ID));
             }
         } finally {
             c.close();
@@ -1105,9 +1125,11 @@ public class MessageUtils {
         OnClickListener positiveListener = new OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                for (final Map.Entry<String, String> entry : map.entrySet()) {
+                for (final Map.Entry<String, String> entry : addressMap.entrySet()) {
+                    String mId = entry.getKey();
+                    int phoneId = phoneIdMap.get(mId);
                     MmsMessageSender.sendReadRec(context, entry.getValue(),
-                                                 entry.getKey(), status);
+                            mId, phoneId, status);
                 }
 
                 if (callback != null) {
@@ -1582,7 +1604,11 @@ public class MessageUtils {
             return null;
         }
 
-        long subId[] = SubscriptionManager.getSubId(subscription);
+        int subId[] = SubscriptionManager.getSubId(subscription);
+        if (subId == null || subId.length == 0) {
+            return null;
+        }
+
         final TelecomManager telecomManager = (TelecomManager) context
                 .getSystemService(Context.TELECOM_SERVICE);
         List<PhoneAccountHandle> pHandles = telecomManager.getCallCapablePhoneAccounts();
@@ -1599,7 +1625,7 @@ public class MessageUtils {
         }
         final PhoneAccount account = telecomManager
                 .getPhoneAccount(phoneAccountHandle);
-        return account.getIcon(context);
+        return account.createIconDrawable(context);
     }
 
     private static void log(String msg) {
@@ -1619,10 +1645,21 @@ public class MessageUtils {
         sp.edit().putBoolean(VIEW_MODE_NAME, mode).commit();
     }
 
+    public static int getFontSize() {
+        SharedPreferences sp = PreferenceManager
+                .getDefaultSharedPreferences(MmsApp
+                        .getApplication());
+        int mFontSize = Integer
+                .parseInt(sp.getString(
+                        MessagingPreferenceActivity.FONT_SIZE_SETTING,
+                        Integer.toString(DEFAULT_FONT_SIZE)));
+        return mFontSize;
+    }
+
     /**
      * Return the sim name of subscription.
      */
-    public static String getMultiSimName(Context context, long subscription) {
+    public static String getMultiSimName(Context context, int subscription) {
         if (subscription >= TelephonyManager.getDefault().getPhoneCount() || subscription < 0) {
             return null;
         }
@@ -1805,6 +1842,11 @@ public class MessageUtils {
         return !mConnService.getMobileDataEnabled();
     }
 
+    public static boolean isAirplaneModeOn(Context context) {
+        return Settings.Global.getInt(context.getContentResolver(),
+                Settings.Global.AIRPLANE_MODE_ON, 0) == 1;
+    }
+
     public static float onFontSizeScale(ArrayList<TextView> list, float scale,
             float mFontSizeForSave) {
         float mCurrentSize = 0;
@@ -1872,7 +1914,7 @@ public class MessageUtils {
                     SqliteWrapper.update(context,
                             context.getContentResolver(),
                             msgUri, values, null, null);
-
+                    MmsWidgetProvider.notifyDatasetChanged(context);
                     MessagingNotification.blockingUpdateNewMessageIndicator(
                             context,
                             MessagingNotification.THREAD_NONE, false);
@@ -1906,7 +1948,7 @@ public class MessageUtils {
     /**
      * Return the icc uri according to subscription
      */
-    public static Uri getIccUriBySubscription(long subscription) {
+    public static Uri getIccUriBySubscription(int subscription) {
         switch ((int)subscription) {
             case (int)SUB1:
                 return ICC1_URI;
@@ -2411,23 +2453,61 @@ public class MessageUtils {
         return intent;
     }
 
-    public static String convertIdp(Context context, String number) {
+    public static String convertIdp(Context context, String number, int subscription) {
+        String convertedNumber = number;
         if (context.getResources().getBoolean(R.bool.customize_env_phone_checkidp)) {
-            if (number.indexOf(IDP_PREFIX) == 0) {
-                return IDP_PLUS + number.substring(IDP_PREFIX.length());
+            String idpPrefix = getIdpPrefixNumber(context, subscription);
+            if (number.indexOf(idpPrefix) == 0) {
+                convertedNumber = IDP_PLUS + number.substring(idpPrefix.length());
             }
         }
-        return number;
+        Log.d(TAG, "convertIdp : number = "  + number + " converted number = " + convertedNumber);
+        return convertedNumber;
+    }
+
+    public static boolean isRoaming(int subscription) {
+        return TelephonyManager.getDefault().isNetworkRoaming(subscription);
+    }
+
+    private static boolean checkIdpEnable(Context context, int subscription) {
+        if (context.getResources().getBoolean(R.bool.customize_env_phone_checkidp)
+                && Settings.System.getInt(context.getContentResolver(),
+                INTERNATIONAL_PREFIX_ENABLE + subscription, IDP_ENABLE) == IDP_ENABLE) {
+            return true;
+        }
+        return false;
+    }
+
+    private static String getIdpPrefixNumber(Context context, int subscription) {
+        String idpPrefix = Settings.System.getString(context.getContentResolver(),
+                INTERNATIONAL_PREFIX_NUMBER + subscription);
+        return TextUtils.isEmpty(idpPrefix) ? IDP_DEFAULT_PREFIX : idpPrefix;
     }
 
     public static String checkIdp(Context context, String number, int subscription) {
-        if (context.getResources().getBoolean(R.bool.customize_env_phone_checkidp)
-                && isCDMAPhone(subscription)) {
-            if (number.indexOf(IDP_PLUS) == 0) {
-                return IDP_PREFIX + number.substring(IDP_PLUS.length());
+        String checkedNumber = number;
+        boolean isCDMA = isCDMAPhone(subscription);
+        boolean isEnable = checkIdpEnable(context, subscription);
+        boolean isRoaming = isRoaming(subscription);
+        if (isEnable && isCDMA) {
+            int indexIdn = number.indexOf(IDP_IDN);
+            int indexPlus = number.indexOf(IDP_PLUS);
+
+            if ((indexIdn != -1) && (!isRoaming(subscription))) {
+                checkedNumber = number.substring(0, indexIdn) +
+                    IDP_ZERO + number.substring(indexIdn + IDP_IDN.length());
+            } else if (indexPlus != -1) {
+                 checkedNumber = number.substring(0, indexPlus)
+                      + getIdpPrefixNumber(context, subscription)
+                      + number.substring(indexPlus + IDP_PLUS.length());
             }
         }
-        return number;
+
+        Log.d(TAG, "checkIdp : number = "  + number + " sub = "  + subscription +
+            " isCDMA = "  + isCDMA  + " isEnable = " + isEnable +
+            " checked number = "  + checkedNumber);
+
+        return checkedNumber;
     }
 
     public static boolean isTooLargeFile(final Context ctx, final Uri uri) {
@@ -2437,7 +2517,7 @@ public class MessageUtils {
         try {
             input = ctx.getContentResolver().openInputStream(uri);
             if (input.available() / COMPRESSION_FACTOR > MmsConfig
-                    .getMaxMessageSize() * KILOBYTE_SIZE) {
+                    .getMaxMessageSize()) {
                 isTooLarge = true;
             }
         } catch (Exception e) {
@@ -2483,5 +2563,49 @@ public class MessageUtils {
         }
 
         return path;
+    }
+
+    public static boolean isCarrierSimCard(Context ctx) {
+        boolean isCarrierSimCard = false;
+        String[] carrierMccMncs = ctx.getResources().getStringArray(
+                com.android.internal.R.array.
+                config_regional_carrier_operator_list);
+        TelephonyManager tm = (TelephonyManager)ctx.getSystemService(
+        Context.TELEPHONY_SERVICE);
+        String simOperator = tm.getSimOperator();
+        if (DEBUG) Log.d(TAG,
+            "carrier sim card check: sim operator is " + simOperator);
+        if (simOperator != null) {
+            if (Arrays.asList(carrierMccMncs).contains(simOperator)) {
+                isCarrierSimCard = true;
+            }
+            else {
+                for(String s: Arrays.asList(carrierMccMncs)) {
+                    if (simOperator.indexOf(s) >= 0) {
+                        isCarrierSimCard = true;
+                        break;
+                    }
+                }
+            }
+        }
+        if (DEBUG) {
+            Log.d(TAG,"is home Carrier SIM Card? " + isCarrierSimCard);
+        }
+        return isCarrierSimCard;
+    }
+
+    public static boolean shouldHandleMmsViaWifi(Context ctx) {
+        if (!isCarrierSimCard(ctx)) {
+            //Not all carriers mmsc support send MMS via wifi and so
+            //this feature is only for home carrier
+            return false;
+        }
+        boolean wifiActive = false;
+        ConnectivityManager connMgr = (ConnectivityManager) ctx.getSystemService(
+                Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = connMgr == null ? null : connMgr.getNetworkInfo(
+                ConnectivityManager.TYPE_WIFI);
+        wifiActive = (info != null && info.isConnected());
+        return wifiActive;
     }
 }

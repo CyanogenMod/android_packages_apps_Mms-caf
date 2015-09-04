@@ -93,7 +93,7 @@ public class ClassZeroActivity extends Activity {
         byte[] pdu = msgIntent.getByteArrayExtra("pdu");
         String format = msgIntent.getStringExtra("format");
         mPhoneId = msgIntent.getIntExtra(PhoneConstants.PHONE_KEY,
-                SubscriptionManager.INVALID_PHONE_ID);
+                SubscriptionManager.INVALID_PHONE_INDEX);
         SmsMessage rawMessage = SmsMessage.createFromPdu(pdu, format);
         String message = rawMessage.getMessageBody();
         if (TextUtils.isEmpty(message)) {
@@ -229,7 +229,8 @@ public class ClassZeroActivity extends Activity {
         // Store the message in the content provider.
         ContentValues values = new ContentValues();
 
-        values.put(Inbox.ADDRESS, MessageUtils.convertIdp(this, sms.getDisplayOriginatingAddress()));
+        values.put(Inbox.ADDRESS, MessageUtils.convertIdp(this,
+                sms.getDisplayOriginatingAddress(), sms.getSubId()));
 
         // Use now for the timestamp to avoid confusion with clock
         // drift between the handset and the SMSC.
@@ -253,7 +254,8 @@ public class ClassZeroActivity extends Activity {
         values.put(Inbox.BODY, sms.getMessageBody());
 
         ContentResolver resolver = getContentResolver();
-        String originatingAddress = MessageUtils.convertIdp(this, sms.getOriginatingAddress());
+        String originatingAddress = MessageUtils.convertIdp(this,
+                sms.getOriginatingAddress(), sms.getSubId());
         int protocolIdentifier = sms.getProtocolIdentifier();
         String selection = Sms.ADDRESS + " = ? AND " + Sms.PROTOCOL + " = ?";
         String[] selectionArgs = new String[] { originatingAddress,

@@ -79,6 +79,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SqliteWrapper;
 import android.drm.DrmStore;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaFile;
 import android.media.RingtoneManager;
@@ -108,7 +111,6 @@ import android.provider.Telephony.Sms;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.telephony.PhoneNumberUtils;
-import android.telephony.SubInfoRecord;
 import android.telephony.SubscriptionManager;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
@@ -328,6 +330,9 @@ public class ComposeMessageActivity extends Activity
     // Preferred CDMA subscription mode is NV.
     private static final int CDMA_SUBSCRIPTION_NV = 1;
 
+    // The default displaying page when selecting attachments.
+    private static final int DEFAULT_ATTACHMENT_PAGER = 0;
+
     private ContentResolver mContentResolver;
 
     private BackgroundQueryHandler mBackgroundQueryHandler;
@@ -451,7 +456,10 @@ public class ComposeMessageActivity extends Activity
     // sure we notice if the user has changed the default SMS app.
     private boolean mIsSmsEnabled;
 
+    private boolean mIsAirplaneModeOn = false;
     private Handler mHandler = new Handler();
+
+    private  boolean mIsRTL = false;
 
     // keys for extras and icicles
     public final static String THREAD_ID = "thread_id";
@@ -489,6 +497,10 @@ public class ComposeMessageActivity extends Activity
     private final static int REPLACE_ATTACHMEN_MASK = 1 << 16;
 
     private boolean mShowTwoButtons = false;
+
+    private boolean mSendMmsMobileDataOff = false;
+
+    private boolean isAvoidingSavingDraft = false;
 
     @SuppressWarnings("unused")
     public static void log(String logMsg) {
@@ -897,10 +909,24 @@ public class ComposeMessageActivity extends Activity
     }
 
     private class SendIgnoreInvalidRecipientListener implements OnClickListener {
+        private int mSubscription = MessageUtils.SUB_INVALID;
+
+        public SendIgnoreInvalidRecipientListener(int subscription) {
+             mSubscription = subscription;
+        }
+
         @Override
         public void onClick(DialogInterface dialog, int whichButton) {
-            if ((TelephonyManager.getDefault().getPhoneCount()) > 1) {
-                sendMsimMessage(true);
+            boolean isMms = mWorkingMessage.requiresMms();
+            if (isMms && mSendMmsMobileDataOff &&
+                    MessageUtils.isMobileDataDisabled(getApplicationContext())) {
+                showMobileDataDisabledDialog(mSubscription);
+            } else if ((TelephonyManager.getDefault().getPhoneCount()) > 1) {
+                if (mSubscription == MessageUtils.SUB_INVALID) {
+                    sendMsimMessage(true);
+                } else {
+                    sendMsimMessage(true, mSubscription);
+                }
             } else {
                 sendMessage(true);
             }
@@ -1003,7 +1029,7 @@ public class ComposeMessageActivity extends Activity
         if (SubscriptionManager.isSMSPromptEnabled()) {
             LaunchMsimDialog(bCheckEcmMode);
         } else {
-            long subId = SubscriptionManager.getDefaultSmsSubId();
+            int subId = SubscriptionManager.getDefaultSmsSubId();
             int phoneId = SubscriptionManager.getPhoneId(subId);
             mWorkingMessage.setWorkingMessageSub(phoneId);
             sendMessage(bCheckEcmMode);
@@ -1049,13 +1075,27 @@ public class ComposeMessageActivity extends Activity
         }
         boolean isMms = mWorkingMessage.requiresMms();
         if (!isRecipientsEditorVisible()) {
-            sendMsimMessage(true, subscription);
+            if (isMms && mSendMmsMobileDataOff &&
+                    MessageUtils.isMobileDataDisabled(getApplicationContext())) {
+                showMobileDataDisabledDialog(subscription);
+            } else {
+                sendMsimMessage(true, subscription);
+            }
             return;
         }
 
         if (mRecipientsEditor.hasInvalidRecipient(isMms)) {
-            showInvalidRecipientDialog();
+            showInvalidRecipientDialog(subscription);
+        } else if (isMms && mSendMmsMobileDataOff &&
+                MessageUtils.isMobileDataDisabled(getApplicationContext())) {
+            showMobileDataDisabledDialog(subscription);
         } else {
+            if (getResources().getBoolean(com.android.internal.R.bool.config_regional_mms_via_wifi_enable)
+                    && !TextUtils.isEmpty(getString(R.string.mms_recipient_Limit))
+                    && isMms
+                    && checkForMmsRecipients(getString(R.string.mms_recipient_Limit), true)) {
+                return;
+            }
             // The recipients editor is still open. Make sure we use what's showing there
             // as the destination.
             ContactList contacts = mRecipientsEditor.constructContactsFromInput(false);
@@ -1065,7 +1105,7 @@ public class ComposeMessageActivity extends Activity
     }
 
     private void confirmSendMessageIfNeeded() {
-        int slot = SubscriptionManager.getSlotId(SmsManager.getDefault().getDefaultSmsSubId());
+        int slot = SubscriptionManager.getSlotId(SmsManager.getDefault().getDefaultSmsSubscriptionId());
         if ((TelephonyManager.getDefault().isMultiSimEnabled() &&
                 isLTEOnlyMode(slot))
                 || (!TelephonyManager.getDefault().isMultiSimEnabled()
@@ -1073,8 +1113,13 @@ public class ComposeMessageActivity extends Activity
             showDisableLTEOnlyDialog(slot);
             return;
         }
+
+        boolean isMms = mWorkingMessage.requiresMms();
         if (!isRecipientsEditorVisible()) {
-            if ((TelephonyManager.getDefault().getPhoneCount()) > 1) {
+            if (isMms && mSendMmsMobileDataOff &&
+                    MessageUtils.isMobileDataDisabled(getApplicationContext())) {
+                showMobileDataDisabledDialog();
+            } else if ((TelephonyManager.getDefault().getPhoneCount()) > 1) {
                 sendMsimMessage(true);
             } else {
                 sendMessage(true);
@@ -1082,10 +1127,18 @@ public class ComposeMessageActivity extends Activity
             return;
         }
 
-        boolean isMms = mWorkingMessage.requiresMms();
         if (mRecipientsEditor.hasInvalidRecipient(isMms)) {
             showInvalidRecipientDialog();
+        } else if (isMms && mSendMmsMobileDataOff &&
+                MessageUtils.isMobileDataDisabled(getApplicationContext())) {
+            showMobileDataDisabledDialog();
         } else {
+            if (getResources().getBoolean(com.android.internal.R.bool.config_regional_mms_via_wifi_enable)
+                    && !TextUtils.isEmpty(getString(R.string.mms_recipient_Limit))
+                    && isMms
+                    && checkForMmsRecipients(getString(R.string.mms_recipient_Limit), true)) {
+                return;
+            }
             // The recipients editor is still open. Make sure we use what's showing there
             // as the destination.
             ContactList contacts = mRecipientsEditor.constructContactsFromInput(false);
@@ -1099,6 +1152,10 @@ public class ComposeMessageActivity extends Activity
     }
 
     private void showInvalidRecipientDialog() {
+        showInvalidRecipientDialog(MessageUtils.SUB_INVALID);
+    }
+
+    private void showInvalidRecipientDialog(int subscription) {
         boolean isMms = mWorkingMessage.requiresMms();
         if (mRecipientsEditor.getValidRecipientsCount(isMms)
                 > MessageUtils.ALL_RECIPIENTS_INVALID) {
@@ -1108,7 +1165,7 @@ public class ComposeMessageActivity extends Activity
                     .setTitle(title)
                     .setMessage(R.string.invalid_recipient_message)
                     .setPositiveButton(R.string.try_to_send,
-                            new SendIgnoreInvalidRecipientListener())
+                            new SendIgnoreInvalidRecipientListener(subscription))
                     .setNegativeButton(R.string.no, new CancelSendingListener())
                     .show();
         } else {
@@ -1118,6 +1175,32 @@ public class ComposeMessageActivity extends Activity
                     .setPositiveButton(R.string.yes, new CancelSendingListener())
                     .show();
         }
+    }
+
+    private void showMobileDataDisabledDialog() {
+        showMobileDataDisabledDialog(MessageUtils.SUB_INVALID);
+    }
+
+    private void showMobileDataDisabledDialog(final int subscription) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.send);
+        builder.setMessage(getString(R.string.mobile_data_disable));
+        builder.setPositiveButton(R.string.yes, new OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                if ((TelephonyManager.getDefault().getPhoneCount()) > 1) {
+                    if (subscription == MessageUtils.SUB_INVALID) {
+                        sendMsimMessage(true);
+                    } else {
+                        sendMsimMessage(true, subscription);
+                    }
+                } else {
+                    sendMessage(true);
+                }
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton(R.string.no, null);
+        builder.show();
     }
 
     private final TextWatcher mRecipientsWatcher = new TextWatcher() {
@@ -1205,9 +1288,34 @@ public class ComposeMessageActivity extends Activity
         updateTitle(contacts);
     }
 
+    private boolean checkForMmsRecipients(String strLimit, boolean isMmsSend) {
+        if (mWorkingMessage.requiresMms()) {
+            int recipientLimit = Integer.parseInt(strLimit);
+            final int currentRecipients = recipientCount();
+            if (recipientLimit < currentRecipients) {
+                if (currentRecipients != mLastRecipientCount || isMmsSend) {
+                    mLastRecipientCount = currentRecipients;
+                    String tooManyMsg = getString(R.string.too_many_recipients, currentRecipients,
+                            recipientLimit);
+                    Toast.makeText(ComposeMessageActivity.this,
+                             tooManyMsg, Toast.LENGTH_LONG).show();
+                }
+                return true;
+            } else {
+                mLastRecipientCount = currentRecipients;
+            }
+        }
+        return false;
+    }
+
     private void checkForTooManyRecipients() {
+        if (getResources().getBoolean(com.android.internal.R.bool.config_regional_mms_via_wifi_enable)
+                && !TextUtils.isEmpty(getString(R.string.mms_recipient_Limit))
+                && checkForMmsRecipients(getString(R.string.mms_recipient_Limit), false)) {
+            return;
+        }
         final int recipientLimit = MmsConfig.getRecipientLimit();
-        if (recipientLimit != Integer.MAX_VALUE) {
+        if (recipientLimit != Integer.MAX_VALUE && recipientLimit > 0) {
             final int recipientCount = recipientCount();
             boolean tooMany = recipientCount > recipientLimit;
 
@@ -2032,6 +2140,9 @@ public class ComposeMessageActivity extends Activity
         mBackgroundQueryHandler = new BackgroundQueryHandler(mContentResolver);
 
         initialize(savedInstanceState, 0);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+        registerReceiver(mAirplaneModeBroadcastReceiver, intentFilter);
 
         if (TRACE) {
             android.os.Debug.startMethodTracing("compose");
@@ -2075,6 +2186,9 @@ public class ComposeMessageActivity extends Activity
     public void initialize(Bundle savedInstanceState, long originalThreadId) {
         // Create a new empty working message.
         mWorkingMessage = WorkingMessage.createEmpty(this);
+
+        mSendMmsMobileDataOff = getResources().getBoolean(
+                com.android.internal.R.bool.config_enable_mms_with_mobile_data_off);
 
         // Read parameters or previously saved state of this activity. This will load a new
         // mConversation
@@ -2350,11 +2464,6 @@ public class ComposeMessageActivity extends Activity
 
         // reset mMessagesAndDraftLoaded
         mMessagesAndDraftLoaded = false;
-        long threadId = mWorkingMessage.getConversation().getThreadId();
-        // Same recipient for ForwardMms will not load draft
-        if (MessageUtils.sSameRecipientList.contains(threadId)) {
-            mShouldLoadDraft = false;
-        }
 
         CharSequence text = mWorkingMessage.getText();
         if (text != null) {
@@ -2411,7 +2520,9 @@ public class ComposeMessageActivity extends Activity
             }
             loadMessageContent();
             boolean drawBottomPanel = true;
-            if (mShouldLoadDraft) {
+            long threadId = mWorkingMessage.getConversation().getThreadId();
+            // Do not load draft when forwarding to the same recipients.
+            if (mShouldLoadDraft && !MessageUtils.sSameRecipientList.contains(threadId)) {
                 if (loadDraft()) {
                     drawBottomPanel = false;
                 }
@@ -2488,7 +2599,12 @@ public class ComposeMessageActivity extends Activity
 
         mIsRunning = true;
         updateThreadIdIfRunning();
-        mConversation.markAsRead();
+        mIsAirplaneModeOn = MessageUtils.isAirplaneModeOn(this);
+
+        if (getResources().getBoolean(R.bool.def_custom_preferences_settings)) {
+            setBackgroundWallpaper();
+            setTextFontsize();
+        }
     }
 
     @Override
@@ -2554,12 +2670,16 @@ public class ComposeMessageActivity extends Activity
         if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
             log("save draft");
         }
-        saveDraft(true);
+        if(!isAvoidingSavingDraft)
+        {
+            saveDraft(true);
 
-        // set 'mShouldLoadDraft' to true, so when coming back to ComposeMessageActivity, we would
-        // load the draft, unless we are coming back to the activity after attaching a photo, etc,
-        // in which case we should set 'mShouldLoadDraft' to false.
-        mShouldLoadDraft = true;
+            // set 'mShouldLoadDraft' to true, so when coming back to ComposeMessageActivity, we would
+            // load the draft, unless we are coming back to the activity after attaching a photo, etc,
+            // in which case we should set 'mShouldLoadDraft' to false.
+            mShouldLoadDraft = true;
+            isAvoidingSavingDraft = false;
+        }
 
         // Cleanup the BroadcastReceiver.
         unregisterReceiver(mHttpProgressReceiver);
@@ -2576,6 +2696,7 @@ public class ComposeMessageActivity extends Activity
             android.os.Debug.stopMethodTracing();
         }
 
+        unregisterReceiver(mAirplaneModeBroadcastReceiver);
         if (mMsgListAdapter != null) {
             mMsgListAdapter.changeCursor(null);
             mMsgListAdapter.cancelBackgroundLoading();
@@ -2691,12 +2812,16 @@ public class ComposeMessageActivity extends Activity
                 }
                 break;
             case KeyEvent.KEYCODE_BACK:
-                exitComposeMessageActivity(new Runnable() {
-                    @Override
-                    public void run() {
-                        finish();
-                    }
-                });
+                if (mAttachmentSelector.getVisibility() == View.VISIBLE) {
+                    mAttachmentSelector.setVisibility(View.GONE);
+                } else {
+                    exitComposeMessageActivity(new Runnable() {
+                        @Override
+                        public void run() {
+                            finish();
+                        }
+                    });
+                }
                 return true;
         }
 
@@ -3344,6 +3469,7 @@ public class ComposeMessageActivity extends Activity
     private void showAttachmentSelector(final boolean replace) {
         mAttachmentPager = (ViewPager) findViewById(R.id.attachments_selector_pager);
         mIsReplaceAttachment = replace;
+        mCurrentAttachmentPager = DEFAULT_ATTACHMENT_PAGER;
         hideKeyboard();
         if (mAttachmentPagerAdapter == null) {
             mAttachmentPagerAdapter = new AttachmentPagerAdapter(this);
@@ -3355,15 +3481,22 @@ public class ComposeMessageActivity extends Activity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (view != null) {
-                    addAttachment((mCurrentAttachmentPager > 0 ? position
-                            + mAttachmentPagerAdapter.PAGE_GRID_COUNT : position), replace);
+                    int index = mCurrentAttachmentPager > DEFAULT_ATTACHMENT_PAGER ? position
+                            + mAttachmentPagerAdapter.PAGE_GRID_COUNT : position;
+                    if (mIsRTL) {
+                        index = mCurrentAttachmentPager > DEFAULT_ATTACHMENT_PAGER ? position
+                                : mAttachmentPagerAdapter.PAGE_GRID_COUNT + position;
+                    }
+                    int type = mAttachmentPagerAdapter.getAttachmentTypeByIndex(index);
+                    addAttachment(type, replace);
                     mAttachmentSelector.setVisibility(View.GONE);
                 }
             }
         });
         setAttachmentSelectorHeight();
         mAttachmentPager.setAdapter(mAttachmentPagerAdapter);
-        mAttachmentPager.setCurrentItem(0);
+        mAttachmentPager.setCurrentItem(((mIsRTL) ? 1 : 0));
+        mCurrentAttachmentPager = ((mIsRTL) ? 1 : 0);
         mAttachmentPager.setOnPageChangeListener(mAttachmentPagerChangeListener);
         mAttachmentSelector.setVisibility(View.VISIBLE);
         // Delay 200ms for drawing view completed.
@@ -3397,6 +3530,15 @@ public class ComposeMessageActivity extends Activity
                 R.id.pager_indicator_first);
         ImageView pagerIndicatorSecond = (ImageView) mAttachmentSelector.findViewById(
                 R.id.pager_indicator_second);
+
+        if (mIsRTL) {
+            pagerIndicatorSecond.setImageResource(pagerPosition == 0 ? R.drawable.dot_chosen
+                    : R.drawable.dot_unchosen);
+            pagerIndicatorFirst.setImageResource(pagerPosition == 0 ? R.drawable.dot_unchosen
+                    : R.drawable.dot_chosen);
+            return;
+        }
+
         pagerIndicatorFirst.setImageResource(pagerPosition == 0 ? R.drawable.dot_chosen
                 : R.drawable.dot_unchosen);
         pagerIndicatorSecond.setImageResource(pagerPosition == 0 ? R.drawable.dot_unchosen
@@ -3876,10 +4018,12 @@ public class ComposeMessageActivity extends Activity
     }
 
     private void addVideoAsync(final Uri uri, final boolean append) {
+        mInAsyncAddAttathProcess = true;
         getAsyncDialog().runAsync(new Runnable() {
             @Override
             public void run() {
                 addVideo(uri, append);
+                mInAsyncAddAttathProcess = false;
             }
         }, null, R.string.adding_attachments_title);
     }
@@ -4320,6 +4464,7 @@ public class ComposeMessageActivity extends Activity
 
     @Override
     public void onClick(View v) {
+        mIsRTL = (v.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL);
         if ((v == mSendButtonSms || v == mSendButtonMms) && isPreparedForSending()) {
             if (mShowTwoButtons) {
                 confirmSendMessageIfNeeded(PhoneConstants.SUB1);
@@ -4746,14 +4891,38 @@ public class ComposeMessageActivity extends Activity
     }
 
     private boolean isPreparedForSending() {
+        if (mIsAirplaneModeOn) {
+            return false;
+        }
+
         int recipientCount = recipientCount();
 
-        return (MessageUtils.getActivatedIccCardCount() > 0 || isCdmaNVMode()) &&
-                recipientCount > 0 && recipientCount <= MmsConfig.getRecipientLimit() &&
-                mIsSmsEnabled &&
-                (mWorkingMessage.hasAttachment() || mWorkingMessage.hasText() ||
-                    mWorkingMessage.hasSubject());
+        if (getContext().getResources().getBoolean(R.bool.enable_send_blank_message)) {
+            Log.d(TAG, "Blank SMS");
+            return (MessageUtils.getActivatedIccCardCount() > 0 || isCdmaNVMode()) &&
+                    recipientCount > 0 && recipientCount <= MmsConfig.getRecipientLimit() &&
+                    mIsSmsEnabled;
+        } else {
+            return (MessageUtils.getActivatedIccCardCount() > 0 || isCdmaNVMode() ||
+                    TelephonyManager.getDefault().isImsRegistered()) &&
+                    recipientCount > 0 && recipientCount <= MmsConfig.getRecipientLimit() &&
+                    mIsSmsEnabled &&
+                    (mWorkingMessage.hasAttachment() || mWorkingMessage.hasText() ||
+                        mWorkingMessage.hasSubject());
+
+        }
     }
+
+    private BroadcastReceiver mAirplaneModeBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(Intent.ACTION_AIRPLANE_MODE_CHANGED)) {
+                mIsAirplaneModeOn = intent.getBooleanExtra("state", false);
+                updateSendButtonState();
+            }
+        }
+    };
 
     private boolean isCdmaNVMode() {
         if (TelephonyManager.getDefault().isMultiSimEnabled()) {
@@ -5534,7 +5703,7 @@ public class ComposeMessageActivity extends Activity
             if (which >= 0) {
                 slot = which;
             } else if (which == DialogInterface.BUTTON_POSITIVE) {
-                long [] subId = SubscriptionManager.getSubId(slot);
+                int [] subId = SubscriptionManager.getSubId(slot);
                 new Thread(new CopyToSimThread(msgItems, subId[0])).start();
             }
         }
@@ -5542,14 +5711,14 @@ public class ComposeMessageActivity extends Activity
 
     private class CopyToSimThread extends Thread {
         private ArrayList<MessageItem> msgItems;
-        private long subscription;
+        private int subscription;
 
         public CopyToSimThread(ArrayList<MessageItem> msgItems) {
             this.msgItems = msgItems;
-            this.subscription = SmsManager.getDefault().getDefaultSmsSubId();
+            this.subscription = SmsManager.getDefault().getDefaultSmsSubscriptionId();
         }
 
-        public CopyToSimThread(ArrayList<MessageItem> msgItems, long subscription) {
+        public CopyToSimThread(ArrayList<MessageItem> msgItems, int subscription) {
             this.msgItems = msgItems;
             this.subscription = subscription;
         }
@@ -5573,10 +5742,10 @@ public class ComposeMessageActivity extends Activity
     }
 
     private boolean copyToSim(MessageItem msgItem) {
-        return copyToSim(msgItem, SmsManager.getDefault().getDefaultSmsSubId());
+        return copyToSim(msgItem, SmsManager.getDefault().getDefaultSmsSubscriptionId());
     }
 
-    private boolean copyToSim(MessageItem msgItem, long subId) {
+    private boolean copyToSim(MessageItem msgItem, int subId) {
         int boxId = msgItem.mBoxId;
         String address = msgItem.mAddress;
         if (MessageUtils.isWapPushNumber(address)) {
@@ -5778,6 +5947,7 @@ public class ComposeMessageActivity extends Activity
                         null);
             }
             mDeleteLockedMessages = false;
+            startMsgListQuery(MESSAGE_LIST_QUERY_AFTER_DELETE_TOKEN);
         }
 
         private void calculateSelectedMsgUri() {
@@ -5842,11 +6012,9 @@ public class ComposeMessageActivity extends Activity
                     new PopupList.OnPopupItemClickListener() {
                         @Override
                         public boolean onPopupItemClick(int itemId) {
-                            if (itemId == SelectionMenu.SELECT_OR_DESELECT) {
-                                boolean selectAll = getListView().getCheckedItemCount() <
-                                        getListView().getCount() ? true : false;
-                                checkAll(selectAll);
-                                mSelectionMenu.updateSelectAllMode(selectAll);
+                            if (itemId == RcsSelectionMenu.SELECT_OR_DESELECT) {
+                                checkAll(!allItemsSelected());
+                                mSelectionMenu.updateSelectAllMode(allItemsSelected());
                             }
                             return true;
                         }
@@ -5965,8 +6133,9 @@ public class ComposeMessageActivity extends Activity
                 }
                 break;
             case R.id.resend:
+                mode.finish();
                 resendCheckedMessage();
-                break;
+                return true;
             case R.id.copy_to_sim:
                 copySmsToSim();
                 break;
@@ -5994,6 +6163,11 @@ public class ComposeMessageActivity extends Activity
         }
 
         private String getAllSMSBody() {
+            if (!getResources().getBoolean(R.bool.config_forwardconv)) {
+                //There should be only one messageItem if forwardconv config is disable.
+                return mMessageItems.get(0).mBody;
+            }
+
             StringBuilder body = new StringBuilder();
             for (MessageItem msgItem : mMessageItems) {
                 // if not the first append a new line
@@ -6186,6 +6360,8 @@ public class ComposeMessageActivity extends Activity
                 } else {
                     if (getResources().getBoolean(R.bool.config_forwardconv)) {
                         mode.getMenu().findItem(R.id.forward).setVisible(true);
+                    } else {
+                        mode.getMenu().findItem(R.id.forward).setVisible(false);
                     }
                     mode.getMenu().findItem(R.id.copy_to_sim).setVisible(true);
                 }
@@ -6221,11 +6397,16 @@ public class ComposeMessageActivity extends Activity
         }
 
         private MessageItem getMessageItemByPos(int position) {
-            MessageListItem msglistItem = (MessageListItem) mMsgListView.getChildAt(position);
-            if (msglistItem == null) {
-                return null;
+            if (mMsgListAdapter.getItemViewType(position)
+                    != MessageListAdapter.GROUP_CHAT_ITEM_TYPE) {
+                Cursor cursor = (Cursor) mMsgListAdapter.getItem(position);
+                if (cursor != null) {
+                    return mMsgListAdapter.getCachedMessageItem(
+                            cursor.getString(COLUMN_MSG_TYPE),
+                            cursor.getLong(COLUMN_ID), cursor);
+                }
             }
-            return  msglistItem.getMessageItem();
+            return null;
         }
 
         private boolean isDeliveryReportMsg(int position) {
@@ -6272,6 +6453,8 @@ public class ComposeMessageActivity extends Activity
                     R.string.selected_count, mCheckedCount));
             mSelectionMenu.updateSelectAllMode(getListView().getCount() == mCheckedCount);
 
+            mSelectionMenu.setTitle(getString(R.string.selected_count, mCheckedCount));
+            mSelectionMenu.updateSelectAllMode(allItemsSelected());
         }
 
         private void confirmDeleteDialog(final DeleteMessagesListener listener,
@@ -6344,6 +6527,42 @@ public class ComposeMessageActivity extends Activity
                     });
             builder.setNegativeButton(R.string.no, null);
             builder.create().show();
+        }
+    }
+
+    private void setBackgroundWallpaper() {
+        SharedPreferences mPreferences = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        String imageUri = mPreferences.getString(
+                MessagingPreferenceActivity.CHAT_WALLPAPER, null);
+        if (!TextUtils.isEmpty(imageUri)) {
+            Bitmap bitmap = BitmapFactory.decodeFile(mPreferences
+                    .getString(
+                            MessagingPreferenceActivity.CHAT_WALLPAPER, null));
+            if(bitmap != null) {
+                mMsgListView.setBackground(new BitmapDrawable(bitmap));
+            }
+        }
+    }
+    private void setTextFontsize() {
+        int size =  MessageUtils.getFontSize();
+        if (mTextEditor != null) {
+            mTextEditor.setTextSize(size);
+        }
+        if (mMsgListAdapter != null) {
+            mMsgListAdapter.setTextSize(size);
+        }
+
+        if (mMsgListView != null
+                && mMsgListView.getVisibility() == View.VISIBLE) {
+            int count = mMsgListView.getChildCount();
+            for (int i = 0; i < count; i++) {
+                MessageListItem item = (MessageListItem) mMsgListView
+                        .getChildAt(i);
+                if (item != null) {
+                    item.setBodyTextSize(size);
+                }
+            }
         }
     }
 

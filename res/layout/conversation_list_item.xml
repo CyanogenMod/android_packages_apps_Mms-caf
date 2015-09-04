@@ -41,7 +41,7 @@
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@id/avatar"
         android:layout_alignWithParentIfMissing="true"
-        android:ellipsize="marquee"  />
+        android:ellipsize="middle"  />
 
     <TextView android:id="@+id/date"
         android:layout_marginTop="2dip"
@@ -53,8 +53,6 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:singleLine="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true" />
-
     <ImageView android:id="@+id/error"
         android:layout_marginStart="3dip"
         android:visibility="invisible"

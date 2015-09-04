@@ -2,19 +2,25 @@ package com.android.mms.transaction;
 
 import java.util.ArrayList;
 
+import android.app.ActivityThread;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.RemoteException;
+import android.os.ServiceManager;
 import android.preference.PreferenceManager;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Sms;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.SmsManager;
 import android.telephony.SubscriptionManager;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.internal.telephony.ISms;
+import com.android.internal.telephony.PhoneConstants;
 import com.android.mms.LogTag;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
@@ -42,6 +48,72 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
         this.mPriority = priority;
     }
 
+    private boolean sendEmptyMessage() throws MmsException {
+        boolean moved = Sms.moveMessageToFolder(mContext, mUri, Sms.MESSAGE_TYPE_OUTBOX, 0);
+        if (!moved) {
+            throw new MmsException("SmsMessageSender.sendMessage: couldn't move message " +
+                    "to outbox: " + mUri);
+        }
+        if (LogTag.DEBUG_SEND) {
+            Log.v(TAG, "sendMessage mDest: " + mDest + " mRequestDeliveryReport: " +
+                    mRequestDeliveryReport);
+        }
+
+        PendingIntent deliveryIntent;
+        if (mRequestDeliveryReport) {
+            deliveryIntent = PendingIntent.getBroadcast(
+                    mContext, 0,
+                    new Intent(
+                            MessageStatusReceiver.MESSAGE_STATUS_RECEIVED_ACTION,
+                            mUri,
+                            mContext,
+                            MessageStatusReceiver.class),
+                            0);
+        } else {
+            deliveryIntent = null;
+        }
+
+        Intent intent  = new Intent(SmsReceiverService.MESSAGE_SENT_ACTION,
+                mUri,
+                mContext,
+                SmsReceiver.class);
+        intent.putExtra(PhoneConstants.SUBSCRIPTION_KEY, mPhoneId);
+        int requestCode = 1;
+        intent.putExtra(SmsReceiverService.EXTRA_MESSAGE_SENT_SEND_NEXT, true);
+
+        if (LogTag.DEBUG_SEND) {
+            Log.v(TAG, "sendMessage sendIntent: " + intent);
+        }
+        PendingIntent sentIntent = PendingIntent.getBroadcast(mContext, requestCode, intent, 0);
+
+        int validityPeriod = getValidityPeriod(mPhoneId);
+        // Remove all attributes for CDMA international roaming.
+        if (MessageUtils.isCDMAInternationalRoaming(mPhoneId)) {
+            Log.v(TAG, "sendMessage during CDMA international roaming.");
+            mPriority = -1;
+            deliveryIntent = null;
+            validityPeriod = -1;
+        }
+        try {
+            ISms iccISms = ISms.Stub.asInterface(ServiceManager.getService("isms"));
+            if (iccISms != null) {
+                iccISms.sendText(ActivityThread.currentPackageName(), mDest,
+                        mServiceCenter, "", sentIntent, deliveryIntent);
+            }
+        } catch (RemoteException ex) {
+            // ignore it
+        } catch (Exception ex) {
+            Log.e(TAG, "SmsMessageSender.sendMessage: caught", ex);
+            throw new MmsException("SmsMessageSender.sendMessage: caught " + ex +
+                    " from MSimSmsManager.sendTextMessage()");
+        }
+        if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE) || LogTag.DEBUG_SEND) {
+            log("sendMessage: address=" + mDest + ", threadId=" + mThreadId +
+                    ", uri=" + mUri);
+        }
+        return false;
+    }
+
     public boolean sendMessage(long token) throws MmsException {
         if (LogTag.DEBUG_SEND) {
             Log.v(TAG, "sendMessage token: " + token);
@@ -51,9 +123,12 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
             // one.
             throw new MmsException("Null message body or have multiple destinations.");
         }
-        long [] subId = SubscriptionManager.getSubId(mPhoneId);
+        int [] subId = SubscriptionManager.getSubId(mPhoneId);
+        if (subId == null || subId.length == 0 || !MessageUtils.isIccCardActivated(mPhoneId)) {
+            return false;
+        }
         Log.e(TAG, "send SMS phone Id = " + mPhoneId + " subId : = " + subId[0]);
-        SmsManager smsManager = SmsManager.getSmsManagerForSubscriber(subId[0]);
+        SmsManager smsManager = SmsManager.getSmsManagerForSubscriptionId(subId[0]);
         ArrayList<String> messages = null;
         if ((MmsConfig.getEmailGateway() != null) &&
                 (Mms.isEmailAddress(mDest) || MessageUtils.isAlias(mDest))) {
@@ -68,14 +143,18 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
             // (e.g. "+8211-123-4567" -> "+82111234567")
             mDest = PhoneNumberUtils.stripSeparators(mDest);
             mDest = Conversation.verifySingleRecipient(mContext, mThreadId, mDest);
-            mDest = MessageUtils.checkIdp(mContext, mDest, mPhoneId);
+            mDest = MessageUtils.checkIdp(mContext, mDest, subId[0]);
         }
         int messageCount = messages.size();
 
         if (messageCount == 0) {
-            // Don't try to send an empty message.
-            throw new MmsException("SmsMessageSender.sendMessage: divideMessage returned " +
-                    "empty messages. Original message is \"" + mMessageText + "\"");
+            if (!mContext.getResources().getBoolean(R.bool.enable_send_blank_message)) {
+                // Don't try to send an empty message.
+                throw new MmsException("SmsMessageSender.sendMessage: divideMessage returned " +
+                            "empty messages. Original message is \"" + mMessageText + "\"");
+            } else {
+                return sendEmptyMessage();
+            }
         }
 
         boolean moved = Sms.moveMessageToFolder(mContext, mUri, Sms.MESSAGE_TYPE_OUTBOX, 0);

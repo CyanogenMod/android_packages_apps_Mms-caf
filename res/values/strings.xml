@@ -607,6 +607,7 @@
     <string name="disk_storage_full_error">Error: Storage is full.</string>
 
     <!-- Mobile data is turned off dialog text. -->
+    <string name="mobile_data_disable">Mobile data is turned off, do you still want to send MMS? If yes, it will generate mobile data traffic.</string>
     <string name="inform_data_off">Mobile data is turned off, turn it on in the system setting and try again.</string>
     <!-- Mms size is too large dialog text. -->
     <string name="mms_too_large">The message is too large to download.</string>
@@ -663,8 +664,10 @@
     <string name="message_failed_body">Touch to review the message and try again.</string>
     <!-- Dialog box message when there's a problem retrieving messages. -->
     <string name="download_later">Can\'t download right now. Try again later.</string>
-    <string name="send_failed_retry">Sending failed, auto retry.</string>
-    <string name="download_failed_retry">Downloading failed, auto retry.</string>
+    <string name="send_failed_retry">Sending failed, will auto retry.</string>
+    <string name="download_failed_retry">Downloading failed, will auto retry.</string>
+    <string name="no_network_send_failed_retry">Network is not available, sending failed, will auto retry</string>
+    <string name="no_network_download_failed_retry">Network is not available, downloading failed, will auto retry</string>
     <!-- Dialog box message when there's no APN specified on the device. -->
     <string name="no_apn">No APN specified on the device.</string>
 
@@ -1005,6 +1008,7 @@
     <string name="mms_max">Maximum</string>
     <string name="save_description">The time of message storing in server</string>
     <string name="status_expired">Mms expired</string>
+    <string name="mms_recipient_Limit"></string>
 
     <string name="pref_sim_card_full_save_to_phone">SIM card full, save new message to phone.</string>
 
@@ -1057,4 +1061,32 @@
     <string name="omacp_configuration">OMACP Configuration</string>
     <string name="configuration_message_key">Configuration Message</string>
     <string name="configuration_message_key_activity">Touch to configure your OMACP messages</string>
+    <!-- General settings -->
+    <string name="pref_title_general_settings">General</string>
+    <string name="pref_title_notification_settings">Notifications</string>
+    <!-- Cell broadcast settings -->
+    <string name="cell_broadcast">Cell broadcast</string>
+    <string name="cell_broadcast_title">Cell broadcast settings</string>
+    <string name="cell_broadcast_settings">SIM card cell broadcast settings</string>
+    <!-- Chat wallpaper -->
+    <string name="pref_chat_wallpaper">Chat wallpaper</string>
+    <string name="dialog_wallpaper_chooser_option_gallery">Gallery</string>
+    <string name="dialog_wallpaper_chooser_option_camera">Take a photo</string>
+    <string name="dialog_wallpaper_title">Choose Wallpaper</string>
+    <string name="intent_chooser_dialog_title">Complete action using</string>
+    <string name="gallery_packagename">com.android.gallery3d</string>
+    <string name="camera_packagename">com.android.camera2</string>
+    <string name="pref_title_size_limit">Size Limit</string>
+    <!-- Font settings -->
+    <string name="pref_title_message_font_size">Message font size</string>
+    <string name="message_font_size_dialog_title">Message font size</string>
+    <string name="font_follow_system_font">Follow system font size</string>
+    <string name="font_small">Small</string>
+    <string name="font_medium">Medium</string>
+    <string name="font_large">Large</string>
+    <string name="font_extra_large">Extra large</string>
+    <string name="plugger_priority">999</string>
+
+    <string name="default_sms_validity_period">-1</string>
+    <string name="default_mms_validity_period">0</string>
 </resources>

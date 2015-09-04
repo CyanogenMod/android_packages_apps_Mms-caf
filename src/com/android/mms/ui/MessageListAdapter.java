@@ -185,6 +185,8 @@ public class MessageListAdapter extends CursorAdapter {
     // for multi delete sim messages or forward merged message
     private int mMultiManageMode = MessageUtils.INVALID_MODE;
 
+    private float mTextSize = 0;
+
     public MessageListAdapter(
             Context context, Cursor c, ListView listView,
             boolean useDefaultColumnsMap, Pattern highlight) {
@@ -239,6 +241,15 @@ public class MessageListAdapter extends CursorAdapter {
                 mli.setMsgListItemHandler(mMsgListItemHandler);
             }
         }
+    }
+
+    @Override
+    public long getItemId(int position) {
+        if (getCursor() != null) {
+            getCursor().moveToPosition(position);
+            return position;
+        }
+        return 0;
     }
 
     public interface OnDataSetChangedListener {
@@ -631,5 +642,9 @@ public class MessageListAdapter extends CursorAdapter {
                 MessageItem oldValue, MessageItem newValue) {
             oldValue.cancelPduLoading();
         }
+    }
+
+    public void setTextSize(float size) {
+        mTextSize = size;
     }
 }

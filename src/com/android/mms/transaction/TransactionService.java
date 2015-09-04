@@ -67,6 +67,8 @@ import com.android.internal.telephony.PhoneConstants;
 import com.android.mms.LogTag;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
+import com.android.mms.ui.ComposeMessageActivity;
+import com.android.mms.ui.MessageUtils;
 import com.android.mms.util.DownloadManager;
 import com.android.mms.util.RateController;
 import com.google.android.mms.pdu.GenericPdu;
@@ -159,6 +161,8 @@ public class TransactionService extends Service implements Observer {
     private static final int TOAST_NO_APN = 3;
     private static final int TOAST_SEND_FAILED_RETRY = 4;
     private static final int TOAST_DOWNLOAD_FAILED_RETRY = 5;
+    private static final int TOAST_SETUP_DATA_CALL_FAILED_FOR_SEND = 6;
+    private static final int TOAST_SETUP_DATA_CALL_FAILED_FOR_DOWNLOAD = 7;
     private static final int TOAST_NONE = -1;
 
     // How often to extend the use of the MMS APN while a transaction
@@ -250,7 +254,7 @@ public class TransactionService extends Service implements Observer {
             if (mmsNetworkInfo.isConnected()) {
                 TransactionSettings settings = new TransactionSettings(
                         TransactionService.this, mmsNetworkInfo.getExtraInfo(),
-                        Long.parseLong(subId));
+                        Integer.parseInt(subId));
                 // If this APN doesn't have an MMSC, mark everything as failed and bail.
                 if (TextUtils.isEmpty(settings.getMmscUrl())) {
                     Log.v(TAG, "   empty MMSC url, bail");
@@ -304,6 +308,10 @@ public class TransactionService extends Service implements Observer {
                 str = getString(R.string.send_failed_retry);
             } else if (msg.what == TOAST_DOWNLOAD_FAILED_RETRY && showRetryToast) {
                 str = getString(R.string.download_failed_retry);
+            } else if (msg.what == TOAST_SETUP_DATA_CALL_FAILED_FOR_SEND && showRetryToast) {
+                str = getString(R.string.no_network_send_failed_retry);
+            } else if (msg.what == TOAST_SETUP_DATA_CALL_FAILED_FOR_DOWNLOAD && showRetryToast) {
+                str = getString(R.string.no_network_download_failed_retry);
             }
 
             if (str != null) {
@@ -341,7 +349,7 @@ public class TransactionService extends Service implements Observer {
         return Service.START_NOT_STICKY;
     }
 
-    private long[] getSubIdFromDb(Uri uri) {
+    private int[] getSubIdFromDb(Uri uri) {
         int phoneId = 0;
         Cursor c = getApplicationContext().getContentResolver().query(uri,
                 null, null, null, null);
@@ -363,7 +371,7 @@ public class TransactionService extends Service implements Observer {
         // If client does not update the DB with phoneId, use default sms
         // phoneId
         if (!SubscriptionManager.isValidSlotId(phoneId)) {
-            phoneId = SubscriptionManager.getDefaultSmsPhoneId();
+            phoneId = SubscriptionManager.from(getApplicationContext()).getDefaultSmsPhoneId();
         }
         Log.d(TAG, "Destination Phone Id = " + phoneId);
         return (SubscriptionManager.getSubId(phoneId));
@@ -398,7 +406,7 @@ public class TransactionService extends Service implements Observer {
         return flag;
     }
 
-    private boolean isMmsDataConnectivityPossible(long subId) {
+    private boolean isMmsDataConnectivityPossible(int subId) {
         boolean flag = false;
         TelephonyManager telephonyManager = (TelephonyManager)getApplicationContext()
                 .getSystemService(Context.TELEPHONY_SERVICE);
@@ -411,6 +419,11 @@ public class TransactionService extends Service implements Observer {
     }
 
     public void onNewIntent(Intent intent, int serviceId) {
+        if (!MmsConfig.isSmsEnabled(getApplicationContext())) {
+            Log.d(TAG, "TransactionService: is not the default sms app");
+            stopSelf(serviceId);
+            return;
+        }
         mConnMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (mConnMgr == null || !MmsConfig.isSmsEnabled(getApplicationContext())) {
             endMmsConnectivity();
@@ -418,6 +431,13 @@ public class TransactionService extends Service implements Observer {
             return;
         }
         boolean noNetwork = false;
+        if (getResources().getBoolean(
+                com.android.internal.R.bool.config_regional_mms_via_wifi_enable)) {
+            NetworkInfo ni = mConnMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE_MMS);
+            boolean shouldUseWifi = MessageUtils.shouldHandleMmsViaWifi(getApplicationContext());
+            noNetwork = !shouldUseWifi && (!mConnMgr.getMobileDataEnabled()
+                    || !(ni != null && ni.isAvailable()));
+        }
 
         if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
             Log.v(TAG, "onNewIntent: serviceId: " + serviceId + ": " + intent.getExtras() +
@@ -461,6 +481,8 @@ public class TransactionService extends Service implements Observer {
                     int columnIndexOfMsgId = cursor.getColumnIndexOrThrow(PendingMessages.MSG_ID);
                     int columnIndexOfMsgType = cursor.getColumnIndexOrThrow(
                             PendingMessages.MSG_TYPE);
+                    int columnIndexOfRetryIndex = cursor.getColumnIndexOrThrow(
+                            PendingMessages.RETRY_INDEX);
 
                     while (cursor.moveToNext()) {
                         int msgType = cursor.getInt(columnIndexOfMsgType);
@@ -472,6 +494,7 @@ public class TransactionService extends Service implements Observer {
                         Uri uri = ContentUris.withAppendedId(
                                 Mms.CONTENT_URI,
                                 cursor.getLong(columnIndexOfMsgId));
+                        boolean inRetry = cursor.getInt(columnIndexOfRetryIndex) > 0;
                         if (noNetwork) {
                             // Because there is a MMS queue list including
                             // unsent and undownload MMS in database while data
@@ -486,7 +509,6 @@ public class TransactionService extends Service implements Observer {
                             cursor.moveToLast();
                             transactionType = getTransactionType(cursor
                                     .getInt(columnIndexOfMsgType));
-                            boolean inRetry = ACTION_ONALARM.equals(intent.getAction());
                             onNetworkUnavailable(serviceId, transactionType, uri, inRetry);
                             return;
                         }
@@ -508,9 +530,9 @@ public class TransactionService extends Service implements Observer {
                                             isTransientFailure(failureType) + " autoDownload=" +
                                             autoDownload);
                                 }
-                                if (!autoDownload) {
-                                    // If autodownload is turned off, don't process the
-                                    // transaction.
+                                if (!autoDownload && !inRetry) {
+                                    // If autodownload is turned off and not in retry peroid,
+                                    // don't process the transaction.
                                     if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
                                         Log.v(TAG, "onNewIntent: skipping - autodownload off");
                                     }
@@ -538,7 +560,7 @@ public class TransactionService extends Service implements Observer {
                                // fall-through
                             default:
 
-                                long [] subId = getSubIdFromDb(uri);
+                                int [] subId = getSubIdFromDb(uri);
                                 // subId is null. Bail out.
                                 if (subId == null) {
                                     Log.e(TAG, "SMS subId is null. Bail out");
@@ -548,7 +570,7 @@ public class TransactionService extends Service implements Observer {
                                 Log.d(TAG, "destination Sub Id = " + subId[0]);
                                 if (subId[0] < 0) {
                                     Log.d(TAG, "Subscriptions are not yet ready.");
-                                    long defSmsSubId = getDefaultSmsSubId();
+                                    int defSmsSubId = getDefaultSmsSubId();
                                     // We dont have enough info about subId. We dont know if the
                                     // phoneId as persent in DB actually would match the subId of
                                     // defaultSmsSubId. We can not also ignore this transaction
@@ -568,7 +590,7 @@ public class TransactionService extends Service implements Observer {
                                         downloadManager.markState(uri,
                                                 DownloadManager.STATE_SKIP_RETRYING);
                                     }
-
+                                    onNetworkUnavailable(serviceId, transactionType, uri, inRetry);
                                     break;
                                 }
 
@@ -610,7 +632,7 @@ public class TransactionService extends Service implements Observer {
             String uriStr = intent.getStringExtra("uri");
             Uri uri = Uri.parse(uriStr);
 
-            long [] subId = getSubIdFromDb(uri);
+            int [] subId = getSubIdFromDb(uri);
             // subId is null. Bail out.
             if (subId == null) {
                 Log.e(TAG, "SMS subId is null. Bail out");
@@ -619,7 +641,7 @@ public class TransactionService extends Service implements Observer {
 
             Log.d(TAG, "destination Sub Id = " + subId[0]);
             if (subId[0] < 0) {
-               long defSmsSubId = getDefaultSmsSubId();
+               int defSmsSubId = getDefaultSmsSubId();
                 Log.d(TAG, "Override with default Sms subId = " + defSmsSubId);
                 subId[0] = defSmsSubId;
             }
@@ -629,18 +651,23 @@ public class TransactionService extends Service implements Observer {
                 Log.d(TAG, "Either mobile data is off or apn not present, Abort");
 
                 downloadManager.markState(uri, DownloadManager.STATE_SKIP_RETRYING);
+
+                boolean isRetry = getRetryIndex(uri.getLastPathSegment()) > 0;
+                int type = intent.getIntExtra(TransactionBundle.TRANSACTION_TYPE,
+                        Transaction.NOTIFICATION_TRANSACTION);
+                onNetworkUnavailable(serviceId, type, uri, isRetry);
                 return;
             }
 
             Bundle bundle = intent.getExtras();
-            bundle.putLong(PhoneConstants.SUBSCRIPTION_KEY, subId[0]);
+            bundle.putInt(PhoneConstants.SUBSCRIPTION_KEY, subId[0]);
             // For launching NotificationTransaction and test purpose.
             TransactionBundle args = new TransactionBundle(bundle);
             launchTransaction(serviceId, args, noNetwork);
         }
     }
 
-    private long getDefaultSmsSubId() {
+    private int getDefaultSmsSubId() {
         return SubscriptionManager.getDefaultSmsSubId();
     }
 
@@ -696,35 +723,67 @@ public class TransactionService extends Service implements Observer {
             Log.v(TAG, "onNetworkUnavailable: sid=" + serviceId + ", type=" + transactionType);
         }
 
+       if (transactionType == Transaction.NOTIFICATION_TRANSACTION
+               && !DownloadManager.getInstance().isAuto()) {
+           // Not trigger next retry for retrieval MMS if user not initiate it.
+           return;
+       }
+
+        // Need the RetryScheduler first to update the retry index and result,
+        // then set the toast type accordingly.
+        if (getResources().getBoolean(R.bool.config_retry_always)) {
+            RetryScheduler.scheduleRetry(getApplicationContext(), uri);
+            RetryScheduler.setRetryAlarm(getApplicationContext(), uri);
+        }
+
         int toastType = TOAST_NONE;
-        if (transactionType == Transaction.RETRIEVE_TRANSACTION) {
+        if (transactionType == Transaction.RETRIEVE_TRANSACTION ||
+                transactionType == Transaction.NOTIFICATION_TRANSACTION) {
             if (getResources().getBoolean(R.bool.config_retry_always) && inRetry) {
                 toastType = isLastRetry(uri.getLastPathSegment()) ?
-                        TOAST_NONE : TOAST_DOWNLOAD_FAILED_RETRY;
+                        TOAST_NONE : TOAST_SETUP_DATA_CALL_FAILED_FOR_DOWNLOAD;
             } else {
-                toastType = TOAST_DOWNLOAD_LATER;
+                toastType = TOAST_SETUP_DATA_CALL_FAILED_FOR_DOWNLOAD;
             }
         } else if (transactionType == Transaction.SEND_TRANSACTION) {
             if (getResources().getBoolean(R.bool.config_retry_always) && inRetry) {
                 toastType = isLastRetry(uri.getLastPathSegment()) ?
-                        TOAST_NONE : TOAST_SEND_FAILED_RETRY;
+                        TOAST_NONE : TOAST_SETUP_DATA_CALL_FAILED_FOR_SEND;
             } else {
                 if (getResources().getBoolean(R.bool.config_manual_resend)) {
                     updateMsgErrorType(uri, MmsSms.ERR_TYPE_MMS_PROTO_TRANSIENT);
                 }
-                toastType = TOAST_MSG_QUEUED;
+                toastType = TOAST_SETUP_DATA_CALL_FAILED_FOR_SEND;
             }
         }
         if (toastType != TOAST_NONE) {
             mToastHandler.sendEmptyMessage(toastType);
         }
 
-        if (getResources().getBoolean(R.bool.config_retry_always)
-                && !isLastRetry(uri.getLastPathSegment())) {
-            RetryScheduler.scheduleRetry(getApplicationContext(), uri);
-            RetryScheduler.setRetryAlarm(getApplicationContext());
-        }
         stopSelfIfIdle(serviceId);
+    }
+
+    private int getRetryIndex(String msgId) {
+        Uri.Builder uriBuilder = PendingMessages.CONTENT_URI.buildUpon();
+        uriBuilder.appendQueryParameter("protocol", "mms");
+        uriBuilder.appendQueryParameter("message", msgId);
+
+        Cursor cursor = null;
+        try {
+             cursor = SqliteWrapper.query(this, getContentResolver(),
+                    uriBuilder.build(), null, null, null, null);
+            if (cursor != null && (cursor.getCount() == 1) && cursor.moveToFirst()) {
+                int index = cursor.getInt(cursor.getColumnIndexOrThrow(
+                        PendingMessages.RETRY_INDEX));
+                Log.v(TAG, "getRetryIndex:" + index) ;
+                return index;
+            }
+            return 0;
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
     }
 
     private void updateMsgErrorType(Uri mmsUri, int errorType) {
@@ -751,7 +810,7 @@ public class TransactionService extends Service implements Observer {
                         PendingMessages.RETRY_INDEX));
                 DefaultRetryScheme scheme = new DefaultRetryScheme(this, retryIndex);
                 Log.i(TAG,"isLastRetry retryIndex="+retryIndex+" limit="+scheme.getRetryLimit());
-                if (retryIndex == scheme.getRetryLimit()) {
+                if (retryIndex >= scheme.getRetryLimit()) {
                     return true;
                 }
             }
@@ -867,14 +926,30 @@ public class TransactionService extends Service implements Observer {
                 case TransactionState.FAILED:
                     int type = transaction.getType();
                     Uri uri = state.getContentUri();
+                    boolean failSetupDataCall = Transaction.FAIL_REASON_CAN_NOT_SETUP_DATA_CALL
+                            == transaction.getFailReason();
                     if (uri != null) {
                         String msgId = uri.getLastPathSegment();
                         if (!isLastRetry(msgId)) {
                             if (type == Transaction.SEND_TRANSACTION) {
-                                mToastHandler.sendEmptyMessage(TOAST_SEND_FAILED_RETRY);
+                                if (failSetupDataCall) {
+                                    mToastHandler.sendEmptyMessage(
+                                            TOAST_SETUP_DATA_CALL_FAILED_FOR_SEND);
+                                } else {
+                                    mToastHandler.sendEmptyMessage(TOAST_SEND_FAILED_RETRY);
+                                }
                             } else if ((type == Transaction.RETRIEVE_TRANSACTION) ||
                                     (type == Transaction.NOTIFICATION_TRANSACTION)) {
-                                mToastHandler.sendEmptyMessage(TOAST_DOWNLOAD_FAILED_RETRY);
+                                if (DownloadManager.getInstance().isAuto() ||
+                                        getResources().getBoolean(R.bool.config_retry_always)) {
+                                    if (failSetupDataCall) {
+                                        mToastHandler.sendEmptyMessage(
+                                                TOAST_SETUP_DATA_CALL_FAILED_FOR_DOWNLOAD);
+                                    } else {
+                                        mToastHandler.sendEmptyMessage(
+                                                TOAST_DOWNLOAD_FAILED_RETRY);
+                                    }
+                                }
                             }
                         }
                     }
@@ -935,6 +1010,12 @@ public class TransactionService extends Service implements Observer {
         }
         // Take a wake lock so we don't fall asleep before the message is downloaded.
         createWakeLock();
+        if (getResources().getBoolean(
+                com.android.internal.R.bool.config_regional_mms_via_wifi_enable)) {
+            if (MessageUtils.shouldHandleMmsViaWifi(getApplicationContext())){
+                return PhoneConstants.APN_ALREADY_ACTIVE;
+            }
+        }
 
         int result = mConnMgr.startUsingNetworkFeatureForSubscription(
                 ConnectivityManager.TYPE_MOBILE, Phone.FEATURE_ENABLE_MMS, subId);
@@ -958,6 +1039,7 @@ public class TransactionService extends Service implements Observer {
         switch (result) {
             case PhoneConstants.APN_ALREADY_ACTIVE:
                 acquireWakeLock();
+                mMmsConnecvivityRetryCount = 0;
                 return result;
             case PhoneConstants.APN_REQUEST_STARTED:
                 acquireWakeLock();
@@ -983,8 +1065,8 @@ public class TransactionService extends Service implements Observer {
     }
 
     protected void endMmsConnectivity() {
-        long subId = SubscriptionManager.getOnDemandDataSubId();
-        endMmsConnectivity(Long.toString(subId));
+        int subId = SubscriptionManager.getOnDemandDataSubId();
+        endMmsConnectivity(Integer.toString(subId));
     }
 
     protected void endMmsConnectivity(String subId) {
@@ -1076,11 +1158,11 @@ public class TransactionService extends Service implements Observer {
                     }
 
                     try {
-                        long subId = SubscriptionManager.getOnDemandDataSubId();
+                        int subId = SubscriptionManager.getOnDemandDataSubId();
                         if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
                             Log.v(TAG, "renew PDP connection for subscription: " + subId);
                         }
-                        int result = beginMmsConnectivity(Long.toString(subId));
+                        int result = beginMmsConnectivity(Integer.toString(subId));
                         if (result != PhoneConstants.APN_ALREADY_ACTIVE) {
                             Log.v(TAG, "Extending MMS connectivity returned " + result +
                                     " instead of APN_ALREADY_ACTIVE");
@@ -1138,7 +1220,8 @@ public class TransactionService extends Service implements Observer {
                                 } else {
                                     // Now it's only used for test purpose.
                                     byte[] pushData = args.getPushData();
-                                    PduParser parser = new PduParser(pushData);
+                                    PduParser parser = new PduParser(pushData,
+                                            PduParserUtil.shouldParseContentDisposition());
                                     GenericPdu ind = parser.parse();
 
                                     int type = PduHeaders.MESSAGE_TYPE_NOTIFICATION_IND;
@@ -1227,7 +1310,7 @@ public class TransactionService extends Service implements Observer {
 
                     if (!mPending.isEmpty()) {
                         try {
-                            beginMmsConnectivity(Long.toString(SubscriptionManager.getDefaultDataSubId()));
+                            beginMmsConnectivity(Integer.toString(SubscriptionManager.getDefaultDataSubId()));
                         } catch (IOException e) {
                             Log.w(TAG, "Attempt to use of MMS connectivity failed");
                             return;
@@ -1366,7 +1449,7 @@ public class TransactionService extends Service implements Observer {
                     }
                 }
 
-                long subId = transaction.getSubId();
+                int subId = transaction.getSubId();
                 /*
                 * Make sure that the network connectivity necessary
                 * for MMS traffic is enabled. If it is not, we need
@@ -1376,7 +1459,7 @@ public class TransactionService extends Service implements Observer {
                 if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
                     Log.v(TAG, "processTransaction: call beginMmsConnectivity on subId = " + subId);
                 }
-                int connectivityResult = beginMmsConnectivity(Long.toString(subId));
+                int connectivityResult = beginMmsConnectivity(Integer.toString(subId));
                 if (connectivityResult == PhoneConstants.APN_REQUEST_STARTED) {
                     mPending.add(transaction);
                     if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {

@@ -211,6 +211,12 @@ public class SlideEditorActivity extends Activity {
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mTextEditor.setTextSize(MessageUtils.getFontSize());
+    }
+
     private void initActivityState(Bundle savedInstanceState, Intent intent) {
         if (savedInstanceState != null) {
             mUri = (Uri) savedInstanceState.getParcelable(MESSAGE_URI);
@@ -520,11 +526,9 @@ public class SlideEditorActivity extends Activity {
                 break;
 
             case MENU_RECORD_SOUND:
-                slide = mSlideshowModel.get(mPosition);
-                int currentSlideSize = slide.getSlideSize();
-                long sizeLimit = ComposeMessageActivity.computeAttachmentSizeLimit(mSlideshowModel,
-                        currentSlideSize);
-                MessageUtils.recordSound(this, REQUEST_CODE_RECORD_SOUND, sizeLimit);
+                long soundSizeLimit = ComposeMessageActivity.computeAttachmentSizeLimit(
+                    mSlideshowModel, 0);
+                MessageUtils.recordSound(this, REQUEST_CODE_RECORD_SOUND, soundSizeLimit);
                 break;
 
             case MENU_DEL_AUDIO:
@@ -539,12 +543,10 @@ public class SlideEditorActivity extends Activity {
                 break;
 
             case MENU_TAKE_VIDEO:
-                slide = mSlideshowModel.get(mPosition);
-                currentSlideSize = slide.getSlideSize();
-                sizeLimit = ComposeMessageActivity.computeAttachmentSizeLimit(mSlideshowModel,
-                        currentSlideSize);
-                if (sizeLimit > 0) {
-                    MessageUtils.recordVideo(this, REQUEST_CODE_TAKE_VIDEO, sizeLimit);
+                long videoSizeLimit = ComposeMessageActivity.computeAttachmentSizeLimit(
+                    mSlideshowModel, 0);
+                if (videoSizeLimit > 0) {
+                    MessageUtils.recordVideo(this, REQUEST_CODE_TAKE_VIDEO, videoSizeLimit);
                 } else {
                     Toast.makeText(this,
                             getString(R.string.message_too_big_for_video),

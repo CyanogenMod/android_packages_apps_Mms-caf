@@ -45,6 +45,7 @@ import com.android.mms.LogTag;
 import com.android.mms.MmsConfig;
 import com.android.mms.ui.MessagingPreferenceActivity;
 import com.android.mms.util.Recycler;
+import com.android.mms.widget.MmsWidgetProvider;
 import com.android.mms.R;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
@@ -143,7 +144,8 @@ public class PushReceiver extends BroadcastReceiver {
                             int.class, String.class);
                     Method mGetThreadID = mWapPushHandler.getDeclaredMethod("getThreadID");
                     Uri pushMsgUri = (Uri)mHandleWapPush.invoke(WapPushHandlerObj, bais,
-                            intent.getType(), mContext, intent.getIntExtra("subscription", 0),
+                            intent.getType(), mContext,
+                            intent.getIntExtra(PhoneConstants.PHONE_KEY, 0),
                             intent.getStringExtra("address") + WAP_PUSH);
 
                     if (pushMsgUri != null) {
@@ -153,6 +155,7 @@ public class PushReceiver extends BroadcastReceiver {
                             (Long)mGetThreadID.invoke(WapPushHandlerObj));
                         MessagingNotification.blockingUpdateNewMessageIndicator(
                             mContext, (Long)mGetThreadID.invoke(WapPushHandlerObj), false);
+                        MmsWidgetProvider.notifyDatasetChanged(mContext);
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Wap Push Hander Error :" + e);
@@ -160,7 +163,8 @@ public class PushReceiver extends BroadcastReceiver {
 
                 return null;
             }
-            PduParser parser = new PduParser(pushData);
+            PduParser parser = new PduParser(pushData,
+                    PduParserUtil.shouldParseContentDisposition());
             GenericPdu pdu = parser.parse();
 
             if (null == pdu) {
@@ -211,7 +215,7 @@ public class PushReceiver extends BroadcastReceiver {
 
                         if (!isDuplicateNotification(mContext, nInd)) {
                             int phoneId = intent.getIntExtra(PhoneConstants.SLOT_KEY, 0);
-                            long subId = intent.getLongExtra(PhoneConstants.SUBSCRIPTION_KEY, 0);
+                            int subId = intent.getIntExtra(PhoneConstants.SUBSCRIPTION_KEY, 0);
                             //Phone ID will be updated in data base
                             Log.d(TAG, "phoneId : " + phoneId + " subId : " + subId);
                             ContentValues values = new ContentValues(1);

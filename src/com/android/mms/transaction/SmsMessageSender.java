@@ -32,6 +32,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.android.mms.LogTag;
+import com.android.mms.R;
 import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.MessagingPreferenceActivity;
 import com.google.android.mms.MmsException;
@@ -85,7 +86,10 @@ public class SmsMessageSender implements MessageSender {
     private boolean queueMessage(long token) throws MmsException {
         if ((mMessageText == null) || (mNumberOfDests == 0)) {
             // Don't try to send an empty message.
-            throw new MmsException("Null message body or dest.");
+            if (!(mMessageText == null &&
+                    mContext.getResources().getBoolean(R.bool.enable_send_blank_message))) {
+                throw new MmsException("Null message body or dest.");
+            }
         }
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -120,7 +124,10 @@ public class SmsMessageSender implements MessageSender {
                     break;
                 }
                 log("updating Database with phoneId = " + mPhoneId);
-                long [] subId = SubscriptionManager.getSubId(mPhoneId);
+                int [] subId = SubscriptionManager.getSubId(mPhoneId);
+                if (subId == null && subId.length == 0) {
+                    return false;
+                }
                 Sms.addMessageToUri(subId[0], mContext.getContentResolver(),
                         Uri.parse("content://sms/queued"), mDests[i],
                         mMessageText, null, mTimestamp,

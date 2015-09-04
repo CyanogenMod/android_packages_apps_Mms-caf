@@ -320,7 +320,7 @@ public class Conversation {
         }
 
         final Cursor c = SqliteWrapper.query(context, context.getContentResolver(),
-                        Mms.Inbox.CONTENT_URI, new String[] {Mms._ID, Mms.MESSAGE_ID},
+                        Mms.Inbox.CONTENT_URI, new String[] {Mms._ID, Mms.MESSAGE_ID, Mms.PHONE_ID},
                         selection, null, null);
 
         try {
@@ -329,12 +329,14 @@ public class Conversation {
             }
 
             while (c.moveToNext()) {
-                Uri uri = ContentUris.withAppendedId(Mms.CONTENT_URI, c.getLong(0));
+                Uri uri = ContentUris.withAppendedId(Mms.CONTENT_URI,
+                        c.getLong(MessageUtils.MESSAGE_REPORT_COLUMN_ID));
                 if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
                     LogTag.debug("sendReadReport: uri = " + uri);
                 }
                 MmsMessageSender.sendReadRec(context, AddressUtils.getFrom(context, uri),
-                                             c.getString(1), status);
+                        c.getString(MessageUtils.MESSAGE_REPORT_COLUMN_MESSAGE_ID),
+                        c.getInt(MessageUtils.MESSAGE_REPORT_COLUMN_PHONE_ID), status);
             }
         } finally {
             if (c != null) {

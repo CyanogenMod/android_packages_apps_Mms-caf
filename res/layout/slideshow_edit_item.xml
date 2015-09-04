@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_toLeftOf="@+id/duration_text">
+            android:layout_toStartOf="@+id/duration_text">
 
             <TextView android:id="@+id/text_preview_bottom"
                 android:layout_width="wrap_content"
@@ -89,9 +89,9 @@
         <TextView android:id="@+id/duration_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:paddingLeft="10dip"
-            android:paddingRight="15dip"
+            android:layout_alignParentEnd="true"
+            android:paddingStart="10dip"
+            android:paddingEnd="15dip"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="?android:attr/textColorSecondary"
             android:maxLines="1" />

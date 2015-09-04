@@ -24,7 +24,7 @@ import java.net.UnknownHostException;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.Uri;
-
+import com.android.mms.ui.MessageUtils;
 import com.android.mms.util.SendingProgressTokenManager;
 import com.google.android.mms.MmsException;
 
@@ -40,7 +40,8 @@ public abstract class Transaction extends Observable {
     protected String mId;
     protected TransactionState mTransactionState;
     protected TransactionSettings mTransactionSettings;
-    protected long mSubId;
+    protected int mSubId;
+    protected int mFailReason;
 
     /**
      * Identifies push requests.
@@ -59,12 +60,17 @@ public abstract class Transaction extends Observable {
      */
     public static final int READREC_TRANSACTION      = 3;
 
+
+    public static final int FAIL_REASON_NONE = 0;
+    public static final int FAIL_REASON_CAN_NOT_SETUP_DATA_CALL = 1;
+
     public Transaction(Context context, int serviceId,
             TransactionSettings settings) {
         mContext = context;
         mTransactionState = new TransactionState();
         mServiceId = serviceId;
         mTransactionSettings = settings;
+        mFailReason = FAIL_REASON_NONE;
     }
 
     /**
@@ -101,11 +107,11 @@ public abstract class Transaction extends Observable {
         return mServiceId;
     }
 
-    public long getSubId() {
+    public int getSubId() {
         return mSubId;
     }
 
-    public void setSubId(long subId) {
+    public void setSubId(int subId) {
         mSubId = subId;
     }
 
@@ -114,6 +120,10 @@ public abstract class Transaction extends Observable {
     }
     public void setConnectionSettings(TransactionSettings settings) {
         mTransactionSettings = settings;
+    }
+
+    public int getFailReason() {
+        return mFailReason;
     }
 
     /**
@@ -178,15 +188,28 @@ public abstract class Transaction extends Observable {
         if (pdu == null) {
             throw new MmsException();
         }
-
+        if (mContext.getResources().getBoolean(
+                com.android.internal.R.bool.
+                config_regional_mms_via_wifi_enable)) {
+            boolean useWifi = MessageUtils.shouldHandleMmsViaWifi(mContext);
+            if (!useWifi) ensureRouteToHost(mmscUrl, mTransactionSettings);
+            return HttpUtils.httpConnection(
+                    mContext, token,
+                    mmscUrl,
+                    pdu, HttpUtils.HTTP_POST_METHOD,
+                    useWifi ? false : mTransactionSettings.isProxySet(),
+                    mTransactionSettings.getProxyAddress(),
+                    mTransactionSettings.getProxyPort());
+        } else {
         ensureRouteToHost(mmscUrl, mTransactionSettings);
-        return HttpUtils.httpConnection(
-                mContext, token,
-                mmscUrl,
-                pdu, HttpUtils.HTTP_POST_METHOD,
-                mTransactionSettings.isProxySet(),
-                mTransactionSettings.getProxyAddress(),
-                mTransactionSettings.getProxyPort());
+            return HttpUtils.httpConnection(
+                    mContext, token,
+                    mmscUrl,
+                    pdu, HttpUtils.HTTP_POST_METHOD,
+                    mTransactionSettings.isProxySet(),
+                    mTransactionSettings.getProxyAddress(),
+                    mTransactionSettings.getProxyPort());
+        }
     }
 
     /**
@@ -199,13 +222,26 @@ public abstract class Transaction extends Observable {
      *         an HTTP error code(>=400) returned from the server.
      */
     protected byte[] getPdu(String url) throws IOException {
+        if (mContext.getResources().getBoolean(
+                com.android.internal.R.bool.
+                config_regional_mms_via_wifi_enable)) {
+            boolean useWifi = MessageUtils.shouldHandleMmsViaWifi(mContext);
+            if (!useWifi) ensureRouteToHost(url, mTransactionSettings);
+            return HttpUtils.httpConnection(
+                    mContext, SendingProgressTokenManager.NO_TOKEN,
+                    url, null, HttpUtils.HTTP_GET_METHOD,
+                    useWifi ? false : mTransactionSettings.isProxySet(),
+                    mTransactionSettings.getProxyAddress(),
+                    mTransactionSettings.getProxyPort());
+        } else {
         ensureRouteToHost(url, mTransactionSettings);
-        return HttpUtils.httpConnection(
-                mContext, SendingProgressTokenManager.NO_TOKEN,
-                url, null, HttpUtils.HTTP_GET_METHOD,
-                mTransactionSettings.isProxySet(),
-                mTransactionSettings.getProxyAddress(),
-                mTransactionSettings.getProxyPort());
+            return HttpUtils.httpConnection(
+                    mContext, SendingProgressTokenManager.NO_TOKEN,
+                    url, null, HttpUtils.HTTP_GET_METHOD,
+                    mTransactionSettings.isProxySet(),
+                    mTransactionSettings.getProxyAddress(),
+                    mTransactionSettings.getProxyPort());
+        }
     }
 
     /**

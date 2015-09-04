@@ -112,6 +112,8 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
     public static final int MENU_VIEW_CONTACT         = 2;
     public static final int MENU_ADD_TO_CONTACTS      = 3;
 
+    public static final int COLUMN_ID = 0;
+
     private ThreadListQueryHandler mQueryHandler;
     private ConversationListAdapter mListAdapter;
     private SharedPreferences mPrefs;
@@ -137,6 +139,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
     private boolean mIsSmsEnabled;
     private Toast mComposeDisabledToast;
     private static long mLastDeletedThread = -1;
+    private boolean mMultiChoiceMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -241,6 +244,10 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         }
 
         mListAdapter.setOnContentChangedListener(mContentChangedListener);
+        if (!mDoOnceAfterFirstQuery) {
+            startAsyncQuery();
+        }
+        mIsRunning = true;
     }
 
     private void setupActionBar() {
@@ -253,7 +260,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         actionBar.setCustomView(v,
                 new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
                         ActionBar.LayoutParams.WRAP_CONTENT,
-                        Gravity.CENTER_VERTICAL | Gravity.RIGHT));
+                        Gravity.CENTER_VERTICAL | Gravity.END));
 
         mUnreadConvCount = (TextView)v.findViewById(R.id.unread_conv_count);
     }
@@ -793,6 +800,21 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         if (DEBUG) Log.v(TAG, "onConfigurationChanged: " + newConfig);
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_SEARCH && !mMultiChoiceMode) {
+            if (getResources().getBoolean(R.bool.config_classify_search)) {
+                Intent searchintent = new Intent(this, SearchActivityExtend.class);
+                startActivityIfNeeded(searchintent, -1);
+            } else if (mSearchView != null) {
+                mSearchView.setIconified(false);
+            }
+            return true;
+        }
+
+        return super.onKeyDown(keyCode, event);
+    }
+
     /**
      * Start the process of putting up a dialog to confirm deleting a thread,
      * but first start a background query to see if any of the threads or thread
@@ -1132,24 +1154,6 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         }
     };
 
-    public void checkAll() {
-        int count = getListView().getCount();
-
-        for (int i = 0; i < count; i++) {
-            getListView().setItemChecked(i, true);
-        }
-        mListAdapter.notifyDataSetChanged();
-    }
-
-    public void unCheckAll() {
-        int count = getListView().getCount();
-
-        for (int i = 0; i < count; i++) {
-            getListView().setItemChecked(i, false);
-        }
-        mListAdapter.notifyDataSetChanged();
-    }
-
     private class ModeCallback implements ListView.MultiChoiceModeListener {
         private View mMultiSelectActionBarView;
         private TextView mSelectedConvCount;
@@ -1159,11 +1163,46 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
         // build action bar with a spinner
         private SelectionMenu mSelectionMenu;
 
+        private boolean mCheckingAll = false;
+
+        public void checkAll(boolean isCheck) {
+            ListView listView = getListView();
+            int count = listView.getCount();
+            mCheckingAll = true;
+            mSelectedThreadIds.clear();
+            for (int i = 0; i < count; i++) {
+                listView.setItemChecked(i, isCheck);
+                if (isCheck) {
+                    Cursor cursor = (Cursor) listView.getItemAtPosition(i);
+                    mSelectedThreadIds.add(cursor.getLong(COLUMN_ID));
+                }
+            }
+            mCheckingAll = false;
+            mListAdapter.notifyDataSetChanged();
+        }
+
+        private void updateMenu(ActionMode mode, boolean isCheck) {
+            ListView listView = getListView();
+            int count = listView.getCount();
+            if (isCheck) {
+                mSelectionMenu.setTitle(getString(R.string.selected_count, count));
+                mHasSelectAll = true;
+                mSelectionMenu.updateSelectAllMode(mHasSelectAll);
+                MenuItem menuItem = mode.getMenu().findItem(R.id.selection_toggle);
+                if (menuItem != null) {
+                    menuItem.setTitle(getString(R.string.deselected_all));
+                }
+            } else {
+                mHasSelectAll = false;
+            }
+        }
+
         @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        public boolean onCreateActionMode(final ActionMode mode, Menu menu) {
             MenuInflater inflater = getMenuInflater();
             mSelectedThreadIds = new HashSet<Long>();
             inflater.inflate(R.menu.conversation_multi_select_menu, menu);
+            mMultiChoiceMode = true;
 
             if (mMultiSelectActionBarView == null) {
                 mMultiSelectActionBarView = LayoutInflater.from(ConversationList.this).inflate(
@@ -1175,15 +1214,9 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                     new PopupList.OnPopupItemClickListener() {
                         @Override
                         public boolean onPopupItemClick(int itemId) {
-                            if (itemId == SelectionMenu.SELECT_OR_DESELECT) {
-                                if (mHasSelectAll) {
-                                    unCheckAll();
-                                    mHasSelectAll = false;
-                                } else {
-                                    checkAll();
-                                    mHasSelectAll = true;
-                                }
-                                mSelectionMenu.updateSelectAllMode(mHasSelectAll);
+                            if (itemId == RcsSelectionMenu.SELECT_OR_DESELECT) {
+                                checkAll(!allItemsSelected());
+                                updateMenu(mode, allItemsSelected());
                             }
                             return true;
                         }
@@ -1212,7 +1245,11 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                     }
                     mode.finish();
                     break;
-
+                case R.id.selection_toggle:
+                    checkAll(!allItemsSelected());
+                    updateMenu(mode, allItemsSelected());
+                    mode.invalidate();
+                    break;
                 default:
                     break;
             }
@@ -1221,16 +1258,23 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
 
         @Override
         public void onDestroyActionMode(ActionMode mode) {
-            ConversationListAdapter adapter = (ConversationListAdapter)getListView().getAdapter();
-            adapter.uncheckAll();
-            mSelectedThreadIds = null;
-            mSelectionMenu.dismiss();
+            if (getListView().getAdapter() instanceof ConversationListAdapter) {
+                 ConversationListAdapter adapter =
+                         (ConversationListAdapter)getListView().getAdapter();
+                 adapter.uncheckAll();
+                 mSelectedThreadIds = null;
+                 mSelectionMenu.dismiss();
+                 mMultiChoiceMode = false;
+             }
         }
 
         @Override
         public void onItemCheckedStateChanged(ActionMode mode,
                 int position, long id, boolean checked) {
             ListView listView = getListView();
+            if (position < listView.getHeaderViewsCount() || mCheckingAll) {
+                return;
+            }
             final int checkedCount = listView.getCheckedItemCount();
 
             mSelectionMenu.setTitle(getApplicationContext().getString(R.string.selected_count,

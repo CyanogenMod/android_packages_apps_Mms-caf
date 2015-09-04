@@ -52,7 +52,7 @@ public class SimFullReceiver extends BroadcastReceiver {
             viewSimIntent.putExtra(MessageUtils.SUBSCRIPTION_KEY, phoneId);
             viewSimIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             PendingIntent pendingIntent = PendingIntent.getActivity(
-                    context, 0, viewSimIntent, 0);
+                    context, 0, viewSimIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             Notification notification = new Notification();
             notification.icon = R.drawable.stat_sys_no_sim;

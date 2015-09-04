@@ -61,7 +61,7 @@ import android.provider.Telephony.MmsSms;
 import android.provider.Telephony.Sms;
 import android.telephony.PhoneStateListener;
 import android.telephony.SubscriptionManager;
-import android.telephony.SubInfoRecord;
+import android.telephony.SubscriptionInfo;
 import android.telephony.TelephonyManager;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -380,10 +380,9 @@ public class MessagingNotification {
     private static boolean isInCurrentConversation(long newMsgThreadId, Set<Long> threads) {
         if (MessageUtils.isMailboxMode()) {
             // For mail box mode, only message with the same tpye will not show the notification.
-            long newMsgType = (newMsgThreadId == THREAD_NONE) ?
-                    MailBoxMessageList.TYPE_INVALID : MailBoxMessageList.TYPE_INBOX;
             synchronized (sCurrentlyDisplayedMsgTypeLock) {
-                return newMsgType == sCurrentlyDisplayedMsgType;
+                return (sCurrentlyDisplayedMsgType == MailBoxMessageList.TYPE_INBOX) &&
+                        (newMsgThreadId != THREAD_NONE);
             }
         } else {
             // For conversation mode, only incomming unread message with the same valid thread id
@@ -1332,9 +1331,10 @@ public class MessagingNotification {
 
         if ((TelephonyManager.getDefault().getPhoneCount()) > 1) {
             //SMS/MMS is operating based of PhoneId which is 0, 1..
-            List<SubInfoRecord> sir = SubscriptionManager.getSubInfoUsingSlotId(phoneId);
+            SubscriptionInfo sir = SubscriptionManager.from(context)
+                    .getActiveSubscriptionInfoForSimSlotIndex(phoneId);
 
-            String displayName = ((sir != null) && (sir.size() > 0)) ? sir.get(0).displayName : "";
+            String displayName = (sir != null) ? sir.getDisplayName().toString() : "";
 
             Log.e(TAG, "PhoneID : " + phoneId + " displayName " + displayName);
             buf.append(displayName);

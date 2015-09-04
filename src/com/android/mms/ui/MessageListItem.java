@@ -43,7 +43,7 @@ import android.provider.Telephony.Sms;
 import android.provider.Telephony.Mms;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.SubscriptionManager;
-import android.telephony.SubInfoRecord;
+import android.telephony.SubscriptionInfo;
 import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
@@ -106,6 +106,7 @@ public class MessageListItem extends LinearLayout implements
     private static final String CANCEL_URI = "canceluri";
     // transparent background
     private static final int ALPHA_TRANSPARENT = 0;
+    private static final int KILOBYTE = 1024;
 
     static final int MSG_LIST_EDIT    = 1;
     static final int MSG_LIST_PLAY    = 2;
@@ -274,20 +275,46 @@ public class MessageListItem extends LinearLayout implements
         mHandler = handler;
     }
 
+    private int getFormatSize(int size) {
+        return (size + KILOBYTE - 1) / KILOBYTE;
+    }
+
     private void bindNotifInd() {
         showMmsView(false);
 
-        String msgSizeText = mContext.getString(R.string.message_size_label)
-                                + String.valueOf((mMessageItem.mMessageSize + 1023) / 1024)
-                                + mContext.getString(R.string.kilobyte);
+        if (mMessageItem.mMessageSize == 0
+                && TextUtils.isEmpty(mMessageItem.mTimestamp)) {
+            mMessageItem.setOnPduLoaded(new MessageItem.PduLoadedCallback() {
+                public void onPduLoaded(MessageItem messageItem) {
+                    if (DEBUG) {
+                        Log.v(TAG, "PduLoadedCallback in MessageListItem for item: "
+                                + mPosition + " " + (mMessageItem == null ? "NULL"
+                                        : mMessageItem.toString())
+                                + " passed in item: " + (messageItem == null ? "NULL"
+                                        : messageItem.toString()));
+                    }
 
-        mBodyTextView.setText(formatMessage(mMessageItem, null,
-                                            mMessageItem.mPhoneId,
-                                            mMessageItem.mSubject,
-                                            mMessageItem.mHighlight,
-                                            mMessageItem.mTextContentType));
+                    if (messageItem != null
+                            && mMessageItem != null
+                            && messageItem.getMessageId() == mMessageItem.getMessageId()
+                            && (mMessageItem.mMessageSize != 0 || !TextUtils
+                                    .isEmpty(mMessageItem.mTimestamp))) {
+                        bindNotifInd();
+                    }
+                }
+            });
+        } else {
+            String msgSizeText = mContext.getString(R.string.message_size_label)
+                    + String.valueOf(getFormatSize(mMessageItem.mMessageSize))
+                    + mContext.getString(R.string.kilobyte);
 
-        mDateView.setText(buildTimestampLine(msgSizeText + " " + mMessageItem.mTimestamp));
+            mBodyTextView.setText(formatMessage(mMessageItem, null,
+                    mMessageItem.mPhoneId, mMessageItem.mSubject,
+                    mMessageItem.mHighlight, mMessageItem.mTextContentType));
+
+            mDateView.setText(buildTimestampLine(msgSizeText + " "
+                    + mMessageItem.mTimestamp));
+        }
 
         updateSimIndicatorView(mMessageItem.mPhoneId);
 
@@ -735,9 +762,10 @@ public class MessageListItem extends LinearLayout implements
         if (TelephonyManager.getDefault().getPhoneCount() > 1) {
             //SMS/MMS is operating on PhoneId which is 0, 1..
             //Sub ID will be 1, 2, ...
-            List<SubInfoRecord> sir = SubscriptionManager.getSubInfoUsingSlotId(phoneId);
+            SubscriptionInfo sir = SubscriptionManager.from(mContext)
+                    .getActiveSubscriptionInfoForSimSlotIndex(phoneId);
             String displayName =
-                    ((sir != null) && (sir.size() > 0)) ? sir.get(0).displayName : "";
+                    (sir != null) ? sir.getDisplayName().toString() : "";
 
             Log.d(TAG, "PhoneID: " + phoneId + " displayName " + displayName);
             buf.append(displayName);
@@ -1028,10 +1056,19 @@ public class MessageListItem extends LinearLayout implements
         if (isSimCardMessage()) {
             // Hide delivery indicator for SIM message
             mDeliveredIndicator.setVisibility(GONE);
-            // Hide date view because SIM message does not contain sent date.
-            if (mMessageItem.isOutgoingMessage() || mMessageItem.mBoxId == Sms.MESSAGE_TYPE_SENT) {
+            // Hide date view because SIM message does not contain sent message
+            // and CDMA received message.
+            if (mMessageItem.isOutgoingMessage() || mMessageItem.mBoxId == Sms.MESSAGE_TYPE_SENT
+                    || mMessageItem.isCdmaInboxMessage()) {
                 mDateView.setVisibility(View.GONE);
             }
+        }
+    }
+
+    public void setBodyTextSize(float size) {
+        if (mBodyTextView != null
+                && mBodyTextView.getVisibility() == View.VISIBLE) {
+            mBodyTextView.setTextSize(size);
         }
     }
 }

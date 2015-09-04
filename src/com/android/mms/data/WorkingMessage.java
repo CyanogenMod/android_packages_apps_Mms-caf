@@ -1062,7 +1062,7 @@ public class WorkingMessage {
             return;
         } else {
             String body = bundle.getString("sms_body");
-            mText = body;
+            mText = body != null ? body : "";
         }
     }
 
@@ -1460,8 +1460,14 @@ public class WorkingMessage {
         ContactList contactList = conv.getRecipients();
         if (contactList != null) {
             String[] numbers = contactList.getNumbers();
-            if (numbers != null && numbers.length == 1) {
-                if (numbers[0].equals(conv.getForwardRecipientNumber())) {
+            String[] forward = conv.getForwardRecipientNumber();
+            if (numbers != null && forward != null
+                    && (numbers.length == forward.length)) {
+                List<String> currentNumberList = Arrays.asList(numbers);
+                List<String> forwardNumberList = Arrays.asList(forward);
+                Collections.sort(currentNumberList);
+                Collections.sort(forwardNumberList);
+                if (currentNumberList.equals(forwardNumberList)) {
                     sameRecipient = true;
                 }
             }

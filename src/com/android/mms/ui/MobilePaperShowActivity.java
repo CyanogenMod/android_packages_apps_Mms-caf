@@ -238,6 +238,7 @@ public class MobilePaperShowActivity extends Activity {
                 mSlideModel.getTotalMessageSize());
         if (!TextUtils.isEmpty(messageDetails)) {
             mDetailsText.setText(messageDetails);
+            mDetailsText.setTextIsSelectable(true);
         }
     }
 
@@ -264,8 +265,28 @@ public class MobilePaperShowActivity extends Activity {
                     MessageUtils.onMessageContentClick(MobilePaperShowActivity.this, (TextView) v);
                 }
             });
-            contentText.setFocusable(false);
-            contentText.setFocusableInTouchMode(false);
+            contentText.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                        // Set focusable to false so that onClick event can be passed in.
+                        v.setFocusable(false);
+                        v.setFocusableInTouchMode(false);
+                    }
+                    return false;
+                }
+            });
+
+            contentText.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    // Set focusable to true so that user can select the text by long click.
+                    v.setFocusable(true);
+                    v.setFocusableInTouchMode(true);
+                    return false;
+                }
+            });
+
             TextView text = (TextView) view.findViewById(R.id.slide_number_text);
             text.setFocusable(false);
             text.setFocusableInTouchMode(false);

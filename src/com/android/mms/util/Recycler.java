@@ -80,9 +80,9 @@ public abstract class Recycler {
             return;
         }
 
-        Cursor cursor = getAllThreads(context);
+        int limit = getMessageLimit(context);
+        Cursor cursor = getAllThreads(context, limit);
         try {
-            int limit = getMessageLimit(context);
             while (cursor.moveToNext()) {
                 long threadId = getThreadId(cursor);
                 deleteMessagesForThread(context, threadId, limit);
@@ -124,7 +124,7 @@ public abstract class Recycler {
 
     abstract protected long getThreadId(Cursor cursor);
 
-    abstract protected Cursor getAllThreads(Context context);
+    abstract protected Cursor getAllThreads(Context context, int limit);
 
     abstract protected void deleteMessagesForThread(Context context, long threadId, int keep);
 
@@ -182,11 +182,13 @@ public abstract class Recycler {
             return cursor.getLong(ID);
         }
 
-        protected Cursor getAllThreads(Context context) {
+        protected Cursor getAllThreads(Context context, int limit) {
             ContentResolver resolver = context.getContentResolver();
             Cursor cursor = SqliteWrapper.query(context, resolver,
                     Telephony.Sms.Conversations.CONTENT_URI,
-                    ALL_SMS_THREADS_PROJECTION, null, null, Conversations.DEFAULT_SORT_ORDER);
+                    ALL_SMS_THREADS_PROJECTION,
+                    Telephony.Sms.Conversations.MESSAGE_COUNT + " >= " + limit,
+                    null, Conversations.DEFAULT_SORT_ORDER);
 
             return cursor;
         }
@@ -250,11 +252,11 @@ public abstract class Recycler {
 
         @Override
         protected boolean anyThreadOverLimit(Context context) {
-            Cursor cursor = getAllThreads(context);
+            int limit = getMessageLimit(context);
+            Cursor cursor = getAllThreads(context, limit);
             if (cursor == null) {
                 return false;
             }
-            int limit = getMessageLimit(context);
             try {
                 while (cursor.moveToNext()) {
                     long threadId = getThreadId(cursor);
@@ -331,11 +333,13 @@ public abstract class Recycler {
             return cursor.getLong(ID);
         }
 
-        protected Cursor getAllThreads(Context context) {
+        protected Cursor getAllThreads(Context context, int limit) {
             ContentResolver resolver = context.getContentResolver();
             Cursor cursor = SqliteWrapper.query(context, resolver,
                     Uri.withAppendedPath(Telephony.Mms.CONTENT_URI, "threads"),
-                    ALL_MMS_THREADS_PROJECTION, null, null, Conversations.DEFAULT_SORT_ORDER);
+                    ALL_MMS_THREADS_PROJECTION,
+                    "msg_count >= " + limit,
+                    null, Conversations.DEFAULT_SORT_ORDER);
 
             return cursor;
         }
@@ -457,11 +461,11 @@ public abstract class Recycler {
 
         @Override
         protected boolean anyThreadOverLimit(Context context) {
-            Cursor cursor = getAllThreads(context);
+            int limit = getMessageLimit(context);
+            Cursor cursor = getAllThreads(context, limit);
             if (cursor == null) {
                 return false;
             }
-            int limit = getMessageLimit(context);
             try {
                 while (cursor.moveToNext()) {
                     long threadId = getThreadId(cursor);

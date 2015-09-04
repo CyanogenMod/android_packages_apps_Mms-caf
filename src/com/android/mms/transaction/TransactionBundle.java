@@ -95,10 +95,10 @@ public class TransactionBundle {
         mBundle.putString(URI, uri);
     }
 
-    public TransactionBundle(int transactionType, String uri, long subId) {
+    public TransactionBundle(int transactionType, String uri, int subId) {
         this(transactionType);
         mBundle.putString(URI, uri);
-        mBundle.putLong(PhoneConstants.SUBSCRIPTION_KEY, subId);
+        mBundle.putInt(PhoneConstants.SUBSCRIPTION_KEY, subId);
     }
     /**
      * Constructor of a transaction bundle used for incoming bundle instances.
@@ -136,8 +136,8 @@ public class TransactionBundle {
         return mBundle.getString(URI);
     }
 
-    public long getSubId() {
-        return mBundle.getLong(PhoneConstants.SUBSCRIPTION_KEY);
+    public int getSubId() {
+        return mBundle.getInt(PhoneConstants.SUBSCRIPTION_KEY);
     }
 
     public byte[] getPushData() {

@@ -294,6 +294,8 @@
     <string name="sim_full_body" msgid="6241664980790322925">"删除部分信息以腾出更多空间。"</string>
     <string name="sms_full_title" msgid="6041287140125011854">"短信内存已满"</string>
     <string name="sms_full_body" msgid="4885861852397651868">"存储空间已满，无法发送和接收短信，请删除部分旧短信。"</string>
+    <!-- Mobile data is turned off dialog text. -->
+    <string name="mobile_data_disable">"移动数据已关闭，是否坚持发送彩信？若继续将会产生数据流量。"</string>
     <string name="memory_low_title">"存储空间低"</string>
     <string name="memory_low_body">"存储空间快要满了，请删除一些旧数据以确保能接收到新信息。"</string>
     <string name="inform_data_off">"移动数据已关闭， 请在系统设定中开启后重试。"</string>
@@ -309,15 +311,17 @@
     <string name="fdn_check_failure" msgid="7880740763778173551">"您只能向固定拨号号码发送信息。"</string>
     <string name="no_subject" msgid="4168963736134552285">"（无主题）"</string>
     <string name="unknown_sender" msgid="4929330613278853635">"未知发送者"</string>
-    <string name="dl_failure_notification" msgid="8097699679464396537">"无法下载来自<xliff:g id="FROM">%2$s</xliff:g>的短信“<xliff:g id="SUBJECT">%1$s</xliff:g>”。"</string>
+    <string name="dl_failure_notification" msgid="8097699679464396537">"无法下载来自<xliff:g id="FROM">%2$s</xliff:g>的信息“<xliff:g id="SUBJECT">%1$s</xliff:g>”。"</string>
     <string name="rate_limit_surpassed" msgid="1347801608211628177">"确认"</string>
     <string name="confirm_rate_limit" msgid="234228299751243067">"即将发送多条彩信。确定要这样做吗？"</string>
     <string name="message_download_failed_title" msgid="5722226064394767921">"信息未下载"</string>
     <string name="message_send_failed_title" msgid="3469894907399046372">"信息未发送"</string>
     <string name="message_failed_body" msgid="3421296112073915245">"触摸可查看短信并重试。"</string>
     <string name="download_later" msgid="5531365714424360903">"目前无法下载。请稍后再试。"</string>
-    <string name="send_failed_retry">"发送失败，自动重新发送。"</string>
-    <string name="download_failed_retry">"下载失败，自动重新下载。"</string>
+    <string name="send_failed_retry">"发送失败，稍后自动重新发送。"</string>
+    <string name="download_failed_retry">"下载失败，稍后自动重新下载。"</string>
+    <string name="no_network_send_failed_retry">"无网络，发送失败，稍后自动重新发送。"</string>
+    <string name="no_network_download_failed_retry">"无网络，下载失败，稍后自动重新下载。"</string>
     <string name="no_apn" msgid="505932916503312015">"设备上未指定任何 APN。"</string>
     <string name="select_audio" msgid="3528161449756771832">"选择音频"</string>
     <string name="system_audio_item">"系统音频"</string>

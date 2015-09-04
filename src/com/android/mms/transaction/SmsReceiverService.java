@@ -148,6 +148,13 @@ public class SmsReceiverService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (!MmsConfig.isSmsEnabled(this)) {
+            Log.d(TAG, "SmsReceiverService: is not the default sms app");
+            // NOTE: We MUST not call stopSelf() directly, since we need to
+            // make sure the wake lock acquired by AlertReceiver is released.
+            SmsReceiver.finishStartingService(SmsReceiverService.this, startId);
+            return Service.START_NOT_STICKY;
+        }
         // Temporarily removed for this duplicate message track down.
 
         int resultCode = intent != null ? intent.getIntExtra("result", 0) : 0;
@@ -249,8 +256,8 @@ public class SmsReceiverService extends Service {
     private void handleServiceStateChanged(Intent intent) {
         // If service just returned, start sending out the queued messages
         ServiceState serviceState = ServiceState.newFromBundle(intent.getExtras());
-        long subId = intent.getLongExtra(PhoneConstants.SUBSCRIPTION_KEY, 0);
-        long prefSubId = SubscriptionManager.getDefaultSmsSubId();
+        int subId = intent.getIntExtra(PhoneConstants.SUBSCRIPTION_KEY, 0);
+        int prefSubId = SubscriptionManager.getDefaultSmsSubId();
         // if service state is IN_SERVICE & current subscription is same as
         // preferred SMS subscription.i.e.as set under SIM Settings, then
         // sendFirstQueuedMessage.
@@ -418,10 +425,10 @@ public class SmsReceiverService extends Service {
                 SmsMessage sms = msgs[i];
                 boolean saveSuccess = saveMessageToIcc(sms);
                 if (saveSuccess) {
-                    long subId = TelephonyManager.getDefault().isMultiSimEnabled()
-                            ? sms.getSubId() : (long)MessageUtils.SUB_INVALID;
+                    int subId = TelephonyManager.getDefault().isMultiSimEnabled()
+                            ? sms.getSubId() : (int)MessageUtils.SUB_INVALID;
                     String address = MessageUtils.convertIdp(this,
-                            sms.getDisplayOriginatingAddress());
+                            sms.getDisplayOriginatingAddress(), subId);
                     MessagingNotification.blockingUpdateNewIccMessageIndicator(
                             this, address, sms.getDisplayMessageBody(),
                             SubscriptionManager.getPhoneId(subId),
@@ -500,8 +507,9 @@ public class SmsReceiverService extends Service {
         // Some messages may get stuck in the outbox. At this point, they're probably irrelevant
         // to the user, so mark them as failed and notify the user, who can then decide whether to
         // resend them manually.
-        int numMoved = moveOutboxMessagesToFailedBox();
-        if (numMoved > 0) {
+        moveOutboxMessagesToFailedBox();
+        int numUnreadFailed = getUnreadFailedMessageCount();
+        if (numUnreadFailed > 0) {
             MessagingNotification.notifySendFailed(getApplicationContext(), true);
         }
 
@@ -511,6 +519,20 @@ public class SmsReceiverService extends Service {
         // Called off of the UI thread so ok to block.
         MessagingNotification.blockingUpdateNewMessageIndicator(
                 this, MessagingNotification.THREAD_ALL, false);
+    }
+
+    private int getUnreadFailedMessageCount() {
+        final Uri uri = Uri.parse("content://sms/failed");
+        Cursor cursor = SqliteWrapper.query(
+                getApplicationContext(), getContentResolver(), uri,
+                new String[] { Sms._ID }, "read=0", null, null);
+        int count = 0;
+        if (cursor != null) {
+            count = cursor.getCount();
+            cursor.close();
+        }
+
+        return count;
     }
 
     /**
@@ -615,7 +637,8 @@ public class SmsReceiverService extends Service {
         }
 
         ContentResolver resolver = context.getContentResolver();
-        String originatingAddress = MessageUtils.convertIdp(this, sms.getOriginatingAddress());
+        String originatingAddress = MessageUtils.convertIdp(this,
+                sms.getOriginatingAddress(), sms.getSubId());
         int protocolIdentifier = sms.getProtocolIdentifier();
         String selection;
         String[] selectionArgs;
@@ -712,6 +735,9 @@ public class SmsReceiverService extends Service {
             if (cacheContact != null) {
                 address = cacheContact.getNumber();
             }
+        } else if (TextUtils.isEmpty(address)
+                && getResources().getBoolean(R.bool.def_hide_unknown_sender)) {
+            values.put(Sms.ADDRESS, "");
         } else {
             address = getString(R.string.unknown_sender);
             values.put(Sms.ADDRESS, address);
@@ -771,7 +797,8 @@ public class SmsReceiverService extends Service {
         // Store the message in the content provider.
         ContentValues values = new ContentValues();
 
-        values.put(Inbox.ADDRESS, MessageUtils.convertIdp(this, sms.getDisplayOriginatingAddress()));
+        values.put(Inbox.ADDRESS, MessageUtils.convertIdp(this, sms.getDisplayOriginatingAddress(),
+                sms.getSubId()));
 
         // Use now for the timestamp to avoid confusion with clock
         // drift between the handset and the SMSC.
@@ -808,7 +835,7 @@ public class SmsReceiverService extends Service {
      *
      */
     private void displayClassZeroMessage(Context context, SmsMessage sms, String format) {
-        long subId = sms.getSubId();
+        int subId = sms.getSubId();
         int phoneId = SubscriptionManager.getPhoneId(subId);
 
         // Using NEW_TASK here is necessary because we're calling
@@ -850,8 +877,9 @@ public class SmsReceiverService extends Service {
 
     private boolean saveMessageToIcc(SmsMessage sms) {
         boolean result = true;
-        long subscription = sms.getSubId();
-        String address = MessageUtils.convertIdp(this, sms.getOriginatingAddress());
+        int subscription = sms.getSubId();
+        String address = MessageUtils.convertIdp(this, sms.getOriginatingAddress(),
+            subscription);
         ContentValues values = new ContentValues();
         values.put(PhoneConstants.SUBSCRIPTION_KEY, subscription);
         values.put(Sms.ADDRESS, address);

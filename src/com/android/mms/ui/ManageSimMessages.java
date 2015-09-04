@@ -45,6 +45,7 @@ import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Sms;
 import android.telephony.SmsManager;
+import android.telephony.SubscriptionManager;
 import android.text.TextUtils;
 import android.text.SpannableString;
 import android.text.style.URLSpan;
@@ -133,11 +134,11 @@ public class ManageSimMessages extends Activity
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (TelephonyIntents.ACTION_SIM_STATE_CHANGED.equals(action)) {
-                long subscription = intent.getLongExtra(MessageUtils.SUBSCRIPTION_KEY,
+                int subscription = intent.getIntExtra(MessageUtils.SUBSCRIPTION_KEY,
                         MessageUtils.SUB_INVALID);
                 Log.d(TAG, "receive sim state change, subscription: " + subscription);
                 if (!MessageUtils.isMultiSimEnabledMms() ||
-                        subscription == (long)mSubscription) {
+                        subscription == mSubscription) {
                     refreshMessageList();
                 }
             }
@@ -404,26 +405,39 @@ public class ManageSimMessages extends Activity
                 cursor.getColumnIndexOrThrow("address"));
         String body = cursor.getString(cursor.getColumnIndexOrThrow("body"));
         Long date = cursor.getLong(cursor.getColumnIndexOrThrow("date"));
+        int subId = MessageUtils.SUB_INVALID;
         int subscription = cursor.getInt(cursor.getColumnIndexOrThrow("phone_id"));
+        if (MessageUtils.isMultiSimEnabledMms()) {
+            int[] subIds = SubscriptionManager.getSubId(subscription);
+            if (subIds == null || subIds.length == 0) {
+                Log.d(TAG, "subIds null or length 0 for subscription = " + subscription);
+                showToast(false);
+                return;
+            }
+            subId = subIds[0];
+        } else {
+            subId = SubscriptionManager.getDefaultSmsSubId();
+        }
+
         boolean success = true;
         try {
             if (isIncomingMessage(cursor)) {
-                Sms.Inbox.addMessage(subscription, mContentResolver, address, body, null,
+                Sms.Inbox.addMessage(subId, mContentResolver, address, body, null,
                         date, true /* read */);
             } else {
-                Sms.Sent.addMessage(subscription, mContentResolver, address, body, null, date);
+                Sms.Sent.addMessage(subId, mContentResolver, address, body, null, date);
             }
         } catch (SQLiteException e) {
             SqliteWrapper.checkSQLiteException(this, e);
             success = false;
         }
-        String toast;
-        if (success){
-            toast = getString(R.string.copy_to_phone_success);
-        } else {
-            toast = getString(R.string.copy_to_phone_fail);
-        }
-        Toast.makeText(getContext(), toast, Toast.LENGTH_SHORT).show();
+        showToast(success);
+    }
+
+    private void showToast(boolean success) {
+        int resId = success ? R.string.copy_to_phone_success :
+                R.string.copy_to_phone_fail;
+        Toast.makeText(getContext(), getString(resId), Toast.LENGTH_SHORT).show();
     }
 
     private boolean isIncomingMessage(Cursor cursor) {
@@ -510,7 +524,7 @@ public class ManageSimMessages extends Activity
         capacityMessage.append(getString(R.string.sim_capacity));
         int iccCapacityAll = -1;
         if (MessageUtils.isMultiSimEnabledMms()) {
-            iccCapacityAll = SmsManager.getSmsManagerForSubscriber(mSubscription)
+            iccCapacityAll = SmsManager.getSmsManagerForSubscriptionId(mSubscription)
                     .getSmsCapacityOnIcc();
         } else {
             iccCapacityAll = SmsManager.getDefault().getSmsCapacityOnIcc();

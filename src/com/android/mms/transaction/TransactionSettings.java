@@ -23,6 +23,7 @@ import android.database.sqlite.SqliteWrapper;
 import android.net.NetworkUtils;
 import android.net.Uri;
 import android.provider.Telephony;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -59,21 +60,20 @@ public class TransactionSettings {
      *
      * @param context The context of the MMS Client
      */
-    public TransactionSettings(Context context, String apnName, long subId) {
+    public TransactionSettings(Context context, String apnName, int subId) {
         if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
             Log.v(TAG, "TransactionSettings: apnName: " + apnName +
                     "subId: " + subId);
         }
-        String selection = null;
+        String numeric = TelephonyManager.getDefault().getIccOperatorNumeric(subId);
+        String selection = "numeric=" + numeric;
         String[] selectionArgs = null;
-        Uri contentUri = Telephony.Carriers.CONTENT_URI;
+        Uri contentUri = Uri.withAppendedPath(Telephony.Carriers.CONTENT_URI, "/subId/" + subId);
         if (!TextUtils.isEmpty(apnName)) {
-            selection = Telephony.Carriers.APN + "=?";
+            selection += " AND " + Telephony.Carriers.APN + "=?";
             selectionArgs = new String[]{ apnName.trim() };
-        } else {
-            contentUri = Uri.withAppendedPath(contentUri, "/subId/" + subId);
         }
-
+        Log.d(TAG, "Selection: " + selection);
         Cursor cursor = SqliteWrapper.query(context, context.getContentResolver(),
                             contentUri, APN_PROJECTION, selection, selectionArgs,
                             null);

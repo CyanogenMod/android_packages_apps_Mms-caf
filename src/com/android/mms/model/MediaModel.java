@@ -250,6 +250,12 @@ public abstract class MediaModel extends Model implements EventListener {
                     Log.w(TAG, "initMediaSize: Video size: f.getChannel().size(): " + mSize +
                             " larger than max message size: " + MmsConfig.getMaxMessageSize());
                 }
+
+                // after attaching vCard into attachment, mSize will be zero, should get it's
+                // size by calling available().
+                if (isVcard() && mSize <= 0) {
+                    mSize = input.available();
+                }
             } else {
                 while (-1 != input.read()) {
                     mSize++;
