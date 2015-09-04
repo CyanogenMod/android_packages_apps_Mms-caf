@@ -983,44 +983,13 @@ public class ComposeMessageActivity extends Activity
             }
 
             if (mRecipientsPickList != null) {
-                // Update UI with mRecipientsPickList, which is picked from
-                // People.
-                updateTitle(mRecipientsPickList);
                 mRecipientsPickList = null;
-            } else {
-                updateTitleForRecipientsChange(s);
             }
 
             // If we have gone to zero recipients, disable send button.
             updateSendButtonState();
         }
     };
-
-    private void updateTitleForRecipientsChange(Editable s) {
-        // If we have gone to zero recipients, we need to update the title.
-        if (TextUtils.isEmpty(s.toString().trim())) {
-            constructContactAndUpdateTitle();
-        }
-
-        // Walk backwards in the text box, skipping spaces. If the last
-        // character is a comma, update the title bar.
-        for (int pos = s.length() - 1; pos >= 0; pos--) {
-            char c = s.charAt(pos);
-            if (c == ' ')
-                continue;
-
-            if (c == ',') {
-                constructContactAndUpdateTitle();
-            }
-            break;
-        }
-
-    }
-
-    private void constructContactAndUpdateTitle() {
-        ContactList contacts = mRecipientsEditor.constructContactsFromInput(false);
-        updateTitle(contacts);
-    }
 
     private void checkForTooManyRecipients() {
         final int recipientLimit = MmsConfig.getRecipientLimit();
@@ -1722,6 +1691,10 @@ public class ComposeMessageActivity extends Activity
                 } else {
                     subTitle = formattedNumber;
                 }
+
+                Contact contact = list.get(0);
+                loadOrSetAccentColor(contact);
+
                 break;
             }
             case 2:
@@ -1898,17 +1871,6 @@ public class ComposeMessageActivity extends Activity
                     if (inputManager == null || !inputManager.isFullscreenMode()) {
                         mTextEditor.requestFocus();
                     }
-                }
-            }
-        });
-
-        mRecipientsEditor.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    RecipientsEditor editor = (RecipientsEditor) v;
-                    ContactList contacts = editor.constructContactsFromInput(false);
-                    updateTitle(contacts);
                 }
             }
         });
@@ -2482,9 +2444,13 @@ public class ComposeMessageActivity extends Activity
         mMessageListItemHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                ContactList recipients = isRecipientsEditorVisible() ?
-                        mRecipientsEditor.constructContactsFromInput(false, true) : getRecipients();
-                updateTitle(recipients);
+                if (mRecipientsEditor == null
+                        || mRecipientsEditor.getVisibility() != View.VISIBLE) {
+                    ContactList recipients = isRecipientsEditorVisible() ?
+                            mRecipientsEditor.constructContactsFromInput(false, true) :
+                            getRecipients();
+                    updateTitle(recipients);
+                }
             }
         }, 100);
 
@@ -4591,6 +4557,34 @@ public class ComposeMessageActivity extends Activity
         return (size + KILOBYTE -1) / KILOBYTE + 1;
     }
 
+    private void loadOrSetAccentColor(final Contact contact) {
+        if (!mAccentColorLoaded && !mLoadingAccentColor) {
+            // first see whether there's a cached color already
+            int color = contact.getAccentColor(this, false);
+            if (color != 0) {
+                mAccentColorLoaded = true;
+                updateColorPalette(color);
+            } else {
+                mLoadingAccentColor = true;
+                new AsyncTask<Void, Void, Integer>() {
+                    @Override
+                    protected Integer doInBackground(Void... params) {
+                        return contact.getAccentColor(ComposeMessageActivity.this, true);
+                    }
+
+                    @Override
+                    protected void onPostExecute(Integer color) {
+                        if (mLoadingAccentColor) {
+                            mLoadingAccentColor = false;
+                            mAccentColorLoaded = true;
+                            updateColorPalette(color);
+                        }
+                    }
+                }.execute();
+            }
+        }
+    }
+
     private void sendMessage(boolean bCheckEcmMode) {
         // Check message size, if >= max message size, do not send message.
         if(checkMessageSizeExceeded()){
@@ -4619,34 +4613,6 @@ public class ComposeMessageActivity extends Activity
         ContactList recipients = isRecipientsEditorVisible() ?
                 mRecipientsEditor.constructContactsFromInput(false) : getRecipients();
         updateTitle(recipients);
-        if (recipients.size() == 1) {
-            if (!mAccentColorLoaded && !mLoadingAccentColor) {
-                final Contact contact = recipients.get(0);
-                // first see whether there's a cached color already
-                int color = contact.getAccentColor(this, false);
-                if (color != 0) {
-                    mAccentColorLoaded = true;
-                    updateColorPalette(color);
-                } else {
-                    mLoadingAccentColor = true;
-                    new AsyncTask<Void, Void, Integer>() {
-                        @Override
-                        protected Integer doInBackground(Void... params) {
-                            return contact.getAccentColor(ComposeMessageActivity.this, true);
-                        }
-
-                        @Override
-                        protected void onPostExecute(Integer color) {
-                            if (mLoadingAccentColor) {
-                                mLoadingAccentColor = false;
-                                mAccentColorLoaded = true;
-                                updateColorPalette(color);
-                            }
-                        }
-                    }.execute();
-                }
-            }
-        }
 
         if (!mSendingMessage) {
             if (LogTag.SEVERE_WARNING) {
