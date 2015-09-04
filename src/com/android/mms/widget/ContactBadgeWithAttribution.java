@@ -30,6 +30,7 @@ public class ContactBadgeWithAttribution extends QuickContactBadge implements Ch
     private boolean mChecked = false;
     private int mCheckMarkBackgroundColor;
     private CheckableFlipDrawable mFlipDrawable;
+    private boolean mInitCalled;
 
     private Drawable mAttributionDrawable;
 
@@ -55,6 +56,7 @@ public class ContactBadgeWithAttribution extends QuickContactBadge implements Ch
     }
 
     private void init(Context context) {
+        mInitCalled = true;
         mCheckMarkBackgroundColor = context.getResources().
                 getColor(R.color.action_mode_checkmark_color);
     }
@@ -117,6 +119,16 @@ public class ContactBadgeWithAttribution extends QuickContactBadge implements Ch
     @Override
     public void setImageDrawable(Drawable d) {
         if (d != null) {
+            // ImageView's constructor can call setImageDrawable (which is over-ridden here), if
+            // a 'src' is specified
+            //
+            // init() wouldn't have been called by this time and we can't use an object initializer
+            // to circumvent this problem as they are executed after the super classes are
+            // constructed
+            if (!mInitCalled) {
+                init(getContext());
+            }
+
             LayerDrawable ld = null;
             if (mAttributionDrawable != null) {
                 Drawable[] drawables = new Drawable[2];
@@ -142,6 +154,7 @@ public class ContactBadgeWithAttribution extends QuickContactBadge implements Ch
 
             d = mFlipDrawable;
         }
+
         super.setImageDrawable(d);
     }
 
