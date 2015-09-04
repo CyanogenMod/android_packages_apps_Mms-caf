@@ -50,6 +50,10 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
             // one.
             throw new MmsException("Null message body or have multiple destinations.");
         }
+        if (mDest == null) {
+            // Don't try to send a message to an invalid destination
+            throw new MmsException("No destinations");
+        }
         SmsManager smsManager = SmsManager.getSmsManagerForSubscriptionId(mSubId);
         ArrayList<String> messages = null;
         if ((MmsConfig.getEmailGateway() != null) &&
