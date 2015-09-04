@@ -600,7 +600,11 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
         // Simply setting the choice mode causes the previous choice mode to finish and we exit
         // multi-select mode (if we're in it) and remove all the selections.
         getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         // Close the cursor in the ListAdapter if the activity stopped.
         Cursor cursor = mListAdapter.getCursor();
 
@@ -609,11 +613,7 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
         }
 
         mListAdapter.changeCursor(null);
-    }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
         MmsApp.getApplication().removePhoneNumberLookupListener(mListAdapter);
         MessageUtils.removeDialogs();
     }
