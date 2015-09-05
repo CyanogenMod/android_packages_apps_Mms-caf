@@ -165,6 +165,13 @@
                       android:key="pref_key_mms_group_mms"
                       android:summary="@string/pref_summary_mms_group_mms"
                       android:title="@string/pref_title_mms_group_mms" />
+
+    <com.android.mms.preference.PhoneNumberPreference
+        android:key="pref_key_sim_1_phone_number" />
+
+    <com.android.mms.preference.PhoneNumberPreference
+        android:key="pref_key_sim_2_phone_number" />
+
     <SwitchPreference android:defaultValue="@bool/def_mms_delivery_reports"
                       android:key="pref_key_mms_delivery_reports"
                       android:summary="@string/pref_summary_mms_delivery_reports"
