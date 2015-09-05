@@ -430,4 +430,11 @@
     <string name="enter_phone_number_hint" translatable="false">(555) 555-5555</string>
     <string name="confirm_phone_number_send">SEND</string>
     <string name="confirm_phone_number_cancel">CANCEL</string>
+
+    <string name="pref_current_phone_number_slot_1">SIM 1 phone number</string>
+    <string name="pref_current_phone_number_slot_2">SIM 2 phone number</string>
+    <string name="pref_enter_number_summary_msg">Please add your phone number to ensure group messages are sent properly</string>
+    <string name="pref_add_your_phone_number">Add your phone number</string>
+    <string name="pref_edit_your_phone_number">Edit your phone number</string>
+    <string name="pref_your_phone_number">Your phone number</string>
 </resources>

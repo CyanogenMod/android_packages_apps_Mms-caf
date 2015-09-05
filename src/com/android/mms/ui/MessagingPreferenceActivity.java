@@ -76,6 +76,7 @@ import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.transaction.TransactionService;
+import com.android.mms.util.AddressUtils;
 import com.android.mms.util.Recycler;
 import com.android.mms.QTIBackupMMS;
 import com.android.mms.QTIBackupSMS;
@@ -202,6 +203,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private ArrayList<Preference> mSmscPrefList = new ArrayList<Preference>();
     private static final int CONFIRM_CLEAR_SEARCH_HISTORY_DIALOG = 3;
     private ListPreference mUnicodeStripping;
+    private EditTextPreference mSim1PhoneNumberPref;
+    private EditTextPreference mSim2PhoneNumberPref;
 
     // Whether or not we are currently enabled for SMS. This field is updated in onResume to make
     // sure we notice if the user has changed the default SMS app.
@@ -376,6 +379,10 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         // Blacklist screen - Needed for setting summary
         mBlacklist = (PreferenceScreen) findPreference(BLACKLIST);
 
+        // SIM phone numbers for group messages
+        mSim1PhoneNumberPref = (EditTextPreference) findPreference(SIM_1_PHONE_NUMBER);
+        mSim2PhoneNumberPref = (EditTextPreference) findPreference(SIM_2_PHONE_NUMBER);
+
         setMessagePreferences();
     }
 
@@ -509,9 +516,24 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             if (!MmsConfig.getMMSReadReportsEnabled()) {
                 mMmsPrefCategory.removePreference(mMmsReadReportPref);
             }
-            // If the phone's SIM doesn't know it's own number, disable group mms.
+
             if (!MmsConfig.getGroupMmsEnabled()) {
                 mMmsPrefCategory.removePreference(mMmsGroupMmsPref);
+            }
+
+            // bind SIM phone number(s) for group messages, if applicable
+            if (!MessageUtils.isMultiSimEnabledMms() ||
+                    !TextUtils.isEmpty(MessageUtils.getLocalNumber(MessageUtils.SLOT2))) {
+                mMmsPrefCategory.removePreference(mSim2PhoneNumberPref);
+                mSim1PhoneNumberPref.setTitle(R.string.pref_your_phone_number);
+            } else {
+                bindSimPhoneNumberToPreference(mSim2PhoneNumberPref);
+            }
+
+            if (TextUtils.isEmpty(MessageUtils.getLocalNumber(MessageUtils.SLOT1))) {
+                bindSimPhoneNumberToPreference(mSim1PhoneNumberPref);
+            } else {
+                mMmsPrefCategory.removePreference(mSim1PhoneNumberPref);
             }
         }
 
@@ -521,6 +543,31 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             mMmsPrefCategory.removePreference(mMmsExpiryCard1Pref);
             mMmsPrefCategory.removePreference(mMmsExpiryCard2Pref);
         }
+    }
+
+    private void bindSimPhoneNumberToPreference(EditTextPreference preference) {
+        bindSimPhoneNumberToPreference(preference, null);
+    }
+
+    private void bindSimPhoneNumberToPreference(EditTextPreference preference, String newValue) {
+        EditText editText = preference.getEditText();
+        String prefValue = newValue != null ? newValue :
+                preference.getSharedPreferences().getString(preference.getKey(), "");
+        prefValue = newValue == null ? AddressUtils.getPhoneNumberFromNormalizedNumber(prefValue) :
+                prefValue;
+
+        if (TextUtils.isEmpty(prefValue)) {
+            preference.setSummary(R.string.pref_enter_number_summary_msg);
+            preference.setDialogTitle(R.string.pref_add_your_phone_number);
+            editText.setHint(R.string.enter_phone_number_hint);
+        } else {
+            String number = PhoneNumberUtils.formatNumber(prefValue, prefValue,
+                    MmsApp.getApplication().getCurrentCountryIso());
+            preference.setSummary(number);
+            preference.setDialogTitle(R.string.pref_edit_your_phone_number);
+        }
+
+        preference.setOnPreferenceChangeListener(this);
     }
 
     private void setMessagePriorityPref() {
@@ -1229,10 +1276,14 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             mMessageSendDelayPref.setValue(value);
             mMessageSendDelayPref.setSummary(mMessageSendDelayPref.getEntry());
             result = true;
+
+        } else if (preference == mSim1PhoneNumberPref || preference == mSim2PhoneNumberPref) {
+            bindSimPhoneNumberToPreference( (EditTextPreference) preference, (String) newValue);
+            result = true;
         }
+
         return result;
     }
-
 
     private void showToast(int id) {
         Toast.makeText(this, id, Toast.LENGTH_SHORT).show();

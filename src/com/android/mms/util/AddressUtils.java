@@ -26,6 +26,8 @@ import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 
 import com.android.i18n.phonenumbers.PhoneNumberUtil;
+import com.android.i18n.phonenumbers.Phonenumber.PhoneNumber;
+import com.android.i18n.phonenumbers.NumberParseException;
 import com.android.mms.MmsApp;
 import com.android.mms.R;
 import com.google.android.mms.pdu.EncodedStringValue;
@@ -86,5 +88,26 @@ public class AddressUtils {
     public static String normalizePhoneNumber(String number) {
         return PhoneNumberUtils.formatNumberToE164(number,
                 MmsApp.getApplication().getCurrentCountryIso());
+    }
+
+    /**
+     * Removes the country formatting from a normalized e164 number and returns the phone number,
+     * a.k.a the national number. ex: +12063341850 returns 2063341850
+     *
+     * @param normalizedNumber e164 formatted number
+     * @return
+     */
+    public static String getPhoneNumberFromNormalizedNumber(String normalizedNumber) {
+        if (mPhoneNumberUtil == null) {
+            mPhoneNumberUtil = PhoneNumberUtil.getInstance();
+        }
+
+        try {
+            PhoneNumber pn = mPhoneNumberUtil.parse(normalizedNumber, "ZZ");
+            return String.valueOf(pn.getNationalNumber());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
