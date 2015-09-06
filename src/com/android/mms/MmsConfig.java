@@ -144,18 +144,6 @@ public class MmsConfig {
         return false;
     }
 
-    public static boolean isSmsPromoDismissed(Context context) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return preferences.getBoolean(SMS_PROMO_DISMISSED_KEY, false);
-    }
-
-    public static void setSmsPromoDismissed(Context context) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean(SMS_PROMO_DISMISSED_KEY, true);
-        editor.apply();
-    }
-
     public static Intent getRequestDefaultSmsAppActivity() {
         final Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
         intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, MMS_APP_PACKAGE);
