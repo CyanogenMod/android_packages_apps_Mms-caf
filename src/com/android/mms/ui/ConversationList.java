@@ -17,9 +17,11 @@
 
 package com.android.mms.ui;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
+import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.LoaderManager;
@@ -39,12 +41,10 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SqliteWrapper;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -69,14 +69,12 @@ import android.view.MenuItem.OnActionExpandListener;
 import android.view.View;
 import android.view.View.OnCreateContextMenuListener;
 import android.view.View.OnKeyListener;
-import android.widget.AbsListView.RecyclerListener;
-import android.widget.ActionMenuView;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
@@ -89,8 +87,6 @@ import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
-import com.android.mms.blacklist.BlacklistData;
-import com.android.mms.blacklist.CallBlacklistHelper;
 import com.android.mms.data.Contact;
 import com.android.mms.data.ContactList;
 import com.android.mms.data.Conversation;
@@ -351,7 +347,7 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
         }
 
         // Show or hide the SMS promo banner
-        if (mIsSmsEnabled || MmsConfig.isSmsPromoDismissed(this)) {
+        if (mIsSmsEnabled) {
             mSmsPromoBannerView.setVisibility(View.GONE);
         } else {
             initSmsPromoBanner();
@@ -439,6 +435,7 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
         MmsApp.getApplication().addPhoneNumberLookupListener(mListAdapter);
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void initSmsPromoBanner() {
         final PackageManager packageManager = getPackageManager();
         final String smsAppPackage = Telephony.Sms.getDefaultSmsPackage(this);
@@ -466,25 +463,25 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
             String message = getResources().getString(R.string.banner_sms_promo_title_application,
                     smsAppInfo.loadLabel(packageManager));
             smsPromoBannerTitle.setText(message);
-
-            mSmsPromoBannerView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(smsAppIntent);
-                }
-            });
-        } else {
-            // Otherwise the banner will be left alone and will launch settings
-            mSmsPromoBannerView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Launch settings
-                    Intent settingsIntent = new Intent(ConversationList.this,
-                            MessagingPreferenceActivity.class);
-                    startActivityIfNeeded(settingsIntent, -1);
-                }
-            });
         }
+
+        View yes = mSmsPromoBannerView.findViewById(R.id.yes);
+        yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+                i.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, getPackageName());
+                i.setPackage("com.android.settings");
+                startActivity(i);
+            }
+        });
+        View no = mSmsPromoBannerView.findViewById(R.id.no);
+        no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mSmsPromoBannerView.setVisibility(View.GONE);
+            }
+        });
     }
 
     /**
