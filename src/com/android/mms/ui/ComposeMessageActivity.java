@@ -1691,9 +1691,6 @@ public class ComposeMessageActivity extends Activity
                     subTitle = formattedNumber;
                 }
 
-                Contact contact = list.get(0);
-                loadOrSetAccentColor(contact);
-
                 break;
             }
             case 2:
@@ -2443,13 +2440,18 @@ public class ComposeMessageActivity extends Activity
         mMessageListItemHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (mRecipientsEditor == null
-                        || mRecipientsEditor.getVisibility() != View.VISIBLE) {
                     ContactList recipients = isRecipientsEditorVisible() ?
                             mRecipientsEditor.constructContactsFromInput(false, true) :
                             getRecipients();
                     updateTitle(recipients);
-                }
+                    if (mRecipientsEditor == null
+                            || mRecipientsEditor.getVisibility() != View.VISIBLE
+                            && recipients.size() == 1) {
+                        loadOrSetAccentColor(recipients.get(0));
+                    }
+                    for (Contact contact : recipients) {
+                        Contact.get(contact.getNumber(), false);
+                    }
             }
         }, 100);
 
@@ -4612,6 +4614,10 @@ public class ComposeMessageActivity extends Activity
         ContactList recipients = isRecipientsEditorVisible() ?
                 mRecipientsEditor.constructContactsFromInput(false) : getRecipients();
         updateTitle(recipients);
+        if (recipients != null && recipients.size() == 1) {
+            Contact contact = recipients.get(0);
+            loadOrSetAccentColor(contact);
+        }
 
         if (!mSendingMessage) {
             if (LogTag.SEVERE_WARNING) {
