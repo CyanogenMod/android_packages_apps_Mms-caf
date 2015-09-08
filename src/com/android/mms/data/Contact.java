@@ -115,7 +115,6 @@ public class Contact {
     private byte [] mAvatarData;
     private int mAccentColor;
     private boolean mIsStale;
-    public boolean mIsReloaded;
     private boolean mQueryPending;
     private boolean mIsMe;          // true if this contact is me!
     private boolean mSendToVoicemail;   // true if this contact should not put up notification
@@ -894,14 +893,11 @@ public class Contact {
                         synchronized (mListeners) {
                             iterator = (HashSet<UpdateListener>)Contact.mListeners.clone();
                         }
-                        if (c.mIsReloaded) {
-                            for (UpdateListener l : iterator) {
-                                if (Log.isLoggable(LogTag.CONTACT, Log.DEBUG)) {
-                                    Log.d(TAG, "updating " + l);
-                                }
-                                l.onUpdate(c);
+                        for (UpdateListener l : iterator) {
+                            if (Log.isLoggable(LogTag.CONTACT, Log.DEBUG)) {
+                                Log.d(TAG, "updating " + l);
                             }
-                            c.mIsReloaded = false;
+                            l.onUpdate(c);
                         }
                     }
                 }

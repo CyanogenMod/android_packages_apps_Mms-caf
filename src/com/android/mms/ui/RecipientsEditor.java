@@ -225,7 +225,6 @@ public class RecipientsEditor extends RecipientEditTextView {
         ContactList list = new ContactList();
         for (String number : numbers) {
             Contact contact = Contact.get(number, blocking);
-            contact.mIsReloaded = reloaded;
             contact.setNumber(number);
             list.add(contact);
         }
