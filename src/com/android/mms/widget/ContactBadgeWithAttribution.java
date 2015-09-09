@@ -1,13 +1,21 @@
 package com.android.mms.widget;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ScaleDrawable;
+import android.net.Uri;
+import android.provider.ContactsContract;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.Checkable;
 import android.widget.QuickContactBadge;
+import android.widget.Toast;
+
 import com.android.contacts.common.widget.CheckableFlipDrawable;
 
 import com.android.mms.R;
@@ -33,6 +41,10 @@ public class ContactBadgeWithAttribution extends QuickContactBadge implements Ch
     private boolean mInitCalled;
 
     private Drawable mAttributionDrawable;
+    private Uri mContactUri;
+    private String mContactPhone;
+
+    public static final String CONTACT_URI_EXTRA = "contact_uri_extra";
 
     public ContactBadgeWithAttribution(Context context) {
         super(context);
@@ -71,6 +83,22 @@ public class ContactBadgeWithAttribution extends QuickContactBadge implements Ch
     public void setAttributionDrawable(Drawable drawable) {
         mAttributionDrawable = drawable;
         setImageDrawable(extractContactDrawable());
+    }
+
+    public String getContactPhone() {
+        return mContactPhone;
+    }
+
+    public void setContactPhone(String contactPhone) {
+        mContactPhone = contactPhone;
+    }
+
+    public Uri getContactUri() {
+        return mContactUri;
+    }
+
+    public void setContactUri(Uri contactUri) {
+        mContactUri = contactUri;
     }
 
     /**
@@ -181,6 +209,25 @@ public class ContactBadgeWithAttribution extends QuickContactBadge implements Ch
         mFlipDrawable.flipTo(!mChecked);
         if (!animate) {
             mFlipDrawable.reset();
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        final Context context = getContext();
+        if (mContactUri != null) {
+            Intent intent = ContactsContract.QuickContact.composeQuickContactsIntent(context,
+                    ContactBadgeWithAttribution.this,
+                    null, ContactsContract.QuickContact.MODE_LARGE, null);
+             intent.putExtra(CONTACT_URI_EXTRA, mContactUri);
+            try {
+                context.startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                Toast.makeText(context, com.android.internal.R.string.quick_contacts_not_available,
+                        Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            super.onClick(v);
         }
     }
 }

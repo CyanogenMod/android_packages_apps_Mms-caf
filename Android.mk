@@ -46,7 +46,7 @@ LOCAL_STATIC_JAVA_LIBRARIES += android-support-v13
 LOCAL_STATIC_JAVA_LIBRARIES += \
 	joda-time-mms \
 	android-joda-mms \
-	mms-picaso \
+	contacts-picaso \
 #	ambientsdk
 
 LOCAL_AAPT_FLAGS := \
@@ -75,8 +75,7 @@ include $(CLEAR_VARS)
 
 LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := \
     joda-time-mms:libs/joda-time-2.7-no-tzdb.jar \
-    android-joda-mms:android-joda/classes.jar \
-    mms-picaso:libs/picaso.jar
+    android-joda-mms:android-joda/classes.jar
 
 include $(BUILD_MULTI_PREBUILT)
 

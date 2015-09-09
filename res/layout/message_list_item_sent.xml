@@ -164,7 +164,7 @@
 
             </FrameLayout>
 
-            <com.android.contacts.common.widget.CheckableQuickContactBadge
+            <com.android.mms.widget.ContactBadgeWithAttribution
                 android:id="@+id/avatar"
                 android:layout_width="@dimen/avatar_width_height"
                 android:layout_height="@dimen/avatar_width_height"
