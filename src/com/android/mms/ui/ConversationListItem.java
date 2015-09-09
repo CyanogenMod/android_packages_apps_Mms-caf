@@ -20,19 +20,19 @@ package com.android.mms.ui;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.style.TextAppearanceSpan;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -40,6 +40,7 @@ import android.widget.Checkable;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.contacts.common.model.ContactBuilder;
 import com.android.mms.LogTag;
 import com.android.mms.R;
 import com.android.mms.data.Contact;
@@ -201,9 +202,24 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
     }
 
     private void updateAvatarView(LookupResponse lookupResponse) {
-        if (lookupResponse != null && !TextUtils.isEmpty(lookupResponse.mPhotoUrl)) {
+        if (lookupResponse != null) {
             // if url exists load into image
-            ImageUtils.loadBitampFromUrl(getContext(), lookupResponse.mPhotoUrl, mAvatarView);
+            if (!TextUtils.isEmpty(lookupResponse.mPhotoUrl)) {
+                ImageUtils.loadBitampFromUrl(getContext(), lookupResponse.mPhotoUrl, mAvatarView);
+            }
+            ContactBuilder builder =
+                    new ContactBuilder(ContactBuilder.REVERSE_LOOKUP, lookupResponse.mNumber,
+                            lookupResponse.mNumber);
+            builder.setName(ContactBuilder.Name.createDisplayName(lookupResponse.mName));
+            builder.addPhoneNumber(
+                    ContactBuilder.PhoneNumber.createMainNumber(lookupResponse.mNumber));
+            builder.addAddress(ContactBuilder.Address.createFormattedHome(lookupResponse.mAddress));
+            builder.setPhotoUrl(lookupResponse.mPhotoUrl);
+            builder.setSpamCount(lookupResponse.mSpamCount);
+            builder.setInfoProviderName(lookupResponse.mProviderName);
+            com.android.contacts.common.model.Contact contact = builder.build();
+            mAvatarView.setContactUri(contact.getLookupUri());
+            mAvatarView.setContactPhone(lookupResponse.mNumber);
             return;
         }
         if (mConversation.getRecipients().size() == 1) {

@@ -47,7 +47,7 @@
                 android:layout_width="@dimen/recv_message_bubble_layout_margin_start"
                 android:layout_height="wrap_content">
 
-                <QuickContactBadge
+                <com.android.mms.widget.ContactBadgeWithAttribution
                     android:id="@+id/avatar"
                     android:layout_width="@dimen/avatar_width_height"
                     android:layout_height="@dimen/avatar_width_height"

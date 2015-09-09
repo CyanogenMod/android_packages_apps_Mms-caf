@@ -22,7 +22,6 @@ import java.util.regex.Pattern;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.sqlite.SqliteWrapper;
@@ -31,7 +30,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Paint.FontMetricsInt;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ScaleDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Handler;
@@ -53,12 +51,10 @@ import android.text.style.TextAppearanceSpan;
 import android.text.style.URLSpan;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Checkable;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -66,8 +62,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.QuickContactBadge;
 
+import com.android.contacts.common.model.ContactBuilder;
 import com.android.internal.telephony.PhoneConstants;
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
@@ -87,9 +83,8 @@ import com.android.mms.ui.zoom.ZoomMessageListItem;
 import com.android.mms.util.AddressUtils;
 import com.android.mms.util.DownloadManager;
 import com.android.mms.util.ImageUtils;
-import com.android.mms.util.ItemLoadedCallback;
 import com.android.mms.util.SmileyParser;
-import com.android.mms.util.ThumbnailManager.ImageLoaded;
+import com.android.mms.widget.ContactBadgeWithAttribution;
 import com.cyanogen.lookup.phonenumber.response.LookupResponse;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
@@ -137,7 +132,7 @@ public class MessageListItem extends ZoomMessageListItem implements
     private TextView mMessageStatus;
     private TextView mSimNameView;
     public View mMessageBlock;
-    private QuickContactBadge mAvatar;
+    private ContactBadgeWithAttribution mAvatar;
     static private RoundedBitmapDrawable sDefaultContactImage;
     private SlideShowPresenter mPresenter;
     private int mPosition;      // for debugging
@@ -184,7 +179,7 @@ public class MessageListItem extends ZoomMessageListItem implements
         mLockedIndicator = (ImageView) findViewById(R.id.locked_indicator);
         mDeliveredIndicator = (ImageView) findViewById(R.id.delivered_indicator);
         mDetailsIndicator = (ImageView) findViewById(R.id.details_indicator);
-        mAvatar = (QuickContactBadge) findViewById(R.id.avatar);
+        mAvatar = (ContactBadgeWithAttribution) findViewById(R.id.avatar);
         mSimIndicatorView = (ImageView) findViewById(R.id.sim_indicator_icon);
         mSimNameView = (TextView) findViewById(R.id.sim_name);
         mMessageBlock = findViewById(R.id.message_block);
@@ -452,6 +447,22 @@ public class MessageListItem extends ZoomMessageListItem implements
     }
 
     private void updateView(LookupResponse lookupResponse) {
+
+        ContactBuilder builder =
+                new ContactBuilder(ContactBuilder.REVERSE_LOOKUP, lookupResponse.mNumber,
+                        lookupResponse.mNumber);
+        builder.setName(ContactBuilder.Name.createDisplayName(lookupResponse.mName));
+        builder.setIsBusiness(false);
+        builder.addPhoneNumber(
+                ContactBuilder.PhoneNumber.createMainNumber(lookupResponse.mNumber));
+        builder.addAddress(ContactBuilder.Address.createFormattedHome(lookupResponse.mAddress));
+        builder.setPhotoUrl(lookupResponse.mPhotoUrl);
+        builder.setSpamCount(lookupResponse.mSpamCount);
+        builder.setInfoProviderName(lookupResponse.mProviderName);
+        com.android.contacts.common.model.Contact contact = builder.build();
+        mAvatar.setContactUri(contact.getLookupUri());
+        mAvatar.setContactPhone(lookupResponse.mNumber);
+
         // if url exists load into image
         if (!TextUtils.isEmpty(lookupResponse.mPhotoUrl)) {
             ImageUtils.loadBitampFromUrl(getContext(), lookupResponse.mPhotoUrl, mAvatar);
