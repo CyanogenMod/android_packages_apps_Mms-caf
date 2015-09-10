@@ -78,6 +78,11 @@ public final class MessageListView extends ZoomMessageListView {
     }
 
     @Override
+    protected float getTopFadingEdgeStrength() {
+        return 0;
+    }
+
+    @Override
     public boolean onKeyShortcut(int keyCode, KeyEvent event) {
         switch (keyCode) {
         case KeyEvent.KEYCODE_C:

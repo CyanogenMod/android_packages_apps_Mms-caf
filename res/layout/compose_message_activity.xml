@@ -105,9 +105,10 @@
             android:smoothScrollbar="false"
             android:stackFromBottom="true"
             android:visibility="gone"
-            android:fadingEdge="none"
+            android:fadingEdgeLength="4dp"
+            android:requiresFadingEdge="vertical"
             android:layout_marginBottom="1dip"
-            android:cacheColorHint="@android:color/white"
+            android:cacheColorHint="#B1B1B1"
             android:scrollbarAlwaysDrawVerticalTrack="false"
             android:scrollbarStyle="outsideOverlay"
             android:paddingBottom="@dimen/input_text_height_adjusted"/>
