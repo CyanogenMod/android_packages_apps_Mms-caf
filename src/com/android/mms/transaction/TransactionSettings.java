@@ -65,12 +65,12 @@ public class TransactionSettings {
             Log.v(TAG, "TransactionSettings: apnName: " + apnName +
                     "subId: " + subId);
         }
-        String numeric = null;//TelephonyManager.getDefault().getIccOperatorNumeric(subId);
-        String selection = "numeric=" + numeric;
+        //String numeric = TelephonyManager.getDefault().getIccOperatorNumeric(subId);
+        String selection = null;//"numeric=" + numeric;
         String[] selectionArgs = null;
         Uri contentUri = Uri.withAppendedPath(Telephony.Carriers.CONTENT_URI, "/subId/" + subId);
         if (!TextUtils.isEmpty(apnName)) {
-            selection += " AND " + Telephony.Carriers.APN + "=?";
+            selection = Telephony.Carriers.APN + "=?";//" AND " + Telephony.Carriers.APN + "=?";
             selectionArgs = new String[]{ apnName.trim() };
         }
         Log.d(TAG, "Selection: " + selection);
