@@ -27,7 +27,7 @@ public class ConversationOptionsActivity extends Activity {
     private long mThreadId;
     private PreferenceFragment mFragment;
 
-    public class ConversationOptionsFragment extends PreferenceFragment
+    public static class ConversationOptionsFragment extends PreferenceFragment
         implements OnPreferenceChangeListener, OnPreferenceClickListener {
         private static final String KEY_NOTIFICATION_ENABLED = "convopt_key_notification_enabled";
         private static final String KEY_NOTIFICATION_RINGTONE = "convopt_key_notification_ringtone";
@@ -35,6 +35,9 @@ public class ConversationOptionsActivity extends Activity {
         private static final String KEY_VIBRATE_PATTERN = "convopt_key_vibrate_pattern";
         private static final String KEY_NOTIFICATIONS_CATEGORY = "convopt_key_notifications_category";
         private static final String KEY_RESET_TO_DEFAULT = "convopt_key_reset_to_default";
+        private static final String THREAD_ID_EXTRA = "thread_id";
+
+        private long mThreadId;
 
         private CheckBoxPreference mNotificationEnabled;
         private RingtonePreference mNotificationRingtone;
@@ -44,10 +47,13 @@ public class ConversationOptionsActivity extends Activity {
         private PreferenceCategory mNotificationsCategory;
         private CMConversationSettings mConversationSetting;
 
+        public ConversationOptionsFragment() {
+        }
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-
+            mThreadId = getArguments().getLong(THREAD_ID_EXTRA);
             new AsyncTask<Long, Void, CMConversationSettings>() {
                 @Override
                 protected CMConversationSettings doInBackground(Long... params) {
@@ -88,7 +94,7 @@ public class ConversationOptionsActivity extends Activity {
             mVibrateEnabled.setOnPreferenceChangeListener(this);
             mVibratePattern.setOnPreferenceChangeListener(this);
 
-            Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+            Vibrator vibrator = (Vibrator) getActivity().getSystemService(VIBRATOR_SERVICE);
             if (!vibrator.hasVibrator()) {
                 mNotificationsCategory.removePreference(mVibrateEnabled);
                 mNotificationsCategory.removePreference(mVibratePattern);
@@ -134,7 +140,7 @@ public class ConversationOptionsActivity extends Activity {
         }
 
         private void updateUI() {
-            if (getActivity().isFinishing()) return;
+            if (getActivity() == null || getActivity().isFinishing()) return;
 
             mNotificationEnabled.setEnabled(true);
             mNotificationRingtone.setEnabled(true);
@@ -248,6 +254,9 @@ public class ConversationOptionsActivity extends Activity {
         }
 
         mFragment = new ConversationOptionsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putLong(ConversationOptionsFragment.THREAD_ID_EXTRA, mThreadId);
+        mFragment.setArguments(bundle);
         getFragmentManager().beginTransaction().replace(android.R.id.content, mFragment).commit();
 
         ActionBar actionBar = getActionBar();
