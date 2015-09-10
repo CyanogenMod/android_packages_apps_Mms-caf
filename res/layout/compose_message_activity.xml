@@ -105,12 +105,12 @@
             android:smoothScrollbar="false"
             android:stackFromBottom="true"
             android:visibility="gone"
-            android:fadingEdge="none"
+            android:fadingEdgeLength="4dp"
+            android:requiresFadingEdge="vertical"
             android:layout_marginBottom="1dip"
-            android:cacheColorHint="@android:color/white"
+            android:cacheColorHint="#F2F2F2"
             android:scrollbarAlwaysDrawVerticalTrack="false"
-            android:scrollbarStyle="outsideOverlay"
-            android:paddingBottom="@dimen/input_text_height_adjusted"/>
+            android:scrollbarStyle="outsideOverlay"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -146,6 +146,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginBottom="16dp"
+                    android:layout_marginTop="8dp"
                     android:gravity="bottom">
 
                     <ImageButton
