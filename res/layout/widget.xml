@@ -40,7 +40,7 @@
             android:layout_width="32dip"
             android:layout_height="32dip"
             android:layout_marginEnd="8dip"
-            android:src="@mipmap/ic_launcher_smsmms" />
+            android:src="@mipmap/ic_launcher" />
         <TextView
             android:id="@+id/widget_label"
             style="@style/WidgetTitle"

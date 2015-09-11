@@ -46,7 +46,7 @@ public class SmsStorageMonitor extends BroadcastReceiver {
     private void notifyReachStorageLimited() {
         Notification.Builder mBuilder =
                 new Notification.Builder(mContext)
-                        .setSmallIcon(R.mipmap.ic_launcher_smsmms)
+                        .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle(mContext.getString(R.string.storage_warning_title))
                         .setContentText(mContext.getString(R.string.storage_warning_content))
                         .setOngoing(true);
