@@ -17,26 +17,26 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string-array name="default_smiley_names">
-    <item>Радость</item>
-    <item>Грустный</item>
-    <item>Подмигивает</item>
-    <item>Показывает язык</item>
-    <item>Удивлен</item>
-    <item>Поцелуй</item>
-    <item>Кричит</item>
-    <item>Крутой</item>
-    <item>Не болтай попусту</item>
-    <item>В замешательстве</item>
-    <item>Смущение</item>
-    <item>Ангел</item>
-    <item>Нерешительный</item>
-    <item>Плачет</item>
-    <item>Не скажу</item>
-    <item>Смех</item>
-    <item>Озадаченный</item>
-    <item>Сердце</item>
-    <item>Злой</item>
-    <item>Ухмылка</item>
-    <item>Невозмутимость</item>
+    <item>ハッピー</item>
+    <item>悲しい</item>
+    <item>ウィンク</item>
+    <item>アッカンベー</item>
+    <item>びっくり</item>
+    <item>キス</item>
+    <item>激怒</item>
+    <item>クール</item>
+    <item>気持ち悪い</item>
+    <item>しまった</item>
+    <item>恥ずかしい</item>
+    <item>天使</item>
+    <item>迷う</item>
+    <item>泣く</item>
+    <item>お口にチャック</item>
+    <item>笑顔</item>
+    <item>混乱</item>
+    <item>ハート</item>
+    <item>怒</item>
+    <item>ニヤニヤ</item>
+    <item>ポーカーフェイス</item>
   </string-array>
 </resources>

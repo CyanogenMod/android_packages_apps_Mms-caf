@@ -17,26 +17,26 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string-array name="default_smiley_names">
-    <item>Радость</item>
-    <item>Грустный</item>
-    <item>Подмигивает</item>
-    <item>Показывает язык</item>
-    <item>Удивлен</item>
-    <item>Поцелуй</item>
-    <item>Кричит</item>
-    <item>Крутой</item>
-    <item>Не болтай попусту</item>
-    <item>В замешательстве</item>
-    <item>Смущение</item>
-    <item>Ангел</item>
-    <item>Нерешительный</item>
-    <item>Плачет</item>
-    <item>Не скажу</item>
-    <item>Смех</item>
-    <item>Озадаченный</item>
-    <item>Сердце</item>
-    <item>Злой</item>
-    <item>Ухмылка</item>
-    <item>Невозмутимость</item>
+    <item>Vesel</item>
+    <item>Žalosten</item>
+    <item>Mežikanje</item>
+    <item>Jezik</item>
+    <item>Presenečen</item>
+    <item>Poljub</item>
+    <item>Krik</item>
+    <item>Kul</item>
+    <item>Usta denarja</item>
+    <item>Noga v ustih</item>
+    <item>Sram</item>
+    <item>Nedolžen</item>
+    <item>Neodločen</item>
+    <item>Jok</item>
+    <item>Zapečatene ustnice</item>
+    <item>Smeh</item>
+    <item>Zmeden</item>
+    <item>Srce</item>
+    <item>Besen</item>
+    <item>Režanje</item>
+    <item>Pokerski obraz</item>
   </string-array>
 </resources>

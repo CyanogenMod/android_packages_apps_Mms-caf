@@ -17,26 +17,26 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string-array name="default_smiley_names">
-    <item>Радость</item>
-    <item>Грустный</item>
-    <item>Подмигивает</item>
-    <item>Показывает язык</item>
-    <item>Удивлен</item>
-    <item>Поцелуй</item>
-    <item>Кричит</item>
-    <item>Крутой</item>
-    <item>Не болтай попусту</item>
-    <item>В замешательстве</item>
-    <item>Смущение</item>
-    <item>Ангел</item>
-    <item>Нерешительный</item>
-    <item>Плачет</item>
-    <item>Не скажу</item>
-    <item>Смех</item>
-    <item>Озадаченный</item>
-    <item>Сердце</item>
-    <item>Злой</item>
-    <item>Ухмылка</item>
-    <item>Невозмутимость</item>
+    <item>Felice</item>
+    <item>Triste</item>
+    <item>Occhiolino</item>
+    <item>Linguaccia</item>
+    <item>Sorpreso</item>
+    <item>Bacio</item>
+    <item>Urlo</item>
+    <item>Fico</item>
+    <item>Fatti, non parole</item>
+    <item>Gaffe</item>
+    <item>Imbarazzato</item>
+    <item>Angelo</item>
+    <item>Indeciso</item>
+    <item>In lacrime</item>
+    <item>Labbra cucite</item>
+    <item>Risata</item>
+    <item>Confuso</item>
+    <item>Cuore</item>
+    <item>Arrabbiato</item>
+    <item>Ghigno</item>
+    <item>Impassibile</item>
   </string-array>
 </resources>

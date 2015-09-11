@@ -17,26 +17,26 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string-array name="default_smiley_names">
-    <item>Радость</item>
-    <item>Грустный</item>
-    <item>Подмигивает</item>
-    <item>Показывает язык</item>
-    <item>Удивлен</item>
-    <item>Поцелуй</item>
-    <item>Кричит</item>
-    <item>Крутой</item>
-    <item>Не болтай попусту</item>
-    <item>В замешательстве</item>
-    <item>Смущение</item>
-    <item>Ангел</item>
-    <item>Нерешительный</item>
-    <item>Плачет</item>
-    <item>Не скажу</item>
-    <item>Смех</item>
-    <item>Озадаченный</item>
-    <item>Сердце</item>
-    <item>Злой</item>
-    <item>Ухмылка</item>
-    <item>Невозмутимость</item>
+    <item>Feliz</item>
+    <item>Triste</item>
+    <item>Chiscar o ollo</item>
+    <item>Sacar a lingua</item>
+    <item>Sorprendido</item>
+    <item>Bicos</item>
+    <item>Gritos</item>
+    <item>Xenial</item>
+    <item>Falar por diñeiro</item>
+    <item>Meter a pata</item>
+    <item>Avergoñado</item>
+    <item>Anxo</item>
+    <item>Indeciso</item>
+    <item>Chorando</item>
+    <item>Os beizos están selados</item>
+    <item>Rindo</item>
+    <item>Confuso</item>
+    <item>Corazón</item>
+    <item>Tolo</item>
+    <item>Sorrir</item>
+    <item>Cara de póker</item>
   </string-array>
 </resources>

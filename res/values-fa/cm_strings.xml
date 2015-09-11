@@ -31,8 +31,8 @@
   <string name="button_templates">قالب‌ها</string>
   <string name="type_to_reply_text_enter_to_send">برای پاسخ تایپ کنید</string>
   <string name="qm_mark_read">خواندن</string>
-  <string name="toast_sending_message">در حال ارسال پیام\u2026</string>
-  <string name="pref_title_send_delay">تأخیر تحویل</string>
+  <string name="toast_sending_message">ارسال پیام\u2026</string>
+  <string name="pref_title_send_delay">تاخیر تحویل</string>
   <string name="send_delay_immediate">ارسال فوری</string>
   <string name="send_delay_3seconds">۳ ثانیه</string>
   <string name="send_delay_5seconds">۵ ثانیه</string>
