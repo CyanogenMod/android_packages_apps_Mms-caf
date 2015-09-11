@@ -1452,9 +1452,7 @@ public class MessagingNotification {
                 displayAddress == null
                 ? ""
                 : displayAddress.replace('\n', ' ').replace('\r', ' '));
-        if (!TextUtils.isEmpty(subject) && !TextUtils.isEmpty(body)) {
-            buf.append(':').append(' ');
-        }
+        buf.append(':').append(' ');
 
         int offset = buf.length();
         if (!TextUtils.isEmpty(subject)) {
