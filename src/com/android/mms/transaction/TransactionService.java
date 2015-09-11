@@ -930,7 +930,7 @@ public class TransactionService extends Service implements Observer {
     }
 
     protected void endMmsConnectivity() {
-        int subId = SubscriptionManager.getOnDemandDataSubId();
+        int subId = getDefaultSmsSubId();
         endMmsConnectivity(subId);
     }
 
@@ -1034,7 +1034,7 @@ public class TransactionService extends Service implements Observer {
                     }
 
                     try {
-                        int subId = SubscriptionManager.getOnDemandDataSubId();
+                        int subId = getDefaultSmsSubId();
                         if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
                             Log.v(TAG, "renew PDP connection for subscription: " + subId);
                         }
@@ -1185,7 +1185,7 @@ public class TransactionService extends Service implements Observer {
 
                     if (!mPending.isEmpty()) {
                         try {
-                            beginMmsConnectivity(SubscriptionManager.getDefaultDataSubId());
+                            beginMmsConnectivity(getDefaultSmsSubId());
                         } catch (IOException e) {
                             Log.w(TAG, "Attempt to use of MMS connectivity failed");
                             return;
