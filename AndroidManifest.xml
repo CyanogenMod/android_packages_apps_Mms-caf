@@ -71,7 +71,7 @@
 
     <application android:name="MmsApp"
             android:label="@string/app_label"
-            android:icon="@mipmap/ic_launcher_smsmms"
+            android:icon="@mipmap/ic_launcher"
             android:taskAffinity="android.task.mms"
             android:backupAgent="QTIBackupAgent"
             android:allowTaskReparenting="true"
