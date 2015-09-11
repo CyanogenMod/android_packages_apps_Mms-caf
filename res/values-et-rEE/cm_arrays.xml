@@ -17,26 +17,26 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string-array name="default_smiley_names">
-    <item>Радость</item>
-    <item>Грустный</item>
-    <item>Подмигивает</item>
-    <item>Показывает язык</item>
-    <item>Удивлен</item>
-    <item>Поцелуй</item>
-    <item>Кричит</item>
-    <item>Крутой</item>
-    <item>Не болтай попусту</item>
-    <item>В замешательстве</item>
-    <item>Смущение</item>
-    <item>Ангел</item>
-    <item>Нерешительный</item>
-    <item>Плачет</item>
-    <item>Не скажу</item>
-    <item>Смех</item>
-    <item>Озадаченный</item>
-    <item>Сердце</item>
-    <item>Злой</item>
-    <item>Ухмылка</item>
-    <item>Невозмутимость</item>
+    <item>Õnnelik</item>
+    <item>Kurb</item>
+    <item>Silmapilgutus</item>
+    <item>Keel väljas</item>
+    <item>Üllatunud</item>
+    <item>Suudlus</item>
+    <item>Karjumine</item>
+    <item>Lahe</item>
+    <item>Rahasuu</item>
+    <item>Loba-aps</item>
+    <item>Piinlik</item>
+    <item>Ingel</item>
+    <item>Otsustusvõimetu</item>
+    <item>Nutt</item>
+    <item>Suletud suu</item>
+    <item>Naer</item>
+    <item>Segaduses</item>
+    <item>Süda</item>
+    <item>Vihane</item>
+    <item>Muie</item>
+    <item>Ükskõikne nägu</item>
   </string-array>
 </resources>

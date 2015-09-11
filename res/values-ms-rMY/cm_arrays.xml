@@ -17,26 +17,26 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string-array name="default_smiley_names">
-    <item>Радость</item>
-    <item>Грустный</item>
-    <item>Подмигивает</item>
-    <item>Показывает язык</item>
-    <item>Удивлен</item>
-    <item>Поцелуй</item>
-    <item>Кричит</item>
-    <item>Крутой</item>
-    <item>Не болтай попусту</item>
-    <item>В замешательстве</item>
-    <item>Смущение</item>
-    <item>Ангел</item>
-    <item>Нерешительный</item>
-    <item>Плачет</item>
-    <item>Не скажу</item>
-    <item>Смех</item>
-    <item>Озадаченный</item>
-    <item>Сердце</item>
-    <item>Злой</item>
-    <item>Ухмылка</item>
-    <item>Невозмутимость</item>
+    <item>Gembira</item>
+    <item>Sedih</item>
+    <item>Mengenyit</item>
+    <item>Lidah terjelir</item>
+    <item>Terkejut</item>
+    <item>Bercium</item>
+    <item>Menjerit</item>
+    <item>Segak</item>
+    <item>Mulut duit</item>
+    <item>Kaki dalam mulut</item>
+    <item>Malu</item>
+    <item>Bidadari</item>
+    <item>Tidak pasti</item>
+    <item>Menangis</item>
+    <item>Bibir terkunci</item>
+    <item>Tertawa</item>
+    <item>Keliru</item>
+    <item>Hati</item>
+    <item>Gila</item>
+    <item>Senyuman sinis</item>
+    <item>Muka selamba</item>
   </string-array>
 </resources>

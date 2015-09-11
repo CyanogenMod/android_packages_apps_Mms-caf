@@ -17,26 +17,26 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string-array name="default_smiley_names">
-    <item>Радость</item>
-    <item>Грустный</item>
-    <item>Подмигивает</item>
-    <item>Показывает язык</item>
-    <item>Удивлен</item>
-    <item>Поцелуй</item>
-    <item>Кричит</item>
-    <item>Крутой</item>
-    <item>Не болтай попусту</item>
-    <item>В замешательстве</item>
-    <item>Смущение</item>
-    <item>Ангел</item>
-    <item>Нерешительный</item>
-    <item>Плачет</item>
-    <item>Не скажу</item>
-    <item>Смех</item>
-    <item>Озадаченный</item>
-    <item>Сердце</item>
-    <item>Злой</item>
-    <item>Ухмылка</item>
-    <item>Невозмутимость</item>
+    <item>開心</item>
+    <item>傷心</item>
+    <item>眨眼</item>
+    <item>吐舌頭</item>
+    <item>驚訝</item>
+    <item>紅唇</item>
+    <item>大喊</item>
+    <item>超酷</item>
+    <item>滿嘴錢</item>
+    <item>說錯話</item>
+    <item>害羞</item>
+    <item>天使</item>
+    <item>還沒決定</item>
+    <item>嚎啕大哭</item>
+    <item>不要告訴別人</item>
+    <item>開懷大笑</item>
+    <item>疑惑</item>
+    <item>愛心</item>
+    <item>生氣</item>
+    <item>傻笑</item>
+    <item>撲克臉</item>
   </string-array>
 </resources>
