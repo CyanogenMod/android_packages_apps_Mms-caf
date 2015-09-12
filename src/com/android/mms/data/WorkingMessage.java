@@ -397,7 +397,7 @@ public class WorkingMessage {
         if (mSubscriptionId != SubscriptionManager.INVALID_SUBSCRIPTION_ID) {
             return mSubscriptionId;
         }
-        return SubscriptionManager.getDefaultDataSubId();
+        return SubscriptionManager.getDefaultSmsSubId();
     }
 
     /**
