@@ -64,18 +64,6 @@ public class RetryScheduler implements Observer {
         return sInstance;
     }
 
-    private boolean isMmsDataConnectivityPossible(int subId) {
-        boolean flag = false;
-        TelephonyManager telephonyManager = (TelephonyManager)mContext
-            .getSystemService(Context.TELEPHONY_SERVICE);
-        if (telephonyManager != null) {
-            /*flag = telephonyManager.isDataPossibleForSubscription(subId,
-                    PhoneConstants.APN_TYPE_MMS);*/
-        }
-        Log.d(TAG, "isMmsDataConnectivityPossible = " + flag + "subId = " + subId);
-        return flag;
-    }
-
     public void update(Observable observable) {
         Uri uri = null;
         Transaction t = (Transaction) observable;
@@ -104,7 +92,7 @@ public class RetryScheduler implements Observer {
                 }
             }
         } finally {
-            if (isMmsDataConnectivityPossible(t.getSubId()) || mContext
+            if (mContext
                     .getResources().getBoolean(R.bool.config_retry_always)) {
                 setRetryAlarm(mContext, uri);
             } else {
