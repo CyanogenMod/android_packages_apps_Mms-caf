@@ -1682,6 +1682,16 @@ public class MessageUtils {
         return false;
     }
 
+    public static int getActiveSimSlot() {
+        if (isIccCardActivated(MessageUtils.SLOT1)) {
+            return MessageUtils.SLOT1;
+        } else if (isIccCardActivated(MessageUtils.SLOT2)) {
+            return MessageUtils.SLOT2;
+        } else {
+            return MessageUtils.SLOT_INVALID;
+        }
+    }
+
     public static float onFontSizeScale(ArrayList<TextView> list, float scale,
             float mFontSizeForSave) {
         float mCurrentSize = 0;

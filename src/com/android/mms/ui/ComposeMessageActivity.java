@@ -3979,7 +3979,9 @@ public class ComposeMessageActivity extends Activity
     public void onClick(View v) {
         if (v == mSendButton && isPreparedForSending()) {
             // Ensure current phone number can be obtained from Telephony or was entered by the user
-            int slotId = mCurrentSimInfo != null ? mCurrentSimInfo.mSlotId : MessageUtils.SLOT1;
+            int slotId = mCurrentSimInfo != null ? mCurrentSimInfo.mSlotId :
+                    MessageUtils.getActiveSimSlot();
+
             if (MessageUtils.isPhoneNumberAttainable(this, slotId)) {
                 // continue sending message
                 sendCurrentMessage();
