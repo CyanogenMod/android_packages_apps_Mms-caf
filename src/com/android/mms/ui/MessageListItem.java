@@ -763,7 +763,7 @@ public class MessageListItem extends LinearLayout implements
             //SMS/MMS is operating on PhoneId which is 0, 1..
             //Sub ID will be 1, 2, ...
             SubscriptionInfo sir = SubscriptionManager.from(mContext)
-                    .getActiveSubscriptionInfoForSimSlotIndex(subId);
+                    .getActiveSubscriptionInfo(subId);
             String displayName =
                     (sir != null) ? sir.getDisplayName().toString() : "";
 
