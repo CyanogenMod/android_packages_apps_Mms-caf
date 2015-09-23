@@ -2080,7 +2080,9 @@ public class ComposeMessageActivity extends Activity
             mRecipientsPickerGroups.setVisibility(View.VISIBLE);
         }
         mRecipientsPicker.setOnClickListener(this);
+        mRecipientsPicker.setVisibility(View.GONE);
         mRecipientsPickerGroups.setOnClickListener(this);
+        mRecipientsPickerGroups.setVisibility(View.GONE);
         mRecipientsEditor.addTextChangedListener(mRecipientsWatcher);
         mRecipientsEditor.setAdapter(new ChipsRecipientAdapter(this));
         mRecipientsEditor.setText(null);
