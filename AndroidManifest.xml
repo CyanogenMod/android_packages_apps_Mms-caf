@@ -19,8 +19,8 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
         package="com.android.mms"
-        android:versionCode="23"
-        android:versionName="5.1.1_23">
+        android:versionCode="24"
+        android:versionName="5.1.1_24">
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
