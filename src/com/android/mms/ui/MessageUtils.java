@@ -1948,11 +1948,12 @@ public class MessageUtils {
     /**
      * Return the icc uri according to subscription
      */
-    public static Uri getIccUriBySubscription(int subscription) {
-        switch ((int)subscription) {
-            case (int)SUB1:
+    public static Uri getIccUriBySubscription(int slotId) {
+        Log.d(TAG, "getIccUriBySubscription slotId="+slotId);
+        switch (slotId) {
+            case SUB1:
                 return ICC1_URI;
-            case (int)SUB2:
+            case SUB2:
                 return ICC2_URI;
             default:
                 return ICC_URI;

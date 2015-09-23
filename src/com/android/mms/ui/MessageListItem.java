@@ -309,14 +309,14 @@ public class MessageListItem extends LinearLayout implements
                     + mContext.getString(R.string.kilobyte);
 
             mBodyTextView.setText(formatMessage(mMessageItem, null,
-                    mMessageItem.mPhoneId, mMessageItem.mSubject,
+                    mMessageItem.mSubId, mMessageItem.mSubject,
                     mMessageItem.mHighlight, mMessageItem.mTextContentType));
 
             mDateView.setText(buildTimestampLine(msgSizeText + " "
                     + mMessageItem.mTimestamp));
         }
 
-        updateSimIndicatorView(mMessageItem.mPhoneId);
+        updateSimIndicatorView(mMessageItem.mSubId);
 
         switch (mMessageItem.getMmsDownloadStatus()) {
             case DownloadManager.STATE_PRE_DOWNLOADING:
@@ -392,7 +392,7 @@ public class MessageListItem extends LinearLayout implements
                         intent.putExtra(TransactionBundle.URI, mMessageItem.mMessageUri.toString());
                         intent.putExtra(TransactionBundle.TRANSACTION_TYPE,
                                 Transaction.RETRIEVE_TRANSACTION);
-                        intent.putExtra("phone_id"/*Mms.PHONE_ID*/, mMessageItem.mPhoneId); //destination Phone Id
+                        intent.putExtra("sub_id", mMessageItem.mSubId);
 
                         mContext.startService(intent);
 
@@ -526,7 +526,7 @@ public class MessageListItem extends LinearLayout implements
         if (formattedMessage == null) {
             formattedMessage = formatMessage(mMessageItem,
                                              mMessageItem.mBody,
-                                             mMessageItem.mPhoneId,
+                                             mMessageItem.mSubId,
                                              mMessageItem.mSubject,
                                              mMessageItem.mHighlight,
                                              mMessageItem.mTextContentType);
@@ -535,7 +535,7 @@ public class MessageListItem extends LinearLayout implements
         if (!sameItem || haveLoadedPdu) {
             mBodyTextView.setText(formattedMessage);
         }
-        updateSimIndicatorView(mMessageItem.mPhoneId);
+        updateSimIndicatorView(mMessageItem.mSubId);
         // Debugging code to put the URI of the image attachment in the body of the list item.
         if (DEBUG) {
             String debugText = null;
@@ -763,7 +763,7 @@ public class MessageListItem extends LinearLayout implements
             //SMS/MMS is operating on PhoneId which is 0, 1..
             //Sub ID will be 1, 2, ...
             SubscriptionInfo sir = SubscriptionManager.from(mContext)
-                    .getActiveSubscriptionInfoForSimSlotIndex(subId);
+                    .getActiveSubscriptionInfo(subId);
             String displayName =
                     (sir != null) ? sir.getDisplayName().toString() : "";
 

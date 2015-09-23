@@ -101,7 +101,7 @@ public class ManageSimMessages extends Activity
     private static final int SHOW_EMPTY = 1;
     private static final int SHOW_BUSY = 2;
     private int mState;
-    private int mSubscription;
+    private int mSlotId;
 
     private Uri mIccUri;
     private ContentResolver mContentResolver;
@@ -134,11 +134,12 @@ public class ManageSimMessages extends Activity
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (TelephonyIntents.ACTION_SIM_STATE_CHANGED.equals(action)) {
-                int subscription = intent.getIntExtra(MessageUtils.SUBSCRIPTION_KEY,
+                int subId = intent.getIntExtra(MessageUtils.SUBSCRIPTION_KEY,
                         MessageUtils.SUB_INVALID);
-                Log.d(TAG, "receive sim state change, subscription: " + subscription);
+                int currentSubId = SubscriptionManager.getSubId(mSlotId)[0];
+                Log.d(TAG, "receive sim state change, subscription id: " + subId);
                 if (!MessageUtils.isMultiSimEnabledMms() ||
-                        subscription == mSubscription) {
+                        subId == currentSubId) {
                     refreshMessageList();
                 }
             }
@@ -178,9 +179,9 @@ public class ManageSimMessages extends Activity
     private void init() {
         MessagingNotification.cancelNotification(getApplicationContext(),
                 SIM_FULL_NOTIFICATION_ID);
-        mSubscription = getIntent().getIntExtra(MessageUtils.SUBSCRIPTION_KEY,
+        mSlotId = getIntent().getIntExtra(MessageUtils.SUBSCRIPTION_KEY,
                 MessageUtils.SUB_INVALID);
-        mIccUri = MessageUtils.getIccUriBySubscription(mSubscription);
+        mIccUri = MessageUtils.getIccUriBySubscription(mSlotId);
         updateState(SHOW_BUSY);
         startQuery();
     }
@@ -358,11 +359,11 @@ public class ManageSimMessages extends Activity
     public void onResume() {
         super.onResume();
         // Clean up the notification according to the SIM number.
-        MessagingNotification.blockingRemoveIccNotifications(this, mSubscription);
+        MessagingNotification.blockingRemoveIccNotifications(this, mSlotId);
 
         // Set current SIM thread id according to the SIM number.
         MessagingNotification.setCurrentlyDisplayedThreadId(
-                MessageUtils.getSimThreadByPhoneId(mSubscription));
+                MessageUtils.getSimThreadByPhoneId(mSlotId));
     }
 
     @Override
@@ -406,18 +407,7 @@ public class ManageSimMessages extends Activity
         String body = cursor.getString(cursor.getColumnIndexOrThrow("body"));
         Long date = cursor.getLong(cursor.getColumnIndexOrThrow("date"));
         int subId = MessageUtils.SUB_INVALID;
-        int subscription = cursor.getInt(cursor.getColumnIndexOrThrow("phone_id"));
-        if (MessageUtils.isMultiSimEnabledMms()) {
-            int[] subIds = SubscriptionManager.getSubId(subscription);
-            if (subIds == null || subIds.length == 0) {
-                Log.d(TAG, "subIds null or length 0 for subscription = " + subscription);
-                showToast(false);
-                return;
-            }
-            subId = subIds[0];
-        } else {
-            subId = SubscriptionManager.getDefaultSmsSubId();
-        }
+        subId = cursor.getInt(cursor.getColumnIndexOrThrow("sub_id"));
 
         boolean success = true;
         try {

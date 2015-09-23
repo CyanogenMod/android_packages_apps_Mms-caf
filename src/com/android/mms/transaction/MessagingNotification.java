@@ -1832,11 +1832,11 @@ public class MessagingNotification {
         }
     }
 
-    public static void blockingRemoveIccNotifications(Context context, int subscription) {
-        if (subscription == MessageUtils.SUB_INVALID) {
+    public static void blockingRemoveIccNotifications(Context context, int slotId) {
+        if (slotId == MessageUtils.SUB_INVALID) {
             cancelNotification(context, ICC_NOTIFICATION_ID);
         } else {
-            cancelNotification(context, NEW_ICC_NOTIFICATION_ID[subscription]);
+            cancelNotification(context, NEW_ICC_NOTIFICATION_ID[slotId]);
         }
     }
 

@@ -88,7 +88,7 @@ public class MessageItem {
     String mAddress;
     String mContact;
     String mBody; // Body of SMS, first text of MMS.
-    int mPhoneId;   // Holds current mms/sms phone Id value.
+    int mSubId;   // Holds current mms/sms sub Id value.
     String mTextContentType; // ContentType of text of MMS.
     Pattern mHighlight; // portion of message to highlight (from search)
 
@@ -170,7 +170,7 @@ public class MessageItem {
             }
             mBody = cursor.getString(columnsMap.mColumnSmsBody);
 
-            mPhoneId = cursor.getInt(columnsMap.mColumnSubId);
+            mSubId = cursor.getInt(columnsMap.mColumnSubId);
             // Unless the message is currently in the progress of being sent, it gets a time stamp.
             if (!isOutgoingMessage()) {
                 if (mBoxId == Sms.MESSAGE_TYPE_SENT) {
@@ -202,7 +202,7 @@ public class MessageItem {
             mMessageType = cursor.getInt(columnsMap.mColumnMmsMessageType);
             mErrorType = cursor.getInt(columnsMap.mColumnMmsErrorType);
             String subject = cursor.getString(columnsMap.mColumnMmsSubject);
-            mPhoneId = cursor.getInt(columnsMap.mColumnSubId);
+            mSubId = cursor.getInt(columnsMap.mColumnSubId);
 
             if (!TextUtils.isEmpty(subject)) {
                 EncodedStringValue v = new EncodedStringValue(
@@ -249,8 +249,7 @@ public class MessageItem {
     public boolean isCdmaInboxMessage() {
         int activePhone;
         if (MessageUtils.isMultiSimEnabledMms()) {
-            int[] subId = SubscriptionManager.getSubId(mPhoneId);
-            activePhone = TelephonyManager.getDefault().getCurrentPhoneType(subId[0]);
+            activePhone = TelephonyManager.getDefault().getCurrentPhoneType(mSubId);
         } else {
             activePhone = TelephonyManager.getDefault().getPhoneType();
         }
