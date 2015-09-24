@@ -31,12 +31,14 @@
         android:layout_height="0dp"
         android:id="@+id/top_spacer" />
 
-    <LinearLayout android:id="@+id/mms_layout_view_parent"
+    <LinearLayout
+        android:id="@+id/mms_layout_view_parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clipChildren="false"
         android:orientation="vertical"
-        android:layout_marginStart="@dimen/material_16dp_keyline"
-        android:layout_marginEnd="@dimen/recv_message_bubble_margin_end">
+        android:paddingStart="@dimen/material_16dp_keyline"
+        android:paddingEnd="@dimen/recv_message_bubble_margin_end">
 
         <LinearLayout
             android:layout_width="wrap_content"
