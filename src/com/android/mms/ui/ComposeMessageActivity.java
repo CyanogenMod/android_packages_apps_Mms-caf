@@ -143,7 +143,6 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EdgeEffect;
@@ -199,7 +198,7 @@ import com.android.mms.util.SmileyParser;
 import com.android.mms.util.UnicodeFilter;
 import com.android.mms.widget.SimDropdownDrawable;
 import com.android.mms.widget.MmsWidgetProvider;
-import com.android.mms.widget.FluctuatingImageButton;
+import com.android.mms.widget.LayeredImageButton;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
 import com.google.android.mms.pdu.EncodedStringValue;
@@ -380,7 +379,7 @@ public class ComposeMessageActivity extends Activity
     private float mTextEditorFontSize;
     private TextView mTextCounter;          // Shows the number of characters used in text editor
     private TextView mMmsMarker;            // annotation indicating that the current msg is an mms
-    private FluctuatingImageButton mSendButton;     // Press to send current message
+    private LayeredImageButton mSendButton;     // Press to send current message
     private LinearLayout mSubjectWrapper;   // Wrapper for subject and cancel button
     private EditText mSubjectTextEditor;    // Text editor for MMS subject
     private ImageView mSubjectRemoveButton; // Remove the subject and editor
@@ -4194,7 +4193,7 @@ public class ComposeMessageActivity extends Activity
         mTextEditorFontSize = mTextEditor.getTextSize();
         mTextCounter = (TextView) findViewById(R.id.text_counter);
         mMmsMarker = (TextView) findViewById(R.id.mms_marker);
-        mSendButton = (FluctuatingImageButton) findViewById(R.id.send_button);
+        mSendButton = (LayeredImageButton) findViewById(R.id.send_button);
         mSendButton.setOnClickListener(this);
 
         mTextEditor.setOnEditorActionListener(this);

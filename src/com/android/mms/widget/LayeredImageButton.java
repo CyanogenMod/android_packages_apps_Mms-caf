@@ -12,25 +12,25 @@ import android.widget.ImageButton;
  * drawable, when deemed appropriate. Reveal animations are performed when fluctuating between
  * showing the action and placeholder drawables.
  */
-public class FluctuatingImageButton extends ImageButton {
+public class LayeredImageButton extends ImageButton {
 
     private static int ANIMATION_DURATION = 200; // ms
 
-    public FluctuatingRevealDrawable mBackgroundDrawable;
+    public LayeredRevealDrawable mBackgroundDrawable;
 
-    public FluctuatingImageButton(Context context) {
+    public LayeredImageButton(Context context) {
         super(context);
     }
 
-    public FluctuatingImageButton(Context context, AttributeSet attrs) {
+    public LayeredImageButton(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public FluctuatingImageButton(Context context, AttributeSet attrs, int defStyleAttr) {
+    public LayeredImageButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public FluctuatingImageButton(Context context, AttributeSet attrs, int defStyleAttr,
+    public LayeredImageButton(Context context, AttributeSet attrs, int defStyleAttr,
             int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
@@ -38,7 +38,7 @@ public class FluctuatingImageButton extends ImageButton {
     @Override
     public void setBackground(Drawable background) {
         if (mBackgroundDrawable == null) {
-            mBackgroundDrawable = new FluctuatingRevealDrawable(background, null, ANIMATION_DURATION);
+            mBackgroundDrawable = new LayeredRevealDrawable(background, null, ANIMATION_DURATION);
         } else {
             mBackgroundDrawable.setPlaceholderDrawable(background, true /* force re-draw */);
         }
