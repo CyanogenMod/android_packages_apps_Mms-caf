@@ -222,8 +222,7 @@ public class NotificationTransaction extends Transaction implements Runnable {
                      *    phone number.
                      */
 
-                    Method getHeaderMethod = GenericPdu.class.getDeclaredMethod("getPduHeaders",
-                            null);
+                    Method getHeaderMethod = GenericPdu.class.getDeclaredMethod("getPduHeaders");
                     Method getEncodedStringValuesMethod = PduHeaders.class.
                             getDeclaredMethod("getEncodedStringValues", int.class);
                     Method setEncodedStringValuesMethod = PduHeaders.class.
@@ -235,7 +234,7 @@ public class NotificationTransaction extends Transaction implements Runnable {
                     setEncodedStringValuesMethod.setAccessible(true);
 
                     String simPhoneNumber = MessageUtils.getPhoneNumber(mContext, mSubId);
-                    PduHeaders pduHeaders = (PduHeaders) getHeaderMethod.invoke(pdu, null);
+                    PduHeaders pduHeaders = (PduHeaders) getHeaderMethod.invoke(pdu);
 
                     EncodedStringValue[] toAddresses = (EncodedStringValue[])
                             getEncodedStringValuesMethod.invoke(pduHeaders, PduHeaders.TO);
