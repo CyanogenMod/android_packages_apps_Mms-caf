@@ -198,7 +198,7 @@
                             android:contentDescription="@string/send_mms"
                             android:nextFocusLeft="@+id/embedded_text_editor"/>
 
-                        <com.android.mms.widget.FluctuatingImageButton
+                        <com.android.mms.widget.LayeredImageButton
                             android:id="@+id/send_button"
                             style="?android:attr/borderlessButtonStyle"
                             android:background="@drawable/generic_contact_picture"

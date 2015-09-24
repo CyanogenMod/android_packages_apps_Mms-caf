@@ -61,6 +61,7 @@ public abstract class ThumbnailPresenter<V extends ThumbnailMessageView, M exten
                 if (bitmap != null) {
                     RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory
                             .create(getContext().getResources(), bitmap);
+                    drawable.setAntiAlias(true);
                     drawable.setCornerRadius(mCornerRadius);
                     RoundedBitmapStateWrapper roundedBitmapStateWrapper =
                             new RoundedBitmapStateWrapper(drawable);
