@@ -11,7 +11,7 @@ import android.graphics.drawable.Drawable;
  * A Drawable that encompasses two drawables - a placeholder drawable and an action drawable - and
  * allows switching between the two drawables.
  */
-public class FluctuatingRevealDrawable extends Drawable implements Drawable.Callback {
+public class LayeredRevealDrawable extends Drawable implements Drawable.Callback {
 
     private static final float NORMAL_SIZE = 1f;
 
@@ -22,7 +22,7 @@ public class FluctuatingRevealDrawable extends Drawable implements Drawable.Call
     private float mCurrentScale;
     private boolean mIsActionDrawableShowing;
 
-    public FluctuatingRevealDrawable(Drawable placeholder, Drawable action, int revealDuration) {
+    public LayeredRevealDrawable(Drawable placeholder, Drawable action, int revealDuration) {
         setActionDrawable(action);
         setPlaceholderDrawable(placeholder);
         mAnimDuration = revealDuration;
