@@ -271,6 +271,7 @@ public class TransactionService extends Service implements Observer {
                     endMmsConnectivity(Integer.parseInt(subId));
                     return;
                 }
+                mConnMgr.bindProcessToNetwork(network);
                 mServiceHandler.processPendingTransaction(null, settings);
             } else {
                 if (Log.isLoggable(LogTag.TRANSACTION, Log.VERBOSE)) {
@@ -1005,7 +1006,8 @@ public class TransactionService extends Service implements Observer {
             mMmsNetworkRequest[phoneId] = buildNetworkRequest(Integer.toString(subId));
             mMmsNetworkCallback[phoneId] = getNetworkCallback(Integer.toString(subId));
 
-            mConnMgr.requestNetwork(mMmsNetworkRequest[phoneId], mMmsNetworkCallback[phoneId]);
+            mConnMgr.requestNetwork(mMmsNetworkRequest[phoneId], mMmsNetworkCallback[phoneId],
+                    PDP_ACTIVATION_TIMEOUT);
             Log.d(TAG, "beginMmsConnectivity:call ConnectivityManager.requestNetwork ");
             mServiceHandler.sendMessageDelayed(mServiceHandler.obtainMessage(
                                EVENT_MMS_PDP_ACTIVATION_TIMEOUT),
