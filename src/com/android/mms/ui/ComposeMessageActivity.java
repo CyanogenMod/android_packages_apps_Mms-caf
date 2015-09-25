@@ -5704,13 +5704,6 @@ public class ComposeMessageActivity extends Activity
             return true;
         }
 
-        private void showMessageDetail() {
-            Cursor c = (Cursor) getListView().getAdapter().getItem(
-                    mSelectedPos.get(0));
-            // this only for sms
-            MessageUtils.showSmsMessageContent(getContext(), c.getLong(COLUMN_ID));
-        }
-
         private void shareMessage() {
             Cursor c = (Cursor)mMsgListAdapter.getItem(mSelectedPos.get(0));
             if (c == null) {
@@ -5828,9 +5821,6 @@ public class ComposeMessageActivity extends Activity
                 break;
             case R.id.copy_to_sim:
                 copySmsToSim();
-                break;
-            case R.id.detail:
-                showMessageDetail();
                 break;
             case R.id.share:
                 shareMessage();
@@ -6006,8 +5996,6 @@ public class ComposeMessageActivity extends Activity
             menu.findItem(R.id.copy_to_sim).setVisible(noMmsSelected);
 
             if (checkedCount > 1) {
-                // no detail
-                menu.findItem(R.id.detail).setVisible(false);
                 // no share
                 mode.getMenu().findItem(R.id.share).setVisible(false);
                 // no delivery report
@@ -6040,7 +6028,6 @@ public class ComposeMessageActivity extends Activity
             } else {
                 int pos = checked ? position : mMsgListView.getCheckedPosition();
 
-                menu.findItem(R.id.detail).setVisible(true);
                 menu.findItem(R.id.save_attachment).setVisible(
                         !noMmsSelected && isAttachmentSaveable(pos));
 
