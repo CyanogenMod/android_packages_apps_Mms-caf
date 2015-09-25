@@ -31,6 +31,8 @@ LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 
 LOCAL_PRIVILEGED_MODULE := true
 
+LOCAL_OVERRIDES_PACKAGES := messaging
+
 include $(BUILD_PACKAGE)
 
 # This finds and builds the test apk as well, so a single make does both.
