@@ -41,6 +41,7 @@ import android.provider.Telephony.Mms;
 import android.provider.Telephony.MmsSms;
 import android.provider.Telephony.MmsSms.PendingMessages;
 import android.provider.Telephony.Sms;
+import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
@@ -170,7 +171,7 @@ public class WorkingMessage {
     };
 
     private static final int MMS_MESSAGE_SIZE_INDEX  = 1;
-    public static int mCurrentConvSubId = 0;
+    public static int mCurrentConvSubId = SmsManager.getDefault().getDefaultSmsSubscriptionId();
 
     // Flag indicate resend sms that the recipient of conversion is more than one.
     private boolean mResendMultiRecipients;
