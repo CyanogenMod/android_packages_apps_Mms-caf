@@ -4223,10 +4223,6 @@ public class ComposeMessageActivity extends Activity
                 public boolean onTouch(View v, MotionEvent event) {
                     int action = event.getAction();
                     switch (action) {
-                        case MotionEvent.ACTION_DOWN:
-                        case MotionEvent.ACTION_MOVE:
-                            return true;
-
                         case MotionEvent.ACTION_UP:
                             if (event.getX() <= mClickBounds && event.getY() <= mClickBounds) {
                                 // build and launch sim select popup
@@ -4235,7 +4231,8 @@ public class ComposeMessageActivity extends Activity
                             }
                             break;
                     }
-                    return false;
+
+                    return mTextEditor.onTouchEvent(event);
                 }
             });
         }
