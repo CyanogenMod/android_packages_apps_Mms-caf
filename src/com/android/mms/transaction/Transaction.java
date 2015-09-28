@@ -192,7 +192,6 @@ public abstract class Transaction extends Observable {
                 com.android.internal.R.bool.
                 config_regional_mms_via_wifi_enable)*/) {
             boolean useWifi = MessageUtils.shouldHandleMmsViaWifi(mContext);
-            if (!useWifi) ensureRouteToHost(mmscUrl, mTransactionSettings);
             return HttpUtils.httpConnection(
                     mContext, token,
                     mmscUrl,
@@ -201,7 +200,6 @@ public abstract class Transaction extends Observable {
                     mTransactionSettings.getProxyAddress(),
                     mTransactionSettings.getProxyPort());
         } else {
-        ensureRouteToHost(mmscUrl, mTransactionSettings);
             return HttpUtils.httpConnection(
                     mContext, token,
                     mmscUrl,
@@ -226,7 +224,6 @@ public abstract class Transaction extends Observable {
                 com.android.internal.R.bool.
                 config_regional_mms_via_wifi_enable)*/) {
             boolean useWifi = MessageUtils.shouldHandleMmsViaWifi(mContext);
-            if (!useWifi) ensureRouteToHost(url, mTransactionSettings);
             return HttpUtils.httpConnection(
                     mContext, SendingProgressTokenManager.NO_TOKEN,
                     url, null, HttpUtils.HTTP_GET_METHOD,
@@ -234,49 +231,12 @@ public abstract class Transaction extends Observable {
                     mTransactionSettings.getProxyAddress(),
                     mTransactionSettings.getProxyPort());
         } else {
-        ensureRouteToHost(url, mTransactionSettings);
             return HttpUtils.httpConnection(
                     mContext, SendingProgressTokenManager.NO_TOKEN,
                     url, null, HttpUtils.HTTP_GET_METHOD,
                     mTransactionSettings.isProxySet(),
                     mTransactionSettings.getProxyAddress(),
                     mTransactionSettings.getProxyPort());
-        }
-    }
-
-    /**
-     * Make sure that a network route exists to allow us to reach the host in the
-     * supplied URL, and to the MMS proxy host as well, if a proxy is used.
-     * @param url The URL of the MMSC to which we need a route
-     * @param settings Specifies the address of the proxy host, if any
-     * @throws IOException if the host doesn't exist, or adding the route fails.
-     */
-    private void ensureRouteToHost(String url, TransactionSettings settings) throws IOException {
-        ConnectivityManager connMgr =
-                (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        InetAddress inetAddr;
-        if (settings.isProxySet()) {
-            String proxyAddr = settings.getProxyAddress();
-            try {
-              inetAddr = InetAddress.getByName(proxyAddr);
-            } catch (UnknownHostException e) {
-                throw new IOException("Cannot establish route for " + url +
-                                      ": Unknown proxy " + proxyAddr);
-            }
-            if (!connMgr.requestRouteToHostAddress(ConnectivityManager.TYPE_MOBILE_MMS, inetAddr)) {
-                throw new IOException("Cannot establish route to proxy " + inetAddr);
-            }
-        } else {
-            Uri uri = Uri.parse(url);
-            try {
-                inetAddr = InetAddress.getByName(uri.getHost());
-            } catch (UnknownHostException e) {
-                throw new IOException("Cannot establish route for " + url + ": Unknown host");
-            }
-            if (!connMgr.requestRouteToHostAddress(ConnectivityManager.TYPE_MOBILE_MMS, inetAddr)) {
-                throw new IOException("Cannot establish route to " + inetAddr + " for " + url);
-            }
         }
     }
 
