@@ -38,6 +38,7 @@ public class CarrierContentRestriction implements ContentRestriction {
     static {
         sSupportedImageTypes = ContentType.getImageTypes();
         sSupportedAudioTypes = ContentType.getAudioTypes();
+        sSupportedAudioTypes.add("audio/ogg");
         sSupportedVideoTypes = ContentType.getVideoTypes();
     }
 
