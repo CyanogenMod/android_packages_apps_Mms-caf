@@ -20,8 +20,13 @@ public class TextPresenter extends RecyclePresenter<TextView, TextModel> {
 
     private ViewTreeObserver.OnPreDrawListener mObserver;
 
+    private final int mIncomingWhite;
+    private final int mIncomingBlack;
+
     public TextPresenter(Context context, TextModel modelInterface) {
         super(context, modelInterface);
+        mIncomingWhite = context.getResources().getColor(R.color.incoming_color_white);
+        mIncomingBlack = context.getResources().getColor(R.color.incoming_color_black);
     }
 
     @Override
@@ -37,7 +42,13 @@ public class TextPresenter extends RecyclePresenter<TextView, TextModel> {
     @Override
     protected void bindMessageAttachmentView(TextView textView, final PresenterOptions presenterOptions) {
         textView.setText(getModel().getText());
-        textView.setTextColor(presenterOptions.isIncomingMessage() ? Color.WHITE : Color.BLACK);
+        textView.setTextColor(
+                presenterOptions.isIncomingMessage() ? mIncomingWhite : mIncomingBlack);
+
+        if (presenterOptions.isIncomingMessage()) {
+            textView.setLinkTextColor(mIncomingWhite);
+        }
+
         MessageUtils.tintBackground(textView, presenterOptions.getAccentColor());
         final TextView finalTextView = textView;
         mObserver = new ViewTreeObserver.OnPreDrawListener() {
