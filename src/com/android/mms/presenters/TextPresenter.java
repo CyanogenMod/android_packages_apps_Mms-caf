@@ -38,6 +38,11 @@ public class TextPresenter extends RecyclePresenter<TextView, TextModel> {
     protected void bindMessageAttachmentView(TextView textView, final PresenterOptions presenterOptions) {
         textView.setText(getModel().getText());
         textView.setTextColor(presenterOptions.isIncomingMessage() ? Color.WHITE : Color.BLACK);
+
+        if (presenterOptions.isIncomingMessage()) {
+            textView.setLinkTextColor(Color.WHITE);
+        }
+
         MessageUtils.tintBackground(textView, presenterOptions.getAccentColor());
         final TextView finalTextView = textView;
         mObserver = new ViewTreeObserver.OnPreDrawListener() {
