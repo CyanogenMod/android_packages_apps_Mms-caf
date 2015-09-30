@@ -22,11 +22,15 @@ import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract.Profile;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.telephony.SubscriptionManager;
@@ -34,23 +38,25 @@ import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.QuickContactBadge;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.contacts.common.util.SchedulingUtils;
 import com.android.internal.telephony.util.BlacklistUtils;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
@@ -64,6 +70,7 @@ import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.MessagingPreferenceActivity;
 import com.android.mms.util.SmileyParser;
 import com.android.mms.util.UnicodeFilter;
+import com.android.mms.widget.LayeredImageButton;
 import com.google.android.mms.MmsException;
 
 import java.util.ArrayList;
@@ -114,6 +121,8 @@ public class QuickMessagePopup extends Activity {
     // Message pager
     private ViewPager mMessagePager;
     private MessagePagerAdapter mPagerAdapter;
+
+    private AsyncTask mSendButtonContactImageTask;
 
     // Options menu items
     private static final int MENU_ADD_TO_BLACKLIST = 1;
@@ -299,6 +308,14 @@ public class QuickMessagePopup extends Activity {
 
             default:
                 return super.onContextItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mSendButtonContactImageTask != null) {
+            mSendButtonContactImageTask.cancel(true /* interrupt */);
         }
     }
 
@@ -600,7 +617,7 @@ public class QuickMessagePopup extends Activity {
         }
 
         @Override
-        public Object instantiateItem(View collection, int position) {
+        public Object instantiateItem(ViewGroup view, int position) {
             QuickMessage qm = mMessageList.get(position);
             if (qm == null) {
                 return null;
@@ -611,19 +628,22 @@ public class QuickMessagePopup extends Activity {
             }
 
             // Load the layout to be used
-            int layoutResId = mDarkTheme
-                    ? R.layout.quickmessage_content_dark : R.layout.quickmessage_content_light;
-            View layout = LayoutInflater.from(QuickMessagePopup.this).inflate(layoutResId, null);
+            int layoutResId = R.layout.quickmessage_content;
+            final View layout = LayoutInflater.from(QuickMessagePopup.this)
+                    .inflate(layoutResId, view, false);
 
             // Load the main views
             EditText qmReplyText = (EditText) layout.findViewById(R.id.embedded_text_editor);
             TextView qmTextCounter = (TextView) layout.findViewById(R.id.text_counter);
-            ImageButton qmSendButton = (ImageButton) layout.findViewById(R.id.send_button_sms);
+            final LayeredImageButton qmSendButton =
+                    (LayeredImageButton) layout.findViewById(R.id.send_button);
             TextView qmMessageText = (TextView) layout.findViewById(R.id.messageTextView);
             TextView qmFromName = (TextView) layout.findViewById(R.id.fromTextView);
             TextView qmTimestamp = (TextView) layout.findViewById(R.id.timestampTextView);
             QuickContactBadge qmContactBadge =
                     (QuickContactBadge) layout.findViewById(R.id.contactBadge);
+            final View messageBlock = layout.findViewById(R.id.message_block_area);
+            final View messageBubbleArrowhead = layout.findViewById(R.id.message_bubble_arrowhead);
 
             if (DEBUG)
                 Log.d(LOG_TAG, "instantiateItem(): Creating page #" + (position + 1)
@@ -635,15 +655,10 @@ public class QuickMessagePopup extends Activity {
             qmTimestamp.setText(MessageUtils.formatTimeStampString(QuickMessagePopup.this,
                     qm.getTimestamp(), false));
             qmContactBadge.setOverlay(null);
-            updateContactBadge(qmContactBadge, qm.getFromNumber()[0], false);
+            final String fromNumber = qm.getFromNumber()[0];
+            updateContactBadge(qmContactBadge, fromNumber, false);
             SmileyParser parser = SmileyParser.getInstance();
             qmMessageText.setText(parser.addSmileySpans(qm.getMessageBody()));
-
-            if (!mDarkTheme) {
-                // We are using a holo.light background with a holo.dark activity theme
-                // Override the EditText background to use the holo.light theme
-                qmReplyText.setBackgroundResource(R.drawable.edit_text_holo_light);
-            }
 
             if (!TextUtils.equals(mUnicodeStripping,
                     MessagingPreferenceActivity.UNICODE_STRIPPING_LEAVE_INTACT)) {
@@ -716,8 +731,51 @@ public class QuickMessagePopup extends Activity {
                 }
             });
 
-            // Add the layout to the viewpager
-            ((ViewPager) collection).addView(layout);
+            int themeColor = getResources().getColor(R.color.mms_next_theme_color);
+            MessageUtils.tintBackground(messageBlock, themeColor);
+            MessageUtils.tintBackground(messageBubbleArrowhead, themeColor);
+
+            qmSendButton.setActionDrawable(getResources().getDrawable(R.drawable.send_button));
+            SchedulingUtils.doAfterLayout(layout, new Runnable() {
+                @Override
+                public void run() {
+                    mSendButtonContactImageTask = new AsyncTask<Void, Void, Pair<Contact, Contact>>() {
+                            @Override
+                            protected Pair<Contact, Contact> doInBackground(Void... params) {
+                                Contact fromContact = Contact.get(fromNumber, true);
+                                fromContact.getAccentColor(QuickMessagePopup.this, true);
+                                return new Pair<>(Contact.getMe(true), fromContact);
+                            }
+
+                            @Override
+                            protected void onPostExecute(Pair<Contact, Contact> contactPair) {
+                                Contact self = contactPair.first;
+                                self.getBitmap(QuickMessagePopup.this, qmSendButton.getWidth(),
+                                        new Contact.BitmapRequestCallback() {
+                                            @Override
+                                            public void onBitmapAvailable(Bitmap photo) {
+                                                RoundedBitmapDrawable drawable =
+                                                        RoundedBitmapDrawableFactory.create(getResources(), photo);
+                                                drawable.setCornerRadius(Math.min(
+                                                        drawable.getMinimumWidth(), drawable.getMinimumHeight()));
+                                                drawable.setAntiAlias(true);
+                                                qmSendButton.setPlaceholderDrawable(drawable);
+                                            }
+                                        });
+
+                                Contact fromContact = contactPair.second;
+                                int contactAccentColor = fromContact.getAccentColor(QuickMessagePopup.this, false);
+                                int mappedColor = MessageUtils.getMappedMaterialColor(getResources(), contactAccentColor);
+                                MessageUtils.tintBackground(messageBlock, mappedColor);
+                                MessageUtils.tintBackground(messageBubbleArrowhead, mappedColor);
+                            }
+
+                    }.execute();
+
+                }
+            });
+
+            view.addView(layout);
 
             return layout;
         }
@@ -789,8 +847,8 @@ public class QuickMessagePopup extends Activity {
         }
 
         @Override
-        public void destroyItem(View collection, int position, Object view) {
-            ((ViewPager) collection).removeView((View) view);
+        public void destroyItem(ViewGroup container, int position, Object view) {
+            ((ViewPager) container).removeView((View) view);
         }
 
         @Override
@@ -799,7 +857,7 @@ public class QuickMessagePopup extends Activity {
         }
 
         @Override
-        public void finishUpdate(View container) {
+        public void finishUpdate(ViewGroup container) {
             if (mCurrentQm != null && mCurrentQm.getEditText() != null) {
                 // After a page switch, re-focus on the reply editor
                 mCurrentQm.getEditText().requestFocus();
