@@ -87,4 +87,9 @@ All Rights Reserved. -->
     <dimen name="thumbnail_attachment_corner_radius">5dp</dimen>
 
     <dimen name="widget_bg_radius">2dp</dimen>
+
+    <dimen name="qm_window_elevation">10dp</dimen>
+    <dimen name="qm_received_msg_height">134dp</dimen>
+    <dimen name="qm_fading_edge_length">3dp</dimen>
+    <dimen name="qm_received_msg_bubble_start">46dp</dimen>
 </resources>
