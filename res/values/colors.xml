@@ -83,4 +83,6 @@
     <color name="header_background_color">#F4F4F4</color>
     <color name="header_border_color">#E9E9E9</color>
     <color name="header_text_color">#66000000</color>
+
+    <color name="qm_bg_color">#fafafa</color>
 </resources>
