@@ -82,4 +82,6 @@ All Rights Reserved. -->
     <dimen name="attachment_editor_item_height">48dp</dimen>
     <dimen name="thumbnail_attachment_static_height">150dp</dimen>
     <dimen name="thumbnail_attachment_corner_radius">5dp</dimen>
+
+    <dimen name="qm_window_elevation">10dp</dimen>
 </resources>
