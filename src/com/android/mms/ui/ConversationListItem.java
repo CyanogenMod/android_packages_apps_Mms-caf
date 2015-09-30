@@ -103,7 +103,7 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
             sDefaultContactImage.setCornerRadius(
                     Math.max(defaultImage.getWidth() / 2, defaultImage.getHeight() / 2));
         }
-        int highlight_color = getResources().getColor(R.color.mms_next_theme_color_check);
+        int highlight_color = getResources().getColor(R.color.mms_next_theme_unread_from);
         sUnreadColorSpan = new ForegroundColorSpan(highlight_color);
         sBlockColorSpan = new ForegroundColorSpan(Color.RED);
     }
