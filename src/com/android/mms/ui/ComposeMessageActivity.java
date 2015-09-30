@@ -411,6 +411,12 @@ public class ComposeMessageActivity extends Activity
                                         // editor thinking it's a draft message. This flag should
                                         // help clarify the situation.
 
+    private boolean mNewIntent;         // in BackgroundQueryHandler.onQueryComplete() for the
+                                        // MESSAGE_LIST_QUERY_TOKEN case, need to know that
+                                        // we are there because of newIntent and can ignore
+                                        // preCursorChangeCount; otherwise, we exit back
+                                        // to the conversation list
+
     private WorkingMessage mWorkingMessage;         // The message currently being composed.
 
     private AlertDialog mInvalidRecipientDialog;
@@ -1887,6 +1893,8 @@ public class ComposeMessageActivity extends Activity
         super.onCreate(savedInstanceState);
         resetConfiguration(getResources().getConfiguration());
 
+        mNewIntent = false;
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String unicodeStripping = prefs.getString(MessagingPreferenceActivity.UNICODE_STRIPPING,
                 MessagingPreferenceActivity.UNICODE_STRIPPING_LEAVE_INTACT);
@@ -2146,6 +2154,7 @@ public class ComposeMessageActivity extends Activity
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
+        mNewIntent = true;
         setIntent(intent);
 
         Conversation conversation = null;
@@ -2219,6 +2228,7 @@ public class ComposeMessageActivity extends Activity
             initialize(null, originalThreadId);
         }
         loadMessagesAndDraft(0);
+        mSavedScrollPosition = -1;
     }
 
     private void sanityCheckConversation() {
@@ -5086,7 +5096,7 @@ public class ComposeMessageActivity extends Activity
                     // more people before the conversation begins.
                     if (cursor != null && cursor.getCount() == 0
                             && !isRecipientsEditorVisible() && !mSentMessage) {
-                        if (preCursorChangeCount >= 1 && TextUtils.isEmpty(mTextEditor.getText())) {
+                        if (preCursorChangeCount >= 1 && !mNewIntent && TextUtils.isEmpty(mTextEditor.getText())) {
                             // No message was entered, dismiss
                             exitComposeMessageActivity(new Runnable() {
                                 @Override
@@ -5099,6 +5109,7 @@ public class ComposeMessageActivity extends Activity
                             mRecipientsEditor.addTextChangedListener(mRecipientsWatcher);
                         }
                     }
+                    mNewIntent = false;
 
                     // FIXME: freshing layout changes the focused view to an unexpected
                     // one, set it back to TextEditor forcely.
