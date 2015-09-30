@@ -120,6 +120,8 @@ import com.android.internal.telephony.cdma.sms.SmsEnvelope;
 import com.android.internal.telephony.cdma.sms.UserData;
 import com.android.internal.telephony.uicc.IccUtils;
 
+import com.android.contacts.common.util.MaterialColorMapUtils;
+import com.android.contacts.common.util.MaterialColorMapUtils.MaterialPalette;
 import com.android.contacts.common.widget.SelectPhoneAccountDialogFragment;
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
@@ -2686,6 +2688,12 @@ public class MessageUtils {
         bos.close();
 
         return new File(filePath);
+    }
+
+    public static int getMappedMaterialColor(Resources res, int inputColor) {
+        MaterialColorMapUtils mcmu = new MaterialColorMapUtils(res);
+        MaterialPalette palette = mcmu.calculatePrimaryAndSecondaryColor(inputColor);
+        return palette.mPrimaryColor;
     }
 
     public static String getPhoneNumber(Context context, int subId) {

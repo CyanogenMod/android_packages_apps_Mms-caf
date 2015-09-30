@@ -45,4 +45,8 @@
     <color name="tab_accent_color">#7ed321</color>
 
     <color name="action_mode_checkmark_color">#00b0f0</color>
+
+    <color name="qm_fading_edge_color">#eeeeee</color>
+    <color name="qm_from_text_color">#2f2f2f</color>
+    <color name="qm_recv_timestamp_text_color">#a79f9c</color>
 </resources>

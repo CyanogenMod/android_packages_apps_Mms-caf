@@ -131,9 +131,24 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
-    <style name="Theme.QMPopUp" parent="android:Theme.Material.Dialog">
-        <item name="android:alertDialogTheme">@android:style/Theme.Material.Light.Dialog</item>
-        <item name="android:windowTranslucentStatus">true</item>
+    <style name="Theme.QMPopUp" parent="android:Theme.Material">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowElevation">@dimen/qm_window_elevation</item>
+        <item name="android:buttonBarStyle">@android:style/Widget.Material.ButtonBar.AlertDialog</item>
+        <item name="android:actionModeStyle">@style/MmsActionModeStyle</item>
+        <item name="android:actionModeBackground">@color/action_mode_background_color</item>
+    </style>
+
+    <style name="QMButtonStyle" parent="android:Widget.Material.Button.Borderless">
+        <item name="android:textColor">#00b0f0</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
     <style name="SectionHeaderStyle" parent="@android:style/TextAppearance.Large">
         <item name="android:textSize">24sp</item>
