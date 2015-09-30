@@ -20,22 +20,24 @@ package com.android.mms.quickmessage;
 import android.content.Context;
 import android.telephony.SmsMessage;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.android.mms.util.UnicodeFilter;
+import com.android.mms.widget.FluctuatingImageButton;
 
 public class QmTextWatcher implements TextWatcher {
     private TextView mTextView;
-    private ImageButton mSendButton;
+    private FluctuatingImageButton mSendButton;
     private UnicodeFilter mUnicodeFilter;
     private Context mContext;
     private static final int CHARS_REMAINING_BEFORE_COUNTER_SHOWN = 30;
 
     public QmTextWatcher(Context context, TextView updateTextView,
-            ImageButton sendButton, UnicodeFilter unicodeFilter) {
+            FluctuatingImageButton sendButton, UnicodeFilter unicodeFilter) {
         mContext = context;
         mTextView = updateTextView;
         mSendButton = sendButton;
@@ -49,7 +51,13 @@ public class QmTextWatcher implements TextWatcher {
     }
 
     @Override
-    public void afterTextChanged(Editable s) {}
+    public void afterTextChanged(Editable s) {
+        if (TextUtils.getTrimmedLength(s) > 0) {
+            mSendButton.showActionDrawable(true);
+        } else {
+            mSendButton.showActionDrawable(false);
+        }
+    }
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
