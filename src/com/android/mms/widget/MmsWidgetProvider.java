@@ -24,6 +24,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -37,6 +38,9 @@ public class MmsWidgetProvider extends AppWidgetProvider {
             "com.android.mms.intent.action.ACTION_NOTIFY_DATASET_CHANGED";
 
     private static final String TAG = LogTag.TAG;
+
+    // [TODO][MSB]: Figure out the small widget later
+//    private static boolean mIsWidgetFullSize = false;
 
     /**
      * Update all widgets in the list
@@ -103,7 +107,7 @@ public class MmsWidgetProvider extends AppWidgetProvider {
         composeIntent.setAction(Intent.ACTION_SENDTO);
         clickIntent = PendingIntent.getActivity(
                 context, 0, composeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteViews.setOnClickPendingIntent(R.id.widget_compose, clickIntent);
+        remoteViews.setOnClickPendingIntent(R.id.floating_action_button, clickIntent);
 
         // On click intent for Conversation
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
@@ -113,6 +117,13 @@ public class MmsWidgetProvider extends AppWidgetProvider {
         taskStackBuilder.addNextIntent(msgIntent);
         remoteViews.setPendingIntentTemplate(R.id.conversation_list,
                 taskStackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT));
+
+        // [TODO][MSB]: Figure out the small widget later
+//        if (!mIsWidgetFullSize) {
+//            remoteViews.setViewVisibility(R.id.avatar, View.GONE);
+//        } else {
+//            remoteViews.setViewVisibility(R.id.avatar, View.VISIBLE);
+//        }
 
         AppWidgetManager.getInstance(context).updateAppWidget(appWidgetId, remoteViews);
     }
@@ -129,4 +140,12 @@ public class MmsWidgetProvider extends AppWidgetProvider {
         context.sendBroadcast(intent);
     }
 
+    @Override
+    public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager,
+            int appWidgetId, Bundle newOptions) {
+        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
+        // [TODO][MSB]: Figure out the small widget later
+//        Log.i("TEST", "" + newOptions.get("appWidgetMinWidth"));
+//        mIsWidgetFullSize = (newOptions.getInt("appWidgetMinWidth") > 327);
+    }
 }

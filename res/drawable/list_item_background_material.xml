@@ -16,7 +16,7 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_activated="true">
-		<color android:color="@color/selected_list_item_bg" />
+        <color android:color="@color/selected_list_item_bg" />
     </item>
     <item>
         <color android:color="@color/transparent" />
