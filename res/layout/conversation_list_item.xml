@@ -57,13 +57,14 @@
             android:layout_alignTop="@id/from"
             android:layout_alignBottom="@id/from"
             android:layout_toEndOf="@id/from">
+
             <TextView android:id="@+id/from_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="1dp"
                 android:layout_toEndOf="@id/from"
                 android:textAppearance="@android:style/TextAppearance.Material.Subhead"
-                android:singleLine="true"  />
+                android:singleLine="true" />
 
             <TextView android:id="@+id/unread_count"
                 android:layout_width="wrap_content"

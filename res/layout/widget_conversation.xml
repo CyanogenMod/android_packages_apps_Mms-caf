@@ -17,83 +17,120 @@
  */
 -->
 
-<FrameLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_conversation"
     android:layout_width="match_parent"
-    android:layout_height="48dp">
-    <!--
-        Remote view doesn't allow changing background so we have to work around
-        by having 2 image views here.
-    -->
+    android:background="@drawable/list_item_background_material"
+    android:layout_height="82dp"
+    android:paddingStart="16dip"
+    android:paddingEnd="16dip" >
+
     <ImageView
-        android:id="@+id/widget_unread_background"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/widget_conversation_unread_selector" />
-    <ImageView
-        android:id="@+id/widget_read_background"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/widget_conversation_read_selector" />
+        android:id="@+id/avatar"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="16dp"
+        android:layout_width="@dimen/contact_photo_size"
+        android:layout_height="@dimen/contact_photo_size" />
+
     <RelativeLayout
+        android:id="@+id/info_root"
+        android:layout_toStartOf="@+id/msg_error"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingStart="8dip" >
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@id/avatar">
 
-        <TextView android:id="@+id/from"
+        <TextView
+            android:id="@+id/from"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMediumInverse"
-            android:singleLine="true"
-            android:textSize="16sp"
-            android:layout_marginTop="6dip"
-            android:layout_marginEnd="5dip"
-            android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
-            android:ellipsize="marquee"  />
-
-        <TextView android:id="@+id/date"
-            android:layout_marginTop="2dip"
-            android:layout_marginBottom="5dip"
-            android:layout_marginStart="5dip"
-            android:layout_marginEnd="8dip"
-            android:textSize="12sp"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmallInverse"
+            android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+            android:textStyle="normal|bold"
             android:singleLine="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true" />
+            android:ellipsize="marquee" />
 
-        <ImageView android:id="@+id/error"
-            android:layout_marginStart="3dip"
-            android:visibility="gone"
-            android:layout_toStartOf="@id/date"
-            android:layout_alignBottom="@id/date"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:src="@drawable/ic_list_alert_sms_failed" />
-
-        <ImageView android:id="@+id/attachment"
-            android:layout_marginStart="3dip"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:visibility="gone"
-            android:layout_toStartOf="@id/error"
-            android:layout_alignBottom="@id/date"
-            android:src="@drawable/ic_attachment_universal_small" />
-
-        <TextView android:id="@+id/subject"
+        <LinearLayout
+            android:id="@+id/info_row"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmallInverse"
-            android:singleLine="true"
-            android:textSize="12sp"
-            android:layout_marginBottom="5dip"
-            android:layout_alignParentBottom="true"
+            android:gravity="center_vertical"
+            android:layout_alignTop="@id/from"
+            android:layout_alignBottom="@id/from"
+            android:layout_toEndOf="@id/from">
+
+            <TextView
+                android:id="@+id/from_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="1dp"
+                android:layout_toEndOf="@id/from"
+                android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+                android:singleLine="true" />
+
+            <TextView
+                android:id="@+id/unread_count"
+                android:layout_width="wrap_content"
+                android:layout_height="16dp"
+                android:background="#f1f6f7"
+                android:textColor="#6F7171"
+                android:layout_marginStart="3dip"
+                android:visibility="gone"
+                android:textSize="10sp"
+                android:gravity="center"
+                android:singleLine="true"
+                android:ellipsize="marquee"  />
+
+            <ImageView
+                android:id="@+id/block"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_marginStart="3dip"
+                android:visibility="gone"
+                android:src="@drawable/ic_blocked_small" />
+
+            <ImageView android:id="@+id/attachment"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="3dip"
+                android:visibility="gone"
+                android:tint="#a8abab"
+                android:src="@drawable/ic_attachment_universal_small" />
+
+            <TextView android:id="@+id/date"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginStart="3dip"
+                android:gravity="bottom"
+                android:textAppearance="@android:style/TextAppearance.Material.Caption"
+                android:textSize="10sp"
+                android:singleLine="true" />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/subject"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_toStartOf="@id/attachment"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_below="@id/from"
+            android:textAppearance="@android:style/TextAppearance.Material.Body1"
+            android:textColor="?android:attr/textColorSecondary"
+            android:maxLines="2"
             android:ellipsize="end" />
+
     </RelativeLayout>
-</FrameLayout>
+
+    <ImageView
+        android:layout_marginStart="16dp"
+        android:visibility="gone"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:padding="7dp"
+        android:id="@+id/error"
+        android:background="#16ff0606"
+        android:src="@drawable/ic_error"
+        android:scaleType="fitXY"
+        android:layout_width="40dp"
+        android:layout_height="40dp"/>
+</RelativeLayout>
