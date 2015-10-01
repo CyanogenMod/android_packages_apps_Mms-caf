@@ -209,6 +209,7 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
     private Menu mMenu;
     private TextView mSearchHint;
     private View mFabContainer, mSearchRoot;
+    private boolean mActionContextMenuEnb;
 
     // keys for extras and icicles
     private final static String LAST_LIST_POS = "last_list_pos";
@@ -243,6 +244,8 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
         return mListHeadersListView;
     }
 
+    private ModeCallback mModeCallbackHandler = new ModeCallback();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -268,7 +271,7 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
         mListView.setOnCreateContextMenuListener(mConvListOnCreateContextMenuListener);
         mListView.setOnKeyListener(mThreadListKeyListener);
         mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-        mListView.setMultiChoiceModeListener(new ModeCallback());
+        mListView.setMultiChoiceModeListener(mModeCallbackHandler);
 
         // Tell the list view which view to display when the list is empty
         mEmptyView = (LinearLayout) findViewById(R.id.ll_empty);
@@ -712,11 +715,16 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
         if (MessageUtils.isMailboxMode()) {
             return true;
         }
-        getMenuInflater().inflate(R.menu.conversation_list_menu, menu);
+        if (!mActionContextMenuEnb) {
+            getMenuInflater().inflate(R.menu.conversation_list_menu, menu);
+        } else {
+            getMenuInflater().inflate(R.menu.conversation_multi_select_menu, menu);
+        }
 
         mMenu = menu;
 
-        if (!getResources().getBoolean(R.bool.config_classify_search)) {
+        if (!getResources().getBoolean(R.bool.config_classify_search) &&
+                !mActionContextMenuEnb) {
             mSearchItem = menu.findItem(R.id.search);
             mSearchItem.setOnActionExpandListener(new OnActionExpandListener() {
                 @Override
@@ -845,6 +853,11 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // pass the Menu event to the ActionContext handler
+        if (mActionContextMenuEnb) {
+            mModeCallbackHandler.onOptionsItemSelected(item);
+            return true;
+        }
         switch(item.getItemId()) {
             case R.id.search:
                 if (getResources().getBoolean(R.bool.config_classify_search)) {
@@ -1578,13 +1591,27 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
     private class ModeCallback implements ListView.MultiChoiceModeListener {
         private HashSet<Long> mSelectedThreadIds;
         private HashSet<String> mSelectedThreadNumbers;
+        private ActionMode mMode;
+
+        // this function is called from within onOptionsItemSelected() when standard menu
+        // button is pressed and we are in the ContextActionMode.
+        // This way all ContextActionMenu handling is done in one place,
+        // in the onActionItemClicked() instead of having to repeat it in the
+        // onOptionsItemSelected()
+        public void onOptionsItemSelected(MenuItem item) {
+            onActionItemClicked(mMode, item);
+        }
 
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             MenuInflater inflater = getMenuInflater();
             mSelectedThreadIds = new HashSet<Long>();
             mSelectedThreadNumbers = new HashSet<String>();
+            mMode = mode;
             inflater.inflate(R.menu.conversation_multi_select_menu, menu);
+            mActionContextMenuEnb = true;
+            // reload Menu so that it matches the ContextActionMenu
+            invalidateOptionsMenu();
             if(mFilterSpinner.getVisibility() == View.VISIBLE){
                 mFilterSpinner.setEnabled(false);
             }
@@ -1663,6 +1690,10 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
             if(mFilterSpinner.getVisibility() == View.VISIBLE){
                 mFilterSpinner.setEnabled(true);
             }
+
+            mActionContextMenuEnb = false;
+            // leaving the ContextActionMode, reload non-ContextActionMenu
+            invalidateOptionsMenu();
         }
 
         @Override
