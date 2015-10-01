@@ -21,6 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -32,6 +33,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ScaleDrawable;
 import android.graphics.drawable.StateListDrawable;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.ContactsContract.Profile;
@@ -62,6 +64,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.contacts.common.model.ContactBuilder;
 import com.android.internal.telephony.PhoneConstants;
@@ -70,8 +73,6 @@ import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.data.Contact;
-import com.android.mms.data.ContactList;
-import com.android.mms.data.Conversation;
 import com.android.mms.data.MessageInfoCache;
 import com.android.mms.data.WorkingMessage;
 import com.android.mms.presenters.SlideShowPresenter;
@@ -83,6 +84,7 @@ import com.android.mms.ui.zoom.ZoomMessageListItem;
 import com.android.mms.util.AddressUtils;
 import com.android.mms.util.DownloadManager;
 import com.android.mms.util.ImageUtils;
+import com.android.mms.util.IntentUtils;
 import com.android.mms.util.SmileyParser;
 import com.android.mms.widget.ContactBadgeWithAttribution;
 import com.cyanogen.lookup.phonenumber.response.LookupResponse;
@@ -147,6 +149,30 @@ public class MessageListItem extends ZoomMessageListItem implements
     private TextView mDownloadTitle;
     private ProgressBar mDownloadProgressBar;
     private TextView mDownloadSubTitle;
+
+    private ContactBadgeWithAttribution.ContactBadgeClickListener mContactBadgeClickListener =
+            new ContactBadgeWithAttribution.ContactBadgeClickListener() {
+                @Override
+                public boolean handleContactBadgeClick(View v, Uri contactUri) {
+                    if (mManageMode == MessageUtils.SELECTION_MODE) {
+                        return true;
+                    }
+                    if (contactUri != null) {
+                        try {
+                            Intent intent =
+                                    IntentUtils.getQuickContactForLookupIntent(mContext,
+                                            v, contactUri);
+                            mContext.startActivity(intent);
+                            return true;
+                        } catch (ActivityNotFoundException e) {
+                            Toast.makeText(mContext,
+                                    com.android.internal.R.string.quick_contacts_not_available,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    return false;
+                }
+            };
 
     public MessageListItem(Context context) {
         this(context, null);
@@ -430,6 +456,8 @@ public class MessageListItem extends ZoomMessageListItem implements
         } else {
             mAvatar.setImageDrawable(sDefaultContactImage);
         }
+        mAvatar.setClickable(mManageMode != MessageUtils.SELECTION_MODE);
+        mAvatar.setContactBadgeClickListener(mContactBadgeClickListener);
     }
 
     private void checkForUnknownContact(Contact contact) {

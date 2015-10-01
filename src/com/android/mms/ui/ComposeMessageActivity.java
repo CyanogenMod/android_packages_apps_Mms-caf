@@ -5674,6 +5674,7 @@ public class ComposeMessageActivity extends Activity
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             logMultiChoice("onCreateActionMode");
+            mMsgListAdapter.setMultiManageMode(MessageUtils.SELECTION_MODE);
             // reset statics
             mMmsSelected = 0;
             mUnlockedCount = 0;
@@ -5939,6 +5940,7 @@ public class ComposeMessageActivity extends Activity
 
         @Override
         public void onDestroyActionMode(ActionMode mode) {
+            mMsgListAdapter.setMultiManageMode(MessageUtils.INVALID_MODE);
             // restore status bar color
             getWindow().setStatusBarColor(mStatusBarColor);
         }
