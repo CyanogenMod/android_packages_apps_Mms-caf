@@ -285,9 +285,7 @@ public class MessageListAdapter extends CursorAdapter implements MmsApp.PhoneNum
             if (msgItem != null) {
                 MessageListItem mli = (MessageListItem) view;
                 int position = cursor.getPosition();
-                if (mMultiManageMode != MessageUtils.INVALID_MODE) {
-                    mli.setManageSelectMode(mMultiManageMode);
-                }
+                mli.setManageSelectMode(mMultiManageMode);
 
                 final Resources res = context.getResources();
                 final int accentColor;
@@ -354,6 +352,7 @@ public class MessageListAdapter extends CursorAdapter implements MmsApp.PhoneNum
 
     public void setMultiManageMode(int manageMode) {
         mMultiManageMode = manageMode;
+        notifyDataSetChanged();
     }
 
     @Override

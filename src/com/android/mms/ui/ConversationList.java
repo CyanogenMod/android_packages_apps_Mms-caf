@@ -1604,6 +1604,8 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
 
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            ConversationListAdapter adapter = (ConversationListAdapter)getListView().getAdapter();
+            adapter.setIsInActionMode(true);
             MenuInflater inflater = getMenuInflater();
             mSelectedThreadIds = new HashSet<Long>();
             mSelectedThreadNumbers = new HashSet<String>();
@@ -1684,6 +1686,7 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
         public void onDestroyActionMode(ActionMode mode) {
             ConversationListAdapter adapter = (ConversationListAdapter)getListView().getAdapter();
             adapter.uncheckAll();
+            adapter.setIsInActionMode(false);
             mSelectedThreadIds = null;
             mSelectedThreadNumbers = null;
             setStatusBarColor(getResources().getColor(R.color.mms_next_theme_color_dark));
