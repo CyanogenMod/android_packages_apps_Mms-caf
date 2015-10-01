@@ -18,7 +18,7 @@
     android:id="@+id/QuickMessageContentlayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal|bottom"
+    android:layout_gravity="center_horizontal"
     android:orientation="vertical" >
 
     <!-- message information section incl sender name, badge and timestamp -->
