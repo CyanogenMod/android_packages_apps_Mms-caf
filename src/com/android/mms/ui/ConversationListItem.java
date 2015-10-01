@@ -17,12 +17,15 @@
 
 package com.android.mms.ui;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Handler;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -39,6 +42,7 @@ import android.view.View;
 import android.widget.Checkable;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.contacts.common.model.ContactBuilder;
 import com.android.mms.LogTag;
@@ -46,6 +50,7 @@ import com.android.mms.R;
 import com.android.mms.data.Contact;
 import com.android.mms.data.Conversation;
 import com.android.mms.util.ImageUtils;
+import com.android.mms.util.IntentUtils;
 import com.android.mms.util.SmileyParser;
 import com.android.mms.widget.ContactBadgeWithAttribution;
 import com.cyanogen.lookup.phonenumber.response.LookupResponse;
@@ -87,6 +92,29 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
     private static ForegroundColorSpan sUnreadColorSpan;
     private static ForegroundColorSpan sBlockColorSpan;
     private boolean mBlocked;
+
+    private ContactBadgeWithAttribution.ContactBadgeClickListener mContactBadgeClickListener =
+            new ContactBadgeWithAttribution.ContactBadgeClickListener() {
+                @Override
+                public boolean handleContactBadgeClick(View v, Uri contactUri) {
+                    if (contactUri != null) {
+                        try {
+                            if (mContext != null) {
+                                Intent intent =
+                                        IntentUtils.getQuickContactForLookupIntent(mContext,
+                                                v, contactUri);
+                                mContext.startActivity(intent);
+                                return true;
+                            }
+                        } catch (ActivityNotFoundException e) {
+                            Toast.makeText(mContext,
+                                    com.android.internal.R.string.quick_contacts_not_available,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    return false;
+                }
+            };
 
     public ConversationListItem(Context context) {
         super(context);
@@ -259,8 +287,10 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
                 if (ellipsisCount == 0) {
                     mFromCount.setVisibility(View.GONE);
                 } else {
-                    String displayed = fromText.toString().substring(0, fromText.length() - ellipsisCount);
-                    int recipientsPending = fromText.toString().split(",").length - displayed.split(",").length;
+                    String displayed =
+                            fromText.toString().substring(0, fromText.length() - ellipsisCount);
+                    int recipientsPending =
+                            fromText.toString().split(",").length - displayed.split(",").length;
                     if (recipientsPending > 0) {
                         mFromCount.setVisibility(View.VISIBLE);
                         String unreadLabel = "+";
@@ -298,7 +328,7 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
     }
 
     public final void bind(Context context, final Conversation conversation,
-                           LookupResponse lookupResponse) {
+                           LookupResponse lookupResponse, boolean inActionMode) {
         //if (DEBUG) Log.v(TAG, "bind()");
         boolean sameItem = mConversation != null
                 && mConversation.getThreadId() == conversation.getThreadId();
@@ -334,6 +364,8 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
 
         updateAvatarView(lookupResponse);
         mAvatarView.setChecked(isChecked(), sameItem);
+        mAvatarView.setClickable(!isChecked() && !inActionMode);
+        mAvatarView.setContactBadgeClickListener(mContactBadgeClickListener);
         if (lookupResponse != null) {
             // add attribution to avatar
             mAvatarView.setAttributionDrawable(lookupResponse.mAttributionLogo);
@@ -399,5 +431,12 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
 
     public boolean isBlocked() {
         return mBlocked;
+    }
+
+    public void setContactBadgeClickListener(
+            ContactBadgeWithAttribution.ContactBadgeClickListener contactBadgeClickListener) {
+        if (mAvatarView != null) {
+            mAvatarView.setContactBadgeClickListener(contactBadgeClickListener);
+        }
     }
 }

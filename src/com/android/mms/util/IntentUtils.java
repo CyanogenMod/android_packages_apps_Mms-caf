@@ -3,12 +3,19 @@ package com.android.mms.util;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
+import android.net.Uri;
+import android.provider.ContactsContract;
+import android.view.View;
+
+import com.android.contacts.common.model.Contact;
+import com.android.mms.widget.ContactBadgeWithAttribution;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class IntentUtils {
+
     /**
      * The number of activities that can handle the baseIntent after filtering
      *
@@ -36,5 +43,12 @@ public class IntentUtils {
             }
         }
         return targetedShareIntents;
+    }
+
+    public static Intent getQuickContactForLookupIntent(Context context, View v, Uri contactUri) {
+        Intent intent = ContactsContract.QuickContact.composeQuickContactsIntent(context,
+                v,null, ContactsContract.QuickContact.MODE_LARGE, null);
+        intent.putExtra(Contact.CONTACT_URI_EXTRA, contactUri);
+        return intent;
     }
 }

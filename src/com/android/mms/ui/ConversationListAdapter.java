@@ -17,9 +17,13 @@
 
 package com.android.mms.ui;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +32,8 @@ import android.widget.AbsListView;
 import android.widget.CursorAdapter;
 
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.android.internal.telephony.util.BlacklistUtils;
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
@@ -38,10 +44,12 @@ import com.android.mms.data.ContactList;
 import com.android.mms.data.Conversation;
 
 import com.android.mms.util.AddressUtils;
+import com.android.mms.util.IntentUtils;
 import com.android.mms.util.PrettyTime;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 import se.emilsjolander.stickylistheaders.WrapperView;
 
+import com.android.mms.widget.ContactBadgeWithAttribution;
 import com.cyanogen.lookup.phonenumber.response.LookupResponse;
 
 import java.lang.ref.WeakReference;
@@ -57,12 +65,17 @@ public class ConversationListAdapter extends CursorAdapter implements AbsListVie
     private static final boolean LOCAL_LOGV = false;
     private static final int DATE = 1;
 
+    private final Context mContext;
+
     private PrettyTime mPrettyTime = new PrettyTime();
     private final LayoutInflater mFactory;
     private OnContentChangedListener mOnContentChangedListener;
 
+    private boolean mIsInActionMode = false;
+
     public ConversationListAdapter(Context context, Cursor cursor) {
         super(context, cursor, false /* auto-requery */);
+        mContext = context;
         mFactory = LayoutInflater.from(context);
     }
 
@@ -86,7 +99,7 @@ public class ConversationListAdapter extends CursorAdapter implements AbsListVie
 
         // if unknown contact, request info
         LookupResponse lookupResponse = checkForUnknownContact(conv);
-        headerView.bind(context, conv, lookupResponse);
+        headerView.bind(context, conv, lookupResponse, mIsInActionMode);
     }
 
     private static class FetchBlacklistInfo extends AsyncTask<Void, Void, Boolean> {
@@ -221,5 +234,10 @@ public class ConversationListAdapter extends CursorAdapter implements AbsListVie
         }
 
         return convertView;
+    }
+
+    public void setIsInActionMode(boolean isInActionMode) {
+        mIsInActionMode = isInActionMode;
+        notifyDataSetChanged();
     }
 }
