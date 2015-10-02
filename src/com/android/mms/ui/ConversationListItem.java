@@ -74,7 +74,7 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
     private View mAttachmentView;
     private View mErrorIndicator;
     private ContactBadgeWithAttribution mAvatarView;
-    private View mInfoRow, mInfoRoot;
+    private View mInfoRoot;
     private TextView mFromCount;
     private View mBlock;
 
@@ -144,7 +144,6 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         mFromView = (TextView) findViewById(R.id.from);
         mFromCount = (TextView) findViewById(R.id.from_count);
         mSubjectView = (TextView) findViewById(R.id.subject);
-        mInfoRow = findViewById(R.id.info_row);
         mInfoRoot = findViewById(R.id.info_root);
         mDateView = (TextView) findViewById(R.id.date);
         mAttachmentView = findViewById(R.id.attachment);
