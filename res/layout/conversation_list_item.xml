@@ -49,33 +49,35 @@
             android:singleLine="true"
             android:ellipsize="marquee"  />
 
+        <TextView android:id="@+id/from_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="1dp"
+            android:layout_toEndOf="@id/from"
+            android:layout_alignBaseline="@id/from"
+            android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+            android:singleLine="true" />
+
+        <TextView android:id="@+id/unread_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#f1f6f7"
+            android:layout_marginStart="3dip"
+            android:layout_toEndOf="@id/from_count"
+            android:layout_alignBaseline="@id/from"
+            android:visibility="gone"
+            android:textSize="10sp"
+            android:singleLine="true"
+            android:ellipsize="marquee"  />
+
         <LinearLayout
-            android:id="@+id/info_row"
+            android:id="@+id/icon_row"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:layout_alignTop="@id/from"
             android:layout_alignBottom="@id/from"
-            android:layout_toEndOf="@id/from">
-
-            <TextView android:id="@+id/from_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="1dp"
-                android:layout_toEndOf="@id/from"
-                android:textAppearance="@android:style/TextAppearance.Material.Subhead"
-                android:singleLine="true" />
-
-            <TextView android:id="@+id/unread_count"
-                android:layout_width="wrap_content"
-                android:layout_height="16dp"
-                android:background="#f1f6f7"
-                android:layout_marginStart="3dip"
-                android:visibility="gone"
-                android:textSize="10sp"
-                android:gravity="center"
-                android:singleLine="true"
-                android:ellipsize="marquee"  />
+            android:layout_toEndOf="@id/unread_count">
 
             <ImageView android:id="@+id/block"
                 android:layout_width="14dp"
@@ -99,15 +101,18 @@
                 android:tint="#a8abab"
                 android:src="@drawable/ic_attachment_universal_small" />
 
-            <TextView android:id="@+id/date"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginStart="3dip"
-                android:gravity="bottom"
-                android:textAppearance="@android:style/TextAppearance.Material.Caption"
-                android:textSize="10sp"
-                android:singleLine="true" />
         </LinearLayout>
+
+        <TextView android:id="@+id/date"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginStart="3dip"
+            android:layout_toEndOf="@id/icon_row"
+            android:layout_alignBaseline="@id/from"
+            android:textAppearance="@android:style/TextAppearance.Material.Caption"
+            android:textSize="10sp"
+            android:singleLine="true" />
+
         <view
             class="com.android.mms.ui.SearchActivity$TextViewSnippet"
             android:id="@+id/subject"

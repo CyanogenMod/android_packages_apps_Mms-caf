@@ -6,12 +6,18 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import com.android.mms.R;
 
+import java.util.ArrayList;
+
 /**
  * Makes sure that from view has a max width of remaining space
  */
 public class ConversationListItemInfo extends RelativeLayout {
     private View mFromView;
-    private View mInfoRow;
+    private ArrayList<View> mViewsNextToFrom = new ArrayList<>();
+
+    private static final int[] VIEWS_NEXT_TO_FROM = {
+        R.id.from_count, R.id.unread_count, R.id.icon_row, R.id.date
+    };
 
     public ConversationListItemInfo(Context context) {
         super(context);
@@ -32,16 +38,23 @@ public class ConversationListItemInfo extends RelativeLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        for (int i = 0; i < VIEWS_NEXT_TO_FROM.length; i++) {
+            mViewsNextToFrom.add(findViewById(VIEWS_NEXT_TO_FROM[i]));
+        }
         mFromView = findViewById(R.id.from);
-        mInfoRow = findViewById(R.id.info_row);
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        mInfoRow.measure(0, 0);
+        int widthOfViewsNextToFrom = 0;
+        for (View v : mViewsNextToFrom) {
+            v.measure(0, 0);
+            widthOfViewsNextToFrom += v.getMeasuredWidth();
+        }
         mFromView.measure(0, 0);
+
         int width = Math.min(mFromView.getMeasuredWidth(),
-                MeasureSpec.getSize(widthMeasureSpec) - mInfoRow.getMeasuredWidth());
+                MeasureSpec.getSize(widthMeasureSpec) - widthOfViewsNextToFrom);
         mFromView.getLayoutParams().width = width;
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
