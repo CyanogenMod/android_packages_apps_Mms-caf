@@ -1044,6 +1044,8 @@ public class ComposeMessageActivity extends Activity
                 mWorkingMessage.setWorkingMessageSub(subId);
                 sendMessage(bCheckEcmMode);
             }
+        } catch (NullPointerException ex) {
+            Log.e(TAG, "fail to getService ", ex);
         } catch (RemoteException ex) {
             Log.e(TAG, "error in getService ", ex);
         }
