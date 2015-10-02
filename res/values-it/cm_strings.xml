@@ -249,7 +249,7 @@
   <string name="pref_title_enable_emoticons">Supporto emoticon</string>
   <string name="pref_summary_enable_emoticons">Sostituisci le emoticon testuali con grafica equivalente</string>
   <string name="menu_conversation_options">Opzioni conversazione</string>
-  <string name="pref_title_reset_convopt_to_default">Ripristina predefinito</string>
+  <string name="pref_title_reset_convopt_to_default">Reimposta predefinito</string>
   <string name="pref_summary_reset_convopt_to_default">Ripristina le impostazioni della conversazione a quelle dell\'applicazione</string>
   <string name="pref_title_mms_full_timestamp">Timestamp completi</string>
   <string name="pref_summary_mms_full_timestamp">Visualizza data e ora nei timestamp</string>

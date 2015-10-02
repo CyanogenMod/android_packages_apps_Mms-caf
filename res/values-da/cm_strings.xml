@@ -20,6 +20,7 @@
   <string name="pref_quickmessage_title">Slå HurtigBesked til</string>
   <string name="pref_quickmessage_summary">Åbn HurtigBesked pop-up for indkommende SMS\'er</string>
   <string name="pref_wake_unlock_title">Vågn og lås op</string>
+  <string name="pref_wake_unlock_summary">Vækker enheden og viser HurtigBesked pop-up</string>
   <string name="pref_close_all_title">Luk alle</string>
   <string name="pref_close_all_summary">Lukknap lukker alle beskeder</string>
   <string name="pref_dark_theme_title">Brug mørkt tema</string>
