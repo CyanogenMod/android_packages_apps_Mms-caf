@@ -1003,24 +1003,28 @@ public class ComposeMessageActivity extends Activity
         int[] smsBtnIds = {R.id.BtnSimOne, R.id.BtnSimTwo, R.id.BtnSimThree};
         int phoneCount = TelephonyManager.getDefault().getPhoneCount();
         Button[] smsBtns = new Button[phoneCount];
-
+        List<SubscriptionInfo> subInfoList = SubscriptionManager.from(
+                getApplicationContext()).getActiveSubscriptionInfoList();
+        String displayName = null;
         for (int i = 0; i < phoneCount; i++) {
-            final int subId = i;
+            final int phoneId = i;
             smsBtns[i] = (Button) layout.findViewById(smsBtnIds[i]);
             smsBtns[i].setVisibility(View.VISIBLE);
-            SubscriptionInfo sir = SubscriptionManager.from(getContext())
-                    .getActiveSubscriptionInfoForSimSlotIndex(subId);
-
-            String displayName = (sir != null) ?
-                    (i + 1) + ": " + sir.getDisplayName().toString() 
-                    : "SIM " + (i + 1);
-
-            Log.e(TAG, "PhoneID : " + subId + " displayName " + displayName);
+            if(subInfoList != null) {
+                displayName = "SIM " + (phoneId + 1);
+                for (SubscriptionInfo info : subInfoList) {
+                    if (info.getSimSlotIndex() == phoneId) {
+                        displayName = (phoneId + 1) + ": " + info.getDisplayName().toString();
+                        break;
+                    }
+                }
+            }
             smsBtns[i].setText(displayName);
             smsBtns[i].setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View v) {
-                        Log.d(TAG, "Phone Id slected " + subId);
+                        int subId = SubscriptionManager.getSubId(phoneId)[0];
+                        Log.d(TAG, "LaunchMsimDialog: subscription selected " + subId);
                         processMsimSendMessage(subId, bCheckEcmMode);
                 }
             });
@@ -1038,6 +1042,7 @@ public class ComposeMessageActivity extends Activity
                 .getService("extphone"));
         try {
             if (mExtTelephony.isSMSPromptEnabled()) {
+                Log.d(TAG, "sendMsimMessage isSMSPromptEnabled: True");
                 LaunchMsimDialog(bCheckEcmMode);
             } else {
                 int subId = SubscriptionManager.getDefaultSmsSubId();
@@ -3205,12 +3210,14 @@ public class ComposeMessageActivity extends Activity
                 break;
             case MENU_SEND_BY_SLOT1:
                 if (isPreparedForSending()) {
-                    confirmSendMessageIfNeeded(PhoneConstants.SUB1);
+                    confirmSendMessageIfNeeded(
+                            SubscriptionManager.getSubId(PhoneConstants.SUB1)[0]);
                 }
                 break;
             case MENU_SEND_BY_SLOT2:
                 if (isPreparedForSending()) {
-                    confirmSendMessageIfNeeded(PhoneConstants.SUB2);
+                    confirmSendMessageIfNeeded(
+                            SubscriptionManager.getSubId(PhoneConstants.SUB2)[0]);
                 }
                 break;
             case MENU_SEARCH:
@@ -4482,13 +4489,13 @@ public class ComposeMessageActivity extends Activity
         mIsRTL = (v.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL);
         if ((v == mSendButtonSms || v == mSendButtonMms) && isPreparedForSending()) {
             if (mShowTwoButtons) {
-                confirmSendMessageIfNeeded(PhoneConstants.SUB1);
+                confirmSendMessageIfNeeded(SubscriptionManager.getSubId(PhoneConstants.SUB1)[0]);
             } else {
                 confirmSendMessageIfNeeded();
             }
         } else if ((v == mSendButtonSmsViewSec || v == mSendButtonMmsViewSec) &&
                 mShowTwoButtons && isPreparedForSending()) {
-            confirmSendMessageIfNeeded(PhoneConstants.SUB2);
+            confirmSendMessageIfNeeded(SubscriptionManager.getSubId(PhoneConstants.SUB2)[0]);
         /*} else if (v == mRecipientsSelector) {
             pickContacts(SelectRecipientsList.MODE_DEFAULT, REQUEST_CODE_ADD_RECIPIENTS);*/
         } else if ((v == mAddAttachmentButton)) {
