@@ -8,20 +8,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
 import com.android.mms.MmsApp;
 import com.android.mms.R;
 import com.android.mms.util.MetricsHelper;
-//import com.cyanogen.ambient.callerinfo.CallerInfoServices;
-//import com.cyanogen.ambient.callerinfo.util.CallerInfoHelper;
-//import com.cyanogen.ambient.callerinfo.util.ProviderInfo;
-//import com.cyanogen.ambient.common.CyanogenAmbientUtil;
-//import com.cyanogen.ambient.common.api.AmbientApiClient;
-//import com.cyanogen.ambient.common.api.PendingResult;
-//import com.cyanogen.ambient.common.api.Result;
-//import com.cyanogen.ambient.common.api.ResultCallback;
 
 public class BlockCallerDialogFragment extends DialogFragment 
         implements DialogInterface.OnClickListener {
@@ -37,10 +30,8 @@ public class BlockCallerDialogFragment extends DialogFragment
 
     private CheckBox mCheckBox;
     private String[] mNumbers;
-//    private AmbientApiClient mClient;
     private FinishListener mFinishListener;
     private int mOrigin;
-//    private ProviderInfo mProviderInfo;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -60,16 +51,15 @@ public class BlockCallerDialogFragment extends DialogFragment
         View v = inflater.inflate(R.layout.block_dialog_view, null);
         mCheckBox = (CheckBox)v.findViewById(R.id.spamCheckbox);
 
-//        mProviderInfo = CallerInfoHelper.getActiveProviderInfo(getActivity());
-//        if (CyanogenAmbientUtil.isCyanogenAmbientAvailable(getActivity())
-//                == CyanogenAmbientUtil.SUCCESS && mProviderInfo != null) {
-//            mCheckBox.setText(getActivity().getResources().getString(
-//                    R.string.block_dialog_report_spam, mProviderInfo.getTitle()));
-//            mCheckBox.setVisibility(View.VISIBLE);
-//        } else {
-//            mCheckBox.setVisibility(View.GONE);
-//        }
-        mCheckBox.setVisibility(View.GONE);
+        // Should be provider.getTitle();
+        String providerTitle = MmsApp.getApplication().getProviderName();
+        if (MmsApp.getApplication().hasSpamReporting()) {
+            mCheckBox.setText(getActivity().getResources().getString(
+                    R.string.block_dialog_report_spam, providerTitle));
+            mCheckBox.setVisibility(View.VISIBLE);
+        } else {
+            mCheckBox.setVisibility(View.GONE);
+        }
 
         builder
             .setTitle(R.string.block_dialog_title)
@@ -93,32 +83,12 @@ public class BlockCallerDialogFragment extends DialogFragment
     public void onClick(DialogInterface dialog, int which) {
         MetricsHelper.Actions action;
         if (mCheckBox.isChecked()) {
-//            AmbientApiClient.Builder builder = new AmbientApiClient.Builder(getActivity());
-//            builder.addApi(CallerInfoServices.API);
-//            builder.addConnectionCallbacks(new AmbientApiClient.ConnectionCallbacks() {
-//                @Override
-//                public void onConnected(Bundle connectionHint) {
-//                    PendingResult<Result> result = null;
-//                    for (String number : mNumbers) {
-//                        result = CallerInfoServices.CallerInfoApi.markAsSpam(mClient, number);
-//                    }
-//                    result.setResultCallback(new ResultCallback<Result>() {
-//                        @Override
-//                        public void onResult(final Result lookupByNumberResult) {
-//                            mClient.disconnect();
-//                            if (mFinishListener != null) {
-//                                mFinishListener.onFinish();
-//                            }
-//                        }
-//                    });
-//                }
-//
-//                @Override
-//                public void onConnectionSuspended(int cause) {
-//                }
-//            });
-//            mClient = builder.build();
-//            mClient.connect();
+            for (String number : mNumbers) {
+                MmsApp.getApplication().markAsSpam(number);
+            }
+            if (mFinishListener != null) {
+                mFinishListener.onFinish();
+            }
             action = MetricsHelper.Actions.BLOCK_SPAM_CALL;
         } else {
             action = MetricsHelper.Actions.BLOCK_CALL;
