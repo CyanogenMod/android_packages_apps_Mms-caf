@@ -322,6 +322,33 @@ public class MmsApp extends Application implements Application.ActivityLifecycle
     }
 
     /**
+     * This will mark a phone number as spam
+     *
+     * @param phoneNumber {@link String}
+     */
+    public void markAsSpam(String phoneNumber) {
+        getLookupHandlerThread().markAsSpam(phoneNumber);
+    }
+
+    /**
+     * Call handler to check if provider has spam reporting capabilities
+     *
+     * @return {@link Boolean}
+     */
+    public boolean hasSpamReporting() {
+        return getLookupHandlerThread().hasSpamReporting();
+    }
+
+    /**
+     * This method returns the name of the spam reporting provider
+     *
+     * @return {@link String} or null if no provider available
+     */
+    public String getProviderName() {
+        return getLookupHandlerThread().getProviderName();
+    }
+
+    /**
      * Registration mechanism for anyone interested in new contact info
      * being available from an external provider. The updates aren't granular
      * as of now - you will be notified of updates to all contact info requests
