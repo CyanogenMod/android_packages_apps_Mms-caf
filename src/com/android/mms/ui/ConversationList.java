@@ -1443,8 +1443,23 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
 
             case UNREAD_THREADS_QUERY_TOKEN:
                 int count = 0;
+                // iterate through all conversations, summing up unread_message_count
+                // if "unread_message_count" column does not exist - due to database not
+                // properly updated (shouldn't happen?) then simply return the number
+                // of conversations with unread messages (pre MMS-104 implementation)
                 if (cursor != null) {
-                    count = cursor.getCount();
+                    try {
+                        int columnIndex = cursor.getColumnIndex("unread_message_count");
+                        int unreadMessageCount = 0;
+                        cursor.moveToFirst();
+                        while(!cursor.isAfterLast()) {
+                            unreadMessageCount = cursor.getInt(columnIndex);
+                            count += unreadMessageCount;
+                            cursor.moveToNext();
+                        }
+                    } catch (IndexOutOfBoundsException e) {
+                        count = cursor.getCount();
+                    }
                     cursor.close();
                 }
                 String titleString = sAppTitle;
