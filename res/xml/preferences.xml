@@ -116,7 +116,7 @@
     <Preference android:key="pref_key_manage_sdcard_messages"
                       android:title="@string/manage_sdcard_messages" />
     <ListPreference
-        android:defaultValue="-1"
+        android:defaultValue="@string/def_sms_validity_period_value"
         android:dialogTitle="@string/pref_title_validity_period"
         android:entries="@array/entries_sms_validity_period"
         android:entryValues="@array/entries_sms_validity_period_value"
@@ -124,7 +124,7 @@
         android:summary="%s"
         android:title="@string/pref_title_validity_period" />
     <ListPreference
-        android:defaultValue="-1"
+        android:defaultValue="@string/def_sms_validity_period_value"
         android:dialogTitle="@string/pref_title_validity_period"
         android:entries="@array/entries_sms_validity_period"
         android:entryValues="@array/entries_sms_validity_period_value"
@@ -132,7 +132,7 @@
         android:summary="%s"
         android:title="@string/pref_title_validity_period_slot1" />
     <ListPreference
-        android:defaultValue="-1"
+        android:defaultValue="@string/def_sms_validity_period_value"
         android:dialogTitle="@string/pref_title_validity_period"
         android:entries="@array/entries_sms_validity_period"
         android:entryValues="@array/entries_sms_validity_period_value"
