@@ -56,6 +56,9 @@
     -->
     <string name="def_sms_store_card2_value">0</string>
 
+    <!-- default sms validity period -->
+    <string name="def_sms_validity_period_value">-1</string>
+
     <!-- sms delivery reports enabled for Single model.default is false to off,true to on -->
     <bool name="def_sms_delivery_reports">false</bool>
 
