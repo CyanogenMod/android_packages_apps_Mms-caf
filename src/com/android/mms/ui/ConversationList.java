@@ -47,6 +47,7 @@ import android.database.sqlite.SqliteWrapper;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -1411,7 +1412,7 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
 //        protected void myonQueryComplete(int token, Object cookie, Cursor cursor) {
 
         @Override
-        protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
+        protected void onQueryComplete(int token, Object cookie, final Cursor cursor) {
             switch (token) {
             case THREAD_LIST_QUERY_TOKEN:
                 mListAdapter.changeCursor(cursor);
@@ -1442,18 +1443,48 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
                 break;
 
             case UNREAD_THREADS_QUERY_TOKEN:
-                int count = 0;
-                if (cursor != null) {
-                    count = cursor.getCount();
-                    cursor.close();
-                }
-                String titleString = sAppTitle;
-                if (count > 0 ) {
-                    sAppTitleWithUnread = getResources().getQuantityString(R.plurals
-                            .app_label_with_unread, count);
-                    titleString = String.format(sAppTitleWithUnread, count);
-                }
-                setTitle(titleString);
+                // iterate through all conversations, summing up unread_message_count
+                // if "unread_message_count" column does not exist - due to database not
+                // properly updated (shouldn't happen?) then simply return the number
+                // of conversations with unread messages (pre MMS-104 implementation)
+
+                // iterate in the background to avoid UI Thread blocking when there are
+                // many conversations
+                new AsyncTask<Void, Void, Integer>() {
+
+                    @Override
+                    protected Integer doInBackground(Void... params) {
+                        int unreadMessageCount = 0;
+                        if (cursor != null) {
+                            try {
+                                int columnIndex = cursor.getColumnIndexOrThrow(Threads.UNREAD_MESSAGE_COUNT);
+
+                                while (cursor.moveToNext()) {
+
+                                    unreadMessageCount += cursor.getInt(columnIndex);
+
+                                }
+                            } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
+                                unreadMessageCount = cursor.getCount();
+                            } finally {
+                                cursor.close();
+                            }
+                        }
+                        return unreadMessageCount;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Integer unreadMessageCount) {
+                        String titleString = sAppTitle;
+                        if (unreadMessageCount > 0) {
+                            sAppTitleWithUnread = getResources().getQuantityString(R.plurals
+                                    .app_label_with_unread, unreadMessageCount);
+                            titleString = String.format(sAppTitleWithUnread, unreadMessageCount);
+                        }
+                        setTitle(titleString);
+                    }
+                }.execute();
+
                 break;
 
             case HAVE_LOCKED_MESSAGES_TOKEN:
