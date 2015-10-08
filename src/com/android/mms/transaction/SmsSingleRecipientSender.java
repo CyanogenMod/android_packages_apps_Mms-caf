@@ -35,13 +35,15 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
     private Uri mUri;
     private static final String TAG = LogTag.TAG;
     private int mPriority = -1;
+    private boolean isExpectMore;
 
     public SmsSingleRecipientSender(Context context, String dest, String msgText, long threadId,
-            boolean requestDeliveryReport, Uri uri, int subId) {
+            boolean requestDeliveryReport, Uri uri, int subId, boolean expectMore) {
         super(context, null, msgText, threadId, subId);
         mRequestDeliveryReport = requestDeliveryReport;
         mDest = dest;
         mUri = uri;
+        isExpectMore = expectMore;
     }
 
     public void setPriority(int priority) {
@@ -186,7 +188,7 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
                     mUri,
                     mContext,
                     SmsReceiver.class);
-
+            intent.putExtra(PhoneConstants.SUBSCRIPTION_KEY, mSubId);
             int requestCode = 0;
             if (i == messageCount -1) {
                 // Changing the requestCode so that a different pending intent
@@ -213,7 +215,7 @@ public class SmsSingleRecipientSender extends SmsMessageSender {
         }
         try {
             smsManager.sendMultipartTextMessage(mDest, mServiceCenter, messages,
-                    sentIntents, deliveryIntents/*, mPriority, false, validityPeriod*/);
+                    sentIntents, deliveryIntents, mPriority, isExpectMore, validityPeriod);
         } catch (Exception ex) {
             Log.e(TAG, "SmsMessageSender.sendMessage: caught", ex);
             throw new MmsException("SmsMessageSender.sendMessage: caught " + ex +

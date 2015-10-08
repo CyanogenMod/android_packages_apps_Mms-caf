@@ -24,6 +24,9 @@ import static android.provider.Telephony.Sms.Intents.SMS_DELIVER_ACTION;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import android.app.Activity;
 import android.app.Service;
@@ -53,6 +56,7 @@ import android.telephony.ServiceState;
 import android.telephony.SmsCbMessage;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
+import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
@@ -84,7 +88,7 @@ public class SmsReceiverService extends Service {
 
     private ServiceHandler mServiceHandler;
     private Looper mServiceLooper;
-    private boolean mSending;
+    private static Map<Integer, Boolean> mSending = new HashMap<Integer, Boolean>();
 
     public static final String MESSAGE_SENT_ACTION =
         "com.android.mms.transaction.MESSAGE_SENT";
@@ -242,7 +246,7 @@ public class SmsReceiverService extends Service {
                 } else if (TelephonyIntents.ACTION_SERVICE_STATE_CHANGED.equals(action)) {
                     handleServiceStateChanged(intent);
                 } else if (ACTION_SEND_MESSAGE.endsWith(action)) {
-                    handleSendMessage();
+                    handleSendMessage(intent);
                 } else if (ACTION_SEND_INACTIVE_MESSAGE.equals(action)) {
                     handleSendInactiveMessage();
                 }
@@ -256,38 +260,59 @@ public class SmsReceiverService extends Service {
     private void handleServiceStateChanged(Intent intent) {
         // If service just returned, start sending out the queued messages
         ServiceState serviceState = ServiceState.newFromBundle(intent.getExtras());
-        int subId = intent.getIntExtra(PhoneConstants.SUBSCRIPTION_KEY, 0);
-        int prefSubId = SubscriptionManager.getDefaultSmsSubId();
+        int subId = intent.getIntExtra(PhoneConstants.SUBSCRIPTION_KEY, -1);
         // if service state is IN_SERVICE & current subscription is same as
         // preferred SMS subscription.i.e.as set under SIM Settings, then
         // sendFirstQueuedMessage.
-        if (serviceState.getState() == ServiceState.STATE_IN_SERVICE &&
-            subId == prefSubId) {
-            sendFirstQueuedMessage();
+        if (serviceState.getState() == ServiceState.STATE_IN_SERVICE) {
+            sendFirstQueuedMessage(subId);
         }
     }
 
-    private void handleSendMessage() {
-        if (!mSending) {
-            sendFirstQueuedMessage();
+    private void handleSendMessage(Intent intent) {
+        int subId = intent.getIntExtra(PhoneConstants.SUBSCRIPTION_KEY,
+                SubscriptionManager.getDefaultSmsSubId());
+        if (mSending.get(subId) == null) {
+           mSending.put(subId, false);
+        }
+        if (!mSending.get(subId)) {
+            sendFirstQueuedMessage(subId);
         }
     }
 
     private void handleSendInactiveMessage() {
         // Inactive messages includes all messages in outbox and queued box.
         moveOutboxMessagesToQueuedBox();
-        sendFirstQueuedMessage();
+        // Process queued messages on all SUB's
+        List<SubscriptionInfo> subInfoList =
+                SubscriptionManager.from(getApplicationContext()).getActiveSubscriptionInfoList();
+        if(subInfoList != null) {
+            for (SubscriptionInfo info : subInfoList)
+            {
+                int subId = info.getSubscriptionId();
+                if (mSending.get(subId) == null) {
+                    mSending.put(subId, false);
+                }
+                if (!mSending.get(subId)) {
+                    sendFirstQueuedMessage(subId);
+                }
+            }
+        }
     }
 
-    public synchronized void sendFirstQueuedMessage() {
+    // Send first queued message of the given subscription
+    public synchronized void sendFirstQueuedMessage(int subscription) {
         boolean success = true;
+        boolean isExpectMore = false;
         // get all the queued messages from the database
         final Uri uri = Uri.parse("content://sms/queued");
         ContentResolver resolver = getContentResolver();
+        String where = "sub_id=?";
+        String[] whereArgs = new String[] {Integer.toString(subscription)};
         Cursor c = SqliteWrapper.query(this, resolver, uri,
-                        SEND_PROJECTION, null, null, "date ASC");   // date ASC so we send out in
-                                                                    // same order the user tried
-                                                                    // to send messages.
+                        SEND_PROJECTION, where, whereArgs, "date ASC"); // date ASC so we send out
+                                                                       // in same order the user
+                                                                       // tried to send messages.
         if (c != null) {
             try {
                 if (c.moveToFirst()) {
@@ -300,10 +325,15 @@ public class SmsReceiverService extends Service {
                     int subId = c.getInt(SEND_COLUMN_SUB_ID);
                     int priority = c.getInt(SEND_COLUMN_PRIORITY);
                     Uri msgUri = ContentUris.withAppendedId(Sms.CONTENT_URI, msgId);
-
+                    // Get the information of is there any messages are pending to process.
+                    // If yes, send this inforamtion to framework to control the link and send all
+                    // messages on same link based on the support in framework
+                    if (c.moveToNext()) {
+                        isExpectMore = true;
+                    }
                     SmsMessageSender sender = new SmsSingleRecipientSender(this,
                             address, msgText, threadId, status == Sms.STATUS_PENDING,
-                            msgUri, subId);
+                            msgUri, subId, isExpectMore);
 
                     if(priority != -1){
                         ((SmsSingleRecipientSender)sender).setPriority(priority);
@@ -319,19 +349,20 @@ public class SmsReceiverService extends Service {
 
                     try {
                         sender.sendMessage(SendingProgressTokenManager.NO_TOKEN);;
-                        mSending = true;
+                        mSending.put(subscription, true);
                     } catch (MmsException e) {
                         Log.e(TAG, "sendFirstQueuedMessage: failed to send message " + msgUri
                                 + ", caught ", e);
-                        mSending = false;
+                        mSending.put(subscription, false);
                         messageFailedToSend(msgUri, SmsManager.RESULT_ERROR_GENERIC_FAILURE);
                         success = false;
                         // Sending current message fails. Try to send more pending messages
                         // if there is any.
-                        sendBroadcast(new Intent(SmsReceiverService.ACTION_SEND_MESSAGE,
-                                null,
+                        Intent intent = new Intent(SmsReceiverService.ACTION_SEND_MESSAGE, null,
                                 this,
-                                SmsReceiver.class));
+                                SmsReceiver.class);
+                        intent.putExtra(PhoneConstants.SUBSCRIPTION_KEY, subscription);
+                        sendBroadcast(intent);
                     }
                 }
             } finally {
@@ -341,16 +372,23 @@ public class SmsReceiverService extends Service {
         if (success) {
             // We successfully sent all the messages in the queue. We don't need to
             // be notified of any service changes any longer.
-            unRegisterForServiceStateChanges();
+            // In case of MSIM don't unregister service state change if there are any messages
+            // pending for process on other subscriptions. There may be a chance of other
+            // subscription is register and waiting for sevice state changes to process the message.
+            if (!(TelephonyManager.getDefault().getPhoneCount() > 1) ||
+                    isUnRegisterAllowed(subscription)) {
+                unRegisterForServiceStateChanges();
+            }
         }
     }
 
     private void handleSmsSent(Intent intent, int error) {
         Uri uri = intent.getData();
         int resultCode = intent.getIntExtra("result", 0);
-        mSending = false;
         boolean sendNextMsg = intent.getBooleanExtra(EXTRA_MESSAGE_SENT_SEND_NEXT, false);
-
+        int subId = intent.getIntExtra(PhoneConstants.SUBSCRIPTION_KEY,
+                SubscriptionManager.getDefaultSmsSubId());
+        mSending.put(subId, false);
         if (LogTag.DEBUG_SEND) {
             Log.v(TAG, "handleSmsSent uri: " + uri + " sendNextMsg: " + sendNextMsg +
                     " resultCode: " + resultCode +
@@ -365,7 +403,8 @@ public class SmsReceiverService extends Service {
                 if (!Sms.moveMessageToFolder(this, uri, Sms.MESSAGE_TYPE_SENT, error)) {
                     Log.e(TAG, "handleSmsSent: failed to move message " + uri + " to sent folder");
                 }
-                sendFirstQueuedMessage();
+                sendFirstQueuedMessage(subId);
+
             }
 
             // Update the notification for failed messages since they may be deleted.
@@ -398,7 +437,7 @@ public class SmsReceiverService extends Service {
         } else {
             messageFailedToSend(uri, error);
             if (sendNextMsg) {
-                sendFirstQueuedMessage();
+                sendFirstQueuedMessage(subId);
             }
         }
     }
@@ -512,10 +551,24 @@ public class SmsReceiverService extends Service {
         if (numUnreadFailed > 0) {
             MessagingNotification.notifySendFailed(getApplicationContext(), true);
         }
-
         // Send any queued messages that were waiting from before the reboot.
-        sendFirstQueuedMessage();
-
+        // // Process queued messages on all SUB's
+        List<SubscriptionInfo> subInfoList =
+                SubscriptionManager.from(getApplicationContext()).getActiveSubscriptionInfoList();
+        if(subInfoList != null) {
+            for (SubscriptionInfo info : subInfoList)
+            {
+                int subId = info.getSubscriptionId();
+                if (mSending.get(subId) == null) {
+                    mSending.put(subId, false);
+                }
+                if (mSending.get(subId) != null) {
+                    if (!mSending.get(subId)) {
+                        sendFirstQueuedMessage(subId);
+                    }
+                }
+            }
+        }
         // Called off of the UI thread so ok to block.
         MessagingNotification.blockingUpdateNewMessageIndicator(
                 this, MessagingNotification.THREAD_ALL, false);
@@ -872,6 +925,39 @@ public class SmsReceiverService extends Service {
         } catch (IllegalArgumentException e) {
             // Allow un-matched register-unregister calls
         }
+    }
+
+    // Returns true, if there are no queued messages on other subscriptions
+    private boolean isUnRegisterAllowed(int subId) {
+        boolean success = true;
+        List<SubscriptionInfo> subInfoList =
+                SubscriptionManager.from(getApplicationContext()).getActiveSubscriptionInfoList();
+        if(subInfoList != null) {
+            final Uri uri = Uri.parse("content://sms/queued");
+            ContentResolver resolver = getContentResolver();
+            String where = "sub_id == ?";
+            for (SubscriptionInfo info : subInfoList) {
+                int subInfoSubId = info.getSubscriptionId();
+                if (subInfoSubId == subId) {
+                    String[] whereArgs = new String[] {Integer.toString(subId)};
+                    Cursor c = SqliteWrapper.query(this, resolver, uri,
+                            SEND_PROJECTION, where, whereArgs, "date ASC");
+                    if (c != null) {
+                        try {
+                            if (c.moveToFirst()) {
+                                success = false;
+                            }
+                        } finally {
+                            c.close();
+                        }
+                    }
+                    if(!success) {
+                        return success;
+                    }
+                }
+            }
+        }
+        return success;
     }
 
     private boolean saveMessageToIcc(SmsMessage sms) {
