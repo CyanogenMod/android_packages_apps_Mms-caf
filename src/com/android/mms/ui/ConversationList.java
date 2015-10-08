@@ -210,6 +210,7 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
     private TextView mSearchHint;
     private View mFabContainer, mSearchRoot;
     private boolean mActionContextMenuEnb;
+    private int mUnreadMessageCount;
 
     // keys for extras and icicles
     private final static String LAST_LIST_POS = "last_list_pos";
@@ -1411,7 +1412,7 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
 //        protected void myonQueryComplete(int token, Object cookie, Cursor cursor) {
 
         @Override
-        protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
+        protected void onQueryComplete(int token, Object cookie, final Cursor cursor) {
             switch (token) {
             case THREAD_LIST_QUERY_TOKEN:
                 mListAdapter.changeCursor(cursor);
@@ -1442,18 +1443,47 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
                 break;
 
             case UNREAD_THREADS_QUERY_TOKEN:
-                int count = 0;
-                if (cursor != null) {
-                    count = cursor.getCount();
-                    cursor.close();
-                }
-                String titleString = sAppTitle;
-                if (count > 0 ) {
-                    sAppTitleWithUnread = getResources().getQuantityString(R.plurals
-                            .app_label_with_unread, count);
-                    titleString = String.format(sAppTitleWithUnread, count);
-                }
-                setTitle(titleString);
+                // iterate through all conversations, summing up unread_message_count
+                // if "unread_message_count" column does not exist - due to database not
+                // properly updated (shouldn't happen?) then simply return the number
+                // of conversations with unread messages (pre MMS-104 implementation)
+
+                // iterate in the background to avoid UI Thread blocking when there are
+                // many conversations
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mUnreadMessageCount = 0;
+                        if (cursor != null) {
+                            try {
+                                int columnIndex = cursor.getColumnIndexOrThrow(Threads.UNREAD_MESSAGE_COUNT);
+
+                                while (cursor.moveToNext()) {
+
+                                    mUnreadMessageCount += cursor.getInt(columnIndex);
+
+                                }
+                            } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
+                                mUnreadMessageCount = cursor.getCount();
+                            } finally {
+                                cursor.close();
+                            }
+                        }
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                String titleString = sAppTitle;
+                                if (mUnreadMessageCount > 0) {
+                                    sAppTitleWithUnread = getResources().getQuantityString(R.plurals
+                                            .app_label_with_unread, mUnreadMessageCount);
+                                    titleString = String.format(sAppTitleWithUnread, mUnreadMessageCount);
+                                }
+                                setTitle(titleString);
+                            }
+                        });
+
+                    }
+                });
                 break;
 
             case HAVE_LOCKED_MESSAGES_TOKEN:
