@@ -46,6 +46,7 @@ import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.AbsListView;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
@@ -397,7 +398,8 @@ public class MessageListAdapter extends CursorAdapter implements Handler.Callbac
             boolean isPreviousUnread =
                     currentItem.getInt(isPreviousItemMms ? COLUMN_MMS_READ : COLUMN_SMS_READ) == 0;
 
-            metadata.shouldShowNewMessagesHeader = metadata.isUnread && !isPreviousUnread;
+            metadata.shouldShowNewMessagesHeader = metadata.isUnread && !isPreviousUnread &&
+                    metadata.isIncoming;
             metadata.isGrouped = isEffectivelySameMsgType(currentItemBoxId, metadata.isMms,
                     previousItemBoxId, isPreviousItemMms);
         }
@@ -675,7 +677,11 @@ public class MessageListAdapter extends CursorAdapter implements Handler.Callbac
             }
             if (headerRoot == null) {
                 // inflate the view stub
-                mli.findViewById(R.id.new_msgs_header_stub).setVisibility(View.VISIBLE);
+                ViewStub stub = (ViewStub) mli.findViewById(R.id.new_msgs_header_stub);
+                if (stub != null) {
+                    stub.inflate();
+                }
+
                 headerRoot = mli.findViewById(R.id.new_msgs_header_root);
             } else {
                 headerRoot.setVisibility(View.VISIBLE);
