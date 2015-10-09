@@ -111,5 +111,5 @@
     <!-- configuration for ignoring CDMA SMS attributes during international roaming -->
     <bool name="config_ignore_sms_attributes">false</bool>
 
-    <integer name="max_chips_parsed">15</integer>
+    <integer name="max_chips_parsed">50</integer>
 </resources>
