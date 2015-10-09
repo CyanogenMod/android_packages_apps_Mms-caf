@@ -258,8 +258,10 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
             } else if (MessageUtils.isWapPushNumber(contact.getNumber())) {
                 mAvatarView.assignContactFromPhone(
                         MessageUtils.getWapPushNumber(contact.getNumber()), true);
+                mAvatarView.assignContactUri(null);
             } else {
                 mAvatarView.assignContactFromPhone(contact.getNumber(), true);
+                mAvatarView.assignContactUri(null);
             }
         } else {
             // TODO get a multiple recipients asset (or do something else)
