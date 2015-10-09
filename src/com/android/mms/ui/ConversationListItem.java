@@ -229,7 +229,11 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
     }
 
     private void updateAvatarView(LookupResponse lookupResponse) {
+        // for Truecaller, lookupResponse will not be null, so it's handled first
+        // setContactUri() to non-null, results in ContactBadgeWithAttribution()
+        // processing of the onClick()
         if (lookupResponse != null) {
+
             // if url exists load into image
             if (!TextUtils.isEmpty(lookupResponse.mPhotoUrl)) {
                 ImageUtils.loadBitampFromUrl(getContext(), lookupResponse.mPhotoUrl, mAvatarView);
@@ -249,6 +253,11 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
             mAvatarView.setContactPhone(lookupResponse.mNumber);
             return;
         }
+
+        // not Truecaller contact, setContactUri() to null so that onClick() is processed
+        // by the super of ContactBadgeWithAttribution(), which is QuickContactBadge()
+        mAvatarView.setContactUri(null);
+
         if (mConversation.getRecipients().size() == 1) {
             Contact contact = mConversation.getRecipients().get(0);
             contact.bindAvatar(mAvatarView);
