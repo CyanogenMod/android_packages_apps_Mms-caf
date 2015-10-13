@@ -249,7 +249,7 @@
   <string name="pref_title_enable_emoticons">Supporto emoticon</string>
   <string name="pref_summary_enable_emoticons">Sostituisci le emoticon testuali con grafica equivalente</string>
   <string name="menu_conversation_options">Opzioni conversazione</string>
-  <string name="pref_title_reset_convopt_to_default">Ripristina predefinito</string>
+  <string name="pref_title_reset_convopt_to_default">Reimposta predefinito</string>
   <string name="pref_summary_reset_convopt_to_default">Ripristina le impostazioni della conversazione a quelle dell\'applicazione</string>
   <string name="pref_title_mms_full_timestamp">Timestamp completi</string>
   <string name="pref_summary_mms_full_timestamp">Visualizza data e ora nei timestamp</string>
@@ -258,6 +258,6 @@
   <string name="pref_title_mms_auto_enable_data">Attiva dati mobili automaticamente</string>
   <string name="pref_summary_mms_auto_enable_data">Attiva automaticamente dati mobili per messaggi MMS</string>
   <string name="adding_selected_recipients_dialog_text">Aggiunta contatti\u2026</string>
-  <string name="pref_title_mms_smart_dialer">Smart Call</string>
+  <string name="pref_title_mms_smart_dialer">Chiamata intelligente</string>
   <string name="pref_summary_mms_smart_dialer">Chiama il contatto posizionando il dispositivo vicino all\'orecchio</string>
 </resources>

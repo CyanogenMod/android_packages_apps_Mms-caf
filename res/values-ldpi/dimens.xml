@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- QuickMessage -->
+    <dimen name="qm_message_height">195dp</dimen>
+</resources>

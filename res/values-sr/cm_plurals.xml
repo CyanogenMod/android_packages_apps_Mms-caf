@@ -19,19 +19,16 @@
   <plurals name="remaining_delay_time">
     <item quantity="one">Слање за 1 секунду, додирни за отказивање.</item>
     <item quantity="few">Слање за %1$d секунде, додирни за отказивање.</item>
-    <item quantity="many">Слање за %1$d секунде, додирни за отказивање.</item>
     <item quantity="other">Слање за %1$d секунде, додирни за отказивање.</item>
   </plurals>
   <plurals name="confirm_delete_messages">
     <item quantity="one">Једна порука ће бити обрисана.</item>
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> поруке ће бити обрисане.</item>
-    <item quantity="many"><xliff:g id="number" example="15">%1$s</xliff:g> поруке ће бити обрисане.</item>
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> поруке ће бити обрисане.</item>
   </plurals>
   <plurals name="confirm_mark_read_conversation">
     <item quantity="one">Једна преписка ће бити означена као прочитана.</item>
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> преписке ће бити означене као прочитане.</item>
-    <item quantity="many"><xliff:g id="number" example="15">%1$s</xliff:g> преписке ће бити означене као прочитане.</item>
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> преписке ће бити означене као прочитане.</item>
   </plurals>
 </resources>

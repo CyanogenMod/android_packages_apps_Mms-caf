@@ -19,12 +19,15 @@ package com.android.mms.quickmessage;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract.Profile;
 import android.support.v4.view.PagerAdapter;
@@ -118,6 +121,11 @@ public class QuickMessagePopup extends Activity {
     // Options menu items
     private static final int MENU_ADD_TO_BLACKLIST = 1;
 
+    // Wake Lock
+    private PowerManager mPowerManager;
+    private WakeLock mWakeLock;
+    private long mWakeLockTimeOut = 5000; // 5 seconds
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,9 +146,11 @@ public class QuickMessagePopup extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         if (mWakeAndUnlock) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+            mPowerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+            mWakeLock = mPowerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK
+             | PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.ON_AFTER_RELEASE, LOG_TAG);
         }
         setContentView(R.layout.dialog_quickmessage);
 
@@ -186,7 +196,7 @@ public class QuickMessagePopup extends Activity {
                     if (qm != null) {
                         dismissKeyboard(qm);
 
-                        if (mCurrentPage < numMessages-1) {
+                        if (mCurrentPage < numMessages - 1) {
                             showNextMessageWithRemove(qm);
                         } else {
                             showPreviousMessageWithRemove(qm);
@@ -259,6 +269,28 @@ public class QuickMessagePopup extends Activity {
                 // Make sure the counter is accurate
                 updateMessageCounter();
             }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mWakeAndUnlock && mWakeLock != null && !mWakeLock.isHeld()) {
+            if (DEBUG) {
+                Log.d(LOG_TAG, "onResume(): acquiring wake lock");
+            }
+            mWakeLock.acquire(mWakeLockTimeOut);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mWakeAndUnlock && mWakeLock != null && mWakeLock.isHeld()) {
+            if (DEBUG) {
+                Log.d(LOG_TAG, "onPause(): releasing wake lock");
+            }
+            mWakeLock.release();
         }
     }
 
