@@ -40,6 +40,7 @@ import android.database.sqlite.SqliteWrapper;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.Telephony.Mms;
@@ -106,7 +107,7 @@ public class ManageSimMessages extends Activity
     private Uri mIccUri;
     private ContentResolver mContentResolver;
     private Cursor mCursor = null;
-    private ListView mSimList;
+    private MessageListView mSimList;
     private TextView mMessage;
     private MessageListAdapter mListAdapter = null;
     private AsyncQueryHandler mQueryHandler = null;
@@ -147,7 +148,7 @@ public class ManageSimMessages extends Activity
         mContentResolver = getContentResolver();
         mQueryHandler = new QueryHandler(mContentResolver, this);
         setContentView(R.layout.sim_list);
-        mSimList = (ListView) findViewById(R.id.messages);
+        mSimList = (MessageListView) findViewById(R.id.messages);
         mMessage = (TextView) findViewById(R.id.empty_message);
 
         ActionBar actionBar = getActionBar();
@@ -206,10 +207,11 @@ public class ManageSimMessages extends Activity
                 } else if (mListAdapter == null) {
                     // Note that the MessageListAdapter doesn't support auto-requeries. If we
                     // want to respond to changes we'd need to add a line like:
-                    //   mListAdapter.setOnDataSetChangedListener(mDataSetChangedListener);
+                    // mListAdapter.setOnDataSetChangedListener(mDataSetChangedListener);
                     // See ComposeMessageActivity for an example.
                     mListAdapter = new MessageListAdapter(
                             mParent, mCursor, mSimList, false, null, null, null);
+
                     mSimList.setAdapter(mListAdapter);
                     mSimList.setOnCreateContextMenuListener(mParent);
                     mSimList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -221,6 +223,7 @@ public class ManageSimMessages extends Activity
                             }
                         }
                     });
+
                     updateState(SHOW_LIST);
                 } else {
                     mListAdapter.changeCursor(mCursor);

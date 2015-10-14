@@ -25,7 +25,7 @@
     android:paddingEnd="16dp"
     android:layout_gravity="center">
 
-    <ListView
+    <com.android.mms.ui.MessageListView
         android:id="@+id/messages"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
