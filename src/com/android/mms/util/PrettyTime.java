@@ -41,10 +41,12 @@ public class PrettyTime {
      */
     public PrettyTime(Context context) {
         this();
-        if (context != null) {
-            mContext = context;
-            updateReferenceTime();
+        if (context == null) {
+            throw new IllegalArgumentException("context must not be null");
         }
+
+        mContext = context;
+        updateReferenceTime();
     }
 
     public void updateReferenceTime() {
