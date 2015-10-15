@@ -4,9 +4,11 @@ import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.android.mms.model.TextModel;
 import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.Presenter;
@@ -16,7 +18,7 @@ import com.android.mms.views.ThumbnailMessageView;
 
 import java.lang.ref.WeakReference;
 
-public class TextPresenter extends RecyclePresenter<TextView, TextModel> {
+public class TextPresenter extends RecyclePresenter<TextView, TextModel> implements OnClickListener {
 
     private ViewTreeObserver.OnPreDrawListener mObserver;
 
@@ -40,8 +42,9 @@ public class TextPresenter extends RecyclePresenter<TextView, TextModel> {
     }
 
     @Override
-    protected void bindMessageAttachmentView(TextView textView, final PresenterOptions presenterOptions) {
+    protected void bindMessageAttachmentView(final TextView textView, final PresenterOptions presenterOptions) {
         textView.setText(getModel().getText());
+
         textView.setTextColor(
                 presenterOptions.isIncomingMessage() ? mIncomingWhite : mIncomingBlack);
 
@@ -50,6 +53,7 @@ public class TextPresenter extends RecyclePresenter<TextView, TextModel> {
         }
 
         MessageUtils.tintBackground(textView, presenterOptions.getAccentColor());
+
         final TextView finalTextView = textView;
         mObserver = new ViewTreeObserver.OnPreDrawListener() {
             @Override
@@ -60,6 +64,12 @@ public class TextPresenter extends RecyclePresenter<TextView, TextModel> {
             }
         };
         textView.getViewTreeObserver().addOnPreDrawListener(mObserver);
+
+
+        textView.setClickable(true);
+        textView.setOnClickListener(this);
+
+
     }
 
     @Override
@@ -78,5 +88,12 @@ public class TextPresenter extends RecyclePresenter<TextView, TextModel> {
             textView.getViewTreeObserver().removeOnPreDrawListener(mObserver);
             mObserver = null;
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        TextView textView = (TextView)v;
+        String text = textView.getText().toString();
+        Toast.makeText(getContext(), text, Toast.LENGTH_LONG).show();
     }
 }
