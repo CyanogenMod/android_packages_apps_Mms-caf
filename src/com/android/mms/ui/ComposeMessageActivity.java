@@ -4320,27 +4320,31 @@ public class ComposeMessageActivity extends Activity
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (s.toString().getBytes().length <= SUBJECT_MAX_LENGTH) {
+            if (s == null) {
+                return;
+            }
+            String text = s.toString();
+            int byteLen = text.getBytes().length;
+            if (byteLen <= SUBJECT_MAX_LENGTH) {
                 mWorkingMessage.setSubject(s, true);
                 updateSendButtonState();
-                if (s.toString().getBytes().length == SUBJECT_MAX_LENGTH
-                        && before < SUBJECT_MAX_LENGTH) {
-                    String toast = getString(R.string.subject_full, SUBJECT_MAX_LENGTH);
-                    Toast.makeText(ComposeMessageActivity.this, toast,
-                            Toast.LENGTH_SHORT).show();
-                }
             }
         }
 
         @Override
         public void afterTextChanged(Editable s) {
-            if (s.toString().getBytes().length > SUBJECT_MAX_LENGTH) {
-                String subject = s.toString();
+            if (s == null) {
+                return;
+            }
+            String text = s.toString();
+            int byteLen = text.getBytes().length;
+            if (byteLen >= SUBJECT_MAX_LENGTH) {
                 String toast = getString(R.string.subject_full, SUBJECT_MAX_LENGTH);
-                Toast.makeText(ComposeMessageActivity.this, toast,
-                        Toast.LENGTH_SHORT).show();
-                s.clear();
-                s.append(subject.substring(0, SUBJECT_MAX_LENGTH));
+                Toast.makeText(ComposeMessageActivity.this, toast, Toast.LENGTH_SHORT).show();
+                if (byteLen > SUBJECT_MAX_LENGTH) {
+                    text = text.substring(0, text.length() - 2);
+                    s.replace(0, s.length() - 1, text);
+                }
             }
         }
     };
