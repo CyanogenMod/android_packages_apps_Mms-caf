@@ -347,8 +347,10 @@ public class MmsApp extends Application implements Application.ActivityLifecycle
     }
 
     @Override
-    public void onActivityStarted(Activity activity) {}
+    public void onActivityStarted(Activity activity) {
 
+    }
+    
     private LookupHandlerThread getLookupHandlerThread() {
         if (mLookupHandlerThread == null) {
             mLookupHandlerThread = new LookupHandlerThread("PhoneNumberLookupHandler", this);
