@@ -71,9 +71,9 @@ public class PduLoaderManager extends BackgroundLoaderManager {
         mContext = context;
     }
 
-    public ItemLoadedFuture getPdu(Uri uri, boolean requestSlideshow,
+    public ItemLoadedFuture getPdu(Context context, Uri uri, boolean requestSlideshow,
             final ItemLoadedCallback<PduLoaded> callback) {
-        if (uri == null) {
+        if (uri == null || context == null) {
             throw new NullPointerException();
         }
 
@@ -106,7 +106,7 @@ public class PduLoaderManager extends BackgroundLoaderManager {
 
         if (newTaskRequired) {
             mPendingTaskUris.add(uri);
-            Runnable task = new PduTask(uri, requestSlideshow);
+            Runnable task = new PduTask(context, uri, requestSlideshow);
             mExecutor.execute(task);
         }
         return new ItemLoadedFuture() {
@@ -157,13 +157,15 @@ public class PduLoaderManager extends BackgroundLoaderManager {
     public class PduTask implements Runnable {
         private final Uri mUri;
         private final boolean mRequestSlideshow;
+        private Context mContext;
 
-        public PduTask(Uri uri, boolean requestSlideshow) {
-            if (uri == null) {
+        public PduTask(Context context, Uri uri, boolean requestSlideshow) {
+            if (uri == null || context == null) {
                 throw new NullPointerException();
             }
             mUri = uri;
             mRequestSlideshow = requestSlideshow;
+            mContext = context;
         }
 
         /** {@inheritDoc} */
