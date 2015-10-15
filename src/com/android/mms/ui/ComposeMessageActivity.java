@@ -5522,6 +5522,9 @@ public class ComposeMessageActivity extends Activity
             address = number[0];
         }
         String text = msgItem.mBody;
+        if (TextUtils.isEmpty(text)) {
+            return false;
+        }
         long timestamp = msgItem.mDate != 0 ? msgItem.mDate : System.currentTimeMillis();
 
         SmsManager sm = SmsManager.getDefault();
