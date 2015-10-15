@@ -79,6 +79,7 @@ public class MmsApp extends Application implements Application.ActivityLifecycle
     private LookupHandlerThread mLookupHandlerThread;
     private HashSet<PhoneNumberLookupListener> mLookupListeners;
     private boolean isPhoneNumberLookupInitialized;
+    private Activity mForegroundActivity;
 
     @Override
     public void onCreate() {
@@ -347,7 +348,13 @@ public class MmsApp extends Application implements Application.ActivityLifecycle
     }
 
     @Override
-    public void onActivityStarted(Activity activity) {}
+    public void onActivityStarted(Activity activity) {
+        mForegroundActivity = activity;
+    }
+
+    public Activity getForegroundActivity() {
+        return mForegroundActivity;
+    }
 
     private LookupHandlerThread getLookupHandlerThread() {
         if (mLookupHandlerThread == null) {
