@@ -240,7 +240,7 @@ public class MessageItem {
             boolean loadSlideshow = mMessageType != PduHeaders.MESSAGE_TYPE_NOTIFICATION_IND;
 
             mItemLoadedFuture = MmsApp.getApplication().getPduLoaderManager()
-                    .getPdu(mMessageUri, loadSlideshow,
+                    .getPdu(mContext, mMessageUri, loadSlideshow,
                     new PduLoadedMessageItemCallback());
 
         } else {
