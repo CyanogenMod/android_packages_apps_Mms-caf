@@ -59,12 +59,15 @@
                 android:layout_marginTop="4dp"
                 android:visibility="gone">
 
-                <EditText android:id="@+id/subject"
+                <EditText
+                    android:id="@+id/subject"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:capitalize="sentences"
                     android:autoText="true"
+                    android:maxLength="40"
+                    android:inputType="textNoSuggestions"
                     android:singleLine="true"
                     android:hint="@string/subject_hint"/>
 
