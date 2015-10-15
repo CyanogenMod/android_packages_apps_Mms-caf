@@ -71,7 +71,7 @@ public class PduLoaderManager extends BackgroundLoaderManager {
         mContext = context;
     }
 
-    public ItemLoadedFuture getPdu(Uri uri, boolean requestSlideshow,
+    public ItemLoadedFuture getPdu(Context activityContext, Uri uri, boolean requestSlideshow,
             final ItemLoadedCallback<PduLoaded> callback) {
         if (uri == null) {
             throw new NullPointerException();
@@ -106,7 +106,7 @@ public class PduLoaderManager extends BackgroundLoaderManager {
 
         if (newTaskRequired) {
             mPendingTaskUris.add(uri);
-            Runnable task = new PduTask(uri, requestSlideshow);
+            Runnable task = new PduTask(activityContext, uri, requestSlideshow);
             mExecutor.execute(task);
         }
         return new ItemLoadedFuture() {
@@ -157,13 +157,15 @@ public class PduLoaderManager extends BackgroundLoaderManager {
     public class PduTask implements Runnable {
         private final Uri mUri;
         private final boolean mRequestSlideshow;
+        private Context mActivityContext;
 
-        public PduTask(Uri uri, boolean requestSlideshow) {
-            if (uri == null) {
+        public PduTask(Context activityContext, Uri uri, boolean requestSlideshow) {
+            if (uri == null || activityContext == null) {
                 throw new NullPointerException();
             }
             mUri = uri;
             mRequestSlideshow = requestSlideshow;
+            mActivityContext = activityContext;
         }
 
         /** {@inheritDoc} */
@@ -183,7 +185,7 @@ public class PduLoaderManager extends BackgroundLoaderManager {
             try {
                 pdu = mPduPersister.load(mUri);
                 if (pdu != null && mRequestSlideshow) {
-                    slideshow = SlideshowModel.createFromPduBody(mContext,
+                    slideshow = SlideshowModel.createFromPduBody(mActivityContext,
                             ((MultimediaMessagePdu)pdu).getBody());
                 }
             } catch (final MmsException e) {
