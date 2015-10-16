@@ -525,6 +525,11 @@ public class ComposeMessageActivity extends Activity
     private SimInfo mCurrentSimInfo;
     private ListPopupWindow mSimSelectionPopup;
 
+    private boolean mActionModeActive;
+    private boolean mActionModeForwardable;
+    private boolean mActionModeReset;
+    private int mActionModePosition;
+
     @SuppressWarnings("unused")
     public static void log(String logMsg) {
         Thread current = Thread.currentThread();
@@ -2525,6 +2530,8 @@ public class ComposeMessageActivity extends Activity
         if (mSendButtonContactImageTask != null) {
             mSendButtonContactImageTask.cancel(true);
         }
+
+        mActionModeReset = false;
 
         if (mMsgListAdapter != null) {
             mMsgListAdapter.clearCaches();
@@ -5707,11 +5714,15 @@ public class ComposeMessageActivity extends Activity
             logMultiChoice("onCreateActionMode");
             mMsgListAdapter.setMultiManageMode(MessageUtils.SELECTION_MODE);
             // reset statics
-            mMmsSelected = 0;
-            mUnlockedCount = 0;
-            mCheckedCount = 0;
+            mActionModeReset = true;
+            if (!mActionModeActive) {
+                mMmsSelected = 0;
+                mUnlockedCount = 0;
+                mCheckedCount = 0;
+            }
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.compose_multi_select_menu, menu);
+
             return true;
         }
 
@@ -5728,7 +5739,14 @@ public class ComposeMessageActivity extends Activity
             mStatusBarColor = getWindow().getStatusBarColor();
             getWindow().setStatusBarColor(
                     getResources().getColor(R.color.action_mode_status_bar_color));
+            if (mActionModeActive) {
+                mCheckedCount = getListView().getCheckedItemCount();
+                customMenuVisibility(mode, mCheckedCount, mActionModePosition, false);
+                mode.setTitle(getString(R.string.selected_count, mCheckedCount));
 
+                mode.getMenu().findItem(R.id.selection_toggle).setTitle(getString(
+                        allItemsSelected() ? R.string.deselected_all : R.string.selected_all));
+            }
             return true;
         }
 
@@ -5974,6 +5992,12 @@ public class ComposeMessageActivity extends Activity
             mMsgListAdapter.setMultiManageMode(MessageUtils.INVALID_MODE);
             // restore status bar color
             getWindow().setStatusBarColor(mStatusBarColor);
+
+            // don't clear mActionModeActive is we are here because the Activity is
+            // being stopped
+            if (mActionModeReset) {
+                mActionModeActive = false;
+            }
         }
 
         private void updateUnlockedCount(int lock, boolean checked) {
@@ -6017,6 +6041,7 @@ public class ComposeMessageActivity extends Activity
                 int position, boolean checked) {
             Menu menu = mode.getMenu();
 
+
             // all locked show unlock, other wise show lock.
             menu.findItem(R.id.lock).setTitle(getString(
                         mUnlockedCount == 0 ? R.string.menu_lock : R.string.menu_unlock));
@@ -6050,6 +6075,8 @@ public class ComposeMessageActivity extends Activity
                 } else {
                     if (getResources().getBoolean(R.bool.config_forwardconv)) {
                         mode.getMenu().findItem(R.id.forward).setVisible(true);
+                    } else {
+                        mode.getMenu().findItem(R.id.forward).setVisible(false);
                     }
                     mode.getMenu().findItem(R.id.copy_to_sim).setVisible(true);
                     mode.getMenu().findItem(R.id.copy).setVisible(true);
@@ -6078,7 +6105,16 @@ public class ComposeMessageActivity extends Activity
                                     getContext().getString(R.string.menu_lock));
                 }
 
-                mode.getMenu().findItem(R.id.forward).setVisible(isMessageForwardable(position));
+                // when customMenuVisibility() is called from onPrepareActionMenu() as
+                // opposed to onItemCheckedStateChanged(), the mMsgListView() is not
+                // valid yet and isMessageForwardable() doesn't return correct
+                // result. Remember the forwardability state when mActionMode was
+                // activated and use it here when restoring ActionMode state after
+                // being Stopped()
+                if (!mActionModeActive) {
+                    mActionModeForwardable = isMessageForwardable(position);
+                }
+                mode.getMenu().findItem(R.id.forward).setVisible(mActionModeForwardable);
 
                 if (mMmsSelected > 0) {
                     mode.getMenu().findItem(R.id.copy_to_sim).setVisible(false);
@@ -6130,6 +6166,8 @@ public class ComposeMessageActivity extends Activity
             logMultiChoice("onItemCheckedStateChanged... position=" + position
                     + ", checked=" + checked);
 
+            mActionModePosition = position;
+
             mCheckedCount = getListView().getCheckedItemCount();
             updateStatics(position, checked);
             customMenuVisibility(mode, mCheckedCount, position, checked);
@@ -6137,6 +6175,7 @@ public class ComposeMessageActivity extends Activity
 
             mode.getMenu().findItem(R.id.selection_toggle).setTitle(getString(
                     allItemsSelected() ? R.string.deselected_all : R.string.selected_all));
+            mActionModeActive = true;
         }
 
         private boolean allItemsSelected() {
