@@ -193,7 +193,6 @@ import com.android.mms.ui.zoom.ZoomGestureOverlayView.IZoomListener;
 import com.android.mms.util.DraftCache;
 import com.android.mms.util.IntentUtils;
 import com.android.mms.util.PhoneNumberFormatter;
-import com.android.mms.util.PrettyTime;
 import com.android.mms.util.SendingProgressTokenManager;
 import com.android.mms.util.SmileyParser;
 import com.android.mms.util.UnicodeFilter;
@@ -5588,8 +5587,6 @@ public class ComposeMessageActivity extends Activity
     }
 
     private class ModeCallback implements ListView.MultiChoiceModeListener {
-        // need define variable to keep info of mms count, lock count, unlock
-        // count.
         private int mMmsSelected = 0;
         private int mUnlockedCount = 0;
         private int mCheckedCount = 0;
@@ -5729,6 +5726,16 @@ public class ComposeMessageActivity extends Activity
             getWindow().setStatusBarColor(
                     getResources().getColor(R.color.action_mode_status_bar_color));
 
+            int checkedCount = getListView().getCheckedItemCount();
+            if (checkedCount > 0) { // action mode was restarted
+                updateCheckedStatus(mode, checkedCount);
+                // loop through checked items and update statistics
+                SparseBooleanArray checkedList = getListView().getCheckedItemPositions();
+                for (int i = 0; i < checkedList.size(); i++) {
+                    customMenuVisibility(mode, checkedCount, checkedList.keyAt(i),
+                            checkedList.valueAt(i));
+                }
+            }
             return true;
         }
 
@@ -6016,7 +6023,6 @@ public class ComposeMessageActivity extends Activity
         private void customMenuVisibility(ActionMode mode, int checkedCount,
                 int position, boolean checked) {
             Menu menu = mode.getMenu();
-
             // all locked show unlock, other wise show lock.
             menu.findItem(R.id.lock).setTitle(getString(
                         mUnlockedCount == 0 ? R.string.menu_lock : R.string.menu_unlock));
@@ -6050,6 +6056,8 @@ public class ComposeMessageActivity extends Activity
                 } else {
                     if (getResources().getBoolean(R.bool.config_forwardconv)) {
                         mode.getMenu().findItem(R.id.forward).setVisible(true);
+                    } else {
+                        mode.getMenu().findItem(R.id.forward).setVisible(false);
                     }
                     mode.getMenu().findItem(R.id.copy_to_sim).setVisible(true);
                     mode.getMenu().findItem(R.id.copy).setVisible(true);
@@ -6130,12 +6138,15 @@ public class ComposeMessageActivity extends Activity
             logMultiChoice("onItemCheckedStateChanged... position=" + position
                     + ", checked=" + checked);
 
-            mCheckedCount = getListView().getCheckedItemCount();
-            updateStatics(position, checked);
+            updateCheckedStatus(mode, getListView().getCheckedItemCount());
             customMenuVisibility(mode, mCheckedCount, position, checked);
-            mode.setTitle(getString(R.string.selected_count, mCheckedCount));
+            updateStatics(position, checked);
+        }
 
-            mode.getMenu().findItem(R.id.selection_toggle).setTitle(getString(
+        private void updateCheckedStatus(ActionMode actionMode, int checkedCount) {
+            mCheckedCount = checkedCount;
+            actionMode.setTitle(getString(R.string.selected_count, mCheckedCount));
+            actionMode.getMenu().findItem(R.id.selection_toggle).setTitle(getString(
                     allItemsSelected() ? R.string.deselected_all : R.string.selected_all));
         }
 
