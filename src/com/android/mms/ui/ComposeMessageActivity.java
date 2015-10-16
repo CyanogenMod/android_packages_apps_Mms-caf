@@ -5712,6 +5712,7 @@ public class ComposeMessageActivity extends Activity
             mCheckedCount = 0;
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.compose_multi_select_menu, menu);
+
             return true;
         }
 
@@ -5729,6 +5730,14 @@ public class ComposeMessageActivity extends Activity
             getWindow().setStatusBarColor(
                     getResources().getColor(R.color.action_mode_status_bar_color));
 
+            mCheckedCount = getListView().getCheckedItemCount();
+            if (mCheckedCount > 0) {
+                customMenuVisibility(mode, mCheckedCount, getListView().getCheckedItemPosition(), false);
+                mode.setTitle(getString(R.string.selected_count, mCheckedCount));
+
+                mode.getMenu().findItem(R.id.selection_toggle).setTitle(getString(
+                        allItemsSelected() ? R.string.deselected_all : R.string.selected_all));
+            }
             return true;
         }
 
@@ -6017,6 +6026,7 @@ public class ComposeMessageActivity extends Activity
                 int position, boolean checked) {
             Menu menu = mode.getMenu();
 
+
             // all locked show unlock, other wise show lock.
             menu.findItem(R.id.lock).setTitle(getString(
                         mUnlockedCount == 0 ? R.string.menu_lock : R.string.menu_unlock));
@@ -6050,6 +6060,8 @@ public class ComposeMessageActivity extends Activity
                 } else {
                     if (getResources().getBoolean(R.bool.config_forwardconv)) {
                         mode.getMenu().findItem(R.id.forward).setVisible(true);
+                    } else {
+                        mode.getMenu().findItem(R.id.forward).setVisible(false);
                     }
                     mode.getMenu().findItem(R.id.copy_to_sim).setVisible(true);
                     mode.getMenu().findItem(R.id.copy).setVisible(true);
