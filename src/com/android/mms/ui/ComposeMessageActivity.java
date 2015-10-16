@@ -525,6 +525,10 @@ public class ComposeMessageActivity extends Activity
     private SimInfo mCurrentSimInfo;
     private ListPopupWindow mSimSelectionPopup;
 
+    private boolean mActionModeActive;
+    private int mActionModePosition;
+    private boolean mActionModeChecked;
+
     @SuppressWarnings("unused")
     public static void log(String logMsg) {
         Thread current = Thread.currentThread();
@@ -5707,11 +5711,14 @@ public class ComposeMessageActivity extends Activity
             logMultiChoice("onCreateActionMode");
             mMsgListAdapter.setMultiManageMode(MessageUtils.SELECTION_MODE);
             // reset statics
-            mMmsSelected = 0;
-            mUnlockedCount = 0;
-            mCheckedCount = 0;
+            if (!mActionModeActive) {
+                mMmsSelected = 0;
+                mUnlockedCount = 0;
+                mCheckedCount = 0;
+            }
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.compose_multi_select_menu, menu);
+
             return true;
         }
 
@@ -5728,7 +5735,15 @@ public class ComposeMessageActivity extends Activity
             mStatusBarColor = getWindow().getStatusBarColor();
             getWindow().setStatusBarColor(
                     getResources().getColor(R.color.action_mode_status_bar_color));
+            if (mActionModeActive) {
+                mCheckedCount = getListView().getCheckedItemCount();
+                // updateStatics(mActionModePosition, mActionModeChecked);
+                customMenuVisibility(mode, mCheckedCount, mActionModePosition, mActionModeChecked);
+                mode.setTitle(getString(R.string.selected_count, mCheckedCount));
 
+                mode.getMenu().findItem(R.id.selection_toggle).setTitle(getString(
+                        allItemsSelected() ? R.string.deselected_all : R.string.selected_all));
+            }
             return true;
         }
 
@@ -5863,6 +5878,7 @@ public class ComposeMessageActivity extends Activity
                 break;
             }
             mode.finish();
+            mActionModeActive = false;
             return true;
         }
 
@@ -6017,6 +6033,7 @@ public class ComposeMessageActivity extends Activity
                 int position, boolean checked) {
             Menu menu = mode.getMenu();
 
+
             // all locked show unlock, other wise show lock.
             menu.findItem(R.id.lock).setTitle(getString(
                         mUnlockedCount == 0 ? R.string.menu_lock : R.string.menu_unlock));
@@ -6129,6 +6146,10 @@ public class ComposeMessageActivity extends Activity
                 long id, boolean checked) {
             logMultiChoice("onItemCheckedStateChanged... position=" + position
                     + ", checked=" + checked);
+
+            mActionModeActive = true;
+            mActionModePosition = position;
+            mActionModeChecked = checked;
 
             mCheckedCount = getListView().getCheckedItemCount();
             updateStatics(position, checked);
