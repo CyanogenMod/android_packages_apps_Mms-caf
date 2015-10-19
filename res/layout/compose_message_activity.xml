@@ -59,11 +59,18 @@
                 android:layout_marginTop="4dp"
                 android:visibility="gone">
 
+                <!--
+                    Need textNoSuggestions because once you hit the programmatic threshold it will
+                     continue inputing characters into the suggestion buffer.  thus forcing you
+                     to backspace all of those characters in order to begin removing characters in
+                     this edit text field.  This is an edge case of hitting the subject length limit
+                -->
                 <EditText android:id="@+id/subject"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:capitalize="sentences"
+                    android:inputType="textNoSuggestions"
                     android:autoText="true"
                     android:singleLine="true"
                     android:hint="@string/subject_hint"/>
