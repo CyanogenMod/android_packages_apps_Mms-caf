@@ -26,6 +26,7 @@ public class BlockCallerDialogFragment extends DialogFragment
     public static final int ORIGIN_INCALL_NOTIFICATION = 0;
     public static final int ORIGIN_INCALL_ACTIVITY = 1;
     public static final int ORIGIN_CONTACT_CARD = 2;
+    public static final int ORIGIN_MMS = 3;
     private String mProgressMessage;
 
     private CheckBox mCheckBox;

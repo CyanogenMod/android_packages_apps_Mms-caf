@@ -171,6 +171,7 @@ import com.android.mms.MmsApp;
 import com.android.mms.MmsConfig;
 import com.android.mms.R;
 import com.android.mms.TempFileProvider;
+import com.android.mms.blacklist.BlockCallerDialogFragment;
 import com.android.mms.data.Contact;
 import com.android.mms.data.ContactList;
 import com.android.mms.data.Conversation;
@@ -3222,6 +3223,16 @@ public class ComposeMessageActivity extends Activity
 
     }
 
+    public void confirmBlockUsersFromThreads(String number) {
+        BlockCallerDialogFragment f = new BlockCallerDialogFragment();
+        Bundle bundle = new Bundle();
+        // API only takes a list currently
+        bundle.putStringArray(BlockCallerDialogFragment.NUMBERS_EXTRA, new String[] { number });
+        bundle.putInt(BlockCallerDialogFragment.ORIGIN_EXTRA, BlockCallerDialogFragment.ORIGIN_MMS);
+        f.setArguments(bundle);
+        f.show(this.getFragmentManager(), "block_caller");
+    }
+
     /**
      *  Pop up a dialog confirming adding the current number to the blacklist
      */
@@ -3231,21 +3242,7 @@ public class ComposeMessageActivity extends Activity
         if (TextUtils.isEmpty(number)) {
             return;
         }
-
-        // Show dialog
-        final String message = getString(R.string.add_to_blacklist_message, number);
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.add_to_blacklist)
-                .setMessage(message)
-                .setPositiveButton(R.string.alert_dialog_yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        BlacklistUtils.addOrUpdate(getApplicationContext(), number,
-                                BlacklistUtils.BLOCK_MESSAGES, BlacklistUtils.BLOCK_MESSAGES);
-                    }
-                })
-                .setNegativeButton(R.string.alert_dialog_no, null)
-                .show();
+        confirmBlockUsersFromThreads(number);
     }
 
     private String getSenderNumber() {

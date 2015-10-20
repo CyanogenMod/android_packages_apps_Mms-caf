@@ -1075,7 +1075,7 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
         BlockCallerDialogFragment f = new BlockCallerDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putStringArray(BlockCallerDialogFragment.NUMBERS_EXTRA, numbers);
-        bundle.putInt(BlockCallerDialogFragment.ORIGIN_EXTRA, BlockCallerDialogFragment.ORIGIN_CONTACT_CARD);
+        bundle.putInt(BlockCallerDialogFragment.ORIGIN_EXTRA, BlockCallerDialogFragment.ORIGIN_MMS);
         f.setArguments(bundle);
         f.show(this.getFragmentManager(), "block_caller");
     }
