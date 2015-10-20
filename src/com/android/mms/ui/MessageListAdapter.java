@@ -289,16 +289,10 @@ public class MessageListAdapter extends CursorAdapter implements Handler.Callbac
             }
         };
 
-        boolean managedTimeInstance = looper != null;
-        if (managedTimeInstance) {
-            mPrettyTime = new PrettyTime(mContext);
-            mTimestampUpdater = new Handler(looper, this);
-            mTimestampUpdater.sendEmptyMessageDelayed(HANDLER_MSG_UPDATE_TIME,
-                    TIMESTAMP_UPDATE_FREQUENCY);
-        } else {
-            mPrettyTime = new PrettyTime();
-        }
-
+        mPrettyTime = new PrettyTime(mContext);
+        mTimestampUpdater = new Handler(looper, this);
+        mTimestampUpdater.sendEmptyMessageDelayed(HANDLER_MSG_UPDATE_TIME,
+                TIMESTAMP_UPDATE_FREQUENCY);
         mMetadataPool = new MetadataPool();
     }
 

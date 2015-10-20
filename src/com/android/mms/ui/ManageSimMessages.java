@@ -40,6 +40,7 @@ import android.database.sqlite.SqliteWrapper;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.Telephony.Mms;
@@ -209,8 +210,7 @@ public class ManageSimMessages extends Activity
                     // mListAdapter.setOnDataSetChangedListener(mDataSetChangedListener);
                     // See ComposeMessageActivity for an example.
                     mListAdapter = new MessageListAdapter(
-                            mParent, mCursor, mSimList, false, null, null, null);
-
+                            mParent, mCursor, mSimList, false, null, null, Looper.getMainLooper());
                     mSimList.setAdapter(mListAdapter);
                     mSimList.setOnCreateContextMenuListener(mParent);
                     mSimList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
