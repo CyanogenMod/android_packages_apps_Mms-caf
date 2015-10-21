@@ -41,6 +41,13 @@ import com.android.mms.MmsApp;
 import com.android.mms.R;
 import com.android.mms.ui.MessageUtils;
 
+// TODO - currently, the onUpdate() listeners are only called when the contacts have been fetched
+// by the View displaying them. In order to generate this fetch, the View has to be redrawn and
+// something has to trigger this redraw. When the cache is invalidated (due to contact delete/
+// update) the view redraw needs to be triggered; added onInvalidate() listeners for this purpose.
+// But I think the Contacts logic should be rewritten so that onUpdate() is called when the
+// contact has been updated to avoid this circuitous way of operating.
+
 public class Contact {
     public static final int CONTACT_METHOD_TYPE_UNKNOWN = 0;
     public static final int CONTACT_METHOD_TYPE_PHONE = 1;
@@ -69,6 +76,12 @@ public class Contact {
     };
 
     private final static HashSet<UpdateListener> mListeners = new HashSet<UpdateListener>();
+
+    // the onUpdate() listeners are not triggered until the contact is fetched, use
+    // invalidateListeners() to trigger the view with contacts refresh, which will
+    // in turn fetch the contacts and onUpdate() listener will be triggered
+    private final static HashSet<InvalidateListener> mInvalidateListeners = new
+            HashSet<InvalidateListener>();
 
     private static Runnable invalidateCache = new Runnable() {
         @Override
@@ -122,6 +135,10 @@ public class Contact {
 
     public interface UpdateListener {
         public void onUpdate(Contact updated);
+    }
+
+    public interface InvalidateListener {
+        public void onInvalidate();
     }
 
     private Contact(String number, String name) {
@@ -215,6 +232,16 @@ public class Contact {
         // updated with the latest info. They redraw themselves when we call the
         // listener's onUpdate().
         sContactCache.invalidate();
+
+        // notify invalidate listeners
+        synchronized (mInvalidateListeners) {
+            for (InvalidateListener l : mInvalidateListeners) {
+                if (Log.isLoggable(LogTag.CONTACT, Log.DEBUG)) {
+                    Log.d(TAG, "updating " + l);
+                }
+                l.onInvalidate();
+            }
+        }
     }
 
     public boolean isMe() {
@@ -354,6 +381,18 @@ public class Contact {
     public static void removeListener(UpdateListener l) {
         synchronized (mListeners) {
             mListeners.remove(l);
+        }
+    }
+
+    public static void addInvalidateListener(InvalidateListener l) {
+        synchronized (mInvalidateListeners) {
+            mInvalidateListeners.add(l);
+        }
+    }
+
+    public static void removeInvalidateListener(InvalidateListener l) {
+        synchronized (mInvalidateListeners) {
+            mInvalidateListeners.remove(l);
         }
     }
 

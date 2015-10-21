@@ -237,6 +237,17 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
         }
     };
 
+    // Contact InvalidateListener indicates when the Contact Cache has been invalidated due to
+    // a contact update or deletion. Force the adapter to refresh the views, which will result
+    // in contact fetching, which in turn, results in receiving onUpdate() notifications from
+    // the Contact
+    private final Contact.InvalidateListener mInvalidateListener = new Contact.InvalidateListener() {
+        @Override
+        public void onInvalidate() {
+            mListAdapter.notifyDataSetChanged();;
+        }
+    };
+
     private StickyListHeadersListView getListView() {
         return mListHeadersListView;
     }
@@ -306,6 +317,7 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
 
         View actionButton = findViewById(R.id.floating_action_button);
         actionButton.setOnClickListener(mComposeClickHandler);
+        Contact.addInvalidateListener(mInvalidateListener);
 
     }
 
@@ -362,6 +374,8 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
         mListAdapter.setOnContentChangedListener(mContentChangedListener);
         mIsRunning = true;
     }
+
+
 
     private ContentObserver mBlacklistObserver = new ContentObserver(mHandler) {
         @Override
@@ -617,6 +631,7 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
 
         MmsApp.getApplication().removePhoneNumberLookupListener(mListAdapter);
         MessageUtils.removeDialogs();
+        Contact.removeInvalidateListener(mInvalidateListener);
     }
 
     private void unbindListeners(final Collection<Long> threadIds) {
@@ -1764,5 +1779,4 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
         String s = String.format(format, args);
         Log.d(TAG, "[" + Thread.currentThread().getId() + "] " + s);
     }
-
 }
