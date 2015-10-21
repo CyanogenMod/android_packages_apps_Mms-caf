@@ -117,7 +117,7 @@ import java.util.HashSet;
  * This activity provides a list view of existing conversations.
  */
 public class ConversationList extends Activity implements DraftCache.OnDraftChangedListener,
-        OnItemClickListener {
+        Contact.UpdateListener, OnItemClickListener {
     private static final String TAG = LogTag.TAG;
     private static final boolean DEBUG = false;
     private static final boolean DEBUGCLEANUP = true;
@@ -336,6 +336,7 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
         mSavedFirstItemOffset = (firstChild == null) ? 0 : firstChild.getTop();
         mIsRunning = false;
         unregisterBlacklistObserver();
+        Contact.removeListener(this);
     }
 
     @Override
@@ -365,6 +366,7 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
         registerBlacklistObserver();
         mListAdapter.setOnContentChangedListener(mContentChangedListener);
         mIsRunning = true;
+        Contact.addListener(this);
     }
 
     private ContentObserver mBlacklistObserver = new ContentObserver(mHandler) {
@@ -1766,6 +1768,18 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
     private void log(String format, Object... args) {
         String s = String.format(format, args);
         Log.d(TAG, "[" + Thread.currentThread().getId() + "] " + s);
+    }
+
+    @Override
+    public void onUpdate(final Contact updated) {
+        if (updated != null) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mListAdapter.notifyDataSetChanged();
+                }
+            });
+        }
     }
 
 }
