@@ -59,6 +59,7 @@ import android.provider.Telephony.Threads;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -207,6 +208,8 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
     private TextView mSearchHint;
     private View mFabContainer, mSearchRoot;
     private boolean mActionContextMenuEnb;
+    private boolean mWasActionModeEnabled;
+    private SparseBooleanArray mCheckedItems;
 
     // keys for extras and icicles
     private final static String LAST_LIST_POS = "last_list_pos";
@@ -319,6 +322,12 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
 
     @Override
     public void onPause() {
+        mWasActionModeEnabled = mActionContextMenuEnb;
+        if (mWasActionModeEnabled) {
+            mCheckedItems = mListView.getCheckedItemPositions().clone();
+        } else {
+            mCheckedItems = null;
+        }
         super.onPause();
 
         // Don't listen for changes while we're paused.
@@ -336,7 +345,7 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
 
     @Override
     protected void onResume() {
-        super.onResume();
+
         boolean isSmsEnabled = MmsConfig.isSmsEnabled(this);
         if (isSmsEnabled != mIsSmsEnabled) {
             mIsSmsEnabled = isSmsEnabled;
@@ -349,6 +358,16 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
         } else {
             mListHeadersListView.setChoiceMode(ListView.CHOICE_MODE_NONE);
         }
+
+        // Reset action mode
+        if (mWasActionModeEnabled) {
+            mListView.startActionMode(mModeCallbackHandler);
+            for (int i = 0; i < mCheckedItems.size(); i++) {
+                mListView.setItemChecked(i, mCheckedItems.get(i));
+            }
+        }
+
+        super.onResume();
 
         // Show or hide the SMS promo banner
         if (mIsSmsEnabled) {
