@@ -217,7 +217,7 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
 
     // Whether or not we are currently enabled for SMS. This field is updated in onResume to make
     // sure we notice if the user has changed the default SMS app.
-    private boolean mIsSmsEnabled;
+    private Boolean mIsSmsEnabled;
     private Toast mComposeDisabledToast;
     private static long mLastDeletedThread = -1;
 
@@ -338,16 +338,11 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
     protected void onResume() {
         super.onResume();
         boolean isSmsEnabled = MmsConfig.isSmsEnabled(this);
-        if (isSmsEnabled != mIsSmsEnabled) {
+        if (mIsSmsEnabled == null || isSmsEnabled != mIsSmsEnabled) {
             mIsSmsEnabled = isSmsEnabled;
             invalidateOptionsMenu();
-        }
-
-        // Multi-select is used to delete conversations. It is disabled if we are not the sms app.
-        if (mIsSmsEnabled) {
-            mListHeadersListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-        } else {
-            mListHeadersListView.setChoiceMode(ListView.CHOICE_MODE_NONE);
+            mListHeadersListView.setChoiceMode(mIsSmsEnabled ? ListView.CHOICE_MODE_MULTIPLE_MODAL :
+                    ListView.CHOICE_MODE_NONE);
         }
 
         // Show or hide the SMS promo banner
@@ -592,15 +587,9 @@ public class ConversationList extends Activity implements DraftCache.OnDraftChan
     @Override
     protected void onStop() {
         super.onStop();
-
         stopAsyncQuery();
-
         DraftCache.getInstance().removeOnDraftChangedListener(this);
-
         unbindListeners(null);
-        // Simply setting the choice mode causes the previous choice mode to finish and we exit
-        // multi-select mode (if we're in it) and remove all the selections.
-        getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
     }
 
     @Override
