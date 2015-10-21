@@ -69,6 +69,8 @@ public class Contact {
     };
 
     private final static HashSet<UpdateListener> mListeners = new HashSet<UpdateListener>();
+    private final static HashSet<InvalidateListener> mInvalidateListeners = new
+            HashSet<InvalidateListener>();
 
     private static Runnable invalidateCache = new Runnable() {
         @Override
@@ -122,6 +124,10 @@ public class Contact {
 
     public interface UpdateListener {
         public void onUpdate(Contact updated);
+    }
+
+    public interface InvalidateListener {
+        public void onInvalidate();
     }
 
     private Contact(String number, String name) {
@@ -215,6 +221,20 @@ public class Contact {
         // updated with the latest info. They redraw themselves when we call the
         // listener's onUpdate().
         sContactCache.invalidate();
+
+        // the onUpdate() listeners are not triggered until the contact is fetched, use
+        // invalidateListeners() to trigger the view with contacts refresh, which will
+        // in turn fetch the contacts and onUpdate() listener will be triggered
+        HashSet<InvalidateListener> iterator;
+        synchronized (mListeners) {
+            iterator = (HashSet<InvalidateListener>)Contact.mInvalidateListeners.clone();
+        }
+        for (InvalidateListener l : iterator) {
+            if (Log.isLoggable(LogTag.CONTACT, Log.DEBUG)) {
+                Log.d(TAG, "updating " + l);
+            }
+            l.onInvalidate();
+        }
     }
 
     public boolean isMe() {
@@ -354,6 +374,18 @@ public class Contact {
     public static void removeListener(UpdateListener l) {
         synchronized (mListeners) {
             mListeners.remove(l);
+        }
+    }
+
+    public static void addInvalidateListener(InvalidateListener l) {
+        synchronized (mInvalidateListeners) {
+            mInvalidateListeners.add(l);
+        }
+    }
+
+    public static void removeInvalidateListener(InvalidateListener l) {
+        synchronized (mInvalidateListeners) {
+            mInvalidateListeners.remove(l);
         }
     }
 
