@@ -66,6 +66,7 @@ import android.support.v4.app.RemoteInput;
 import android.telephony.TelephonyManager;
 import android.telephony.SubscriptionManager;
 import android.telephony.SubscriptionInfo;
+import android.text.BidiFormatter;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -732,7 +733,8 @@ public class MessagingNotification {
             if (i > 0) {
                 spannableStringBuilder.append(separator);
             }
-            spannableStringBuilder.append(senders.get(i).mSender.getName());
+            spannableStringBuilder.append(BidiFormatter.getInstance(context.getResources()
+                    .getConfiguration().locale).unicodeWrap(senders.get(i).mSender.getName()));
         }
         spannableStringBuilder.setSpan(notificationSenderSpan, 0,
                 spannableStringBuilder.length(), 0);
@@ -1154,7 +1156,8 @@ public class MessagingNotification {
                 mainActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             title = context.getString(R.string.message_count_notification, messageCount);
         } else {    // same thread, single or multiple messages
-            title = mostRecentNotification.mTitle;
+            title = BidiFormatter.getInstance(context.getResources().getConfiguration()
+                            .locale).unicodeWrap(mostRecentNotification.mTitle);
             avatar = mostRecentNotification.mSender.getAvatar(context);
             noti.setSubText(mostRecentNotification.mSimName); // no-op in single SIM case
             if (avatar != null) {
@@ -1176,7 +1179,6 @@ public class MessagingNotification {
 
         NotificationManagerCompat nm = NotificationManagerCompat.from(context);
 
-        // Update the notification.
         noti.setContentTitle(title)
             .setContentIntent(pendingIntent)
             .setColor(context.getResources().getColor(R.color.mms_next_theme_color))
