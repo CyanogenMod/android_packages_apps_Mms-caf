@@ -114,7 +114,6 @@ public class QuickMessagePopup extends Activity {
     // Configuration
     private boolean mCloseClosesAll = false;
     private boolean mWakeAndUnlock = false;
-    private boolean mDarkTheme = false;
     private String mUnicodeStripping = MessagingPreferenceActivity.UNICODE_STRIPPING_LEAVE_INTACT;
     private UnicodeFilter mUnicodeFilter = null;
 
@@ -139,7 +138,6 @@ public class QuickMessagePopup extends Activity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         mCloseClosesAll = prefs.getBoolean(MessagingPreferenceActivity.QM_CLOSE_ALL_ENABLED, false);
         mWakeAndUnlock = prefs.getBoolean(MessagingPreferenceActivity.QM_LOCKSCREEN_ENABLED, false);
-        mDarkTheme = prefs.getBoolean(MessagingPreferenceActivity.QM_DARK_THEME_ENABLED, false);
         mUnicodeStripping = prefs.getString(MessagingPreferenceActivity.UNICODE_STRIPPING,
                 MessagingPreferenceActivity.UNICODE_STRIPPING_LEAVE_INTACT);
 
@@ -171,8 +169,8 @@ public class QuickMessagePopup extends Activity {
         mViewButton = (Button) findViewById(R.id.button_view);
 
         // Set the theme color on the pager arrow
-        mQmPagerArrow.setBackgroundColor(getResources().getColor(mDarkTheme
-                ? R.color.quickmessage_body_dark_bg : R.color.quickmessage_body_light_bg));
+        mQmPagerArrow.setBackgroundColor(getResources().
+                getColor(R.color.quickmessage_body_light_bg));
 
         // ViewPager Support
         mPagerAdapter = new MessagePagerAdapter();
