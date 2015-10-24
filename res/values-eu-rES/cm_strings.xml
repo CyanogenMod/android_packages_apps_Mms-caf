@@ -251,8 +251,6 @@
   <string name="menu_conversation_options">Elkarrizketa aukerak</string>
   <string name="pref_title_reset_convopt_to_default">Leheneratu balio lehenetsietara</string>
   <string name="pref_summary_reset_convopt_to_default">Elkarrizketa ezarpenak aplikazioko mailako ezarpenetara leheneratzen ditu</string>
-  <string name="pref_title_mms_full_timestamp">Denbora marka osoa</string>
-  <string name="pref_summary_mms_full_timestamp">Bistaratu data eta ordua denbora marketan</string>
   <string name="pref_title_mms_use_sent_timestamp">Jatorrizko denbora markak</string>
   <string name="pref_summary_mms_use_sent_timestamp">Bistaratu bidaltze data  jasotze dataren ordez denbora marketan</string>
   <string name="pref_title_mms_auto_enable_data">Automatikoki gaitu datuak</string>

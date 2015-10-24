@@ -251,8 +251,6 @@
   <string name="menu_conversation_options">वार्तालाप विकल्प</string>
   <string name="pref_title_reset_convopt_to_default">डॉफ़ॉल्ट पर रीसेट करें</string>
   <string name="pref_summary_reset_convopt_to_default">वार्तालाप सेटिंग को अनुप्रयोग स्तर की सेटिंग पर रीसेट करता है</string>
-  <string name="pref_title_mms_full_timestamp">पूर्ण समय-मुहर</string>
-  <string name="pref_summary_mms_full_timestamp">समय-मुहर में तिथि और समय दोनों दिखाएँ</string>
   <string name="pref_title_mms_use_sent_timestamp">मूल समय-मुहर</string>
   <string name="pref_summary_mms_use_sent_timestamp">समय-मुहर में प्राप्त होने की तिथि की जगह भेजने की तिथि दिखाएँ</string>
   <string name="pref_title_mms_auto_enable_data">डेटा को स्वतः सक्षम करें</string>

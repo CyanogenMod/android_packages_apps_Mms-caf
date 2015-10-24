@@ -251,8 +251,6 @@
   <string name="menu_conversation_options">Možnosti pogovora</string>
   <string name="pref_title_reset_convopt_to_default">Ponastavi na privzeto</string>
   <string name="pref_summary_reset_convopt_to_default">Ponastavi nastavitve za pogovor na nastavitve ravni programa</string>
-  <string name="pref_title_mms_full_timestamp">Polni časovni žigi</string>
-  <string name="pref_summary_mms_full_timestamp">V časovnem žigu prikaži tako datum kot čas</string>
   <string name="pref_title_mms_use_sent_timestamp">Izvirni časovni žigi</string>
   <string name="pref_summary_mms_use_sent_timestamp">V časovnih žigih prikaži datum pošiljanja namesto datume prejema</string>
   <string name="pref_title_mms_auto_enable_data">Samodejno omogoči podatke</string>

@@ -251,8 +251,6 @@
   <string name="menu_conversation_options">Opcioj de dialogoj</string>
   <string name="pref_title_reset_convopt_to_default">Restarigi al defaŭlta</string>
   <string name="pref_summary_reset_convopt_to_default">Restartigas la dialogajn agordojn al tiuj de la aplikaĵo</string>
-  <string name="pref_title_mms_full_timestamp">Ĉiuj tempindikoj</string>
-  <string name="pref_summary_mms_full_timestamp">Montri kaj daton kaj tempon en tempoindiko</string>
   <string name="pref_title_mms_use_sent_timestamp">Originala tempoindiko</string>
   <string name="pref_summary_mms_use_sent_timestamp">Montri sendan tempoindikon anstataŭ riceva tempoindiko</string>
   <string name="pref_title_mms_auto_enable_data">Aŭtomate ŝalti datumojn</string>

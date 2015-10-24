@@ -251,8 +251,6 @@
   <string name="menu_conversation_options">خيارات المحادثة</string>
   <string name="pref_title_reset_convopt_to_default">إعادة التعيين إلى الوضع الافتراضي</string>
   <string name="pref_summary_reset_convopt_to_default">إعادة تعيين إعدادات المحادثة إلى إعداد مستوى التطبيق</string>
-  <string name="pref_title_mms_full_timestamp">الطوابع الزمنية الكاملة</string>
-  <string name="pref_summary_mms_full_timestamp">عرض التاريخ والوقت في الطوابع الزمنية</string>
   <string name="pref_title_mms_use_sent_timestamp">الطوابع الزمنية الأصلية</string>
   <string name="pref_summary_mms_use_sent_timestamp">عرض تاريخ الإرسال بدلاً من تاريخ الاستلام في الطوابع الزمنية</string>
   <string name="pref_title_mms_auto_enable_data">التمكين التلقائي للبيانات</string>

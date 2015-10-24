@@ -143,7 +143,6 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     public static final String BLACKLIST                 = "pref_blacklist";
 
     // Timestamps
-    public static final String FULL_TIMESTAMP            = "pref_key_mms_full_timestamp";
     public static final String SENT_TIMESTAMP            = "pref_key_mms_use_sent_timestamp";
 
     // Vibrate pattern
