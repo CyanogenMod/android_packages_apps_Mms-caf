@@ -251,8 +251,6 @@
   <string name="menu_conversation_options">گزینه‌های گفتگو</string>
   <string name="pref_title_reset_convopt_to_default">بازنشانی به پیش‌فرض</string>
   <string name="pref_summary_reset_convopt_to_default">بازنشانی تنظیمات گفتگو به تنظیمات سطح برنامه</string>
-  <string name="pref_title_mms_full_timestamp">مهرهای زمانی کامل</string>
-  <string name="pref_summary_mms_full_timestamp">نمایش زمان و تاریخ در مهرهای زمانی</string>
   <string name="pref_title_mms_use_sent_timestamp">مهرهای زمانی اصل</string>
   <string name="pref_summary_mms_use_sent_timestamp">نمایش تاریخ ارسال به جای تاریخ دریافت در مهرهای زمانی</string>
   <string name="pref_title_mms_auto_enable_data">فعال‌کردن خودکار داده‌ها</string>

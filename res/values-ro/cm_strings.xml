@@ -182,7 +182,6 @@
   <string name="menu_conversation_options">Opțiuni conversație</string>
   <string name="pref_title_reset_convopt_to_default">Resetare la valori implicite</string>
   <string name="pref_summary_reset_convopt_to_default">Resetează setările conversațiilor la setările de nivel ale aplicației</string>
-  <string name="pref_title_mms_full_timestamp">Marcaje de timp integrale</string>
   <string name="pref_title_mms_use_sent_timestamp">Marcaje de timp originale</string>
   <string name="pref_title_mms_auto_enable_data">Auto-activează date</string>
   <string name="pref_summary_mms_auto_enable_data">Activează automat datele mobile pentru mesaje MMS</string>

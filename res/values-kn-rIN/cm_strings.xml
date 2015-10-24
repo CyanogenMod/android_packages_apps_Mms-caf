@@ -251,8 +251,6 @@
   <string name="menu_conversation_options">ಸಂಭಾಷಣೆ ಆಯ್ಕೆಗಳು</string>
   <string name="pref_title_reset_convopt_to_default">ಡೀಫಾಲ್ಟ್ ಗೆ ಮರುಹೊಂದಿಸು</string>
   <string name="pref_summary_reset_convopt_to_default">ಸಂಭಾಷಣೆ ಸೆಟ್ಟಿಂಗ್ಸನ್ನು ಅಪ್ಲಿಕೇಶನ್ ಮಟ್ಟದ ಸೆಟ್ಟಿಂಗ್‍ಗೆ ಮರುಹೊಂದಿಸುತ್ತದೆ</string>
-  <string name="pref_title_mms_full_timestamp">ಪೂರ್ಣ ಸಮಯಮುದ್ರೆಗಳು</string>
-  <string name="pref_summary_mms_full_timestamp">ಸಮಯಮುದ್ರೆಗಳಲ್ಲಿ ದಿನಾಂಕ ಮತ್ತು ಗಂಟೆ ಎರಡನ್ನೂ ಪ್ರದರ್ಶಿಸು</string>
   <string name="pref_title_mms_use_sent_timestamp">ಮೂಲ ಸಮಯಮುದ್ರೆ</string>
   <string name="pref_summary_mms_use_sent_timestamp">ಸಮಯಮುದ್ರೆಯಲ್ಲಿ ಸ್ವೀಕರಿಸಿದ ದಿನಾಂಕದ ಬದಲಿಗೆ ಕಳುಹಿಸಿದ ದಿನಾಂಕವನ್ನು ಪ್ರದರ್ಶಿಸು</string>
   <string name="pref_title_mms_auto_enable_data">ಡೇಟಾ ಸ್ವಯಂ-ಸಕ್ರಿಯಗೊಳಿಸು</string>

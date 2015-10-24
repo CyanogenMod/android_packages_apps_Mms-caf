@@ -147,7 +147,7 @@ public class MessageItem {
         mColumnsMap = columnsMap;
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-        mFullTimestamp = prefs.getBoolean(MessagingPreferenceActivity.FULL_TIMESTAMP, false);
+        mFullTimestamp = true;
         mSentTimestamp = prefs.getBoolean(MessagingPreferenceActivity.SENT_TIMESTAMP, false);
 
         if ("sms".equals(type)) {

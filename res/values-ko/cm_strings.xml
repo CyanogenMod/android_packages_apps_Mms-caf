@@ -251,8 +251,6 @@
   <string name="menu_conversation_options">대화 옵션</string>
   <string name="pref_title_reset_convopt_to_default">기본값으로 재설정</string>
   <string name="pref_summary_reset_convopt_to_default">대화 설정을 앱 수준 설정으로 재설정</string>
-  <string name="pref_title_mms_full_timestamp">전체 타임스탬프</string>
-  <string name="pref_summary_mms_full_timestamp">타임스탬프에 날짜와 시간 모두 보이기</string>
   <string name="pref_title_mms_use_sent_timestamp">원본 타임스탬프</string>
   <string name="pref_summary_mms_use_sent_timestamp">타임스탬프에 받은 날짜 대신 보낸 날짜 표시</string>
   <string name="pref_title_mms_auto_enable_data">모바일 데이터 자동 연결</string>

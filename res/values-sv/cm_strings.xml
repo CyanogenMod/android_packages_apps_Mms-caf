@@ -251,8 +251,6 @@
   <string name="menu_conversation_options">Konversationsalternativ</string>
   <string name="pref_title_reset_convopt_to_default">Återställ till standard</string>
   <string name="pref_summary_reset_convopt_to_default">Återställer konversationsinställningarna till standard på applikationsnivå</string>
-  <string name="pref_title_mms_full_timestamp">Fullständiga tidsstämplar</string>
-  <string name="pref_summary_mms_full_timestamp">Visa både datum och tid i tidsstämplar</string>
   <string name="pref_title_mms_use_sent_timestamp">Ursprungliga tidsstämplar</string>
   <string name="pref_summary_mms_use_sent_timestamp">Visa skickadatum istället för mottagningsdatum i tidsstämplar</string>
   <string name="pref_title_mms_auto_enable_data">Auto-aktivera data</string>

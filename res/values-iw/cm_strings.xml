@@ -251,8 +251,6 @@
   <string name="menu_conversation_options">אפשרויות שיחה</string>
   <string name="pref_title_reset_convopt_to_default">אפס לברירת מחדל</string>
   <string name="pref_summary_reset_convopt_to_default">איפוס הגדרת השיחה אל ההגדרה ברמת היישום</string>
-  <string name="pref_title_mms_full_timestamp">חותמות זמן מלאות</string>
-  <string name="pref_summary_mms_full_timestamp">הצג גם תאריך וגם שעה בחותמת הזמן של ההודעות</string>
   <string name="pref_title_mms_use_sent_timestamp">חותמות זמן מקוריות</string>
   <string name="pref_summary_mms_use_sent_timestamp">הצג את חותמות הזמן של רגע השליחה במקום את אלה של רגע הקבלה</string>
   <string name="pref_title_mms_auto_enable_data">הפעל נתונים אוטומטית</string>
