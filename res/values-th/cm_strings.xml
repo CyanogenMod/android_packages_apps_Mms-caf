@@ -251,8 +251,6 @@
   <string name="menu_conversation_options">ตัวเลือกการสนทนา</string>
   <string name="pref_title_reset_convopt_to_default">คืนค่าเริ่มต้น</string>
   <string name="pref_summary_reset_convopt_to_default">ล้างการตั้งค่าการสนทนาเป็นการตั้งค่าของแอป</string>
-  <string name="pref_title_mms_full_timestamp">รายละเอียดวันเวลาแบบเต็ม</string>
-  <string name="pref_summary_mms_full_timestamp">แสดงทั้งวันและเวลาในรายละเอียดวันเวลา</string>
   <string name="pref_title_mms_use_sent_timestamp">รายละเอียดวันเวลาดั้งเดิม</string>
   <string name="pref_summary_mms_use_sent_timestamp">แสดงวันส่ง/วันที่รับในรายละเอียดวันเวลา</string>
   <string name="pref_title_mms_auto_enable_data">เปิดใช้งานข้อมูลอัตโนมัติ</string>

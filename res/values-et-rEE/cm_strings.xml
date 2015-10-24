@@ -251,8 +251,6 @@
   <string name="menu_conversation_options">Vestluse valikud</string>
   <string name="pref_title_reset_convopt_to_default">Taasta vaikesätted</string>
   <string name="pref_summary_reset_convopt_to_default">Lähtestab vestluse sätted rakenduse põhiste sättetega</string>
-  <string name="pref_title_mms_full_timestamp">Täielikud ajatemplid</string>
-  <string name="pref_summary_mms_full_timestamp">Kuva nii kuupäev kui kellaaeg ajatemplil</string>
   <string name="pref_title_mms_use_sent_timestamp">Algne ajatempel</string>
   <string name="pref_summary_mms_use_sent_timestamp">Kuva ajatemplitel saatmiskuupäev vastuvõtmiskuupäeva asemel</string>
   <string name="pref_title_mms_auto_enable_data">Luba andmeside automaatselt</string>
