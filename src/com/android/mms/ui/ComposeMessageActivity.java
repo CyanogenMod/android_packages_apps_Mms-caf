@@ -191,6 +191,7 @@ import android.widget.Toolbar;
 
 import com.android.contacts.common.util.MaterialColorMapUtils;
 import com.android.contacts.common.util.MaterialColorMapUtils.MaterialPalette;
+import com.android.ex.chips.RecipientEditTextView.MaxChipsHandler;
 import com.android.internal.telephony.PhoneConstants;
 import com.android.internal.telephony.RILConstants;
 import com.android.internal.telephony.TelephonyIntents;
@@ -2230,6 +2231,12 @@ public class ComposeMessageActivity extends Activity
 
         mRecipientsSelector.setOnClickListener(this);
 
+        mRecipientsEditor.setMaxChipsHandler(new MaxChipsHandler() {
+            @Override
+            public void onMaxChips() {
+                pickContacts(SelectRecipientsList.MODE_DEFAULT, REQUEST_CODE_ADD_RECIPIENTS);
+            }
+        });
         mRecipientsEditor.addTextChangedListener(mRecipientsWatcher);
         mRecipientsEditor.setAdapter(new ChipsRecipientAdapter(this));
         mRecipientsEditor.setText(null);
