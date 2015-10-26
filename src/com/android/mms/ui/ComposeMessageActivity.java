@@ -191,6 +191,7 @@ import android.widget.Toolbar;
 
 import com.android.contacts.common.util.MaterialColorMapUtils;
 import com.android.contacts.common.util.MaterialColorMapUtils.MaterialPalette;
+import com.android.ex.chips.RecipientEditTextView.MaxChipsHandler;
 import com.android.internal.telephony.PhoneConstants;
 import com.android.internal.telephony.RILConstants;
 import com.android.internal.telephony.TelephonyIntents;
@@ -1128,7 +1129,7 @@ public class ComposeMessageActivity extends Activity
         @Override
         public void onClick(DialogInterface dialog, int whichButton) {
             if (isRecipientsEditorVisible()) {
-                mRecipientsEditor.requestFocus();
+                mRecipientsEditor.requestFocusIfAble();
             }
             dialog.dismiss();
         }
@@ -2230,6 +2231,12 @@ public class ComposeMessageActivity extends Activity
 
         mRecipientsSelector.setOnClickListener(this);
 
+        mRecipientsEditor.setMaxChipsHandler(new MaxChipsHandler() {
+            @Override
+            public void onMaxChips() {
+                pickContacts(SelectRecipientsList.MODE_DEFAULT, REQUEST_CODE_ADD_RECIPIENTS);
+            }
+        });
         mRecipientsEditor.addTextChangedListener(mRecipientsWatcher);
         mRecipientsEditor.setAdapter(new ChipsRecipientAdapter(this));
         mRecipientsEditor.setText(null);
@@ -2528,7 +2535,7 @@ public class ComposeMessageActivity extends Activity
         if (isForwardedMessage && isRecipientsEditorVisible()) {
             // The user is forwarding the message to someone. Put the focus on the
             // recipient editor rather than in the message editor.
-            mRecipientsEditor.requestFocus();
+            mRecipientsEditor.requestFocusIfAble();
         }
 
         mMsgListAdapter.setIsGroupConversation(mConversation.getRecipients().size() > 1);
@@ -6573,7 +6580,7 @@ public class ComposeMessageActivity extends Activity
         // recipients editor.
         if (isRecipientsEditorVisible()
                 && !mTextEditor.isFocused()) {
-            mRecipientsEditor.requestFocus();
+            mRecipientsEditor.requestFocusIfAble();
             return;
         }
 
@@ -6819,7 +6826,7 @@ public class ComposeMessageActivity extends Activity
                     // one. In this situation, mRecipientsEditor has higher priority to
                     // get the focus.
                     if (isRecipientsEditorVisible()) {
-                        mRecipientsEditor.requestFocus();
+                        mRecipientsEditor.requestFocusIfAble();
                     } else {
                         mTextEditor.requestFocus();
                     }
