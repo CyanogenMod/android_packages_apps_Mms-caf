@@ -578,6 +578,12 @@ public class ComposeMessageActivity extends Activity
                         showMessageDetails(msgItem);
                         break;
 
+                    case MessageListItem.MSG_LIST_EDIT:
+                        mTextEditor.setText(msgItem.mBody);
+                        DeleteMessageListener l = new DeleteMessageListener(msgItem);
+                        l.onClick(new AlertDialog.Builder(ComposeMessageActivity.this).create(), 0);
+                        break;
+
                     default:
                         Log.w(TAG, "Unknown message: " + msg.what);
                         return;
