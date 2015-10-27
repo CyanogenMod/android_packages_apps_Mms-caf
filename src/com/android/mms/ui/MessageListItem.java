@@ -80,6 +80,7 @@ import com.android.mms.transaction.SmsReceiverService;
 import com.android.mms.transaction.Transaction;
 import com.android.mms.transaction.TransactionBundle;
 import com.android.mms.transaction.TransactionService;
+import com.android.mms.ui.MessageItem.DeliveryStatus;
 import com.android.mms.ui.zoom.ZoomMessageListItem;
 import com.android.mms.util.AddressUtils;
 import com.android.mms.util.DownloadManager;
@@ -832,15 +833,15 @@ public class MessageListItem extends ZoomMessageListItem implements
             return;
         }
         // If the message is a failed one, clicking it should reload it in the compose view,
-        // regardless of whether it has links in it
-        if (mMessageItem != null &&
-                mMessageItem.isOutgoingMessage() &&
-                mMessageItem.isFailedMessage() ) {
-
-            // Assuming the current message is a failed one, reload it into the compose view so
-            // the user can resend it.
-            sendMessage(mMessageItem, MSG_LIST_EDIT);
-            return;
+        // regardless of whether it has links in it.  Also account for cancelled message
+        if (mMessageItem != null) {
+            if ((mMessageItem.isOutgoingMessage() && mMessageItem.isFailedMessage()) ||
+                mMessageItem.mDeliveryStatus == DeliveryStatus.FAILED) {
+                // Assuming the current message is a failed one, reload it into the compose view so
+                // the user can resend it.
+                sendMessage(mMessageItem, MSG_LIST_EDIT);
+                return;
+            }
         }
 
         // Check for links. If none, do nothing; if 1, open it; if >1, ask user to pick one

@@ -578,6 +578,12 @@ public class ComposeMessageActivity extends Activity
                         showMessageDetails(msgItem);
                         break;
 
+                    case MessageListItem.MSG_LIST_EDIT:
+                        mTextEditor.setText(msgItem.mBody);
+                        DeleteMessageListener l = new DeleteMessageListener(msgItem);
+                        l.onClick(null, 0);
+                        break;
+
                     default:
                         Log.w(TAG, "Unknown message: " + msg.what);
                         return;
@@ -750,7 +756,9 @@ public class ComposeMessageActivity extends Activity
 
         @Override
         public void onClick(DialogInterface dialog, int whichButton) {
-            dialog.dismiss();
+            if (dialog != null) {
+                dialog.dismiss();
+            }
 
             new AsyncTask<Void, Void, Void>() {
                 protected Void doInBackground(Void... none) {
