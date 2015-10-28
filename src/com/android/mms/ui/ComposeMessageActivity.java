@@ -317,6 +317,7 @@ public class ComposeMessageActivity extends Activity
     private static final int DIALOG_IMPORT_TEMPLATE = 1;
 
     private static final int MSG_COPY_TO_SIM_SUCCESS = 2;
+    private static final int MSG_COPY_TO_SIM_FAIL = 3;
 
     private static final int KILOBYTE = 1024;
     // The max length of characters for subject.
@@ -5443,19 +5444,18 @@ public class ComposeMessageActivity extends Activity
     private Handler mCopyToSimWithToastHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            int sum = 0;
-            int success = 0;
+            String toast = "";
             switch (msg.what) {
             case MSG_COPY_TO_SIM_SUCCESS:
-                sum = msg.arg1;
-                success = msg.arg2;
+                toast = getString(R.string.copy_to_sim_success, msg.arg2, msg.arg1);
+                break;
+            case MSG_COPY_TO_SIM_FAIL:
+                toast = getString(R.string.copy_to_sim_fail);
                 break;
             default:
                 break;
             }
-            String toast = getString(R.string.copy_to_sim_success, success, sum);
-            Toast.makeText(ComposeMessageActivity.this, toast,
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(ComposeMessageActivity.this, toast, Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -5497,6 +5497,14 @@ public class ComposeMessageActivity extends Activity
             Message msg = mCopyToSimWithToastHandler.obtainMessage();
             int sum = msgItems.size();
             int success = 0;
+
+            int phoneType = TelephonyManager.getDefault().getCurrentPhoneType(subscription);
+            if (phoneType == PhoneConstants.PHONE_TYPE_CDMA) {
+                Log.d(TAG, " copy msg to CDMA sim is not permitted");
+                msg.what = MSG_COPY_TO_SIM_FAIL;
+                msg.sendToTarget();
+                return;
+            }
             for (MessageItem msgItem : msgItems) {
                 if (copyToSim(msgItem, subscription)) {
                     success++;
