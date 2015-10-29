@@ -427,9 +427,8 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
 
     /**
      * Checks to see if the number of MMS and SMS messages are under the limits for the
-     * recycler. If so, it will automatically turn on the recycler setting. If not, it
-     * will prompt the user with a message and point them to the setting to manually
-     * turn on the recycler.
+     * recycler. If not, it will prompt the user with a message and point them to the setting to
+     * manually turn on the recycler.
      */
     public synchronized void runOneTimeStorageLimitCheckForLegacyMessages() {
         if (Recycler.isAutoDeleteEnabled(this)) {
@@ -456,16 +455,7 @@ public class ConversationList extends ListActivity implements DraftCache.OnDraft
                         }
                     }, 2000);
                 } else {
-                    if (DEBUG) Log.v(TAG, "checkForThreadsOverLimit silently turning on recycler");
-                    // No threads were over the limit. Turn on the recycler by default.
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            SharedPreferences.Editor editor = mPrefs.edit();
-                            editor.putBoolean(MessagingPreferenceActivity.AUTO_DELETE, true);
-                            editor.apply();
-                        }
-                    });
+                    if (DEBUG) Log.v(TAG, "checkForThreadsOverLimit FALSE");
                 }
                 // Remember that we don't have to do the check anymore when starting MMS.
                 runOnUiThread(new Runnable() {
