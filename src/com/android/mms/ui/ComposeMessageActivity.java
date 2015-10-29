@@ -5729,8 +5729,10 @@ public class ComposeMessageActivity extends Activity
                 // loop through checked items and update statistics
                 SparseBooleanArray checkedList = getListView().getCheckedItemPositions();
                 for (int i = 0; i < checkedList.size(); i++) {
-                    customMenuVisibility(mode, checkedCount, checkedList.keyAt(i),
-                            checkedList.valueAt(i));
+                    int position = checkedList.keyAt(i);
+                    boolean isChecked = checkedList.valueAt(i);
+                    updateStatics(position, isChecked);
+                    customMenuVisibility(mode, checkedCount, position, isChecked);
                 }
             }
             return true;
@@ -6136,8 +6138,9 @@ public class ComposeMessageActivity extends Activity
                     + ", checked=" + checked);
 
             updateCheckedStatus(mode, getListView().getCheckedItemCount());
-            customMenuVisibility(mode, mCheckedCount, position, checked);
+
             updateStatics(position, checked);
+            customMenuVisibility(mode, mCheckedCount, position, checked);
         }
 
         private void updateCheckedStatus(ActionMode actionMode, int checkedCount) {
