@@ -40,8 +40,6 @@ import android.os.Vibrator;
 import android.os.Message;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
-import android.os.Vibrator;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -166,6 +164,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     public static final String SEND_DELAY_DURATION = "pref_key_send_delay";
 
     private ListPreference mMessageSendDelayPref;
+    private SwitchPreference mAutoDeleteMsgsPref;
     private Preference mSmsLimitPref;
     private Preference mSmsDeliveryReportPref;
     private Preference mSmsDeliveryReportPrefSub1;
@@ -319,6 +318,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mManageSim1Pref = findPreference("pref_key_manage_sim_messages_slot1");
         mManageSim2Pref = findPreference("pref_key_manage_sim_messages_slot2");
         mManageSdcardSMSPref = findPreference("pref_key_manage_sdcard_messages");
+        mAutoDeleteMsgsPref = (SwitchPreference) findPreference(AUTO_DELETE);
         mSmsLimitPref = findPreference("pref_key_sms_delete_limit");
         mSmsDeliveryReportPref = findPreference("pref_key_sms_delivery_reports");
         mSmsDeliveryReportPrefSub1 = findPreference("pref_key_sms_delivery_reports_slot1");
