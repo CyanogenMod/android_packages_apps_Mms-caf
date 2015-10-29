@@ -5715,6 +5715,19 @@ public class ComposeMessageActivity extends Activity
                     item.setVisible(false);
                 }
             }
+
+            int checkedCount = getListView().getCheckedItemCount();
+            if (checkedCount > 0) { // action mode was restarted
+                updateCheckedStatus(mode, checkedCount);
+                // loop through checked items and update statistics
+                SparseBooleanArray checkedList = getListView().getCheckedItemPositions();
+                for (int i = 0; i < checkedList.size(); i++) {
+                    int position = checkedList.keyAt(i);
+                    boolean isChecked = checkedList.valueAt(i);
+                    updateStatics(position, isChecked);
+                    customMenuVisibility(mode, checkedCount, position, isChecked);
+                }
+            }
             return true;
         }
 
@@ -6129,7 +6142,7 @@ public class ComposeMessageActivity extends Activity
 
         @Override
         public void onItemCheckedStateChanged(ActionMode mode, int position,
-                long id, boolean checked) {
+                                              long id, boolean checked) {
             logMultiChoice("onItemCheckedStateChanged... position=" + position
                     + ", checked=" + checked);
 
@@ -6139,6 +6152,13 @@ public class ComposeMessageActivity extends Activity
             mode.setTitle(getString(R.string.selected_count, mCheckedCount));
 
             mode.getMenu().findItem(R.id.selection_toggle).setTitle(getString(
+                    allItemsSelected() ? R.string.deselected_all : R.string.selected_all));
+        }
+
+        private void updateCheckedStatus(ActionMode actionMode, int checkedCount) {
+            mCheckedCount = checkedCount;
+            actionMode.setTitle(getString(R.string.selected_count, mCheckedCount));
+            actionMode.getMenu().findItem(R.id.selection_toggle).setTitle(getString(
                     allItemsSelected() ? R.string.deselected_all : R.string.selected_all));
         }
 
