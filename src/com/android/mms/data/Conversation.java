@@ -384,25 +384,33 @@ public class Conversation {
                     Long smsID = -1L;
                     Cursor c = mContext.getContentResolver().query(threadUri,
                             UNREAD_PROJECTION, READ_SELECTION, null, Sms._ID + " DESC");
-                    boolean needUpdate = false;
+
+                    // the cursor will contain all messages that ARE READ
+                    // iterate through these messages and build a list of IDs to send to the
+                    // update function
+                    String ids = "(";
                     if (c != null) {
                         try {
-                            needUpdate = c.getCount() > 0;
-                            if (needUpdate && c.moveToFirst()) {
+                            int readCount = c.getCount();
+                            while(readCount != 0) {
+                                c.moveToNext();
                                 smsID = c.getLong(0);
+                                if (smsID != -1) {
+                                    if (readCount == 1) {
+                                        ids += smsID;
+                                    } else {
+                                        ids += (smsID + ",");
+                                    }
+                                }
+                                readCount--;
                             }
+                            ids += ")";
+                            mContext.getContentResolver().update(threadUri,
+                                    sUnReadContentValues, Sms._ID + " in " + ids, null);
+                            setHasUnreadMessages(true);
                         } finally {
                             c.close();
                         }
-                    }
-
-                    if (needUpdate && smsID!=-1) {
-                        LogTag.debug("markAsUnRead: update read/seen for thread uri: " +
-                                threadUri);
-                        mContext.getContentResolver().update(threadUri, sUnReadContentValues,
-                                Sms._ID + " = "+smsID,null);
-
-                        setHasUnreadMessages(true);
                     }
                 }
 
