@@ -1344,4 +1344,16 @@ public class Contact {
     public interface BitmapRequestCallback {
         void onBitmapAvailable(Bitmap Photo);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Contact) {
+            Contact other = (Contact)obj;
+            if (this.mNumber != null && other.mNumber != null) {
+                return this.mNumber.equals(other.mNumber);
+            }
+        }
+        return false;
+    }
+
 }

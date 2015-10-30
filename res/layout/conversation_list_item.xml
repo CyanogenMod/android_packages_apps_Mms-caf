@@ -27,7 +27,7 @@
 
     <com.android.mms.widget.ContactBadgeWithAttribution
         android:id="@+id/avatar"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_centerVertical="true"
         android:layout_marginEnd="16dp"
         android:layout_width="@dimen/contact_photo_size"

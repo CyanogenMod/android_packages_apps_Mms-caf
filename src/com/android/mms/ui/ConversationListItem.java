@@ -310,15 +310,24 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         });
     }
 
+    @Override
     public void onUpdate(Contact updated) {
         if (Log.isLoggable(LogTag.CONTACT, Log.DEBUG)) {
             Log.v(TAG, "onUpdate: " + this + " contact: " + updated);
         }
-        mHandler.post(new Runnable() {
-            public void run() {
-                updateFromView();
+        if (mConversation != null && updated != null) {
+            for (Contact contact : mConversation.getRecipients()) {
+                if (contact != null && contact.equals(updated)) {
+                    mHandler.post(new Runnable() {
+                        public void run() {
+                            updateFromView();
+                        }
+                    });
+                    break;
+                }
             }
-        });
+        }
+
     }
 
     private void updateSubjectView() {
