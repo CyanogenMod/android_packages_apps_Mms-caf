@@ -6022,9 +6022,11 @@ public class ComposeMessageActivity extends Activity
         }
 
         private boolean isAttachmentSaveable(int pos) {
-            MessageListItem msglistItem = (MessageListItem) mMsgListView.getChildAt(pos);
-            return msglistItem != null && msglistItem.getMessageItem() != null
-                    && msglistItem.getMessageItem().hasAttachemntToSave();
+            MessageItem msgItem = getMessageItemByPos(pos);
+            if (msgItem == null) {
+                return false;
+            }
+            return msgItem.hasAttachemntToSave();
         }
 
         private void customMenuVisibility(ActionMode mode, int checkedCount,
@@ -6109,11 +6111,15 @@ public class ComposeMessageActivity extends Activity
         }
 
         private MessageItem getMessageItemByPos(int position) {
-            MessageListItem msglistItem = (MessageListItem) mMsgListView.getChildAt(position);
-            if (msglistItem == null) {
+            Cursor cursor = (Cursor)getListView().getAdapter().getItem(position);
+            String type = cursor.getString(COLUMN_MSG_TYPE);
+            long msgId = cursor.getLong(COLUMN_ID);
+            MessageItem msgItem = mMsgListAdapter.getCachedMessageItem(type, msgId,
+                    cursor);
+            if (msgItem == null) {
                 return null;
             }
-            return  msglistItem.getMessageItem();
+            return  msgItem;
         }
 
         private boolean isDeliveryReportMsg(int position) {
