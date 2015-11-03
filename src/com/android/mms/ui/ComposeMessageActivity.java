@@ -6152,8 +6152,10 @@ public class ComposeMessageActivity extends Activity
 
             updateCheckedStatus(mode, getListView().getCheckedItemCount());
 
-            updateStatics(position, checked);
-            customMenuVisibility(mode, mCheckedCount, position, checked);
+            if (mCheckedCount > 0) {
+                updateStatics(position, checked);
+                customMenuVisibility(mode, mCheckedCount, position, checked);
+            }
         }
 
         private void updateCheckedStatus(ActionMode actionMode, int checkedCount) {
