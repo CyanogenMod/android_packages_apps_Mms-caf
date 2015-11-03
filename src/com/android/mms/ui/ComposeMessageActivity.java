@@ -579,9 +579,8 @@ public class ComposeMessageActivity extends Activity
                         break;
 
                     case MessageListItem.MSG_LIST_EDIT:
+                        editMessageItem(msgItem);
                         mTextEditor.setText(msgItem.mBody);
-                        DeleteMessageListener l = new DeleteMessageListener(msgItem);
-                        l.onClick(null, 0);
                         break;
 
                     default:
