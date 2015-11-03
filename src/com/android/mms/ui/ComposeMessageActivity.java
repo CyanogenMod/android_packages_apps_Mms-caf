@@ -5460,10 +5460,14 @@ public class ComposeMessageActivity extends Activity
     private class CopyToSimSelectListener implements DialogInterface.OnClickListener {
         private ArrayList<MessageItem> msgItems;
         private int slot;
+        private MenuItem item;
+        private int mMmsSelected;
 
-        public CopyToSimSelectListener(ArrayList<MessageItem> msgItems) {
+        public CopyToSimSelectListener(ArrayList<MessageItem> msgItems, MenuItem item, int mMmsSelected) {
             super();
             this.msgItems = msgItems;
+            this.item = item;
+            this.mMmsSelected = mMmsSelected;
         }
 
         public void onClick(DialogInterface dialog, int which) {
@@ -5471,7 +5475,7 @@ public class ComposeMessageActivity extends Activity
                 slot = which;
             } else if (which == DialogInterface.BUTTON_POSITIVE) {
                 int[] subId = SubscriptionManager.getSubId(slot);
-                new Thread(new CopyToSimThread(msgItems, subId[0])).start();
+                new Thread(new CopyToSimThread(msgItems, subId[0], item, mMmsSelected)).start();
             }
         }
     }
@@ -5479,15 +5483,19 @@ public class ComposeMessageActivity extends Activity
     private class CopyToSimThread extends Thread {
         private ArrayList<MessageItem> msgItems;
         private int subscription;
+        private MenuItem item;
+        private int mMmsSelected;
 
         public CopyToSimThread(ArrayList<MessageItem> msgItems) {
             this.msgItems = msgItems;
             this.subscription = SubscriptionManager.getDefaultSmsSubId();
         }
 
-        public CopyToSimThread(ArrayList<MessageItem> msgItems, int subscription) {
+        public CopyToSimThread(ArrayList<MessageItem> msgItems, int subscription, MenuItem item, int mMmsSelected) {
             this.msgItems = msgItems;
             this.subscription = subscription;
+            this.item = item;
+            this.mMmsSelected = mMmsSelected;
         }
 
         @Override
@@ -5495,6 +5503,15 @@ public class ComposeMessageActivity extends Activity
             Message msg = mCopyToSimWithToastHandler.obtainMessage();
             int sum = msgItems.size();
             int success = 0;
+
+            int phoneType = TelephonyManager.getDefault().getCurrentPhoneType(subscription);
+
+            if(phoneType == PhoneConstants.PHONE_TYPE_CDMA) {
+                boolean noMmsSelected = mMmsSelected == 0;
+                Log.d(TAG, "ANKIT: copy msg to CDMA sim is not permitted, setting visibility to false");
+                item.setVisible(noMmsSelected);
+            }
+
             for (MessageItem msgItem : msgItems) {
                 if (copyToSim(msgItem, subscription)) {
                     success++;
@@ -5809,13 +5826,12 @@ public class ComposeMessageActivity extends Activity
             }
         }
 
-        private void copySmsToSim() {
+        private void copySmsToSim(MenuItem item) {
             mMessageItems.clear();
             for (Integer pos : mSelectedPos) {
                 Cursor c = (Cursor) mMsgListAdapter.getItem(pos);
                 mMessageItems.add(mMsgListAdapter.getCachedMessageItem(
                         c.getString(COLUMN_MSG_TYPE), c.getLong(COLUMN_ID), c));
-
             }
             if (MessageUtils.getActivatedIccCardCount() > 1) {
                 String[] items = new String[TelephonyManager.getDefault()
@@ -5825,7 +5841,7 @@ public class ComposeMessageActivity extends Activity
                             ComposeMessageActivity.this, i);
                 }
                 CopyToSimSelectListener listener = new CopyToSimSelectListener(
-                        mMessageItems);
+                        mMessageItems, item, mMmsSelected);
                 new AlertDialog.Builder(ComposeMessageActivity.this)
                         .setTitle(R.string.copy_to_sim)
                         .setPositiveButton(android.R.string.ok, listener)
@@ -5861,7 +5877,7 @@ public class ComposeMessageActivity extends Activity
                 }
                 break;
             case R.id.copy_to_sim:
-                copySmsToSim();
+                copySmsToSim(item);
                 break;
             case R.id.detail:
                 showMessageDetail();
