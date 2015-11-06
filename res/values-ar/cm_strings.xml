@@ -26,10 +26,10 @@
   <string name="pref_dark_theme_summary">إذا لم تكن محددة، سيتم استخدام السمة الافتراضية \'الخفيفة\'</string>
   <string name="message_counter">%1$d من %2$d</string>
   <string name="button_close">إغلاق</string>
-  <string name="button_view">طريقة العرض</string>
+  <string name="button_view">عرض</string>
   <string name="button_templates">قوالب</string>
-  <string name="type_to_reply_text_enter_to_send">نوع الرد</string>
-  <string name="qm_mark_read">قراءة</string>
+  <string name="type_to_reply_text_enter_to_send">اكتب ردًّا</string>
+  <string name="qm_mark_read">قرأتُها</string>
   <string name="toast_sending_message">جاري إرسال الرسالة…</string>
   <string name="pref_title_send_delay">تأخير التسليم</string>
   <string name="send_delay_immediate">إرسال فورا</string>
