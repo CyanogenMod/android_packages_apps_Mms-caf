@@ -216,6 +216,7 @@
   <string name="menu_delete_sms">SMS sil</string>
   <string name="menu_delete_mms">MMS sil</string>
   <string name="import_sms_title">Yaddaşdan idxal et</string>
+  <string name="export_sms_title">Saxlama yerinə ixrac et</string>
   <string name="delete_sms_title">Mövcud nüsxəni sil</string>
   <string name="pick_sms_backup_title">SMS nüsxəsini seçin</string>
   <string name="delete_sms_toast">Nüsxə silindi.</string>
