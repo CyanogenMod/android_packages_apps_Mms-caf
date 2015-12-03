@@ -174,7 +174,13 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
                         1, buf.length() - before + 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
                 before = buf.length();
                 int size;
-                buf.insert(1, mContext.getResources().getString(R.string.has_draft));
+                // characters in strings.xml are input in reverse order under the assumption
+                // that RTL will reverse them.  Since we include this string in the buffer
+                // literally, reverse it ourselves.
+                String hasDraft = new StringBuilder(
+                        mContext.getResources().getString(R.string.has_draft))
+                            .reverse().toString();
+                buf.insert(1, hasDraft);
                 size = android.R.style.TextAppearance_Small;
                 buf.setSpan(new TextAppearanceSpan(mContext, size), 1,
                         buf.length() - before + 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
