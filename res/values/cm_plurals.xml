@@ -31,4 +31,10 @@
         <!-- Case of 0 or 2 or more results. -->
         <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> conversations will be marked as read.</item>
     </plurals>
+    <plurals name="confirm_mark_unread_conversation">
+        <!-- Case of 1 result. -->
+        <item quantity="one">One conversation will be marked as unread.</item>
+        <!-- Case of 0 or 2 or more results. -->
+        <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> conversations will be marked as unread.</item>
+    </plurals>
 </resources>
