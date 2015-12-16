@@ -28,4 +28,8 @@
     <item quantity="one">Μια συνομιλία θα επισημανθεί ως αναγνωσμένη.</item>
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> συνομιλίες θα επισημανθούν ως αναγνωσμένες.</item>
   </plurals>
+  <plurals name="confirm_mark_unread_conversation">
+    <item quantity="one">Μια συνομιλία θα επισημανθεί ως μη αναγνωσμένη.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> συνομιλίες θα επισημανθούν ως μη αναγνωσμένες.</item>
+  </plurals>
 </resources>

@@ -185,13 +185,6 @@
   <string name="pref_summary_mms_auto_retrieval">Messagen automatesch empfänken</string>
   <string name="pref_title_mms_retrieval_during_roaming">Am Roaming automatesch empfänken</string>
   <string name="pref_summary_mms_retrieval_during_roaming">Roaming-Messagen automatesch ofruffen</string>
-  <string name="confirm_mark_unread_dialog_title">Als ongelies markéieren?</string>
-  <plurals name="confirm_mark_unread_conversation">
-    <item quantity="one">Eng Diskussioun gëtt als ongelies markéiert.</item>
-    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> Diskussioune ginn als ongelies markéiert.</item>
-  </plurals>
-  <string name="confirm_mark_unread_conversation">D\'Diskussioun gëtt als ongelies markéiert.</string>
-  <string name="confirm_mark_unread_all_conversations">All d\'Konversatioune ginn als ongelies markéiert.</string>
   <string name="confirm_dialog_title">Läschen?</string>
   <string name="confirm_dialog_locked_title">Gespaarte Message läschen?</string>
   <plurals name="confirm_delete_conversation">

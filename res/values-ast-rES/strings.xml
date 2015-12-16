@@ -185,13 +185,6 @@
   <string name="pref_summary_mms_auto_retrieval">Recuperar mensaxes automáticamente</string>
   <string name="pref_title_mms_retrieval_during_roaming">N\'itinerancia</string>
   <string name="pref_summary_mms_retrieval_during_roaming">Recuperar mensaxes automáticamente n\'itinerancia</string>
-  <string name="confirm_mark_unread_dialog_title">Marcar como non lleío?</string>
-  <plurals name="confirm_mark_unread_conversation">
-    <item quantity="one">La conversación va marcase como non lleída.</item>
-    <item quantity="other">Van marcase <xliff:g id="number" example="15">%1$s</xliff:g> conversaciones como non lleíes.</item>
-  </plurals>
-  <string name="confirm_mark_unread_conversation">La conversación va marcase como non lleída.</string>
-  <string name="confirm_mark_unread_all_conversations">Van marcase tolos filos como non lleíos.</string>
   <string name="confirm_dialog_title">¿Desaniciar?</string>
   <string name="confirm_dialog_locked_title">¿Quies desaniciar el mensaxe bloquiáu?</string>
   <plurals name="confirm_delete_conversation">
