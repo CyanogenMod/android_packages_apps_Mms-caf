@@ -495,6 +495,15 @@ public class MessagingNotification {
     }
 
     /**
+     * Same as playInConversationNotificationSound, but exported
+     * for use in ClassZeroActivity. threadId is forced to ALL, and
+     * the CMSettings still apply.
+     */
+    public static void playClassZeroSound(Context context) {
+        playInConversationNotificationSound(context, MessagingNotification.THREAD_ALL);
+    }
+
+    /**
      * Updates all pending notifications, clearing or updating them as
      * necessary.
      */
