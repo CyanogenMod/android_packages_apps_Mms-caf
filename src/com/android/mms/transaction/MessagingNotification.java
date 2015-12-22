@@ -495,6 +495,15 @@ public class MessagingNotification {
     }
 
     /**
+     * @hide
+     * Same as playInConversationNotificationSound, but exported
+     * for use in ClassZeroActivity
+     */
+    public static void playClassZeroSound(Context context) {
+        playInConversationNotificationSound(context, MessagingNotification.THREAD_ALL);
+    }
+
+    /**
      * Updates all pending notifications, clearing or updating them as
      * necessary.
      */
