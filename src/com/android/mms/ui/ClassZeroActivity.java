@@ -103,6 +103,8 @@ public class ClassZeroActivity extends Activity {
             return false;
         }
         mMessageQueue.add(rawMessage);
+
+        MessagingNotification.playClassZeroSound(this);
         return true;
     }
 
