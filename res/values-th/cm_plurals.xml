@@ -16,27 +16,13 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string-array name="default_smiley_names">
-    <item>Contento</item>
-    <item>Triste</item>
-    <item>Guiño</item>
-    <item>Sacar la lengua</item>
-    <item>Sorprendido</item>
-    <item>Besando</item>
-    <item>Gritando</item>
-    <item>Genial</item>
-    <item>Hablar por dinero</item>
-    <item>Meter la pata</item>
-    <item>Avergonzado</item>
-    <item>Angelical</item>
-    <item>Indeciso</item>
-    <item>Llorando</item>
-    <item>Labios sellados</item>
-    <item>Riendo</item>
-    <item>Confundido</item>
-    <item>Corazón</item>
-    <item>Loco</item>
-    <item>Mueca</item>
-    <item>Cara de poker</item>
-  </string-array>
+  <plurals name="remaining_delay_time">
+    <item quantity="other">จะส่งใน %1$d วินาที แตะเพื่อยกเลิก</item>
+  </plurals>
+  <plurals name="confirm_delete_messages">
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> ข้อความจะถูกลบ</item>
+  </plurals>
+  <plurals name="confirm_mark_read_conversation">
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> ข้อความการสนทนาถูกทำเครื่องหมายว่าอ่านแล้ว</item>
+  </plurals>
 </resources>

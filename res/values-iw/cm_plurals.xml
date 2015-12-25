@@ -28,4 +28,8 @@
     <item quantity="one">שיחה אחת תסומן כנקראה.</item>
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> שיחות יסומנו כנקראו.</item>
   </plurals>
+  <plurals name="confirm_mark_unread_conversation">
+    <item quantity="one">שיחה אחת תסומן כלא נקראה.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> שיחות יסומנו כלא נקראו.</item>
+  </plurals>
 </resources>

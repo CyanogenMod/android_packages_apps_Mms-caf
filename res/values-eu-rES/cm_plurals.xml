@@ -28,4 +28,8 @@
     <item quantity="one">Elkarrizketa bat irakurria bezala markatuko da.</item>
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> elkarrizketa irakurriak bezala markatuko dira.</item>
   </plurals>
+  <plurals name="confirm_mark_unread_conversation">
+    <item quantity="one">Elkarrizketa bat irakurri gabea bezala markatuko da.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> elkarrizketa irakurri gabeak bezala markatuko dira.</item>
+  </plurals>
 </resources>

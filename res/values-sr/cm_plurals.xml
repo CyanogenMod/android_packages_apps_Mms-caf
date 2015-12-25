@@ -31,4 +31,9 @@
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> преписке ће бити означене као прочитане.</item>
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> преписке ће бити означене као прочитане.</item>
   </plurals>
+  <plurals name="confirm_mark_unread_conversation">
+    <item quantity="one">Преписка ће бити означена као непрочитана.</item>
+    <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> преписки ће бити означено као непрочитано.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> преписки ће бити означено као непрочитано.</item>
+  </plurals>
 </resources>

@@ -28,4 +28,8 @@
     <item quantity="one">Eén gesprek wordt gemarkeerd als gelezen.</item>
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> gesprekken worden gemarkeerd als gelezen.</item>
   </plurals>
+  <plurals name="confirm_mark_unread_conversation">
+    <item quantity="one">Het gesprek wordt gemarkeerd als ongelezen.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> gesprekken worden gemarkeerd als ongelezen.</item>
+  </plurals>
 </resources>

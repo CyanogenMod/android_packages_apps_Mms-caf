@@ -28,4 +28,8 @@
     <item quantity="one">Én samtale bliver markeret som læst.</item>
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> samtaler bliver markeret som læste.</item>
   </plurals>
+  <plurals name="confirm_mark_unread_conversation">
+    <item quantity="one">Samtalen vil blive markeret som ulæst.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> samtaler vil blive markeret som ulæst.</item>
+  </plurals>
 </resources>

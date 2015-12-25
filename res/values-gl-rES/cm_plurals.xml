@@ -17,8 +17,8 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <plurals name="remaining_delay_time">
-    <item quantity="one">Envío nun segundo, tocar para cancelar.</item>
-    <item quantity="other">Envío en %1$d segundos, tocar para cancelar.</item>
+    <item quantity="one">Enviarase dentro dun segundo, toque para anular.</item>
+    <item quantity="other">Enviarase dentro de %1$d segundos, toque para anular.</item>
   </plurals>
   <plurals name="confirm_delete_messages">
     <item quantity="one">Eliminarase unha mensaxe.</item>
