@@ -28,4 +28,8 @@
     <item quantity="one">ಒಂದು ಸಂಭಾಷಣೆಯನ್ನು ಓದಲಾಗಿದೆ ಎಂದು ಗುರುತಿಸಲಾಗುತ್ತದೆ.</item>
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> ಸಂಭಾಷಣೆಗಳನ್ನು ಓದಲಾಗಿದೆ ಎಂದು ಗುರುತಿಸಲಾಗುತ್ತದೆ.</item>
   </plurals>
+  <plurals name="confirm_mark_unread_conversation">
+    <item quantity="one">ಸಂಭಾಷಣೆಯನ್ನು ಓದಲಾಗಿಲ್ಲ ಎಂದು ಗುರುತಿಸಲಾಗುತ್ತದೆ.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> ಸಂಭಾಷಣೆಗಳನ್ನು ಓದಲಾಗಿಲ್ಲ ಎಂದು ಗುರುತಿಸಲಾಗುತ್ತದೆ.</item>
+  </plurals>
 </resources>

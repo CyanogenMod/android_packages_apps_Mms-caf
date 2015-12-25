@@ -34,4 +34,10 @@
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> pogovori bodo označeni kot prebrani.</item>
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> pogovorov bo označenih kot prebranih.</item>
   </plurals>
+  <plurals name="confirm_mark_unread_conversation">
+    <item quantity="one">Pogovor bo označen kot neprebran.</item>
+    <item quantity="two"><xliff:g id="number" example="15">%1$s</xliff:g> pogovora bosta označena kot neprebrana.</item>
+    <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> pogovori bodo označeni kot neprebrani.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> pogovorov bo označenih kot neprebranih.</item>
+  </plurals>
 </resources>

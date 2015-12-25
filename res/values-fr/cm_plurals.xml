@@ -28,4 +28,8 @@
     <item quantity="one">Une conversation sera marquée comme lue.</item>
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> conversations seront marquées comme lues.</item>
   </plurals>
+  <plurals name="confirm_mark_unread_conversation">
+    <item quantity="one">Une conversation sera marquée comme non lue.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> conversations seront marquées comme non lues.</item>
+  </plurals>
 </resources>

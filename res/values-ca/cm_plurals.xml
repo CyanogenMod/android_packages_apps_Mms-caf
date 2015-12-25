@@ -28,4 +28,8 @@
     <item quantity="one">Una conversa es marcarà com a llegida.</item>
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> converses es marcaran com a llegides.</item>
   </plurals>
+  <plurals name="confirm_mark_unread_conversation">
+    <item quantity="one">Una conversa es marcarà com a no llegida.</item>
+    <item quantity="other">Es marcaran <xliff:g id="number" example="15">%1$s</xliff:g> converses com a no llegides.</item>
+  </plurals>
 </resources>

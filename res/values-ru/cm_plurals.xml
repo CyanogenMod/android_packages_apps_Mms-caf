@@ -31,4 +31,9 @@
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> цепочки будут помечены как прочитанные.</item>
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> цепочек будут помечены как прочитанные.</item>
   </plurals>
+  <plurals name="confirm_mark_unread_conversation">
+    <item quantity="one"><xliff:g id="number" example="15">%1$s</xliff:g> цепочка будет помечена как содержащая новые сообщения.</item>
+    <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> цепочки будут помечены как содержащие новые сообщения.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> цепочек будут помечены как содержащие новые сообщения.</item>
+  </plurals>
 </resources>

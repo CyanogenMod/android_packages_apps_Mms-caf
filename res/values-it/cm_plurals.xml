@@ -28,4 +28,8 @@
     <item quantity="one">La conversazione verrà segnata come letta.</item>
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> conversazioni verranno contrassegnate come lette.</item>
   </plurals>
+  <plurals name="confirm_mark_unread_conversation">
+    <item quantity="one">La conversazione verrà segnata come non letta.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> conversazioni verranno segnate come non lette.</item>
+  </plurals>
 </resources>

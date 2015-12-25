@@ -16,5 +16,8 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="pref_quickmessage">ตอบกลับข้อความแบบรวดเร็ว</string>
+  <string name="pref_quickmessage_title">แสดงข้อความตอบกลับแบบรวดเร็ว</string>
+  <string name="pref_quickmessage_summary">เปิดป๊อปอัปข้อความตอบกลับแบบรวดเร็วเมื่อมี SMS เข้า</string>
   <string name="pref_wake_unlock_summary">เปิดอุปกรณ์และแสดงป๊อบอัพ QuickMessage</string>
 </resources>
