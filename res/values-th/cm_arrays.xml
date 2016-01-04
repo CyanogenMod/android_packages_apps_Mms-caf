@@ -17,26 +17,26 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string-array name="default_smiley_names">
-    <item>Vui vẻ</item>
-    <item>Buồn</item>
-    <item>Nháy mắt</item>
-    <item>Lưỡi thè ra</item>
-    <item>Ngạc nhiên</item>
-    <item>Hôn</item>
-    <item>La hét</item>
-    <item>Tuyệt vời</item>
-    <item>Có nhiều tiền</item>
-    <item>Nói điều gì đó ngu ngốc</item>
-    <item>Xấu hổ</item>
-    <item>Thiên thần</item>
-    <item>Chưa quyết định</item>
-    <item>Khóc</item>
-    <item>Không tiết lộ bí mật</item>
-    <item>Cười</item>
-    <item>Bối rối</item>
-    <item>Trái tim</item>
-    <item>Điên</item>
-    <item>Nhếch mép</item>
-    <item>Mặt không cảm xúc</item>
+    <item>มีความสุข</item>
+    <item>เศร้า</item>
+    <item>ขยิบตา</item>
+    <item>แลบลิ้น</item>
+    <item>ประหลาดใจ</item>
+    <item>กำลังจูบ</item>
+    <item>ตะโกน</item>
+    <item>เทห์</item>
+    <item>เงินปิดปาก</item>
+    <item>ขายหน้า</item>
+    <item>อับอาย</item>
+    <item>เทวดา</item>
+    <item>ไม่แน่ใจ</item>
+    <item>ร้องไห้</item>
+    <item>ปิดปาก</item>
+    <item>หัวเราะ</item>
+    <item>สับสน</item>
+    <item>หัวใจ</item>
+    <item>โกรธ</item>
+    <item>แสยะยิ้ม</item>
+    <item>หน้าโป๊กเกอร์</item>
   </string-array>
 </resources>

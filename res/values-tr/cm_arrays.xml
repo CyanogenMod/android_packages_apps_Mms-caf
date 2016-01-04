@@ -17,26 +17,26 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string-array name="default_smiley_names">
-    <item>Mutlu</item>
-    <item>Üzgün</item>
+    <item>Happy</item>
+    <item>Sad</item>
     <item>Göz Kırpma</item>
     <item>Dil çıkarmış</item>
     <item>Şaşırmış</item>
-    <item>Öpücük</item>
-    <item>Bağırma</item>
+    <item>Kissing</item>
+    <item>Yelling</item>
     <item>Sakin</item>
     <item>Para ağızlı</item>
     <item>Ayak ağızda</item>
-    <item>Mahçup</item>
-    <item>Melek</item>
-    <item>Kararsız</item>
-    <item>Ağlama</item>
-    <item>Dudakları mühürlü</item>
-    <item>Gülme</item>
-    <item>Sersemlemiş</item>
-    <item>Kalp</item>
-    <item>Kızgın</item>
-    <item>Sırıtma</item>
-    <item>Poker surat</item>
+    <item>Embarrassed</item>
+    <item>Angel</item>
+    <item>Undecided</item>
+    <item>Crying</item>
+    <item>Lips are sealed</item>
+    <item>Laughing</item>
+    <item>Confused</item>
+    <item>Heart</item>
+    <item>Mad</item>
+    <item>Smirk</item>
+    <item>Poker face</item>
   </string-array>
 </resources>
