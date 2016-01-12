@@ -117,7 +117,7 @@
   <string name="summary_new_message_template">Yeni mesaj şablonu oluştur</string>
   <string name="dialog_editSMSTemplate_title">Şablonu düzenle</string>
   <string name="import_message_template">Şablon ekle</string>
-  <string name="template_full">Şablon metni uzunluk sınırını aştı.</string>
+  <string name="template_full">Şablon metni maksimum uzunluğa ulaştı.</string>
   <string name="pref_sms_signature_title">SMS imzası</string>
   <string name="pref_title_enable_signature">Mesajlara imza ekle</string>
   <string name="pref_title_edit_signature">İmza metnini düzenle</string>
@@ -185,7 +185,7 @@
   <string name="search_mode">Arama modu</string>
   <string name="search_as_name">İsim</string>
   <string name="search_as_number">Numara</string>
-  <string name="search_as_content">Içerik</string>
+  <string name="search_as_content">İçerik</string>
   <string name="search_as_subject">Konu</string>
   <string name="invalid_name_toast">Lütfen geçerli bir ad girin</string>
   <string name="sim_capacity_title">SIM kapasitesi</string>
@@ -250,7 +250,7 @@
   <string name="pref_summary_enable_emoticons">Metin ifadelerini grafiksel eşdeğerleri ile değiştir</string>
   <string name="menu_conversation_options">Sohbet seçenekleri</string>
   <string name="pref_title_reset_convopt_to_default">Varsayılana sıfırla</string>
-  <string name="pref_summary_reset_convopt_to_default">Sohbet ayarlarını uygulama seviyesi ayarlarına sıfırlar</string>
+  <string name="pref_summary_reset_convopt_to_default">Sohbet ayarını uygulama seviyesi ayarına sıfırlar</string>
   <string name="pref_title_mms_full_timestamp">Tam zaman damgaları</string>
   <string name="pref_summary_mms_full_timestamp">Zaman damgalarında hem tarih hem saati gösterir</string>
   <string name="pref_title_mms_use_sent_timestamp">Orijinal zaman damgaları</string>
