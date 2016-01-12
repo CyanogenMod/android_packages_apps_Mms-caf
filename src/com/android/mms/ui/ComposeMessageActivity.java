@@ -5074,9 +5074,11 @@ public class ComposeMessageActivity extends Activity
                         startMsgListQuery();
                         return;
                     }
-
                     // check consistency b/t mConversation & mWorkingMessage.mConversation
                     ComposeMessageActivity.this.sanityCheckConversation();
+
+                    // check for Nested Activity
+                    boolean isNestedActivity = false;
 
                     int newSelectionPos = -1;
                     long targetMsgId = getIntent().getLongExtra("select_id", -1);
@@ -5098,6 +5100,10 @@ public class ComposeMessageActivity extends Activity
                         // previously scrolled to the end, jump the list so any new messages are
                         // visible.
                         if (mSavedScrollPosition == Integer.MAX_VALUE) {
+                            // isNestedActivity is true for new activity with mSavedScrollPosition
+                            // set to Integer.MAX_VALUE while mSavedScrollPosition sets to -1 or
+                            // some value if its not a new activity
+                            isNestedActivity = true;
                             int cnt = mMsgListAdapter.getCount();
                             if (cnt > 0) {
                                 // Have to wait until the adapter is loaded before jumping to
@@ -5147,7 +5153,8 @@ public class ComposeMessageActivity extends Activity
                     // more people before the conversation begins.
                     if (cursor != null && cursor.getCount() == 0
                             && !isRecipientsEditorVisible() && !mSentMessage) {
-                        if (preCursorChangeCount >= 1 && TextUtils.isEmpty(mTextEditor.getText())) {
+                        // do not exit activity if its a new nested activity
+                        if (preCursorChangeCount >= 1 && TextUtils.isEmpty(mTextEditor.getText()) && !isNestedActivity) {
                             // No message was entered, dismiss
                             exitComposeMessageActivity(new Runnable() {
                                 @Override
