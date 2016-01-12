@@ -40,4 +40,12 @@
     <item quantity="many">ستُوضع علامة مقروء على <xliff:g id="number" example="15">%1$s</xliff:g> حوارات.</item>
     <item quantity="other">ستُوضع علامة مقروء على <xliff:g id="number" example="15">%1$s</xliff:g> حوارات.</item>
   </plurals>
+  <plurals name="confirm_mark_unread_conversation">
+    <item quantity="zero"><xliff:g id="number" example="15">%1$s</xliff:g> سيتم وضع علامة كـ غير مقرءوة على المحادثات.</item>
+    <item quantity="one">سيتم وضع علامة كـ غير مقرءوة على محادثة واحدة.</item>
+    <item quantity="two"><xliff:g id="number" example="15">%1$s</xliff:g> سيتم وضع علامة كـ غير مقرءوة على المحادثات.</item>
+    <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> سيتم وضع علامة كـ غير مقرءوة على المحادثات.</item>
+    <item quantity="many"><xliff:g id="number" example="15">%1$s</xliff:g> سيتم وضع علامة كـ غير مقرءوة على المحادثات.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> سيتم وضع علامة كـ غير مقرءوة على المحادثات.</item>
+  </plurals>
 </resources>
