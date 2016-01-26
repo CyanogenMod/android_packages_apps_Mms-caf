@@ -194,7 +194,7 @@
                     android:hint="@string/type_to_compose_text_enter_to_send"
                     android:minHeight="@dimen/input_text_height"
                     android:maxLines="9"
-                    android:inputType="textShortMessage|textAutoCorrect|textCapSentences|textMultiLine"
+                    android:inputType="textAutoCorrect|textCapSentences|textMultiLine"
                     android:imeOptions="actionSend|flagNoEnterAction"
                 />
 
@@ -273,7 +273,7 @@
                     android:hint="@string/type_to_compose_text_enter_to_send"
                     android:minHeight="@dimen/input_text_height"
                     android:maxLines="3"
-                    android:inputType="textShortMessage|textAutoCorrect|textCapSentences|textMultiLine"
+                    android:inputType="textAutoCorrect|textCapSentences|textMultiLine"
                     android:imeOptions="actionSend|flagNoEnterAction"
                 />
 
