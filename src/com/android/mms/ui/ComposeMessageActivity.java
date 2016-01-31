@@ -107,6 +107,7 @@ import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputFilter.LengthFilter;
+import android.text.InputType;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -2539,6 +2540,15 @@ public class ComposeMessageActivity extends Activity
         if (MessagingPreferenceActivity.isSmartCallEnabled(ComposeMessageActivity.this)
               && tm.getCallState() == TelephonyManager.CALL_STATE_IDLE) {
             mPickupDetector.enable();
+        }
+
+        if (MessagingPreferenceActivity.isShowEmoticonsEnabled(
+                ComposeMessageActivity.this)) {
+            mTextEditor.setInputType(mTextEditor.getInputType()
+                    | InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE);
+        } else {
+            mTextEditor.setInputType(mTextEditor.getInputType()
+                    & ~InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE);
         }
 
         mIsRunning = true;
