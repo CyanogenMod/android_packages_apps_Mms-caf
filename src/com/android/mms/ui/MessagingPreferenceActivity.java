@@ -115,6 +115,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     public static final String GROUP_MMS_MODE           = "pref_key_mms_group_mms";
     public static final String SMS_CDMA_PRIORITY        = "pref_key_sms_cdma_priority";
     public static final String ENABLE_EMOTICONS         = "pref_key_enable_emoticons";
+    public static final String SHOW_EMOTICONS           = "pref_key_show_emoticons";
 
     // Unicode
     public static final String UNICODE_STRIPPING            = "pref_key_unicode_stripping_value";
@@ -1205,6 +1206,11 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     public static boolean isSmartCallEnabled(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getBoolean(SMART_DIALER_ENABLED, false);
+    }
+
+    public static boolean isShowEmoticonsEnabled(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(SHOW_EMOTICONS, true);
     }
 
     private void registerListeners() {

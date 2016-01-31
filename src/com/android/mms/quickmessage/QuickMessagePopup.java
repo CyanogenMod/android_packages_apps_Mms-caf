@@ -685,11 +685,14 @@ public class QuickMessagePopup extends Activity {
             }
 
             // Set the remaining values
+            boolean mShowEmoticons = MessagingPreferenceActivity.isShowEmoticonsEnabled(
+                    QuickMessagePopup.this);
             qmReplyText.setInputType(InputType.TYPE_CLASS_TEXT
                     | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
                     | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
                     | InputType.TYPE_TEXT_FLAG_MULTI_LINE
-                    | InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE);
+                    | (mShowEmoticons ?
+                        InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE : 0));
             qmReplyText.setText(qm.getReplyText());
             qmReplyText.setSelection(qm.getReplyText().length());
             qmReplyText.addTextChangedListener(new QmTextWatcher(QuickMessagePopup.this,
