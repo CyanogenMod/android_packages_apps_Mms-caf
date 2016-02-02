@@ -28,4 +28,8 @@
     <item quantity="one">En samtale vil bli merket som lest.</item>
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> samtaler vil bli merket som lest.</item>
   </plurals>
+  <plurals name="confirm_mark_unread_conversation">
+    <item quantity="one">Samtalen vil bli merket som ulest.</item>
+    <item quantity="other"><xliff:g id="number">%1$s</xliff:g> samtaler vil bli markert som uleste.</item>
+  </plurals>
 </resources>
