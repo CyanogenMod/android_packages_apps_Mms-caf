@@ -28,4 +28,8 @@
     <item quantity="one">Konversationen kommer att markeras som oläst.</item>
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> konversationer kommer att markeras som olästa.</item>
   </plurals>
+  <plurals name="confirm_mark_unread_conversation">
+    <item quantity="one">En konversation kommer att markeras som läst.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> konversationer kommer att markeras som lästa.</item>
+  </plurals>
 </resources>

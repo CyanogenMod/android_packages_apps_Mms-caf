@@ -134,7 +134,7 @@
   <string name="copy_to_sim_fail">Sporočila ni mogoče shraniti</string>
   <string name="copy_to_phone_success">Sporočilo shranjeno</string>
   <string name="copy_to_phone_fail">Sporočila ni mogoče shraniti</string>
-  <string name="contact_app_not_found">Programa za stike ni mogoče odpreti</string>
+  <string name="contact_app_not_found">Aplikacije za stike ni mogoče odpreti</string>
   <string name="search_bar_hint">Išči po stikih</string>
   <string name="type_vcard">Vizitka (vCard)</string>
   <string name="import_vcard">Uvozi</string>
@@ -237,7 +237,7 @@
   <string name="qm_wear_reply_by_voice">Odgovori z glasovnim sporočilom</string>
   <string name="copy_empty_string">Ni besedila za kopiranje</string>
   <string name="attach_add_calendar_events">Dogodek koledarja</string>
-  <string name="calendar_attachment_activity_not_found">Podprtega programa za koledar ni mogoče najti</string>
+  <string name="calendar_attachment_activity_not_found">Podprte aplikacije za koledar ni mogoče najti</string>
   <string name="pref_title_mms_notification_vibrate_pattern">Vzorec vibriranja</string>
   <string name="pref_summary_mms_notification_vibrate_pattern">Spremeni vzorec vibriranja</string>
   <string name="pref_mms_notification_vibrate_normal">Običajen</string>
@@ -250,7 +250,7 @@
   <string name="pref_summary_enable_emoticons">Nadomesti besedilne izrazne ikone z grafičnimi ustrezniki</string>
   <string name="menu_conversation_options">Možnosti pogovora</string>
   <string name="pref_title_reset_convopt_to_default">Ponastavi na privzeto</string>
-  <string name="pref_summary_reset_convopt_to_default">Ponastavi nastavitve za pogovor na nastavitve ravni programa</string>
+  <string name="pref_summary_reset_convopt_to_default">Ponastavi nastavitve za pogovor na nastavitve ravni aplikacije</string>
   <string name="pref_title_mms_full_timestamp">Polni časovni žigi</string>
   <string name="pref_summary_mms_full_timestamp">V časovnem žigu prikaži tako datum kot čas</string>
   <string name="pref_title_mms_use_sent_timestamp">Izvirni časovni žigi</string>
