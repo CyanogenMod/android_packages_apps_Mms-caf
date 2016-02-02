@@ -16,27 +16,6 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string-array name="default_smiley_names">
-    <item>Весялосць</item>
-    <item>Сумны</item>
-    <item>Падморгвае</item>
-    <item>Паказвае язык</item>
-    <item>Здзіўлены</item>
-    <item>Пацалунак</item>
-    <item>Крычыць</item>
-    <item>Круты</item>
-    <item>Не балбачы дарма</item>
-    <item>У замяшанні</item>
-    <item>Збянтэжанасць</item>
-    <item>Анёл</item>
-    <item>Нерашучы</item>
-    <item>Плача</item>
-    <item>Не скажу</item>
-    <item>Смех</item>
-    <item>Збянтэжаны</item>
-    <item>Рэйтынг</item>
-    <item>Злы</item>
-    <item>Ухмылка</item>
-    <item>Спакой</item>
-  </string-array>
+  <string name="no_recipients_mobile_only">Nema pronađenih odgovarajućih kontakata. Probajte bez filtera \"Samo mobilni brojevi\"</string>
+  <string name="menu_mobile">Samo mobilni brojevi</string>
 </resources>

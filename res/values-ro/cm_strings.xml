@@ -28,7 +28,7 @@
   <string name="button_close">Închide</string>
   <string name="button_view">Vizualizați</string>
   <string name="button_templates">Șabloane</string>
-  <string name="type_to_reply_text_enter_to_send">Introduceți text pentru a răspunde</string>
+  <string name="type_to_reply_text_enter_to_send">Tastați pentru a răspunde</string>
   <string name="qm_mark_read">Citește</string>
   <string name="toast_sending_message">Se trimite mesajul\u2026</string>
   <string name="pref_title_send_delay">Întârziere la livrare</string>
@@ -61,6 +61,7 @@
   <string name="menu_as_read">Marchează ca citit</string>
   <string name="menu_all_as_unread">Marchează toate ca necitite</string>
   <string name="menu_all_as_read">Marchează toate ca fiind citite</string>
+  <string name="menu_add_to_contacts_cm">Adaugă la contacte</string>
   <string name="confirm_mark_unread_dialog_title">Marcați ca necitit?</string>
   <string name="confirm_mark_unread_conversation">Conversația va fi marcată ca necitită.</string>
   <string name="confirm_mark_read_dialog_title">Marcați ca citit?</string>

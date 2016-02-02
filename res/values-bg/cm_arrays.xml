@@ -17,26 +17,26 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string-array name="default_smiley_names">
-    <item>Весялосць</item>
-    <item>Сумны</item>
-    <item>Падморгвае</item>
-    <item>Паказвае язык</item>
-    <item>Здзіўлены</item>
-    <item>Пацалунак</item>
-    <item>Крычыць</item>
-    <item>Круты</item>
-    <item>Не балбачы дарма</item>
-    <item>У замяшанні</item>
-    <item>Збянтэжанасць</item>
-    <item>Анёл</item>
-    <item>Нерашучы</item>
+    <item>Щастлив</item>
+    <item>Тъжен</item>
+    <item>Премигване</item>
+    <item>Показва език</item>
+    <item>Изненадан</item>
+    <item>Целуване</item>
+    <item>Писъци</item>
+    <item>Готино</item>
+    <item>Пари в устата</item>
+    <item>Нерешителен</item>
+    <item>Смущение</item>
+    <item>Ангел</item>
+    <item>Колеблив</item>
     <item>Плача</item>
-    <item>Не скажу</item>
-    <item>Смех</item>
-    <item>Збянтэжаны</item>
-    <item>Рэйтынг</item>
-    <item>Злы</item>
-    <item>Ухмылка</item>
-    <item>Спакой</item>
+    <item>Няма да кажа</item>
+    <item>Смях</item>
+    <item>Объркан</item>
+    <item>Сърце</item>
+    <item>Луд</item>
+    <item>Самодоволен</item>
+    <item>Безизразно лице</item>
   </string-array>
 </resources>
