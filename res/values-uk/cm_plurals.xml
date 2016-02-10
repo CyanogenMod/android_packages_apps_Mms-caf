@@ -31,4 +31,9 @@
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> розмови будуть позначені як прочитані.</item>
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> розмов буде позначено як прочитані.</item>
   </plurals>
+  <plurals name="confirm_mark_unread_conversation">
+    <item quantity="one">Розмова буде позначена як непрочитана.</item>
+    <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> розмови буде позначено як непрочитані.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> розмов буде позначено як непрочитані.</item>
+  </plurals>
 </resources>
