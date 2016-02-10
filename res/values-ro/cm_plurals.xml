@@ -26,4 +26,9 @@
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> mesaje vor fi șterse.</item>
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> mesaje vor fi șterse.</item>
   </plurals>
+  <plurals name="confirm_mark_unread_conversation">
+    <item quantity="one">O conversație va fi marcată ca necitită.</item>
+    <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> conversații vor fi marcate ca necitite.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> conversații vor fi marcate ca necitite.</item>
+  </plurals>
 </resources>

@@ -54,10 +54,10 @@
   <string name="add_to_blacklist_message">Berichten van %s worden geblokkeerd</string>
   <string name="alert_dialog_yes">Ja</string>
   <string name="alert_dialog_no">Nee</string>
-  <string name="pref_title_unicode_stripping">Unicode-tekens omzetten</string>
+  <string name="pref_title_unicode_stripping">Unicode-tekens verwijderen</string>
   <string name="pref_unicode_stripping_leave_intact">Tekens intact laten</string>
-  <string name="pref_unicode_stripping_non_encodable">Niet-encodeerbare tekens omzetten</string>
-  <string name="pref_unicode_stripping_all">Alle Unicode-tekens omzetten</string>
+  <string name="pref_unicode_stripping_non_encodable">Niet-encodeerbare tekens verwijderen</string>
+  <string name="pref_unicode_stripping_all">Alle Unicode-tekens verwijderen</string>
   <string name="menu_as_unread">Markeren als ongelezen</string>
   <string name="menu_as_read">Markeren als gelezen</string>
   <string name="menu_all_as_unread">Alles markeren als ongelezen</string>
