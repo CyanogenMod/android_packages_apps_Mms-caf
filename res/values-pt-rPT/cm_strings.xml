@@ -24,7 +24,7 @@
   <string name="pref_close_all_title">Fechar todas</string>
   <string name="pref_close_all_summary">O botão \'fechar\' fecha todas as mensagens</string>
   <string name="pref_dark_theme_title">Usar tema escuro</string>
-  <string name="pref_dark_theme_summary">Se não estiver selecionado, será utilizado o tema \'claro\'</string>
+  <string name="pref_dark_theme_summary">Se não estiver selecionado, será utilizado o tema \"claro\"</string>
   <string name="message_counter">%1$d de %2$d</string>
   <string name="button_close">Fechar</string>
   <string name="button_view">Ver</string>
@@ -252,9 +252,9 @@
   <string name="pref_title_reset_convopt_to_default">Repor os valores de origem</string>
   <string name="pref_summary_reset_convopt_to_default">Repõe as definições de conversa para o padrão da aplicação</string>
   <string name="pref_title_mms_full_timestamp">Data completa</string>
-  <string name="pref_summary_mms_full_timestamp">Exibe data e hora</string>
-  <string name="pref_title_mms_use_sent_timestamp">Data/hora original</string>
-  <string name="pref_summary_mms_use_sent_timestamp">Exibe data de envio em vez da data de receção</string>
+  <string name="pref_summary_mms_full_timestamp">Mostrar data e hora</string>
+  <string name="pref_title_mms_use_sent_timestamp">Data e hora originais</string>
+  <string name="pref_summary_mms_use_sent_timestamp">Mostrar a data de envio em vez da data de receção</string>
   <string name="pref_title_mms_auto_enable_data">Dados automáticos</string>
   <string name="pref_summary_mms_auto_enable_data">Ativar automaticamente os dados móveis para as mensagens MMS</string>
   <string name="adding_selected_recipients_dialog_text">A adicionar contactos\u2026</string>

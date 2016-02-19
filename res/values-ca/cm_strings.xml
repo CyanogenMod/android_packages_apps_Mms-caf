@@ -237,7 +237,7 @@
   <string name="qm_wear_reply_by_voice">Respon mitjançant veu</string>
   <string name="copy_empty_string">No hi ha text a copiar</string>
   <string name="attach_add_calendar_events">Esdeveniment del calendari</string>
-  <string name="calendar_attachment_activity_not_found">No s\'ha pogut trobar una app de calendari suportada</string>
+  <string name="calendar_attachment_activity_not_found">No s\'ha pogut trobar una aplicació de calendari suportada</string>
   <string name="pref_title_mms_notification_vibrate_pattern">Patró de vibració</string>
   <string name="pref_summary_mms_notification_vibrate_pattern">Canvia el patró de vibració</string>
   <string name="pref_mms_notification_vibrate_normal">Normal</string>

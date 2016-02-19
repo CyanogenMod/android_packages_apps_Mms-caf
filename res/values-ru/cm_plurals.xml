@@ -17,23 +17,23 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <plurals name="remaining_delay_time">
-    <item quantity="one">Отправка через %1$d секунду...\nНажмите для отмены.</item>
-    <item quantity="few">Отправка через %1$d секунды...\nНажмите для отмены.</item>
-    <item quantity="other">Отправка через %1$d секунд...\nНажмите для отмены.</item>
+    <item quantity="one">Отправка через 1 секунду. Нажмите для отмены.</item>
+    <item quantity="few">Отправка через %1$d секунды. Нажмите для отмены.</item>
+    <item quantity="other">Отправка через %1$d секунд. Нажмите для отмены.</item>
   </plurals>
   <plurals name="confirm_delete_messages">
-    <item quantity="one">Будет удалено <xliff:g id="number" example="21">%1$s</xliff:g> сообщение.</item>
-    <item quantity="few">Будет удалено <xliff:g id="number" example="15">%1$s</xliff:g> сообщения.</item>
-    <item quantity="other">Будет удалено <xliff:g id="number" example="15">%1$s</xliff:g> сообщений.</item>
+    <item quantity="one">1 сообщение будет удалено.</item>
+    <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> сообщения будут удалены.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> сообщений будут удалены.</item>
   </plurals>
   <plurals name="confirm_mark_read_conversation">
-    <item quantity="one">Цепочка будет помечена как прочитанная.</item>
+    <item quantity="one">1 цепочка будет помечена как прочитанная.</item>
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> цепочки будут помечены как прочитанные.</item>
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> цепочек будут помечены как прочитанные.</item>
   </plurals>
   <plurals name="confirm_mark_unread_conversation">
-    <item quantity="one"><xliff:g id="number" example="15">%1$s</xliff:g> цепочка будет помечена как содержащая новые сообщения.</item>
-    <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> цепочки будут помечены как содержащие новые сообщения.</item>
-    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> цепочек будут помечены как содержащие новые сообщения.</item>
+    <item quantity="one"><xliff:g id="number" example="15">%1$s</xliff:g> цепочка будет помечена как непрочитанная.</item>
+    <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> цепочки будут помечены как непрочитанные.</item>
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> цепочек будут помечены как непрочитанные.</item>
   </plurals>
 </resources>
