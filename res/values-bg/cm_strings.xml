@@ -41,7 +41,7 @@
   <string name="send_delay_30seconds">30 секунди</string>
   <string name="sent_countdown">Обратно отброяване на изпращането</string>
   <string name="pref_extra_settings">Допълнителни настройки</string>
-  <string name="blacklist_title">Списък на блокираните абонати</string>
+  <string name="blacklist_title">Списък на блокираните контакти</string>
   <string name="blacklist_summary_disabled">Изключено</string>
   <string name="blacklist_summary">Няма да получавате входящи повиквания или съобщения от телефонните номера в списъка</string>
   <string name="blacklist_notification">Блокирано съобщение от %s</string>
@@ -50,7 +50,7 @@
   <string name="blacklist_notification_unknown_number">Блокирано съобщение от непознат номер %s</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d </xliff:g> съобщения са били блокирани</string>
   <string name="unblock_number">Разблокирай</string>
-  <string name="add_to_blacklist">Добавяне към блокираните</string>
+  <string name="add_to_blacklist">Добавяне към списъка на блокираните контакти</string>
   <string name="add_to_blacklist_message">Бъдещи съобщения от %s ще бъдат блокирани</string>
   <string name="alert_dialog_yes">Да</string>
   <string name="alert_dialog_no">Не</string>
@@ -86,8 +86,8 @@
   <string name="menu_resend">Повторно изпращане</string>
   <string name="cancel_downloading">Отказ</string>
   <string name="confirm_cancel_downloading">Изтеглянето на MMS ще бъде отказано.</string>
-  <string name="send_by_slot1">Изпрати чрез СИМ 1</string>
-  <string name="send_by_slot2">Изпрати чрез СИМ 2</string>
+  <string name="send_by_slot1">Изпрати чрез СИМ карта 1</string>
+  <string name="send_by_slot2">Изпрати чрез СИМ карта 2</string>
   <string name="select_phone_account_title">Изпрати с</string>
   <string name="media_size_limit">Надвишен е максимумът за размер на съобщението, съобщението не може да се изпрати.</string>
   <string name="illegal_message_or_increase_size">Сгрешен размер на съобщението.</string>
@@ -95,12 +95,12 @@
   <string name="cannot_add_text_anymore">Не може да добавяте повече текст.</string>
   <string name="title_send_message">Изпрати съобщението</string>
   <string name="subject_full">Заглавната част не трябва да бъде по-дълга от <xliff:g id="length">%d </xliff:g> символа.</string>
-  <string name="pref_title_manage_sim_messages_slot1">Управляване на съобщения от СИМ 1</string>
-  <string name="pref_title_manage_sim_messages_slot2">Управляване на съобщения от СИМ 2</string>
+  <string name="pref_title_manage_sim_messages_slot1">Управляване на съобщения от СИМ карта 1</string>
+  <string name="pref_title_manage_sim_messages_slot2">Управляване на съобщения от СИМ карта 2</string>
   <string name="prefs_title_export_sms_messages">Експортиране на SMS съобщения</string>
   <string name="prefs_title_import_sms_messages">Внасяне на SMS съобщения</string>
-  <string name="pref_title_sms_delivery_reports_slot1">Отчети за доставка за СИМ 1</string>
-  <string name="pref_title_sms_delivery_reports_slot2">Отчети за доставка за СИМ 2</string>
+  <string name="pref_title_sms_delivery_reports_slot1">Отчети за доставка СИМ карта 1</string>
+  <string name="pref_title_sms_delivery_reports_slot2">Отчети за доставка СИМ карта 2</string>
   <string name="status_deleted_unread">Изтрито без да бъде прочетено</string>
   <string name="disk_storage_full_error">Грешка: Паметта е пълена.</string>
   <string name="mms_too_large">Съобщението е твърде голямо, за да го изтеглите.</string>
@@ -125,12 +125,12 @@
   <string name="operation_to_card_memory">Копирай съобщението в СИМ картата</string>
   <string name="pref_smsc_title">SMS център за обслужване</string>
   <string name="pref_one_smcs">Номер на SMS центъра</string>
-  <string name="pref_more_smcs">СИМ <xliff:g id="slot_number">%d </xliff:g> Номер на SMS центъра</string>
+  <string name="pref_more_smcs">СИМ карта <xliff:g id="slot_number">%d </xliff:g> Номер на SMS центъра</string>
   <string name="set_smsc_error">Не може да зададете номера на SMS центъра</string>
   <string name="set_smsc_success">Номера на SMS центъра е зададен успешно</string>
   <string name="set_smsc_confirm_message">Промяна на номера на SMS центъра може да предизвика грешки при изпращане на SMS. Наистина ли искате да продължите?</string>
-  <string name="copy_to_sim">Копирай съобщението в SIM картата</string>
-  <string name="copy_to_sim_success"><xliff:g id="count">%1$d </xliff:g> на <xliff:g id="total">%2$d </xliff:g> съобщения, записани в SIM карта.</string>
+  <string name="copy_to_sim">Копирай съобщението в СИМ картата</string>
+  <string name="copy_to_sim_success"><xliff:g id="count">%1$d </xliff:g> на <xliff:g id="total">%2$d </xliff:g> съобщения записани в СИМ картата.</string>
   <string name="copy_to_sim_fail">Не може да запише това съобщение</string>
   <string name="copy_to_phone_success">Съобщението е записано</string>
   <string name="copy_to_phone_fail">Не може да запише това съобщение</string>
@@ -151,8 +151,8 @@
   <string name="sms_phone_memory_usage">SMS: се използва <xliff:g id="used">%1$d </xliff:g> от <xliff:g id="total">%2$d </xliff:g></string>
   <string name="mms_phone_memory_usage">MMS: се използва <xliff:g id="used">%1$d </xliff:g> от <xliff:g id="total">%2$d </xliff:g></string>
   <string name="pref_title_validity_period">Период на валидност</string>
-  <string name="pref_title_validity_period_slot1">Срок на валидност за СИМ 1</string>
-  <string name="pref_title_validity_period_slot2">Срок на валидност за СИМ 2</string>
+  <string name="pref_title_validity_period_slot1">Срок на валидност на СИМ карта 1</string>
+  <string name="pref_title_validity_period_slot2">Срок на валидност на СИМ карта 2</string>
   <string name="sms_validity_period_not_set">Не е зададен</string>
   <string name="sms_validity_period_one_hour">1 час</string>
   <string name="sms_validity_period_six_hours">6 часа</string>
@@ -165,9 +165,9 @@
   <string name="operate_success">Операцията завърши успешно</string>
   <string name="operate_failure">Неуспешна операция</string>
   <string name="menu_reply">Отговор</string>
-  <string name="slot1">СИМ 1</string>
-  <string name="slot2">СИМ 2</string>
-  <string name="sim_spinner_active_item_postfix">СИМ %d</string>
+  <string name="slot1">СИМ карта 1</string>
+  <string name="slot2">СИМ карта 2</string>
+  <string name="sim_spinner_active_item_postfix">СИМ карта %d</string>
   <string name="cannot_play">Не може да представи слайдшоуто.</string>
   <string name="confirm_delete_selected_messages">Избраните съобщения ще бъдат изтрити.</string>
   <string name="send_failure">Не може да изпрати съобщение.</string>
@@ -189,8 +189,8 @@
   <string name="search_as_subject">Тема</string>
   <string name="invalid_name_toast">Моля, въведете валидно име</string>
   <string name="sim_capacity_title">Капацитет на СИМ картата</string>
-  <string name="sim_capacity"><xliff:g id="used">%1$d </xliff:g> от <xliff:g id="total">%2$d </xliff:g> Записи на СИМ картата се използват</string>
-  <string name="pref_sim_card_full_save_to_phone">СИМ карта е пълна, записвай новите съобщения в телефона.</string>
+  <string name="sim_capacity">Използвайте <xliff:g id="used">%1$d</xliff:g> от <xliff:g id="total">%2$d</xliff:g>възможни записи на СИМ картата</string>
+  <string name="pref_sim_card_full_save_to_phone">СИМ картата е пълена. Новите съобщения ще се записват в паметта на устройството.</string>
   <string name="selected_all">Маркирай всички</string>
   <string name="deselected_all">Размаркирай всички</string>
   <string name="selected_count"><xliff:g id="COUNT">%d </xliff:g> избрани</string>
@@ -203,8 +203,8 @@
   <string name="download_dialog_title">Изтегли този MMS?</string>
   <string name="menu_email">Изпращане на е-писмо</string>
   <string name="pref_title_sms_store">Предпочитано място за съхранение</string>
-  <string name="pref_title_sms_store_card1">Предпочитано място за съхранение за СИМ 1</string>
-  <string name="pref_title_sms_store_card2">Предпочитано място за съхранение за СИМ 2</string>
+  <string name="pref_title_sms_store_card1">Предпочитано място за съхранение за СИМ карта 1</string>
+  <string name="pref_title_sms_store_card2">Предпочитано място за съхранение за СИМ карта 2</string>
   <string name="pref_sms_store_phone">Телефон</string>
   <string name="pref_sms_store_card">СИМ карта</string>
   <string name="mms_size_indicator"><xliff:g id="mms_size">%1$d</xliff:g> от <xliff:g id="all_size">%2$d</xliff:g> КБ</string>
