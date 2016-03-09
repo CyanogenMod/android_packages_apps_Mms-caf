@@ -32,6 +32,9 @@
 <resources>
     <!-- configuration for filtering illegal character in address -->
     <bool name="config_filter_char_address">true</bool>
+    
+    <!-- configuration for smart call feature in extra settings -->
+    <bool name="config_enableMmsSmartDialer">false</bool>
 
     <!-- configuration for retry immediately when send MMS failed -->
     <bool name="config_retry_immediately">false</bool>

@@ -115,6 +115,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     public static final String GROUP_MMS_MODE           = "pref_key_mms_group_mms";
     public static final String SMS_CDMA_PRIORITY        = "pref_key_sms_cdma_priority";
     public static final String ENABLE_EMOTICONS         = "pref_key_enable_emoticons";
+    public static final String ENABLE_SMART_CALL        = "pref_summary_mms_smart_dialer";
 
     // Unicode
     public static final String UNICODE_STRIPPING            = "pref_key_unicode_stripping_value";
@@ -157,6 +158,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     private PreferenceCategory mMmsPrefCategory;
     private PreferenceCategory mNotificationPrefCategory;
     private PreferenceCategory mSmscPrefCate;
+    private PreferenceCategory mExtraSettingsCategory;
 
     // Delay send
     public static final String SEND_DELAY_DURATION = "pref_key_send_delay";
@@ -232,6 +234,9 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
     // Blacklist
     private PreferenceScreen mBlacklist;
+    
+    // Smart Dialer
+    private SwitchPreference mSmartDialer;
 
     @Override
     protected void onCreate(Bundle icicle) {
@@ -305,6 +310,7 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mSmsEnabledPref = findPreference("pref_key_sms_enabled");
 
         mStoragePrefCategory = (PreferenceCategory)findPreference("pref_key_storage_settings");
+        mExtraSettingsCategory = (PreferenceCategory)findPreference("pref_extra_settings");
         mSmsPrefCategory = (PreferenceCategory)findPreference("pref_key_sms_settings");
         mMmsPrefCategory = (PreferenceCategory)findPreference("pref_key_mms_settings");
         mNotificationPrefCategory =
@@ -370,8 +376,20 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
         // Blacklist screen - Needed for setting summary
         mBlacklist = (PreferenceScreen) findPreference(BLACKLIST);
+        
+        // Smart Function
+        mSmartDialer = (SwitchPreference) findPreference(SMART_DIALER_ENABLED);
+        boolean val = getResources().getBoolean(R.bool.config_enableMmsSmartDialer);
+        Log.d(TAG, "ANKIT ***** val: " + val);
+        if (!val)
+        {
+		if (mSmartDialer != null) {
+			Log.d(TAG, "ANKIT ***** smartdialer is not null");
+			mExtraSettingsCategory.removePreference(mSmartDialer);
+		}
+	}
 
-        setMessagePreferences();
+	setMessagePreferences();
     }
 
     private void restoreDefaultPreferences() {
