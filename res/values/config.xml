@@ -108,4 +108,8 @@
     <bool name="enable_data_for_mms">false</bool>
 
     <integer name="max_chips_parsed">15</integer>
+
+    <!-- configuration for smart call feature in extra settings -->
+    <bool name="config_enableMmsSmartDialer">true</bool>
+
 </resources>
