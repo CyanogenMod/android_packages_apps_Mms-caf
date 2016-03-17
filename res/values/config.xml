@@ -112,4 +112,6 @@
     <!-- configuration for smart call feature in extra settings -->
     <bool name="config_enableMmsSmartDialer">true</bool>
 
+    <!-- default sms ringtone uri -->
+    <string name="pref_sms_tone">content://settings/system/notification_sound</string>
 </resources>
