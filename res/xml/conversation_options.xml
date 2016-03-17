@@ -16,7 +16,7 @@
                 android:dependency="convopt_key_notification_enabled"
                 android:persistent="false"
                 android:enabled="false"
-                android:defaultValue="content://settings/system/notification_sound" />
+                android:defaultValue="@string/pref_sms_tone"/>
 
         <CheckBoxPreference
                 android:key="convopt_key_vibrate"
