@@ -16,6 +16,8 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- QUICKMESSAGE SUPPORT -->
+  <!-- Preferences -->
   <string name="pref_quickmessage">Αναδυόμενο μήνυμα και απάντηση</string>
   <string name="pref_quickmessage_title">Εμφάνιση αναδυόμενου παραθύρου</string>
   <string name="pref_quickmessage_summary">Αυτόματη εμφάνιση αναδυόμενου μηνύματος για τα εισερχόμενα SMS</string>
@@ -26,12 +28,16 @@
   <string name="pref_dark_theme_title">Χρήση σκοτεινού θέματος</string>
   <string name="pref_dark_theme_summary">Αν δεν επιλεχθεί, το προεπιλεγμένο \'φωτεινό\' θέμα θα χρησιμοποιηθεί</string>
   <string name="message_counter">%1$d από %2$d</string>
+  <!-- QM Dialog box buttons -->
   <string name="button_close">Κλείσιμο</string>
   <string name="button_view">Εμφάνιση</string>
   <string name="button_templates">Πρότυπα</string>
+  <!-- Hint text in message body field when keyboard is exposed -->
   <string name="type_to_reply_text_enter_to_send">Πληκτρολογήστε για να απαντήσετε</string>
+  <!-- QM Toast -->
   <string name="qm_mark_read">Διαβάστηκε</string>
   <string name="toast_sending_message">Αποστολή μηνύματος\u2026</string>
+  <!-- Delay delivery -->
   <string name="pref_title_send_delay">Καθυστέρηση παράδοσης</string>
   <string name="send_delay_immediate">Άμεση αποστολή</string>
   <string name="send_delay_3seconds">3 δευτερόλεπτα</string>
@@ -40,35 +46,46 @@
   <string name="send_delay_20seconds">20 δευτερόλεπτα</string>
   <string name="send_delay_30seconds">30 δευτερόλεπτα</string>
   <string name="sent_countdown">Αντίστροφη μέτρηση παράδοσης μηνύματος</string>
+  <!-- EXTRA SETTINGS -->
   <string name="pref_extra_settings">Επιπλέον ρυθμίσεις</string>
+  <!-- Blacklist preferences -->
   <string name="blacklist_title">Λίστα αποκλεισμένων καλούντων</string>
   <string name="blacklist_summary_disabled">Απενεργοποιημένη</string>
   <string name="blacklist_summary">Δε θα λαμβάνετε εισερχόμενες κλήσεις ή μηνύματα από τηλεφωνικούς αριθμούς στη λίστα αποκλεισμένων καλούντων</string>
+  <!-- Blacklist notifications -->
   <string name="blacklist_notification">Απορρίφθηκε μήνυμα από %s</string>
   <string name="blacklist_notification_private_number">Απορρίφθηκε μήνυμα από απόρρητο αριθμό</string>
   <string name="blacklist_notification_list_private">Απόρρητο</string>
   <string name="blacklist_notification_unknown_number">Απορρίφθηκε μήνυμα από άγνωστο αριθμό %s</string>
   <string name="blacklist_notification_multiple">Απορρίφθηκαν <xliff:g id="count">%d</xliff:g> μηνύματα</string>
   <string name="unblock_number">Ακύρωση φραγής</string>
+  <!-- Blacklist management -->
   <string name="add_to_blacklist">Προσθήκη στη λίστα αποκλεισμένων καλούντων</string>
   <string name="add_to_blacklist_message">Μελλοντικά μηνύματα από το %s θα απορρίπτονται</string>
+  <!-- Generic blacklist handling -->
   <string name="alert_dialog_yes">Ναι</string>
   <string name="alert_dialog_no">Όχι</string>
+  <!-- Strip unicode -->
   <string name="pref_title_unicode_stripping">Αφαίρεση unicode</string>
   <string name="pref_unicode_stripping_leave_intact">Καμία αλλαγή στους χαρακτήρες</string>
   <string name="pref_unicode_stripping_non_encodable">Αφαίρεση χαρακτήρων που δεν μπορούν να κωδικοποιηθούν</string>
   <string name="pref_unicode_stripping_all">Αφαίρεση όλων των χαρακτήρων</string>
+  <!-- Context menu item on a message for marking as unread / read -->
   <string name="menu_as_unread">Επισήμανση ως μη αναγνωσμένο</string>
   <string name="menu_as_read">Επισήμανση ως αναγνωσμένο</string>
+  <!-- Context menu item on a message for marking all threads as unread / read -->
   <string name="menu_all_as_unread">Επισήμανση όλων ως μη αναγνωσμένα</string>
   <string name="menu_all_as_read">Επισήμανση όλων ως αναγνωσμένα</string>
   <string name="menu_add_to_contacts_cm">Προσθήκη στις Επαφές</string>
+  <!-- Confirm Mark as unread / read -->
   <string name="confirm_mark_unread_dialog_title">Επισήμανση ως μη αναγνωσμένο;</string>
   <string name="confirm_mark_unread_conversation">Η συνομιλία θα επισημανθεί ως μη αναγνωσμένη.</string>
   <string name="confirm_mark_read_dialog_title">Επισήμανση ως αναγνωσμένο;</string>
   <string name="confirm_mark_read_conversation">Η συνομιλία θα επισημανθεί ως αναγνωσμένη.</string>
+  <!-- Mark all threads confirmation dialog message -->
   <string name="confirm_mark_unread_all_conversations">Όλα τα θέματα θα επισημανθούν ως μη αναγνωσμένα.</string>
   <string name="confirm_mark_read_all_conversations">Όλα τα θέματα θα επισημανθούν ως αναγνωσμένα.</string>
+  <!-- Multi recipients -->
   <string name="loading">Φόρτωση\u2026</string>
   <string name="select_recipients">Επιλέξτε παραλήπτες</string>
   <string name="no_recipients">Δεν βρέθηκαν επαφές</string>
@@ -77,12 +94,14 @@
   <string name="menu_mobile">Μόνο κινητά τηλέφωνα</string>
   <string name="menu_order_by_given_name">Ταξινόμηση κατά όνομα</string>
   <string name="menu_order_by_last_name">Ταξινόμηση κατά επώνυμο</string>
+  <!-- Extra message options -->
   <string name="message_share">Κοινή χρήση</string>
   <string name="message_share_intent_title">Κοινή χρήση μηνύματος</string>
   <string name="start_new_message_button">Νέο μήνυμα</string>
   <string name="all_spinner_option">Όλα</string>
   <string name="menu_copy_url">Αντιγραφή του URL <xliff:g id="extractedurl">%s</xliff:g></string>
   <string name="deleting_threads">Διαγραφή νημάτων\u2026</string>
+  <!-- Context menu item on an failed message for resending -->
   <string name="menu_resend">Αποστολή ξανά</string>
   <string name="cancel_downloading">Ακύρωση</string>
   <string name="confirm_cancel_downloading">Η λήψη MMS θα ακυρωθεί.</string>
@@ -90,10 +109,15 @@
   <string name="send_by_slot2">Αποστολή μέσω SIM 2</string>
   <string name="select_phone_account_title">Αποστολή με</string>
   <string name="media_size_limit">Το μήνυμα έφτασε το όριο μεγέθους, το μήνυμα δεν θα αποσταλεί.</string>
+  <!-- Error message indicating that the message size or the increase size is negative -->
   <string name="illegal_message_or_increase_size">Μη έγκυρο μέγεθος μηνύματος.</string>
+  <!-- Dialog box title that appears when a draft message will not be saved due to invalid recipients -->
   <string name="discard_message_reason_some_invalid">Το μήνυμά σας θα απορριφθεί επειδή μερικοί παραλήπτες δεν είναι έγκυροι.</string>
+  <!-- Brief message that appears when the maximum size of slides has been reached -->
   <string name="cannot_add_text_anymore">Δεν είναι δυνατό να προσθέσετε περισσότερο κείμενο.</string>
+  <!-- Dialog box title for display the current mms size  -->
   <string name="title_send_message">Αποστολή μηνύματος</string>
+  <!-- Toast when the subject is full -->
   <string name="subject_full">Το θέμα δεν πρέπει να υπερβαίνει τους <xliff:g id="length">%d</xliff:g> χαρακτήρες.</string>
   <string name="pref_title_manage_sim_messages_slot1">Διαχείριση μηνυμάτων της SIM 1</string>
   <string name="pref_title_manage_sim_messages_slot2">Διαχείριση μηνυμάτων της SIM 2</string>
@@ -101,17 +125,23 @@
   <string name="prefs_title_import_sms_messages">Εισαγωγή μηνυμάτων SMS</string>
   <string name="pref_title_sms_delivery_reports_slot1">Αναφορές παράδοσης για SIM 1</string>
   <string name="pref_title_sms_delivery_reports_slot2">Αναφορές παράδοσης για SIM 2</string>
+  <!-- Status in "Report" window -->
   <string name="status_deleted_unread">Διαγράφηκε χωρίς να διαβαστεί</string>
+  <!-- Disk Storage Full Error Notification dialog text. -->
   <string name="disk_storage_full_error">Σφάλμα: Ο αποθηκευτικός χώρος είναι γεμάτος.</string>
+  <!-- Mms size is too large dialog text. -->
   <string name="mms_too_large">Το μήνυμα είναι πολύ μεγάλο για να ληφθεί.</string>
   <string name="send_failed_retry">Το μήνυμα δεν στάλθηκε, προσπάθεια ξανά\u2026</string>
   <string name="download_failed_retry">Το μήνυμα δεν ελήφθη, προσπάθεια ξανά\u2026</string>
   <string name="system_audio_item">Ήχοι κλήσης</string>
   <string name="external_audio_item">Μουσική</string>
+  <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
   <string name="menu_connect_url">Άνοιγμα URL</string>
   <string name="do_not_show_connect_warning">Να μην εμφανιστεί ξανά αυτή η προειδοποίηση</string>
+  <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
   <string name="menu_add_to_label">Προσθήκη στους σελιδοδείκτες</string>
   <string name="loadurlinfo_str">Διευθύνσεις URL από άγνωστους αποστολείς θα μπορούσαν να είναι απόπειρες phishing. Εάν δεν είστε βέβαιοι, μην ανοίξετε αυτή τη διεύθυνση.</string>
+  <!-- Message Template -->
   <string name="pref_title_message_template">Πρότυπα μηνυμάτων</string>
   <string name="title_new_message_template">Νέο πρότυπο</string>
   <string name="summary_new_message_template">Σύνθεση νέου προτύπου μηνύματος</string>
@@ -121,21 +151,26 @@
   <string name="pref_sms_signature_title">Υπογραφή SMS</string>
   <string name="pref_title_enable_signature">Προσθήκη υπογραφής στα μηνύματα</string>
   <string name="pref_title_edit_signature">Επεξεργασία κειμένου υπογραφής</string>
+  <!-- Copy message to sim -->
   <string name="menu_copy_to">Αντιγραφή</string>
   <string name="operation_to_card_memory">Αντιγραφή μήνυματος στην κάρτα SIM</string>
+  <!-- SMSC -->
   <string name="pref_smsc_title">Κέντρο υπηρεσιών SMS</string>
   <string name="pref_one_smcs">Αριθμός SMSC</string>
   <string name="pref_more_smcs">Αριθμός SMSC SIM <xliff:g id="slot_number">%d</xliff:g></string>
   <string name="set_smsc_error">Δεν ήταν δυνατός ο ορισμός του αριθμού SMSC</string>
   <string name="set_smsc_success">Ο αριθμός SMSC ορίστηκε με επιτυχία</string>
   <string name="set_smsc_confirm_message">Η αλλαγή του SMSC μπορεί να προκαλέσει αποτυχία συναλλαγών SMS. Είστε βέβαιοι ότι θέλετε να συνεχίσετε;</string>
+  <!-- Copy message to sim -->
   <string name="copy_to_sim">Αντιγραφή μήνυματος στην κάρτα SIM</string>
   <string name="copy_to_sim_success"><xliff:g id="count">%1$d</xliff:g> από <xliff:g id="total">%2$d</xliff:g> μηνύματα αποθηκεύτηκαν στην κάρτα SIM.</string>
   <string name="copy_to_sim_fail">Δεν ήταν δυνατή η αποθήκευση του μηνύματος</string>
   <string name="copy_to_phone_success">Το μήνυμα αποθηκεύτηκε</string>
   <string name="copy_to_phone_fail">Δεν ήταν δυνατή η αποθήκευση του μηνύματος</string>
   <string name="contact_app_not_found">Δεν είναι δυνατή η εκκίνηση της εφαρμογής Επαφών</string>
+  <!-- Gray hint displayed in the search field in Contacts when empty -->
   <string name="search_bar_hint">Αναζήτηση επαφών</string>
+  <!-- Add for share contact feature -->
   <string name="type_vcard">vCard</string>
   <string name="import_vcard">Εισαγωγή</string>
   <string name="attach_add_contact_as_vcard">vCard επαφής</string>
@@ -143,13 +178,16 @@
   <string name="contact_info_text_as_name">Όνομα:</string>
   <string name="contact_info_text_as_phone">Τηλ:</string>
   <string name="contact_info_text_as_email">E-mail:</string>
+  <!-- Sharing vcs files from Calendar -->
   <string name="type_vcal">Συμβάν ημερολογίου</string>
   <string name="pref_wap_push_title">Μηνύματα υπηρεσίας Push</string>
   <string name="pref_title_wap_push_enabled">Υπηρεσία WAP Push</string>
   <string name="pref_summary_wap_push_enabled">Λήψη μηνυμάτων υπηρεσιών δικτύου</string>
+  <!-- String used in MemoryStatusActivity.java -->
   <string name="memory_status_title">Κατάσταση μνήμης</string>
   <string name="sms_phone_memory_usage">SMS: <xliff:g id="used">%1$d</xliff:g> από <xliff:g id="total">%2$d</xliff:g> σε χρήση</string>
   <string name="mms_phone_memory_usage">MMS: <xliff:g id="used">%1$d</xliff:g> από <xliff:g id="total">%2$d</xliff:g> σε χρήση</string>
+  <!-- Settings item description for SMS and MMS Validity period -->
   <string name="pref_title_validity_period">Περίοδος ισχύος</string>
   <string name="pref_title_validity_period_slot1">Περίοδος ισχύος για SIM 1</string>
   <string name="pref_title_validity_period_slot2">Περίοδος ισχύος για SIM 2</string>
@@ -170,16 +208,21 @@
   <string name="sim_spinner_active_item_postfix">SIM %d</string>
   <string name="cannot_play">Δεν είναι δυνατή η προβολή της παρουσίασης.</string>
   <string name="confirm_delete_selected_messages">Τα επιλεγμένα μηνύματα θα διαγραφούν.</string>
+  <!-- toast for send result -->
   <string name="send_failure">Δεν ήταν δυνατή η αποστολή του μηνύματος.</string>
+  <!-- title of mailboxmessagecontent -->
   <string name="message_detail">Λεπτομέρειες μηνύματος</string>
   <string name="no_message">Δεν υπάρχουν μηνύματα.</string>
   <string name="change_to_folder_mode">Προβολή φακέλου</string>
   <string name="change_to_conversation_mode">Προβολή συνομιλίας</string>
+  <!-- Spinner item of box type in mailbox-mode -->
   <string name="type_inbox">Εισερχόμενα</string>
   <string name="type_sent">Απεσταλμένα</string>
   <string name="type_outbox">Εξερχόμενα</string>
   <string name="type_draft">Πρόχειρα</string>
+  <!-- Spinner item of slot type in mailbox-mode -->
   <string name="slot_type_select">Επιλογή κάρτας SIM</string>
+  <!-- String used in SearchActivityExtend.java -->
   <string name="search_title">Αναζήτηση μηνυμάτων</string>
   <string name="search_key">Λέξη-κλειδί αναζήτησης</string>
   <string name="search_mode">Λειτουργία αναζήτησης</string>
@@ -191,9 +234,11 @@
   <string name="sim_capacity_title">Χωρητικότητα SIM</string>
   <string name="sim_capacity"><xliff:g id="used">%1$d</xliff:g> από <xliff:g id="total">%2$d</xliff:g> καταχωρήσεις κάρτας SIM σε χρήση</string>
   <string name="pref_sim_card_full_save_to_phone">Η κάρτα SIM είναι γεμάτη, τα νέα μηνύματα θα αποθηκεύονται στο τηλέφωνο.</string>
+  <!-- batch delete message in ConversationList and MailBoxMessageList -->
   <string name="selected_all">Επιλογή όλων</string>
   <string name="deselected_all">Αποεπιλογή όλων</string>
   <string name="selected_count">Επιλέχθηκαν <xliff:g id="COUNT">%d</xliff:g></string>
+  <!-- priority of cdma message -->
   <string name="cdma_priority_normal">Κανονική</string>
   <string name="cdma_priority_interactive">Διαδραστική</string>
   <string name="cdma_priority_urgent">Επείγουσα</string>
@@ -202,6 +247,7 @@
   <string name="pref_summary_cdma_priority">Προτεραιότητα μηνυμάτων CDMA</string>
   <string name="download_dialog_title">Λήψη αυτού του MMS;</string>
   <string name="menu_email">Αποστολή email</string>
+  <!-- Settings item description for Preferred storage -->
   <string name="pref_title_sms_store">Προτιμώμενος αποθ. χώρος</string>
   <string name="pref_title_sms_store_card1">Προτιμώμενος αποθ. χώρος για SIM 1</string>
   <string name="pref_title_sms_store_card2">Προτιμώμενος αποθ. χώρος για SIM 2</string>
@@ -231,13 +277,17 @@
   <string name="manage_sdcard_messages">Εισαγωγή/εξαγωγή μηνυμάτων</string>
   <string name="no_backups_found">Δεν βρέθηκε κανένα αντίγραφο ασφαλείας</string>
   <string name="remove_subject">Αφαίρεση θέματος</string>
+  <!-- QuickMessage Wear-->
   <string name="qm_wear_sending_message">Αποστολή απάντησης σε <xliff:g id="name">%s</xliff:g>\u2026</string>
   <string name="qm_wear_messaged_failed">Το μήνυμα κειμένου προς <xliff:g id="name">%s </xliff:g> δεν εστάλη, παρακαλώ προσπαθήστε ξανά.</string>
   <string name="qm_wear_voice_reply">Ποια είναι η απάντησή σας;</string>
   <string name="qm_wear_reply_by_voice">Φωνητική απάντηση</string>
+  <!-- Copy message text-->
   <string name="copy_empty_string">Δεν υπάρχει κείμενο για αντιγραφή</string>
   <string name="attach_add_calendar_events">Συμβάν ημερολογίου</string>
+  <!-- friendlier text for an activity not found exception for calendar attachments -->
   <string name="calendar_attachment_activity_not_found">Δεν βρέθηκε υποστηριζόμενη εφαρμογή Ημερολογίου</string>
+  <!-- Vibrate pattern -->
   <string name="pref_title_mms_notification_vibrate_pattern">Μοτίβο δόνησης</string>
   <string name="pref_summary_mms_notification_vibrate_pattern">Αλλαγή μοτίβου δόνησης</string>
   <string name="pref_mms_notification_vibrate_normal">Κανονική</string>
@@ -245,19 +295,28 @@
   <string name="pref_mms_notification_vibrate_long_vib">Εκτενής δόνηση</string>
   <string name="pref_mms_notification_vibrate_mult_short">Πολλαπλές μικρές</string>
   <string name="pref_mms_notification_vibrate_mult_long">Πολλαπλές εκτενείς</string>
+  <!-- Menu item - Insert smiley -->
   <string name="menu_insert_smiley">Εισαγωγή smiley</string>
+  <!-- Enable emoticons -->
   <string name="pref_title_enable_emoticons">Υποστήριξη emoticon</string>
   <string name="pref_summary_enable_emoticons">Αντικατάσταση emoticon κειμένου με τα αντίστοιχα εικονίδια</string>
+  <!-- Conversation options -->
   <string name="menu_conversation_options">Επιλογές συνομιλίας</string>
   <string name="pref_title_reset_convopt_to_default">Επαναφορά στις προεπιλογές</string>
   <string name="pref_summary_reset_convopt_to_default">Επαναφορά της ρύθμισης συνομιλίας στην προεπιλεγμένη ρύθμιση της εφαρμογής</string>
+  <!-- Full timestamps -->
   <string name="pref_title_mms_full_timestamp">Πλήρες timestamp</string>
   <string name="pref_summary_mms_full_timestamp">Εμφάνιση της ημερομηνίας και της ώρας στα timestamp</string>
+  <!-- Original timestamps -->
   <string name="pref_title_mms_use_sent_timestamp">Αρχικά timestamp</string>
   <string name="pref_summary_mms_use_sent_timestamp">Εμφάνιση ημερομηνίας αποστολής, αντί της ημερομηνίας παραλαβής στα timestamp</string>
+  <!-- Settings item for boolean option to auto -enable data for MMS messages -->
   <string name="pref_title_mms_auto_enable_data">Αυτόματη ενεργοποίηση δεδομένων</string>
+  <!-- Settings item description for boolean auto-enable data for MMS option -->
   <string name="pref_summary_mms_auto_enable_data">Αυτόματη ενεργοποίηση δεδομένων τηλεφωνίας για μηνύματα MMS</string>
+  <!-- Select recipients dialog -->
   <string name="adding_selected_recipients_dialog_text">Προσθήκη επαφών\u2026</string>
+  <!-- Smart Dialer -->
   <string name="pref_title_mms_smart_dialer">Έξυπνη κλήση</string>
   <string name="pref_summary_mms_smart_dialer">Αυτόματη κλήση της επαφής μετακινώντας το τηλέφωνο στο αυτί σας</string>
 </resources>

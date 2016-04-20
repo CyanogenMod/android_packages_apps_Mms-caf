@@ -22,18 +22,24 @@
     <item quantity="other">Адпраўка праз %1$d секундаў, націсніце для скасавання.</item>
   </plurals>
   <plurals name="confirm_delete_messages">
+    <!-- Case of 1 result. -->
     <item quantity="one">Будзе выдалена паведамленне.</item>
     <item quantity="few">Будзе выдалена <xliff:g id="number" example="15">%1$s</xliff:g> паведамленні.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other">Будзе выдалена <xliff:g id="number" example="15">%1$s</xliff:g> паведамленняў.</item>
   </plurals>
   <plurals name="confirm_mark_read_conversation">
+    <!-- Case of 1 result. -->
     <item quantity="one">Ланцужок будзе пазначаны як прачытаны.</item>
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> ланцужкі будуць пазначаны як прачытаныя.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> ланцужкоў будуць пазначаны як прачытаныя.</item>
   </plurals>
   <plurals name="confirm_mark_unread_conversation">
+    <!-- Case of 1 result. -->
     <item quantity="one">Ланцужок будзе пазначаны як прачытаны.</item>
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> ланцужкоў будуць пазначаны як прачытаныя.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> ланцужкоў будуць пазначаны як прачытаныя.</item>
   </plurals>
 </resources>

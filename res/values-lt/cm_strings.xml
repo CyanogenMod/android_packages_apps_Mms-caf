@@ -16,6 +16,8 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- QUICKMESSAGE SUPPORT -->
+  <!-- Preferences -->
   <string name="pref_quickmessage">Greitasis pranešimas ir atsakymas</string>
   <string name="pref_quickmessage_title">Rodyti greitąjį pranešimą</string>
   <string name="pref_quickmessage_summary">Automatiškai atidaryti iššokančiuosius greituosius pranešimus gaunamiems SMS pranešimams</string>
@@ -26,12 +28,16 @@
   <string name="pref_dark_theme_title">Naudoti tamsią temą</string>
   <string name="pref_dark_theme_summary">Jei nepasirinkta, pagal nutylėjimą bus naudojama „Šviesi“ tema</string>
   <string name="message_counter">%1$d iš %2$d</string>
+  <!-- QM Dialog box buttons -->
   <string name="button_close">Uždaryti</string>
   <string name="button_view">Žiūrėti</string>
   <string name="button_templates">Šablonai</string>
+  <!-- Hint text in message body field when keyboard is exposed -->
   <string name="type_to_reply_text_enter_to_send">Rašykite, kad atsakytumėte</string>
+  <!-- QM Toast -->
   <string name="qm_mark_read">Skaityta</string>
   <string name="toast_sending_message">Siunčiamas pranešimas\u2026</string>
+  <!-- Delay delivery -->
   <string name="pref_title_send_delay">Siuntimo delsimas</string>
   <string name="send_delay_immediate">Siųsti nedelsiant</string>
   <string name="send_delay_3seconds">3 sek.</string>
@@ -40,35 +46,46 @@
   <string name="send_delay_20seconds">20 sek.</string>
   <string name="send_delay_30seconds">30 sek.</string>
   <string name="sent_countdown">Pranešimo siuntimo laikmatis</string>
+  <!-- EXTRA SETTINGS -->
   <string name="pref_extra_settings">Papildomi nustatymai</string>
+  <!-- Blacklist preferences -->
   <string name="blacklist_title">Užblokuotų skambintojų sąrašas</string>
   <string name="blacklist_summary_disabled">Neleidžiamas</string>
   <string name="blacklist_summary">Jūs negausite įeinančių skambučių ar pranešimų iš telefonų numerių kurie yra užblokuotų skambintojų sąraše</string>
+  <!-- Blacklist notifications -->
   <string name="blacklist_notification">Užblokuotas pranešimas iš %s</string>
   <string name="blacklist_notification_private_number">Užblokuotas pranešimas iš privataus numerio</string>
   <string name="blacklist_notification_list_private">Privatus</string>
   <string name="blacklist_notification_unknown_number">Užblokuotas pranešimas iš nežinomo numerio %s</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> pranešimai buvo užblokuoti</string>
   <string name="unblock_number">Atblokuoti</string>
+  <!-- Blacklist management -->
   <string name="add_to_blacklist">Pridėti prie užblokuotų skambintojų sąrašo</string>
   <string name="add_to_blacklist_message">Būsimi pranešimai iš %s bus blokuojami</string>
+  <!-- Generic blacklist handling -->
   <string name="alert_dialog_yes">Taip</string>
   <string name="alert_dialog_no">Ne</string>
+  <!-- Strip unicode -->
   <string name="pref_title_unicode_stripping">Pašalinti unikodą</string>
   <string name="pref_unicode_stripping_leave_intact">Palikti simbolius nepaliestus</string>
   <string name="pref_unicode_stripping_non_encodable">Pašalinti nekoduojamus simbolius</string>
   <string name="pref_unicode_stripping_all">Pašalinti visus unikodo simbolius</string>
+  <!-- Context menu item on a message for marking as unread / read -->
   <string name="menu_as_unread">Pažymėti kaip neperskaitytą</string>
   <string name="menu_as_read">Pažymėti kaip perskaitytą</string>
+  <!-- Context menu item on a message for marking all threads as unread / read -->
   <string name="menu_all_as_unread">Pažymėti visus kaip neperskaitytus</string>
   <string name="menu_all_as_read">Pažymėti visus kaip perskaitytus</string>
   <string name="menu_add_to_contacts_cm">Pridėti prie kontaktų</string>
+  <!-- Confirm Mark as unread / read -->
   <string name="confirm_mark_unread_dialog_title">Pažymėti kaip neperskaitytą?</string>
   <string name="confirm_mark_unread_conversation">Pokalbis bus pažymėtas kaip neperskaitytas.</string>
   <string name="confirm_mark_read_dialog_title">Pažymėti kaip perskaitytą?</string>
   <string name="confirm_mark_read_conversation">Pokalbis bus pažymėtas kaip perskaitytas.</string>
+  <!-- Mark all threads confirmation dialog message -->
   <string name="confirm_mark_unread_all_conversations">Visos gijos bus pažymėtos kaip neperskaitytos.</string>
   <string name="confirm_mark_read_all_conversations">Visos gijos bus pažymėtos kaip perskaitytos.</string>
+  <!-- Multi recipients -->
   <string name="loading">Įkeliama\u2026</string>
   <string name="select_recipients">Pasirinkti gavėjus</string>
   <string name="no_recipients">Kontaktų nerasta</string>
@@ -77,12 +94,14 @@
   <string name="menu_mobile">Tik mobilieji numeriai</string>
   <string name="menu_order_by_given_name">Rūšiuoti pagal vardą</string>
   <string name="menu_order_by_last_name">Rūšiuoti pagal pavardę</string>
+  <!-- Extra message options -->
   <string name="message_share">Bendrinti</string>
   <string name="message_share_intent_title">Bendrinti pranešimą</string>
   <string name="start_new_message_button">Naujas pranešimas</string>
   <string name="all_spinner_option">Visi</string>
   <string name="menu_copy_url">Kopijuoti URL <xliff:g id="extractedurl">%s</xliff:g></string>
   <string name="deleting_threads">Ištrinamos gijos\u2026</string>
+  <!-- Context menu item on an failed message for resending -->
   <string name="menu_resend">Siųsti iš naujo</string>
   <string name="cancel_downloading">Atšaukti</string>
   <string name="confirm_cancel_downloading">MMS atsisiuntimas bus atšauktas.</string>
@@ -90,10 +109,15 @@
   <string name="send_by_slot2">Siųsti naudojant SIM 2</string>
   <string name="select_phone_account_title">Siųsti naudojant</string>
   <string name="media_size_limit">Pasiekta pranešimo dydžio riba, negalima išsiųsti pranešimo.</string>
+  <!-- Error message indicating that the message size or the increase size is negative -->
   <string name="illegal_message_or_increase_size">Neteisingas pranešimo dydis.</string>
+  <!-- Dialog box title that appears when a draft message will not be saved due to invalid recipients -->
   <string name="discard_message_reason_some_invalid">Jūsų pranešimas bus atmestas, nes, kai kurie gavėjai yra neteisingi.</string>
+  <!-- Brief message that appears when the maximum size of slides has been reached -->
   <string name="cannot_add_text_anymore">Negalima pridėti daugiau teksto.</string>
+  <!-- Dialog box title for display the current mms size  -->
   <string name="title_send_message">Siųsti pranešimą</string>
+  <!-- Toast when the subject is full -->
   <string name="subject_full">Tema turi būti ne ilgesnė nei <xliff:g id="length">%d</xliff:g> simbolių.</string>
   <string name="pref_title_manage_sim_messages_slot1">Tvarkyti SIM 1 pranešimus</string>
   <string name="pref_title_manage_sim_messages_slot2">Tvarkyti SIM 2 pranešimus</string>
@@ -101,17 +125,23 @@
   <string name="prefs_title_import_sms_messages">Importuoti SMS pranešimus</string>
   <string name="pref_title_sms_delivery_reports_slot1">SIM 1 siuntimo ataskaitos</string>
   <string name="pref_title_sms_delivery_reports_slot2">SIM 2 siuntimo ataskaitos</string>
+  <!-- Status in "Report" window -->
   <string name="status_deleted_unread">Ištrinta neskaičius</string>
+  <!-- Disk Storage Full Error Notification dialog text. -->
   <string name="disk_storage_full_error">Klaida: saugykla pilna.</string>
+  <!-- Mms size is too large dialog text. -->
   <string name="mms_too_large">Pranešimas yra per didelis, kad būtų galima atsisiųsti.</string>
   <string name="send_failed_retry">Nepavyko išsiųsti pranešimo, bandoma dar kartą\u2026</string>
   <string name="download_failed_retry">Nepavyko atsisiųsti pranešimo, bandoma dar kartą\u2026</string>
   <string name="system_audio_item">Skambėjimo tonas</string>
   <string name="external_audio_item">Muzika</string>
+  <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
   <string name="menu_connect_url">Atidaryti URL</string>
   <string name="do_not_show_connect_warning">Daugiau nerodyti šio įspėjimo</string>
+  <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
   <string name="menu_add_to_label">Pridėti į užrašus</string>
   <string name="loadurlinfo_str">URL iš nežinomų siuntėjų gali būti bandymas sukčiauti. Jei abejojate, neatidarykite šio adreso.</string>
+  <!-- Message Template -->
   <string name="pref_title_message_template">Pranešimų šablonai</string>
   <string name="title_new_message_template">Naujas šablonas</string>
   <string name="summary_new_message_template">Kurti naujo pranešimo šabloną</string>
@@ -121,21 +151,26 @@
   <string name="pref_sms_signature_title">SMS parašas</string>
   <string name="pref_title_enable_signature">Pridėti parašą prie pranešimų</string>
   <string name="pref_title_edit_signature">Redaguoti parašo tekstą</string>
+  <!-- Copy message to sim -->
   <string name="menu_copy_to">Kopijuoti</string>
   <string name="operation_to_card_memory">Kopijuoti pranešimą į SIM kortelę</string>
+  <!-- SMSC -->
   <string name="pref_smsc_title">SMS paslaugų centras</string>
   <string name="pref_one_smcs">SMSC numeris</string>
   <string name="pref_more_smcs">SIM <xliff:g id="slot_number">%d</xliff:g> SMSC numeris</string>
   <string name="set_smsc_error">Nepavyko nustatyti SMSC numerio</string>
   <string name="set_smsc_success">SMSC numeris nustatytas sėkmingai</string>
   <string name="set_smsc_confirm_message">Pakeitus SMSC gali sutrikti SMS operacijos. Ar tikrai norite tęsti?</string>
+  <!-- Copy message to sim -->
   <string name="copy_to_sim">Kopijuoti pranešimą į SIM kortelę</string>
   <string name="copy_to_sim_success"><xliff:g id="count">%1$d</xliff:g> of <xliff:g id="total">%2$d</xliff:g> pranešimai išsaugoti į SIM kortelę.</string>
   <string name="copy_to_sim_fail">Nepavyko išsaugoti pranešimo</string>
   <string name="copy_to_phone_success">Pranešimas išsaugotas</string>
   <string name="copy_to_phone_fail">Nepavyko išsaugoti pranešimo</string>
   <string name="contact_app_not_found">Nepavyko atidaryti kontaktų programos</string>
+  <!-- Gray hint displayed in the search field in Contacts when empty -->
   <string name="search_bar_hint">Ieškoti kontaktų</string>
+  <!-- Add for share contact feature -->
   <string name="type_vcard">vCard</string>
   <string name="import_vcard">Importuoti</string>
   <string name="attach_add_contact_as_vcard">Kontakto „vCard“</string>
@@ -143,13 +178,16 @@
   <string name="contact_info_text_as_name">Vardas:</string>
   <string name="contact_info_text_as_phone">Tel:</string>
   <string name="contact_info_text_as_email">El. paštas:</string>
+  <!-- Sharing vcs files from Calendar -->
   <string name="type_vcal">Kalendoriaus įvykis</string>
   <string name="pref_wap_push_title">„Push“ paslaugų pranešimai</string>
   <string name="pref_title_wap_push_enabled">„WAP Push“ paslauga</string>
   <string name="pref_summary_wap_push_enabled">Gauti tinklo paslaugų pranešimus</string>
+  <!-- String used in MemoryStatusActivity.java -->
   <string name="memory_status_title">Atminties būsena</string>
   <string name="sms_phone_memory_usage">SMS: <xliff:g id="used">%1$d</xliff:g> iš <xliff:g id="total">%2$d</xliff:g> naudota</string>
   <string name="mms_phone_memory_usage">MMS: <xliff:g id="used">%1$d</xliff:g> iš <xliff:g id="total">%2$d</xliff:g> naudota</string>
+  <!-- Settings item description for SMS and MMS Validity period -->
   <string name="pref_title_validity_period">Galiojimo laikotarpis</string>
   <string name="pref_title_validity_period_slot1">Galiojimo laikotarpis SIM 1</string>
   <string name="pref_title_validity_period_slot2">Galiojimo laikotarpis SIM 2</string>
@@ -170,16 +208,21 @@
   <string name="sim_spinner_active_item_postfix">SIM %d</string>
   <string name="cannot_play">Skaidrių peržiūra negalima.</string>
   <string name="confirm_delete_selected_messages">Pasirinkti pranešimai bus ištrinti.</string>
+  <!-- toast for send result -->
   <string name="send_failure">Nepavyko išsiųsti pranešimo.</string>
+  <!-- title of mailboxmessagecontent -->
   <string name="message_detail">Pranešimo informacija</string>
   <string name="no_message">Nėra pranešimų.</string>
   <string name="change_to_folder_mode">Aplanko rodinys</string>
   <string name="change_to_conversation_mode">Pokalbio rodinys</string>
+  <!-- Spinner item of box type in mailbox-mode -->
   <string name="type_inbox">Gautieji</string>
   <string name="type_sent">Išsiųsta</string>
   <string name="type_outbox">Siunčiamieji</string>
   <string name="type_draft">Juodraščiai</string>
+  <!-- Spinner item of slot type in mailbox-mode -->
   <string name="slot_type_select">Pasirinkti SIM korteles</string>
+  <!-- String used in SearchActivityExtend.java -->
   <string name="search_title">Pranešimo paieška</string>
   <string name="search_key">Paieškos raktažodis</string>
   <string name="search_mode">Paieškos režimas</string>
@@ -191,9 +234,11 @@
   <string name="sim_capacity_title">SIM talpa</string>
   <string name="sim_capacity"><xliff:g id="used">%1$d</xliff:g> iš <xliff:g id="total">%2$d</xliff:g> SIM kortelės įrašų yra naudojama</string>
   <string name="pref_sim_card_full_save_to_phone">SIM kortelė yra pilna, nauji pranešimai įšsaugomi į telefoną.</string>
+  <!-- batch delete message in ConversationList and MailBoxMessageList -->
   <string name="selected_all">Pažymėti viską</string>
   <string name="deselected_all">Atžymėti viską</string>
   <string name="selected_count"><xliff:g id="COUNT">%d</xliff:g> pasirinkti (-ų)</string>
+  <!-- priority of cdma message -->
   <string name="cdma_priority_normal">Normalus</string>
   <string name="cdma_priority_interactive">Interaktyvus</string>
   <string name="cdma_priority_urgent">Skubus</string>
@@ -202,6 +247,7 @@
   <string name="pref_summary_cdma_priority">CDMA pranešimų prioritetas</string>
   <string name="download_dialog_title">Atsisiųsti šį MMS?</string>
   <string name="menu_email">Siųsti el. laišką</string>
+  <!-- Settings item description for Preferred storage -->
   <string name="pref_title_sms_store">Pageidaujama saugykla</string>
   <string name="pref_title_sms_store_card1">Pageidaujama saugykla SIM 1</string>
   <string name="pref_title_sms_store_card2">Pageidaujama saugykla SIM 2</string>
@@ -231,13 +277,17 @@
   <string name="manage_sdcard_messages">Importuoti / eksportuoti pranešimus</string>
   <string name="no_backups_found">Nerasta jokių atsarginių kopijų</string>
   <string name="remove_subject">Pašalinti temą</string>
+  <!-- QuickMessage Wear-->
   <string name="qm_wear_sending_message">Siunčiamas atsakymas <xliff:g id="name">%s</xliff:g>\u2026</string>
   <string name="qm_wear_messaged_failed">Pranešimas <xliff:g id="name">%s</xliff:g> neišsiųstas, bandykite dar kartą.</string>
   <string name="qm_wear_voice_reply">Koks jūsų atsakymas?</string>
   <string name="qm_wear_reply_by_voice">Atsakyti naudojant balsą</string>
+  <!-- Copy message text-->
   <string name="copy_empty_string">Nėra teksto kopijavimui</string>
   <string name="attach_add_calendar_events">Kalendoriaus įvykis</string>
+  <!-- friendlier text for an activity not found exception for calendar attachments -->
   <string name="calendar_attachment_activity_not_found">Nepavyko rasti palaikančios kalendorių programos</string>
+  <!-- Vibrate pattern -->
   <string name="pref_title_mms_notification_vibrate_pattern">Vibravimo modelis</string>
   <string name="pref_summary_mms_notification_vibrate_pattern">Pakeisti vibravimo modelį</string>
   <string name="pref_mms_notification_vibrate_normal">Normalus</string>
@@ -245,19 +295,28 @@
   <string name="pref_mms_notification_vibrate_long_vib">Ilgas vibravimas</string>
   <string name="pref_mms_notification_vibrate_mult_short">Kartotinis trumpas</string>
   <string name="pref_mms_notification_vibrate_mult_long">Kartotinis ilgas</string>
+  <!-- Menu item - Insert smiley -->
   <string name="menu_insert_smiley">Įterpti šypsenėlę</string>
+  <!-- Enable emoticons -->
   <string name="pref_title_enable_emoticons">Emocijų palaikymas</string>
   <string name="pref_summary_enable_emoticons">Pakeisti tekstines emocijas į grafinius atitikmenis</string>
+  <!-- Conversation options -->
   <string name="menu_conversation_options">Pokalbio parinktys</string>
   <string name="pref_title_reset_convopt_to_default">Nustatyti iš naujo į numatytasias</string>
   <string name="pref_summary_reset_convopt_to_default">Nustato iš naujo pokalbio parametrą į programos lygio nustatymą</string>
+  <!-- Full timestamps -->
   <string name="pref_title_mms_full_timestamp">Visos laiko žymės</string>
   <string name="pref_summary_mms_full_timestamp">Laiko žymėse rodyti datą ir laiką</string>
+  <!-- Original timestamps -->
   <string name="pref_title_mms_use_sent_timestamp">Originalios laiko žymės</string>
   <string name="pref_summary_mms_use_sent_timestamp">Laiko žymėse rodyti išsiuntimo datą vietoj gautos datos</string>
+  <!-- Settings item for boolean option to auto -enable data for MMS messages -->
   <string name="pref_title_mms_auto_enable_data">Automatiškai įgalinti duomenis</string>
+  <!-- Settings item description for boolean auto-enable data for MMS option -->
   <string name="pref_summary_mms_auto_enable_data">Automatiškai įgalinti korinio ryšio duomenis MMS pranešimams</string>
+  <!-- Select recipients dialog -->
   <string name="adding_selected_recipients_dialog_text">Pridedami kontaktai\u2026</string>
+  <!-- Smart Dialer -->
   <string name="pref_title_mms_smart_dialer">Sumanusis skambutis</string>
   <string name="pref_summary_mms_smart_dialer">Automatiškai skambinti kontaktui pridedant įrenginį prie ausies</string>
 </resources>

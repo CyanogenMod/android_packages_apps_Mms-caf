@@ -16,6 +16,8 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- QUICKMESSAGE SUPPORT -->
+  <!-- Preferences -->
   <string name="pref_quickmessage_summary">自動打開 QuickMessage 快顯視窗檢視新訊息</string>
   <string name="pref_wake_unlock_title">喚醒和解鎖</string>
   <string name="pref_wake_unlock_summary">喚醒設備和顯示 QuickMessage 快顯視窗</string>
@@ -23,11 +25,15 @@
   <string name="pref_close_all_summary">關閉按鈕關閉所有訊息</string>
   <string name="pref_dark_theme_title">採用深色主題</string>
   <string name="pref_dark_theme_summary">如果未選取，預設的「淺色」主題將被使用</string>
+  <!-- QM Dialog box buttons -->
   <string name="button_close">關閉</string>
   <string name="button_view">檢視</string>
   <string name="button_templates">範本</string>
+  <!-- Hint text in message body field when keyboard is exposed -->
   <string name="type_to_reply_text_enter_to_send">輸入答覆</string>
+  <!-- QM Toast -->
   <string name="qm_mark_read">已讀</string>
+  <!-- Delay delivery -->
   <string name="pref_title_send_delay">傳遞延遲</string>
   <string name="send_delay_immediate">立即發送</string>
   <string name="send_delay_3seconds">3 秒</string>
@@ -36,35 +42,46 @@
   <string name="send_delay_20seconds">20 秒</string>
   <string name="send_delay_30seconds">30 秒</string>
   <string name="sent_countdown">訊息傳送倒數</string>
+  <!-- EXTRA SETTINGS -->
   <string name="pref_extra_settings">更多設定</string>
+  <!-- Blacklist preferences -->
   <string name="blacklist_title">通話黑名單</string>
   <string name="blacklist_summary_disabled">已停用</string>
   <string name="blacklist_summary">您將不會收到來自通話黑名單上電話號碼的來電或短訊</string>
+  <!-- Blacklist notifications -->
   <string name="blacklist_notification">已封鎖 %s 傳來的訊息</string>
   <string name="blacklist_notification_private_number">已封鎖私人號碼傳來的訊息</string>
   <string name="blacklist_notification_list_private">私人</string>
   <string name="blacklist_notification_unknown_number">已封鎖不明號碼 %s 傳來的訊息</string>
   <string name="blacklist_notification_multiple">已封鎖 <xliff:g id="count">%d</xliff:g> 則訊息</string>
   <string name="unblock_number">解除封鎖</string>
+  <!-- Blacklist management -->
   <string name="add_to_blacklist">新增至通話黑名單</string>
   <string name="add_to_blacklist_message">來自 %s 的訊息將被封鎖</string>
+  <!-- Generic blacklist handling -->
   <string name="alert_dialog_yes">是</string>
   <string name="alert_dialog_no">否</string>
+  <!-- Strip unicode -->
   <string name="pref_title_unicode_stripping">去除 unicode</string>
   <string name="pref_unicode_stripping_leave_intact">保留完整字元</string>
   <string name="pref_unicode_stripping_non_encodable">去除非可編碼字元</string>
   <string name="pref_unicode_stripping_all">去除所有 unicode 字元</string>
+  <!-- Context menu item on a message for marking as unread / read -->
   <string name="menu_as_unread">標記為未讀</string>
   <string name="menu_as_read">標示為已讀取</string>
+  <!-- Context menu item on a message for marking all threads as unread / read -->
   <string name="menu_all_as_unread">全部標為未讀</string>
   <string name="menu_all_as_read">標示全部為已讀取</string>
   <string name="menu_add_to_contacts_cm">新增至聯絡人</string>
+  <!-- Confirm Mark as unread / read -->
   <string name="confirm_mark_unread_dialog_title">標記為未讀？</string>
   <string name="confirm_mark_unread_conversation">此對話將標示為未讀取。</string>
   <string name="confirm_mark_read_dialog_title">確定標示為已讀取？</string>
   <string name="confirm_mark_read_conversation">此對話將標示為已讀取。</string>
+  <!-- Mark all threads confirmation dialog message -->
   <string name="confirm_mark_unread_all_conversations">所有的主題將被標記為未讀。 </string>
   <string name="confirm_mark_read_all_conversations">所有的主題將被標記為已讀取。</string>
+  <!-- Multi recipients -->
   <string name="loading">載入中\u2026</string>
   <string name="select_recipients">選取收件人</string>
   <string name="no_recipients">找不到聯絡人</string>
@@ -73,12 +90,14 @@
   <string name="menu_mobile">僅手機號碼</string>
   <string name="menu_order_by_given_name">依照名字排序</string>
   <string name="menu_order_by_last_name">依照姓氏排序</string>
+  <!-- Extra message options -->
   <string name="message_share">分享</string>
   <string name="message_share_intent_title">分享訊息</string>
   <string name="start_new_message_button">新訊息</string>
   <string name="all_spinner_option">所有</string>
   <string name="menu_copy_url">複製 URL <xliff:g id="extractedurl">%s</xliff:g></string>
   <string name="deleting_threads">刪除主題\u2026</string>
+  <!-- Context menu item on an failed message for resending -->
   <string name="menu_resend">重新傳送</string>
   <string name="cancel_downloading">取消</string>
   <string name="confirm_cancel_downloading">多媒體短訊下載將會取消。</string>
@@ -86,10 +105,15 @@
   <string name="send_by_slot2">透過 SIM 卡 2 傳送</string>
   <string name="select_phone_account_title">傳送方式</string>
   <string name="media_size_limit">訊息已達大小限制，無法傳送訊息。</string>
+  <!-- Error message indicating that the message size or the increase size is negative -->
   <string name="illegal_message_or_increase_size">無效的訊息大小。</string>
+  <!-- Dialog box title that appears when a draft message will not be saved due to invalid recipients -->
   <string name="discard_message_reason_some_invalid">您的訊息將被丟棄，因為部份收件人無效。</string>
+  <!-- Brief message that appears when the maximum size of slides has been reached -->
   <string name="cannot_add_text_anymore">不能再新增文字。</string>
+  <!-- Dialog box title for display the current mms size  -->
   <string name="title_send_message">傳送訊息</string>
+  <!-- Toast when the subject is full -->
   <string name="subject_full">標題不能超過 <xliff:g id="length">%d</xliff:g> 個字元。</string>
   <string name="pref_title_manage_sim_messages_slot1">管理 SIM 卡 1 的訊息</string>
   <string name="pref_title_manage_sim_messages_slot2">管理 SIM 卡 2 的訊息</string>
@@ -97,16 +121,22 @@
   <string name="prefs_title_import_sms_messages">匯入短訊</string>
   <string name="pref_title_sms_delivery_reports_slot1">SIM 卡 1 的送達報告</string>
   <string name="pref_title_sms_delivery_reports_slot2">Sim 卡 2 的送達報告</string>
+  <!-- Status in "Report" window -->
   <string name="status_deleted_unread">已刪除的未讀取訊息</string>
+  <!-- Disk Storage Full Error Notification dialog text. -->
   <string name="disk_storage_full_error">錯誤：儲存空間已滿。</string>
+  <!-- Mms size is too large dialog text. -->
   <string name="mms_too_large">訊息過大無法下載。</string>
   <string name="send_failed_retry">傳送訊息失敗，正在重試\u2026</string>
   <string name="download_failed_retry">下載訊息失敗，正在重試\u2026</string>
   <string name="external_audio_item">音樂</string>
+  <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
   <string name="menu_connect_url">開啟 URL</string>
   <string name="do_not_show_connect_warning">不再顯示此警告</string>
+  <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
   <string name="menu_add_to_label">新增到書籤</string>
   <string name="loadurlinfo_str">來自未知寄件人的 URL 可能為網路釣魚行為。如果您不能確定，請不要打開此連結。</string>
+  <!-- Message Template -->
   <string name="pref_title_message_template">訊息範本</string>
   <string name="title_new_message_template">新範本</string>
   <string name="summary_new_message_template">撰寫新訊息範本</string>
@@ -116,20 +146,25 @@
   <string name="pref_sms_signature_title">短訊簽名</string>
   <string name="pref_title_enable_signature">新增簽名至訊息</string>
   <string name="pref_title_edit_signature">編輯簽名文字</string>
+  <!-- Copy message to sim -->
   <string name="menu_copy_to">複製</string>
   <string name="operation_to_card_memory">複製訊息至 SIM 卡</string>
+  <!-- SMSC -->
   <string name="pref_smsc_title">短訊服務中心</string>
   <string name="pref_one_smcs">短訊服務中心號碼</string>
   <string name="pref_more_smcs">SIM 卡 <xliff:g id="slot_number">%d</xliff:g> 短訊服務中心號碼</string>
   <string name="set_smsc_error">無法設定短訊服務中心號碼</string>
   <string name="set_smsc_success">成功設定短訊服務中心號碼</string>
   <string name="set_smsc_confirm_message">變更短訊服務中心可能導致短訊傳遞失敗。您是否確定繼續？</string>
+  <!-- Copy message to sim -->
   <string name="copy_to_sim">複製訊息至 SIM 卡</string>
   <string name="copy_to_sim_fail">無法儲存訊息</string>
   <string name="copy_to_phone_success">訊息已儲存</string>
   <string name="copy_to_phone_fail">無法儲存訊息</string>
   <string name="contact_app_not_found">無法開啟聯絡人程式</string>
+  <!-- Gray hint displayed in the search field in Contacts when empty -->
   <string name="search_bar_hint">搜尋聯絡人</string>
+  <!-- Add for share contact feature -->
   <string name="type_vcard">vCard</string>
   <string name="import_vcard">匯入</string>
   <string name="attach_add_contact_as_vcard">聯絡人 vCard</string>
@@ -137,13 +172,16 @@
   <string name="contact_info_text_as_name">名稱：</string>
   <string name="contact_info_text_as_phone">電話：</string>
   <string name="contact_info_text_as_email">電子郵件：</string>
+  <!-- Sharing vcs files from Calendar -->
   <string name="type_vcal">日曆活動</string>
   <string name="pref_wap_push_title">推送服務訊息</string>
   <string name="pref_title_wap_push_enabled">WAP 推送服務</string>
   <string name="pref_summary_wap_push_enabled">接收網絡服務訊息</string>
+  <!-- String used in MemoryStatusActivity.java -->
   <string name="memory_status_title">記憶體狀態</string>
   <string name="sms_phone_memory_usage">短訊：<xliff:g id="total">%2$d</xliff:g> 中已使用 <xliff:g id="used">%1$d</xliff:g></string>
   <string name="mms_phone_memory_usage">多媒體短訊：<xliff:g id="total">%2$d</xliff:g> 中已使用 <xliff:g id="used">%1$d</xliff:g></string>
+  <!-- Settings item description for SMS and MMS Validity period -->
   <string name="pref_title_validity_period">有效期</string>
   <string name="pref_title_validity_period_slot1">SIM 卡 1 的有效期</string>
   <string name="pref_title_validity_period_slot2">SIM 卡 2 有效期</string>
@@ -164,16 +202,21 @@
   <string name="sim_spinner_active_item_postfix">SIM 卡 %d</string>
   <string name="cannot_play">無法顯示幻燈片。</string>
   <string name="confirm_delete_selected_messages">選取的訊息將被刪除。</string>
+  <!-- toast for send result -->
   <string name="send_failure">無法傳送訊息。</string>
+  <!-- title of mailboxmessagecontent -->
   <string name="message_detail">訊息詳情</string>
   <string name="no_message">沒有訊息。</string>
   <string name="change_to_folder_mode">資料夾檢視</string>
   <string name="change_to_conversation_mode">對話檢視</string>
+  <!-- Spinner item of box type in mailbox-mode -->
   <string name="type_inbox">收件匣</string>
   <string name="type_sent">已傳送</string>
   <string name="type_outbox">寄件匣</string>
   <string name="type_draft">草稿</string>
+  <!-- Spinner item of slot type in mailbox-mode -->
   <string name="slot_type_select">選擇 SIM 卡</string>
+  <!-- String used in SearchActivityExtend.java -->
   <string name="search_title">訊息搜尋</string>
   <string name="search_key">搜尋關鍵字</string>
   <string name="search_mode">搜尋模式</string>
@@ -185,9 +228,11 @@
   <string name="sim_capacity_title">SIM 卡容量</string>
   <string name="sim_capacity">已使用 <xliff:g id="used">%1$d</xliff:g> 條（共 <xliff:g id="total">%2$d</xliff:g> 條）SIM 卡紀錄</string>
   <string name="pref_sim_card_full_save_to_phone">SIM 卡儲存已滿，正在將新訊息儲存到手機。</string>
+  <!-- batch delete message in ConversationList and MailBoxMessageList -->
   <string name="selected_all">全選</string>
   <string name="deselected_all">取消全選</string>
   <string name="selected_count">已選擇 <xliff:g id="COUNT">%d</xliff:g> 則</string>
+  <!-- priority of cdma message -->
   <string name="cdma_priority_normal">適中</string>
   <string name="cdma_priority_interactive">互動</string>
   <string name="cdma_priority_urgent">急件</string>
@@ -196,6 +241,7 @@
   <string name="pref_summary_cdma_priority">CDMA 訊息優先順序</string>
   <string name="download_dialog_title">下載這則多媒體短訊？</string>
   <string name="menu_email">傳送電子郵件</string>
+  <!-- Settings item description for Preferred storage -->
   <string name="pref_title_sms_store">首選存儲空間</string>
   <string name="pref_title_sms_store_card1">SIM 卡 1 的首選儲存空間</string>
   <string name="pref_title_sms_store_card2">SIM 卡 2 的首選儲存空間</string>
@@ -225,25 +271,38 @@
   <string name="manage_sdcard_messages">匯入/匯出訊息</string>
   <string name="no_backups_found">未發現備份</string>
   <string name="remove_subject">移除主題</string>
+  <!-- QuickMessage Wear-->
   <string name="qm_wear_sending_message">正在傳送回覆至 <xliff:g id="name">%s</xliff:g>\u2026</string>
   <string name="qm_wear_messaged_failed">未傳送訊息至 <xliff:g id="name">%s</xliff:g>，請再試一次。</string>
   <string name="qm_wear_voice_reply">您如何回覆？</string>
   <string name="qm_wear_reply_by_voice">使用語音回覆</string>
+  <!-- Copy message text-->
   <string name="copy_empty_string">沒有可複製文字</string>
   <string name="attach_add_calendar_events">日曆活動</string>
+  <!-- friendlier text for an activity not found exception for calendar attachments -->
   <string name="calendar_attachment_activity_not_found">無法找到支援的日曆應用程式</string>
+  <!-- Vibrate pattern -->
   <string name="pref_mms_notification_vibrate_normal">適中</string>
+  <!-- Menu item - Insert smiley -->
   <string name="menu_insert_smiley">插入表情符號</string>
+  <!-- Enable emoticons -->
   <string name="pref_title_enable_emoticons">表情符號支援</string>
   <string name="pref_summary_enable_emoticons">用等同的圖像來替代文字表情符號</string>
+  <!-- Conversation options -->
   <string name="menu_conversation_options">會話選項</string>
   <string name="pref_title_reset_convopt_to_default">重設為預設值</string>
   <string name="pref_summary_reset_convopt_to_default">將會話設定重設為應用程式級別的設定</string>
+  <!-- Full timestamps -->
   <string name="pref_title_mms_full_timestamp">完整時間戳記</string>
   <string name="pref_summary_mms_full_timestamp">日期和時間均顯示於時間戳記</string>
+  <!-- Original timestamps -->
   <string name="pref_title_mms_use_sent_timestamp">原始時間戳記</string>
   <string name="pref_summary_mms_use_sent_timestamp">在時間戳記中顯示傳送日期而非接收日期</string>
+  <!-- Settings item for boolean option to auto -enable data for MMS messages -->
+  <!-- Settings item description for boolean auto-enable data for MMS option -->
   <string name="pref_summary_mms_auto_enable_data">自動啟用流動數據接收多媒體短訊</string>
+  <!-- Select recipients dialog -->
   <string name="adding_selected_recipients_dialog_text">新增連絡人\u2026</string>
+  <!-- Smart Dialer -->
   <string name="pref_title_mms_smart_dialer">智能撥號</string>
 </resources>

@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
     <item>Šťastný</item>
+    <!-- 0: :-) -->
     <item>Smutný</item>
+    <!-- 1: :-( -->
     <item>Žmurkanie</item>
+    <!-- 2: ;-) -->
     <item>Vyplazený jazyk</item>
+    <!-- 3: :-P -->
     <item>Prekvapený</item>
+    <!-- 4: =-O -->
     <item>Bozkávanie</item>
+    <!-- 5: :-* -->
     <item>Kričanie</item>
+    <!-- 6: :O -->
     <item>Super</item>
+    <!-- 7: B-) -->
     <item>Cinkanie dukátov</item>
+    <!-- 8: :-$ -->
     <item>Trapas</item>
+    <!-- 9: :-! -->
     <item>V rozpakoch</item>
+    <!-- 10: :-[ -->
     <item>Anjel</item>
+    <!-- 11: O:-) -->
     <item>Nerozhodnutý</item>
+    <!-- 12: :-\\ -->
     <item>Plač</item>
+    <!-- 13: :\'( -->
     <item>Mlčanie</item>
+    <!-- 14: :-X -->
     <item>Smiech</item>
+    <!-- 15: :-D -->
     <item>Zmätený</item>
+    <!-- 16: o_O -->
     <item>Srdce</item>
+    <!-- 17: <3 -->
     <item>Šialený</item>
+    <!-- 18: x-( -->
     <item>Úškrn</item>
+    <!-- 19: :-/ -->
     <item>Kamenná tvár</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>

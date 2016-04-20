@@ -21,15 +21,21 @@
     <item quantity="other">Stuur in %1$d sekondes, raak om te kanselleer.</item>
   </plurals>
   <plurals name="confirm_delete_messages">
+    <!-- Case of 1 result. -->
     <item quantity="one">Een boodskap sal verwyder word.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> boodskappe sal verwyder word.</item>
   </plurals>
   <plurals name="confirm_mark_read_conversation">
+    <!-- Case of 1 result. -->
     <item quantity="one">Die gesprek sal gemerk word as gelees.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> gesprekke sal gemerk word as gelees.</item>
   </plurals>
   <plurals name="confirm_mark_unread_conversation">
+    <!-- Case of 1 result. -->
     <item quantity="one">Die gesprek sal gemerk word as ongelees.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> gesprekke sal gemerk word as ongelees.</item>
   </plurals>
 </resources>

@@ -20,12 +20,18 @@
     <item quantity="other">%1$d초 후에 전송합니다. 터치하여 취소합니다.</item>
   </plurals>
   <plurals name="confirm_delete_messages">
+    <!-- Case of 1 result. -->
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g>개의 메시지가 삭제됩니다.</item>
   </plurals>
   <plurals name="confirm_mark_read_conversation">
+    <!-- Case of 1 result. -->
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s </xliff:g> 건의 대화가 읽은 상태로 표시 됩니다.</item>
   </plurals>
   <plurals name="confirm_mark_unread_conversation">
+    <!-- Case of 1 result. -->
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g>건의 대화를 읽지 않음으로 표시합니다.</item>
   </plurals>
 </resources>

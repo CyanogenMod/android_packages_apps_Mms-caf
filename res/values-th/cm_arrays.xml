@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
     <item>มีความสุข</item>
+    <!-- 0: :-) -->
     <item>เศร้า</item>
+    <!-- 1: :-( -->
     <item>ขยิบตา</item>
+    <!-- 2: ;-) -->
     <item>แลบลิ้น</item>
+    <!-- 3: :-P -->
     <item>ประหลาดใจ</item>
+    <!-- 4: =-O -->
     <item>กำลังจูบ</item>
+    <!-- 5: :-* -->
     <item>ตะโกน</item>
+    <!-- 6: :O -->
     <item>เทห์</item>
+    <!-- 7: B-) -->
     <item>เงินปิดปาก</item>
+    <!-- 8: :-$ -->
     <item>ขายหน้า</item>
+    <!-- 9: :-! -->
     <item>อับอาย</item>
+    <!-- 10: :-[ -->
     <item>เทวดา</item>
+    <!-- 11: O:-) -->
     <item>ไม่แน่ใจ</item>
+    <!-- 12: :-\\ -->
     <item>ร้องไห้</item>
+    <!-- 13: :\'( -->
     <item>ปิดปาก</item>
+    <!-- 14: :-X -->
     <item>หัวเราะ</item>
+    <!-- 15: :-D -->
     <item>สับสน</item>
+    <!-- 16: o_O -->
     <item>หัวใจ</item>
+    <!-- 17: <3 -->
     <item>โกรธ</item>
+    <!-- 18: x-( -->
     <item>แสยะยิ้ม</item>
+    <!-- 19: :-/ -->
     <item>หน้าโป๊กเกอร์</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>

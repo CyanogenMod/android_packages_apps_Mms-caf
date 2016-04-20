@@ -22,18 +22,24 @@
     <item quantity="other">Отправка через %1$d секунд. Нажмите для отмены.</item>
   </plurals>
   <plurals name="confirm_delete_messages">
+    <!-- Case of 1 result. -->
     <item quantity="one">1 сообщение будет удалено.</item>
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> сообщения будут удалены.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> сообщений будут удалены.</item>
   </plurals>
   <plurals name="confirm_mark_read_conversation">
+    <!-- Case of 1 result. -->
     <item quantity="one">1 цепочка будет помечена как прочитанная.</item>
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> цепочки будут помечены как прочитанные.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> цепочек будут помечены как прочитанные.</item>
   </plurals>
   <plurals name="confirm_mark_unread_conversation">
+    <!-- Case of 1 result. -->
     <item quantity="one"><xliff:g id="number" example="15">%1$s</xliff:g> цепочка будет помечена как непрочитанная.</item>
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> цепочки будут помечены как непрочитанные.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> цепочек будут помечены как непрочитанные.</item>
   </plurals>
 </resources>

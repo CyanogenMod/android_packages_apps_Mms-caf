@@ -16,6 +16,8 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- QUICKMESSAGE SUPPORT -->
+  <!-- Preferences -->
   <string name="pref_quickmessage">Rychlá zpráva a odpověď</string>
   <string name="pref_quickmessage_title">Zobrazit rychlé zprávy</string>
   <string name="pref_quickmessage_summary">Automaticky otevřít rychlou zprávu pro příchozí SMS zprávy</string>
@@ -26,12 +28,16 @@
   <string name="pref_dark_theme_title">Použít tmavý motiv</string>
   <string name="pref_dark_theme_summary">Pokud není vybráno, použije se výchozí \u201asvětlý\u2018 motiv</string>
   <string name="message_counter">%1$d z %2$d</string>
+  <!-- QM Dialog box buttons -->
   <string name="button_close">Zavřít</string>
   <string name="button_view">Zobrazit</string>
   <string name="button_templates">Šablony</string>
+  <!-- Hint text in message body field when keyboard is exposed -->
   <string name="type_to_reply_text_enter_to_send">Zde napište odpověď</string>
+  <!-- QM Toast -->
   <string name="qm_mark_read">Přečteno</string>
   <string name="toast_sending_message">Odesílání zprávy\u2026</string>
+  <!-- Delay delivery -->
   <string name="pref_title_send_delay">Zpožděné doručení</string>
   <string name="send_delay_immediate">Odeslat okamžitě</string>
   <string name="send_delay_3seconds">3 sekundy</string>
@@ -40,35 +46,46 @@
   <string name="send_delay_20seconds">20 sekund</string>
   <string name="send_delay_30seconds">30 sekund</string>
   <string name="sent_countdown">Odpočet doručení zprávy</string>
+  <!-- EXTRA SETTINGS -->
   <string name="pref_extra_settings">Rozšířená nastavení</string>
+  <!-- Blacklist preferences -->
   <string name="blacklist_title">Seznam blokovaných čísel</string>
   <string name="blacklist_summary_disabled">Zakázána</string>
   <string name="blacklist_summary">Nebudou přijímány příchozí hovory nebo zprávy od telefonního čísla na seznamu blokovaných čísel</string>
+  <!-- Blacklist notifications -->
   <string name="blacklist_notification">Zablokována zpráva od %s</string>
   <string name="blacklist_notification_private_number">Zablokována zpráva ze skrytého čísla</string>
   <string name="blacklist_notification_list_private">Soukromý</string>
   <string name="blacklist_notification_unknown_number">Zablokována zpráva z neznámého čísla %s</string>
   <string name="blacklist_notification_multiple">Blokovaných zpráv: <xliff:g id="count">%d</xliff:g></string>
   <string name="unblock_number">Odblokovat</string>
+  <!-- Blacklist management -->
   <string name="add_to_blacklist">Přidat do seznamu blokovaných čísel</string>
   <string name="add_to_blacklist_message">Příští zprávy z čísla %s budou blokovány</string>
+  <!-- Generic blacklist handling -->
   <string name="alert_dialog_yes">Ano</string>
   <string name="alert_dialog_no">Ne</string>
+  <!-- Strip unicode -->
   <string name="pref_title_unicode_stripping">Odstranit znaky Unicode</string>
   <string name="pref_unicode_stripping_leave_intact">Ponechat původní znaky</string>
   <string name="pref_unicode_stripping_non_encodable">Oříznout nekódovatelné znaky</string>
   <string name="pref_unicode_stripping_all">Oříznout všechny znaky unicode</string>
+  <!-- Context menu item on a message for marking as unread / read -->
   <string name="menu_as_unread">Označit jako nepřečtené</string>
   <string name="menu_as_read">Označit jako přečtené</string>
+  <!-- Context menu item on a message for marking all threads as unread / read -->
   <string name="menu_all_as_unread">Označit vše jako nepřečtené</string>
   <string name="menu_all_as_read">Označit vše jako přečtené</string>
   <string name="menu_add_to_contacts_cm">Přidat do kontaktů</string>
+  <!-- Confirm Mark as unread / read -->
   <string name="confirm_mark_unread_dialog_title">Označit jako nepřečtené?</string>
   <string name="confirm_mark_unread_conversation">Konverzace bude označena jako nepřečtená.</string>
   <string name="confirm_mark_read_dialog_title">Označit jako přečtené?</string>
   <string name="confirm_mark_read_conversation">Konverzace bude označena jako přečtená.</string>
+  <!-- Mark all threads confirmation dialog message -->
   <string name="confirm_mark_unread_all_conversations">Všechny vlákna budou označena jako nepřečtená.</string>
   <string name="confirm_mark_read_all_conversations">Všechna vlákna budou označena jako přečtená.</string>
+  <!-- Multi recipients -->
   <string name="loading">Načítání\u2026</string>
   <string name="select_recipients">Zvolte příjemce</string>
   <string name="no_recipients">Nenalezen žádný kontakt</string>
@@ -77,12 +94,14 @@
   <string name="menu_mobile">Pouze mobilní čísla</string>
   <string name="menu_order_by_given_name">Seřadit podle křestního jména</string>
   <string name="menu_order_by_last_name">Seřadit podle příjmení</string>
+  <!-- Extra message options -->
   <string name="message_share">Sdílet</string>
   <string name="message_share_intent_title">Sdílet zprávu</string>
   <string name="start_new_message_button">Nová zpráva</string>
   <string name="all_spinner_option">Vše</string>
   <string name="menu_copy_url">Kopírovat odkaz <xliff:g id="extractedurl">%s</xliff:g></string>
   <string name="deleting_threads">Mazání konverzací\u2026</string>
+  <!-- Context menu item on an failed message for resending -->
   <string name="menu_resend">Odeslat znovu</string>
   <string name="cancel_downloading">Zrušit</string>
   <string name="confirm_cancel_downloading">Stahování MMS bude zrušeno.</string>
@@ -90,10 +109,15 @@
   <string name="send_by_slot2">Odeslat přes SIM 2</string>
   <string name="select_phone_account_title">Odeslat pomocí</string>
   <string name="media_size_limit">Dosažen limit velikosti zprávy, zprávu nelze odeslat.</string>
+  <!-- Error message indicating that the message size or the increase size is negative -->
   <string name="illegal_message_or_increase_size">Nesprávná velikost zprávy.</string>
+  <!-- Dialog box title that appears when a draft message will not be saved due to invalid recipients -->
   <string name="discard_message_reason_some_invalid">Zpráva bude zahozena, protože někteří z příjemců jsou neplatní.</string>
+  <!-- Brief message that appears when the maximum size of slides has been reached -->
   <string name="cannot_add_text_anymore">Nelze přidat další text.</string>
+  <!-- Dialog box title for display the current mms size  -->
   <string name="title_send_message">Poslat zprávu</string>
+  <!-- Toast when the subject is full -->
   <string name="subject_full">Předmět nesmí být delší než <xliff:g id="length">%d</xliff:g> znaků.</string>
   <string name="pref_title_manage_sim_messages_slot1">Spravovat zprávy SIM 1</string>
   <string name="pref_title_manage_sim_messages_slot2">Spravovat zprávy SIM 2</string>
@@ -101,17 +125,23 @@
   <string name="prefs_title_import_sms_messages">Importovat SMS zprávy</string>
   <string name="pref_title_sms_delivery_reports_slot1">Potvrzení doručení pro SIM 1</string>
   <string name="pref_title_sms_delivery_reports_slot2">Potvrzení doručení pro SIM 2</string>
+  <!-- Status in "Report" window -->
   <string name="status_deleted_unread">Smazáno bez přečtení</string>
+  <!-- Disk Storage Full Error Notification dialog text. -->
   <string name="disk_storage_full_error">Chyba: úložiště je plné.</string>
+  <!-- Mms size is too large dialog text. -->
   <string name="mms_too_large">Zpráva je pro stáhnutí příliš veliká.</string>
   <string name="send_failed_retry">Nepodařilo se odeslat zprávu, opakování\u2026</string>
   <string name="download_failed_retry">Nepodařilo se načíst zprávu, opakování\u2026</string>
   <string name="system_audio_item">Vyzvánění</string>
   <string name="external_audio_item">Hudba</string>
+  <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
   <string name="menu_connect_url">Otevřít odkaz</string>
   <string name="do_not_show_connect_warning">Příště toto varování nezobrazovat</string>
+  <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
   <string name="menu_add_to_label">Přidat do záložek</string>
   <string name="loadurlinfo_str">Odkazy od neznámých odesílatelů můžou být pokusy o „phishing“. Jestli si nejste jisti, neotevírejte tyto adresy.</string>
+  <!-- Message Template -->
   <string name="pref_title_message_template">Šablona zprávy</string>
   <string name="title_new_message_template">Nová šablona</string>
   <string name="summary_new_message_template">Vytvořit novou šablonu zprávy</string>
@@ -121,21 +151,26 @@
   <string name="pref_sms_signature_title">Podpis SMS</string>
   <string name="pref_title_enable_signature">Přidání podpisu do zpráv</string>
   <string name="pref_title_edit_signature">Upravit text podpisu</string>
+  <!-- Copy message to sim -->
   <string name="menu_copy_to">Kopírovat</string>
   <string name="operation_to_card_memory">Kopírovat zprávu na SIM kartu</string>
+  <!-- SMSC -->
   <string name="pref_smsc_title">Centrum služeb SMS</string>
   <string name="pref_one_smcs">Číslo SMSC</string>
   <string name="pref_more_smcs">Číslo SMSC <xliff:g id="slot_number">%d</xliff:g> SIM</string>
   <string name="set_smsc_error">Nepodařilo se nastavit číslo SMSC</string>
   <string name="set_smsc_success">Číslo SMSC úspěšně nastaveno</string>
   <string name="set_smsc_confirm_message">Změna na SMSC může způsobit selhání transakcí SMS. Jste si jisti, že chcete pokračovat?</string>
+  <!-- Copy message to sim -->
   <string name="copy_to_sim">Kopírovat zprávu na SIM karty</string>
   <string name="copy_to_sim_success">Uloženo zpráv na SIM kartu: <xliff:g id="count">%1$d</xliff:g> z <xliff:g id="total">%2$d</xliff:g>.</string>
   <string name="copy_to_sim_fail">Nelze uložit zprávu</string>
   <string name="copy_to_phone_success">Zpráva uložena</string>
   <string name="copy_to_phone_fail">Zprávu nelze uložit</string>
   <string name="contact_app_not_found">Nelze otevřít aplikaci kontaktů</string>
+  <!-- Gray hint displayed in the search field in Contacts when empty -->
   <string name="search_bar_hint">Vyhledat kontakty</string>
+  <!-- Add for share contact feature -->
   <string name="type_vcard">vCard</string>
   <string name="import_vcard">Importovat</string>
   <string name="attach_add_contact_as_vcard">vCard kontaktu</string>
@@ -143,13 +178,16 @@
   <string name="contact_info_text_as_name">Jméno:</string>
   <string name="contact_info_text_as_phone">Tel:</string>
   <string name="contact_info_text_as_email">E-mail:</string>
+  <!-- Sharing vcs files from Calendar -->
   <string name="type_vcal">Událost kalendáře</string>
   <string name="pref_wap_push_title">Zprávy služby Push</string>
   <string name="pref_title_wap_push_enabled">Služba WAP Push</string>
   <string name="pref_summary_wap_push_enabled">Přijímat zprávy síťových služeb</string>
+  <!-- String used in MemoryStatusActivity.java -->
   <string name="memory_status_title">Stav paměti</string>
   <string name="sms_phone_memory_usage">SMS: <xliff:g id="used">%1$d</xliff:g> z <xliff:g id="total">%2$d</xliff:g> použito</string>
   <string name="mms_phone_memory_usage">MMS: <xliff:g id="used">%1$d</xliff:g> z <xliff:g id="total">%2$d</xliff:g> použito</string>
+  <!-- Settings item description for SMS and MMS Validity period -->
   <string name="pref_title_validity_period">Doba platnosti</string>
   <string name="pref_title_validity_period_slot1">Doba platnosti pro SIM 1</string>
   <string name="pref_title_validity_period_slot2">Doba platnosti pro SIM 2</string>
@@ -170,16 +208,21 @@
   <string name="sim_spinner_active_item_postfix">SIM %d</string>
   <string name="cannot_play">Prezentaci nelze spustit.</string>
   <string name="confirm_delete_selected_messages">Vybrané zprávy budou odstraněny.</string>
+  <!-- toast for send result -->
   <string name="send_failure">Nelze odeslat zprávu.</string>
+  <!-- title of mailboxmessagecontent -->
   <string name="message_detail">Podrobnosti zprávy</string>
   <string name="no_message">Žádné zprávy.</string>
   <string name="change_to_folder_mode">Zobrazení složek</string>
   <string name="change_to_conversation_mode">Zobrazení konverzace</string>
+  <!-- Spinner item of box type in mailbox-mode -->
   <string name="type_inbox">Příchozí zprávy</string>
   <string name="type_sent">Odeslané</string>
   <string name="type_outbox">K odeslání</string>
   <string name="type_draft">Koncepty</string>
+  <!-- Spinner item of slot type in mailbox-mode -->
   <string name="slot_type_select">Vyberte SIM kartu</string>
+  <!-- String used in SearchActivityExtend.java -->
   <string name="search_title">Hledat zprávy</string>
   <string name="search_key">Hledat klíčové slovo</string>
   <string name="search_mode">Režim hledání</string>
@@ -191,9 +234,11 @@
   <string name="sim_capacity_title">Kapacita SIM karty</string>
   <string name="sim_capacity">Využívá se <xliff:g id="used">%1$d</xliff:g> z <xliff:g id="total">%2$d</xliff:g> položek SIM karty</string>
   <string name="pref_sim_card_full_save_to_phone">SIM karta je plná, nové zprávy se budou ukládat do telefonu.</string>
+  <!-- batch delete message in ConversationList and MailBoxMessageList -->
   <string name="selected_all">Vybrat vše</string>
   <string name="deselected_all">Zrušit výběr všech</string>
   <string name="selected_count">Počet vybraných: <xliff:g id="COUNT">%d</xliff:g></string>
+  <!-- priority of cdma message -->
   <string name="cdma_priority_normal">Normální</string>
   <string name="cdma_priority_interactive">Interaktivní</string>
   <string name="cdma_priority_urgent">Naléhavé</string>
@@ -202,6 +247,7 @@
   <string name="pref_summary_cdma_priority">Priorita CDMA zpráv</string>
   <string name="download_dialog_title">Stáhnout tuto MMS?</string>
   <string name="menu_email">Poslat e-mail</string>
+  <!-- Settings item description for Preferred storage -->
   <string name="pref_title_sms_store">Upřednostňované úložiště</string>
   <string name="pref_title_sms_store_card1">Upřednostňované úložiště karty SIM 1</string>
   <string name="pref_title_sms_store_card2">Upřednostňované úložiště karty SIM 2</string>
@@ -231,13 +277,17 @@
   <string name="manage_sdcard_messages">Import a export zpráv</string>
   <string name="no_backups_found">Nebyly nalezeny žádné zálohy</string>
   <string name="remove_subject">Odstranit předmět</string>
+  <!-- QuickMessage Wear-->
   <string name="qm_wear_sending_message">Odesílání odpovědi <xliff:g id="name">%s</xliff:g>\u2026</string>
   <string name="qm_wear_messaged_failed">Textová zpráva <xliff:g id="name">%s</xliff:g> nebyla odeslána, prosím opakujte akci.</string>
   <string name="qm_wear_voice_reply">Jaká je vaše odpověď?</string>
   <string name="qm_wear_reply_by_voice">Odpovědět pomocí hlasu</string>
+  <!-- Copy message text-->
   <string name="copy_empty_string">Žádný text ke kopírování</string>
   <string name="attach_add_calendar_events">Událost z kalendáře</string>
+  <!-- friendlier text for an activity not found exception for calendar attachments -->
   <string name="calendar_attachment_activity_not_found">Nelze najít podpůrné aplikace Kalendáře</string>
+  <!-- Vibrate pattern -->
   <string name="pref_title_mms_notification_vibrate_pattern">Vzor vibrování</string>
   <string name="pref_summary_mms_notification_vibrate_pattern">Změnit vzor vibrování</string>
   <string name="pref_mms_notification_vibrate_normal">Normální</string>
@@ -245,19 +295,28 @@
   <string name="pref_mms_notification_vibrate_long_vib">Dlouhé vibrace</string>
   <string name="pref_mms_notification_vibrate_mult_short">Více krátkých</string>
   <string name="pref_mms_notification_vibrate_mult_long">Více dlouhých</string>
+  <!-- Menu item - Insert smiley -->
   <string name="menu_insert_smiley">Vložit smajlík</string>
+  <!-- Enable emoticons -->
   <string name="pref_title_enable_emoticons">Podpora smajlíků</string>
   <string name="pref_summary_enable_emoticons">Nahradit textovou formu smajlíků jejich obrázkovým ekvivalentem</string>
+  <!-- Conversation options -->
   <string name="menu_conversation_options">Možnosti konverzace</string>
   <string name="pref_title_reset_convopt_to_default">Obnovit výchozí</string>
   <string name="pref_summary_reset_convopt_to_default">Obnoví nastavení konverzace na úroveň nastavení aplikace</string>
+  <!-- Full timestamps -->
   <string name="pref_title_mms_full_timestamp">Kompletní časový údaj</string>
   <string name="pref_summary_mms_full_timestamp">Zobrazení času i datumu v informacích o zprávě</string>
+  <!-- Original timestamps -->
   <string name="pref_title_mms_use_sent_timestamp">Původní časové údaje</string>
   <string name="pref_summary_mms_use_sent_timestamp">Zobrazí se pouze čas odeslání zprávy</string>
+  <!-- Settings item for boolean option to auto -enable data for MMS messages -->
   <string name="pref_title_mms_auto_enable_data">Automaticky povolit data</string>
+  <!-- Settings item description for boolean auto-enable data for MMS option -->
   <string name="pref_summary_mms_auto_enable_data">Automaticky povolit mobilní data pro MMS zprávy</string>
+  <!-- Select recipients dialog -->
   <string name="adding_selected_recipients_dialog_text">Přidávání kontaktů\u2026</string>
+  <!-- Smart Dialer -->
   <string name="pref_title_mms_smart_dialer">Inteligentní vytáčení</string>
   <string name="pref_summary_mms_smart_dialer">Provedení automatického vytáčení při přiložení zařízení k uchu</string>
 </resources>

@@ -21,15 +21,21 @@
     <item quantity="other">%1$d segundotan bidaltzen, sakatu uzteko.</item>
   </plurals>
   <plurals name="confirm_delete_messages">
+    <!-- Case of 1 result. -->
     <item quantity="one">Mezu bat ezabatuko da.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> mezu ezabatuko dira.</item>
   </plurals>
   <plurals name="confirm_mark_read_conversation">
+    <!-- Case of 1 result. -->
     <item quantity="one">Elkarrizketa bat irakurria bezala markatuko da.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> elkarrizketa irakurriak bezala markatuko dira.</item>
   </plurals>
   <plurals name="confirm_mark_unread_conversation">
+    <!-- Case of 1 result. -->
     <item quantity="one">Elkarrizketa bat irakurri gabea bezala markatuko da.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> elkarrizketa irakurri gabeak bezala markatuko dira.</item>
   </plurals>
 </resources>

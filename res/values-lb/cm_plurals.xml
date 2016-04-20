@@ -21,11 +21,15 @@
     <item quantity="other">Gëtt a(n) %1$d Sekonne geschéckt, drécke fir ofzebriechen.</item>
   </plurals>
   <plurals name="confirm_delete_messages">
+    <!-- Case of 1 result. -->
     <item quantity="one">Ee Message gëtt geläscht.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> Messagë gi geläscht.</item>
   </plurals>
   <plurals name="confirm_mark_read_conversation">
+    <!-- Case of 1 result. -->
     <item quantity="one">Eng Konversatioun gouf als gelies markéiert.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> Konversatioune goufen als gelies markéiert.</item>
   </plurals>
 </resources>

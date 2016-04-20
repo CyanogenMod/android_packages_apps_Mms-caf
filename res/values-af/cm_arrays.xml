@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
     <item>Gelukkig</item>
+    <!-- 0: :-) -->
     <item>Hartseer</item>
+    <!-- 1: :-( -->
     <item>Oogknip</item>
+    <!-- 2: ;-) -->
     <item>Steek tong uit</item>
+    <!-- 3: :-P -->
     <item>Verras</item>
+    <!-- 4: =-O -->
     <item>Soen</item>
+    <!-- 5: :-* -->
     <item>Skree</item>
+    <!-- 6: :O -->
     <item>Koel</item>
+    <!-- 7: B-) -->
     <item>Praat of doen</item>
+    <!-- 8: :-$ -->
     <item>Voet-in-mond</item>
+    <!-- 9: :-! -->
     <item>Verleë</item>
+    <!-- 10: :-[ -->
     <item>Engel</item>
+    <!-- 11: O:-) -->
     <item>Weifelend</item>
+    <!-- 12: :-\\ -->
     <item>Huil</item>
+    <!-- 13: :\'( -->
     <item>Sê niks</item>
+    <!-- 14: :-X -->
     <item>Lag</item>
+    <!-- 15: :-D -->
     <item>Verward</item>
+    <!-- 16: o_O -->
     <item>Hart</item>
+    <!-- 17: <3 -->
     <item>Mal</item>
+    <!-- 18: x-( -->
     <item>Grynslag</item>
+    <!-- 19: :-/ -->
     <item>Niksseggende blik</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>

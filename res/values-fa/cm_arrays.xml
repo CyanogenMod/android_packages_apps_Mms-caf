@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
     <item>خوشحال</item>
+    <!-- 0: :-) -->
     <item>ناراحت</item>
+    <!-- 1: :-( -->
     <item>چشمک زدن</item>
+    <!-- 2: ;-) -->
     <item>زبان درازی</item>
+    <!-- 3: :-P -->
     <item>شگفت زده</item>
+    <!-- 4: =-O -->
     <item>بوسیدن</item>
+    <!-- 5: :-* -->
     <item>فریاد زدن</item>
+    <!-- 6: :O -->
     <item>باحال</item>
+    <!-- 7: B-) -->
     <item>دهان پر از پول</item>
+    <!-- 8: :-$ -->
     <item>پا در دهان</item>
+    <!-- 9: :-! -->
     <item>شرمنده</item>
+    <!-- 10: :-[ -->
     <item>فرشته</item>
+    <!-- 11: O:-) -->
     <item>تصمیم گیری نشده</item>
+    <!-- 12: :-\\ -->
     <item>گریان</item>
+    <!-- 13: :\'( -->
     <item>زیپ دهان کشیده شده</item>
+    <!-- 14: :-X -->
     <item>خندیدن</item>
+    <!-- 15: :-D -->
     <item>سردرگم</item>
+    <!-- 16: o_O -->
     <item>قلب</item>
+    <!-- 17: <3 -->
     <item>عصبانی</item>
+    <!-- 18: x-( -->
     <item>پوزخند</item>
+    <!-- 19: :-/ -->
     <item>چهره پوکر</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>

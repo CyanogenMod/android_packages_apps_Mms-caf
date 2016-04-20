@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
     <item>Felice</item>
+    <!-- 0: :-) -->
     <item>Triste</item>
+    <!-- 1: :-( -->
     <item>Occhiolino</item>
+    <!-- 2: ;-) -->
     <item>Linguaccia</item>
+    <!-- 3: :-P -->
     <item>Sorpreso</item>
+    <!-- 4: =-O -->
     <item>Bacio</item>
+    <!-- 5: :-* -->
     <item>Urlo</item>
+    <!-- 6: :O -->
     <item>Fico</item>
+    <!-- 7: B-) -->
     <item>Fatti, non parole</item>
+    <!-- 8: :-$ -->
     <item>Gaffe</item>
+    <!-- 9: :-! -->
     <item>Imbarazzato</item>
+    <!-- 10: :-[ -->
     <item>Angelo</item>
+    <!-- 11: O:-) -->
     <item>Indeciso</item>
+    <!-- 12: :-\\ -->
     <item>In lacrime</item>
+    <!-- 13: :\'( -->
     <item>Labbra cucite</item>
+    <!-- 14: :-X -->
     <item>Risata</item>
+    <!-- 15: :-D -->
     <item>Confuso</item>
+    <!-- 16: o_O -->
     <item>Cuore</item>
+    <!-- 17: <3 -->
     <item>Arrabbiato</item>
+    <!-- 18: x-( -->
     <item>Ghigno</item>
+    <!-- 19: :-/ -->
     <item>Impassibile</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>

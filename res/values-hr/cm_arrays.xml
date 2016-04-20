@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
     <item>Sretan</item>
+    <!-- 0: :-) -->
     <item>Tužan</item>
+    <!-- 1: :-( -->
     <item>Namigujem</item>
+    <!-- 2: ;-) -->
     <item>Plazim ti jezik</item>
+    <!-- 3: :-P -->
     <item>Iznenađen</item>
+    <!-- 4: =-O -->
     <item>Šaljem pusu</item>
+    <!-- 5: :-* -->
     <item>Vikanje</item>
+    <!-- 6: :O -->
     <item>Cool</item>
+    <!-- 7: B-) -->
     <item>Pohlepan</item>
+    <!-- 8: :-$ -->
     <item>Ispeci pa reci</item>
+    <!-- 9: :-! -->
     <item>Neugodno mi je</item>
+    <!-- 10: :-[ -->
     <item>Anđeo</item>
+    <!-- 11: O:-) -->
     <item>Neodlučan</item>
+    <!-- 12: :-\\ -->
     <item>Plačem</item>
+    <!-- 13: :\'( -->
     <item>Strogo povjerljivo</item>
+    <!-- 14: :-X -->
     <item>Smijem se</item>
+    <!-- 15: :-D -->
     <item>Zbunjen</item>
+    <!-- 16: o_O -->
     <item>Srce</item>
+    <!-- 17: <3 -->
     <item>Ljutnja</item>
+    <!-- 18: x-( -->
     <item>Samozadovoljni podsmjeh</item>
+    <!-- 19: :-/ -->
     <item>Pokeraš</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>

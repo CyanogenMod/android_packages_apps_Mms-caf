@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
     <item>Wesoły</item>
+    <!-- 0: :-) -->
     <item>Smutny</item>
+    <!-- 1: :-( -->
     <item>Mruga</item>
+    <!-- 2: ;-) -->
     <item>Pokazuje język</item>
+    <!-- 3: :-P -->
     <item>Zdziwiony</item>
+    <!-- 4: =-O -->
     <item>Całuje</item>
+    <!-- 5: :-* -->
     <item>Krzyczy</item>
+    <!-- 6: :O -->
     <item>Na luzie</item>
+    <!-- 7: B-) -->
     <item>Pazerny</item>
+    <!-- 8: :-$ -->
     <item>Nietaktowny</item>
+    <!-- 9: :-! -->
     <item>Zawstydzony</item>
+    <!-- 10: :-[ -->
     <item>Anioł</item>
+    <!-- 11: O:-) -->
     <item>Niezdecydowany</item>
+    <!-- 12: :-\\ -->
     <item>Płacze</item>
+    <!-- 13: :\'( -->
     <item>Milczy jak grób</item>
+    <!-- 14: :-X -->
     <item>Śmieje się</item>
+    <!-- 15: :-D -->
     <item>Zakłopotany</item>
+    <!-- 16: o_O -->
     <item>Serce</item>
+    <!-- 17: <3 -->
     <item>Szalony</item>
+    <!-- 18: x-( -->
     <item>Uśmieszek</item>
+    <!-- 19: :-/ -->
     <item>Twarz pokerzysty</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>

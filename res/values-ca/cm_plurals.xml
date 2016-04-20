@@ -21,15 +21,21 @@
     <item quantity="other">Enviant en %1$d segons, toca per cancel·lar.</item>
   </plurals>
   <plurals name="confirm_delete_messages">
+    <!-- Case of 1 result. -->
     <item quantity="one">Un missatge serà esborrat.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> missatges seran esborrats.</item>
   </plurals>
   <plurals name="confirm_mark_read_conversation">
+    <!-- Case of 1 result. -->
     <item quantity="one">Una conversa es marcarà com a llegida.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> converses es marcaran com a llegides.</item>
   </plurals>
   <plurals name="confirm_mark_unread_conversation">
+    <!-- Case of 1 result. -->
     <item quantity="one">Una conversa es marcarà com a no llegida.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other">Es marcaran <xliff:g id="number" example="15">%1$s</xliff:g> converses com a no llegides.</item>
   </plurals>
 </resources>

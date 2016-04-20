@@ -22,18 +22,24 @@
     <item quantity="other">Wysyłanie w ciągu %1$d sekund, dotknij aby przerwać.</item>
   </plurals>
   <plurals name="confirm_delete_messages">
+    <!-- Case of 1 result. -->
     <item quantity="one">Jedna wiadomość zostanie usunięta.</item>
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> wiadomości zostaną usunięte.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> wiadomości zostanie usunięte.</item>
   </plurals>
   <plurals name="confirm_mark_read_conversation">
+    <!-- Case of 1 result. -->
     <item quantity="one">Jedna konwersacja zostanie oznaczona jako przeczytana.</item>
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> konwersacje zostaną oznaczone jako przeczytane.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> konwersacji zostanie oznaczone jako przeczytane.</item>
   </plurals>
   <plurals name="confirm_mark_unread_conversation">
+    <!-- Case of 1 result. -->
     <item quantity="one">Jedna konwersacja zostanie oznaczona jako nieprzeczytana.</item>
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> konwersacje zostaną oznaczone jako nieprzeczytane.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> konwersacji zostanie oznaczonych jako nieprzeczytane.</item>
   </plurals>
 </resources>

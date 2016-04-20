@@ -23,21 +23,27 @@
     <item quantity="other">Pošiljanje čez %1$d sekund, dotaknite se za preklic.</item>
   </plurals>
   <plurals name="confirm_delete_messages">
+    <!-- Case of 1 result. -->
     <item quantity="one">Sporočilo bo izbrisano.</item>
     <item quantity="two"><xliff:g id="number" example="15">%1$s</xliff:g> sporočili bosta izbrisani.</item>
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> sporočila bodo izbrisana.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> sporočil bo izbrisanih.</item>
   </plurals>
   <plurals name="confirm_mark_read_conversation">
+    <!-- Case of 1 result. -->
     <item quantity="one">Pogovor bo označen kot prebran.</item>
     <item quantity="two"><xliff:g id="number" example="15">%1$s</xliff:g> pogovora bosta označena kot prebrana.</item>
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> pogovori bodo označeni kot prebrani.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> pogovorov bo označenih kot prebranih.</item>
   </plurals>
   <plurals name="confirm_mark_unread_conversation">
+    <!-- Case of 1 result. -->
     <item quantity="one">Pogovor bo označen kot neprebran.</item>
     <item quantity="two"><xliff:g id="number" example="15">%1$s</xliff:g> pogovora bosta označena kot neprebrana.</item>
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> pogovori bodo označeni kot neprebrani.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> pogovorov bo označenih kot neprebranih.</item>
   </plurals>
 </resources>

@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
     <item>행복</item>
+    <!-- 0: :-) -->
     <item>슬픔</item>
+    <!-- 1: :-( -->
     <item>윙크</item>
+    <!-- 2: ;-) -->
     <item>메롱</item>
+    <!-- 3: :-P -->
     <item>깜짝</item>
+    <!-- 4: =-O -->
     <item>키스</item>
+    <!-- 5: :-* -->
     <item>소리지름</item>
+    <!-- 6: :O -->
     <item>멋짐</item>
+    <!-- 7: B-) -->
     <item>입에 돈</item>
+    <!-- 8: :-$ -->
     <item>입에 발</item>
+    <!-- 9: :-! -->
     <item>당황</item>
+    <!-- 10: :-[ -->
     <item>천사</item>
+    <!-- 11: O:-) -->
     <item>결정하지 못함</item>
+    <!-- 12: :-\\ -->
     <item>눈물</item>
+    <!-- 13: :\'( -->
     <item>비밀</item>
+    <!-- 14: :-X -->
     <item>웃음</item>
+    <!-- 15: :-D -->
     <item>헷갈림</item>
+    <!-- 16: o_O -->
     <item>하트</item>
+    <!-- 17: <3 -->
     <item>화남</item>
+    <!-- 18: x-( -->
     <item>능글맞은 웃음</item>
+    <!-- 19: :-/ -->
     <item>포커 페이스</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>

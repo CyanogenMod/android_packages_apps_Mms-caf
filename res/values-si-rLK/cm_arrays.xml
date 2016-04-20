@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
     <item>සතුටු</item>
+    <!-- 0: :-) -->
     <item>දුක්මුසු</item>
+    <!-- 1: :-( -->
     <item>ඉඟිමරන</item>
+    <!-- 2: ;-) -->
     <item>දිව එලියට දැමූ</item>
+    <!-- 3: :-P -->
     <item>පුදුමවූ</item>
+    <!-- 4: =-O -->
     <item>හාදු දෙන</item>
+    <!-- 5: :-* -->
     <item>මොරදෙන</item>
+    <!-- 6: :O -->
     <item>නිවුණු</item>
+    <!-- 7: B-) -->
     <item>මුදල් කට</item>
+    <!-- 8: :-$ -->
     <item>කට වැරදුනු</item>
+    <!-- 9: :-! -->
     <item>ලැජ්ජාවට පත්වූ</item>
+    <!-- 10: :-[ -->
     <item>දේවදූතයා</item>
+    <!-- 11: O:-) -->
     <item>අවිනිශ්වත</item>
+    <!-- 12: :-\\ -->
     <item>හඬන</item>
+    <!-- 13: :\'( -->
     <item>වැසුණු කට</item>
+    <!-- 14: :-X -->
     <item>සිනහවෙන</item>
+    <!-- 15: :-D -->
     <item>ව්‍යාකූලවූ</item>
+    <!-- 16: o_O -->
     <item>හදවත</item>
+    <!-- 17: <3 -->
     <item>කුපිතවූ</item>
+    <!-- 18: x-( -->
     <item>නියවීම</item>
+    <!-- 19: :-/ -->
     <item>හැඟීම් විරහිත</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>

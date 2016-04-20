@@ -16,6 +16,8 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- QUICKMESSAGE SUPPORT -->
+  <!-- Preferences -->
   <string name="pref_quickmessage">Hurtigsvar og svar</string>
   <string name="pref_quickmessage_title">Vis Hurtigsvars-dialog</string>
   <string name="pref_quickmessage_summary">Åpne automatisk Hurtigsvars-dialog for innkommende SMS-meldinger</string>
@@ -26,12 +28,16 @@
   <string name="pref_dark_theme_title">Bruk mørkt tema</string>
   <string name="pref_dark_theme_summary">Hvis ikke valgt, vil \'Lyst\' tema bli brukt.</string>
   <string name="message_counter">%1$d av %2$d</string>
+  <!-- QM Dialog box buttons -->
   <string name="button_close">Lukk</string>
   <string name="button_view">Vis</string>
   <string name="button_templates">Maler</string>
+  <!-- Hint text in message body field when keyboard is exposed -->
   <string name="type_to_reply_text_enter_to_send">Skriv for å svare</string>
+  <!-- QM Toast -->
   <string name="qm_mark_read">Les</string>
   <string name="toast_sending_message">Sender melding\u2026</string>
+  <!-- Delay delivery -->
   <string name="pref_title_send_delay">Leveringsforsinkelse</string>
   <string name="send_delay_immediate">Send umiddelbart</string>
   <string name="send_delay_3seconds">3 sekunder</string>
@@ -40,35 +46,46 @@
   <string name="send_delay_20seconds">20 sekunder</string>
   <string name="send_delay_30seconds">30 sekunder</string>
   <string name="sent_countdown">Meldingslevering nedtelling</string>
+  <!-- EXTRA SETTINGS -->
   <string name="pref_extra_settings">Ekstra innstillinger</string>
+  <!-- Blacklist preferences -->
   <string name="blacklist_title">Blokkert anropsliste</string>
   <string name="blacklist_summary_disabled">Deaktivert</string>
   <string name="blacklist_summary">Du vil ikke motta innkommende samtaler eller meldinger fra telefonnumre på listen over blokkerte telefonnummer</string>
+  <!-- Blacklist notifications -->
   <string name="blacklist_notification">Blokkerte en melding fra %s</string>
   <string name="blacklist_notification_private_number">Blokkerte en melding fra et skjult nummer</string>
   <string name="blacklist_notification_list_private">Privat</string>
   <string name="blacklist_notification_unknown_number">Blokkerte en melding fra ukjent nummer %s</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> meldinger ble blokkert</string>
   <string name="unblock_number">Opphev blokkering</string>
+  <!-- Blacklist management -->
   <string name="add_to_blacklist">Legge til blokkert anropsliste</string>
   <string name="add_to_blacklist_message">Fremtidige meldinger fra %s blokkeres</string>
+  <!-- Generic blacklist handling -->
   <string name="alert_dialog_yes">Ja</string>
   <string name="alert_dialog_no">Nei</string>
+  <!-- Strip unicode -->
   <string name="pref_title_unicode_stripping">Fjern unicode</string>
   <string name="pref_unicode_stripping_leave_intact">Forlat tegn intakt</string>
   <string name="pref_unicode_stripping_non_encodable">Fjern ikke-kodbare tegn</string>
   <string name="pref_unicode_stripping_all">Fjern alle unicode-tegn</string>
+  <!-- Context menu item on a message for marking as unread / read -->
   <string name="menu_as_unread">Merk som ulest</string>
   <string name="menu_as_read">Marker som lest</string>
+  <!-- Context menu item on a message for marking all threads as unread / read -->
   <string name="menu_all_as_unread">Merk alle som ulest</string>
   <string name="menu_all_as_read">Marker alle som lest</string>
   <string name="menu_add_to_contacts_cm">Legg til i kontakter</string>
+  <!-- Confirm Mark as unread / read -->
   <string name="confirm_mark_unread_dialog_title">Merk som ulest?</string>
   <string name="confirm_mark_unread_conversation">Samtalen vil bli merket som ulest.</string>
   <string name="confirm_mark_read_dialog_title">Marker som lest?</string>
   <string name="confirm_mark_read_conversation">samtalen vil bli merket som lest.</string>
+  <!-- Mark all threads confirmation dialog message -->
   <string name="confirm_mark_unread_all_conversations">Alle emner vil bli merket som ulest.</string>
   <string name="confirm_mark_read_all_conversations">Alle emner vil bli merket som lest.</string>
+  <!-- Multi recipients -->
   <string name="loading">Laster\u2026</string>
   <string name="select_recipients">Velg mottakere</string>
   <string name="no_recipients">Finner ingen kontakter</string>
@@ -77,12 +94,14 @@
   <string name="menu_mobile">Kun mobilnummer</string>
   <string name="menu_order_by_given_name">Sorter etter fornavn</string>
   <string name="menu_order_by_last_name">Sorter etter etternavn</string>
+  <!-- Extra message options -->
   <string name="message_share">Del</string>
   <string name="message_share_intent_title">Del melding</string>
   <string name="start_new_message_button">Ny melding</string>
   <string name="all_spinner_option">Alle</string>
   <string name="menu_copy_url">Kopier URL <xliff:g id="extractedurl">%s</xliff:g></string>
   <string name="deleting_threads">Sletter tråder\u2026</string>
+  <!-- Context menu item on an failed message for resending -->
   <string name="menu_resend">Send på nytt</string>
   <string name="cancel_downloading">Avbryt</string>
   <string name="confirm_cancel_downloading">MMS nedlasting vil bli avbrutt.</string>
@@ -90,10 +109,15 @@
   <string name="send_by_slot2">Send via SIM 2</string>
   <string name="select_phone_account_title">Send med</string>
   <string name="media_size_limit">Meldingsstørrelse er nådd, kan ikke sende meldingen.</string>
+  <!-- Error message indicating that the message size or the increase size is negative -->
   <string name="illegal_message_or_increase_size">Feil meldingsstørrelse.</string>
+  <!-- Dialog box title that appears when a draft message will not be saved due to invalid recipients -->
   <string name="discard_message_reason_some_invalid">Meldingen forkastes fordi noen av mottakerne er ugyldige.</string>
+  <!-- Brief message that appears when the maximum size of slides has been reached -->
   <string name="cannot_add_text_anymore">Kan ikke legge til mer tekst.</string>
+  <!-- Dialog box title for display the current mms size  -->
   <string name="title_send_message">Send melding</string>
+  <!-- Toast when the subject is full -->
   <string name="subject_full">Emne må ikke være lengre enn <xliff:g id="length">%d </xliff:g> tegn.</string>
   <string name="pref_title_manage_sim_messages_slot1">Administrer SIM 1 meldinger</string>
   <string name="pref_title_manage_sim_messages_slot2">Administrer SIM 2 meldinger</string>
@@ -101,17 +125,23 @@
   <string name="prefs_title_import_sms_messages">Importer SMS-meldinger</string>
   <string name="pref_title_sms_delivery_reports_slot1">Leveringsrapporter for SIM 1</string>
   <string name="pref_title_sms_delivery_reports_slot2">Leveringsrapporter for SIM 2</string>
+  <!-- Status in "Report" window -->
   <string name="status_deleted_unread">Slettet uten å bli lest</string>
+  <!-- Disk Storage Full Error Notification dialog text. -->
   <string name="disk_storage_full_error">Feil: Lagring er full.</string>
+  <!-- Mms size is too large dialog text. -->
   <string name="mms_too_large">Meldingen er for stor til å lastes ned.</string>
   <string name="send_failed_retry">Kan ikke sende meldingen, prøver på nytt\u2026</string>
   <string name="download_failed_retry">Kan ikke laste ned meldingen, prøver på nytt\u2026</string>
   <string name="system_audio_item">Ringetone</string>
   <string name="external_audio_item">Musikk</string>
+  <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
   <string name="menu_connect_url">Åpne URL</string>
   <string name="do_not_show_connect_warning">Ikke vis denne advarselen på nytt</string>
+  <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
   <string name="menu_add_to_label">Legg til i bokmerker</string>
   <string name="loadurlinfo_str">Nettadresser fra ukjente kan være phishing-forsøk. Hvis du er usikker, bør du ikke åpne denne adressen.</string>
+  <!-- Message Template -->
   <string name="pref_title_message_template">Melding maler</string>
   <string name="title_new_message_template">Ny mal</string>
   <string name="summary_new_message_template">Skriv ny SMS-mal</string>
@@ -121,21 +151,26 @@
   <string name="pref_sms_signature_title">SMS signatur</string>
   <string name="pref_title_enable_signature">Legg til signatur i meldinger</string>
   <string name="pref_title_edit_signature">Redigere signaturteksten</string>
+  <!-- Copy message to sim -->
   <string name="menu_copy_to">Kopier</string>
   <string name="operation_to_card_memory">Kopier melding til SIM-kortet</string>
+  <!-- SMSC -->
   <string name="pref_smsc_title">SMS servicesenter</string>
   <string name="pref_one_smcs">SMSC nummer</string>
   <string name="pref_more_smcs">SIM <xliff:g id="slot_number">%d </xliff:g> SMSC nummer</string>
   <string name="set_smsc_error">Kan ikke angi SMSC nummer</string>
   <string name="set_smsc_success">SMSC nummeret angitt</string>
   <string name="set_smsc_confirm_message">Hvis du endrer SMSC, kan det føre til SMS transaksjons feil. Er du sikker på at du vil fortsette?</string>
+  <!-- Copy message to sim -->
   <string name="copy_to_sim">Kopier melding til SIM-kortet</string>
   <string name="copy_to_sim_success"><xliff:g id="count">%1$d </xliff:g> av <xliff:g id="total">%2$d </xliff:g> meldinger lagret på SIM-kortet.</string>
   <string name="copy_to_sim_fail">Kan ikke lagre meldingen</string>
   <string name="copy_to_phone_success">Meldingen er lagret</string>
   <string name="copy_to_phone_fail">Kan ikke lagre meldingen</string>
   <string name="contact_app_not_found">Kan ikke åpne kontakter</string>
+  <!-- Gray hint displayed in the search field in Contacts when empty -->
   <string name="search_bar_hint">Søk etter kontakter</string>
+  <!-- Add for share contact feature -->
   <string name="type_vcard">vCard</string>
   <string name="import_vcard">Importer</string>
   <string name="attach_add_contact_as_vcard">Kontakt vCard</string>
@@ -143,13 +178,16 @@
   <string name="contact_info_text_as_name">Navn:</string>
   <string name="contact_info_text_as_phone">Tel:</string>
   <string name="contact_info_text_as_email">E-post:</string>
+  <!-- Sharing vcs files from Calendar -->
   <string name="type_vcal">Kalenderoppføringer</string>
   <string name="pref_wap_push_title">Push meldinger</string>
   <string name="pref_title_wap_push_enabled">WAP Push-tjeneste</string>
   <string name="pref_summary_wap_push_enabled">Motta nettverksmeldinger</string>
+  <!-- String used in MemoryStatusActivity.java -->
   <string name="memory_status_title">Minnestatus</string>
   <string name="sms_phone_memory_usage">SMS: <xliff:g id="used">%1$d </xliff:g> av <xliff:g id="total">%2$d </xliff:g> brukes</string>
   <string name="mms_phone_memory_usage">MMS: <xliff:g id="used">%1$d </xliff:g> av <xliff:g id="total">%2$d </xliff:g> brukes</string>
+  <!-- Settings item description for SMS and MMS Validity period -->
   <string name="pref_title_validity_period">Gyldighetsperiode</string>
   <string name="pref_title_validity_period_slot1">Gyldighetsperioden for SIM 1</string>
   <string name="pref_title_validity_period_slot2">Gyldighetsperioden for SIM 2</string>
@@ -170,16 +208,21 @@
   <string name="sim_spinner_active_item_postfix">SIM %d</string>
   <string name="cannot_play">Kan ikke vise lysbildefremvisningen.</string>
   <string name="confirm_delete_selected_messages">Valgte meldinger vil bli slettet.</string>
+  <!-- toast for send result -->
   <string name="send_failure">Kan ikke sende meldingen.</string>
+  <!-- title of mailboxmessagecontent -->
   <string name="message_detail">Meldingsinformasjon</string>
   <string name="no_message">Ingen meldinger.</string>
   <string name="change_to_folder_mode">Mappevisning</string>
   <string name="change_to_conversation_mode">Samtalevisning</string>
+  <!-- Spinner item of box type in mailbox-mode -->
   <string name="type_inbox">Innboks</string>
   <string name="type_sent">Sendt</string>
   <string name="type_outbox">Utboks</string>
   <string name="type_draft">Kladd</string>
+  <!-- Spinner item of slot type in mailbox-mode -->
   <string name="slot_type_select">Velg SIM-kort</string>
+  <!-- String used in SearchActivityExtend.java -->
   <string name="search_title">meldingssøk</string>
   <string name="search_key">Søkeord</string>
   <string name="search_mode">Søkemodus</string>
@@ -191,9 +234,11 @@
   <string name="sim_capacity_title">SIM kapasitet</string>
   <string name="sim_capacity"><xliff:g id="used">%1$d </xliff:g> av <xliff:g id="total">%2$d </xliff:g> SIM card oppføringer brukes</string>
   <string name="pref_sim_card_full_save_to_phone">SIM-kortet er fullt, lagrer nye meldinger på telefonen.</string>
+  <!-- batch delete message in ConversationList and MailBoxMessageList -->
   <string name="selected_all">Velg alle</string>
   <string name="deselected_all">Fjern all merking</string>
   <string name="selected_count"><xliff:g id="COUNT">%d</xliff:g> valgt</string>
+  <!-- priority of cdma message -->
   <string name="cdma_priority_normal">Normal</string>
   <string name="cdma_priority_interactive">Interaktiv</string>
   <string name="cdma_priority_urgent">Haster</string>
@@ -202,6 +247,7 @@
   <string name="pref_summary_cdma_priority">Prioritet for CDMA meldinger</string>
   <string name="download_dialog_title">Last ned denne MMS-en?</string>
   <string name="menu_email">Send e-post</string>
+  <!-- Settings item description for Preferred storage -->
   <string name="pref_title_sms_store">Foretrukket lagring</string>
   <string name="pref_title_sms_store_card1">Foretrukket lagring SIM 1</string>
   <string name="pref_title_sms_store_card2">Foretrukket lagring SIM 2</string>
@@ -231,13 +277,17 @@
   <string name="manage_sdcard_messages">Import/eksport meldinger</string>
   <string name="no_backups_found">Finner ingen sikkerhetskopier</string>
   <string name="remove_subject">Fjern emnet</string>
+  <!-- QuickMessage Wear-->
   <string name="qm_wear_sending_message">Sender svar til <xliff:g id="name">%s </xliff:g> \u2026</string>
   <string name="qm_wear_messaged_failed">Tekstmelding til <xliff:g id="name">%s </xliff:g> ikke sendt, prøv på nytt.</string>
   <string name="qm_wear_voice_reply">Hva er svaret?</string>
   <string name="qm_wear_reply_by_voice">Svar ved hjelp av stemmen</string>
+  <!-- Copy message text-->
   <string name="copy_empty_string">Ingen tekst å kopiere</string>
   <string name="attach_add_calendar_events">Kalenderoppføringer</string>
+  <!-- friendlier text for an activity not found exception for calendar attachments -->
   <string name="calendar_attachment_activity_not_found">Finner ikke en støttet kalender app</string>
+  <!-- Vibrate pattern -->
   <string name="pref_title_mms_notification_vibrate_pattern">Vibreringsmønster</string>
   <string name="pref_summary_mms_notification_vibrate_pattern">Endre vibreringsmønster</string>
   <string name="pref_mms_notification_vibrate_normal">Normal</string>
@@ -245,19 +295,28 @@
   <string name="pref_mms_notification_vibrate_long_vib">Lang vibrasjon</string>
   <string name="pref_mms_notification_vibrate_mult_short">Flere korte</string>
   <string name="pref_mms_notification_vibrate_mult_long">Flere lange</string>
+  <!-- Menu item - Insert smiley -->
   <string name="menu_insert_smiley">Sett inn smilefjes</string>
+  <!-- Enable emoticons -->
   <string name="pref_title_enable_emoticons">Støtte for uttrykksikoner</string>
   <string name="pref_summary_enable_emoticons">Erstatte tekst-uttrykksikoner med grafiske ekvivalenter</string>
+  <!-- Conversation options -->
   <string name="menu_conversation_options">samtaleinnstillinger</string>
   <string name="pref_title_reset_convopt_to_default">Tilbakestill til standard</string>
   <string name="pref_summary_reset_convopt_to_default">Tilbakestiller samtaleinnstillingene til applikasjonens standardinnstillinger</string>
+  <!-- Full timestamps -->
   <string name="pref_title_mms_full_timestamp">Hele tidsstempler</string>
   <string name="pref_summary_mms_full_timestamp">Vis både dato og tid i tidsstempler</string>
+  <!-- Original timestamps -->
   <string name="pref_title_mms_use_sent_timestamp">Originale tidsstempler</string>
   <string name="pref_summary_mms_use_sent_timestamp">Vis dato sendt og ikke dato mottatt i tidsstempler</string>
+  <!-- Settings item for boolean option to auto -enable data for MMS messages -->
   <string name="pref_title_mms_auto_enable_data">Automatisk aktiver data</string>
+  <!-- Settings item description for boolean auto-enable data for MMS option -->
   <string name="pref_summary_mms_auto_enable_data">Automatisk aktiver mobildata for MMS meldinger</string>
+  <!-- Select recipients dialog -->
   <string name="adding_selected_recipients_dialog_text">Legge til kontakter\u2026</string>
+  <!-- Smart Dialer -->
   <string name="pref_title_mms_smart_dialer">Smart samtale</string>
   <string name="pref_summary_mms_smart_dialer">Automatisk ringe kontakten ved å flytte enheten til øret</string>
 </resources>

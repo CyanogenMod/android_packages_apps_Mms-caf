@@ -22,18 +22,24 @@
     <item quantity="other">Слање за %1$d секунде, додирни за отказивање.</item>
   </plurals>
   <plurals name="confirm_delete_messages">
+    <!-- Case of 1 result. -->
     <item quantity="one">Једна порука ће бити обрисана.</item>
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> поруке ће бити обрисане.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> поруке ће бити обрисане.</item>
   </plurals>
   <plurals name="confirm_mark_read_conversation">
+    <!-- Case of 1 result. -->
     <item quantity="one">Једна преписка ће бити означена као прочитана.</item>
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> преписке ће бити означене као прочитане.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> преписке ће бити означене као прочитане.</item>
   </plurals>
   <plurals name="confirm_mark_unread_conversation">
+    <!-- Case of 1 result. -->
     <item quantity="one">Преписка ће бити означена као непрочитана.</item>
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> преписки ће бити означено као непрочитано.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> преписки ће бити означено као непрочитано.</item>
   </plurals>
 </resources>

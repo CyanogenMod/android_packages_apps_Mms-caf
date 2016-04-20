@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
     <item>Gembira</item>
+    <!-- 0: :-) -->
     <item>Sedih</item>
+    <!-- 1: :-( -->
     <item>Mengenyit</item>
+    <!-- 2: ;-) -->
     <item>Lidah terjelir</item>
+    <!-- 3: :-P -->
     <item>Terkejut</item>
+    <!-- 4: =-O -->
     <item>Bercium</item>
+    <!-- 5: :-* -->
     <item>Menjerit</item>
+    <!-- 6: :O -->
     <item>Segak</item>
+    <!-- 7: B-) -->
     <item>Mulut duit</item>
+    <!-- 8: :-$ -->
     <item>Kaki dalam mulut</item>
+    <!-- 9: :-! -->
     <item>Malu</item>
+    <!-- 10: :-[ -->
     <item>Bidadari</item>
+    <!-- 11: O:-) -->
     <item>Tidak pasti</item>
+    <!-- 12: :-\\ -->
     <item>Menangis</item>
+    <!-- 13: :\'( -->
     <item>Bibir terkunci</item>
+    <!-- 14: :-X -->
     <item>Tertawa</item>
+    <!-- 15: :-D -->
     <item>Keliru</item>
+    <!-- 16: o_O -->
     <item>Hati</item>
+    <!-- 17: <3 -->
     <item>Gila</item>
+    <!-- 18: x-( -->
     <item>Senyuman sinis</item>
+    <!-- 19: :-/ -->
     <item>Muka selamba</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>

@@ -16,6 +16,8 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- QUICKMESSAGE SUPPORT -->
+  <!-- Preferences -->
   <string name="pref_quickmessage">پیام سریع و پاسخ</string>
   <string name="pref_quickmessage_title">نمایش پیام سریع</string>
   <string name="pref_quickmessage_summary">بازکردن خودکار بالاپر پیام سریع برای پیامک‌ها</string>
@@ -26,12 +28,16 @@
   <string name="pref_dark_theme_title">استفاده از تم تیره</string>
   <string name="pref_dark_theme_summary">در صورت عدم انتخاب، از تم پیش‌فرض «روشن» استفاده خواهد شد</string>
   <string name="message_counter">%1$d از %2$d</string>
+  <!-- QM Dialog box buttons -->
   <string name="button_close">بستن</string>
   <string name="button_view">مشاهده</string>
   <string name="button_templates">قالب‌ها</string>
+  <!-- Hint text in message body field when keyboard is exposed -->
   <string name="type_to_reply_text_enter_to_send">برای پاسخ تایپ کنید</string>
+  <!-- QM Toast -->
   <string name="qm_mark_read">خواندن</string>
   <string name="toast_sending_message">ارسال پیام\u2026</string>
+  <!-- Delay delivery -->
   <string name="pref_title_send_delay">تاخیر تحویل</string>
   <string name="send_delay_immediate">ارسال فوری</string>
   <string name="send_delay_3seconds">۳ ثانیه</string>
@@ -40,35 +46,46 @@
   <string name="send_delay_20seconds">۲۰ ثانیه</string>
   <string name="send_delay_30seconds">۳۰ ثانیه</string>
   <string name="sent_countdown">شمارش معکوس تحویل پیام</string>
+  <!-- EXTRA SETTINGS -->
   <string name="pref_extra_settings">تنظیمات اضافی</string>
+  <!-- Blacklist preferences -->
   <string name="blacklist_title">لیست تماس‌گیرنده مسدود</string>
   <string name="blacklist_summary_disabled">غیرفعال</string>
   <string name="blacklist_summary">شما تماس یا پیامی از شماره تلفن‌های لیست تماس‌گیرنده مسدود دریافت نخواهید کرد</string>
+  <!-- Blacklist notifications -->
   <string name="blacklist_notification">پیام دریافتی از %s مسدود شد</string>
   <string name="blacklist_notification_private_number">پیام دریافتی از شماره خصوصی مسدود شد</string>
   <string name="blacklist_notification_list_private">خصوصی</string>
   <string name="blacklist_notification_unknown_number">پیام دریافتی از شماره ناشناخته %s مسدود شد</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d </xliff:g> پیام مسدود شد</string>
   <string name="unblock_number">لغو مسدودیت</string>
+  <!-- Blacklist management -->
   <string name="add_to_blacklist">افزودن به لیست تماس‌گیرنده‌های مسدود شده</string>
   <string name="add_to_blacklist_message">پیام‌های بعدی از %s مسدود خواهد شد</string>
+  <!-- Generic blacklist handling -->
   <string name="alert_dialog_yes">بله</string>
   <string name="alert_dialog_no">خیر</string>
+  <!-- Strip unicode -->
   <string name="pref_title_unicode_stripping">برداشتن یونی‌کد</string>
   <string name="pref_unicode_stripping_leave_intact">دست نزدن به نویسه‌ها</string>
   <string name="pref_unicode_stripping_non_encodable">برداشتن نویسه‌های غیرقابل‌کدگذاری</string>
   <string name="pref_unicode_stripping_all">برداشتن تمام نویسه‌های یونی‌کد</string>
+  <!-- Context menu item on a message for marking as unread / read -->
   <string name="menu_as_unread">خوانده نشده</string>
   <string name="menu_as_read">خوانده شده</string>
+  <!-- Context menu item on a message for marking all threads as unread / read -->
   <string name="menu_all_as_unread">همه خوانده نشده</string>
   <string name="menu_all_as_read">همه خوانده شده</string>
   <string name="menu_add_to_contacts_cm">افزودن به مخاطبین</string>
+  <!-- Confirm Mark as unread / read -->
   <string name="confirm_mark_unread_dialog_title">علامت گذاری به عنوان خوانده نشده؟</string>
   <string name="confirm_mark_unread_conversation">این مکالمه به عنوان خوانده نشده علامت گذاری خواهد شد.</string>
   <string name="confirm_mark_read_dialog_title">علامت گذاری به عنوان خوانده شده؟</string>
   <string name="confirm_mark_read_conversation">این مکالمه به عنوان خوانده شده علامت گذاری خواهد شد.</string>
+  <!-- Mark all threads confirmation dialog message -->
   <string name="confirm_mark_unread_all_conversations">تمام ریسه‌ها به عنوان خوانده نشده علامت‌گذاری خواهند شد.</string>
   <string name="confirm_mark_read_all_conversations">تمام ریسه‌ها به عنوان خوانده شده علامت‌گذاری خواهند شد.</string>
+  <!-- Multi recipients -->
   <string name="loading">در حال بارگذاری\u2026</string>
   <string name="select_recipients">انتخاب گیرندگان</string>
   <string name="no_recipients">مخاطبی پیدا نشد</string>
@@ -77,12 +94,14 @@
   <string name="menu_mobile">تنها شماره‌های تلفن همراه</string>
   <string name="menu_order_by_given_name">تنظیم بر اساس نام</string>
   <string name="menu_order_by_last_name">تنظیم بر اساس نام خانوادگی</string>
+  <!-- Extra message options -->
   <string name="message_share">اشتراک‌ﮔﺬﺍﺭﯼ</string>
   <string name="message_share_intent_title">اشتراک‌ﮔﺬﺍﺭﯼ پیام</string>
   <string name="start_new_message_button">پیام جدید</string>
   <string name="all_spinner_option">همه</string>
   <string name="menu_copy_url">کپی آدرس <xliff:g id="extractedurl">%s</xliff:g></string>
   <string name="deleting_threads">در حال حذف ریسه‌ها\u2026</string>
+  <!-- Context menu item on an failed message for resending -->
   <string name="menu_resend">ارسال مجدد</string>
   <string name="cancel_downloading">لغو</string>
   <string name="confirm_cancel_downloading">دانلود ام ام اس لغو خواهد شد.</string>
@@ -90,10 +109,15 @@
   <string name="send_by_slot2">ارسال از طریق سیمکارت ۲</string>
   <string name="select_phone_account_title">ارسال با</string>
   <string name="media_size_limit">اندازه پیام بیش از حد مجاز است، ارسال ممکن نیست.</string>
+  <!-- Error message indicating that the message size or the increase size is negative -->
   <string name="illegal_message_or_increase_size">اندازه نادرست پیام.</string>
+  <!-- Dialog box title that appears when a draft message will not be saved due to invalid recipients -->
   <string name="discard_message_reason_some_invalid">پیام شما به دلیل داشتن چند دریافت‌کننده نامعتبر حذف خواهد شد.</string>
+  <!-- Brief message that appears when the maximum size of slides has been reached -->
   <string name="cannot_add_text_anymore">افزودن متن بیشتر ممکن نیست.</string>
+  <!-- Dialog box title for display the current mms size  -->
   <string name="title_send_message">ارسال پیام</string>
+  <!-- Toast when the subject is full -->
   <string name="subject_full">عنوان نباید بیش از <xliff:g id="length">%d</xliff:g> characters نویسه باشد.</string>
   <string name="pref_title_manage_sim_messages_slot1">مدیریت پیام‌های سیمکارت ۱</string>
   <string name="pref_title_manage_sim_messages_slot2">مدیریت پیام‌های سیمکارت ۲</string>
@@ -101,17 +125,23 @@
   <string name="prefs_title_import_sms_messages">درون‌ریزی پیام‌ها</string>
   <string name="pref_title_sms_delivery_reports_slot1">گزارش‌های تحویل برای سیمکارت ۱</string>
   <string name="pref_title_sms_delivery_reports_slot2">گزارش‌های تحویل برای سیمکارت ۲</string>
+  <!-- Status in "Report" window -->
   <string name="status_deleted_unread">بدون خوانده‌شدن حذف شد</string>
+  <!-- Disk Storage Full Error Notification dialog text. -->
   <string name="disk_storage_full_error">خطا: حافظه پر است.</string>
+  <!-- Mms size is too large dialog text. -->
   <string name="mms_too_large">این پیام برای دانلود شدن بسیار بزرگ است.</string>
   <string name="send_failed_retry">پیام ارسال نشد، در حال تلاش مجدد\u2026</string>
   <string name="download_failed_retry">پیام دانلود نشد، در حال تلاش مجدد\u2026</string>
   <string name="system_audio_item">صدای زنگ</string>
   <string name="external_audio_item">موسیقی</string>
+  <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
   <string name="menu_connect_url">بازکردن آدرس</string>
   <string name="do_not_show_connect_warning">نشان‌ندادن مجدد این هشدار</string>
+  <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
   <string name="menu_add_to_label">افزودن به نشانک‌ها</string>
   <string name="loadurlinfo_str">آدرس‌های ارسال‌کنندگان ناشناس می‌تواند به منظور کلاهبردای باشد. در صورت عدم اطمینان، این آدرس را باز نکنید.</string>
+  <!-- Message Template -->
   <string name="pref_title_message_template">قالب‌های پیام</string>
   <string name="title_new_message_template">قالب جدید</string>
   <string name="summary_new_message_template">نوشتن قالب جدید پیام</string>
@@ -121,21 +151,26 @@
   <string name="pref_sms_signature_title">امضای پیامک</string>
   <string name="pref_title_enable_signature">افزودن امضا به پیام‌ها</string>
   <string name="pref_title_edit_signature">ویرایش متن امضا</string>
+  <!-- Copy message to sim -->
   <string name="menu_copy_to">کپی</string>
   <string name="operation_to_card_memory">کپی پیام به سیم کارت</string>
+  <!-- SMSC -->
   <string name="pref_smsc_title">مرکز خدمات پیام کوتاه</string>
   <string name="pref_one_smcs">شماره SMSC</string>
   <string name="pref_more_smcs">شماره SMSC سیمکارت <xliff:g id="slot_number">%d</xliff:g></string>
   <string name="set_smsc_error">تنظیم شماره SMSC ناموفق بود</string>
   <string name="set_smsc_success">شماره SMSC با موفقیت تنظیم شد</string>
   <string name="set_smsc_confirm_message">ممکن است تغییر به SMSC باعث اشکال در عملیات اس ام اس شود. ادامه می‌دهید؟</string>
+  <!-- Copy message to sim -->
   <string name="copy_to_sim">کپی پیام به سیم کارت</string>
   <string name="copy_to_sim_success"><xliff:g id="count">%1$d</xliff:g> پیام از <xliff:g id="total">%2$d</xliff:g> پیام در سیم کارت ذخیره شد.</string>
   <string name="copy_to_sim_fail">ذخیره پیام انجام نشد</string>
   <string name="copy_to_phone_success">پیام ذخیره شد</string>
   <string name="copy_to_phone_fail">ذخیره پیام انجام نشد</string>
   <string name="contact_app_not_found">بازکردن برنامه مخاطبین ناموفق بود</string>
+  <!-- Gray hint displayed in the search field in Contacts when empty -->
   <string name="search_bar_hint">جستجوی مخاطبین</string>
+  <!-- Add for share contact feature -->
   <string name="type_vcard">vCard</string>
   <string name="import_vcard">درون‌ریزی</string>
   <string name="attach_add_contact_as_vcard">vCard مخاطب</string>
@@ -143,13 +178,16 @@
   <string name="contact_info_text_as_name">نام:</string>
   <string name="contact_info_text_as_phone">تلفن:</string>
   <string name="contact_info_text_as_email">ایمیل:</string>
+  <!-- Sharing vcs files from Calendar -->
   <string name="type_vcal">رویداد تقویم</string>
   <string name="pref_wap_push_title">پیام‌های سرویس پوش</string>
   <string name="pref_title_wap_push_enabled">سرویس پیامک وپ</string>
   <string name="pref_summary_wap_push_enabled">دریافت پیام‌های سرویس شبکه</string>
+  <!-- String used in MemoryStatusActivity.java -->
   <string name="memory_status_title">وضعیت حافظه</string>
   <string name="sms_phone_memory_usage">پیامک: <xliff:g id="used">%1$d</xliff:g> از <xliff:g id="total">%2$d</xliff:g> استفاده می‌شود</string>
   <string name="mms_phone_memory_usage">ام ام اس: <xliff:g id="used">%1$d</xliff:g> از <xliff:g id="total">%2$d</xliff:g> استفاده می‌شود</string>
+  <!-- Settings item description for SMS and MMS Validity period -->
   <string name="pref_title_validity_period">مدت اعتبار</string>
   <string name="pref_title_validity_period_slot1">مدت اعتبار برای سیمکارت ۱</string>
   <string name="pref_title_validity_period_slot2">مدت اعتبار برای سیمکارت ۲</string>
@@ -170,16 +208,21 @@
   <string name="sim_spinner_active_item_postfix">سیمکارت %d</string>
   <string name="cannot_play">نمایش اسلایدشو ممکن نیست.</string>
   <string name="confirm_delete_selected_messages">پیام‌های انتخاب‌شده حذف خواهند شد.</string>
+  <!-- toast for send result -->
   <string name="send_failure">پیام ارسال نمی‌شود.</string>
+  <!-- title of mailboxmessagecontent -->
   <string name="message_detail">جزئیات پیام</string>
   <string name="no_message">پیامی وجود ندارد.</string>
   <string name="change_to_folder_mode">نمای پوشه</string>
   <string name="change_to_conversation_mode">نمای گفتگو</string>
+  <!-- Spinner item of box type in mailbox-mode -->
   <string name="type_inbox">صندوق ورودی</string>
   <string name="type_sent">ارسال شد</string>
   <string name="type_outbox">صندوق خروجی</string>
   <string name="type_draft">پیش‌نویس‌ها</string>
+  <!-- Spinner item of slot type in mailbox-mode -->
   <string name="slot_type_select">انتخاب سیم کارت</string>
+  <!-- String used in SearchActivityExtend.java -->
   <string name="search_title">جستجوی پیام</string>
   <string name="search_key">کلیدواژه‌ی جستجو</string>
   <string name="search_mode">حالت جستجو</string>
@@ -191,9 +234,11 @@
   <string name="sim_capacity_title">ظرفیت سیمکارت</string>
   <string name="sim_capacity"><xliff:g id="used">%1$d</xliff:g> ورودی از <xliff:g id="total">%2$d</xliff:g> ورودی سیم کارت در حال استفاده است</string>
   <string name="pref_sim_card_full_save_to_phone">سیم کارت پر است، در حال ذخیره پیام‌های جدید در تلفن.</string>
+  <!-- batch delete message in ConversationList and MailBoxMessageList -->
   <string name="selected_all">انتخاب همه</string>
   <string name="deselected_all">لغو انتخاب همه</string>
   <string name="selected_count"><xliff:g id="COUNT">%d</xliff:g> مورد انتخاب شد</string>
+  <!-- priority of cdma message -->
   <string name="cdma_priority_normal">عادی</string>
   <string name="cdma_priority_interactive">تعاملی</string>
   <string name="cdma_priority_urgent">فوری</string>
@@ -202,6 +247,7 @@
   <string name="pref_summary_cdma_priority">اولویت پیام‌های CDMA</string>
   <string name="download_dialog_title">این ام ام اس دانلود شود؟</string>
   <string name="menu_email">ارسال ایمیل</string>
+  <!-- Settings item description for Preferred storage -->
   <string name="pref_title_sms_store">حافظه مورد نظر</string>
   <string name="pref_title_sms_store_card1">حافظه مورد نظر برای سیمکارت ۱</string>
   <string name="pref_title_sms_store_card2">حافظه مورد نظر برای سیمکارت ۲</string>
@@ -231,13 +277,17 @@
   <string name="manage_sdcard_messages">درون‌ریزی/برون‌ریزی پیام‌ها</string>
   <string name="no_backups_found">نسخه پشتیبانی پیدا نشد</string>
   <string name="remove_subject">حذف عنوان</string>
+  <!-- QuickMessage Wear-->
   <string name="qm_wear_sending_message">ارسال پاسخ به <xliff:g id="name">%s</xliff:g>\u2026</string>
   <string name="qm_wear_messaged_failed">پیام متنی به <xliff:g id="name">%s</xliff:g> ارسال نشد، لطفاً دوباره امتحان کنید.</string>
   <string name="qm_wear_voice_reply">پاسخ شما چیست؟</string>
   <string name="qm_wear_reply_by_voice">پاسخ با استفاده از صدا</string>
+  <!-- Copy message text-->
   <string name="copy_empty_string">متنی برای کپی وجود ندارد</string>
   <string name="attach_add_calendar_events">رویداد تقویم</string>
+  <!-- friendlier text for an activity not found exception for calendar attachments -->
   <string name="calendar_attachment_activity_not_found">برنامه پشتیبانی‌کننده از تقویم پیدا نشد</string>
+  <!-- Vibrate pattern -->
   <string name="pref_title_mms_notification_vibrate_pattern">الگوی لرزش</string>
   <string name="pref_summary_mms_notification_vibrate_pattern">تغییر الگوی لرزش</string>
   <string name="pref_mms_notification_vibrate_normal">عادی</string>
@@ -245,19 +295,28 @@
   <string name="pref_mms_notification_vibrate_long_vib">لرزش طولانی</string>
   <string name="pref_mms_notification_vibrate_mult_short">چند لرزش کوتاه</string>
   <string name="pref_mms_notification_vibrate_mult_long">چند لرزش طولانی</string>
+  <!-- Menu item - Insert smiley -->
   <string name="menu_insert_smiley">درج لبخندک</string>
+  <!-- Enable emoticons -->
   <string name="pref_title_enable_emoticons">پشتیبانی از شکلک‌ها</string>
   <string name="pref_summary_enable_emoticons">جایگزینی شکلک متنی با معادل گرافیکی آن</string>
+  <!-- Conversation options -->
   <string name="menu_conversation_options">گزینه‌های گفتگو</string>
   <string name="pref_title_reset_convopt_to_default">تنظیم مجدد به پیش‌فرض</string>
   <string name="pref_summary_reset_convopt_to_default">تنظیم مجدد تنظیمات مکالمه به تنظیمات سطح برنامه</string>
+  <!-- Full timestamps -->
   <string name="pref_title_mms_full_timestamp">مهرهای زمانی کامل</string>
   <string name="pref_summary_mms_full_timestamp">نمایش زمان و تاریخ در مهرهای زمانی</string>
+  <!-- Original timestamps -->
   <string name="pref_title_mms_use_sent_timestamp">مهرهای زمانی اصل</string>
   <string name="pref_summary_mms_use_sent_timestamp">نمایش تاریخ ارسال به جای تاریخ دریافت در مهرهای زمانی</string>
+  <!-- Settings item for boolean option to auto -enable data for MMS messages -->
   <string name="pref_title_mms_auto_enable_data">فعال‌کردن خودکار داده‌ها</string>
+  <!-- Settings item description for boolean auto-enable data for MMS option -->
   <string name="pref_summary_mms_auto_enable_data">فعال‌کردن خودکار داده تلفن همراه برای پیام‌های ام ام اس</string>
+  <!-- Select recipients dialog -->
   <string name="adding_selected_recipients_dialog_text">در حال افزودن مخاطبین\u2026</string>
+  <!-- Smart Dialer -->
   <string name="pref_title_mms_smart_dialer">تماس هوشمند</string>
   <string name="pref_summary_mms_smart_dialer">تماس خودکار با مخاطب به وسیله نزدیک‌کردن تلفن به گوش</string>
 </resources>

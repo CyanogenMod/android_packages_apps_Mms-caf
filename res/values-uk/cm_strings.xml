@@ -16,6 +16,8 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- QUICKMESSAGE SUPPORT -->
+  <!-- Preferences -->
   <string name="pref_quickmessage">Швидке повідомлення та відповідь</string>
   <string name="pref_quickmessage_title">Показати швидке повідомлення</string>
   <string name="pref_quickmessage_summary">Автоматично відкривати спливаючи вікна для вхідних SMS-повідомлень</string>
@@ -26,12 +28,16 @@
   <string name="pref_dark_theme_title">Використовувати темну тему</string>
   <string name="pref_dark_theme_summary">Якщо не обрано, використовуватиметься типова \'світла\' тема</string>
   <string name="message_counter">%1$d із %2$d</string>
+  <!-- QM Dialog box buttons -->
   <string name="button_close">Закрити</string>
   <string name="button_view">Вигляд</string>
   <string name="button_templates">Шаблони</string>
+  <!-- Hint text in message body field when keyboard is exposed -->
   <string name="type_to_reply_text_enter_to_send">Введіть текст для відповіді</string>
+  <!-- QM Toast -->
   <string name="qm_mark_read">Читати</string>
   <string name="toast_sending_message">Відправка повідомлення\u2026</string>
+  <!-- Delay delivery -->
   <string name="pref_title_send_delay">Затримка доставки</string>
   <string name="send_delay_immediate">Надіслати негайно</string>
   <string name="send_delay_3seconds">3 секунди</string>
@@ -40,35 +46,46 @@
   <string name="send_delay_20seconds">20 секунд</string>
   <string name="send_delay_30seconds">30 секунд</string>
   <string name="sent_countdown">Зворотний відлік</string>
+  <!-- EXTRA SETTINGS -->
   <string name="pref_extra_settings">Додаткові налаштування</string>
+  <!-- Blacklist preferences -->
   <string name="blacklist_title">Список заблокованих абонентів</string>
   <string name="blacklist_summary_disabled">Вимкнено</string>
   <string name="blacklist_summary">Ви не будете отримувати вхідні дзвінки чи повідомлення від абонентів, які знаходяться у списку заблокованих</string>
+  <!-- Blacklist notifications -->
   <string name="blacklist_notification">Повідомлення від %s заблоковано</string>
   <string name="blacklist_notification_private_number">Повідомлення з прихованого номеру заблоковано</string>
   <string name="blacklist_notification_list_private">Прихований номер</string>
   <string name="blacklist_notification_unknown_number">Повідомлення з невідомого номеру %s заблоковано</string>
   <string name="blacklist_notification_multiple">Повідомлень заблоковано: <xliff:g id="count">%d </xliff:g></string>
   <string name="unblock_number">Розблокувати</string>
+  <!-- Blacklist management -->
   <string name="add_to_blacklist">Додати абонента до списку заблокованих</string>
   <string name="add_to_blacklist_message">Майбутні повідомлення від %s будуть блокуватися</string>
+  <!-- Generic blacklist handling -->
   <string name="alert_dialog_yes">Так</string>
   <string name="alert_dialog_no">Ні</string>
+  <!-- Strip unicode -->
   <string name="pref_title_unicode_stripping">Замінювати юнікод</string>
   <string name="pref_unicode_stripping_leave_intact">Залишити символи без змін</string>
   <string name="pref_unicode_stripping_non_encodable">Замінювати символи які не кодуються</string>
   <string name="pref_unicode_stripping_all">Замінювати всі символи юнікоду</string>
+  <!-- Context menu item on a message for marking as unread / read -->
   <string name="menu_as_unread">Позначити як непрочитано</string>
   <string name="menu_as_read">Позначити прочитаним</string>
+  <!-- Context menu item on a message for marking all threads as unread / read -->
   <string name="menu_all_as_unread">Помітити все як непрочитане</string>
   <string name="menu_all_as_read">Позначити усі як прочитані</string>
   <string name="menu_add_to_contacts_cm">Додати до контактів</string>
+  <!-- Confirm Mark as unread / read -->
   <string name="confirm_mark_unread_dialog_title">Позначити як непрочитано?</string>
   <string name="confirm_mark_unread_conversation">Розмова буде позначена як непрочитана.</string>
   <string name="confirm_mark_read_dialog_title">Позначити прочитаним?</string>
   <string name="confirm_mark_read_conversation">Розмова буде позначена як прочитана.</string>
+  <!-- Mark all threads confirmation dialog message -->
   <string name="confirm_mark_unread_all_conversations">Усі лацюжки будуть позначені як непрочитані.</string>
   <string name="confirm_mark_read_all_conversations">Усі розмови будуть позначені як прочитані.</string>
+  <!-- Multi recipients -->
   <string name="loading">Завантаження\u2026</string>
   <string name="select_recipients">Оберіть отримувачів</string>
   <string name="no_recipients">Контактів не знайдено</string>
@@ -77,12 +94,14 @@
   <string name="menu_mobile">Тільки мобільні номери</string>
   <string name="menu_order_by_given_name">Сортувати за Ім\'ям</string>
   <string name="menu_order_by_last_name">Сортувати за Прізвищем</string>
+  <!-- Extra message options -->
   <string name="message_share">Поділитись</string>
   <string name="message_share_intent_title">Поділитись повідомленням</string>
   <string name="start_new_message_button">Нове повідомлення</string>
   <string name="all_spinner_option">Усі</string>
   <string name="menu_copy_url">Скопіювати URL-адресу <xliff:g id="extractedurl">%s</xliff:g></string>
   <string name="deleting_threads">Видалення діалогів\u2026</string>
+  <!-- Context menu item on an failed message for resending -->
   <string name="menu_resend">Надіслати повторно</string>
   <string name="cancel_downloading">Скасувати</string>
   <string name="confirm_cancel_downloading">Завантаження MMS буде скасовано.</string>
@@ -90,10 +109,15 @@
   <string name="send_by_slot2">Надіслати за допомогою SIM 2</string>
   <string name="select_phone_account_title">Відправити за допомогою</string>
   <string name="media_size_limit">Повідомлення досягло максимального розміру, не вдається надіслати повідомлення.</string>
+  <!-- Error message indicating that the message size or the increase size is negative -->
   <string name="illegal_message_or_increase_size">Некоректний розмір повідомлення.</string>
+  <!-- Dialog box title that appears when a draft message will not be saved due to invalid recipients -->
   <string name="discard_message_reason_some_invalid">Ваше повідомлення буде скасовано, оскільки деякі одержувачі, є недійсними.</string>
+  <!-- Brief message that appears when the maximum size of slides has been reached -->
   <string name="cannot_add_text_anymore">Не вдалося додати більше тексту.</string>
+  <!-- Dialog box title for display the current mms size  -->
   <string name="title_send_message">Надіслати повідомлення</string>
+  <!-- Toast when the subject is full -->
   <string name="subject_full">Розмір теми має бути не більш ніж <xliff:g id="length">%d </xliff:g> символів.</string>
   <string name="pref_title_manage_sim_messages_slot1">Керувати повідомленнями SIM 1</string>
   <string name="pref_title_manage_sim_messages_slot2">Керувати повідомленнями SIM 2</string>
@@ -101,17 +125,23 @@
   <string name="prefs_title_import_sms_messages">Імпорт SMS-повідомлень</string>
   <string name="pref_title_sms_delivery_reports_slot1">Звіти про доставку для SIM-1</string>
   <string name="pref_title_sms_delivery_reports_slot2">Звіти про доставку для SIM 2</string>
+  <!-- Status in "Report" window -->
   <string name="status_deleted_unread">Видалено непрочитане</string>
+  <!-- Disk Storage Full Error Notification dialog text. -->
   <string name="disk_storage_full_error">Помилка: пам\'ять заповнена.</string>
+  <!-- Mms size is too large dialog text. -->
   <string name="mms_too_large">Повідомлення завелике для завантаження.</string>
   <string name="send_failed_retry">Не вдалося надіслати повідомлення. Повторна спроба\u2026</string>
   <string name="download_failed_retry">Не вдалося завантажити повідомлення. Повторна спроба\u2026</string>
   <string name="system_audio_item">Рінгтон</string>
   <string name="external_audio_item">Музика</string>
+  <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
   <string name="menu_connect_url">Відкрити URL-адресу</string>
   <string name="do_not_show_connect_warning">Не показувати це попередження в майбутньому</string>
+  <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
   <string name="menu_add_to_label">Додати до закладок</string>
   <string name="loadurlinfo_str">URL-адреси від невідомих відправників, можуть бути спробою фішингу. Якщо ви не впевнені - не відкривайте цю адресу.</string>
+  <!-- Message Template -->
   <string name="pref_title_message_template">Шаблони повідомлень</string>
   <string name="title_new_message_template">Новий шаблон</string>
   <string name="summary_new_message_template">Створення нового шаблону повідомлення</string>
@@ -121,21 +151,26 @@
   <string name="pref_sms_signature_title">SMS-підпис</string>
   <string name="pref_title_enable_signature">Додати підпис до повідомлень</string>
   <string name="pref_title_edit_signature">Редагувати текст підпису</string>
+  <!-- Copy message to sim -->
   <string name="menu_copy_to">Копіювати</string>
   <string name="operation_to_card_memory">Копіювати повідомлення на SIM-карту</string>
+  <!-- SMSC -->
   <string name="pref_smsc_title">Налаштування SMS-центра</string>
   <string name="pref_one_smcs">Номер SMS-центра</string>
   <string name="pref_more_smcs">Номер SMS-центра SIM <xliff:g id="slot_number">%d</xliff:g></string>
   <string name="set_smsc_error">Не вдалося налаштувати SMSC номер</string>
   <string name="set_smsc_success">Номер SMS-центра успішно встановлен</string>
   <string name="set_smsc_confirm_message">Зміна номера SMS-центра може призвести до помилок під час відправлення SMS-повідомлень. Справді продовжити?</string>
+  <!-- Copy message to sim -->
   <string name="copy_to_sim">Копіювати повідомлення на SIM-картку</string>
   <string name="copy_to_sim_success"><xliff:g id="count">%1$d </xliff:g> <xliff:g id="total">%2$d </xliff:g> повідомлень, що зберігаються на SIM-картці.</string>
   <string name="copy_to_sim_fail">Не вдалося зберегти повідомлення</string>
   <string name="copy_to_phone_success">Повідомлення збережено</string>
   <string name="copy_to_phone_fail">Не вдалося зберегти повідомлення</string>
   <string name="contact_app_not_found">Не вдалося відкрити додаток Контакти</string>
+  <!-- Gray hint displayed in the search field in Contacts when empty -->
   <string name="search_bar_hint">Пошук контактів</string>
+  <!-- Add for share contact feature -->
   <string name="type_vcard">Контактні дані</string>
   <string name="import_vcard">Імпорт</string>
   <string name="attach_add_contact_as_vcard">Картка контакту</string>
@@ -143,13 +178,16 @@
   <string name="contact_info_text_as_name">Ім’я:</string>
   <string name="contact_info_text_as_phone">Тел:</string>
   <string name="contact_info_text_as_email">Email:</string>
+  <!-- Sharing vcs files from Calendar -->
   <string name="type_vcal">Події календаря</string>
   <string name="pref_wap_push_title">Служба Push-повідомлень</string>
   <string name="pref_title_wap_push_enabled">Служба WAP Push</string>
   <string name="pref_summary_wap_push_enabled">Приймати сервісні повідомлення мережі</string>
+  <!-- String used in MemoryStatusActivity.java -->
   <string name="memory_status_title">Стан пам\'яті</string>
   <string name="sms_phone_memory_usage">SMS: <xliff:g id="used">%1$d </xliff:g> <xliff:g id="total">%2$d </xliff:g> використано</string>
   <string name="mms_phone_memory_usage">MMS: <xliff:g id="used">%1$d </xliff:g> <xliff:g id="total">%2$d </xliff:g> використано</string>
+  <!-- Settings item description for SMS and MMS Validity period -->
   <string name="pref_title_validity_period">Термін дії</string>
   <string name="pref_title_validity_period_slot1">Термін дії для SIM-1</string>
   <string name="pref_title_validity_period_slot2">Термін дії для SIM 2</string>
@@ -170,16 +208,21 @@
   <string name="sim_spinner_active_item_postfix">SIM %d</string>
   <string name="cannot_play">Неможливо відтворити слайд-шоу.</string>
   <string name="confirm_delete_selected_messages">Видалити обрані повідомлення.</string>
+  <!-- toast for send result -->
   <string name="send_failure">Неможливо надіслати повідомлення.</string>
+  <!-- title of mailboxmessagecontent -->
   <string name="message_detail">Деталі повідомлення</string>
   <string name="no_message">Повідомлень немає.</string>
   <string name="change_to_folder_mode">Перегляд папки</string>
   <string name="change_to_conversation_mode">Перегляд бесід</string>
+  <!-- Spinner item of box type in mailbox-mode -->
   <string name="type_inbox">«Вхідні»</string>
   <string name="type_sent">Надіслані</string>
   <string name="type_outbox">Вихідні</string>
   <string name="type_draft">Чернетки</string>
+  <!-- Spinner item of slot type in mailbox-mode -->
   <string name="slot_type_select">Виберіть SIM-картку</string>
+  <!-- String used in SearchActivityExtend.java -->
   <string name="search_title">Пошук повідомленя</string>
   <string name="search_key">Ключове слово</string>
   <string name="search_mode">Режим пошуку</string>
@@ -191,9 +234,11 @@
   <string name="sim_capacity_title">Ємність SIM</string>
   <string name="sim_capacity"><xliff:g id="used">%1$d</xliff:g> із <xliff:g id="total">%2$d</xliff:g> записів на SIM-картці використано</string>
   <string name="pref_sim_card_full_save_to_phone">SIM-картка заповнена. Нові повідомлення будуть зберігатись на телефоні.</string>
+  <!-- batch delete message in ConversationList and MailBoxMessageList -->
   <string name="selected_all">Виділити все</string>
   <string name="deselected_all">Знати виділення</string>
   <string name="selected_count"><xliff:g id="COUNT">%d</xliff:g> вибрані</string>
+  <!-- priority of cdma message -->
   <string name="cdma_priority_normal">Звичайний</string>
   <string name="cdma_priority_interactive">Інтерактивний</string>
   <string name="cdma_priority_urgent">Терміново</string>
@@ -202,6 +247,7 @@
   <string name="pref_summary_cdma_priority">Пріоритет CDMA-повідомлень</string>
   <string name="download_dialog_title">Завантажити цю MMS?</string>
   <string name="menu_email">Надіслати email</string>
+  <!-- Settings item description for Preferred storage -->
   <string name="pref_title_sms_store">Сховище повідомлень</string>
   <string name="pref_title_sms_store_card1">Бажане сховище для SIM 1</string>
   <string name="pref_title_sms_store_card2">Бажане сховище для SIM 2</string>
@@ -231,13 +277,17 @@
   <string name="manage_sdcard_messages">Імпорт/Експорт повідомлень</string>
   <string name="no_backups_found">Резервних копій не знайдено</string>
   <string name="remove_subject">Видалити тему</string>
+  <!-- QuickMessage Wear-->
   <string name="qm_wear_sending_message">Надсилання відповіді на <xliff:g id="name">%s </xliff:g> \u2026</string>
   <string name="qm_wear_messaged_failed">Текстове повідомлення до <xliff:g id="name">%s </xliff:g> не надіслано. Спробуйте ще раз.</string>
   <string name="qm_wear_voice_reply">Що відповісти ?</string>
   <string name="qm_wear_reply_by_voice">Відповісти, використовуючи голос</string>
+  <!-- Copy message text-->
   <string name="copy_empty_string">Відсутній текст для копіювання</string>
   <string name="attach_add_calendar_events">Події календаря</string>
+  <!-- friendlier text for an activity not found exception for calendar attachments -->
   <string name="calendar_attachment_activity_not_found">Не вдалося знайти додаток Календар</string>
+  <!-- Vibrate pattern -->
   <string name="pref_title_mms_notification_vibrate_pattern">Шаблон вібрації</string>
   <string name="pref_summary_mms_notification_vibrate_pattern">Змінити шаблон вібрацій</string>
   <string name="pref_mms_notification_vibrate_normal">Звичайний</string>
@@ -245,19 +295,28 @@
   <string name="pref_mms_notification_vibrate_long_vib">Довга вібрація</string>
   <string name="pref_mms_notification_vibrate_mult_short">Кілька коротких</string>
   <string name="pref_mms_notification_vibrate_mult_long">Кілька довгих</string>
+  <!-- Menu item - Insert smiley -->
   <string name="menu_insert_smiley">Вставити смайлик</string>
+  <!-- Enable emoticons -->
   <string name="pref_title_enable_emoticons">Підтримка смайликів</string>
   <string name="pref_summary_enable_emoticons">Замінювати текстові смайлики графічними</string>
+  <!-- Conversation options -->
   <string name="menu_conversation_options">Параметри розмови</string>
   <string name="pref_title_reset_convopt_to_default">Скинути налаштування</string>
   <string name="pref_summary_reset_convopt_to_default">Змінює параметри розмови на типові налаштування</string>
+  <!-- Full timestamps -->
   <string name="pref_title_mms_full_timestamp">Повна мітка часу</string>
   <string name="pref_summary_mms_full_timestamp">Увімкнути відображення повної дати та часу</string>
+  <!-- Original timestamps -->
   <string name="pref_title_mms_use_sent_timestamp">Час надсилання</string>
   <string name="pref_summary_mms_use_sent_timestamp">Відображення дати надсилання, замість дати отримання</string>
+  <!-- Settings item for boolean option to auto -enable data for MMS messages -->
   <string name="pref_title_mms_auto_enable_data">Авто-увімкнення даних</string>
+  <!-- Settings item description for boolean auto-enable data for MMS option -->
   <string name="pref_summary_mms_auto_enable_data">Автоматично вмикати мобільні дані для MMS-повідомлень</string>
+  <!-- Select recipients dialog -->
   <string name="adding_selected_recipients_dialog_text">Додавання одержувачів</string>
+  <!-- Smart Dialer -->
   <string name="pref_title_mms_smart_dialer">Розумний виклик</string>
   <string name="pref_summary_mms_smart_dialer">Автоматично телефонувати контакту, у випадку піднесення пристрою до вуха</string>
 </resources>

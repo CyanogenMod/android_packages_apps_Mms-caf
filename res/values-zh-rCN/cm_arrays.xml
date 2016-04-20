@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
     <item>开心</item>
+    <!-- 0: :-) -->
     <item>伤心</item>
+    <!-- 1: :-( -->
     <item>眨眼</item>
+    <!-- 2: ;-) -->
     <item>吐舌头</item>
+    <!-- 3: :-P -->
     <item>惊讶</item>
+    <!-- 4: =-O -->
     <item>红唇</item>
+    <!-- 5: :-* -->
     <item>大喊</item>
+    <!-- 6: :O -->
     <item>酷</item>
+    <!-- 7: B-) -->
     <item>满嘴钱</item>
+    <!-- 8: :-$ -->
     <item>说错话</item>
+    <!-- 9: :-! -->
     <item>害羞</item>
+    <!-- 10: :-[ -->
     <item>天使</item>
+    <!-- 11: O:-) -->
     <item>犹豫</item>
+    <!-- 12: :-\\ -->
     <item>大哭</item>
+    <!-- 13: :\'( -->
     <item>不要告诉别人</item>
+    <!-- 14: :-X -->
     <item>大笑</item>
+    <!-- 15: :-D -->
     <item>疑惑</item>
+    <!-- 16: o_O -->
     <item>爱心</item>
+    <!-- 17: <3 -->
     <item>生气</item>
+    <!-- 18: x-( -->
     <item>傻笑</item>
+    <!-- 19: :-/ -->
     <item>扑克脸</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>

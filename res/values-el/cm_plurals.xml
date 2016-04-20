@@ -21,15 +21,21 @@
     <item quantity="other">Αποστολή σε %1$d δευτερόλεπτα, πιέστε για ακύρωση.</item>
   </plurals>
   <plurals name="confirm_delete_messages">
+    <!-- Case of 1 result. -->
     <item quantity="one">Ένα μήνυμα θα διαγραφεί.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> μηνύματα θα διαγραφούν.</item>
   </plurals>
   <plurals name="confirm_mark_read_conversation">
+    <!-- Case of 1 result. -->
     <item quantity="one">Μια συνομιλία θα επισημανθεί ως αναγνωσμένη.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> συνομιλίες θα επισημανθούν ως αναγνωσμένες.</item>
   </plurals>
   <plurals name="confirm_mark_unread_conversation">
+    <!-- Case of 1 result. -->
     <item quantity="one">Μια συνομιλία θα επισημανθεί ως μη αναγνωσμένη.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> συνομιλίες θα επισημανθούν ως μη αναγνωσμένες.</item>
   </plurals>
 </resources>

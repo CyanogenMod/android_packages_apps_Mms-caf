@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
     <item>دڵخۆش</item>
+    <!-- 0: :-) -->
     <item>خەمبار</item>
+    <!-- 1: :-( -->
     <item>چاوداگرتن</item>
+    <!-- 2: ;-) -->
     <item>زمان دەرهێنان</item>
+    <!-- 3: :-P -->
     <item>سەر سوڕماو</item>
+    <!-- 4: =-O -->
     <item>ماچکردن</item>
+    <!-- 5: :-* -->
     <item>هاوارکردن</item>
+    <!-- 6: :O -->
     <item>جوان</item>
+    <!-- 7: B-) -->
     <item>پاره‌ی ده‌می</item>
+    <!-- 8: :-$ -->
     <item>پێ له‌ناوده‌م</item>
+    <!-- 9: :-! -->
     <item>شڵه‌ژاو</item>
+    <!-- 10: :-[ -->
     <item>فریشتە</item>
+    <!-- 11: O:-) -->
     <item>بڕیارنه‌دراو</item>
+    <!-- 12: :-\\ -->
     <item>گریان</item>
+    <!-- 13: :\'( -->
     <item>لێو مۆربونه‌ته‌وه‌</item>
+    <!-- 14: :-X -->
     <item>پێکه‌نین</item>
+    <!-- 15: :-D -->
     <item>سه‌رلێشێنراو</item>
+    <!-- 16: o_O -->
     <item>دڵ</item>
+    <!-- 17: <3 -->
     <item>تووڕە</item>
+    <!-- 18: x-( -->
     <item>فیز</item>
+    <!-- 19: :-/ -->
     <item>ڕووی قومارکه‌ر</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>

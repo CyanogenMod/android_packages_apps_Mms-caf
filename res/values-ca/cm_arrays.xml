@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
     <item>Feliç</item>
+    <!-- 0: :-) -->
     <item>Trist</item>
+    <!-- 1: :-( -->
     <item>Fent l\'ullet</item>
+    <!-- 2: ;-) -->
     <item>Treient la llengua</item>
+    <!-- 3: :-P -->
     <item>Sorprès</item>
+    <!-- 4: =-O -->
     <item>Donant un petó</item>
+    <!-- 5: :-* -->
     <item>Cridant</item>
+    <!-- 6: :O -->
     <item>Tranquil</item>
+    <!-- 7: B-) -->
     <item>Diners a la boca</item>
+    <!-- 8: :-$ -->
     <item>Peu a la boca</item>
+    <!-- 9: :-! -->
     <item>Avergonyit</item>
+    <!-- 10: :-[ -->
     <item>Àngel</item>
+    <!-- 11: O:-) -->
     <item>Indecís</item>
+    <!-- 12: :-\\ -->
     <item>Plorant</item>
+    <!-- 13: :\'( -->
     <item>Llavis segellats</item>
+    <!-- 14: :-X -->
     <item>Rient</item>
+    <!-- 15: :-D -->
     <item>Confós</item>
+    <!-- 16: o_O -->
     <item>Cor</item>
+    <!-- 17: <3 -->
     <item>Boig</item>
+    <!-- 18: x-( -->
     <item>Somrient satisfet</item>
+    <!-- 19: :-/ -->
     <item>Cara de pòquer</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>

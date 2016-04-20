@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
     <item>שמח</item>
+    <!-- 0: :-) -->
     <item>עצוב</item>
+    <!-- 1: :-( -->
     <item>קריצה</item>
+    <!-- 2: ;-) -->
     <item>חריצת לשון</item>
+    <!-- 3: :-P -->
     <item>מופתע</item>
+    <!-- 4: =-O -->
     <item>נשיקה</item>
+    <!-- 5: :-* -->
     <item>צועק</item>
+    <!-- 6: :O -->
     <item>מגניב</item>
+    <!-- 7: B-) -->
     <item>פה עם כסף</item>
+    <!-- 8: :-$ -->
     <item>פליטת פה</item>
+    <!-- 9: :-! -->
     <item>נבוך</item>
+    <!-- 10: :-[ -->
     <item>מלאך</item>
+    <!-- 11: O:-) -->
     <item>מתלבט</item>
+    <!-- 12: :-\\ -->
     <item>בוכה</item>
+    <!-- 13: :\'( -->
     <item>שפתיי חתומות</item>
+    <!-- 14: :-X -->
     <item>צוחק</item>
+    <!-- 15: :-D -->
     <item>מבולבל</item>
+    <!-- 16: o_O -->
     <item>לב</item>
+    <!-- 17: <3 -->
     <item>כועס</item>
+    <!-- 18: x-( -->
     <item>מגחך</item>
+    <!-- 19: :-/ -->
     <item>פני פוקר</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>

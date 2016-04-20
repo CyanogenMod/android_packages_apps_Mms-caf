@@ -17,6 +17,9 @@
  * limitations under the License.
  -->
 <resources>
+  <!-- String to match as no subject and filter out as a subject. For example, if the
+         subject string is "no subject", we won't display that. We'll pretend
+         no subject string was delivered. -->
   <string-array name="empty_subject_strings">
     <item>بابەت نیە</item>
     <item>بێ سەردێڕ</item>

@@ -21,15 +21,21 @@
     <item quantity="other">Изпращане в %1$d секунди, докоснете за да откажете.</item>
   </plurals>
   <plurals name="confirm_delete_messages">
+    <!-- Case of 1 result. -->
     <item quantity="one">Едно съобщение ще бъде изтрито.</item>
-    <item quantity="other"><xliff:g id="number" example="15">%1$s </xliff:g> съобщенията ще бъдат изтрити.</item>
+    <!-- Case of 0 or 2 or more results. -->
+    <item quantity="other"><xliff:g id="number" example="15">%1$s </xliff:g> съобщения ще бъдат изтрити.</item>
   </plurals>
   <plurals name="confirm_mark_read_conversation">
-    <item quantity="one">Разговорът ще бъде маркиран като прочетен.</item>
+    <!-- Case of 1 result. -->
+    <item quantity="one">Един разговор ще бъде маркиран като прочетен.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s </xliff:g> разговора ще бъдат маркирани като прочетени.</item>
   </plurals>
   <plurals name="confirm_mark_unread_conversation">
-    <item quantity="one">Разговорът ще бъде маркиран като непрочетен.</item>
-    <item quantity="other"><xliff:g id="number" example="15">%1$s </xliff:g> разговора ще бъдат маркирани като непрочетени.</item>
+    <!-- Case of 1 result. -->
+    <item quantity="one">Разговорът ще бъде маркиран, като непрочетен.</item>
+    <!-- Case of 0 or 2 or more results. -->
+    <item quantity="other"><xliff:g id="number" example="15">%1$s </xliff:g> разговора ще бъдат маркирани, като непрочетени.</item>
   </plurals>
 </resources>

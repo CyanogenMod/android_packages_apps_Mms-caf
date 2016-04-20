@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
     <item>Щасливий</item>
+    <!-- 0: :-) -->
     <item>Сумний</item>
+    <!-- 1: :-( -->
     <item>Підморгнути</item>
+    <!-- 2: ;-) -->
     <item>Показує язик</item>
+    <!-- 3: :-P -->
     <item>Здивований</item>
+    <!-- 4: =-O -->
     <item>Поцілунок</item>
+    <!-- 5: :-* -->
     <item>Репетує</item>
+    <!-- 6: :O -->
     <item>Круто</item>
+    <!-- 7: B-) -->
     <item>Грошолюб</item>
+    <!-- 8: :-$ -->
     <item>Тіпун на язик</item>
+    <!-- 9: :-! -->
     <item>Збентежений</item>
+    <!-- 10: :-[ -->
     <item>Ангел</item>
+    <!-- 11: O:-) -->
     <item>Невпевнений</item>
+    <!-- 12: :-\\ -->
     <item>Плач</item>
+    <!-- 13: :\'( -->
     <item>Рот на замку</item>
+    <!-- 14: :-X -->
     <item>Сміх</item>
+    <!-- 15: :-D -->
     <item>Збентежений</item>
+    <!-- 16: o_O -->
     <item>Серце</item>
+    <!-- 17: <3 -->
     <item>Злість</item>
+    <!-- 18: x-( -->
     <item>Самовдоволена посмішка</item>
+    <!-- 19: :-/ -->
     <item>Байдужий вираз</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>

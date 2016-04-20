@@ -22,18 +22,24 @@
     <item quantity="other">Odeslání za %1$d sekund - dotykem zrušíte.</item>
   </plurals>
   <plurals name="confirm_delete_messages">
+    <!-- Case of 1 result. -->
     <item quantity="one">Jedna zpráva bude smazána.</item>
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> zprávy budou smazány.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> zpráv bude smazáno.</item>
   </plurals>
   <plurals name="confirm_mark_read_conversation">
+    <!-- Case of 1 result. -->
     <item quantity="one">Jedna konverzace bude označena jako přečtená.</item>
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> konverzace budou označeny jako přečtené.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> konverzací bude označeno jako přečtených.</item>
   </plurals>
   <plurals name="confirm_mark_unread_conversation">
+    <!-- Case of 1 result. -->
     <item quantity="one">Jedna konverzace bude označena jako nepřečtená.</item>
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> konverzace budou označeny jako nepřečtené.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> konverzací bude označeno jako nepřečtené.</item>
   </plurals>
 </resources>

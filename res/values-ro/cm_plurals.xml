@@ -22,13 +22,24 @@
     <item quantity="other">Trimit în %1$d secunde, apăsați pentru a anula.</item>
   </plurals>
   <plurals name="confirm_delete_messages">
+    <!-- Case of 1 result. -->
     <item quantity="one">Un mesaj va fi șters.</item>
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> mesaje vor fi șterse.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> mesaje vor fi șterse.</item>
   </plurals>
+  <plurals name="confirm_mark_read_conversation">
+    <!-- Case of 1 result. -->
+    <item quantity="one">O conversație va fi marcată ca citită.</item>
+    <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> conversații vor fi marcate ca citite.</item>
+    <!-- Case of 0 or 2 or more results. -->
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> conversații vor fi marcate ca citite.</item>
+  </plurals>
   <plurals name="confirm_mark_unread_conversation">
+    <!-- Case of 1 result. -->
     <item quantity="one">O conversație va fi marcată ca necitită.</item>
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> conversații vor fi marcate ca necitite.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> conversații vor fi marcate ca necitite.</item>
   </plurals>
 </resources>

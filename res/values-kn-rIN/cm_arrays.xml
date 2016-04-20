@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
     <item>ಖುಷಿ</item>
+    <!-- 0: :-) -->
     <item>ದುಃಖ</item>
+    <!-- 1: :-( -->
     <item>ಕಣ್ಣು ಮಿಟುಕು</item>
+    <!-- 2: ;-) -->
     <item>ನಾಲಿಗೆ ಹೊರಹಾಕುವುದು</item>
+    <!-- 3: :-P -->
     <item>ಅಚ್ಚರಿ</item>
+    <!-- 4: =-O -->
     <item>ಚುಂಬನ</item>
+    <!-- 5: :-* -->
     <item>ಕೂಗುವಿಕೆ</item>
+    <!-- 6: :O -->
     <item>ಶಾಂತ</item>
+    <!-- 7: B-) -->
     <item>ಹಣದ ಬಾಯಿ</item>
+    <!-- 8: :-$ -->
     <item>ಬಾಯಿಯಲ್ಲಿ ಆಹಾರ</item>
+    <!-- 9: :-! -->
     <item>ಅವಮಾನಕ್ಕೊಳಗಾದ</item>
+    <!-- 10: :-[ -->
     <item>ದೇವತೆ</item>
+    <!-- 11: O:-) -->
     <item>ಅನಿರ್ಧಾರಿತ</item>
+    <!-- 12: :-\\ -->
     <item>ಅಳುವುದು</item>
+    <!-- 13: :\'( -->
     <item>ತುಟಿಗಳು ಮುಚ್ಚಿವೆ</item>
+    <!-- 14: :-X -->
     <item>ನಗುತ್ತಿರುವ</item>
+    <!-- 15: :-D -->
     <item>ಗೊಂದಲಮಯ</item>
+    <!-- 16: o_O -->
     <item>ಹೃದಯ</item>
+    <!-- 17: <3 -->
     <item>ಹುಚ್ಚ</item>
+    <!-- 18: x-( -->
     <item>ಕೃತಕ ನಗು</item>
+    <!-- 19: :-/ -->
     <item>ಪೋಕರ್ ಮುಖ</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>
