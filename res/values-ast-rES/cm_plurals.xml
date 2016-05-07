@@ -32,4 +32,10 @@
     <!-- Case of 0 or 2 or more results. -->
     <item quantity="other">Van marcase <xliff:g id="number" example="15">%1$s</xliff:g> conversaciones como lleíes.</item>
   </plurals>
+  <plurals name="confirm_mark_unread_conversation">
+    <!-- Case of 1 result. -->
+    <item quantity="one">Va marcase una charra como non lleída.</item>
+    <!-- Case of 0 or 2 or more results. -->
+    <item quantity="other">Van marcase <xliff:g id="number" example="15">%1$s</xliff:g> charres como non lleíes.</item>
+  </plurals>
 </resources>

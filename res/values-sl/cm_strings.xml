@@ -74,7 +74,7 @@
   <string name="menu_as_unread">Označi kot neprebrano</string>
   <string name="menu_as_read">Označi kot prebrano</string>
   <!-- Context menu item on a message for marking all threads as unread / read -->
-  <string name="menu_all_as_unread">Označi vsa kot neprebrana</string>
+  <string name="menu_all_as_unread">Označi vse kot neprebrano</string>
   <string name="menu_all_as_read">Označi vsa kot prebrana</string>
   <string name="menu_add_to_contacts_cm">Dodaj k stikom</string>
   <!-- Confirm Mark as unread / read -->
