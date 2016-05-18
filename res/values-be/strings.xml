@@ -20,22 +20,26 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <!-- The name of the SMS/MMS app as it appears to the user in the Home screen, task switcher, etc. -->
+  <string name="app_label">Паведамленьні</string>
   <!-- Command name to open a Compose screen; displays in conversation list.
          Also used as accessibility text for widget's new message button -->
   <!-- Context menu item on an individual message for dialing the sender's phone number -->
   <!-- Context menu item on an individual message for emailing the sender -->
   <!-- Menu item for starting a new conversation -->
   <!-- Menu item for accessing application settings -->
+  <string name="menu_preferences">Налады</string>
   <!-- Menu shown in the context menu when long pressing on a message when the message contains
          one or more phone numbers and/or email addresses and the number or email is new to
          contacts. [CHAR LIMIT=50] -->
   <!-- Menu item to call the recipient of the conversation on the phone (imperative verb) -->
   <!-- Menu item for search -->
+  <string name="menu_search">Пошук</string>
   <!-- Menu item for deleting all conversations -->
   <!-- Context menu item on an individual conversation for deleting that conversation -->
   <!-- Context menu item on an individual conversation for viewing that conversation -->
   <!-- Menu item for debugging - do not localize -->
   <!-- Message that appears on screen while SIM card messages are retrieved -->
+  <string name="refreshing">Абнавіць\u2026</string>
   <!-- Menu item to show received cell broadcasts. [CHAR LIMIT=30] -->
   <!-- Tag appearing on conversations in the conversation list that contain a draft message -->
   <!-- Subject to display in the conversation list if there is no subject -->
@@ -81,6 +85,7 @@
   <!-- Menu item in conversation screen for attaching something to the message being composed -->
   <!-- Menu item in conversation screen for adding a subject to the message being composed -->
   <!-- Menu item in conversation screen for discarding the message currently being composed -->
+  <string name="discard">Адхіліць</string>
   <!-- Button next to an attachment during message composition to view the attachment (imperative verb) -->
   <!-- Button next to an attachment during message composition to replace the attachment (imperative verb) -->
   <!-- Button next to an attachment during message composition to remove the attachment (imperative verb) -->
