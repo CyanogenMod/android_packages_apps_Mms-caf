@@ -16,6 +16,8 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- QUICKMESSAGE SUPPORT -->
+  <!-- Preferences -->
   <string name="pref_quickmessage">Брза порука и одговор</string>
   <string name="pref_quickmessage_title">Прикажи Брзу поруку</string>
   <string name="pref_quickmessage_summary">Аутоматски отвори искачући прозор Брзе поруке за долазеће SMS поруке</string>
@@ -26,12 +28,16 @@
   <string name="pref_dark_theme_title">Користи тамну тему</string>
   <string name="pref_dark_theme_summary">Ако није изабрано, подразумевана \'светла\' тема ће се користити</string>
   <string name="message_counter">%1$d од %2$d</string>
+  <!-- QM Dialog box buttons -->
   <string name="button_close">Затвори</string>
   <string name="button_view">Погледај</string>
   <string name="button_templates">Шаблони</string>
+  <!-- Hint text in message body field when keyboard is exposed -->
   <string name="type_to_reply_text_enter_to_send">Додирни да одговориш</string>
+  <!-- QM Toast -->
   <string name="qm_mark_read">Прочитај</string>
   <string name="toast_sending_message">Слање поруке\u2026</string>
+  <!-- Delay delivery -->
   <string name="pref_title_send_delay">Кашњење испоруке</string>
   <string name="send_delay_immediate">Пошаљи одмах</string>
   <string name="send_delay_3seconds">3 секунде</string>
@@ -40,35 +46,46 @@
   <string name="send_delay_20seconds">20 секунди</string>
   <string name="send_delay_30seconds">30 секунди</string>
   <string name="sent_countdown">Одбројавање достава порука</string>
+  <!-- EXTRA SETTINGS -->
   <string name="pref_extra_settings">Екстра подешавања</string>
+  <!-- Blacklist preferences -->
   <string name="blacklist_title">Листа блокираних саговорника</string>
   <string name="blacklist_summary_disabled">Онемогућено</string>
   <string name="blacklist_summary">Нећеш примити позив или поруку са телефонског броја на листи блокираних саговорника</string>
+  <!-- Blacklist notifications -->
   <string name="blacklist_notification">Блокирај поруку од %s</string>
   <string name="blacklist_notification_private_number">Блокирај поруку са приватног броја</string>
   <string name="blacklist_notification_list_private">Приватно</string>
   <string name="blacklist_notification_unknown_number">Блокирај поруку са непознатог броја %s</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> поруке су блокиране</string>
   <string name="unblock_number">Одблокирај</string>
+  <!-- Blacklist management -->
   <string name="add_to_blacklist">Додај у листу блокираних саговорника</string>
   <string name="add_to_blacklist_message">Будуће поруке од %s ће бити блокиране</string>
+  <!-- Generic blacklist handling -->
   <string name="alert_dialog_yes">Да</string>
   <string name="alert_dialog_no">Не</string>
+  <!-- Strip unicode -->
   <string name="pref_title_unicode_stripping">Нацртај уникод</string>
   <string name="pref_unicode_stripping_leave_intact">Остави знакове нетакнуте</string>
   <string name="pref_unicode_stripping_non_encodable">Монтирај не-кодиране знакове</string>
   <string name="pref_unicode_stripping_all">Монтирај све уникод знакове</string>
+  <!-- Context menu item on a message for marking as unread / read -->
   <string name="menu_as_unread">Означи као непрочитано</string>
   <string name="menu_as_read">Означи као прочитано</string>
+  <!-- Context menu item on a message for marking all threads as unread / read -->
   <string name="menu_all_as_unread">Означи све као непрочитано</string>
   <string name="menu_all_as_read">Означи све као прочитано</string>
   <string name="menu_add_to_contacts_cm">Додај у контакте</string>
+  <!-- Confirm Mark as unread / read -->
   <string name="confirm_mark_unread_dialog_title">Означи као непрочитано?</string>
   <string name="confirm_mark_unread_conversation">Преписка ће бити означена као непрочитана.</string>
   <string name="confirm_mark_read_dialog_title">Означи као прочитано?</string>
   <string name="confirm_mark_read_conversation">Преписка ће бити означена као прочитана.</string>
+  <!-- Mark all threads confirmation dialog message -->
   <string name="confirm_mark_unread_all_conversations">Сви низови ће бити означени као непрочитани.</string>
   <string name="confirm_mark_read_all_conversations">Сви низови ће бити означени као прочитани.</string>
+  <!-- Multi recipients -->
   <string name="loading">Учитавам\u2026</string>
   <string name="select_recipients">Изабери примаоце</string>
   <string name="no_recipients">Нема пронађених контаката</string>
@@ -77,12 +94,14 @@
   <string name="menu_mobile">Само мобилни бројеви</string>
   <string name="menu_order_by_given_name">Редослед по имену</string>
   <string name="menu_order_by_last_name">Редослед по презимену</string>
+  <!-- Extra message options -->
   <string name="message_share">Дели</string>
   <string name="message_share_intent_title">Подели поруку</string>
   <string name="start_new_message_button">Нова порука</string>
   <string name="all_spinner_option">Све</string>
   <string name="menu_copy_url">Копирај URL <xliff:g id="extractedurl">%s</xliff:g></string>
   <string name="deleting_threads">Брисање тема\u2026</string>
+  <!-- Context menu item on an failed message for resending -->
   <string name="menu_resend">Пошаљи поново</string>
   <string name="cancel_downloading">Поништи</string>
   <string name="confirm_cancel_downloading">MMS пријем ће бити отказан.</string>
@@ -90,10 +109,15 @@
   <string name="send_by_slot2">Пошаљи преко SIM 2</string>
   <string name="select_phone_account_title">Пошаљи са</string>
   <string name="media_size_limit">Достигнут лимит величине поруке, не могу послати поруку.</string>
+  <!-- Error message indicating that the message size or the increase size is negative -->
   <string name="illegal_message_or_increase_size">Нетачна величина поруке.</string>
+  <!-- Dialog box title that appears when a draft message will not be saved due to invalid recipients -->
   <string name="discard_message_reason_some_invalid">Ваша порука ће бити одбачена јер су неки примаоци неважећи.</string>
+  <!-- Brief message that appears when the maximum size of slides has been reached -->
   <string name="cannot_add_text_anymore">Није могуће додати још текста.</string>
+  <!-- Dialog box title for display the current mms size  -->
   <string name="title_send_message">Пошаљи поруку</string>
+  <!-- Toast when the subject is full -->
   <string name="subject_full">Субјект не сме бити дужи од <xliff:g id="length">%d</xliff:g> карактера.</string>
   <string name="pref_title_manage_sim_messages_slot1">Управљај SIM 1 порукама</string>
   <string name="pref_title_manage_sim_messages_slot2">Управљај SIM 2 порукама</string>
@@ -101,17 +125,23 @@
   <string name="prefs_title_import_sms_messages">Увези SMS поруке</string>
   <string name="pref_title_sms_delivery_reports_slot1">Извештај доставе за SMS 1</string>
   <string name="pref_title_sms_delivery_reports_slot2">Извештај доставе за SMS 2</string>
+  <!-- Status in "Report" window -->
   <string name="status_deleted_unread">Избрисан без читања</string>
+  <!-- Disk Storage Full Error Notification dialog text. -->
   <string name="disk_storage_full_error">Грешка: Складиште је пуно.</string>
+  <!-- Mms size is too large dialog text. -->
   <string name="mms_too_large">Порука је превелика за преузимање.</string>
   <string name="send_failed_retry">Не могу послати поруку, понављам\u2026</string>
   <string name="download_failed_retry">Не могу примити поруку, понављам\u2026</string>
   <string name="system_audio_item">Тон звона</string>
   <string name="external_audio_item">Музика</string>
+  <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
   <string name="menu_connect_url">Отвори URL</string>
   <string name="do_not_show_connect_warning">Не показуј ово упозорење опет</string>
+  <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
   <string name="menu_add_to_label">Обележи</string>
   <string name="loadurlinfo_str">URL од непознатих пошиљаоца могу бити покушаји пецања. Ако нисте сигурни немојте отворити ову адресу.</string>
+  <!-- Message Template -->
   <string name="pref_title_message_template">Шаблони поруке</string>
   <string name="title_new_message_template">Нови шаблон</string>
   <string name="summary_new_message_template">Направи нови шаблон поруке</string>
@@ -121,21 +151,26 @@
   <string name="pref_sms_signature_title">SMS потпис</string>
   <string name="pref_title_enable_signature">Додај потпис у поруку</string>
   <string name="pref_title_edit_signature">Измени текст потписа</string>
+  <!-- Copy message to sim -->
   <string name="menu_copy_to">Копирај</string>
   <string name="operation_to_card_memory">Копирај поруку на SIM картицу</string>
+  <!-- SMSC -->
   <string name="pref_smsc_title">SMS сервис центар</string>
   <string name="pref_one_smcs">SMSC број</string>
   <string name="pref_more_smcs">SIM <xliff:g id="slot_number">%d</xliff:g> SMSC број</string>
   <string name="set_smsc_error">Није могуће поставити SMSC број</string>
   <string name="set_smsc_success">SMSC број подешен успешно</string>
   <string name="set_smsc_confirm_message">Промена SMSC може узроковати SMS пренос неуспешним. Да ли сте сигурни да желите да наставите?</string>
+  <!-- Copy message to sim -->
   <string name="copy_to_sim">Копирање поруке на SIM картицу</string>
   <string name="copy_to_sim_success"><xliff:g id="count">%1$d</xliff:g> од <xliff:g id="total">%2$d</xliff:g> порука сачувано на SIM картицу.</string>
   <string name="copy_to_sim_fail">Није могуће сачувати поруку</string>
   <string name="copy_to_phone_success">Порука сачувана</string>
   <string name="copy_to_phone_fail">Није могуће сачувати поруку</string>
   <string name="contact_app_not_found">Није могуће отворити апликацију Контакти</string>
+  <!-- Gray hint displayed in the search field in Contacts when empty -->
   <string name="search_bar_hint">Претражи контакте</string>
+  <!-- Add for share contact feature -->
   <string name="type_vcard">vCard</string>
   <string name="import_vcard">Увези</string>
   <string name="attach_add_contact_as_vcard">Контакт vCard</string>
@@ -143,13 +178,16 @@
   <string name="contact_info_text_as_name">Име:</string>
   <string name="contact_info_text_as_phone">Тел:</string>
   <string name="contact_info_text_as_email">Е-пошта:</string>
+  <!-- Sharing vcs files from Calendar -->
   <string name="type_vcal">Догађаји у календару</string>
   <string name="pref_wap_push_title">Push сервисне поруке</string>
   <string name="pref_title_wap_push_enabled">WAP Push сервис</string>
   <string name="pref_summary_wap_push_enabled">Пријем мрежних сервисних порука</string>
+  <!-- String used in MemoryStatusActivity.java -->
   <string name="memory_status_title">Статус меморије</string>
   <string name="sms_phone_memory_usage">SMS: <xliff:g id="used">%1$d</xliff:g> oд <xliff:g id="total">%2$d</xliff:g> искоришћено</string>
   <string name="mms_phone_memory_usage">МMS: <xliff:g id="used">%1$d</xliff:g> oд <xliff:g id="total">%2$d</xliff:g> искоришћено</string>
+  <!-- Settings item description for SMS and MMS Validity period -->
   <string name="pref_title_validity_period">Рок важења</string>
   <string name="pref_title_validity_period_slot1">Рок важења за SIM 1</string>
   <string name="pref_title_validity_period_slot2">Рок важења за SIM 2</string>
@@ -170,16 +208,21 @@
   <string name="sim_spinner_active_item_postfix">SIM %d</string>
   <string name="cannot_play">Не могу се приказати слајдови.</string>
   <string name="confirm_delete_selected_messages">Изабране поруке ће бити обрисане.</string>
+  <!-- toast for send result -->
   <string name="send_failure">Не могу послати поруку.</string>
+  <!-- title of mailboxmessagecontent -->
   <string name="message_detail">Детаљи поруке</string>
   <string name="no_message">Нема порука.</string>
   <string name="change_to_folder_mode">Приказ фолдера</string>
   <string name="change_to_conversation_mode">Приказ конверзација</string>
+  <!-- Spinner item of box type in mailbox-mode -->
   <string name="type_inbox">Примљене поруке</string>
   <string name="type_sent">Послато</string>
   <string name="type_outbox">За слање</string>
   <string name="type_draft">Нацрти</string>
+  <!-- Spinner item of slot type in mailbox-mode -->
   <string name="slot_type_select">Изабери SIM картицу</string>
+  <!-- String used in SearchActivityExtend.java -->
   <string name="search_title">Претрага порука</string>
   <string name="search_key">Кључне речи претраге</string>
   <string name="search_mode">Режим претраге</string>
@@ -191,9 +234,11 @@
   <string name="sim_capacity_title">SIM капацитет</string>
   <string name="sim_capacity"><xliff:g id="used">%1$d</xliff:g> oд <xliff:g id="total">%2$d</xliff:g> уноса SIM картице искоришћено</string>
   <string name="pref_sim_card_full_save_to_phone">SIM картица је пуна, чувам нове поруке у телефон.</string>
+  <!-- batch delete message in ConversationList and MailBoxMessageList -->
   <string name="selected_all">Изабери све</string>
   <string name="deselected_all">Поништи избор свега</string>
   <string name="selected_count"><xliff:g id="COUNT">%d</xliff:g> изабрано</string>
+  <!-- priority of cdma message -->
   <string name="cdma_priority_normal">Нормално</string>
   <string name="cdma_priority_interactive">Интерактивно</string>
   <string name="cdma_priority_urgent">Хитно</string>
@@ -202,6 +247,7 @@
   <string name="pref_summary_cdma_priority">Приоритет CDMA порука</string>
   <string name="download_dialog_title">Скини овај MMS?</string>
   <string name="menu_email">Пошаљи електронску пошту</string>
+  <!-- Settings item description for Preferred storage -->
   <string name="pref_title_sms_store">Приоритетно складиште</string>
   <string name="pref_title_sms_store_card1">Приоритетно складиште за SIM 1</string>
   <string name="pref_title_sms_store_card2">Приоритетно складиште за SIM 2</string>
@@ -231,13 +277,17 @@
   <string name="manage_sdcard_messages">Увези/извези поруке</string>
   <string name="no_backups_found">Нема пронађене резерве</string>
   <string name="remove_subject">Уклони субјект</string>
+  <!-- QuickMessage Wear-->
   <string name="qm_wear_sending_message">Слање одговора за <xliff:g id="name">%s</xliff:g>\u2026</string>
   <string name="qm_wear_messaged_failed">Текстуална порука за <xliff:g id="name">%s</xliff:g> није послата, молим пробај поново.</string>
   <string name="qm_wear_voice_reply">Који је твој одговор?</string>
   <string name="qm_wear_reply_by_voice">Одговори користећи глас</string>
+  <!-- Copy message text-->
   <string name="copy_empty_string">Нема текста за копирање</string>
   <string name="attach_add_calendar_events">Догађаји у календару</string>
+  <!-- friendlier text for an activity not found exception for calendar attachments -->
   <string name="calendar_attachment_activity_not_found">Не могу пронаћи подржану Календар апликацију</string>
+  <!-- Vibrate pattern -->
   <string name="pref_title_mms_notification_vibrate_pattern">Шаблон вибрације</string>
   <string name="pref_summary_mms_notification_vibrate_pattern">Промени шаблон вибрације</string>
   <string name="pref_mms_notification_vibrate_normal">Нормално</string>
@@ -245,19 +295,28 @@
   <string name="pref_mms_notification_vibrate_long_vib">Дуга вибрација</string>
   <string name="pref_mms_notification_vibrate_mult_short">Више кратких</string>
   <string name="pref_mms_notification_vibrate_mult_long">Више дугих</string>
+  <!-- Menu item - Insert smiley -->
   <string name="menu_insert_smiley">Убаци смајли</string>
+  <!-- Enable emoticons -->
   <string name="pref_title_enable_emoticons">Подршка смајлија</string>
   <string name="pref_summary_enable_emoticons">Замени текстуалне смајлије са графичким еквивалентима</string>
+  <!-- Conversation options -->
   <string name="menu_conversation_options">Опције преписке</string>
   <string name="pref_title_reset_convopt_to_default">Ресетуј на подразумевано</string>
   <string name="pref_summary_reset_convopt_to_default">Ресетуј подешавање преписке на ниво подешавања апликације</string>
+  <!-- Full timestamps -->
   <string name="pref_title_mms_full_timestamp">Пуне временске ознаке</string>
   <string name="pref_summary_mms_full_timestamp">Прикажи оба датума и време у временским ознакама</string>
+  <!-- Original timestamps -->
   <string name="pref_title_mms_use_sent_timestamp">Оригиналне временске ознаке</string>
   <string name="pref_summary_mms_use_sent_timestamp">Прикажи датум слања уместо датума пријема у временским ознакама</string>
+  <!-- Settings item for boolean option to auto -enable data for MMS messages -->
   <string name="pref_title_mms_auto_enable_data">Аутоматско омогућавање података</string>
+  <!-- Settings item description for boolean auto-enable data for MMS option -->
   <string name="pref_summary_mms_auto_enable_data">Аутоматски омогући мобилне податке за MMS поруке</string>
+  <!-- Select recipients dialog -->
   <string name="adding_selected_recipients_dialog_text">Додајем контакте\u2026</string>
+  <!-- Smart Dialer -->
   <string name="pref_title_mms_smart_dialer">Паметни позив</string>
   <string name="pref_summary_mms_smart_dialer">Аутоматски позови контакт приношењем уређаја уху</string>
 </resources>

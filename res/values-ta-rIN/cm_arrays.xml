@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
-    <item>Happy</item>
-    <item>Sad</item>
-    <item>Winking</item>
-    <item>Tongue sticking out</item>
-    <item>Surprised</item>
-    <item>Kissing</item>
-    <item>Yelling</item>
-    <item>Cool</item>
-    <item>Money mouth</item>
-    <item>Foot in mouth</item>
-    <item>Embarrassed</item>
-    <item>Angel</item>
-    <item>Undecided</item>
-    <item>Crying</item>
-    <item>Lips are sealed</item>
-    <item>Laughing</item>
-    <item>Confused</item>
+    <item>சந்தோஷமாக</item>
+    <!-- 0: :-) -->
+    <item>வருத்தமாக</item>
+    <!-- 1: :-( -->
+    <item>கண்சிமிட்டுதல்</item>
+    <!-- 2: ;-) -->
+    <item>நாக்கு வெளியே ஒட்டிக்கொண்டிருக்கும்</item>
+    <!-- 3: :-P -->
+    <item>ஆச்சரியமாக</item>
+    <!-- 4: =-O -->
+    <item>முத்தம்</item>
+    <!-- 5: :-* -->
+    <item>திட்டுதல்</item>
+    <!-- 6: :O -->
+    <item>குளிர்ந்த</item>
+    <!-- 7: B-) -->
+    <item>நிதி வாய்</item>
+    <!-- 8: :-$ -->
+    <item>வாயில் பாதம்</item>
+    <!-- 9: :-! -->
+    <item>தர்மசங்கடத்தில்</item>
+    <!-- 10: :-[ -->
+    <item>தேவதை</item>
+    <!-- 11: O:-) -->
+    <item>தீர்மானிக்கப்படாத</item>
+    <!-- 12: :-\\ -->
+    <item>அழுதல்</item>
+    <!-- 13: :\'( -->
+    <item>உதடுகள் மூடப்பட்டுள்ளன</item>
+    <!-- 14: :-X -->
+    <item>சிரித்தல்</item>
+    <!-- 15: :-D -->
+    <item>குழப்பமானது</item>
+    <!-- 16: o_O -->
     <item>இதயம்</item>
-    <item>Mad</item>
-    <item>Smirk</item>
-    <item>Poker face</item>
+    <!-- 17: <3 -->
+    <item>முட்டால்</item>
+    <!-- 18: x-( -->
+    <item>போலிச்சிப்பு</item>
+    <!-- 19: :-/ -->
+    <item>போக்கர் ஃபேஸ்</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>

@@ -16,6 +16,8 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- QUICKMESSAGE SUPPORT -->
+  <!-- Preferences -->
   <string name="pref_quickmessage">QuickMessage ja Vastus</string>
   <string name="pref_quickmessage_title">Näita QuickMessage</string>
   <string name="pref_quickmessage_summary">Ava automaatselt QuickMessage hüpikaken saabuvtele SMS sõnumitele</string>
@@ -26,12 +28,16 @@
   <string name="pref_dark_theme_title">Kasuta tumedat teemat</string>
   <string name="pref_dark_theme_summary">Kui valimata, kasutatakse vaike \'hele\' teemat</string>
   <string name="message_counter">%2$d %1$d -st</string>
+  <!-- QM Dialog box buttons -->
   <string name="button_close">Sulge</string>
   <string name="button_view">Vaade</string>
   <string name="button_templates">Mallid</string>
+  <!-- Hint text in message body field when keyboard is exposed -->
   <string name="type_to_reply_text_enter_to_send">Kirjuta et vastata</string>
+  <!-- QM Toast -->
   <string name="qm_mark_read">Loe</string>
   <string name="toast_sending_message">Saadan sõnumit\u2026</string>
+  <!-- Delay delivery -->
   <string name="pref_title_send_delay">Kohaletoimetamise viivitus</string>
   <string name="send_delay_immediate">Saada kohe</string>
   <string name="send_delay_3seconds">3 sekundit</string>
@@ -40,35 +46,46 @@
   <string name="send_delay_20seconds">20 sekundit</string>
   <string name="send_delay_30seconds">30 sekundit</string>
   <string name="sent_countdown">Sõnumi kohaletoimetamise mahalugemine</string>
+  <!-- EXTRA SETTINGS -->
   <string name="pref_extra_settings">Lisa seadistused</string>
+  <!-- Blacklist preferences -->
   <string name="blacklist_title">Blokeeritud helistajate nimekiri</string>
   <string name="blacklist_summary_disabled">Keelatud</string>
   <string name="blacklist_summary">Te ei saa sissetulevaid kõnesid ega sõnumeid numbritelt, mis on blokeeritud helistajate nimekirjas</string>
+  <!-- Blacklist notifications -->
   <string name="blacklist_notification">Blokeeritud sõnum %s</string>
   <string name="blacklist_notification_private_number">Blokeeritud sõnum privaatselt numbrilt</string>
   <string name="blacklist_notification_list_private">Privaatne</string>
   <string name="blacklist_notification_unknown_number">Blokeeritud sõnum tundmatult numbrilt %s</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> sõnumit oli blokeeritud</string>
   <string name="unblock_number">Blokeeri lahti</string>
+  <!-- Blacklist management -->
   <string name="add_to_blacklist">Lisa blokeeritud helistajate nimekirja</string>
   <string name="add_to_blacklist_message">Tulevased sõnumid numbrilt %s on blokeeritud</string>
+  <!-- Generic blacklist handling -->
   <string name="alert_dialog_yes">Jah</string>
   <string name="alert_dialog_no">Ei</string>
+  <!-- Strip unicode -->
   <string name="pref_title_unicode_stripping">Eemalda unicode</string>
   <string name="pref_unicode_stripping_leave_intact">Jäta märgid puutumata</string>
   <string name="pref_unicode_stripping_non_encodable">Eemalda kodeerimatud märgid</string>
   <string name="pref_unicode_stripping_all">Eemalda kõik unicode märgid</string>
+  <!-- Context menu item on a message for marking as unread / read -->
   <string name="menu_as_unread">Märgi mitteloetuks</string>
   <string name="menu_as_read">Märgi loetuks</string>
+  <!-- Context menu item on a message for marking all threads as unread / read -->
   <string name="menu_all_as_unread">Märgi kõik mitteloetuks</string>
   <string name="menu_all_as_read">Märgi kõik loetuks</string>
   <string name="menu_add_to_contacts_cm">Lisa kontaktidesse</string>
+  <!-- Confirm Mark as unread / read -->
   <string name="confirm_mark_unread_dialog_title">Märgi mitteloetuks?</string>
   <string name="confirm_mark_unread_conversation">Vestlus märgitakse mitteloetuks.</string>
   <string name="confirm_mark_read_dialog_title">Märgi loetuks?</string>
   <string name="confirm_mark_read_conversation">Vestlus märgitakse loetuks.</string>
+  <!-- Mark all threads confirmation dialog message -->
   <string name="confirm_mark_unread_all_conversations">Kõik teemad märgitakse mitteloetuks.</string>
   <string name="confirm_mark_read_all_conversations">Kõik teemad märgitakse loetuks.</string>
+  <!-- Multi recipients -->
   <string name="loading">Laen\u2026</string>
   <string name="select_recipients">Vali saajad</string>
   <string name="no_recipients">Kontakte ei leitud</string>
@@ -77,12 +94,14 @@
   <string name="menu_mobile">Ainult mobiilinumbrid</string>
   <string name="menu_order_by_given_name">Järjesta eesnime järgi</string>
   <string name="menu_order_by_last_name">Järjesta perenime järgi</string>
+  <!-- Extra message options -->
   <string name="message_share">Jaga</string>
   <string name="message_share_intent_title">Jaga sõnumit</string>
   <string name="start_new_message_button">Uus sõnum</string>
   <string name="all_spinner_option">Kõik</string>
   <string name="menu_copy_url">Kopeeri URL <xliff:g id="extractedurl">%s</xliff:g></string>
   <string name="deleting_threads">Kustutan lõimed\u2026</string>
+  <!-- Context menu item on an failed message for resending -->
   <string name="menu_resend">Saada uuesti</string>
   <string name="cancel_downloading">Tühista</string>
   <string name="confirm_cancel_downloading">MMS-i allalaadimine tühistatakse.</string>
@@ -90,10 +109,15 @@
   <string name="send_by_slot2">Saada läbi SIM 2</string>
   <string name="select_phone_account_title">Saada kasutades</string>
   <string name="media_size_limit">Sõnumi mahupiirang ületatud, sõnumit ei saa saata.</string>
+  <!-- Error message indicating that the message size or the increase size is negative -->
   <string name="illegal_message_or_increase_size">Väär sõnumi suurus.</string>
+  <!-- Dialog box title that appears when a draft message will not be saved due to invalid recipients -->
   <string name="discard_message_reason_some_invalid">Sinu sõnumist loobutakse, kuna mõni adressaat ei sobi.</string>
+  <!-- Brief message that appears when the maximum size of slides has been reached -->
   <string name="cannot_add_text_anymore">Ei saa lisada rohkem teksti.</string>
+  <!-- Dialog box title for display the current mms size  -->
   <string name="title_send_message">Saada sõnum</string>
+  <!-- Toast when the subject is full -->
   <string name="subject_full">Teema ei tohi olla pikem kui <xliff:g id="length">%d</xliff:g> märki.</string>
   <string name="pref_title_manage_sim_messages_slot1">Halda SIM 1 sõnumeid</string>
   <string name="pref_title_manage_sim_messages_slot2">Halda SIM 2 sõnumeid</string>
@@ -101,17 +125,23 @@
   <string name="prefs_title_import_sms_messages">Impordi SIM sõnumid</string>
   <string name="pref_title_sms_delivery_reports_slot1">SIM 1 saateraportid</string>
   <string name="pref_title_sms_delivery_reports_slot2">SIM 2 saateraportid</string>
+  <!-- Status in "Report" window -->
   <string name="status_deleted_unread">Kustuta ilma lugemata</string>
+  <!-- Disk Storage Full Error Notification dialog text. -->
   <string name="disk_storage_full_error">Tõrge: Mälu on täis.</string>
+  <!-- Mms size is too large dialog text. -->
   <string name="mms_too_large">Sõnum on allalaadimiseks liiga suur.</string>
   <string name="send_failed_retry">Sõnumi saatmine nurjus, proovin uuesti\u2026</string>
   <string name="download_failed_retry">Sõnumi allalaadimine nurjus, proovin uuesti\u2026</string>
   <string name="system_audio_item">Helina toon</string>
   <string name="external_audio_item">Muusika</string>
+  <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
   <string name="menu_connect_url">Ava URL</string>
   <string name="do_not_show_connect_warning">Ära kuva enam seda hoiatust</string>
+  <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
   <string name="menu_add_to_label">Lisa järjehoidjatesse</string>
   <string name="loadurlinfo_str">Tundmatutelt saatjatelt saabunud URLid võivad olla pettuse katse. Kui sa ei ole kindel, ära ava seda aadressi.</string>
+  <!-- Message Template -->
   <string name="pref_title_message_template">Sõnumi mallid</string>
   <string name="title_new_message_template">Uus mall</string>
   <string name="summary_new_message_template">Koosta uus sõnumi mall</string>
@@ -121,21 +151,26 @@
   <string name="pref_sms_signature_title">SMS allkiri</string>
   <string name="pref_title_enable_signature">Lisa signratuur sõnumitele</string>
   <string name="pref_title_edit_signature">Redigeeri signatuuri teksti</string>
+  <!-- Copy message to sim -->
   <string name="menu_copy_to">Kopeeri</string>
   <string name="operation_to_card_memory">Kopeeri sõnum SIM-kaardile</string>
+  <!-- SMSC -->
   <string name="pref_smsc_title">SMS teeninduskeskus</string>
   <string name="pref_one_smcs">SMSC number</string>
   <string name="pref_more_smcs">SIM <xliff:g id="slot_number">%d </xliff:g> SMSC number</string>
   <string name="set_smsc_error">Ei suuda määrata SMSC numbrit</string>
   <string name="set_smsc_success">SMSC number edukalt määratud</string>
   <string name="set_smsc_confirm_message">SMSC numbri muutmine võib põhjustada SMS saatmise nurjumisi. Kas oled kindel, et soovid jätkata?</string>
+  <!-- Copy message to sim -->
   <string name="copy_to_sim">Kopeeri sõnum SIM-kaardile</string>
   <string name="copy_to_sim_success"><xliff:g id="count">%1$d</xliff:g> sõnumit <xliff:g id="total">%2$d</xliff:g> salvestatud SIM kaardile.</string>
   <string name="copy_to_sim_fail">Ei saa sõnumit salvestada</string>
   <string name="copy_to_phone_success">Sõnum salvestatud</string>
   <string name="copy_to_phone_fail">Ei saa sõnumit salvestada</string>
   <string name="contact_app_not_found">Ei saa avada Kontaktide rakendust</string>
+  <!-- Gray hint displayed in the search field in Contacts when empty -->
   <string name="search_bar_hint">Otsi kontakte</string>
+  <!-- Add for share contact feature -->
   <string name="type_vcard">vCard</string>
   <string name="import_vcard">Impordi</string>
   <string name="attach_add_contact_as_vcard">Kontakti vCard</string>
@@ -143,13 +178,16 @@
   <string name="contact_info_text_as_name">Nimi:</string>
   <string name="contact_info_text_as_phone">Tel:</string>
   <string name="contact_info_text_as_email">E-mail:</string>
+  <!-- Sharing vcs files from Calendar -->
   <string name="type_vcal">Kalendri sündmus</string>
   <string name="pref_wap_push_title">Tõuke teenuste sõnumid</string>
   <string name="pref_title_wap_push_enabled">WAP Tõuke teenus</string>
   <string name="pref_summary_wap_push_enabled">Võta vastu võrguteenuste sõnumeid</string>
+  <!-- String used in MemoryStatusActivity.java -->
   <string name="memory_status_title">Mälu olek</string>
   <string name="sms_phone_memory_usage">SMS: Kasutatud <xliff:g id="used">%1$d</xliff:g> <xliff:g id="total">%2$d</xliff:g>-st</string>
   <string name="mms_phone_memory_usage">MMS: Kasutatud <xliff:g id="used">%1$d</xliff:g> <xliff:g id="total">%2$d</xliff:g>-st</string>
+  <!-- Settings item description for SMS and MMS Validity period -->
   <string name="pref_title_validity_period">Kehtivusaeg</string>
   <string name="pref_title_validity_period_slot1">SIM 1 kehtivusaeg</string>
   <string name="pref_title_validity_period_slot2">SIM 2 kehtivusaeg</string>
@@ -170,16 +208,21 @@
   <string name="sim_spinner_active_item_postfix">SIM %d</string>
   <string name="cannot_play">Ei saa kuvada presentatsiooni.</string>
   <string name="confirm_delete_selected_messages">Valitud sõnumid kustutatakse.</string>
+  <!-- toast for send result -->
   <string name="send_failure">Sõnumi saatmine ebaõnnestus.</string>
+  <!-- title of mailboxmessagecontent -->
   <string name="message_detail">Sõnumi üksikasjad</string>
   <string name="no_message">Ei ole sõnumeid.</string>
   <string name="change_to_folder_mode">Kaustavaade</string>
   <string name="change_to_conversation_mode">Vestluse vaade</string>
+  <!-- Spinner item of box type in mailbox-mode -->
   <string name="type_inbox">Postkast</string>
   <string name="type_sent">Saadetud</string>
   <string name="type_outbox">Väljundkast</string>
   <string name="type_draft">Mustandid</string>
+  <!-- Spinner item of slot type in mailbox-mode -->
   <string name="slot_type_select">Vali SIM kaart</string>
+  <!-- String used in SearchActivityExtend.java -->
   <string name="search_title">Sõnumi otsing</string>
   <string name="search_key">Otsi märksõna</string>
   <string name="search_mode">Otsimise režiim</string>
@@ -191,9 +234,11 @@
   <string name="sim_capacity_title">SIM-kaardi maht</string>
   <string name="sim_capacity"><xliff:g id="used">%1$d</xliff:g> kohta <xliff:g id="total">%2$d</xliff:g> SIM kaardil kasutatud</string>
   <string name="pref_sim_card_full_save_to_phone">SIM-kaart täis, salvestan uued sõnumid telefoni.</string>
+  <!-- batch delete message in ConversationList and MailBoxMessageList -->
   <string name="selected_all">Vali kõik</string>
   <string name="deselected_all">Tühista kõik valikud</string>
   <string name="selected_count"><xliff:g id="COUNT">%d</xliff:g> valitud</string>
+  <!-- priority of cdma message -->
   <string name="cdma_priority_normal">Tavaline</string>
   <string name="cdma_priority_interactive">Interaktiivne</string>
   <string name="cdma_priority_urgent">Kiireloomuline</string>
@@ -202,6 +247,7 @@
   <string name="pref_summary_cdma_priority">CDMA sõnumite prioriteet</string>
   <string name="download_dialog_title">Lae see MMS alla?</string>
   <string name="menu_email">Saada e-kiri</string>
+  <!-- Settings item description for Preferred storage -->
   <string name="pref_title_sms_store">Eelistatud mälu</string>
   <string name="pref_title_sms_store_card1">SIM 1 eelistatud mälu</string>
   <string name="pref_title_sms_store_card2">SIM 2 eelistatud mälu</string>
@@ -231,13 +277,17 @@
   <string name="manage_sdcard_messages">Impordi/ekspordi sõnumid</string>
   <string name="no_backups_found">Varukoopiaid ei leitud</string>
   <string name="remove_subject">Eemalda teema</string>
+  <!-- QuickMessage Wear-->
   <string name="qm_wear_sending_message">Saadan vastust <xliff:g id="name">%s</xliff:g>\u2026</string>
   <string name="qm_wear_messaged_failed">Tekstisõnumi saamtine <xliff:g id="name">%s</xliff:g> ebaõnnestus, proovi palun uuesti.</string>
   <string name="qm_wear_voice_reply">Mida soovid vastata?</string>
   <string name="qm_wear_reply_by_voice">Vasta kasutades häält</string>
+  <!-- Copy message text-->
   <string name="copy_empty_string">Ei ole kopeeritavat teksti</string>
   <string name="attach_add_calendar_events">Kalendri sündmus</string>
+  <!-- friendlier text for an activity not found exception for calendar attachments -->
   <string name="calendar_attachment_activity_not_found">Ei leia toetatud kalenderirakendust</string>
+  <!-- Vibrate pattern -->
   <string name="pref_title_mms_notification_vibrate_pattern">Vibreerimise muster</string>
   <string name="pref_summary_mms_notification_vibrate_pattern">Muuda vibreerimise mustrit</string>
   <string name="pref_mms_notification_vibrate_normal">Normaalne</string>
@@ -245,19 +295,28 @@
   <string name="pref_mms_notification_vibrate_long_vib">Pikk vibreerimine</string>
   <string name="pref_mms_notification_vibrate_mult_short">Mitu lühikest</string>
   <string name="pref_mms_notification_vibrate_mult_long">Mitu pikka</string>
+  <!-- Menu item - Insert smiley -->
   <string name="menu_insert_smiley">Sisesta emotikon</string>
+  <!-- Enable emoticons -->
   <string name="pref_title_enable_emoticons">Emotikonide toetus</string>
   <string name="pref_summary_enable_emoticons">Asenda tektsi emotikonid graafiliste vastetega</string>
+  <!-- Conversation options -->
   <string name="menu_conversation_options">Vestluse valikud</string>
   <string name="pref_title_reset_convopt_to_default">Taasta vaikesätted</string>
   <string name="pref_summary_reset_convopt_to_default">Lähtestab vestluse sätted rakenduse põhiste sättetega</string>
+  <!-- Full timestamps -->
   <string name="pref_title_mms_full_timestamp">Täielikud ajatemplid</string>
   <string name="pref_summary_mms_full_timestamp">Kuva nii kuupäev kui kellaaeg ajatemplil</string>
+  <!-- Original timestamps -->
   <string name="pref_title_mms_use_sent_timestamp">Algne ajatempel</string>
   <string name="pref_summary_mms_use_sent_timestamp">Kuva ajatemplitel saatmiskuupäev vastuvõtmiskuupäeva asemel</string>
+  <!-- Settings item for boolean option to auto -enable data for MMS messages -->
   <string name="pref_title_mms_auto_enable_data">Luba andmeside automaatselt</string>
+  <!-- Settings item description for boolean auto-enable data for MMS option -->
   <string name="pref_summary_mms_auto_enable_data">Luba mobiilandmeside MMS-de jaoks automaatselt</string>
+  <!-- Select recipients dialog -->
   <string name="adding_selected_recipients_dialog_text">Lisan kontakti\u2026</string>
+  <!-- Smart Dialer -->
   <string name="pref_title_mms_smart_dialer">Nutikas helistamine</string>
   <string name="pref_summary_mms_smart_dialer">Helista kontaktile automaatselt, kui tõstad telefoni kõrva äärde</string>
 </resources>

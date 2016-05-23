@@ -16,22 +16,28 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="pref_quickmessage">Réponse rapide</string>
-  <string name="pref_quickmessage_title">Afficher message rapide</string>
-  <string name="pref_quickmessage_summary">Ouvrir automatiquement la fenêtre QuickMessage pour les messages SMS entrants</string>
+  <!-- QUICKMESSAGE SUPPORT -->
+  <!-- Preferences -->
+  <string name="pref_quickmessage">Message rapide et réponse</string>
+  <string name="pref_quickmessage_title">Afficher Message rapide</string>
+  <string name="pref_quickmessage_summary">Ouvrir automatiquement la fenêtre Message rapide pour les messages SMS entrants</string>
   <string name="pref_wake_unlock_title">Réveiller et déverrouiller</string>
-  <string name="pref_wake_unlock_summary">Réveiller l\'appareil et afficher la pop-up de réponse rapide</string>
+  <string name="pref_wake_unlock_summary">Réveiller l\'appareil et afficher la pop-up de Message rapide</string>
   <string name="pref_close_all_title">Tout fermer</string>
   <string name="pref_close_all_summary">Le bouton \'Fermer\' ferme tous les messages</string>
   <string name="pref_dark_theme_title">Utiliser le thème noir</string>
-  <string name="pref_dark_theme_summary">Si rien n\'est sélectionné, le thème \'clair\' sera utilisé par défaut</string>
+  <string name="pref_dark_theme_summary">Si rien n\'est sélectionné, le thème « clair » sera utilisé par défaut</string>
   <string name="message_counter">%1$d sur %2$d</string>
+  <!-- QM Dialog box buttons -->
   <string name="button_close">Fermer</string>
   <string name="button_view">Afficher</string>
   <string name="button_templates">Modèles</string>
+  <!-- Hint text in message body field when keyboard is exposed -->
   <string name="type_to_reply_text_enter_to_send">Taper une réponse</string>
+  <!-- QM Toast -->
   <string name="qm_mark_read">Lu</string>
   <string name="toast_sending_message">Envoi du message\u2026</string>
+  <!-- Delay delivery -->
   <string name="pref_title_send_delay">Délai d\'envoi</string>
   <string name="send_delay_immediate">Envoi immédiat</string>
   <string name="send_delay_3seconds">3 secondes</string>
@@ -40,49 +46,62 @@
   <string name="send_delay_20seconds">20 secondes</string>
   <string name="send_delay_30seconds">30 secondes</string>
   <string name="sent_countdown">Décompte avant l\'envoi</string>
+  <!-- EXTRA SETTINGS -->
   <string name="pref_extra_settings">Paramètres supplémentaires</string>
+  <!-- Blacklist preferences -->
   <string name="blacklist_title">Liste des appelants bloqués</string>
   <string name="blacklist_summary_disabled">Désactivé</string>
   <string name="blacklist_summary">Vous ne recevrez pas d’appels ou de messages de numéros présents dans la liste des appelants bloqués</string>
+  <!-- Blacklist notifications -->
   <string name="blacklist_notification">Message de %s bloqué</string>
-  <string name="blacklist_notification_private_number">Message d\'un numéro privé bloqué</string>
-  <string name="blacklist_notification_list_private">Privé</string>
-  <string name="blacklist_notification_unknown_number">Message d\'un numéro inconnu %s bloqué</string>
+  <string name="blacklist_notification_private_number">Un message en provenance d\'un numéro privé a été bloqué</string>
+  <string name="blacklist_notification_list_private">Privée</string>
+  <string name="blacklist_notification_unknown_number">Un message en provenance d\'un numéro inconnu %s a été bloqué</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> messages ont été bloqués</string>
   <string name="unblock_number">Débloquer</string>
+  <!-- Blacklist management -->
   <string name="add_to_blacklist">Ajouter à la liste des appelants bloqués</string>
   <string name="add_to_blacklist_message">Les futurs messages de %s seront bloqués</string>
+  <!-- Generic blacklist handling -->
   <string name="alert_dialog_yes">Oui</string>
   <string name="alert_dialog_no">Non</string>
+  <!-- Strip unicode -->
   <string name="pref_title_unicode_stripping">Gestion Unicode</string>
-  <string name="pref_unicode_stripping_leave_intact">Conserver les caractères</string>
+  <string name="pref_unicode_stripping_leave_intact">Conserver les caractères intacts</string>
   <string name="pref_unicode_stripping_non_encodable">Enlever les caractères non encodables</string>
   <string name="pref_unicode_stripping_all">Enlever tous les caractères Unicode</string>
+  <!-- Context menu item on a message for marking as unread / read -->
   <string name="menu_as_unread">Marquer comme non lu</string>
   <string name="menu_as_read">Marquer comme lu</string>
-  <string name="menu_all_as_unread">Marquer tout comme non lus</string>
+  <!-- Context menu item on a message for marking all threads as unread / read -->
+  <string name="menu_all_as_unread">Tout marquer comme non lus</string>
   <string name="menu_all_as_read">Tout marquer comme lu</string>
   <string name="menu_add_to_contacts_cm">Ajouter aux contacts</string>
+  <!-- Confirm Mark as unread / read -->
   <string name="confirm_mark_unread_dialog_title">Marquer comme non lu ?</string>
   <string name="confirm_mark_unread_conversation">La conversation sera marquée comme non lue.</string>
   <string name="confirm_mark_read_dialog_title">Marquer comme lu ?</string>
   <string name="confirm_mark_read_conversation">La conversation sera marquée comme lue.</string>
+  <!-- Mark all threads confirmation dialog message -->
   <string name="confirm_mark_unread_all_conversations">Toutes les conversations seront marquées comme non lues.</string>
   <string name="confirm_mark_read_all_conversations">Toutes les conversations seront marquées comme lues.</string>
+  <!-- Multi recipients -->
   <string name="loading">Chargement\u2026</string>
-  <string name="select_recipients">Sélectionnez les destinataires</string>
+  <string name="select_recipients">Sélectionner les destinataires</string>
   <string name="no_recipients">Aucun contact trouvé</string>
   <string name="no_recipients_mobile_only">Aucun contact trouvé. Essayez sans le filtre \'Mobiles uniquement\'</string>
   <string name="menu_done">Terminé</string>
   <string name="menu_mobile">Mobiles uniquement</string>
   <string name="menu_order_by_given_name">Trier par prénom</string>
   <string name="menu_order_by_last_name">Trier par nom de famille</string>
+  <!-- Extra message options -->
   <string name="message_share">Partager</string>
   <string name="message_share_intent_title">Partager le message</string>
   <string name="start_new_message_button">Nouveau message</string>
   <string name="all_spinner_option">Tout</string>
   <string name="menu_copy_url">Copier l\'URL <xliff:g id="extractedurl">%s</xliff:g></string>
   <string name="deleting_threads">Suppression des conversations\u2026</string>
+  <!-- Context menu item on an failed message for resending -->
   <string name="menu_resend">Renvoyer</string>
   <string name="cancel_downloading">Annuler</string>
   <string name="confirm_cancel_downloading">Le téléchargement du MMS sera annulé.</string>
@@ -90,28 +109,39 @@
   <string name="send_by_slot2">Envoyer via SIM 2</string>
   <string name="select_phone_account_title">Envoyer avec</string>
   <string name="media_size_limit">Taille maximale du message atteinte, impossible d\'envoyer le message.</string>
+  <!-- Error message indicating that the message size or the increase size is negative -->
   <string name="illegal_message_or_increase_size">Taille de message incorrecte.</string>
+  <!-- Dialog box title that appears when a draft message will not be saved due to invalid recipients -->
   <string name="discard_message_reason_some_invalid">Votre message sera annulé car certains destinataires sont incorrects.</string>
+  <!-- Brief message that appears when the maximum size of slides has been reached -->
   <string name="cannot_add_text_anymore">Impossible d\'ajouter plus de texte.</string>
+  <!-- Dialog box title for display the current mms size  -->
   <string name="title_send_message">Envoyer le message</string>
-  <string name="subject_full">Le sujet ne doit pas être plus long que <xliff:g id="length">%d</xliff:g> caractères.</string>
+  <!-- Toast when the subject is full -->
+  <string name="subject_full">L\'objet ne doit pas dépasser <xliff:g id="length">%d</xliff:g> caractères.</string>
   <string name="pref_title_manage_sim_messages_slot1">Gérer les messages de SIM 1</string>
   <string name="pref_title_manage_sim_messages_slot2">Gérer les messages de SIM 2</string>
   <string name="prefs_title_export_sms_messages">Exporter les messages SMS</string>
   <string name="prefs_title_import_sms_messages">Importer des messages SMS</string>
   <string name="pref_title_sms_delivery_reports_slot1">Accusés de réception pour SIM 1</string>
   <string name="pref_title_sms_delivery_reports_slot2">Accusés de réception pour SIM 2</string>
+  <!-- Status in "Report" window -->
   <string name="status_deleted_unread">Supprimé sans avoir été lu</string>
+  <!-- Disk Storage Full Error Notification dialog text. -->
   <string name="disk_storage_full_error">Erreur : Le stockage est plein.</string>
+  <!-- Mms size is too large dialog text. -->
   <string name="mms_too_large">Le message est trop volumineux à télécharger.</string>
   <string name="send_failed_retry">Impossible d\'envoyer le message, essayer de nouveau\u2026</string>
   <string name="download_failed_retry">Échec de téléchargement du message, essayer de nouveau\u2026</string>
   <string name="system_audio_item">Sonnerie</string>
   <string name="external_audio_item">Musique</string>
+  <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
   <string name="menu_connect_url">Ouvrir l\'URL</string>
   <string name="do_not_show_connect_warning">Ne plus afficher cet avertissement</string>
+  <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
   <string name="menu_add_to_label">Ajouter aux favoris</string>
-  <string name="loadurlinfo_str">Les URL provenant d\'expéditeurs inconnus pourraient être des tentatives d’hameçonnage. N\'ouvrez cette adresse que si vous en êtes sûr.</string>
+  <string name="loadurlinfo_str">Les URL provenant d\'expéditeurs inconnus pourraient être des tentatives de phishing. N\'ouvrez cette adresse que si vous en êtes sûr.</string>
+  <!-- Message Template -->
   <string name="pref_title_message_template">Modèles de message</string>
   <string name="title_new_message_template">Nouveau modèle</string>
   <string name="summary_new_message_template">Composer un nouveau modèle de message</string>
@@ -121,35 +151,43 @@
   <string name="pref_sms_signature_title">Signature SMS</string>
   <string name="pref_title_enable_signature">Ajouter une signature aux messages</string>
   <string name="pref_title_edit_signature">Modifier le texte de signature</string>
+  <!-- Copy message to sim -->
   <string name="menu_copy_to">Copier</string>
   <string name="operation_to_card_memory">Copier le message vers la carte SIM</string>
+  <!-- SMSC -->
   <string name="pref_smsc_title">Centre de service SMS</string>
-  <string name="pref_one_smcs">Numéro du centre de service</string>
+  <string name="pref_one_smcs">Numéro du SMSC</string>
   <string name="pref_more_smcs">Numéro SMSC de la SIM <xliff:g id="slot_number">%d</xliff:g></string>
-  <string name="set_smsc_error">Impossible de définir le numéro du centre de service</string>
+  <string name="set_smsc_error">Impossible de définir le numéro du SMSC</string>
   <string name="set_smsc_success">Numéro SMSC correctement défini</string>
   <string name="set_smsc_confirm_message">Changer le SMSC peut provoquer des échecs SMS. Êtes-vous sûr de vouloir continuer ?</string>
+  <!-- Copy message to sim -->
   <string name="copy_to_sim">Copier le message vers la carte SIM</string>
   <string name="copy_to_sim_success"><xliff:g id="count">%1$d</xliff:g> messages sur <xliff:g id="total">%2$d</xliff:g> enregistrés sur la carte SIM.</string>
   <string name="copy_to_sim_fail">Impossible d\'enregistrer le message</string>
   <string name="copy_to_phone_success">Message enregistré</string>
   <string name="copy_to_phone_fail">Impossible d\'enregistrer le message</string>
   <string name="contact_app_not_found">Impossible d\'ouvrir l\'application Contacts</string>
+  <!-- Gray hint displayed in the search field in Contacts when empty -->
   <string name="search_bar_hint">Rechercher des contacts</string>
+  <!-- Add for share contact feature -->
   <string name="type_vcard">vCard</string>
   <string name="import_vcard">Importer</string>
-  <string name="attach_add_contact_as_vcard">Contact vCard</string>
-  <string name="attach_add_contact_as_text">Joindre les informations d\'un contact</string>
+  <string name="attach_add_contact_as_vcard">vCard du contact</string>
+  <string name="attach_add_contact_as_text">Coordonnées sous forme de texte</string>
   <string name="contact_info_text_as_name">Nom :</string>
   <string name="contact_info_text_as_phone">Tél :</string>
   <string name="contact_info_text_as_email">E-mail :</string>
+  <!-- Sharing vcs files from Calendar -->
   <string name="type_vcal">Événement de l\'agenda</string>
   <string name="pref_wap_push_title">Messages de service Push</string>
   <string name="pref_title_wap_push_enabled">Service Push WAP</string>
   <string name="pref_summary_wap_push_enabled">Recevoir des messages de service de réseau</string>
+  <!-- String used in MemoryStatusActivity.java -->
   <string name="memory_status_title">État de la mémoire</string>
   <string name="sms_phone_memory_usage">SMS : <xliff:g id="used">%1$d</xliff:g> sur <xliff:g id="total">%2$d</xliff:g> utilisés</string>
   <string name="mms_phone_memory_usage">MMS : <xliff:g id="used">%1$d</xliff:g> sur <xliff:g id="total">%2$d</xliff:g> utilisés</string>
+  <!-- Settings item description for SMS and MMS Validity period -->
   <string name="pref_title_validity_period">Durée de validité</string>
   <string name="pref_title_validity_period_slot1">Durée de validité pour SIM 1</string>
   <string name="pref_title_validity_period_slot2">Durée de validité pour SIM 2</string>
@@ -163,25 +201,30 @@
   <string name="validity_period_maximum">Maximale</string>
   <string name="status_expired">MMS expiré</string>
   <string name="operate_success">Opération réussie</string>
-  <string name="operate_failure">Opération échouée</string>
+  <string name="operate_failure">L\'opération a échoué</string>
   <string name="menu_reply">Répondre</string>
   <string name="slot1">SIM 1</string>
   <string name="slot2">SIM 2</string>
   <string name="sim_spinner_active_item_postfix">SIM %d</string>
-  <string name="cannot_play">Ne peut pas présenter le diaporama.</string>
+  <string name="cannot_play">Impossible de présenter le diaporama.</string>
   <string name="confirm_delete_selected_messages">Les messages sélectionnés seront supprimés.</string>
+  <!-- toast for send result -->
   <string name="send_failure">Impossible d\'envoyer le message.</string>
+  <!-- title of mailboxmessagecontent -->
   <string name="message_detail">Détails du message</string>
   <string name="no_message">Aucun message.</string>
   <string name="change_to_folder_mode">Vue dossier</string>
   <string name="change_to_conversation_mode">Vue conversation</string>
+  <!-- Spinner item of box type in mailbox-mode -->
   <string name="type_inbox">Boîte de réception</string>
   <string name="type_sent">Envoyé</string>
   <string name="type_outbox">Boîte d\'envoi</string>
   <string name="type_draft">Brouillons</string>
+  <!-- Spinner item of slot type in mailbox-mode -->
   <string name="slot_type_select">Sélectionner une carte SIM</string>
-  <string name="search_title">Rechercher un message</string>
-  <string name="search_key">Rechercher un mot-clé</string>
+  <!-- String used in SearchActivityExtend.java -->
+  <string name="search_title">Recherche de message</string>
+  <string name="search_key">Mot-clé pour la recherche</string>
   <string name="search_mode">Mode de recherche</string>
   <string name="search_as_name">Nom</string>
   <string name="search_as_number">Numéro</string>
@@ -191,23 +234,26 @@
   <string name="sim_capacity_title">Capacité de la SIM</string>
   <string name="sim_capacity"><xliff:g id="used">%1$d</xliff:g> entrées sur <xliff:g id="total">%2$d</xliff:g> de la carte SIM sont utilisées</string>
   <string name="pref_sim_card_full_save_to_phone">La carte SIM est saturée, enregistrement des nouveaux messages dans la mémoire du téléphone.</string>
+  <!-- batch delete message in ConversationList and MailBoxMessageList -->
   <string name="selected_all">Tout sélectionner</string>
   <string name="deselected_all">Tout désélectionner</string>
   <string name="selected_count"><xliff:g id="COUNT">%d</xliff:g> sélectionné</string>
+  <!-- priority of cdma message -->
   <string name="cdma_priority_normal">Normale</string>
   <string name="cdma_priority_interactive">Interactive</string>
-  <string name="cdma_priority_urgent">Important</string>
+  <string name="cdma_priority_urgent">Urgent</string>
   <string name="cdma_priority_emergency">Urgence</string>
   <string name="pref_title_cdma_priority">Priorité du message</string>
   <string name="pref_summary_cdma_priority">Priorité des messages CDMA</string>
   <string name="download_dialog_title">Télécharger ce MMS ?</string>
   <string name="menu_email">Envoyer e-mail</string>
+  <!-- Settings item description for Preferred storage -->
   <string name="pref_title_sms_store">Stockage préféré</string>
   <string name="pref_title_sms_store_card1">Stockage préféré pour SIM 1</string>
   <string name="pref_title_sms_store_card2">Stockage préféré pour SIM 2</string>
   <string name="pref_sms_store_phone">Téléphone</string>
   <string name="pref_sms_store_card">Carte SIM</string>
-  <string name="mms_size_indicator"><xliff:g id="mms_size">%1$d</xliff:g>/<xliff:g id="all_size">%2$d</xliff:g> KB</string>
+  <string name="mms_size_indicator"><xliff:g id="mms_size">%1$d</xliff:g>/<xliff:g id="all_size">%2$d</xliff:g> Ko</string>
   <string name="pre_define_message_template_1">Je vous rappellerai plus tard.</string>
   <string name="pre_define_message_template_2">Je suis en réunion. Je vous rappellerai plus tard.</string>
   <string name="pre_define_message_template_3">Veuillez m\'appeler plus tard.</string>
@@ -215,8 +261,8 @@
   <string name="menu_delete_all_entries">Tout supprimer</string>
   <string name="menu_delete_sms">Supprimer les SMS</string>
   <string name="menu_delete_mms">Supprimer les MMS</string>
-  <string name="import_sms_title">Importer depuis la mémoire</string>
-  <string name="export_sms_title">Exporter vers la mémoire</string>
+  <string name="import_sms_title">Importer depuis le stockage</string>
+  <string name="export_sms_title">Exporter vers le stockage</string>
   <string name="delete_sms_title">Supprimer la sauvegarde existante</string>
   <string name="pick_sms_backup_title">Sélectionner la sauvegarde SMS</string>
   <string name="delete_sms_toast">Sauvegarde supprimée.</string>
@@ -227,37 +273,50 @@
   <string name="perform_backup_title">Exportation</string>
   <string name="perform_restore_title">Importation</string>
   <string name="wait_progress_message">Veuillez patienter\u2026</string>
-  <string name="backup_file_name_message">Messages exportés vers «%1$s»</string>
+  <string name="backup_file_name_message">Messages exportés vers \'%1$s\'</string>
   <string name="manage_sdcard_messages">Importer/exporter les messages</string>
   <string name="no_backups_found">Aucune sauvegarde trouvée</string>
   <string name="remove_subject">Supprimer l\'objet</string>
+  <!-- QuickMessage Wear-->
   <string name="qm_wear_sending_message">Envoi de la réponse à <xliff:g id="name">%s</xliff:g>\u2026</string>
   <string name="qm_wear_messaged_failed">Message texte pour <xliff:g id="name">%s</xliff:g> non envoyé, veuillez réessayer.</string>
   <string name="qm_wear_voice_reply">Quelle est votre réponse ?</string>
   <string name="qm_wear_reply_by_voice">Répondre à l\'aide de la voix</string>
+  <!-- Copy message text-->
   <string name="copy_empty_string">Aucun texte à copier</string>
   <string name="attach_add_calendar_events">Événement de l\'agenda</string>
+  <!-- friendlier text for an activity not found exception for calendar attachments -->
   <string name="calendar_attachment_activity_not_found">Impossible de trouver une application d\'agenda compatible</string>
+  <!-- Vibrate pattern -->
   <string name="pref_title_mms_notification_vibrate_pattern">Style de vibration</string>
   <string name="pref_summary_mms_notification_vibrate_pattern">Modifier le style de vibration</string>
   <string name="pref_mms_notification_vibrate_normal">Normal</string>
   <string name="pref_mms_notification_vibrate_med_vib">Vibration moyenne</string>
   <string name="pref_mms_notification_vibrate_long_vib">Vibration longue</string>
-  <string name="pref_mms_notification_vibrate_mult_short">Plusieurs courtes</string>
-  <string name="pref_mms_notification_vibrate_mult_long">Plusieurs longues</string>
+  <string name="pref_mms_notification_vibrate_mult_short">Plusieurs vibrations courtes</string>
+  <string name="pref_mms_notification_vibrate_mult_long">Plusieurs vibrations longues</string>
+  <!-- Menu item - Insert smiley -->
   <string name="menu_insert_smiley">Insérer une émoticône</string>
+  <!-- Enable emoticons -->
   <string name="pref_title_enable_emoticons">Support des émoticônes</string>
   <string name="pref_summary_enable_emoticons">Substituer les émoticônes avec des équivalents graphiques</string>
+  <!-- Conversation options -->
   <string name="menu_conversation_options">Options de conversation</string>
   <string name="pref_title_reset_convopt_to_default">Rétablir par défaut</string>
   <string name="pref_summary_reset_convopt_to_default">Réinitialise les paramètres de la conversation avec ceux de l\'application</string>
+  <!-- Full timestamps -->
   <string name="pref_title_mms_full_timestamp">Date complète</string>
   <string name="pref_summary_mms_full_timestamp">Afficher la date et l\'heure des messages</string>
+  <!-- Original timestamps -->
   <string name="pref_title_mms_use_sent_timestamp">Date originale</string>
   <string name="pref_summary_mms_use_sent_timestamp">Afficher la date d\'envoi au lieu de la date de réception</string>
+  <!-- Settings item for boolean option to auto -enable data for MMS messages -->
   <string name="pref_title_mms_auto_enable_data">Activation auto des données mobiles</string>
+  <!-- Settings item description for boolean auto-enable data for MMS option -->
   <string name="pref_summary_mms_auto_enable_data">Activer automatiquement les données mobiles pour les messages MMS</string>
+  <!-- Select recipients dialog -->
   <string name="adding_selected_recipients_dialog_text">Ajout de contacts\u2026</string>
+  <!-- Smart Dialer -->
   <string name="pref_title_mms_smart_dialer">Appel intelligent</string>
-  <string name="pref_summary_mms_smart_dialer">Appelle automatiquement le contact en déplaçant votre appareil à votre oreille</string>
+  <string name="pref_summary_mms_smart_dialer">Appeler automatiquement le contact en rapprochant l\'appareil à votre oreille</string>
 </resources>

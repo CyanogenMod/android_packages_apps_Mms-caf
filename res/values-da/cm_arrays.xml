@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
     <item>Glad</item>
+    <!-- 0: :-) -->
     <item>Trist</item>
+    <!-- 1: :-( -->
     <item>Blinker</item>
+    <!-- 2: ;-) -->
     <item>Tungen stikker ud</item>
+    <!-- 3: :-P -->
     <item>Overrasket</item>
+    <!-- 4: =-O -->
     <item>Kysser</item>
+    <!-- 5: :-* -->
     <item>Råber</item>
+    <!-- 6: :O -->
     <item>Cool</item>
+    <!-- 7: B-) -->
     <item>Pengemund</item>
+    <!-- 8: :-$ -->
     <item>Fod i munden</item>
+    <!-- 9: :-! -->
     <item>Flov</item>
+    <!-- 10: :-[ -->
     <item>Engel</item>
+    <!-- 11: O:-) -->
     <item>Uafklaret</item>
+    <!-- 12: :-\\ -->
     <item>Græder</item>
+    <!-- 13: :\'( -->
     <item>Læber forseglet</item>
+    <!-- 14: :-X -->
     <item>Griner</item>
+    <!-- 15: :-D -->
     <item>Forvirret</item>
+    <!-- 16: o_O -->
     <item>Hjerte</item>
+    <!-- 17: <3 -->
     <item>Gal</item>
+    <!-- 18: x-( -->
     <item>Smørret grin</item>
+    <!-- 19: :-/ -->
     <item>Pokerfjæs</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>

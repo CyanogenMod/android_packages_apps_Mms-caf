@@ -16,6 +16,8 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- QUICKMESSAGE SUPPORT -->
+  <!-- Preferences -->
   <string name="pref_quickmessage">クイックメッセージと返信</string>
   <string name="pref_quickmessage_title">クイックメッセージを表示</string>
   <string name="pref_quickmessage_summary">SMSメッセージ受信時にクイックメッセージのポップアップを自動的に開く</string>
@@ -24,14 +26,18 @@
   <string name="pref_close_all_title">すべて閉じる</string>
   <string name="pref_close_all_summary">閉じるボタンですべてのメッセージを閉じる</string>
   <string name="pref_dark_theme_title">ダークテーマを使用</string>
-  <string name="pref_dark_theme_summary">選択されていなければデフォルトの「ライト」テーマが使用されます</string>
+  <string name="pref_dark_theme_summary">選択されていなければデフォルトの[ライト]テーマが使用されます</string>
   <string name="message_counter">%2$d通中%1$d通目</string>
+  <!-- QM Dialog box buttons -->
   <string name="button_close">閉じる</string>
   <string name="button_view">表示</string>
   <string name="button_templates">テンプレート</string>
+  <!-- Hint text in message body field when keyboard is exposed -->
   <string name="type_to_reply_text_enter_to_send">返信の種類</string>
+  <!-- QM Toast -->
   <string name="qm_mark_read">読む</string>
   <string name="toast_sending_message">メッセージを送信中\u2026</string>
+  <!-- Delay delivery -->
   <string name="pref_title_send_delay">送信の遅延</string>
   <string name="send_delay_immediate">すぐに送信</string>
   <string name="send_delay_3seconds">3秒</string>
@@ -40,35 +46,46 @@
   <string name="send_delay_20seconds">20秒</string>
   <string name="send_delay_30seconds">30秒</string>
   <string name="sent_countdown">メッセージ送信のカウントダウン</string>
+  <!-- EXTRA SETTINGS -->
   <string name="pref_extra_settings">その他の設定</string>
+  <!-- Blacklist preferences -->
   <string name="blacklist_title">着信拒否リスト</string>
   <string name="blacklist_summary_disabled">無効</string>
   <string name="blacklist_summary">着信拒否リストにある電話番号からの着信やメッセージを受け取らないようにします</string>
+  <!-- Blacklist notifications -->
   <string name="blacklist_notification">%sからのメッセージを受信拒否しました</string>
   <string name="blacklist_notification_private_number">非通知番号からのメッセージを受信拒否しました</string>
   <string name="blacklist_notification_list_private">非通知</string>
-  <string name="blacklist_notification_unknown_number">不明な番号「%s」からのメッセージを受信拒否しました</string>
+  <string name="blacklist_notification_unknown_number">不明な番号[%s]からのメッセージを受信拒否しました</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g>通のメッセージを受信拒否しました</string>
   <string name="unblock_number">ブロック解除</string>
+  <!-- Blacklist management -->
   <string name="add_to_blacklist">着信拒否リストに追加</string>
   <string name="add_to_blacklist_message">%sからの今後のメッセージは受信拒否されます</string>
+  <!-- Generic blacklist handling -->
   <string name="alert_dialog_yes">はい</string>
   <string name="alert_dialog_no">いいえ</string>
+  <!-- Strip unicode -->
   <string name="pref_title_unicode_stripping">Unicodeを削除</string>
   <string name="pref_unicode_stripping_leave_intact">文字をそのままにしておく</string>
   <string name="pref_unicode_stripping_non_encodable">エンコードできない文字を削除</string>
   <string name="pref_unicode_stripping_all">すべてのUnicode文字を削除</string>
+  <!-- Context menu item on a message for marking as unread / read -->
   <string name="menu_as_unread">未読にする</string>
   <string name="menu_as_read">既読にする</string>
+  <!-- Context menu item on a message for marking all threads as unread / read -->
   <string name="menu_all_as_unread">すべて未読にする</string>
   <string name="menu_all_as_read">すべて既読にする</string>
   <string name="menu_add_to_contacts_cm">連絡帳に追加</string>
+  <!-- Confirm Mark as unread / read -->
   <string name="confirm_mark_unread_dialog_title">未読にしますか？</string>
   <string name="confirm_mark_unread_conversation">会話は未読になります。</string>
   <string name="confirm_mark_read_dialog_title">既読にしますか？</string>
   <string name="confirm_mark_read_conversation">会話は既読になります。</string>
+  <!-- Mark all threads confirmation dialog message -->
   <string name="confirm_mark_unread_all_conversations">すべてのスレッドが未読になります。</string>
   <string name="confirm_mark_read_all_conversations">すべてのスレッドが既読になります。</string>
+  <!-- Multi recipients -->
   <string name="loading">読み込み中\u2026</string>
   <string name="select_recipients">宛先を選択</string>
   <string name="no_recipients">連絡先が見つかりません</string>
@@ -77,12 +94,14 @@
   <string name="menu_mobile">携帯電話番号のみ</string>
   <string name="menu_order_by_given_name">名前で並べ替え</string>
   <string name="menu_order_by_last_name">苗字で並べ替え</string>
+  <!-- Extra message options -->
   <string name="message_share">共有</string>
   <string name="message_share_intent_title">メッセージを共有</string>
   <string name="start_new_message_button">新しいメッセージ</string>
   <string name="all_spinner_option">すべて</string>
-  <string name="menu_copy_url">URL「<xliff:g id="extractedurl">%s</xliff:g>」をコピー</string>
+  <string name="menu_copy_url">URL[<xliff:g id="extractedurl">%s</xliff:g>]をコピー</string>
   <string name="deleting_threads">スレッドを削除しています\u2026</string>
+  <!-- Context menu item on an failed message for resending -->
   <string name="menu_resend">再送信</string>
   <string name="cancel_downloading">キャンセル</string>
   <string name="confirm_cancel_downloading">MMSのダウンロードはキャンセルされます。</string>
@@ -90,10 +109,15 @@
   <string name="send_by_slot2">SIM 2で送信</string>
   <string name="select_phone_account_title">別のアプリで送信</string>
   <string name="media_size_limit">メッセージサイズの上限を超えているため、メッセージを送信できません。</string>
+  <!-- Error message indicating that the message size or the increase size is negative -->
   <string name="illegal_message_or_increase_size">無効なメッセージサイズです。</string>
+  <!-- Dialog box title that appears when a draft message will not be saved due to invalid recipients -->
   <string name="discard_message_reason_some_invalid">受信者のアドレスの一部が無効であるため、メッセージは破棄されます。</string>
+  <!-- Brief message that appears when the maximum size of slides has been reached -->
   <string name="cannot_add_text_anymore">これ以上テキストを追加できません。</string>
+  <!-- Dialog box title for display the current mms size  -->
   <string name="title_send_message">メッセージを送信</string>
+  <!-- Toast when the subject is full -->
   <string name="subject_full">件名は<xliff:g id="length">%d</xliff:g>文字より短くしてください。</string>
   <string name="pref_title_manage_sim_messages_slot1">SIM 1のメッセージを管理</string>
   <string name="pref_title_manage_sim_messages_slot2">SIM 2のメッセージを管理</string>
@@ -101,17 +125,23 @@
   <string name="prefs_title_import_sms_messages">SMSメッセージをインポート</string>
   <string name="pref_title_sms_delivery_reports_slot1">SIM 1の配信レポート</string>
   <string name="pref_title_sms_delivery_reports_slot2">SIM 2の配信レポート</string>
+  <!-- Status in "Report" window -->
   <string name="status_deleted_unread">未読のまま削除</string>
+  <!-- Disk Storage Full Error Notification dialog text. -->
   <string name="disk_storage_full_error">エラー: ストレージがいっぱいです。</string>
+  <!-- Mms size is too large dialog text. -->
   <string name="mms_too_large">メッセージが大きすぎるためダウンロードできません。</string>
   <string name="send_failed_retry">メッセージを送信できませんでした、再試行中\u2026</string>
   <string name="download_failed_retry">メッセージをダウンロードできませんでした、再試行中\u2026</string>
   <string name="system_audio_item">着信音</string>
   <string name="external_audio_item">音楽</string>
+  <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
   <string name="menu_connect_url">URLを開く</string>
   <string name="do_not_show_connect_warning">この警告を次回から表示しない</string>
+  <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
   <string name="menu_add_to_label">ブックマークに追加</string>
   <string name="loadurlinfo_str">不明な送信者からのURLはフィッシングの恐れがあります。確信がなければこのアドレスを開かないでください。</string>
+  <!-- Message Template -->
   <string name="pref_title_message_template">メッセージのテンプレート</string>
   <string name="title_new_message_template">新しいテンプレート</string>
   <string name="summary_new_message_template">新しいメッセージのテンプレートを作成する</string>
@@ -121,21 +151,26 @@
   <string name="pref_sms_signature_title">SMSの署名</string>
   <string name="pref_title_enable_signature">メッセージに署名を追加</string>
   <string name="pref_title_edit_signature">署名のテキストを編集</string>
+  <!-- Copy message to sim -->
   <string name="menu_copy_to">コピー</string>
   <string name="operation_to_card_memory">SIMカードにメッセージをコピー</string>
+  <!-- SMSC -->
   <string name="pref_smsc_title">SMSサービスセンター</string>
   <string name="pref_one_smcs">SMSC番号</string>
   <string name="pref_more_smcs">SIM <xliff:g id="slot_number">%d</xliff:g>のSMSC番号</string>
   <string name="set_smsc_error">SMSC番号を設定できませんでした</string>
   <string name="set_smsc_success">SMSC番号の設定が完了しました</string>
   <string name="set_smsc_confirm_message">SMSCを変更するとSMSの処理ができなくなる恐れがあります。続けてもよろしいですか？</string>
+  <!-- Copy message to sim -->
   <string name="copy_to_sim">メッセージをSIMにコピー</string>
   <string name="copy_to_sim_success"><xliff:g id="total">%2$d</xliff:g>通中<xliff:g id="count">%1$d</xliff:g>通のメッセージをSIMカードに保存しました。</string>
   <string name="copy_to_sim_fail">メッセージを保存できません</string>
   <string name="copy_to_phone_success">メッセージを保存しました</string>
   <string name="copy_to_phone_fail">メッセージを保存できませんでした</string>
   <string name="contact_app_not_found">連絡帳アプリケーションを開けませんでした</string>
+  <!-- Gray hint displayed in the search field in Contacts when empty -->
   <string name="search_bar_hint">連絡先を検索</string>
+  <!-- Add for share contact feature -->
   <string name="type_vcard">vCard</string>
   <string name="import_vcard">インポート</string>
   <string name="attach_add_contact_as_vcard">連絡先のvCard</string>
@@ -143,13 +178,16 @@
   <string name="contact_info_text_as_name">名前:</string>
   <string name="contact_info_text_as_phone">電話:</string>
   <string name="contact_info_text_as_email">メール:</string>
+  <!-- Sharing vcs files from Calendar -->
   <string name="type_vcal">カレンダーの予定</string>
   <string name="pref_wap_push_title">プッシュサービスメッセージ</string>
   <string name="pref_title_wap_push_enabled">WAPプッシュサービス</string>
   <string name="pref_summary_wap_push_enabled">ネットワークサービスメッセージを受信する</string>
+  <!-- String used in MemoryStatusActivity.java -->
   <string name="memory_status_title">メモリの状態</string>
   <string name="sms_phone_memory_usage">SMS: <xliff:g id="total">%2$d</xliff:g>中<xliff:g id="used">%1$d</xliff:g>使用</string>
   <string name="mms_phone_memory_usage">MMS: <xliff:g id="total">%2$d</xliff:g>中<xliff:g id="used">%1$d</xliff:g>使用</string>
+  <!-- Settings item description for SMS and MMS Validity period -->
   <string name="pref_title_validity_period">有効期限</string>
   <string name="pref_title_validity_period_slot1">SIM 1の有効期限</string>
   <string name="pref_title_validity_period_slot2">SIM 2の有効期限</string>
@@ -170,16 +208,21 @@
   <string name="sim_spinner_active_item_postfix">SIM %d</string>
   <string name="cannot_play">スライドショーを表示できません。</string>
   <string name="confirm_delete_selected_messages">選択したメッセージは削除されます。</string>
+  <!-- toast for send result -->
   <string name="send_failure">メッセージを送信できませんでした。</string>
+  <!-- title of mailboxmessagecontent -->
   <string name="message_detail">メッセージの詳細</string>
   <string name="no_message">メッセージがありません。</string>
   <string name="change_to_folder_mode">フォルダー表示</string>
   <string name="change_to_conversation_mode">会話表示</string>
+  <!-- Spinner item of box type in mailbox-mode -->
   <string name="type_inbox">受信トレイ</string>
   <string name="type_sent">送信済み</string>
   <string name="type_outbox">送信トレイ</string>
   <string name="type_draft">下書き</string>
+  <!-- Spinner item of slot type in mailbox-mode -->
   <string name="slot_type_select">SIMカードを選択</string>
+  <!-- String used in SearchActivityExtend.java -->
   <string name="search_title">メッセージを検索</string>
   <string name="search_key">検索キーワード</string>
   <string name="search_mode">検索モード</string>
@@ -191,9 +234,11 @@
   <string name="sim_capacity_title">SIMの容量</string>
   <string name="sim_capacity"><xliff:g id="total">%2$d</xliff:g>中<xliff:g id="used">%1$d</xliff:g>のSIMカードのエントリが使用されています</string>
   <string name="pref_sim_card_full_save_to_phone">SIMカードがいっぱいであるため、新しいメッセージを携帯電話に保存しています。</string>
+  <!-- batch delete message in ConversationList and MailBoxMessageList -->
   <string name="selected_all">すべて選択</string>
   <string name="deselected_all">すべて選択解除</string>
   <string name="selected_count"><xliff:g id="COUNT">%d</xliff:g>件を選択しています</string>
+  <!-- priority of cdma message -->
   <string name="cdma_priority_normal">標準</string>
   <string name="cdma_priority_interactive">会話</string>
   <string name="cdma_priority_urgent">至急</string>
@@ -202,6 +247,7 @@
   <string name="pref_summary_cdma_priority">CDMAメッセージの優先度</string>
   <string name="download_dialog_title">このMMSをダウンロードしますか？</string>
   <string name="menu_email">メールを送信</string>
+  <!-- Settings item description for Preferred storage -->
   <string name="pref_title_sms_store">優先ストレージ</string>
   <string name="pref_title_sms_store_card1">SIM 1の優先ストレージ</string>
   <string name="pref_title_sms_store_card2">SIM 2の優先ストレージ</string>
@@ -227,17 +273,21 @@
   <string name="perform_backup_title">エクスポート中</string>
   <string name="perform_restore_title">インポート中</string>
   <string name="wait_progress_message">お待ち下さい\u2026</string>
-  <string name="backup_file_name_message">「%1$s」にメッセージをエクスポートしました</string>
+  <string name="backup_file_name_message">[%1$s]にメッセージをエクスポートしました</string>
   <string name="manage_sdcard_messages">メッセージをインポート/エクスポート</string>
   <string name="no_backups_found">バックアップは見つかりませんでした</string>
   <string name="remove_subject">件名を削除</string>
+  <!-- QuickMessage Wear-->
   <string name="qm_wear_sending_message"><xliff:g id="name">%s</xliff:g>に返信を送信中\u2026</string>
   <string name="qm_wear_messaged_failed"><xliff:g id="name">%s</xliff:g>宛のテキストメッセージは送信されませんでした、もう一度お試しください。</string>
   <string name="qm_wear_voice_reply">返信の内容は何ですか？</string>
   <string name="qm_wear_reply_by_voice">音声で返信</string>
+  <!-- Copy message text-->
   <string name="copy_empty_string">コピーするテキストがありません</string>
   <string name="attach_add_calendar_events">カレンダーの予定</string>
+  <!-- friendlier text for an activity not found exception for calendar attachments -->
   <string name="calendar_attachment_activity_not_found">サポートしているカレンダーアプリが見つかりませんでした</string>
+  <!-- Vibrate pattern -->
   <string name="pref_title_mms_notification_vibrate_pattern">バイブレーションのパターン</string>
   <string name="pref_summary_mms_notification_vibrate_pattern">バイブレーションのパターンを変更する</string>
   <string name="pref_mms_notification_vibrate_normal">標準</string>
@@ -245,19 +295,28 @@
   <string name="pref_mms_notification_vibrate_long_vib">長い振動</string>
   <string name="pref_mms_notification_vibrate_mult_short">複数の短い振動</string>
   <string name="pref_mms_notification_vibrate_mult_long">複数の長い振動</string>
+  <!-- Menu item - Insert smiley -->
   <string name="menu_insert_smiley">絵文字を挿入</string>
+  <!-- Enable emoticons -->
   <string name="pref_title_enable_emoticons">絵文字サポート</string>
   <string name="pref_summary_enable_emoticons">テキストの顔文字をそれに対応する絵文字で置き換える</string>
+  <!-- Conversation options -->
   <string name="menu_conversation_options">会話のオプション</string>
   <string name="pref_title_reset_convopt_to_default">デフォルトに戻す</string>
   <string name="pref_summary_reset_convopt_to_default">会話の設定をアプリケーションレベルの設定にリセットする</string>
+  <!-- Full timestamps -->
   <string name="pref_title_mms_full_timestamp">フルタイムスタンプ</string>
   <string name="pref_summary_mms_full_timestamp">タイムスタンプに日付と時刻の両方を表示する</string>
+  <!-- Original timestamps -->
   <string name="pref_title_mms_use_sent_timestamp">オリジナルタイムスタンプ</string>
   <string name="pref_summary_mms_use_sent_timestamp">タイムスタンプに受信日時の代わりに送信日時を表示する</string>
-  <string name="pref_title_mms_auto_enable_data">データ通信を自動で有効化</string>
-  <string name="pref_summary_mms_auto_enable_data">MMSメッセージを送受信するためにデータ通信を自動的に有効にする</string>
+  <!-- Settings item for boolean option to auto -enable data for MMS messages -->
+  <string name="pref_title_mms_auto_enable_data">モバイルデータを自動で有効化</string>
+  <!-- Settings item description for boolean auto-enable data for MMS option -->
+  <string name="pref_summary_mms_auto_enable_data">MMSメッセージを送受信するためにモバイルデータを自動的に有効にする</string>
+  <!-- Select recipients dialog -->
   <string name="adding_selected_recipients_dialog_text">連絡先を追加しています\u2026</string>
+  <!-- Smart Dialer -->
   <string name="pref_title_mms_smart_dialer">スマートコール</string>
   <string name="pref_summary_mms_smart_dialer">携帯電話を耳に近づけると連絡先に自動的に発信する</string>
 </resources>

@@ -16,6 +16,8 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- QUICKMESSAGE SUPPORT -->
+  <!-- Preferences -->
   <string name="pref_quickmessage">Mezu eta erantzun azkarrak</string>
   <string name="pref_quickmessage_title">Erakutsi mezu azkarra</string>
   <string name="pref_quickmessage_summary">Ireki automatikoki mezu azkarren laster-leihoa SMSak jasotzean</string>
@@ -26,12 +28,16 @@
   <string name="pref_dark_theme_title">Gai iluna erabili</string>
   <string name="pref_dark_theme_summary">Hautatuta ez badago, lehenetsitako gai argia erabiliko da</string>
   <string name="message_counter">%1$d / %2$d</string>
+  <!-- QM Dialog box buttons -->
   <string name="button_close">Itxi</string>
   <string name="button_view">Ikusi</string>
   <string name="button_templates">Txantiloiak</string>
+  <!-- Hint text in message body field when keyboard is exposed -->
   <string name="type_to_reply_text_enter_to_send">Idatzi erantzuteko</string>
+  <!-- QM Toast -->
   <string name="qm_mark_read">Irakurrita</string>
   <string name="toast_sending_message">Mezua bidaltzen\u2026</string>
+  <!-- Delay delivery -->
   <string name="pref_title_send_delay">Bidaltzea atzeratu</string>
   <string name="send_delay_immediate">Bidali berehala</string>
   <string name="send_delay_3seconds">3 segundo</string>
@@ -40,35 +46,46 @@
   <string name="send_delay_20seconds">20 segundo</string>
   <string name="send_delay_30seconds">30 segundo</string>
   <string name="sent_countdown">Mezua bidaltzeko atzerakontua</string>
+  <!-- EXTRA SETTINGS -->
   <string name="pref_extra_settings">Ezarpen osagarriak</string>
+  <!-- Blacklist preferences -->
   <string name="blacklist_title">Blokeatutako deitzaileen zerrenda</string>
   <string name="blacklist_summary_disabled">Ezgaituta</string>
   <string name="blacklist_summary">Ez duzu dei edo mezurik jasoko blokeatutako deitzaileen zerrendan dauden telefono zenbakietatik</string>
+  <!-- Blacklist notifications -->
   <string name="blacklist_notification">%s(r)en mezu bat blokeatu da</string>
   <string name="blacklist_notification_private_number">Zenbaki pribatu baten mezu bat blokeatu da</string>
   <string name="blacklist_notification_list_private">Pribatua</string>
   <string name="blacklist_notification_unknown_number">%s zenbaki ezezagunaren mezu bat blokeatu da</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> mezu blokeatu dira</string>
   <string name="unblock_number">Desblokeatu</string>
+  <!-- Blacklist management -->
   <string name="add_to_blacklist">Gehitu blokeatutako deitzaileen zerrendara</string>
   <string name="add_to_blacklist_message">Etorkizunean %s(r)en mezuak blokeatu egingo dira</string>
+  <!-- Generic blacklist handling -->
   <string name="alert_dialog_yes">Bai</string>
   <string name="alert_dialog_no">Ez</string>
+  <!-- Strip unicode -->
   <string name="pref_title_unicode_stripping">Garbitu Unicodea</string>
   <string name="pref_unicode_stripping_leave_intact">Laga karaktereak ukitu gabe</string>
   <string name="pref_unicode_stripping_non_encodable">Ezabatu kodetu ezin diren karaktereak</string>
   <string name="pref_unicode_stripping_all">Garbitu unicode karaktere guztiak</string>
+  <!-- Context menu item on a message for marking as unread / read -->
   <string name="menu_as_unread">Irakurri gabe bezala markatu</string>
   <string name="menu_as_read">Markatu irakurrita gisa</string>
+  <!-- Context menu item on a message for marking all threads as unread / read -->
   <string name="menu_all_as_unread">Denak ez irakurriak bezala markatu</string>
   <string name="menu_all_as_read">Markatu guztiak irakurrita gisa</string>
   <string name="menu_add_to_contacts_cm">Gehitu kontaktuetara</string>
+  <!-- Confirm Mark as unread / read -->
   <string name="confirm_mark_unread_dialog_title">Irakurri gabe bezala markatu?</string>
   <string name="confirm_mark_unread_conversation">Elkarrizketa ez irakurria bezala markatuko da.</string>
   <string name="confirm_mark_read_dialog_title">Markatu irakurrita gisa?</string>
   <string name="confirm_mark_read_conversation">Elkarrizketa irakurria bezala markatuko da.</string>
+  <!-- Mark all threads confirmation dialog message -->
   <string name="confirm_mark_unread_all_conversations">Elkarrizketa guztiak ez irakurriak bezala markatuko dira.</string>
   <string name="confirm_mark_read_all_conversations">Hari guztiak irakurrita gisa markatuko dira.</string>
+  <!-- Multi recipients -->
   <string name="loading">Kargatzen\u2026</string>
   <string name="select_recipients">Hartzaileak hautatu</string>
   <string name="no_recipients">Ez da kontakturik aurkitu</string>
@@ -77,12 +94,14 @@
   <string name="menu_mobile">Mugikor zenbakiak besterik ez</string>
   <string name="menu_order_by_given_name">Ordenatu izenaren arabera</string>
   <string name="menu_order_by_last_name">Ordenatu abizenaren arabera</string>
+  <!-- Extra message options -->
   <string name="message_share">Partekatu</string>
   <string name="message_share_intent_title">Partekatu mezua</string>
   <string name="start_new_message_button">Mezu berria</string>
   <string name="all_spinner_option">Guztiak</string>
   <string name="menu_copy_url">Kopiatu URL helbidea <xliff:g id="extractedurl">%s</xliff:g></string>
   <string name="deleting_threads">Hariak ezabatzen\u2026</string>
+  <!-- Context menu item on an failed message for resending -->
   <string name="menu_resend">Birbidali</string>
   <string name="cancel_downloading">Utzi</string>
   <string name="confirm_cancel_downloading">MMS deskarga utziko da.</string>
@@ -90,10 +109,15 @@
   <string name="send_by_slot2">Bidali 2. SIM txartela erabilita</string>
   <string name="select_phone_account_title">Bidali honekin:</string>
   <string name="media_size_limit">Mezuaren tamaina muga gainditu da, ezin da mezua bidali.</string>
+  <!-- Error message indicating that the message size or the increase size is negative -->
   <string name="illegal_message_or_increase_size">Mezu tamaina okerra.</string>
+  <!-- Dialog box title that appears when a draft message will not be saved due to invalid recipients -->
   <string name="discard_message_reason_some_invalid">Zure mezua baztertuko da hartzaile batzuk baliogabeak direlako.</string>
+  <!-- Brief message that appears when the maximum size of slides has been reached -->
   <string name="cannot_add_text_anymore">Ezin da testu gehiago gehitu.</string>
+  <!-- Dialog box title for display the current mms size  -->
   <string name="title_send_message">Bidali mezua</string>
+  <!-- Toast when the subject is full -->
   <string name="subject_full">Gaia ezin da <xliff:g id="length">%d</xliff:g> karaktere baino luzeagoa izan.</string>
   <string name="pref_title_manage_sim_messages_slot1">Kudeatu 1. SIM txarteleko mezuak</string>
   <string name="pref_title_manage_sim_messages_slot2">Kudeatu 2. SIM txarteleko mezuak</string>
@@ -101,17 +125,23 @@
   <string name="prefs_title_import_sms_messages">Inportatu SMS mezuak</string>
   <string name="pref_title_sms_delivery_reports_slot1">1. SIM txartelaren bidalketa txostenak</string>
   <string name="pref_title_sms_delivery_reports_slot2">2. SIM txartelaren bidalketa txostenak</string>
+  <!-- Status in "Report" window -->
   <string name="status_deleted_unread">Irakurri gabe ezabatuta</string>
+  <!-- Disk Storage Full Error Notification dialog text. -->
   <string name="disk_storage_full_error">Errorea. Biltegiratzea beteta dago.</string>
+  <!-- Mms size is too large dialog text. -->
   <string name="mms_too_large">Mezua handiegia da deskargatzeko.</string>
   <string name="send_failed_retry">Huts egin du mezua bidaltzean, berriro saiatzen\u2026</string>
   <string name="download_failed_retry">Huts egin du mezua deskargatzean, berriro saiatzen\u2026</string>
   <string name="system_audio_item">Dei doinua</string>
   <string name="external_audio_item">Musika</string>
+  <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
   <string name="menu_connect_url">Ireki URL helbidea</string>
   <string name="do_not_show_connect_warning">Ez bistaratu ohar hau berriro</string>
+  <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
   <string name="menu_add_to_label">Gehitu laster-marketara</string>
   <string name="loadurlinfo_str">Igorle ezezagunen URL helbideak iruzur saiakerak izan daitezke. Ziur ez bazaude, ez ireki helbide hau.</string>
+  <!-- Message Template -->
   <string name="pref_title_message_template">Mezu txantiloiak</string>
   <string name="title_new_message_template">Txantiloi berria</string>
   <string name="summary_new_message_template">Idatzi mezu txantiloi berria</string>
@@ -121,21 +151,26 @@
   <string name="pref_sms_signature_title">SMS sinadura</string>
   <string name="pref_title_enable_signature">Gehitu sinadura mezuetara</string>
   <string name="pref_title_edit_signature">Editatu sinaduraren testua</string>
+  <!-- Copy message to sim -->
   <string name="menu_copy_to">Kopiatu</string>
   <string name="operation_to_card_memory">Kopiatu mezua SIM txartelera</string>
+  <!-- SMSC -->
   <string name="pref_smsc_title">SMS zerbitzu zentroa</string>
   <string name="pref_one_smcs">SMSC zenbakia</string>
   <string name="pref_more_smcs"><xliff:g id="slot_number">%d</xliff:g>. SIM txartelaren SMSC zenbakia</string>
   <string name="set_smsc_error">Ezin izan da SMSC zenbakia ezarri</string>
   <string name="set_smsc_success">SMSC zenbakia ondo ezarri da</string>
   <string name="set_smsc_confirm_message">SMSC zenbakia aldatzeak SMS transakzioek huts egitea ekar lezake. Jarraitu?</string>
+  <!-- Copy message to sim -->
   <string name="copy_to_sim">Kopiatu mezua SIM txartelera</string>
   <string name="copy_to_sim_success"><xliff:g id="count">%1$d</xliff:g> / <xliff:g id="total">%2$d</xliff:g> mezu gorde dira SIM txartelean.</string>
   <string name="copy_to_sim_fail">Ezin izan da mezua gorde</string>
   <string name="copy_to_phone_success">Mezua gorde da</string>
   <string name="copy_to_phone_fail">Ezin izan da mezua gorde</string>
   <string name="contact_app_not_found">Ezin izan da kontaktuen aplikazioa ireki</string>
+  <!-- Gray hint displayed in the search field in Contacts when empty -->
   <string name="search_bar_hint">Bilatu kontaktuak</string>
+  <!-- Add for share contact feature -->
   <string name="type_vcard">vCard</string>
   <string name="import_vcard">Inportatu</string>
   <string name="attach_add_contact_as_vcard">Kontaktuaren vCard txartela</string>
@@ -143,13 +178,16 @@
   <string name="contact_info_text_as_name">Izena:</string>
   <string name="contact_info_text_as_phone">Tel:</string>
   <string name="contact_info_text_as_email">Eposta:</string>
+  <!-- Sharing vcs files from Calendar -->
   <string name="type_vcal">Egutegiko gertaera</string>
   <string name="pref_wap_push_title">Push zerbitzuko mezuak</string>
   <string name="pref_title_wap_push_enabled">WAP Push zerbitzua</string>
   <string name="pref_summary_wap_push_enabled">Jaso sare zerbitzuko mezuak</string>
+  <!-- String used in MemoryStatusActivity.java -->
   <string name="memory_status_title">Memoriaren egoera</string>
   <string name="sms_phone_memory_usage">SMS: <xliff:g id="used">%1$d</xliff:g> / <xliff:g id="total">%2$d</xliff:g> erabilita</string>
   <string name="mms_phone_memory_usage">MMS: <xliff:g id="used">%1$d</xliff:g> / <xliff:g id="total">%2$d</xliff:g> erabilita</string>
+  <!-- Settings item description for SMS and MMS Validity period -->
   <string name="pref_title_validity_period">Baliozkotasun epea</string>
   <string name="pref_title_validity_period_slot1">1. SIMaren baliozkotasun epea</string>
   <string name="pref_title_validity_period_slot2">2. SIMaren baliozkotasun epea</string>
@@ -170,16 +208,21 @@
   <string name="sim_spinner_active_item_postfix">%d. SIMa</string>
   <string name="cannot_play">Ezin da aurkezpena bistaratu.</string>
   <string name="confirm_delete_selected_messages">Hautatutako mezuak ezabatuko dira.</string>
+  <!-- toast for send result -->
   <string name="send_failure">Ezin izan da mezua bidali.</string>
+  <!-- title of mailboxmessagecontent -->
   <string name="message_detail">Mezuaren xehetasunak</string>
   <string name="no_message">Mezurik ez.</string>
   <string name="change_to_folder_mode">Karpeta ikuspegia</string>
   <string name="change_to_conversation_mode">Elkarrizketa ikuspegia</string>
+  <!-- Spinner item of box type in mailbox-mode -->
   <string name="type_inbox">Sarrera ontzia</string>
   <string name="type_sent">Bidalitakoak</string>
   <string name="type_outbox">Irteera ontzia</string>
   <string name="type_draft">Zirriborroak</string>
+  <!-- Spinner item of slot type in mailbox-mode -->
   <string name="slot_type_select">Hautatu SIM txartela</string>
+  <!-- String used in SearchActivityExtend.java -->
   <string name="search_title">Mezu bilaketa</string>
   <string name="search_key">Bilaketa hitz gakoa</string>
   <string name="search_mode">Bilaketa modua</string>
@@ -191,9 +234,11 @@
   <string name="sim_capacity_title">SIM edukiera</string>
   <string name="sim_capacity"><xliff:g id="total">%2$d</xliff:g>tik <xliff:g id="used">%1$d</xliff:g> sarrera erabilita SIM txartelean</string>
   <string name="pref_sim_card_full_save_to_phone">SIM txartela beteta dago, mezu berriak telefonoan gordeko dira.</string>
+  <!-- batch delete message in ConversationList and MailBoxMessageList -->
   <string name="selected_all">Hautatu guztiak</string>
   <string name="deselected_all">Desautatu guztiak</string>
   <string name="selected_count"><xliff:g id="COUNT">%d</xliff:g> hautatuta</string>
+  <!-- priority of cdma message -->
   <string name="cdma_priority_normal">Arrunta</string>
   <string name="cdma_priority_interactive">Interaktiboa</string>
   <string name="cdma_priority_urgent">Premiazkoa</string>
@@ -202,6 +247,7 @@
   <string name="pref_summary_cdma_priority">CDMA mezuen lehentasuna</string>
   <string name="download_dialog_title">Deskargatu MMS mezu hau?</string>
   <string name="menu_email">Bidali eposta</string>
+  <!-- Settings item description for Preferred storage -->
   <string name="pref_title_sms_store">Biltegiratze hobetsia</string>
   <string name="pref_title_sms_store_card1">1. SIM txartelaren biltegiratze hobetsia</string>
   <string name="pref_title_sms_store_card2">2. SIM txartelaren biltegiratze hobetsia</string>
@@ -231,13 +277,17 @@
   <string name="manage_sdcard_messages">Inportatu/esportatu mezuak</string>
   <string name="no_backups_found">Ez da babeskopiarik aurkitu</string>
   <string name="remove_subject">Kendu gaia</string>
+  <!-- QuickMessage Wear-->
   <string name="qm_wear_sending_message">Erantzuna bidaltzen <xliff:g id="name">%s</xliff:g>(r)i\u2026</string>
   <string name="qm_wear_messaged_failed">Ez zaio testu mezua bidali <xliff:g id="name">%s</xliff:g>(r)i, saiatu berriro mesedez.</string>
   <string name="qm_wear_voice_reply">Zein da zure erantzuna?</string>
   <string name="qm_wear_reply_by_voice">Erantzun ahotsa erabilita</string>
+  <!-- Copy message text-->
   <string name="copy_empty_string">Ez dago testurik kopiatzeko</string>
   <string name="attach_add_calendar_events">Egutegiko gertaera</string>
+  <!-- friendlier text for an activity not found exception for calendar attachments -->
   <string name="calendar_attachment_activity_not_found">Ezin izan da aurkitu euskarria duen egutegi aplikaziorik</string>
+  <!-- Vibrate pattern -->
   <string name="pref_title_mms_notification_vibrate_pattern">Bibrazio eredua</string>
   <string name="pref_summary_mms_notification_vibrate_pattern">Aldatu bibrazio eredua</string>
   <string name="pref_mms_notification_vibrate_normal">Arrunta</string>
@@ -245,19 +295,28 @@
   <string name="pref_mms_notification_vibrate_long_vib">Bibrazio luzea</string>
   <string name="pref_mms_notification_vibrate_mult_short">Labur anitz</string>
   <string name="pref_mms_notification_vibrate_mult_long">Luze anitz</string>
+  <!-- Menu item - Insert smiley -->
   <string name="menu_insert_smiley">Txertatu emotikonoa</string>
+  <!-- Enable emoticons -->
   <string name="pref_title_enable_emoticons">Emotikonoentzako euskarria</string>
   <string name="pref_summary_enable_emoticons">Ordeztu testu emotikonoak baliokide grafikoekin</string>
+  <!-- Conversation options -->
   <string name="menu_conversation_options">Elkarrizketa aukerak</string>
   <string name="pref_title_reset_convopt_to_default">Leheneratu balio lehenetsietara</string>
   <string name="pref_summary_reset_convopt_to_default">Elkarrizketa ezarpenak aplikazioko mailako ezarpenetara leheneratzen ditu</string>
+  <!-- Full timestamps -->
   <string name="pref_title_mms_full_timestamp">Denbora marka osoa</string>
   <string name="pref_summary_mms_full_timestamp">Bistaratu data eta ordua denbora marketan</string>
+  <!-- Original timestamps -->
   <string name="pref_title_mms_use_sent_timestamp">Jatorrizko denbora markak</string>
   <string name="pref_summary_mms_use_sent_timestamp">Bistaratu bidaltze data  jasotze dataren ordez denbora marketan</string>
+  <!-- Settings item for boolean option to auto -enable data for MMS messages -->
   <string name="pref_title_mms_auto_enable_data">Automatikoki gaitu datuak</string>
+  <!-- Settings item description for boolean auto-enable data for MMS option -->
   <string name="pref_summary_mms_auto_enable_data">Automatikoki gaitu datu mugikorrak MMS mezuentzat</string>
+  <!-- Select recipients dialog -->
   <string name="adding_selected_recipients_dialog_text">Kontaktuak gehitzen\2026</string>
+  <!-- Smart Dialer -->
   <string name="pref_title_mms_smart_dialer">Dei adimentsua</string>
   <string name="pref_summary_mms_smart_dialer">Automatikoki deitu kontaktua telefonoa belarrira hurbilduz</string>
 </resources>

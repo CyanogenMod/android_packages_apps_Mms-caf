@@ -16,16 +16,22 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- QUICKMESSAGE SUPPORT -->
+  <!-- Preferences -->
   <string name="pref_wake_unlock_title">නැගිට අගුළු අරින්න</string>
   <string name="pref_close_all_title">සියල්ල වහන්න</string>
   <string name="pref_close_all_summary">වහන්න බොත්තම සියලුම පණිවිඩ වසා දමයි</string>
   <string name="pref_dark_theme_title">අඳුරු තේමාව භාවිතා කරන්න</string>
   <string name="pref_dark_theme_summary">තේරුවේ නැතිනම් පෙරනිමි \'සැහැල්ලු\' තේමාව භාවිතයට ගැනේ</string>
+  <!-- QM Dialog box buttons -->
   <string name="button_close">වහන්න</string>
   <string name="button_view">පෙන්වන්න</string>
   <string name="button_templates">අච්චු</string>
+  <!-- Hint text in message body field when keyboard is exposed -->
   <string name="type_to_reply_text_enter_to_send">පිළිතුරු දීමට ටයිප් කරන්න</string>
+  <!-- QM Toast -->
   <string name="qm_mark_read">කියවන්න</string>
+  <!-- Delay delivery -->
   <string name="pref_title_send_delay">බාරදීමේ ප්‍රමාදය</string>
   <string name="send_delay_immediate">එසැණින් යවන්න</string>
   <string name="send_delay_3seconds">තත්පර 3</string>
@@ -34,39 +40,71 @@
   <string name="send_delay_20seconds">තත්පර 20</string>
   <string name="send_delay_30seconds">තත්පර 30</string>
   <string name="sent_countdown">පණිවිඩය බාරදීමේ අවරෝහණ ගණනය</string>
+  <!-- EXTRA SETTINGS -->
   <string name="pref_extra_settings">අමතර සැකසීම්</string>
+  <!-- Blacklist preferences -->
   <string name="blacklist_summary_disabled">අබලයි</string>
+  <!-- Blacklist notifications -->
+  <!-- Blacklist management -->
   <string name="add_to_blacklist_message">%s වෙතින් ඉදිරියට පැමිණෙන පනිවිඩ අවහිර කෙරේ</string>
+  <!-- Generic blacklist handling -->
   <string name="alert_dialog_yes">ඔව්</string>
   <string name="alert_dialog_no">නැහැ</string>
+  <!-- Strip unicode -->
+  <!-- Context menu item on a message for marking as unread / read -->
   <string name="menu_as_unread">නොකියවූ ලෙස සලකුණු කරන්න</string>
+  <!-- Context menu item on a message for marking all threads as unread / read -->
   <string name="menu_all_as_unread">සියල්ල නොකියවූ ලෙස සලකුණු කරන්න</string>
+  <!-- Confirm Mark as unread / read -->
   <string name="confirm_mark_unread_dialog_title">නොකියවූ ලෙස සලකුණු කරන්නද?</string>
+  <!-- Mark all threads confirmation dialog message -->
   <string name="confirm_mark_unread_all_conversations">සියලු පොටවල් නොකියවූ ලෙස සලකුණු කෙරෙණු ඇත.</string>
+  <!-- Multi recipients -->
   <string name="select_recipients">ලබන්නන් තෝරන්න</string>
   <string name="no_recipients">කිසිඳු සබඳතාවයක් සොයාගත්තේ නැත</string>
   <string name="no_recipients_mobile_only">කිසිඳු ගැලපෙන සබඳතාවයක් සොයාගත්තේ නැත. \'දුරකථන අංකය පමණයි\' පෙරහන නොමැතිව උත්සාහ කර බලන්න</string>
   <string name="menu_done">හරි</string>
   <string name="menu_mobile">දුරකථන අංක පමණි</string>
+  <!-- Extra message options -->
   <string name="deleting_threads">සංවාද මකමින්\u2026</string>
+  <!-- Context menu item on an failed message for resending -->
   <string name="menu_resend">නැවත යවන්න</string>
   <string name="cancel_downloading">එපා</string>
   <string name="media_size_limit">පණිවිඩයේ විශාලත්ව සීමාව ඉක්මවා ගොස් ඇත, පණිවිඩය යැවිය නොහැක.</string>
+  <!-- Error message indicating that the message size or the increase size is negative -->
+  <!-- Dialog box title that appears when a draft message will not be saved due to invalid recipients -->
+  <!-- Brief message that appears when the maximum size of slides has been reached -->
   <string name="cannot_add_text_anymore">වැඩිදුර පෙළ එක් කළ නොහැක.</string>
+  <!-- Dialog box title for display the current mms size  -->
   <string name="title_send_message">පණිවිඩය යවන්න</string>
+  <!-- Toast when the subject is full -->
+  <!-- Status in "Report" window -->
   <string name="status_deleted_unread">නොකියවාම මකා දැමිණි</string>
+  <!-- Disk Storage Full Error Notification dialog text. -->
+  <!-- Mms size is too large dialog text. -->
   <string name="mms_too_large">බාගැනීමට පණිවිඩය විශාල වැඩියි.</string>
+  <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
+  <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
+  <!-- Message Template -->
   <string name="pref_sms_signature_title">SMS අත්සන</string>
+  <!-- Copy message to sim -->
+  <!-- SMSC -->
   <string name="set_smsc_error">SMSC අංකය පිහිටුවිය නොහැක</string>
+  <!-- Copy message to sim -->
   <string name="copy_to_sim">පණිවිඩය සිම් කාඩ්පතට පිටපත් කරන්න</string>
   <string name="copy_to_sim_fail">පණිවිඩය සුරැකිය නොහැකි විය</string>
+  <!-- Gray hint displayed in the search field in Contacts when empty -->
+  <!-- Add for share contact feature -->
   <string name="type_vcard">vCard</string>
   <string name="import_vcard">ආයාත කරන්න</string>
   <string name="attach_add_contact_as_vcard">සබඳතා vCard</string>
   <string name="contact_info_text_as_name">නම:</string>
   <string name="contact_info_text_as_phone">දු.ක:</string>
   <string name="contact_info_text_as_email">ඊමේල්:</string>
+  <!-- Sharing vcs files from Calendar -->
+  <!-- String used in MemoryStatusActivity.java -->
   <string name="memory_status_title">මතකයේ තත්ත්වය</string>
+  <!-- Settings item description for SMS and MMS Validity period -->
   <string name="sms_validity_period_not_set">සකසා නැත</string>
   <string name="sms_validity_period_one_hour">පැය 1</string>
   <string name="sms_validity_period_six_hours">පැය 6</string>
@@ -79,12 +117,17 @@
   <string name="slot1">සිම් 1</string>
   <string name="slot2">සිම් 2</string>
   <string name="cannot_play">කදා දර්ශනය පිළිගැන්විය නොහැක.</string>
+  <!-- toast for send result -->
+  <!-- title of mailboxmessagecontent -->
   <string name="message_detail">පණිවිඩයේ විස්තර</string>
+  <!-- Spinner item of box type in mailbox-mode -->
   <string name="type_inbox">එන ලිපි</string>
   <string name="type_sent">යැවූ</string>
   <string name="type_outbox">යන ලිපි</string>
   <string name="type_draft">කෙටුම්පත්</string>
+  <!-- Spinner item of slot type in mailbox-mode -->
   <string name="slot_type_select">සිම් කාඩ්පත තෝරන්න</string>
+  <!-- String used in SearchActivityExtend.java -->
   <string name="search_title">පණිවිඩ සෙවුම</string>
   <string name="search_key">යතුරුවදන සොයන්න</string>
   <string name="search_mode">සෙවුම් ක්‍රමය</string>
@@ -94,15 +137,31 @@
   <string name="search_as_subject">විෂයය</string>
   <string name="invalid_name_toast">කරුණාකර වලංගු නමක් යොදන්න</string>
   <string name="sim_capacity_title">SIM ධාරිතාව</string>
+  <!-- batch delete message in ConversationList and MailBoxMessageList -->
   <string name="selected_all">සියල්ල තෝරන්න</string>
   <string name="deselected_all">සියල්ල නොතෝරන්න</string>
   <string name="selected_count"><xliff:g id="COUNT">%d</xliff:g> තේරිණි</string>
+  <!-- priority of cdma message -->
   <string name="cdma_priority_normal">සාමාන්‍ය</string>
   <string name="cdma_priority_interactive">අන්තර්ක්‍රියාකාරී</string>
   <string name="cdma_priority_urgent">හදිසි</string>
   <string name="cdma_priority_emergency">හදිසිය</string>
   <string name="pref_title_cdma_priority">පණිවිඩ ප්‍රමුඛතාවය</string>
+  <!-- Settings item description for Preferred storage -->
   <string name="pref_title_sms_store">අභිමත ගබඩාව</string>
   <string name="pref_sms_store_phone">දුරකථනය</string>
   <string name="pref_sms_store_card">සිම් කාඩ්පත</string>
+  <!-- QuickMessage Wear-->
+  <!-- Copy message text-->
+  <!-- friendlier text for an activity not found exception for calendar attachments -->
+  <!-- Vibrate pattern -->
+  <!-- Menu item - Insert smiley -->
+  <!-- Enable emoticons -->
+  <!-- Conversation options -->
+  <!-- Full timestamps -->
+  <!-- Original timestamps -->
+  <!-- Settings item for boolean option to auto -enable data for MMS messages -->
+  <!-- Settings item description for boolean auto-enable data for MMS option -->
+  <!-- Select recipients dialog -->
+  <!-- Smart Dialer -->
 </resources>

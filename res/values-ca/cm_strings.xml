@@ -16,6 +16,8 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- QUICKMESSAGE SUPPORT -->
+  <!-- Preferences -->
   <string name="pref_quickmessage">MissatgeRàpid i respondre</string>
   <string name="pref_quickmessage_title">Mostra MissatgeRàpid</string>
   <string name="pref_quickmessage_summary">Obre automàticament la finestra emergent MissatgeRàpid pels missatges SMS entrants</string>
@@ -26,12 +28,16 @@
   <string name="pref_dark_theme_title">Utilitza un tema fosc</string>
   <string name="pref_dark_theme_summary">Si no està seleccionat, per defecte s\'utilitzarà el tema \'clar\'</string>
   <string name="message_counter">%1$d de %2$d</string>
+  <!-- QM Dialog box buttons -->
   <string name="button_close">Tanca</string>
   <string name="button_view">Veure</string>
   <string name="button_templates">Plantilles</string>
+  <!-- Hint text in message body field when keyboard is exposed -->
   <string name="type_to_reply_text_enter_to_send">Escriu per respondre</string>
+  <!-- QM Toast -->
   <string name="qm_mark_read">Llegeix</string>
   <string name="toast_sending_message">S\'està enviant el missatge\u2026</string>
+  <!-- Delay delivery -->
   <string name="pref_title_send_delay">Retard de lliurament</string>
   <string name="send_delay_immediate">Envia immediatament</string>
   <string name="send_delay_3seconds">3 segons</string>
@@ -40,35 +46,46 @@
   <string name="send_delay_20seconds">20 segons</string>
   <string name="send_delay_30seconds">30 segons</string>
   <string name="sent_countdown">Compte enrera pel lliurament del missatge</string>
+  <!-- EXTRA SETTINGS -->
   <string name="pref_extra_settings">Configuracions addicionals</string>
+  <!-- Blacklist preferences -->
   <string name="blacklist_title">Llista de números bloquejats</string>
   <string name="blacklist_summary_disabled">Desactivada</string>
   <string name="blacklist_summary">No rebràs trucades entrants o missatges dels números de telèfon que siguin dins la llista de números bloquejats</string>
+  <!-- Blacklist notifications -->
   <string name="blacklist_notification">S\'ha bloquejat un missatge de %s</string>
   <string name="blacklist_notification_private_number">S\'ha bloquejat un missatge d\'un número privat</string>
   <string name="blacklist_notification_list_private">Privat</string>
   <string name="blacklist_notification_unknown_number">S\'ha bloquejat un missatge d\'un número desconegut %s</string>
   <string name="blacklist_notification_multiple">S\'han bloquejat <xliff:g id="count">%d</xliff:g> missatges</string>
   <string name="unblock_number">Desbloqueja</string>
+  <!-- Blacklist management -->
   <string name="add_to_blacklist">Afegeix a la llista de números bloquejats</string>
   <string name="add_to_blacklist_message">Els missatges futurs de %s seran bloquejats</string>
+  <!-- Generic blacklist handling -->
   <string name="alert_dialog_yes">Sí</string>
   <string name="alert_dialog_no">No</string>
+  <!-- Strip unicode -->
   <string name="pref_title_unicode_stripping">Esquinça unicode</string>
   <string name="pref_unicode_stripping_leave_intact">Deixa els caràcters intactes</string>
   <string name="pref_unicode_stripping_non_encodable">Esquinça els caràcters no codificables</string>
   <string name="pref_unicode_stripping_all">Esquinça tots el caràcters unicode</string>
+  <!-- Context menu item on a message for marking as unread / read -->
   <string name="menu_as_unread">Marca\'l com a sense llegir</string>
   <string name="menu_as_read">Marca com a llegit</string>
+  <!-- Context menu item on a message for marking all threads as unread / read -->
   <string name="menu_all_as_unread">Marcal\'s tots com sense llegir</string>
   <string name="menu_all_as_read">Marca-ho tot com a llegit</string>
   <string name="menu_add_to_contacts_cm">Afegeix als contactes</string>
+  <!-- Confirm Mark as unread / read -->
   <string name="confirm_mark_unread_dialog_title">Marcar com a sense llegir?</string>
   <string name="confirm_mark_unread_conversation">La conversa es marcarà com a no llegida.</string>
   <string name="confirm_mark_read_dialog_title">Marcar-ho com a llegit?</string>
   <string name="confirm_mark_read_conversation">La conversa es marcarà com a llegida.</string>
+  <!-- Mark all threads confirmation dialog message -->
   <string name="confirm_mark_unread_all_conversations">Tots els fils seran marcats com a no llegits.</string>
   <string name="confirm_mark_read_all_conversations">Tots els fils seran marcats com a llegits.</string>
+  <!-- Multi recipients -->
   <string name="loading">S\'està carregant\u2026</string>
   <string name="select_recipients">Selecciona recipients</string>
   <string name="no_recipients">No s\'han trobat contactes</string>
@@ -77,12 +94,14 @@
   <string name="menu_mobile">Només números mòbils</string>
   <string name="menu_order_by_given_name">Ordena per nom</string>
   <string name="menu_order_by_last_name">Ordena per cognom</string>
+  <!-- Extra message options -->
   <string name="message_share">Comparteix</string>
   <string name="message_share_intent_title">Comparteix missatge</string>
   <string name="start_new_message_button">Nou missatge</string>
   <string name="all_spinner_option">Tot</string>
   <string name="menu_copy_url">Copia URL <xliff:g id="extractedurl">%s</xliff:g></string>
   <string name="deleting_threads">S\'estan esborrant els fils\u2026</string>
+  <!-- Context menu item on an failed message for resending -->
   <string name="menu_resend">Reenvia</string>
   <string name="cancel_downloading">Cancel·la</string>
   <string name="confirm_cancel_downloading">La descàrrega de MMS serà cancel·lada.</string>
@@ -90,10 +109,15 @@
   <string name="send_by_slot2">Envia via la SIM 2</string>
   <string name="select_phone_account_title">Envia amb</string>
   <string name="media_size_limit">S\'ha arribat a la mida límit del missatge, no es pot enviar el missatge.</string>
+  <!-- Error message indicating that the message size or the increase size is negative -->
   <string name="illegal_message_or_increase_size">Mida del missatge incorrecta.</string>
+  <!-- Dialog box title that appears when a draft message will not be saved due to invalid recipients -->
   <string name="discard_message_reason_some_invalid">El teu missatge es descartarà perquè alguns destinataris són invàlids.</string>
+  <!-- Brief message that appears when the maximum size of slides has been reached -->
   <string name="cannot_add_text_anymore">No es pot afegir més text.</string>
+  <!-- Dialog box title for display the current mms size  -->
   <string name="title_send_message">Envia un missatge</string>
+  <!-- Toast when the subject is full -->
   <string name="subject_full">El tema no pot tenir més de <xliff:g id="length">%d </xliff:g> caràcters.</string>
   <string name="pref_title_manage_sim_messages_slot1">Gestiona els missatges de la SIM 1</string>
   <string name="pref_title_manage_sim_messages_slot2">Gestiona els missatges de la SIM 2</string>
@@ -101,17 +125,23 @@
   <string name="prefs_title_import_sms_messages">Importa els missatges SMS</string>
   <string name="pref_title_sms_delivery_reports_slot1">Informes de lliurament per la SIM 1</string>
   <string name="pref_title_sms_delivery_reports_slot2">Informes de lliurament per la SIM 2</string>
+  <!-- Status in "Report" window -->
   <string name="status_deleted_unread">Esborrats sense ser llegits</string>
+  <!-- Disk Storage Full Error Notification dialog text. -->
   <string name="disk_storage_full_error">Error: Emmagatzematge ple.</string>
+  <!-- Mms size is too large dialog text. -->
   <string name="mms_too_large">El missatge és massa gran per descarregar-lo.</string>
   <string name="send_failed_retry">No s\'ha pogut enviar el missatge, s\'està reintentant\u2026</string>
   <string name="download_failed_retry">No s\'ha pogut descarregar el missatge, s\'està reintentant\u2026</string>
   <string name="system_audio_item">To de trucada</string>
   <string name="external_audio_item">Música</string>
+  <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
   <string name="menu_connect_url">Obre URL</string>
   <string name="do_not_show_connect_warning">No tornis a mostrar aquest advertiment</string>
+  <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
   <string name="menu_add_to_label">Afegeix als marcadors</string>
   <string name="loadurlinfo_str">Les URLs des de remitents desconeguts podrien ser intents de phishing. Si no n\'estàs segur, no obris aquesta adreça.</string>
+  <!-- Message Template -->
   <string name="pref_title_message_template">Plantilles de missatge</string>
   <string name="title_new_message_template">Nova plantilla</string>
   <string name="summary_new_message_template">Escriu una plantilla de missatge nova</string>
@@ -121,21 +151,26 @@
   <string name="pref_sms_signature_title">Signatura SMS</string>
   <string name="pref_title_enable_signature">Afegeix la signatura als missatges</string>
   <string name="pref_title_edit_signature">Edita el text de signatura</string>
+  <!-- Copy message to sim -->
   <string name="menu_copy_to">Copia</string>
   <string name="operation_to_card_memory">Copia el missatge a la targeta SIM</string>
+  <!-- SMSC -->
   <string name="pref_smsc_title">Centre de servei SMS</string>
   <string name="pref_one_smcs">Número SMSC</string>
   <string name="pref_more_smcs">Número SMSC de la SIM <xliff:g id="slot_number">%d</xliff:g></string>
   <string name="set_smsc_error">No es pot establir el número SMSC</string>
   <string name="set_smsc_success">El número SMSC s\'ha establert satisfactòriament</string>
   <string name="set_smsc_confirm_message">Canviar la SMSC pot provocar errors de transacció de SMS. Estàs segur que vols continuar?</string>
+  <!-- Copy message to sim -->
   <string name="copy_to_sim">Copia el missatge a la targeta SIM</string>
   <string name="copy_to_sim_success"><xliff:g id="count">%1$d</xliff:g> de <xliff:g id="total">%2$d</xliff:g> missatges desats a la targeta SIM.</string>
   <string name="copy_to_sim_fail">No s\'ha pogut desar el missatge</string>
   <string name="copy_to_phone_success">Missatge desat</string>
   <string name="copy_to_phone_fail">No s\'ha pogut desar el missatge</string>
   <string name="contact_app_not_found">No s\'ha pogut obrir l\'aplicació Contactes</string>
+  <!-- Gray hint displayed in the search field in Contacts when empty -->
   <string name="search_bar_hint">Cerca als contactes</string>
+  <!-- Add for share contact feature -->
   <string name="type_vcard">vCard</string>
   <string name="import_vcard">Importa</string>
   <string name="attach_add_contact_as_vcard">Contacte vCard</string>
@@ -143,13 +178,16 @@
   <string name="contact_info_text_as_name">Nom:</string>
   <string name="contact_info_text_as_phone">Tel:</string>
   <string name="contact_info_text_as_email">Correu electrònic:</string>
+  <!-- Sharing vcs files from Calendar -->
   <string name="type_vcal">Esdeveniment del calendari</string>
   <string name="pref_wap_push_title">Servei de missatges Push</string>
   <string name="pref_title_wap_push_enabled">Servei Push WAP</string>
   <string name="pref_summary_wap_push_enabled">Rebre missatges de servei de la xarxa</string>
+  <!-- String used in MemoryStatusActivity.java -->
   <string name="memory_status_title">Estat de la memòria</string>
   <string name="sms_phone_memory_usage">SMS: <xliff:g id="used">%1$d</xliff:g> de <xliff:g id="total">%2$d</xliff:g> utilitzats</string>
   <string name="mms_phone_memory_usage">MMS: <xliff:g id="used">%1$d</xliff:g> de <xliff:g id="total">%2$d</xliff:g> utilitzats</string>
+  <!-- Settings item description for SMS and MMS Validity period -->
   <string name="pref_title_validity_period">Període de validesa</string>
   <string name="pref_title_validity_period_slot1">Període de validesa de la SIM 1</string>
   <string name="pref_title_validity_period_slot2">Període de validesa de la SIM 2</string>
@@ -170,16 +208,21 @@
   <string name="sim_spinner_active_item_postfix">SIM %d</string>
   <string name="cannot_play">No es pot mostrar la projecció de diapositives.</string>
   <string name="confirm_delete_selected_messages">Els missatges seleccionats seran esborrats.</string>
+  <!-- toast for send result -->
   <string name="send_failure">No s\'ha pogut enviar el missatge.</string>
+  <!-- title of mailboxmessagecontent -->
   <string name="message_detail">Detalls del missatge</string>
   <string name="no_message">No hi ha missatges.</string>
   <string name="change_to_folder_mode">Vista de carpeta</string>
   <string name="change_to_conversation_mode">Vista de conversa</string>
+  <!-- Spinner item of box type in mailbox-mode -->
   <string name="type_inbox">Bústia d’entrada</string>
   <string name="type_sent">Enviats</string>
   <string name="type_outbox">Bústia de sortida</string>
   <string name="type_draft">Esborranys</string>
+  <!-- Spinner item of slot type in mailbox-mode -->
   <string name="slot_type_select">Selecciona la targeta SIM</string>
+  <!-- String used in SearchActivityExtend.java -->
   <string name="search_title">Cerca missatges</string>
   <string name="search_key">Paraula clau de cerca</string>
   <string name="search_mode">Mode de cerca</string>
@@ -191,9 +234,11 @@
   <string name="sim_capacity_title">Capacitat de la SIM</string>
   <string name="sim_capacity"><xliff:g id="used">%1$d</xliff:g> of <xliff:g id="total">%2$d</xliff:g> entrades de la targeta SIM utilitzades</string>
   <string name="pref_sim_card_full_save_to_phone">La targeta SIM és plena, s\'estan desant els missatges nous al telèfon.</string>
+  <!-- batch delete message in ConversationList and MailBoxMessageList -->
   <string name="selected_all">Selecciona-ho tot</string>
   <string name="deselected_all">Deselecciona-ho tot</string>
   <string name="selected_count"><xliff:g id="COUNT">%d</xliff:g> seleccionat</string>
+  <!-- priority of cdma message -->
   <string name="cdma_priority_normal">Normal</string>
   <string name="cdma_priority_interactive">Interactiu</string>
   <string name="cdma_priority_urgent">Urgent</string>
@@ -202,6 +247,7 @@
   <string name="pref_summary_cdma_priority">Prioritat dels missatges CDMA</string>
   <string name="download_dialog_title">Vols descarregar aquest MMS?</string>
   <string name="menu_email">Envia correu</string>
+  <!-- Settings item description for Preferred storage -->
   <string name="pref_title_sms_store">Emmagatzematge preferit</string>
   <string name="pref_title_sms_store_card1">Magatzem preferit per la SIM 1</string>
   <string name="pref_title_sms_store_card2">Magatzem preferit per la SIM 2</string>
@@ -231,13 +277,17 @@
   <string name="manage_sdcard_messages">Importa/Exporta missatges</string>
   <string name="no_backups_found">No s\'han trobat còpies de seguretat</string>
   <string name="remove_subject">Treu el tema</string>
+  <!-- QuickMessage Wear-->
   <string name="qm_wear_sending_message">S\'està enviant resposta a <xliff:g id="name">%s</xliff:g>\u2026</string>
   <string name="qm_wear_messaged_failed">Missatge de text a <xliff:g id="name">%s</xliff:g> no enviat, intenta-ho una altra vegada.</string>
   <string name="qm_wear_voice_reply">Quina és la teva resposta?</string>
   <string name="qm_wear_reply_by_voice">Respon mitjançant veu</string>
+  <!-- Copy message text-->
   <string name="copy_empty_string">No hi ha text a copiar</string>
   <string name="attach_add_calendar_events">Esdeveniment del calendari</string>
+  <!-- friendlier text for an activity not found exception for calendar attachments -->
   <string name="calendar_attachment_activity_not_found">No s\'ha pogut trobar una aplicació de calendari suportada</string>
+  <!-- Vibrate pattern -->
   <string name="pref_title_mms_notification_vibrate_pattern">Patró de vibració</string>
   <string name="pref_summary_mms_notification_vibrate_pattern">Canvia el patró de vibració</string>
   <string name="pref_mms_notification_vibrate_normal">Normal</string>
@@ -245,19 +295,28 @@
   <string name="pref_mms_notification_vibrate_long_vib">Vibració llarga</string>
   <string name="pref_mms_notification_vibrate_mult_short">Múltiples curtes</string>
   <string name="pref_mms_notification_vibrate_mult_long">Múltiples llargues</string>
+  <!-- Menu item - Insert smiley -->
   <string name="menu_insert_smiley">Insereix una emoticona</string>
+  <!-- Enable emoticons -->
   <string name="pref_title_enable_emoticons">Suport d\'emoticones</string>
   <string name="pref_summary_enable_emoticons">Substitueix les emoticones de text amb els seus equivalents gràfics</string>
+  <!-- Conversation options -->
   <string name="menu_conversation_options">Opcions de conversa</string>
   <string name="pref_title_reset_convopt_to_default">Restableix els valors per defecte</string>
   <string name="pref_summary_reset_convopt_to_default">Restableix la configuració de conversa a la configuració a nivell d\'aplicació</string>
+  <!-- Full timestamps -->
   <string name="pref_title_mms_full_timestamp">Data i hora sencera</string>
   <string name="pref_summary_mms_full_timestamp">Mostra la data i l\'hora sencera</string>
+  <!-- Original timestamps -->
   <string name="pref_title_mms_use_sent_timestamp">Data i hora originals</string>
   <string name="pref_summary_mms_use_sent_timestamp">Mostra la data d\'enviament enlloc de la de recepció</string>
+  <!-- Settings item for boolean option to auto -enable data for MMS messages -->
   <string name="pref_title_mms_auto_enable_data">Auto-habilita dades</string>
+  <!-- Settings item description for boolean auto-enable data for MMS option -->
   <string name="pref_summary_mms_auto_enable_data">Habilita automàticament les dades mòbils per als missatges MMS</string>
+  <!-- Select recipients dialog -->
   <string name="adding_selected_recipients_dialog_text">S\'estan afegint els contactes\u2026</string>
+  <!-- Smart Dialer -->
   <string name="pref_title_mms_smart_dialer">Trucada intel·ligent</string>
   <string name="pref_summary_mms_smart_dialer">Truca automàticament el contacte movent el dispositiu a la teva orella</string>
 </resources>

@@ -16,6 +16,8 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- QUICKMESSAGE SUPPORT -->
+  <!-- Preferences -->
   <string name="pref_quickmessage">Nhắn tin và trả lời nhanh</string>
   <string name="pref_quickmessage_title">Hiện nhắn tin nhanh</string>
   <string name="pref_quickmessage_summary">Tự động mở cửa sổ bật lên Nhắn tin nhanh đối với các tin nhắn SMS đến</string>
@@ -26,12 +28,16 @@
   <string name="pref_dark_theme_title">Dùng chủ đề tối</string>
   <string name="pref_dark_theme_summary">Nếu không được chọn, chủ đề \'sáng\' mặc định sẽ được sử dụng</string>
   <string name="message_counter">%1$d / %2$d</string>
+  <!-- QM Dialog box buttons -->
   <string name="button_close">Đóng</string>
   <string name="button_view">Xem</string>
   <string name="button_templates">Mẫu</string>
+  <!-- Hint text in message body field when keyboard is exposed -->
   <string name="type_to_reply_text_enter_to_send">Nhập để trả lời</string>
+  <!-- QM Toast -->
   <string name="qm_mark_read">Đã đọc</string>
   <string name="toast_sending_message">Đang gửi tin nhắn\u2026</string>
+  <!-- Delay delivery -->
   <string name="pref_title_send_delay">Chậm trễ gửi tin</string>
   <string name="send_delay_immediate">Gửi ngay lập tức</string>
   <string name="send_delay_3seconds">3 giây</string>
@@ -40,35 +46,46 @@
   <string name="send_delay_20seconds">20 giây</string>
   <string name="send_delay_30seconds">30 giây</string>
   <string name="sent_countdown">Đồng hồ đếm ngược gửi tin nhắn</string>
+  <!-- EXTRA SETTINGS -->
   <string name="pref_extra_settings">Cài đặt thêm</string>
+  <!-- Blacklist preferences -->
   <string name="blacklist_title">Danh sách chặn người gọi</string>
   <string name="blacklist_summary_disabled">Đã tắt</string>
   <string name="blacklist_summary">Bạn sẽ không nhận được cuộc gọi đến hoặc tin nhắn từ các số điện thoại trên danh sách chặn người gọi</string>
+  <!-- Blacklist notifications -->
   <string name="blacklist_notification">Đã chặn tin nhắn từ %s</string>
   <string name="blacklist_notification_private_number">Đã chặn một tin nhắn từ số điện thoại bí mật</string>
   <string name="blacklist_notification_list_private">Bí mật</string>
   <string name="blacklist_notification_unknown_number">Đã chặn một tin nhắn từ số không quen %s</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> tin nhắn đã bị chặn</string>
   <string name="unblock_number">Bỏ chặn</string>
+  <!-- Blacklist management -->
   <string name="add_to_blacklist">Thêm vào danh sách chặn người gọi</string>
   <string name="add_to_blacklist_message">Các tin nhắn trong tương lai từ %s sẽ bị chặn</string>
+  <!-- Generic blacklist handling -->
   <string name="alert_dialog_yes">Có</string>
   <string name="alert_dialog_no">Không</string>
+  <!-- Strip unicode -->
   <string name="pref_title_unicode_stripping">Gỡ bỏ unicode</string>
   <string name="pref_unicode_stripping_leave_intact">Giữ nguyên các ký tự</string>
   <string name="pref_unicode_stripping_non_encodable">Gỡ bỏ các ký tự không thể mã hóa</string>
   <string name="pref_unicode_stripping_all">Gỡ bỏ tất cả các ký tự unicode</string>
+  <!-- Context menu item on a message for marking as unread / read -->
   <string name="menu_as_unread">Đánh dấu là chưa đọc</string>
   <string name="menu_as_read">Đánh dấu là đã đọc</string>
+  <!-- Context menu item on a message for marking all threads as unread / read -->
   <string name="menu_all_as_unread">Đánh dấu tất cả là chưa đọc</string>
   <string name="menu_all_as_read">Đánh dấu tất cả là đã đọc</string>
   <string name="menu_add_to_contacts_cm">Thêm vào danh bạ</string>
+  <!-- Confirm Mark as unread / read -->
   <string name="confirm_mark_unread_dialog_title">Đánh dấu là chưa đọc?</string>
   <string name="confirm_mark_unread_conversation">Cuộc trò chuyện sẽ được đánh dấu là chưa đọc.</string>
   <string name="confirm_mark_read_dialog_title">Đánh dấu là đã đọc?</string>
   <string name="confirm_mark_read_conversation">Cuộc trò chuyện sẽ được đánh dấu là đã đọc.</string>
+  <!-- Mark all threads confirmation dialog message -->
   <string name="confirm_mark_unread_all_conversations">Tất cả các chuỗi sẽ được đánh dấu là chưa đọc.</string>
   <string name="confirm_mark_read_all_conversations">Tất cả các chuỗi sẽ được đánh dấu là đã đọc.</string>
+  <!-- Multi recipients -->
   <string name="loading">Đang tải\u2026</string>
   <string name="select_recipients">Chọn người nhận</string>
   <string name="no_recipients">Không tìm thấy số liên lạc</string>
@@ -77,12 +94,14 @@
   <string name="menu_mobile">Chỉ số điện thoại di động</string>
   <string name="menu_order_by_given_name">Sắp xếp theo tên</string>
   <string name="menu_order_by_last_name">Sắp xếp theo họ</string>
+  <!-- Extra message options -->
   <string name="message_share">Chia sẻ</string>
   <string name="message_share_intent_title">Chia sẻ tin nhắn</string>
   <string name="start_new_message_button">Tin nhắn mới</string>
   <string name="all_spinner_option">Tất cả</string>
   <string name="menu_copy_url">Sao chép URL <xliff:g id="extractedurl">%s</xliff:g></string>
   <string name="deleting_threads">Đang xóa chuỗi\u2026</string>
+  <!-- Context menu item on an failed message for resending -->
   <string name="menu_resend">Gửi lại</string>
   <string name="cancel_downloading">Huỷ</string>
   <string name="confirm_cancel_downloading">Tải MMS về sẽ bị hủy.</string>
@@ -90,10 +109,15 @@
   <string name="send_by_slot2">Gửi qua SIM 2</string>
   <string name="select_phone_account_title">Gửi với</string>
   <string name="media_size_limit">Đã đạt đến giới hạn kích cỡ tin nhắn, không thể gửi tin nhắn.</string>
+  <!-- Error message indicating that the message size or the increase size is negative -->
   <string name="illegal_message_or_increase_size">Kích cỡ tin nhắn không chính xác.</string>
+  <!-- Dialog box title that appears when a draft message will not be saved due to invalid recipients -->
   <string name="discard_message_reason_some_invalid">Tin nhắn của bạn sẽ bị hủy do một số người nhận không hợp lệ.</string>
+  <!-- Brief message that appears when the maximum size of slides has been reached -->
   <string name="cannot_add_text_anymore">Không thể thêm nhiều văn bản hơn nữa.</string>
+  <!-- Dialog box title for display the current mms size  -->
   <string name="title_send_message">Gửi tin nhắn</string>
+  <!-- Toast when the subject is full -->
   <string name="subject_full">Chủ đề không được dài hơn <xliff:g id="length">%d</xliff:g> ký tự.</string>
   <string name="pref_title_manage_sim_messages_slot1">Quản lý tin nhắn SIM 1</string>
   <string name="pref_title_manage_sim_messages_slot2">Quản lý tin nhắn SIM 2</string>
@@ -101,17 +125,23 @@
   <string name="prefs_title_import_sms_messages">Nhập tin nhắn SMS</string>
   <string name="pref_title_sms_delivery_reports_slot1">Báo cáo gửi cho SIM 1</string>
   <string name="pref_title_sms_delivery_reports_slot2">Báo cáo gửi cho SIM 2</string>
+  <!-- Status in "Report" window -->
   <string name="status_deleted_unread">Đã xóa mà chưa đọc</string>
+  <!-- Disk Storage Full Error Notification dialog text. -->
   <string name="disk_storage_full_error">Lỗi: Bộ lưu trữ đã đầy.</string>
+  <!-- Mms size is too large dialog text. -->
   <string name="mms_too_large">Tin nhắn quá lớn để tải về.</string>
   <string name="send_failed_retry">Không thể gửi tin nhắn, đang thử lại\u2026</string>
   <string name="download_failed_retry">Không thể tải tin nhắn xuống, đang thử lại\u2026</string>
   <string name="system_audio_item">Nhạc chuông</string>
   <string name="external_audio_item">Nhạc</string>
+  <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
   <string name="menu_connect_url">Mở URL</string>
   <string name="do_not_show_connect_warning">Không hiện cảnh báo này một lần nữa</string>
+  <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
   <string name="menu_add_to_label">Thêm vào dấu trang</string>
   <string name="loadurlinfo_str">URL từ người gửi không quen có thể là cố gắng lừa đảo. Nếu bạn không chắc chắn, đừng mở địa chỉ này.</string>
+  <!-- Message Template -->
   <string name="pref_title_message_template">Tin nhắn mẫu</string>
   <string name="title_new_message_template">Tin nhắn mẫu mới</string>
   <string name="summary_new_message_template">Soạn tin nhắn mẫu mới</string>
@@ -121,21 +151,26 @@
   <string name="pref_sms_signature_title">Chữ ký tin nhắn SMS</string>
   <string name="pref_title_enable_signature">Thêm chữ ký vào tin nhắn</string>
   <string name="pref_title_edit_signature">Chỉnh sửa văn bản chữ ký</string>
+  <!-- Copy message to sim -->
   <string name="menu_copy_to">Sao chép</string>
   <string name="operation_to_card_memory">Sao chép tin nhắn vào thẻ SIM</string>
+  <!-- SMSC -->
   <string name="pref_smsc_title">Trung tâm dịch vụ tin nhắn SMS</string>
   <string name="pref_one_smcs">Số SMSC</string>
   <string name="pref_more_smcs">SIM <xliff:g id="slot_number">%d</xliff:g> số SMSC</string>
   <string name="set_smsc_error">Không thể đặt số SMSC</string>
   <string name="set_smsc_success">Đã đặt số SMSC thành công</string>
   <string name="set_smsc_confirm_message">Việc đổi SMSC có thể khiến gửi tin nhắn SMS không thành công. Bạn có chắc là bạn muốn tiếp tục không?</string>
+  <!-- Copy message to sim -->
   <string name="copy_to_sim">Sao chép tin nhắn vào thẻ SIM</string>
   <string name="copy_to_sim_success"><xliff:g id="count">%1$d</xliff:g> / <xliff:g id="total">%2$d</xliff:g> tin nhắn được lưu vào thẻ SIM.</string>
   <string name="copy_to_sim_fail">Không thể lưu tin nhắn</string>
   <string name="copy_to_phone_success">Tin nhắn đã lưu</string>
   <string name="copy_to_phone_fail">Không thể lưu tin nhắn</string>
   <string name="contact_app_not_found">Không thể mở ứng dụng Danh bạ</string>
+  <!-- Gray hint displayed in the search field in Contacts when empty -->
   <string name="search_bar_hint">Tìm số liên hệ</string>
+  <!-- Add for share contact feature -->
   <string name="type_vcard">vCard</string>
   <string name="import_vcard">Nhập</string>
   <string name="attach_add_contact_as_vcard">vCard số liên hệ</string>
@@ -143,13 +178,16 @@
   <string name="contact_info_text_as_name">Tên:</string>
   <string name="contact_info_text_as_phone">Điện thoại:</string>
   <string name="contact_info_text_as_email">Email:</string>
+  <!-- Sharing vcs files from Calendar -->
   <string name="type_vcal">Lịch sự kiện</string>
   <string name="pref_wap_push_title">Tin nhắn dịch vụ dạng đẩy</string>
   <string name="pref_title_wap_push_enabled">Dịch vụ đẩy WAP</string>
   <string name="pref_summary_wap_push_enabled">Nhận được tin nhắn dịch vụ mạng</string>
+  <!-- String used in MemoryStatusActivity.java -->
   <string name="memory_status_title">Trạng thái bộ nhớ</string>
   <string name="sms_phone_memory_usage">SMS: <xliff:g id="used">%1$d</xliff:g> / <xliff:g id="total">%2$d</xliff:g> đã dùng</string>
   <string name="mms_phone_memory_usage">MMS: <xliff:g id="used">%1$d</xliff:g> / <xliff:g id="total">%2$d</xliff:g> đã dùng</string>
+  <!-- Settings item description for SMS and MMS Validity period -->
   <string name="pref_title_validity_period">Thời hạn hiệu lực</string>
   <string name="pref_title_validity_period_slot1">Thời hạn hiệu lực cho SIM 1</string>
   <string name="pref_title_validity_period_slot2">Thời hạn hiệu lực cho SIM 2</string>
@@ -170,16 +208,21 @@
   <string name="sim_spinner_active_item_postfix">SIM %d</string>
   <string name="cannot_play">Không thể trình chiếu slide.</string>
   <string name="confirm_delete_selected_messages">Tin nhắn đã chọn sẽ bị xóa.</string>
+  <!-- toast for send result -->
   <string name="send_failure">Không thể gửi tin nhắn.</string>
+  <!-- title of mailboxmessagecontent -->
   <string name="message_detail">Chi tiết tin nhắn</string>
   <string name="no_message">Không có tin nhắn.</string>
   <string name="change_to_folder_mode">Dạng xem thư mục</string>
   <string name="change_to_conversation_mode">Dạng xem cuộc trò chuyện</string>
+  <!-- Spinner item of box type in mailbox-mode -->
   <string name="type_inbox">Hộp thư đến</string>
   <string name="type_sent">Đã gửi</string>
   <string name="type_outbox">Hộp thư đi</string>
   <string name="type_draft">Tin nháp</string>
+  <!-- Spinner item of slot type in mailbox-mode -->
   <string name="slot_type_select">Chọn thẻ SIM</string>
+  <!-- String used in SearchActivityExtend.java -->
   <string name="search_title">Tìm kiếm tin nhắn</string>
   <string name="search_key">Từ khóa tìm kiếm</string>
   <string name="search_mode">Chế độ tìm kiếm</string>
@@ -191,9 +234,11 @@
   <string name="sim_capacity_title">Dung lượng SIM</string>
   <string name="sim_capacity"><xliff:g id="used">%1$d</xliff:g> / <xliff:g id="total">%2$d</xliff:g> mục nhập trên thẻ SIM đã được dùng</string>
   <string name="pref_sim_card_full_save_to_phone">Thẻ SIM đã đầy, đang lưu tin nhắn mới vào điện thoại.</string>
+  <!-- batch delete message in ConversationList and MailBoxMessageList -->
   <string name="selected_all">Chọn tất cả</string>
   <string name="deselected_all">Bỏ chọn tất cả</string>
   <string name="selected_count"><xliff:g id="COUNT">%d</xliff:g> được chọn</string>
+  <!-- priority of cdma message -->
   <string name="cdma_priority_normal">Thông thường</string>
   <string name="cdma_priority_interactive">Tương tác</string>
   <string name="cdma_priority_urgent">Khẩn cấp</string>
@@ -202,6 +247,7 @@
   <string name="pref_summary_cdma_priority">Ưu tiên tin nhắn CDMA</string>
   <string name="download_dialog_title">Tải MMS này xuống?</string>
   <string name="menu_email">Gửi email</string>
+  <!-- Settings item description for Preferred storage -->
   <string name="pref_title_sms_store">Bộ lưu trữ ưu tiên</string>
   <string name="pref_title_sms_store_card1">Bộ lưu trữ ưu tiên cho SIM 1</string>
   <string name="pref_title_sms_store_card2">Bộ lưu trữ ưu tiên cho SIM 2</string>
@@ -231,13 +277,17 @@
   <string name="manage_sdcard_messages">Nhập/xuất tin nhắn</string>
   <string name="no_backups_found">Không tìm thấy bản sao lưu</string>
   <string name="remove_subject">Xóa chủ đề</string>
+  <!-- QuickMessage Wear-->
   <string name="qm_wear_sending_message">Gửi trả lời tới <xliff:g id="name">%s</xliff:g>\u2026</string>
   <string name="qm_wear_messaged_failed">Tin nhắn văn bản đến <xliff:g id="name">%s</xliff:g> không gửi được, vui lòng thử lại.</string>
   <string name="qm_wear_voice_reply">Trả lời của bạn là gì?</string>
   <string name="qm_wear_reply_by_voice">Trả lời bằng cách sử dụng giọng nói</string>
+  <!-- Copy message text-->
   <string name="copy_empty_string">Không có văn bản để sao chép</string>
   <string name="attach_add_calendar_events">Lịch sự kiện</string>
+  <!-- friendlier text for an activity not found exception for calendar attachments -->
   <string name="calendar_attachment_activity_not_found">Không thể tìm thấy một ứng dụng Lịch hỗ trợ</string>
+  <!-- Vibrate pattern -->
   <string name="pref_title_mms_notification_vibrate_pattern">Mẫu rung</string>
   <string name="pref_summary_mms_notification_vibrate_pattern">Đổi mẫu rung</string>
   <string name="pref_mms_notification_vibrate_normal">Thông thường</string>
@@ -245,19 +295,28 @@
   <string name="pref_mms_notification_vibrate_long_vib">Rung lâu</string>
   <string name="pref_mms_notification_vibrate_mult_short">Ngắn nhiều lần</string>
   <string name="pref_mms_notification_vibrate_mult_long">Lâu nhiều lần</string>
+  <!-- Menu item - Insert smiley -->
   <string name="menu_insert_smiley">Chèn mặt cười</string>
+  <!-- Enable emoticons -->
   <string name="pref_title_enable_emoticons">Hỗ trợ biểu tượng cảm xúc</string>
   <string name="pref_summary_enable_emoticons">Thay thế văn bản biểu tượng cảm xúc bằng đồ họa tương đương</string>
+  <!-- Conversation options -->
   <string name="menu_conversation_options">Tùy chọn cuộc trò chuyện</string>
   <string name="pref_title_reset_convopt_to_default">Thiết lập lại về mặc định</string>
   <string name="pref_summary_reset_convopt_to_default">Thiết lập lại cài đặt cuộc trò chuyện về cài đặt mức độ ứng dụng</string>
+  <!-- Full timestamps -->
   <string name="pref_title_mms_full_timestamp">Đầy đủ nhãn thời gian</string>
   <string name="pref_summary_mms_full_timestamp">Hiển thị cả ngày và thời gian trong nhãn thời gian</string>
+  <!-- Original timestamps -->
   <string name="pref_title_mms_use_sent_timestamp">Nhãn thời gian ban đầu</string>
   <string name="pref_summary_mms_use_sent_timestamp">Hiển thị ngày đã gửi thay vì ngày đã nhận trong nhãn thời gian</string>
+  <!-- Settings item for boolean option to auto -enable data for MMS messages -->
   <string name="pref_title_mms_auto_enable_data">Tự động bật dữ liệu</string>
+  <!-- Settings item description for boolean auto-enable data for MMS option -->
   <string name="pref_summary_mms_auto_enable_data">Tự động bật dữ liệu điện thoại di động cho tin nhắn MMS</string>
+  <!-- Select recipients dialog -->
   <string name="adding_selected_recipients_dialog_text">Đang thêm số liên lạc\u2026</string>
+  <!-- Smart Dialer -->
   <string name="pref_title_mms_smart_dialer">Cuộc gọi thông minh</string>
   <string name="pref_summary_mms_smart_dialer">Tự động gọi đến số liên lạc bằng cách đưa điện thoại lên tai của bạn</string>
 </resources>

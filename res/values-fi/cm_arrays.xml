@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
     <item>Iloinen</item>
+    <!-- 0: :-) -->
     <item>Surullinen</item>
+    <!-- 1: :-( -->
     <item>Iskee silmää</item>
+    <!-- 2: ;-) -->
     <item>Näyttää kieltä</item>
+    <!-- 3: :-P -->
     <item>Yllättynyt</item>
+    <!-- 4: =-O -->
     <item>Suutelee</item>
+    <!-- 5: :-* -->
     <item>Huutaa</item>
+    <!-- 6: :O -->
     <item>Siisti</item>
+    <!-- 7: B-) -->
     <item>Ahne</item>
+    <!-- 8: :-$ -->
     <item>Möläyttää</item>
+    <!-- 9: :-! -->
     <item>Nolostunut</item>
+    <!-- 10: :-[ -->
     <item>Enkeli</item>
+    <!-- 11: O:-) -->
     <item>Epävarma</item>
+    <!-- 12: :-\\ -->
     <item>Itkee</item>
+    <!-- 13: :\'( -->
     <item>Sinetöidyt huulet</item>
+    <!-- 14: :-X -->
     <item>Nauraa</item>
+    <!-- 15: :-D -->
     <item>Hämmentynyt</item>
+    <!-- 16: o_O -->
     <item>Sydän</item>
+    <!-- 17: <3 -->
     <item>Hullu</item>
+    <!-- 18: x-( -->
     <item>Virnistys</item>
+    <!-- 19: :-/ -->
     <item>Ilmeetön</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>

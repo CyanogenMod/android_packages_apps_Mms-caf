@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
     <item>ደስተኛ</item>
+    <!-- 0: :-) -->
     <item>አሳዛኝ</item>
+    <!-- 1: :-( -->
     <item>ጥቅሻ</item>
+    <!-- 2: ;-) -->
     <item>ምላስ ተጎልጉሎ ወጥቷል</item>
+    <!-- 3: :-P -->
     <item>ተደነቀ</item>
+    <!-- 4: =-O -->
     <item>መሳም</item>
+    <!-- 5: :-* -->
     <item>ጩኸት</item>
+    <!-- 6: :O -->
     <item>አሪፍ</item>
+    <!-- 7: B-) -->
     <item>ለወሬ ሟች</item>
+    <!-- 8: :-$ -->
     <item>የምላስ ወለምታ</item>
+    <!-- 9: :-! -->
     <item>የታቀፉ</item>
+    <!-- 10: :-[ -->
     <item>መልኣክ</item>
+    <!-- 11: O:-) -->
     <item>አልተወሰነም</item>
+    <!-- 12: :-\\ -->
     <item>እያለቀሱ</item>
+    <!-- 13: :\'( -->
     <item>ዝም ጭጭ</item>
+    <!-- 14: :-X -->
     <item>ሳቅ በሳቅ</item>
+    <!-- 15: :-D -->
     <item>ግራ ተጋባ</item>
+    <!-- 16: o_O -->
     <item>ልብ</item>
+    <!-- 17: <3 -->
     <item>ዕብድ</item>
+    <!-- 18: x-( -->
     <item>መገልፈጥ</item>
+    <!-- 19: :-/ -->
     <item>ስሜት አልባ ፊት</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>

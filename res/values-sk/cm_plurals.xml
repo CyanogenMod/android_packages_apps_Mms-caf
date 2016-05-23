@@ -22,13 +22,17 @@
     <item quantity="other">Odosielanie za %1$d sekúnd, dotykom zrušíte.</item>
   </plurals>
   <plurals name="confirm_delete_messages">
+    <!-- Case of 1 result. -->
     <item quantity="one">1 správa bude vymazaná.</item>
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> správy budú vymazané.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> správ bude vymazaných.</item>
   </plurals>
   <plurals name="confirm_mark_read_conversation">
+    <!-- Case of 1 result. -->
     <item quantity="one">1 konverzácia bude označená ako prečítaná.</item>
     <item quantity="few"><xliff:g id="number" example="15">%1$s </xliff:g> konverzácie budú označené ako prečítané.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s </xliff:g> konverzácií bude označených ako prečítané.</item>
   </plurals>
 </resources>

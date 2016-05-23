@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
     <item>Alaia</item>
+    <!-- 0: :-) -->
     <item>Goibela</item>
+    <!-- 1: :-( -->
     <item>Keinua</item>
+    <!-- 2: ;-) -->
     <item>Mihia atera</item>
+    <!-- 3: :-P -->
     <item>Harrituta</item>
+    <!-- 4: =-O -->
     <item>Musukatzen</item>
+    <!-- 5: :-* -->
     <item>Oihuka</item>
+    <!-- 6: :O -->
     <item>Izugarri</item>
+    <!-- 7: B-) -->
     <item>Diruagatik hitz egin</item>
+    <!-- 8: :-$ -->
     <item>Hanka sartu</item>
+    <!-- 9: :-! -->
     <item>Lotsatuta</item>
+    <!-- 10: :-[ -->
     <item>Aingeruen antza</item>
+    <!-- 11: O:-) -->
     <item>Zalantzati</item>
+    <!-- 12: :-\\ -->
     <item>Negarrez</item>
+    <!-- 13: :\'( -->
     <item>Ezpain zigilatuak</item>
+    <!-- 14: :-X -->
     <item>Barrezka</item>
+    <!-- 15: :-D -->
     <item>Nahasita</item>
+    <!-- 16: o_O -->
     <item>Bihotza</item>
+    <!-- 17: <3 -->
     <item>Zoratuta</item>
+    <!-- 18: x-( -->
     <item>Imintzioa</item>
+    <!-- 19: :-/ -->
     <item>Poker aurpegia</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>

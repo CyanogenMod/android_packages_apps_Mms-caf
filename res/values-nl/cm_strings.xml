@@ -16,6 +16,8 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- QUICKMESSAGE SUPPORT -->
+  <!-- Preferences -->
   <string name="pref_quickmessage">Snelbericht en -beantwoorden</string>
   <string name="pref_quickmessage_title">Snelbericht weergeven</string>
   <string name="pref_quickmessage_summary">Automatisch een Snelbericht-venster weergeven bij inkomende sms-berichten</string>
@@ -26,12 +28,16 @@
   <string name="pref_dark_theme_title">Donker thema</string>
   <string name="pref_dark_theme_summary">Donkere i.p.v. lichte kleuren gebruiken</string>
   <string name="message_counter">%1$d van %2$d</string>
+  <!-- QM Dialog box buttons -->
   <string name="button_close">Sluiten</string>
   <string name="button_view">Tonen</string>
   <string name="button_templates">Sjablonen</string>
+  <!-- Hint text in message body field when keyboard is exposed -->
   <string name="type_to_reply_text_enter_to_send">Typ om te beantwoorden</string>
+  <!-- QM Toast -->
   <string name="qm_mark_read">Gelezen</string>
   <string name="toast_sending_message">Bericht verzenden\u2026</string>
+  <!-- Delay delivery -->
   <string name="pref_title_send_delay">Verzendingsvertraging</string>
   <string name="send_delay_immediate">Onmiddellijk</string>
   <string name="send_delay_3seconds">3 seconden</string>
@@ -40,35 +46,46 @@
   <string name="send_delay_20seconds">20 seconden</string>
   <string name="send_delay_30seconds">30 seconden</string>
   <string name="sent_countdown">Aftellen tot verzenden</string>
+  <!-- EXTRA SETTINGS -->
   <string name="pref_extra_settings">Meer\u2026</string>
+  <!-- Blacklist preferences -->
   <string name="blacklist_title">Zwarte lijst</string>
   <string name="blacklist_summary_disabled">Uitgeschakeld</string>
   <string name="blacklist_summary">U ontvangt geen inkomende oproepen of berichten van telefoonnummers op de zwarte lijst</string>
+  <!-- Blacklist notifications -->
   <string name="blacklist_notification">Bericht van %s geblokkeerd</string>
   <string name="blacklist_notification_private_number">Bericht van afgeschermd nummer geblokkeerd</string>
   <string name="blacklist_notification_list_private">Afgeschermd</string>
   <string name="blacklist_notification_unknown_number">Bericht van onbekend nummer %s geblokkeerd</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> berichten geblokkeerd</string>
   <string name="unblock_number">Deblokkeren</string>
+  <!-- Blacklist management -->
   <string name="add_to_blacklist">Toevoegen aan zwarte lijst</string>
   <string name="add_to_blacklist_message">Berichten van %s worden geblokkeerd</string>
+  <!-- Generic blacklist handling -->
   <string name="alert_dialog_yes">Ja</string>
   <string name="alert_dialog_no">Nee</string>
+  <!-- Strip unicode -->
   <string name="pref_title_unicode_stripping">Unicode-tekens verwijderen</string>
   <string name="pref_unicode_stripping_leave_intact">Tekens intact laten</string>
   <string name="pref_unicode_stripping_non_encodable">Niet-encodeerbare tekens verwijderen</string>
   <string name="pref_unicode_stripping_all">Alle Unicode-tekens verwijderen</string>
+  <!-- Context menu item on a message for marking as unread / read -->
   <string name="menu_as_unread">Markeren als ongelezen</string>
   <string name="menu_as_read">Markeren als gelezen</string>
+  <!-- Context menu item on a message for marking all threads as unread / read -->
   <string name="menu_all_as_unread">Alles markeren als ongelezen</string>
   <string name="menu_all_as_read">Alles markeren als gelezen</string>
   <string name="menu_add_to_contacts_cm">Aan contacten toevoegen</string>
+  <!-- Confirm Mark as unread / read -->
   <string name="confirm_mark_unread_dialog_title">Markeren als ongelezen?</string>
   <string name="confirm_mark_unread_conversation">Het gesprek wordt gemarkeerd als ongelezen.</string>
   <string name="confirm_mark_read_dialog_title">Markeren als gelezen?</string>
   <string name="confirm_mark_read_conversation">Het gesprek wordt gemarkeerd als gelezen.</string>
+  <!-- Mark all threads confirmation dialog message -->
   <string name="confirm_mark_unread_all_conversations">Alle gesprekken worden gemarkeerd als ongelezen.</string>
   <string name="confirm_mark_read_all_conversations">Alle gesprekken worden gemarkeerd als gelezen.</string>
+  <!-- Multi recipients -->
   <string name="loading">Laden\u2026</string>
   <string name="select_recipients">Ontvangers kiezen</string>
   <string name="no_recipients">Geen contacten gevonden</string>
@@ -77,12 +94,14 @@
   <string name="menu_mobile">Alleen mobiele nummers</string>
   <string name="menu_order_by_given_name">Sorteren op voornaam</string>
   <string name="menu_order_by_last_name">Sorteren op achternaam</string>
+  <!-- Extra message options -->
   <string name="message_share">Delen</string>
   <string name="message_share_intent_title">Bericht delen</string>
   <string name="start_new_message_button">Nieuw bericht</string>
   <string name="all_spinner_option">Alles</string>
   <string name="menu_copy_url">URL <xliff:g id="extractedurl">%s</xliff:g> kopiëren</string>
   <string name="deleting_threads">Gesprekken verwijderen\u2026</string>
+  <!-- Context menu item on an failed message for resending -->
   <string name="menu_resend">Opnieuw verzenden</string>
   <string name="cancel_downloading">Annuleren</string>
   <string name="confirm_cancel_downloading">Mms downloaden wordt geannuleerd.</string>
@@ -90,10 +109,15 @@
   <string name="send_by_slot2">Verzenden via SIM 2</string>
   <string name="select_phone_account_title">Verzenden met</string>
   <string name="media_size_limit">Limiet berichtgrootte bereikt, kan bericht niet verzenden.</string>
+  <!-- Error message indicating that the message size or the increase size is negative -->
   <string name="illegal_message_or_increase_size">Berichtgrootte onjuist.</string>
+  <!-- Dialog box title that appears when a draft message will not be saved due to invalid recipients -->
   <string name="discard_message_reason_some_invalid">Bericht wordt verwijderd, omdat sommige geadresseerden ongeldig zijn.</string>
+  <!-- Brief message that appears when the maximum size of slides has been reached -->
   <string name="cannot_add_text_anymore">Kan geen tekst meer toevoegen.</string>
+  <!-- Dialog box title for display the current mms size  -->
   <string name="title_send_message">Bericht verzenden</string>
+  <!-- Toast when the subject is full -->
   <string name="subject_full">Onderwerp mag niet langer zijn dan <xliff:g id="length">%d</xliff:g> tekens.</string>
   <string name="pref_title_manage_sim_messages_slot1">Berichten op SIM 1 beheren</string>
   <string name="pref_title_manage_sim_messages_slot2">Berichten op SIM 2 beheren</string>
@@ -101,17 +125,23 @@
   <string name="prefs_title_import_sms_messages">Sms-berichten importeren</string>
   <string name="pref_title_sms_delivery_reports_slot1">Afleverrapporten voor SIM 1</string>
   <string name="pref_title_sms_delivery_reports_slot2">Afleverrapporten voor SIM 2</string>
+  <!-- Status in "Report" window -->
   <string name="status_deleted_unread">Ongelezen verwijderd</string>
+  <!-- Disk Storage Full Error Notification dialog text. -->
   <string name="disk_storage_full_error">Fout: opslag is vol.</string>
+  <!-- Mms size is too large dialog text. -->
   <string name="mms_too_large">Bericht is te groot om te downloaden.</string>
   <string name="send_failed_retry">Kan bericht niet verzenden, opnieuw proberen\u2026</string>
   <string name="download_failed_retry">Kan bericht niet downloaden, opnieuw proberen\u2026</string>
   <string name="system_audio_item">Beltoon</string>
   <string name="external_audio_item">Muziek</string>
+  <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
   <string name="menu_connect_url">URL openen</string>
   <string name="do_not_show_connect_warning">Deze waarschuwing niet opnieuw weergeven</string>
+  <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
   <string name="menu_add_to_label">Favoriet maken</string>
   <string name="loadurlinfo_str">URL\'s van onbekende afzenders kunnen phishing-berichten zijn. Indien u het niet zeker weet, kunt u deze link beter niet openen.</string>
+  <!-- Message Template -->
   <string name="pref_title_message_template">Berichtsjablonen</string>
   <string name="title_new_message_template">Nieuw sjabloon</string>
   <string name="summary_new_message_template">Nieuw berichtsjabloon samenstellen</string>
@@ -121,21 +151,26 @@
   <string name="pref_sms_signature_title">SMS-handtekening</string>
   <string name="pref_title_enable_signature">Handtekening toevoegen aan berichten</string>
   <string name="pref_title_edit_signature">Handtekening bewerken</string>
+  <!-- Copy message to sim -->
   <string name="menu_copy_to">Kopiëren</string>
   <string name="operation_to_card_memory">Bericht kopiëren naar simkaart</string>
+  <!-- SMSC -->
   <string name="pref_smsc_title">SMS-berichtencentrale</string>
   <string name="pref_one_smcs">SMSC-nummer</string>
   <string name="pref_more_smcs">SMSC-nr. SIM <xliff:g id="slot_number">%d </xliff:g></string>
   <string name="set_smsc_error">Kan SMSC-nummer niet instellen</string>
   <string name="set_smsc_success">SMSC-nummer instellen gelukt</string>
   <string name="set_smsc_confirm_message">Berichtencentrale wijzigen kan leiden tot mislukte sms-berichten. Weet u zeker dat u wilt doorgaan?</string>
+  <!-- Copy message to sim -->
   <string name="copy_to_sim">Bericht kopiëren naar simkaart</string>
   <string name="copy_to_sim_success"><xliff:g id="count">%1$d</xliff:g> van <xliff:g id="total">%2$d</xliff:g> berichten opgeslagen op simkaart.</string>
   <string name="copy_to_sim_fail">Kan bericht niet opslaan</string>
   <string name="copy_to_phone_success">Bericht opgeslagen</string>
   <string name="copy_to_phone_fail">Kan bericht niet opslaan</string>
   <string name="contact_app_not_found">Kan Contacten-app niet openen</string>
+  <!-- Gray hint displayed in the search field in Contacts when empty -->
   <string name="search_bar_hint">Contacten vinden</string>
+  <!-- Add for share contact feature -->
   <string name="type_vcard">vCard</string>
   <string name="import_vcard">Importeren</string>
   <string name="attach_add_contact_as_vcard">Contact vCard</string>
@@ -143,13 +178,16 @@
   <string name="contact_info_text_as_name">Naam:</string>
   <string name="contact_info_text_as_phone">Telefoon:</string>
   <string name="contact_info_text_as_email">E-mail:</string>
+  <!-- Sharing vcs files from Calendar -->
   <string name="type_vcal">Agenda-afspraken</string>
   <string name="pref_wap_push_title">Push-serviceberichten</string>
   <string name="pref_title_wap_push_enabled">WAP push-service</string>
   <string name="pref_summary_wap_push_enabled">Serviceberichten van netwerk ontvangen</string>
+  <!-- String used in MemoryStatusActivity.java -->
   <string name="memory_status_title">Geheugenstatus</string>
   <string name="sms_phone_memory_usage">Sms: <xliff:g id="used">%1$d</xliff:g> van <xliff:g id="total">%2$d</xliff:g> gebruikt</string>
   <string name="mms_phone_memory_usage">Mms: <xliff:g id="used">%1$d</xliff:g> van <xliff:g id="total">%2$d</xliff:g> gebruikt</string>
+  <!-- Settings item description for SMS and MMS Validity period -->
   <string name="pref_title_validity_period">Geldigheidsduur</string>
   <string name="pref_title_validity_period_slot1">Geldigheidsduur voor SIM 1</string>
   <string name="pref_title_validity_period_slot2">Geldigheidsduur voor SIM 2</string>
@@ -170,16 +208,21 @@
   <string name="sim_spinner_active_item_postfix">SIM %d</string>
   <string name="cannot_play">Kan diavoorstelling niet tonen.</string>
   <string name="confirm_delete_selected_messages">Geselecteerde berichten worden verwijderd.</string>
+  <!-- toast for send result -->
   <string name="send_failure">Kan bericht niet verzenden.</string>
+  <!-- title of mailboxmessagecontent -->
   <string name="message_detail">Berichtdetails</string>
   <string name="no_message">Geen berichten.</string>
   <string name="change_to_folder_mode">Mappenweergave</string>
   <string name="change_to_conversation_mode">Gesprekkenweergave</string>
+  <!-- Spinner item of box type in mailbox-mode -->
   <string name="type_inbox">Postvak IN</string>
   <string name="type_sent">Verzonden</string>
   <string name="type_outbox">Postvak UIT</string>
   <string name="type_draft">Concepten</string>
+  <!-- Spinner item of slot type in mailbox-mode -->
   <string name="slot_type_select">Simkaart selecteren</string>
+  <!-- String used in SearchActivityExtend.java -->
   <string name="search_title">Berichten doorzoeken</string>
   <string name="search_key">Zoekwoord</string>
   <string name="search_mode">Zoekmodus</string>
@@ -191,9 +234,11 @@
   <string name="sim_capacity_title">SIM-capaciteit</string>
   <string name="sim_capacity"><xliff:g id="used">%1$d</xliff:g> van <xliff:g id="total">%2$d</xliff:g> plekken op simkaart in gebruik</string>
   <string name="pref_sim_card_full_save_to_phone">Simkaart vol, nieuwe berichten worden op telefoon opgeslagen.</string>
+  <!-- batch delete message in ConversationList and MailBoxMessageList -->
   <string name="selected_all">Alles selecteren</string>
   <string name="deselected_all">Alles deselecteren</string>
   <string name="selected_count"><xliff:g id="COUNT">%d</xliff:g> geselecteerd</string>
+  <!-- priority of cdma message -->
   <string name="cdma_priority_normal">Normaal</string>
   <string name="cdma_priority_interactive">Interactief</string>
   <string name="cdma_priority_urgent">Dringend</string>
@@ -202,6 +247,7 @@
   <string name="pref_summary_cdma_priority">Prioriteit CDMA-berichten</string>
   <string name="download_dialog_title">Deze mms downloaden?</string>
   <string name="menu_email">E-mail verzenden</string>
+  <!-- Settings item description for Preferred storage -->
   <string name="pref_title_sms_store">Voorkeursopslag</string>
   <string name="pref_title_sms_store_card1">Voorkeursopslag SIM 1</string>
   <string name="pref_title_sms_store_card2">Voorkeursopslag SIM 2</string>
@@ -231,13 +277,17 @@
   <string name="manage_sdcard_messages">Berichten importeren/exporteren</string>
   <string name="no_backups_found">Geen back-ups gevonden</string>
   <string name="remove_subject">Onderwerp verwijderen</string>
+  <!-- QuickMessage Wear-->
   <string name="qm_wear_sending_message">Antwoord verzenden naar <xliff:g id="name">%s</xliff:g>\u2026</string>
   <string name="qm_wear_messaged_failed">Sms-bericht naar <xliff:g id="name">%s</xliff:g> niet verzonden, probeer het opnieuw.</string>
   <string name="qm_wear_voice_reply">Wat is uw antwoord?</string>
   <string name="qm_wear_reply_by_voice">Beantwoorden via spraak</string>
+  <!-- Copy message text-->
   <string name="copy_empty_string">Geen tekst om te kopiëren</string>
   <string name="attach_add_calendar_events">Agenda-afspraken</string>
+  <!-- friendlier text for an activity not found exception for calendar attachments -->
   <string name="calendar_attachment_activity_not_found">Kan geen ondersteunde Agenda-app vinden</string>
+  <!-- Vibrate pattern -->
   <string name="pref_title_mms_notification_vibrate_pattern">Trilpatroon</string>
   <string name="pref_summary_mms_notification_vibrate_pattern">Trilpatroon wijzigen</string>
   <string name="pref_mms_notification_vibrate_normal">Normaal</string>
@@ -245,19 +295,28 @@
   <string name="pref_mms_notification_vibrate_long_vib">Lang</string>
   <string name="pref_mms_notification_vibrate_mult_short">Meerdere keren kort</string>
   <string name="pref_mms_notification_vibrate_mult_long">Meerdere keren lang</string>
+  <!-- Menu item - Insert smiley -->
   <string name="menu_insert_smiley">Smiley invoegen</string>
+  <!-- Enable emoticons -->
   <string name="pref_title_enable_emoticons">Emoticons</string>
   <string name="pref_summary_enable_emoticons">Tekst-emoticons omzetten naar plaatjes</string>
+  <!-- Conversation options -->
   <string name="menu_conversation_options">Gespreksopties</string>
   <string name="pref_title_reset_convopt_to_default">Standaardwaarden</string>
   <string name="pref_summary_reset_convopt_to_default">Gespreksinstelling terugzetten naar instelling van de app</string>
+  <!-- Full timestamps -->
   <string name="pref_title_mms_full_timestamp">Volledige tijdsaanduiding</string>
   <string name="pref_summary_mms_full_timestamp">Datum en tijd tonen in tijdsaanduidingen</string>
+  <!-- Original timestamps -->
   <string name="pref_title_mms_use_sent_timestamp">Oorspronkelijke tijdsaanduiding</string>
   <string name="pref_summary_mms_use_sent_timestamp">Verzenddatum tonen i.p.v. ontvangstdatum in tijdsaanduidingen</string>
+  <!-- Settings item for boolean option to auto -enable data for MMS messages -->
   <string name="pref_title_mms_auto_enable_data">Automatisch mobiele gegevens</string>
+  <!-- Settings item description for boolean auto-enable data for MMS option -->
   <string name="pref_summary_mms_auto_enable_data">Automatisch mobiele gegevensverbinding inschakelen voor mms-berichten</string>
+  <!-- Select recipients dialog -->
   <string name="adding_selected_recipients_dialog_text">Contacten toevoegen\u2026</string>
+  <!-- Smart Dialer -->
   <string name="pref_title_mms_smart_dialer">Slim bellen</string>
   <string name="pref_summary_mms_smart_dialer">Automatisch het contact bellen door uw telefoon naar uw oor te brengen</string>
 </resources>

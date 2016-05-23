@@ -22,18 +22,17 @@
     <item quantity="other">Відправлення за %1$d секунд, торкніться аби відмінити.</item>
   </plurals>
   <plurals name="confirm_delete_messages">
+    <!-- Case of 1 result. -->
     <item quantity="one">Одне повідомлення буде видалено.</item>
     <item quantity="few">Буде видалено <xliff:g id="number" example="15">%1$s</xliff:g> повідомлення.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other">Буде видалено <xliff:g id="number" example="15">%1$s</xliff:g> повідомлень.</item>
   </plurals>
   <plurals name="confirm_mark_read_conversation">
+    <!-- Case of 1 result. -->
     <item quantity="one">Одна розмова буде позначена як прочитана.</item>
     <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> розмови будуть позначені як прочитані.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> розмов буде позначено як прочитані.</item>
-  </plurals>
-  <plurals name="confirm_mark_unread_conversation">
-    <item quantity="one">Розмова буде позначена як непрочитана.</item>
-    <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> розмови буде позначено як непрочитані.</item>
-    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> розмов буде позначено як непрочитані.</item>
   </plurals>
 </resources>

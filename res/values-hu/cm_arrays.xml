@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
     <item>Boldog</item>
+    <!-- 0: :-) -->
     <item>Szomorú</item>
+    <!-- 1: :-( -->
     <item>Kacsintó</item>
+    <!-- 2: ;-) -->
     <item>Nyelvnyújtó</item>
+    <!-- 3: :-P -->
     <item>Meglepett</item>
+    <!-- 4: =-O -->
     <item>Csókolózás</item>
+    <!-- 5: :-* -->
     <item>Kiabál</item>
+    <!-- 6: :O -->
     <item>Cool</item>
+    <!-- 7: B-) -->
     <item>Pénz száj</item>
+    <!-- 8: :-$ -->
     <item>Láb a szájban</item>
+    <!-- 9: :-! -->
     <item>Zavarba jött</item>
+    <!-- 10: :-[ -->
     <item>Angyal</item>
+    <!-- 11: O:-) -->
     <item>Bizonytalan</item>
+    <!-- 12: :-\\ -->
     <item>Síró</item>
+    <!-- 13: :\'( -->
     <item>Zárt ajkak</item>
+    <!-- 14: :-X -->
     <item>Nevetés</item>
+    <!-- 15: :-D -->
     <item>Zavaros</item>
+    <!-- 16: o_O -->
     <item>Szív</item>
+    <!-- 17: <3 -->
     <item>Őrült</item>
+    <!-- 18: x-( -->
     <item>Önelégült mosoly</item>
+    <!-- 19: :-/ -->
     <item>Poker arc</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>

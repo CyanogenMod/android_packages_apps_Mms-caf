@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
     <item>ດີໃຈ</item>
+    <!-- 0: :-) -->
     <item>ເສົ້າ</item>
+    <!-- 1: :-( -->
     <item>ຂະຢິບຕາ</item>
+    <!-- 2: ;-) -->
     <item>ແລບລິ້ນ</item>
+    <!-- 3: :-P -->
     <item>ປະຫຼາດໃຈ</item>
+    <!-- 4: =-O -->
     <item>ຈູບ</item>
+    <!-- 5: :-* -->
     <item>ຮ້ອງ</item>
+    <!-- 6: :O -->
     <item>ໜ້າສົນໃຈ</item>
+    <!-- 7: B-) -->
     <item>ເງິນປິດປາກ</item>
+    <!-- 8: :-$ -->
     <item>ຕີນປິດປາກ</item>
+    <!-- 9: :-! -->
     <item>ອາຍ</item>
+    <!-- 10: :-[ -->
     <item>ນາງຟ້າ</item>
+    <!-- 11: O:-) -->
     <item>ບໍ່ແນ່ໃຈ</item>
+    <!-- 12: :-\\ -->
     <item>ໄຫ້</item>
+    <!-- 13: :\'( -->
     <item>ຮູດຊິບປາກ</item>
+    <!-- 14: :-X -->
     <item>ຫົວຂວັນ</item>
+    <!-- 15: :-D -->
     <item>ສັບສົນ</item>
+    <!-- 16: o_O -->
     <item>ຫົວໃຈ</item>
+    <!-- 17: <3 -->
     <item>ຢາກຮ້າຍ</item>
+    <!-- 18: x-( -->
     <item>Smirk</item>
+    <!-- 19: :-/ -->
     <item>Poker face</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>

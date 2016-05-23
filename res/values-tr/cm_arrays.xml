@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
     <item>Mutlu</item>
+    <!-- 0: :-) -->
     <item>Üzgün</item>
+    <!-- 1: :-( -->
     <item>Göz Kırpma</item>
+    <!-- 2: ;-) -->
     <item>Dil çıkarmış</item>
+    <!-- 3: :-P -->
     <item>Şaşırmış</item>
+    <!-- 4: =-O -->
     <item>Öpücük</item>
+    <!-- 5: :-* -->
     <item>Bağırma</item>
+    <!-- 6: :O -->
     <item>Sakin</item>
+    <!-- 7: B-) -->
     <item>Para ağızlı</item>
+    <!-- 8: :-$ -->
     <item>Ayak ağızda</item>
+    <!-- 9: :-! -->
     <item>Mahçup</item>
+    <!-- 10: :-[ -->
     <item>Melek</item>
+    <!-- 11: O:-) -->
     <item>Kararsız</item>
+    <!-- 12: :-\\ -->
     <item>Ağlama</item>
+    <!-- 13: :\'( -->
     <item>Dudakları mühürlü</item>
+    <!-- 14: :-X -->
     <item>Gülme</item>
+    <!-- 15: :-D -->
     <item>Sersemlemiş</item>
+    <!-- 16: o_O -->
     <item>Kalp</item>
+    <!-- 17: <3 -->
     <item>Kızgın</item>
+    <!-- 18: x-( -->
     <item>Sırıtma</item>
+    <!-- 19: :-/ -->
     <item>Poker surat</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>

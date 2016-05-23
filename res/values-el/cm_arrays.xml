@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
     <item>Είμαι χαρούμενος</item>
+    <!-- 0: :-) -->
     <item>Είμαι λυπημένος</item>
+    <!-- 1: :-( -->
     <item>Κλείνω το μάτι</item>
+    <!-- 2: ;-) -->
     <item>Κοροϊδεύω</item>
+    <!-- 3: :-P -->
     <item>Είμαι έκπληκτος</item>
+    <!-- 4: =-O -->
     <item>Φιλάω</item>
+    <!-- 5: :-* -->
     <item>Φωνάζω</item>
+    <!-- 6: :O -->
     <item>Cool</item>
+    <!-- 7: B-) -->
     <item>Κάνω τα λόγια μου πράξη</item>
+    <!-- 8: :-$ -->
     <item>Είπα χαζομάρα</item>
+    <!-- 9: :-! -->
     <item>Ντρέπομαι</item>
+    <!-- 10: :-[ -->
     <item>Αγγελούδι</item>
+    <!-- 11: O:-) -->
     <item>Δεν έχω αποφασίσει</item>
+    <!-- 12: :-\\ -->
     <item>Κλαίω</item>
+    <!-- 13: :\'( -->
     <item>Δεν αποκαλύπτω τίποτα</item>
+    <!-- 14: :-X -->
     <item>Γελάω</item>
+    <!-- 15: :-D -->
     <item>Είμαι μπερδεμένος</item>
+    <!-- 16: o_O -->
     <item>Καρδιά</item>
+    <!-- 17: <3 -->
     <item>Τρελός</item>
+    <!-- 18: x-( -->
     <item>Υπεροπτικό χαμόγελο</item>
+    <!-- 19: :-/ -->
     <item>Είμαι ανέκφραστος</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>

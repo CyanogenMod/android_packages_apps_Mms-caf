@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
     <item>Õnnelik</item>
+    <!-- 0: :-) -->
     <item>Kurb</item>
+    <!-- 1: :-( -->
     <item>Silmapilgutus</item>
+    <!-- 2: ;-) -->
     <item>Keel väljas</item>
+    <!-- 3: :-P -->
     <item>Üllatunud</item>
+    <!-- 4: =-O -->
     <item>Suudlus</item>
+    <!-- 5: :-* -->
     <item>Karjumine</item>
+    <!-- 6: :O -->
     <item>Lahe</item>
+    <!-- 7: B-) -->
     <item>Rahasuu</item>
+    <!-- 8: :-$ -->
     <item>Loba-aps</item>
+    <!-- 9: :-! -->
     <item>Piinlik</item>
+    <!-- 10: :-[ -->
     <item>Ingel</item>
+    <!-- 11: O:-) -->
     <item>Otsustusvõimetu</item>
+    <!-- 12: :-\\ -->
     <item>Nutt</item>
+    <!-- 13: :\'( -->
     <item>Suletud suu</item>
+    <!-- 14: :-X -->
     <item>Naer</item>
+    <!-- 15: :-D -->
     <item>Segaduses</item>
+    <!-- 16: o_O -->
     <item>Süda</item>
+    <!-- 17: <3 -->
     <item>Vihane</item>
+    <!-- 18: x-( -->
     <item>Muie</item>
+    <!-- 19: :-/ -->
     <item>Ükskõikne nägu</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>

@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
     <item>ハッピー</item>
+    <!-- 0: :-) -->
     <item>悲しい</item>
+    <!-- 1: :-( -->
     <item>ウィンク</item>
+    <!-- 2: ;-) -->
     <item>アッカンベー</item>
+    <!-- 3: :-P -->
     <item>びっくり</item>
+    <!-- 4: =-O -->
     <item>キス</item>
+    <!-- 5: :-* -->
     <item>激怒</item>
+    <!-- 6: :O -->
     <item>クール</item>
+    <!-- 7: B-) -->
     <item>気持ち悪い</item>
+    <!-- 8: :-$ -->
     <item>しまった</item>
+    <!-- 9: :-! -->
     <item>恥ずかしい</item>
+    <!-- 10: :-[ -->
     <item>天使</item>
+    <!-- 11: O:-) -->
     <item>迷う</item>
+    <!-- 12: :-\\ -->
     <item>泣く</item>
+    <!-- 13: :\'( -->
     <item>お口にチャック</item>
+    <!-- 14: :-X -->
     <item>笑顔</item>
+    <!-- 15: :-D -->
     <item>混乱</item>
+    <!-- 16: o_O -->
     <item>ハート</item>
+    <!-- 17: <3 -->
     <item>怒</item>
+    <!-- 18: x-( -->
     <item>ニヤニヤ</item>
+    <!-- 19: :-/ -->
     <item>ポーカーフェイス</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>

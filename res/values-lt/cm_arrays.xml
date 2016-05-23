@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
     <item>Laimingas</item>
+    <!-- 0: :-) -->
     <item>Liūdnas</item>
+    <!-- 1: :-( -->
     <item>Mirksintis</item>
+    <!-- 2: ;-) -->
     <item>Iškišęs liežuvį</item>
+    <!-- 3: :-P -->
     <item>Nustebęs</item>
+    <!-- 4: =-O -->
     <item>Bučiuojantis</item>
+    <!-- 5: :-* -->
     <item>Šaukiantis</item>
+    <!-- 6: :O -->
     <item>Kietas</item>
+    <!-- 7: B-) -->
     <item>Pinigai vietoj burnos</item>
+    <!-- 8: :-$ -->
     <item>Pėda burnoje</item>
+    <!-- 9: :-! -->
     <item>Susigėdęs</item>
+    <!-- 10: :-[ -->
     <item>Angelas</item>
+    <!-- 11: O:-) -->
     <item>Neapsisprendęs</item>
+    <!-- 12: :-\\ -->
     <item>Verkiantis</item>
+    <!-- 13: :\'( -->
     <item>Niekam nepasakosiu</item>
+    <!-- 14: :-X -->
     <item>Juokiasi</item>
+    <!-- 15: :-D -->
     <item>Sumišęs</item>
+    <!-- 16: o_O -->
     <item>Širdelė</item>
+    <!-- 17: <3 -->
     <item>Įniršęs</item>
+    <!-- 18: x-( -->
     <item>Kvaila šypsena</item>
+    <!-- 19: :-/ -->
     <item>Nieko nesakantis veidas</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>

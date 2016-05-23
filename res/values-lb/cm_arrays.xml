@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
     <item>Frou</item>
+    <!-- 0: :-) -->
     <item>Traureg</item>
+    <!-- 1: :-( -->
     <item>Zwinkeren</item>
+    <!-- 2: ;-) -->
     <item>Zong erausstrecken</item>
+    <!-- 3: :-P -->
     <item>Iwwerrascht</item>
+    <!-- 4: =-O -->
     <item>Kuss</item>
+    <!-- 5: :-* -->
     <item>Blären</item>
+    <!-- 6: :O -->
     <item>Cool</item>
+    <!-- 7: B-) -->
     <item>Räich</item>
+    <!-- 8: :-$ -->
     <item>Fettdëppchen</item>
+    <!-- 9: :-! -->
     <item>Peinlech</item>
+    <!-- 10: :-[ -->
     <item>Engel</item>
+    <!-- 11: O:-) -->
     <item>Ondecidéiert</item>
+    <!-- 12: :-\\ -->
     <item>Kräischen</item>
+    <!-- 13: :\'( -->
     <item>Mond zou</item>
+    <!-- 14: :-X -->
     <item>Laachen</item>
+    <!-- 15: :-D -->
     <item>Duercherneen</item>
+    <!-- 16: o_O -->
     <item>Häerz</item>
+    <!-- 17: <3 -->
     <item>Rosen</item>
+    <!-- 18: x-( -->
     <item>Grinsen</item>
+    <!-- 19: :-/ -->
     <item>Pokergesiicht</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>

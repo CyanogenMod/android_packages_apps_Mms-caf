@@ -16,6 +16,8 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- QUICKMESSAGE SUPPORT -->
+  <!-- Preferences -->
   <string name="pref_quickmessage">तेज़संदेश और उत्तर</string>
   <string name="pref_quickmessage_title">तेज़संदेश दिखाएँ</string>
   <string name="pref_quickmessage_summary">आवक एसएमएस संदेशों के लिए अपने आप ही तेज़संदेश पॉपअप को खोलें</string>
@@ -25,12 +27,16 @@
   <string name="pref_dark_theme_title">गहरे थीम का उपयोग करें</string>
   <string name="pref_dark_theme_summary">यदि इसे नहीं चुना जाए, तो डिफ़ॉल्ट \'हल्के\' थीम उपयोग किया जाएगा</string>
   <string name="message_counter">%2$d का %1$d</string>
+  <!-- QM Dialog box buttons -->
   <string name="button_close">बंद करें</string>
   <string name="button_view">देखें</string>
   <string name="button_templates">टेंप्लेट</string>
+  <!-- Hint text in message body field when keyboard is exposed -->
   <string name="type_to_reply_text_enter_to_send">उत्तर देने के लिए टाइप करें</string>
+  <!-- QM Toast -->
   <string name="qm_mark_read">पढ़ें</string>
   <string name="toast_sending_message">संदेश भेज रहे हैं\u2026</string>
+  <!-- Delay delivery -->
   <string name="pref_title_send_delay">सुपुर्दगी विलंब</string>
   <string name="send_delay_immediate">तुरंत भेजें</string>
   <string name="send_delay_3seconds">3 सेकंड</string>
@@ -39,35 +45,46 @@
   <string name="send_delay_20seconds">20 सेकंड</string>
   <string name="send_delay_30seconds">30 सेकंड</string>
   <string name="sent_countdown">संदेश सुपुर्दगी उल्टी गिनती</string>
+  <!-- EXTRA SETTINGS -->
   <string name="pref_extra_settings">अतिरिक्त सेटिंग</string>
+  <!-- Blacklist preferences -->
   <string name="blacklist_title">अवरुद्ध किए गए कॉलरों की सूची</string>
   <string name="blacklist_summary_disabled">अक्षम</string>
   <string name="blacklist_summary">आपको अवरुद्ध किए गए कॉलरों की सूची में मौजूद फ़ोन नंबरों से कॉल और संदेश नहीं आया करेंगे</string>
+  <!-- Blacklist notifications -->
   <string name="blacklist_notification">%s के एक संदेश को अवरुद्ध किया</string>
   <string name="blacklist_notification_private_number">एक निजी नंबर से आए संदेश को अवरुद्ध किया</string>
   <string name="blacklist_notification_list_private">निजी</string>
   <string name="blacklist_notification_unknown_number">अज्ञात नंबर %s से आने वाले संदेश को अवरुद्ध किया</string>
   <string name="blacklist_notification_multiple"><xliff:g id="count">%d</xliff:g> संदेशों को अवरुद्ध किया गया</string>
   <string name="unblock_number">अनवरुद्ध करें</string>
+  <!-- Blacklist management -->
   <string name="add_to_blacklist">अवरुद्ध किए गए कॉलरों की सूची में जोड़ें</string>
   <string name="add_to_blacklist_message">%s के भावी संदेश अवरुद्ध किए जाएँगे</string>
+  <!-- Generic blacklist handling -->
   <string name="alert_dialog_yes">हाँ</string>
   <string name="alert_dialog_no">नहीं</string>
+  <!-- Strip unicode -->
   <string name="pref_title_unicode_stripping">यूनीकोड को स्ट्रिप करें</string>
   <string name="pref_unicode_stripping_leave_intact">वर्णों को साबुत छोड़ें</string>
   <string name="pref_unicode_stripping_non_encodable">ग़ैर-यूनीकोड वर्णों को स्ट्रिप करें</string>
   <string name="pref_unicode_stripping_all">सभी यूनीकोड वर्णों को स्ट्रिप करें</string>
+  <!-- Context menu item on a message for marking as unread / read -->
   <string name="menu_as_unread">पढ़ा नहीं है के रूप में चिह्नित करें</string>
   <string name="menu_as_read">पढ़ लिया के रूप में चिह्नित करें</string>
+  <!-- Context menu item on a message for marking all threads as unread / read -->
   <string name="menu_all_as_unread">सबको पढ़ा नहीं है के रूप में चिह्नित करें</string>
   <string name="menu_all_as_read">सबको पढ़ लिया के रूप में चिह्नित करें</string>
   <string name="menu_add_to_contacts_cm">संपर्कों में जोड़ें</string>
+  <!-- Confirm Mark as unread / read -->
   <string name="confirm_mark_unread_dialog_title">पढ़ा नहीं है के रूप में चिह्नित कर दें?</string>
   <string name="confirm_mark_unread_conversation">इस वार्तालाप को पढ़ा नहीं है के रूप में चिह्नित किया जाएगा।</string>
   <string name="confirm_mark_read_dialog_title">पढ़ लिया के रूप में चिह्नित करें?</string>
   <string name="confirm_mark_read_conversation">वार्तालाप को पढ़ लिया के रूप में चिह्नित किया जाएगा।</string>
+  <!-- Mark all threads confirmation dialog message -->
   <string name="confirm_mark_unread_all_conversations">सभी थ्रेडों को पढ़ लिया के रूप में चिह्नित करें।</string>
   <string name="confirm_mark_read_all_conversations">सभी थ्रेडों को पढ़ लिया के रूप में चिह्नित किया जाएगा।</string>
+  <!-- Multi recipients -->
   <string name="loading">लोड कर रहे हैं\u2026</string>
   <string name="select_recipients">प्राप्ती चुनें</string>
   <string name="no_recipients">कोई संपर्क नहीं मिले</string>
@@ -76,12 +93,14 @@
   <string name="menu_mobile">केवल मोबाइल नंबर</string>
   <string name="menu_order_by_given_name">प्रथम नाम से क्रमित करें</string>
   <string name="menu_order_by_last_name">अंतिम नाम से क्रमित करें</string>
+  <!-- Extra message options -->
   <string name="message_share">साझा करें</string>
   <string name="message_share_intent_title">संदेश को साझा करें</string>
   <string name="start_new_message_button">नया संदेश</string>
   <string name="all_spinner_option">सब</string>
   <string name="menu_copy_url"><xliff:g id="extractedurl">%s</xliff:g> यूआरएल को कॉपी करें</string>
   <string name="deleting_threads">थ्रेडों को हटा रहे हैं\u2026</string>
+  <!-- Context menu item on an failed message for resending -->
   <string name="menu_resend">फिर से भेजें</string>
   <string name="cancel_downloading">रद्द करें</string>
   <string name="confirm_cancel_downloading">एमएमएस डाउनलोड को रद्द कर दिया जाएगा।</string>
@@ -89,10 +108,15 @@
   <string name="send_by_slot2">सिम 2 से भेजें</string>
   <string name="select_phone_account_title">इससे भेजें</string>
   <string name="media_size_limit">संदेश आमाप सीमा तक पहुँच गए। संदेश नहीं भेज सकते।</string>
+  <!-- Error message indicating that the message size or the increase size is negative -->
   <string name="illegal_message_or_increase_size">ग़लत संदेश आमाप।</string>
+  <!-- Dialog box title that appears when a draft message will not be saved due to invalid recipients -->
   <string name="discard_message_reason_some_invalid">आपके संदेश को त्याग दिया जाएगा क्योंकि कुछ प्राप्ती मान्य नहीं हैं।</string>
+  <!-- Brief message that appears when the maximum size of slides has been reached -->
   <string name="cannot_add_text_anymore">और पाठ नहीं जोड़ सकते।</string>
+  <!-- Dialog box title for display the current mms size  -->
   <string name="title_send_message">संदेश भेजें</string>
+  <!-- Toast when the subject is full -->
   <string name="subject_full">विषय <xliff:g id="length">%d</xliff:g> वर्णों से अधिक लंबा नहीं होना चाहिए।</string>
   <string name="pref_title_manage_sim_messages_slot1">सिम 1 के संदेशों को प्रबंधित करें</string>
   <string name="pref_title_manage_sim_messages_slot2">सिम 2 के संदेशों को प्रबंधित करें</string>
@@ -100,17 +124,23 @@
   <string name="prefs_title_import_sms_messages">एसएमएस संदेशों को आयात करें</string>
   <string name="pref_title_sms_delivery_reports_slot1">सिम 1 के लिए सुपुर्दगी रिपोर्टें</string>
   <string name="pref_title_sms_delivery_reports_slot2">सिम 2 के लिए सुपुर्दगी रिपोर्टें</string>
+  <!-- Status in "Report" window -->
   <string name="status_deleted_unread">बिना पढ़े हटा दिया गया</string>
+  <!-- Disk Storage Full Error Notification dialog text. -->
   <string name="disk_storage_full_error">त्रुटि: भंडारण भर चुका है।</string>
+  <!-- Mms size is too large dialog text. -->
   <string name="mms_too_large">संदेश डाउनलोड करने के लिए बहुत बड़ा है।</string>
   <string name="send_failed_retry">संदेश भेज नहीं सके। फिर से कोशिश कर रहे हैं\u2026</string>
   <string name="download_failed_retry">संदेश डाउनलोड नहीं कर सके। फिर से कोशिश कर रहे हैं\u2026</string>
   <string name="system_audio_item">रिंगटोन</string>
   <string name="external_audio_item">संगीत</string>
+  <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
   <string name="menu_connect_url">यूआरएल खोलें</string>
   <string name="do_not_show_connect_warning">यह चेतावनी दुबारा नहीं दिखाएँ</string>
+  <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
   <string name="menu_add_to_label">बुकमार्कों में जोड़ें</string>
   <string name="loadurlinfo_str">अज्ञात स्रोतों के यूआरएल फ़िशिंग प्रयास हो सकते हैं। यदि आपको संदेह हो, तो इस पते को नहीं खोलें।</string>
+  <!-- Message Template -->
   <string name="pref_title_message_template">संदेश टेंप्लेट</string>
   <string name="title_new_message_template">नया टेंप्लेट</string>
   <string name="summary_new_message_template">नया संदेश टेंप्लेट निर्मित करें</string>
@@ -120,21 +150,26 @@
   <string name="pref_sms_signature_title">एसएमएस हस्ताक्षर</string>
   <string name="pref_title_enable_signature">संदेशों में हस्ताक्षर जोड़ें</string>
   <string name="pref_title_edit_signature">हस्ताक्षर पाठ को संपादित करें</string>
+  <!-- Copy message to sim -->
   <string name="menu_copy_to">कॉपी करें</string>
   <string name="operation_to_card_memory">संदेश को सिम कार्ड में कॉपी करें</string>
+  <!-- SMSC -->
   <string name="pref_smsc_title">एसएमएस सेवा केंद्र</string>
   <string name="pref_one_smcs">एसएमएससी संख्या</string>
   <string name="pref_more_smcs">सिम <xliff:g id="slot_number">%d</xliff:g> एसएमएससी संख्या</string>
   <string name="set_smsc_error">एसएमएससी संख्या सेट नहीं कर सके</string>
   <string name="set_smsc_success">एसएमएससी संख्या सफलतापूर्वक सेट हो गई</string>
   <string name="set_smsc_confirm_message">एसएमएससी को बदलने से एसएमएस कार्यों में विफलता आ सकती है। क्या आपको पूरा यकीन है कि आप आगे बढ़ना चाहते हैं?</string>
+  <!-- Copy message to sim -->
   <string name="copy_to_sim">संदेश को सिम कार्ड में कॉपी करें</string>
   <string name="copy_to_sim_success"><xliff:g id="total">%2$d</xliff:g> में से <xliff:g id="count">%1$d</xliff:g> संदेशों को सिम कार्ड में सहेजा गया।</string>
   <string name="copy_to_sim_fail">संदेश को सहेज नहीं सके</string>
   <string name="copy_to_phone_success">संदेश को सहेज लिया</string>
   <string name="copy_to_phone_fail">संदेश को सहेज नहीं सके</string>
   <string name="contact_app_not_found">संपर्क अनुप्रयोग को खोल नहीं सके</string>
+  <!-- Gray hint displayed in the search field in Contacts when empty -->
   <string name="search_bar_hint">संपर्क खोजें</string>
+  <!-- Add for share contact feature -->
   <string name="type_vcard">वीकार्ड</string>
   <string name="import_vcard">आयात करें</string>
   <string name="attach_add_contact_as_vcard">संपर्क वीकार्ड</string>
@@ -142,13 +177,16 @@
   <string name="contact_info_text_as_name">नाम:</string>
   <string name="contact_info_text_as_phone">फ़ोन:</string>
   <string name="contact_info_text_as_email">ईमेल:</string>
+  <!-- Sharing vcs files from Calendar -->
   <string name="type_vcal">कैलेंडर घटना</string>
   <string name="pref_wap_push_title">पुश सेवा संदेश</string>
   <string name="pref_title_wap_push_enabled">वैप पुश सेवा</string>
   <string name="pref_summary_wap_push_enabled">नेटवर्क सेवा संदेश प्राप्त करें</string>
+  <!-- String used in MemoryStatusActivity.java -->
   <string name="memory_status_title">स्मृति की स्थिति</string>
   <string name="sms_phone_memory_usage">एसएमएस: <xliff:g id="total">%2$d</xliff:g> में से <xliff:g id="used">%1$d</xliff:g> का उपयोग हो चुका है</string>
   <string name="mms_phone_memory_usage">एमएमएस: <xliff:g id="total">%2$d</xliff:g> में से <xliff:g id="used">%1$d</xliff:g> का उपयोग हो चुका है</string>
+  <!-- Settings item description for SMS and MMS Validity period -->
   <string name="pref_title_validity_period">वैधता अवधि</string>
   <string name="pref_title_validity_period_slot1">सिम 1 के लिए वैधता अवधि</string>
   <string name="pref_title_validity_period_slot2">सिम 2 के लिए वैधता अवधि</string>
@@ -169,16 +207,21 @@
   <string name="sim_spinner_active_item_postfix">सिम %d</string>
   <string name="cannot_play">स्लाइड शो प्रस्तुत नहीं कर सकते।</string>
   <string name="confirm_delete_selected_messages">चुने गए संदेशों को हटा दिया जाएगा।</string>
+  <!-- toast for send result -->
   <string name="send_failure">संदेश भेज नहीं सके।</string>
+  <!-- title of mailboxmessagecontent -->
   <string name="message_detail">संदेश विवरण</string>
   <string name="no_message">कोई संदेश नहीं।</string>
   <string name="change_to_folder_mode">फ़ोल्डर दृश्य</string>
   <string name="change_to_conversation_mode">वार्तालाप दृश्य</string>
+  <!-- Spinner item of box type in mailbox-mode -->
   <string name="type_inbox">इनबॉक्स</string>
   <string name="type_sent">भेजे गए</string>
   <string name="type_outbox">आउटबॉक्स</string>
   <string name="type_draft">प्रारूप</string>
+  <!-- Spinner item of slot type in mailbox-mode -->
   <string name="slot_type_select">सिम कार्ड चुनें</string>
+  <!-- String used in SearchActivityExtend.java -->
   <string name="search_title">संदेश खोज</string>
   <string name="search_key">खोज कुंजीशब्द</string>
   <string name="search_mode">खोज मोड</string>
@@ -190,9 +233,11 @@
   <string name="sim_capacity_title">सिम क्षमता</string>
   <string name="sim_capacity"><xliff:g id="total">%2$d</xliff:g> में से <xliff:g id="used">%1$d</xliff:g> सिम कार्ड प्रविष्टियाँ उपयोग की गई हैं</string>
   <string name="pref_sim_card_full_save_to_phone">सिम कार्ड भर चुकी है। नए संदेशों को फ़ोन में सहेज रहे हैं।</string>
+  <!-- batch delete message in ConversationList and MailBoxMessageList -->
   <string name="selected_all">सबको चयनित करें</string>
   <string name="deselected_all">सबको अचयनित करें</string>
   <string name="selected_count"><xliff:g id="COUNT">%d</xliff:g> चयनित</string>
+  <!-- priority of cdma message -->
   <string name="cdma_priority_normal">सामान्य</string>
   <string name="cdma_priority_interactive">अंतर्क्रियात्मक</string>
   <string name="cdma_priority_urgent">अत्यावश्यक</string>
@@ -201,6 +246,7 @@
   <string name="pref_summary_cdma_priority">सीडीएमए संदेशों की वरीयता</string>
   <string name="download_dialog_title">इस एमएमएस को डाउनलोड करें?</string>
   <string name="menu_email">ईमेल भेजें</string>
+  <!-- Settings item description for Preferred storage -->
   <string name="pref_title_sms_store">पसंदीदा भंडारण</string>
   <string name="pref_title_sms_store_card1">सिम 1 के लिए पसंदीदा भंडारण</string>
   <string name="pref_title_sms_store_card2">सिम 2 के लिए पसंदीदा भंडारण</string>
@@ -230,13 +276,17 @@
   <string name="manage_sdcard_messages">संदेशों को आयात/निर्यात करें</string>
   <string name="no_backups_found">कोई बैकअप नहीं मिला</string>
   <string name="remove_subject">विषय हटाएँ</string>
+  <!-- QuickMessage Wear-->
   <string name="qm_wear_sending_message"><xliff:g id="name">%s</xliff:g> को उत्तर दे रहे हैं\u2026</string>
   <string name="qm_wear_messaged_failed"><xliff:g id="name">%s</xliff:g> को पाठ संदेश नहीं भेजा गया। कृपया फिर से कोशिश करें।</string>
   <string name="qm_wear_voice_reply">आपका उत्तर क्या है?</string>
   <string name="qm_wear_reply_by_voice">आवाज़ से उत्तर दें</string>
+  <!-- Copy message text-->
   <string name="copy_empty_string">कॉपी करने के लिए कोई पाठ नहीं है</string>
   <string name="attach_add_calendar_events">कैलेंडर घटना</string>
+  <!-- friendlier text for an activity not found exception for calendar attachments -->
   <string name="calendar_attachment_activity_not_found">समर्थन देने वाला कैलेंडर ऐप नहीं मिला</string>
+  <!-- Vibrate pattern -->
   <string name="pref_title_mms_notification_vibrate_pattern">कंपन पैटर्न</string>
   <string name="pref_summary_mms_notification_vibrate_pattern">कंपन पैटर्न बदलें</string>
   <string name="pref_mms_notification_vibrate_normal">सामान्य</string>
@@ -244,19 +294,28 @@
   <string name="pref_mms_notification_vibrate_long_vib">लंबा कंपन</string>
   <string name="pref_mms_notification_vibrate_mult_short">अनेक छोटे</string>
   <string name="pref_mms_notification_vibrate_mult_long">अनेक लंबे</string>
+  <!-- Menu item - Insert smiley -->
   <string name="menu_insert_smiley">स्माइली डालें</string>
+  <!-- Enable emoticons -->
   <string name="pref_title_enable_emoticons">भावना-चिह्न समर्थन</string>
   <string name="pref_summary_enable_emoticons">पाठ भावना-चिह्नों को ग्राफ़िकल तुल्यों से बदलें</string>
+  <!-- Conversation options -->
   <string name="menu_conversation_options">वार्तालाप विकल्प</string>
   <string name="pref_title_reset_convopt_to_default">डॉफ़ॉल्ट पर रीसेट करें</string>
   <string name="pref_summary_reset_convopt_to_default">वार्तालाप सेटिंग को अनुप्रयोग स्तर की सेटिंग पर रीसेट करता है</string>
+  <!-- Full timestamps -->
   <string name="pref_title_mms_full_timestamp">पूर्ण समय-मुहर</string>
   <string name="pref_summary_mms_full_timestamp">समय-मुहर में तिथि और समय दोनों दिखाएँ</string>
+  <!-- Original timestamps -->
   <string name="pref_title_mms_use_sent_timestamp">मूल समय-मुहर</string>
   <string name="pref_summary_mms_use_sent_timestamp">समय-मुहर में प्राप्त होने की तिथि की जगह भेजने की तिथि दिखाएँ</string>
+  <!-- Settings item for boolean option to auto -enable data for MMS messages -->
   <string name="pref_title_mms_auto_enable_data">डेटा को स्वतः सक्षम करें</string>
+  <!-- Settings item description for boolean auto-enable data for MMS option -->
   <string name="pref_summary_mms_auto_enable_data">एमएमएस संदेशों के लिए अपने आप ही मोबाइल डेटा को सक्षम करें</string>
+  <!-- Select recipients dialog -->
   <string name="adding_selected_recipients_dialog_text">संपर्क जोड़ रहे हैं\u2026</string>
+  <!-- Smart Dialer -->
   <string name="pref_title_mms_smart_dialer">स्मार्ट कॉल</string>
   <string name="pref_summary_mms_smart_dialer">अपने फ़ोन को अपने कान की तरफ़ ले जाकर अपने आप ही संपर्क को कॉल करें</string>
 </resources>

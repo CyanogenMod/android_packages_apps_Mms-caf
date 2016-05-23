@@ -16,27 +16,54 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in MessageListItem.java and to default_smiley_names
+         below. -->
+  <!-- NOTE: if you change anything about this array, you must make the corresponding change
+         to the array DEFAULT_SMILEY_RES_IDS in SmileyParser.java and to default_smiley_texts
+         above. -->
   <string-array name="default_smiley_names">
     <item>Feliz</item>
+    <!-- 0: :-) -->
     <item>Triste</item>
+    <!-- 1: :-( -->
     <item>Piscar o olho</item>
+    <!-- 2: ;-) -->
     <item>Língua de fora</item>
+    <!-- 3: :-P -->
     <item>Surpreso</item>
+    <!-- 4: =-O -->
     <item>Beijos</item>
+    <!-- 5: :-* -->
     <item>Gritar</item>
+    <!-- 6: :O -->
     <item>Cool</item>
+    <!-- 7: B-) -->
     <item>Rico</item>
+    <!-- 8: :-$ -->
     <item>Pé na boca</item>
+    <!-- 9: :-! -->
     <item>Envergonhado</item>
+    <!-- 10: :-[ -->
     <item>Anjo</item>
+    <!-- 11: O:-) -->
     <item>Indeciso</item>
+    <!-- 12: :-\\ -->
     <item>Chorar</item>
+    <!-- 13: :\'( -->
     <item>Segredo</item>
+    <!-- 14: :-X -->
     <item>Rir</item>
+    <!-- 15: :-D -->
     <item>Confuso</item>
+    <!-- 16: o_O -->
     <item>Coração</item>
+    <!-- 17: <3 -->
     <item>Louco</item>
+    <!-- 18: x-( -->
     <item>Sorriso</item>
+    <!-- 19: :-/ -->
     <item>Jogador</item>
+    <!-- 20: :-I -->
   </string-array>
 </resources>
