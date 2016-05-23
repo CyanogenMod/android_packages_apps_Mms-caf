@@ -311,9 +311,9 @@
   <string name="pref_title_mms_use_sent_timestamp">オリジナルタイムスタンプ</string>
   <string name="pref_summary_mms_use_sent_timestamp">タイムスタンプに受信日時の代わりに送信日時を表示する</string>
   <!-- Settings item for boolean option to auto -enable data for MMS messages -->
-  <string name="pref_title_mms_auto_enable_data">データ通信を自動で有効化</string>
+  <string name="pref_title_mms_auto_enable_data">モバイルデータを自動で有効化</string>
   <!-- Settings item description for boolean auto-enable data for MMS option -->
-  <string name="pref_summary_mms_auto_enable_data">MMSメッセージを送受信するためにデータ通信を自動的に有効にする</string>
+  <string name="pref_summary_mms_auto_enable_data">MMSメッセージを送受信するためにモバイルデータを自動的に有効にする</string>
   <!-- Select recipients dialog -->
   <string name="adding_selected_recipients_dialog_text">連絡先を追加しています\u2026</string>
   <!-- Smart Dialer -->

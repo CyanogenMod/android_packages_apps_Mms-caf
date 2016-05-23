@@ -240,7 +240,7 @@
   <string name="selected_count">Izbranih <xliff:g id="COUNT">%d</xliff:g></string>
   <!-- priority of cdma message -->
   <string name="cdma_priority_normal">Običajno</string>
-  <string name="cdma_priority_interactive">Sodejno</string>
+  <string name="cdma_priority_interactive">Vzajemno</string>
   <string name="cdma_priority_urgent">Nujno</string>
   <string name="cdma_priority_emergency">V sili</string>
   <string name="pref_title_cdma_priority">Prednost sporočila</string>
