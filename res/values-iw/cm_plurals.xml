@@ -17,15 +17,25 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <plurals name="remaining_delay_time">
-    <item quantity="one">שולח בעוד 1 שניות, גע לביטול.</item>
+    <item quantity="one">שולח בעוד שנייה 1, גע לביטול.</item>
+    <item quantity="two">שולח בעוד %1$d שניות, גע לביטול.</item>
+    <item quantity="many">שולח בעוד %1$d שניות, גע לביטול.</item>
     <item quantity="other">שולח בעוד %1$d שניות, גע לביטול.</item>
   </plurals>
   <plurals name="confirm_delete_messages">
+    <!-- Case of 1 result. -->
     <item quantity="one">הודעה אחת תימחק.</item>
+    <item quantity="two"><xliff:g id="number" example="15">%1$s</xliff:g> הודעות יימחקו.</item>
+    <item quantity="many"><xliff:g id="number" example="15">%1$s</xliff:g> הודעות יימחקו.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> הודעות יימחקו.</item>
   </plurals>
   <plurals name="confirm_mark_read_conversation">
+    <!-- Case of 1 result. -->
     <item quantity="one">שיחה אחת תסומן כנקראה.</item>
+    <item quantity="two"><xliff:g id="number" example="15">%1$s</xliff:g> שיחות יסומנו כנקראו.</item>
+    <item quantity="many"><xliff:g id="number" example="15">%1$s</xliff:g> שיחות יסומנו כנקראו.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> שיחות יסומנו כנקראו.</item>
   </plurals>
 </resources>

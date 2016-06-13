@@ -21,11 +21,15 @@
     <item quantity="other">Unviando en %1$d segundos, toca pa encaboxar.</item>
   </plurals>
   <plurals name="confirm_delete_messages">
+    <!-- Case of 1 result. -->
     <item quantity="one">Va desaniciase\'l mensaxe.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other">Van desaniciase <xliff:g id="number" example="15">%1$s</xliff:g> mensaxes.</item>
   </plurals>
   <plurals name="confirm_mark_read_conversation">
+    <!-- Case of 1 result. -->
     <item quantity="one">La conversación va marcase como lleída.</item>
+    <!-- Case of 0 or 2 or more results. -->
     <item quantity="other">Van marcase <xliff:g id="number" example="15">%1$s</xliff:g> conversaciones como lleíes.</item>
   </plurals>
 </resources>
