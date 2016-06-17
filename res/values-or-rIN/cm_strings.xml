@@ -22,6 +22,7 @@
   <string name="pref_quickmessage_title">ଦ୍ରୁତସନ୍ଦେଶ ଦେଖାନ୍ତୁ</string>
   <string name="pref_quickmessage_summary">ଆସୁଥିବା SMS ସନ୍ଦେଶ ପାଇଁ ଦ୍ରୁତସନ୍ଦେଶ ପପ୍‍-ଅପ୍‍ ସ୍ୱତଃ ଭାବେ ଖୋଲନ୍ତୁ</string>
   <string name="pref_wake_unlock_title">ଉଠନ୍ତୁ ଓ ଅନ୍‍ଲକ୍‍ କରନ୍ତୁ</string>
+  <string name="pref_wake_unlock_summary">ଡିଭାଇସ୍‍କୁ ଉଠାନ୍ତୁ ଓ ଦ୍ରୁତସନ୍ଦେଶ ପପ୍‍ଅପ୍‍ ପ୍ରଦର୍ଶନ କରନ୍ତୁ</string>
   <string name="pref_close_all_title">ସବୁ ବନ୍ଦ କରନ୍ତୁ</string>
   <string name="pref_close_all_summary">ବନ୍ଦ କରିବା ବଟନ୍‍ ସମସ୍ତ ସନ୍ଦେଶ ବନ୍ଦ କରିଦିଏ</string>
   <string name="pref_dark_theme_title">ଗାଢ ଥିମ୍‍ ବ୍ୟବହାର କରନ୍ତୁ</string>

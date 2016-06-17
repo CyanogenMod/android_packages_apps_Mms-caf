@@ -22,6 +22,7 @@
   <string name="pref_quickmessage_title">কুইকবাৰ্তা প্ৰদৰ্শন কৰক</string>
   <string name="pref_quickmessage_summary">ইনকামিং SMS বাৰ্তাৰ বাবে স্বয়ংক্ৰিয়ভাবে কুইকবাৰ্তা পপ-আপ খোলক</string>
   <string name="pref_wake_unlock_title">ৱেক আৰু আনলক</string>
+  <string name="pref_wake_unlock_summary">ডিভাইচটো ৱেক কৰক আৰু কুইকবাৰ্তা পপ-আপ প্ৰদৰ্শন কৰক</string>
   <string name="pref_close_all_title">সকলো বন্ধ কৰক</string>
   <string name="pref_close_all_summary">ক্লোজ বুটামে সকলো বাৰ্তা বন্ধ কৰে</string>
   <string name="pref_dark_theme_title">গাঢ় বিষয়বস্তু ব্যৱহাৰ কৰক</string>

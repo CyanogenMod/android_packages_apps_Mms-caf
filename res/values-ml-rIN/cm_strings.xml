@@ -22,6 +22,7 @@
   <string name="pref_quickmessage_title">ക്വിക്ക്മെസേജ് കാണിക്കുക</string>
   <string name="pref_quickmessage_summary">ഇൻകമിംഗ് SMS സന്ദേശങ്ങൾക്കായി ക്വിക്ക്മെസേജ് പോപ്പ്-അപ്പ് സ്വമേധയാ തുറക്കുക</string>
   <string name="pref_wake_unlock_title">സജീവമാക്കുക, അൺലോക്ക് ചെയ്യുക</string>
+  <string name="pref_wake_unlock_summary">ഉപകരണം സജീവമാക്കുക, ക്വിക്ക്മെസേജ് പോപ്പ്-അപ്പ് പ്രദര്‍ശിപ്പിക്കുക</string>
   <string name="pref_close_all_title">എല്ലാം അടയ്ക്കുക</string>
   <string name="pref_close_all_summary">ക്ലോസ് ബട്ടൺ എല്ലാ സന്ദേശങ്ങളും അടയ്ക്കുന്നു</string>
   <string name="pref_dark_theme_title">ഇരുണ്ട തീം ഉപയോഗിക്കുക</string>

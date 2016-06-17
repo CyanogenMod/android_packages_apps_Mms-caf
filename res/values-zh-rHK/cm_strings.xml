@@ -20,6 +20,7 @@
   <!-- Preferences -->
   <string name="pref_quickmessage_summary">自動打開 QuickMessage 快顯視窗檢視新訊息</string>
   <string name="pref_wake_unlock_title">喚醒和解鎖</string>
+  <string name="pref_wake_unlock_summary">喚醒設備和顯示 QuickMessage 快顯視窗</string>
   <string name="pref_close_all_title">全部關閉</string>
   <string name="pref_close_all_summary">關閉按鈕關閉所有訊息</string>
   <string name="pref_dark_theme_title">採用深色主題</string>

@@ -22,6 +22,7 @@
   <string name="pref_quickmessage_title">Prikaži Hitro sporočilo</string>
   <string name="pref_quickmessage_summary">Samodejno odpri pojavno okno Hitrega sporočila za dohodna sporočila SMS</string>
   <string name="pref_wake_unlock_title">Zbudi in odkleni</string>
+  <string name="pref_wake_unlock_summary">Zbudi napravo in prikaži pojavno okno Hitrega sporočila</string>
   <string name="pref_close_all_title">Zapri vse</string>
   <string name="pref_close_all_summary">Gumb Zapri zapre vsa sporočila</string>
   <string name="pref_dark_theme_title">Uporabi temno temo</string>

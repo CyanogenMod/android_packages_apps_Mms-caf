@@ -22,6 +22,7 @@
   <string name="pref_quickmessage_title">Pokaži BrzuPoruku</string>
   <string name="pref_quickmessage_summary">Automatski otvori skočni prozor Brze poruke za dolazeće SMS poruke</string>
   <string name="pref_wake_unlock_title">Probudi i otključaj</string>
+  <string name="pref_wake_unlock_summary">Probudi uređaj i prikaži primanje skočne poruke</string>
   <string name="pref_close_all_title">Zatvori sve</string>
   <string name="pref_close_all_summary">Zatvori tipka zatvara sve poruke</string>
   <string name="pref_dark_theme_title">Koristi tamnu temu</string>

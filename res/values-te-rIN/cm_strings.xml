@@ -22,6 +22,7 @@
   <string name="pref_quickmessage_title">త్వరిత సందేశాన్ని చూపుము</string>
   <string name="pref_quickmessage_summary">ఇన్‌కమింగ్ SMS  సందేశాలకు స్వయంచాలకంగా త్వరిత సందేశ ఉద్వాహాన్ని తెరువుము</string>
   <string name="pref_wake_unlock_title">మేల్కొలుపుము మరియు అన్‌లాక్ చేయి</string>
+  <string name="pref_wake_unlock_summary">పరికరాన్ని మేల్కొలుపుము మరియు త్వరితసందేశ ఉద్వాహాన్ని ప్రదర్శించుము</string>
   <string name="pref_close_all_title">అన్నింటినీ మూయుము</string>
   <string name="pref_close_all_summary">క్లోస్ బటన్ అన్ని సందేశాలను మూసి వేస్తుంది</string>
   <string name="pref_dark_theme_title">ముదురు రంగు థీమును ఉపయోగించుము</string>

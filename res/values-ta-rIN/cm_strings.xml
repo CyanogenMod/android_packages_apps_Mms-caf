@@ -22,6 +22,7 @@
   <string name="pref_quickmessage_title">QuickMessage காண்பி</string>
   <string name="pref_quickmessage_summary">தானியக்கமாக QuickMessageபாப்-அப்பை உள்வரும் SMS செய்திகளுக்கு திற</string>
   <string name="pref_wake_unlock_title">விழித்து பூட்டுநீக்கு</string>
+  <string name="pref_wake_unlock_summary">சாதனத்தை விழிப்பூட்டி QuickMessage பாப்-அப்பை காட்டு</string>
   <string name="pref_close_all_title">அனைத்தையும் மூடு</string>
   <string name="pref_close_all_summary">மூடு பொத்தான் அனைத்து செய்திகளையும் மூடுகிறது</string>
   <string name="pref_dark_theme_title">கருமையான கருப்பொருளை பயன்படுத்து</string>
