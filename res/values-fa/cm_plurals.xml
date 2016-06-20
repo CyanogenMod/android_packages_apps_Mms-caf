@@ -17,15 +17,18 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <plurals name="remaining_delay_time">
+    <item quantity="one">ارسال ظرف %1$d ثانیه، برای لغو لمس کنید.</item>
     <item quantity="other">ارسال ظرف %1$d ثانیه، برای لغو لمس کنید.</item>
   </plurals>
   <plurals name="confirm_delete_messages">
     <!-- Case of 1 result. -->
+    <item quantity="one"><xliff:g id="number" example="15">%1$s</xliff:g> پیام حذف خواهد شد.</item>
     <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> پیام حذف خواهد شد.</item>
   </plurals>
   <plurals name="confirm_mark_read_conversation">
     <!-- Case of 1 result. -->
+    <item quantity="one"><xliff:g id="number" example="15">%1$s</xliff:g> مکالمه به عنوان خوانده شده علامت زده خواهد شد.</item>
     <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> مکالمه به عنوان خوانده شده علامت زده خواهد شد.</item>
   </plurals>

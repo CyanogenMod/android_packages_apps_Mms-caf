@@ -318,5 +318,5 @@
   <string name="adding_selected_recipients_dialog_text">S\'estan afegint els contactes\u2026</string>
   <!-- Smart Dialer -->
   <string name="pref_title_mms_smart_dialer">Trucada intel·ligent</string>
-  <string name="pref_summary_mms_smart_dialer">Truca automàticament el contacte movent el dispositiu a la teva orella</string>
+  <string name="pref_summary_mms_smart_dialer">Truca automàticament al contacte movent el dispositiu a la teva orella</string>
 </resources>
