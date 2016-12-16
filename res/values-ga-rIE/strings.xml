@@ -22,18 +22,15 @@
   <!-- The name of the SMS/MMS app as it appears to the user in the Home screen, task switcher, etc. -->
   <!-- Command name to open a Compose screen; displays in conversation list.
          Also used as accessibility text for widget's new message button -->
-  <string name="new_message">Nova mesaĝo</string>
   <!-- Context menu item on an individual message for dialing the sender's phone number -->
   <!-- Context menu item on an individual message for emailing the sender -->
   <!-- Menu item for starting a new conversation -->
   <!-- Menu item for accessing application settings -->
-  <string name="menu_preferences">Agordoj</string>
   <!-- Menu shown in the context menu when long pressing on a message when the message contains
          one or more phone numbers and/or email addresses and the number or email is new to
          contacts. [CHAR LIMIT=50] -->
   <!-- Menu item to call the recipient of the conversation on the phone (imperative verb) -->
   <!-- Menu item for search -->
-  <string name="menu_search">Serĉi</string>
   <!-- Menu item for deleting all conversations -->
   <!-- Context menu item on an individual conversation for deleting that conversation -->
   <!-- Context menu item on an individual conversation for viewing that conversation -->
@@ -43,12 +40,10 @@
   <!-- Tag appearing on conversations in the conversation list that contain a draft message -->
   <!-- Subject to display in the conversation list if there is no subject -->
   <!-- Name of the local user when displaying sender of an outgoing message (personal pronoun) -->
-  <string name="messagelist_sender_self">Mi</string>
   <!-- Context menu item on an individual message for viewing an attached slideshow -->
   <!-- Context menu item on an individual message for viewing message details such as time and date -->
   <!-- Context menu item on an individual message for viewing a delivery report -->
   <!-- Context menu item on an individual message for deleting only that message -->
-  <string name="delete_message">Forigi</string>
   <!-- Time and date a message is due to expire -->
   <!-- Abbreviation for "kilobyte" -->
   <!-- Dialog box title brought up when warning the user that a message could not be delivered -->
@@ -58,7 +53,6 @@
   <!-- Context menu item on an individual message for forwarding it to another recipient -->
   <!-- Text of a button appearing for MMS messages that have not yet been downloaded, causing the message
          to be downloaded (imperative verb) -->
-  <string name="download">Elŝuti</string>
   <!-- Message displayed in place of the "download message" button once it has been pressed,
          indicating that the download is in progress -->
   <!-- Formatting for subject displayed inline, prepended to MMS message text -->
@@ -77,9 +71,7 @@
   <!-- Header of slideshow showing which slide is being displayed -->
   <!-- Menu item in slide edit screen for removing the text from the slide being edited -->
   <!-- Menu item in slide edit screen for adding a picture to the slide being edited -->
-  <string name="add_picture">Aldoni bildon</string>
   <!-- Menu item in slide edit screen for removing the picture from the slide being edited -->
-  <string name="remove_picture">Forigi bildon</string>
   <!-- Menu item in slide edit screen for adding music to the slide being edited -->
   <!-- Menu item in slide edit screen for removing the music from the slide being edited -->
   <!-- Menu item in slide edit screen for adding a video to the slide being edited -->
@@ -92,9 +84,7 @@
   <!-- Button next to an attachment during message composition to view the attachment (imperative verb) -->
   <!-- Button next to an attachment during message composition to replace the attachment (imperative verb) -->
   <!-- Button next to an attachment during message composition to remove the attachment (imperative verb) -->
-  <string name="remove">Forigi</string>
   <!-- Button in conversation screen for sending the SMS message currently being composed (imperative verb) -->
-  <string name="send">Sendi</string>
   <!-- Text to appear directly below the "Send" text on the SMS/MMS send button. The "MMS" text is on a second line in a smaller font. This is similar to saying "Send (mms)". -->
   <!-- Content description for the send button when sending an mms (imperative verb) -->
   <!-- Menu item in conversation screen for returning to the conversation list -->
@@ -146,38 +136,20 @@
   <!-- Toast when the user enters a zero value for the duration of a slide -->
   <!-- In duration selection dialog box, short version of "seconds" -->
   <!-- Options for slide duration in duration selection dialog box -->
-  <string-array name="select_dialog_items">
-    <item>1 sekundo</item>
-    <item>2 sekundoj</item>
-    <item>3 sekundoj</item>
-    <item>4 sekundoj</item>
-    <item>5 sekundoj</item>
-    <item>6 sekundoj</item>
-    <item>7 sekundoj</item>
-    <item>8 sekundoj</item>
-    <item>9 sekundoj</item>
-    <item>10 sekundoj</item>
-    <item>Other</item>
-  </string-array>
   <!-- Context menu item on a message recipient for viewing their contact info -->
   <!-- Context menu item on a message recipient for adding them to the user's
          contacts (used if the recipient is not already in the address book) -->
   <!-- Sender to be used if the sender address has been hidden -->
   <!-- Text to be used for affirmative response button in dialog boxes -->
   <!-- Text to be used for negative response button in dialog boxes -->
-  <string name="no">Nuligi</string>
   <!-- Text to be used for affirmative response button in setting SMS limits dialog box -->
   <!-- Button text used for playing an attachment or slideshow (imperative verb) -->
-  <string name="play">Ludi</string>
   <!-- Button text used for editing a slideshow (imperative verb) -->
-  <string name="edit">Redakti</string>
   <!-- Button used for trying to send a message that has some valid recipients and some
          invalid recipients, in spite of the warning presented to the user -->
   <!-- Title of Settings screen -->
-  <string name="preferences_title">"Agordoj"</string>
   <!-- Settings screen menu item for restoring all settings to default -->
   <!-- Settings screen, section heading for notifications -->
-  <string name="pref_notification_settings_title">Sciigoj</string>
   <!-- Settings screen, section heading for MMS-specific settings -->
   <!-- Settings screen, section heading for SMS-specific settings -->
   <!-- Settings screen, section heading for storage-specific settings -->
@@ -201,7 +173,6 @@
   <!-- Settings item for integer option to set SMS delete limit -->
   <!-- Settings item for integer option to set MMS delete limit -->
   <!-- Settings item for boolean option to display message notifications -->
-  <string name="pref_title_notification_enabled">Sciigoj</string>
   <!-- Settings item for boolean option to vibrate during message notification -->
   <!-- Settings item for entering ringtone selection screen -->
   <!-- Settings item for setting the number of message to save for each conversation -->
@@ -224,7 +195,6 @@
   <!-- Delete the selected message on the SIM dialog message -->
   <!-- Delete unlocked checkbox title -->
   <!-- Delete button title -->
-  <string name="delete">Forigi</string>
   <!-- Action bar mode title when multi-selecting conversations -->
   <!-- Show this in the middle of the main activity when there are no conversations [CHAR LIMIT=none] -->
   <!-- Show this in the middle of the main activity when loading conversations [CHAR LIMIT=none] -->
@@ -250,17 +220,14 @@
   <!-- Label in "Message details" dialog -->
   <!-- Label in "Message details" dialog -->
   <!-- Menu title for editing a message -->
-  <string name="menu_edit">Redakti</string>
   <!-- Menu title for deleting undelivered messages or messages on
         the SIM card. -->
-  <string name="menu_delete_messages">Forigi mesaĝojn</string>
   <!-- Menu title for locking a message -->
   <!-- Menu title for unlocking a message -->
   <!-- Manage SIM Messages -->
   <!-- Menu title to copy a selected message from the SIM card to the phone. -->
   <!-- Menu title to copy a selected message from the SIM card to the phone. -->
   <!-- Menu title to delete a selected messaged from the SIM card. -->
-  <string name="sim_delete">Forigi</string>
   <!-- Title of screen displaying messages on SIM card -->
   <!-- Context menu item but currently commented out in 1.0. -->
   <!-- Message that appears on the "SMS messges on SIM card" screen when there are no messages on the SIM card -->
@@ -278,7 +245,6 @@
   <!-- Label in "Report" window -->
   <!-- Label in "Report" window [CHAR LIMIT=50]-->
   <!-- Attachment Type Selector Adapter. This string is an option in the "Attach" dialog, "Add music" dialog -->
-  <string name="attach_image">Bildoj</string>
   <!-- Attachment Type Selector Adapter. This string is an option in the "Attach" dialog, "Add music" dialog -->
   <!-- Attachment Type Selector Adapter. This string is an option in the "Attach" dialog, "Add music" dialog -->
   <!-- Attachment Type Selector Adapter. This string is an option in the "Attach" dialog, "Add music" dialog -->
@@ -290,7 +256,6 @@
   <!-- Delivery Report Toast dialog content -->
   <!-- Delivery Report Notification dialog title. -->
   <!-- Delivery Report Notification dialog title. -->
-  <string name="notification_multiple_title">Novaj mesaĝoj</string>
   <!-- Failed to send/download Notification dialog title. -->
   <!-- Failed to send/download Notification dialog title. -->
   <!-- Sim Full Notification dialog title. -->
@@ -303,7 +268,6 @@
          For instance: Sorry, you cannot add this audio to your message. -->
   <!-- Multimedia type used in building other messages.
          For instance: Sorry, you cannot add this picture to your message. -->
-  <string name="type_picture">bildo</string>
   <!-- Multimedia type used in building other messages.
          For instance: Sorry, you cannot add this video to your message. -->
   <!-- Dialog title for the Read Report dialog. -->
@@ -361,7 +325,6 @@
           immediately when clicked. -->
   <!--- Button description in preferences to clear the search history. -->
   <!-- Dialog text for display mode save dialog. -->
-  <string name="save">Konservi</string>
   <!-- Dialog title for dialog that informs user about new storage settings. -->
   <!-- Dialog message for dialog that informs user about new storage settings. -->
   <!-- Button title for dialog that informs user about new storage settings. -->
@@ -373,10 +336,8 @@
   <!-- Message of progress dialog for picker -->
   <!-- In conversation list items, this is the separator between a contact's name
          and the draft stamp [CHAR LIMIT=5] -->
-  <string name="draft_separator">,\u0020</string>
   <!-- In conversation list items, this comes after the receipient's name and contains
          the number of messages in the thread [CHAR LIMIT=5] -->
-  <string name="message_count_format">\u00a0<xliff:g id="number" example="1">%1$s</xliff:g></string>
   <!-- When showing a multi-message notification, this is the title [CHAR LIMIT=none] -->
   <!-- In digest notifications when we show N messages, but there are N+M outstanding messages,
          this text is displayed at the bottom of the notification. [CHAR LIMIT=50] -->
@@ -393,11 +354,8 @@
   <!-- Attachment type shown in notification. [CHAR LIMIT=35] -->
   <!-- Attachment type shown in notification. [CHAR LIMIT=35] -->
   <!-- Separator between parts of a notification in each line of an inboxStyle notification. [CHAR LIMIT=2] -->
-  <string name="notification_separator">\u0020\u0020</string>
   <!-- An enumeration comma for separating multiple names in notifications. [CHAR LIMIT=2] -->
-  <string name="enumeration_comma">,\u0020</string>
   <!-- In message list items, this string builds the timestamp line when the message is in a group [CHAR LIMIT=NONE] -->
-  <string name="message_timestamp_format"><xliff:g id="string" example="Fred Flinstone">%1$s</xliff:g>\u0020-\u0020<xliff:g id="string" example="9:39AM">%2$s</xliff:g></string>
   <!--  Strings used forh MMS push of messages in outbox -->
   <!-- Banner in conversation list for making Messaging the default SMS app -->
 </resources>

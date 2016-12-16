@@ -223,8 +223,8 @@
   <!-- Spinner item of slot type in mailbox-mode -->
   <string name="slot_type_select">Izberite kartico SIM</string>
   <!-- String used in SearchActivityExtend.java -->
-  <string name="search_title">Iskanje sporočil</string>
-  <string name="search_key">Iskanje ključnih besed</string>
+  <string name="search_title">Išči po sporočilih</string>
+  <string name="search_key">Išči po ključnih besedah</string>
   <string name="search_mode">Način iskanja</string>
   <string name="search_as_name">Ime</string>
   <string name="search_as_number">Številka</string>

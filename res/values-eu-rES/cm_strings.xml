@@ -110,7 +110,7 @@
   <string name="select_phone_account_title">Bidali honekin:</string>
   <string name="media_size_limit">Mezuaren tamaina muga gainditu da, ezin da mezua bidali.</string>
   <!-- Error message indicating that the message size or the increase size is negative -->
-  <string name="illegal_message_or_increase_size">Mezu tamaina okerra.</string>
+  <string name="illegal_message_or_increase_size">Mezuaren tamaina okerra.</string>
   <!-- Dialog box title that appears when a draft message will not be saved due to invalid recipients -->
   <string name="discard_message_reason_some_invalid">Zure mezua baztertuko da hartzaile batzuk baliogabeak direlako.</string>
   <!-- Brief message that appears when the maximum size of slides has been reached -->
@@ -177,7 +177,7 @@
   <string name="attach_add_contact_as_text">Kontaktuaren informazioa testu gisa</string>
   <string name="contact_info_text_as_name">Izena:</string>
   <string name="contact_info_text_as_phone">Tel:</string>
-  <string name="contact_info_text_as_email">Eposta:</string>
+  <string name="contact_info_text_as_email">E-posta:</string>
   <!-- Sharing vcs files from Calendar -->
   <string name="type_vcal">Egutegiko gertaera</string>
   <string name="pref_wap_push_title">Push zerbitzuko mezuak</string>
@@ -246,7 +246,7 @@
   <string name="pref_title_cdma_priority">Mezuaren lehentasuna</string>
   <string name="pref_summary_cdma_priority">CDMA mezuen lehentasuna</string>
   <string name="download_dialog_title">Deskargatu MMS mezu hau?</string>
-  <string name="menu_email">Bidali eposta</string>
+  <string name="menu_email">Bidali e-posta</string>
   <!-- Settings item description for Preferred storage -->
   <string name="pref_title_sms_store">Biltegiratze hobetsia</string>
   <string name="pref_title_sms_store_card1">1. SIM txartelaren biltegiratze hobetsia</string>

@@ -35,4 +35,11 @@
     <!-- Case of 0 or 2 or more results. -->
     <item quantity="other"><xliff:g id="number" example="15">%1$s </xliff:g> konverzácií bude označených ako prečítané.</item>
   </plurals>
+  <plurals name="confirm_mark_unread_conversation">
+    <!-- Case of 1 result. -->
+    <item quantity="one">Konverzácia bude označená ako neprečítaná.</item>
+    <item quantity="few"><xliff:g id="number" example="15">%1$s</xliff:g> konverzácie budú označené ako neprečítané.</item>
+    <!-- Case of 0 or 2 or more results. -->
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> konverzácií bude označených ako neprečítané.</item>
+  </plurals>
 </resources>

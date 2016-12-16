@@ -38,20 +38,20 @@
   <string name="qm_mark_read">読む</string>
   <string name="toast_sending_message">メッセージを送信中\u2026</string>
   <!-- Delay delivery -->
-  <string name="pref_title_send_delay">送信の遅延</string>
+  <string name="pref_title_send_delay">配信の遅延</string>
   <string name="send_delay_immediate">すぐに送信</string>
   <string name="send_delay_3seconds">3秒</string>
   <string name="send_delay_5seconds">5秒</string>
   <string name="send_delay_10seconds">10秒</string>
   <string name="send_delay_20seconds">20秒</string>
   <string name="send_delay_30seconds">30秒</string>
-  <string name="sent_countdown">メッセージ送信のカウントダウン</string>
+  <string name="sent_countdown">メッセージ配信のカウントダウン</string>
   <!-- EXTRA SETTINGS -->
   <string name="pref_extra_settings">その他の設定</string>
   <!-- Blacklist preferences -->
   <string name="blacklist_title">着信拒否リスト</string>
   <string name="blacklist_summary_disabled">無効</string>
-  <string name="blacklist_summary">着信拒否リストにある電話番号からの着信やメッセージを受け取らないようにします</string>
+  <string name="blacklist_summary">着信拒否リストにある電話番号からの着信やメッセージを受け取らないようにする</string>
   <!-- Blacklist notifications -->
   <string name="blacklist_notification">%sからのメッセージを受信拒否しました</string>
   <string name="blacklist_notification_private_number">非通知番号からのメッセージを受信拒否しました</string>
@@ -76,12 +76,12 @@
   <!-- Context menu item on a message for marking all threads as unread / read -->
   <string name="menu_all_as_unread">すべて未読にする</string>
   <string name="menu_all_as_read">すべて既読にする</string>
-  <string name="menu_add_to_contacts_cm">連絡帳に追加</string>
+  <string name="menu_add_to_contacts_cm">連絡先に追加</string>
   <!-- Confirm Mark as unread / read -->
   <string name="confirm_mark_unread_dialog_title">未読にしますか？</string>
-  <string name="confirm_mark_unread_conversation">会話は未読になります。</string>
+  <string name="confirm_mark_unread_conversation">スレッドは未読になります。</string>
   <string name="confirm_mark_read_dialog_title">既読にしますか？</string>
-  <string name="confirm_mark_read_conversation">会話は既読になります。</string>
+  <string name="confirm_mark_read_conversation">スレッドは既読になります。</string>
   <!-- Mark all threads confirmation dialog message -->
   <string name="confirm_mark_unread_all_conversations">すべてのスレッドが未読になります。</string>
   <string name="confirm_mark_read_all_conversations">すべてのスレッドが既読になります。</string>
@@ -153,7 +153,7 @@
   <string name="pref_title_edit_signature">署名のテキストを編集</string>
   <!-- Copy message to sim -->
   <string name="menu_copy_to">コピー</string>
-  <string name="operation_to_card_memory">SIMカードにメッセージをコピー</string>
+  <string name="operation_to_card_memory">メッセージをSIMカードにコピー</string>
   <!-- SMSC -->
   <string name="pref_smsc_title">SMSサービスセンター</string>
   <string name="pref_one_smcs">SMSC番号</string>
@@ -167,7 +167,7 @@
   <string name="copy_to_sim_fail">メッセージを保存できません</string>
   <string name="copy_to_phone_success">メッセージを保存しました</string>
   <string name="copy_to_phone_fail">メッセージを保存できませんでした</string>
-  <string name="contact_app_not_found">連絡帳アプリケーションを開けませんでした</string>
+  <string name="contact_app_not_found">連絡先アプリケーションを開けませんでした</string>
   <!-- Gray hint displayed in the search field in Contacts when empty -->
   <string name="search_bar_hint">連絡先を検索</string>
   <!-- Add for share contact feature -->
@@ -214,7 +214,7 @@
   <string name="message_detail">メッセージの詳細</string>
   <string name="no_message">メッセージがありません。</string>
   <string name="change_to_folder_mode">フォルダー表示</string>
-  <string name="change_to_conversation_mode">会話表示</string>
+  <string name="change_to_conversation_mode">スレッド表示</string>
   <!-- Spinner item of box type in mailbox-mode -->
   <string name="type_inbox">受信トレイ</string>
   <string name="type_sent">送信済み</string>
@@ -301,9 +301,9 @@
   <string name="pref_title_enable_emoticons">絵文字サポート</string>
   <string name="pref_summary_enable_emoticons">テキストの顔文字をそれに対応する絵文字で置き換える</string>
   <!-- Conversation options -->
-  <string name="menu_conversation_options">会話のオプション</string>
+  <string name="menu_conversation_options">スレッドのオプション</string>
   <string name="pref_title_reset_convopt_to_default">デフォルトに戻す</string>
-  <string name="pref_summary_reset_convopt_to_default">会話の設定をアプリケーションレベルの設定にリセットする</string>
+  <string name="pref_summary_reset_convopt_to_default">スレッドの設定をアプリケーションレベルの設定にリセットする</string>
   <!-- Full timestamps -->
   <string name="pref_title_mms_full_timestamp">フルタイムスタンプ</string>
   <string name="pref_summary_mms_full_timestamp">タイムスタンプに日付と時刻の両方を表示する</string>

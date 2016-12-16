@@ -32,4 +32,10 @@
     <!-- Case of 0 or 2 or more results. -->
     <item quantity="other">Marcaranse <xliff:g id="number" example="15">%1$s</xliff:g> conversas como lidas.</item>
   </plurals>
+  <plurals name="confirm_mark_unread_conversation">
+    <!-- Case of 1 result. -->
+    <item quantity="one">Marcarase a conversa como non lida.</item>
+    <!-- Case of 0 or 2 or more results. -->
+    <item quantity="other"><xliff:g id="number" example="15">%1$s</xliff:g> conversacións serán marcadas como non lidas.</item>
+  </plurals>
 </resources>

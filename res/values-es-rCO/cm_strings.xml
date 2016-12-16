@@ -22,17 +22,11 @@
   <!-- Hint text in message body field when keyboard is exposed -->
   <!-- QM Toast -->
   <!-- Delay delivery -->
-  <string name="send_delay_3seconds">3 sekundoj</string>
-  <string name="send_delay_5seconds">5 sekundoj</string>
-  <string name="send_delay_10seconds">10 sekundoj</string>
-  <string name="send_delay_20seconds">20 sekundoj</string>
-  <string name="send_delay_30seconds">30 sekundoj</string>
   <!-- EXTRA SETTINGS -->
   <!-- Blacklist preferences -->
   <!-- Blacklist notifications -->
   <!-- Blacklist management -->
   <!-- Generic blacklist handling -->
-  <string name="alert_dialog_yes">Jes</string>
   <!-- Strip unicode -->
   <!-- Context menu item on a message for marking as unread / read -->
   <!-- Context menu item on a message for marking all threads as unread / read -->
@@ -40,15 +34,11 @@
   <!-- Mark all threads confirmation dialog message -->
   <!-- Multi recipients -->
   <!-- Extra message options -->
-  <string name="start_new_message_button">Nova mesaĝo</string>
   <!-- Context menu item on an failed message for resending -->
-  <string name="menu_resend">Resendi</string>
-  <string name="cancel_downloading">Nuligi</string>
   <!-- Error message indicating that the message size or the increase size is negative -->
   <!-- Dialog box title that appears when a draft message will not be saved due to invalid recipients -->
   <!-- Brief message that appears when the maximum size of slides has been reached -->
   <!-- Dialog box title for display the current mms size  -->
-  <string name="title_send_message">Sendi mesaĝon</string>
   <!-- Toast when the subject is full -->
   <!-- Status in "Report" window -->
   <!-- Disk Storage Full Error Notification dialog text. -->
@@ -56,28 +46,19 @@
   <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
   <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
   <!-- Message Template -->
-  <string name="dialog_editSMSTemplate_title">Redakti ŝablonon</string>
   <!-- Copy message to sim -->
   <!-- SMSC -->
   <!-- Copy message to sim -->
   <!-- Gray hint displayed in the search field in Contacts when empty -->
   <!-- Add for share contact feature -->
-  <string name="contact_info_text_as_name">Nomo:</string>
   <!-- Sharing vcs files from Calendar -->
   <!-- String used in MemoryStatusActivity.java -->
   <!-- Settings item description for SMS and MMS Validity period -->
-  <string name="sms_validity_period_one_hour">1 horo</string>
-  <string name="sms_validity_period_six_hours">6 horoj</string>
-  <string name="sms_validity_period_twelve_hours">12 horoj</string>
-  <string name="sms_validity_period_one_day">1 tago</string>
-  <string name="mms_validity_period_two_days">2 tagoj</string>
-  <string name="mms_validity_period_one_week">1 semajno</string>
   <!-- toast for send result -->
   <!-- title of mailboxmessagecontent -->
   <!-- Spinner item of box type in mailbox-mode -->
   <!-- Spinner item of slot type in mailbox-mode -->
   <!-- String used in SearchActivityExtend.java -->
-  <string name="search_as_name">Nomo</string>
   <!-- batch delete message in ConversationList and MailBoxMessageList -->
   <!-- priority of cdma message -->
   <!-- Settings item description for Preferred storage -->

@@ -119,8 +119,8 @@
   <string name="title_send_message">Изпрати съобщението</string>
   <!-- Toast when the subject is full -->
   <string name="subject_full">Заглавната част не трябва да бъде по-дълга от <xliff:g id="length">%d </xliff:g> символа.</string>
-  <string name="pref_title_manage_sim_messages_slot1">Управляване на съобщения от СИМ карта 1</string>
-  <string name="pref_title_manage_sim_messages_slot2">Управляване на съобщения от СИМ карта 2</string>
+  <string name="pref_title_manage_sim_messages_slot1">Управление на съобщенията СИМ карта 1</string>
+  <string name="pref_title_manage_sim_messages_slot2">Управление на съобщенията СИМ карта 2</string>
   <string name="prefs_title_export_sms_messages">Експортиране на SMS съобщения</string>
   <string name="prefs_title_import_sms_messages">Импортиране на SMS съобщения</string>
   <string name="pref_title_sms_delivery_reports_slot1">Отчети за доставка СИМ карта 1</string>
@@ -288,8 +288,8 @@
   <!-- friendlier text for an activity not found exception for calendar attachments -->
   <string name="calendar_attachment_activity_not_found">Не може да се намери приложението за календар</string>
   <!-- Vibrate pattern -->
-  <string name="pref_title_mms_notification_vibrate_pattern">Режим на вибрацията</string>
-  <string name="pref_summary_mms_notification_vibrate_pattern">Промяна на режима на вибрацията</string>
+  <string name="pref_title_mms_notification_vibrate_pattern">Режим на вибрация</string>
+  <string name="pref_summary_mms_notification_vibrate_pattern">Промяна режима на вибрация</string>
   <string name="pref_mms_notification_vibrate_normal">Нормално</string>
   <string name="pref_mms_notification_vibrate_med_vib">Средно вибриране</string>
   <string name="pref_mms_notification_vibrate_long_vib">Дълго вибриране</string>

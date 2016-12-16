@@ -45,7 +45,7 @@
   <string name="send_delay_10seconds">10 segundos</string>
   <string name="send_delay_20seconds">20 segundos</string>
   <string name="send_delay_30seconds">30 segundos</string>
-  <string name="sent_countdown">Contagem regressiva para envio de mensagem</string>
+  <string name="sent_countdown">Contagem descrescente para envio de mensagem</string>
   <!-- EXTRA SETTINGS -->
   <string name="pref_extra_settings">Definições extra</string>
   <!-- Blacklist preferences -->
@@ -137,7 +137,7 @@
   <string name="external_audio_item">Música</string>
   <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
   <string name="menu_connect_url">Abrir URL</string>
-  <string name="do_not_show_connect_warning">Não mostrar este aviso novamente</string>
+  <string name="do_not_show_connect_warning">Não voltar a mostrar este aviso</string>
   <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
   <string name="menu_add_to_label">Adicionar aos marcadores</string>
   <string name="loadurlinfo_str">URLs de remetentes desconhecidos podem ser tentativas de phishing. Se não tiver a certeza, não abra este endereço.</string>
@@ -216,7 +216,7 @@
   <string name="change_to_folder_mode">Vista de pasta</string>
   <string name="change_to_conversation_mode">Vista de conversa</string>
   <!-- Spinner item of box type in mailbox-mode -->
-  <string name="type_inbox">Caixa de Entrada</string>
+  <string name="type_inbox">Caixa de entrada</string>
   <string name="type_sent">Enviadas</string>
   <string name="type_outbox">Caixa de saída</string>
   <string name="type_draft">Rascunhos</string>
@@ -296,7 +296,7 @@
   <string name="pref_mms_notification_vibrate_mult_short">Várias curtas</string>
   <string name="pref_mms_notification_vibrate_mult_long">Várias longas</string>
   <!-- Menu item - Insert smiley -->
-  <string name="menu_insert_smiley">Inserir Emoticon</string>
+  <string name="menu_insert_smiley">Inserir emoticon</string>
   <!-- Enable emoticons -->
   <string name="pref_title_enable_emoticons">Suporte de emoticons</string>
   <string name="pref_summary_enable_emoticons">Substituir emoticons de texto pela imagem equivalente</string>
