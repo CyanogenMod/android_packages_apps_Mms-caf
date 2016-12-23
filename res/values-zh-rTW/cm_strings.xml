@@ -22,8 +22,9 @@
   <string name="pref_quickmessage_title">顯示快速訊息</string>
   <string name="pref_quickmessage_summary">將傳入的簡訊自動彈出快速訊息視窗</string>
   <string name="pref_wake_unlock_title">喚醒和解鎖</string>
+  <string name="pref_wake_unlock_summary">喚醒裝置並顯示快速訊息彈出視窗</string>
   <string name="pref_close_all_title">全部關閉</string>
-  <string name="pref_close_all_summary">關閉按鈕會關閉所有訊息</string>
+  <string name="pref_close_all_summary">關閉按鍵會關閉所有訊息</string>
   <string name="pref_dark_theme_title">使用深色主題</string>
   <string name="pref_dark_theme_summary">如果未選取，則會使用預設的「淺色」主題</string>
   <string name="message_counter">%2$d 的 %1$d</string>
@@ -55,11 +56,11 @@
   <string name="blacklist_notification">已封鎖 %s 傳來的訊息</string>
   <string name="blacklist_notification_private_number">已封鎖由私人號碼傳來的訊息</string>
   <string name="blacklist_notification_list_private">私人</string>
-  <string name="blacklist_notification_unknown_number">已封鎖不明號碼 %s 傳來的訊息</string>
+  <string name="blacklist_notification_unknown_number">已封鎖未知號碼 %s 傳來的訊息</string>
   <string name="blacklist_notification_multiple">已封鎖 <xliff:g id="count">%d</xliff:g> 則訊息</string>
   <string name="unblock_number">解除封鎖</string>
   <!-- Blacklist management -->
-  <string name="add_to_blacklist">添加至已封鎖來電者名單</string>
+  <string name="add_to_blacklist">新增至已封鎖來電者名單</string>
   <string name="add_to_blacklist_message">%s 以後傳來的訊息將會被封鎖</string>
   <!-- Generic blacklist handling -->
   <string name="alert_dialog_yes">是</string>
@@ -75,22 +76,22 @@
   <!-- Context menu item on a message for marking all threads as unread / read -->
   <string name="menu_all_as_unread">全部標為未讀</string>
   <string name="menu_all_as_read">標示所有為已讀</string>
-  <string name="menu_add_to_contacts_cm">添加至連絡人</string>
+  <string name="menu_add_to_contacts_cm">新增至聯絡人</string>
   <!-- Confirm Mark as unread / read -->
-  <string name="confirm_mark_unread_dialog_title">標示為未讀？</string>
-  <string name="confirm_mark_unread_conversation">此會話群組將被標記為未讀。</string>
-  <string name="confirm_mark_read_dialog_title">確定標示為已讀?</string>
+  <string name="confirm_mark_unread_dialog_title">是否標示為未讀？</string>
+  <string name="confirm_mark_unread_conversation">此會話群組將被標示為未讀。</string>
+  <string name="confirm_mark_read_dialog_title">是否確定標示為已讀？</string>
   <string name="confirm_mark_read_conversation">此對話群組將標示為已讀。</string>
   <!-- Mark all threads confirmation dialog message -->
-  <string name="confirm_mark_unread_all_conversations">所有會話串將被標記為未讀。</string>
+  <string name="confirm_mark_unread_all_conversations">所有會話串將被標示為未讀。</string>
   <string name="confirm_mark_read_all_conversations">所有對話串將標示為已讀。</string>
   <!-- Multi recipients -->
-  <string name="loading">正在讀取中\u2026</string>
+  <string name="loading">正在讀取\u2026</string>
   <string name="select_recipients">選取收件者</string>
   <string name="no_recipients">找不到聯絡人</string>
-  <string name="no_recipients_mobile_only">找不到符合的聯絡人。試試看不勾選「只有行動裝置號碼」篩選器</string>
+  <string name="no_recipients_mobile_only">找不到符合的聯絡人。試試看不勾選「僅限行動裝置號碼」篩選器</string>
   <string name="menu_done">完成</string>
-  <string name="menu_mobile">只有行動裝置號碼</string>
+  <string name="menu_mobile">僅限行動裝置號碼</string>
   <string name="menu_order_by_given_name">依照名字排序</string>
   <string name="menu_order_by_last_name">依照姓氏排序</string>
   <!-- Extra message options -->
@@ -99,7 +100,7 @@
   <string name="start_new_message_button">新訊息</string>
   <string name="all_spinner_option">全部</string>
   <string name="menu_copy_url">複製網址 <xliff:g id="extractedurl">%s</xliff:g></string>
-  <string name="deleting_threads">刪除主題\u2026</string>
+  <string name="deleting_threads">正在刪除主題\u2026</string>
   <!-- Context menu item on an failed message for resending -->
   <string name="menu_resend">重新發送</string>
   <string name="cancel_downloading">取消</string>
@@ -113,7 +114,7 @@
   <!-- Dialog box title that appears when a draft message will not be saved due to invalid recipients -->
   <string name="discard_message_reason_some_invalid">您的訊息將被丟棄，因為部分收件者地址無效。</string>
   <!-- Brief message that appears when the maximum size of slides has been reached -->
-  <string name="cannot_add_text_anymore">不能再添加文字。</string>
+  <string name="cannot_add_text_anymore">不能再新增文字。</string>
   <!-- Dialog box title for display the current mms size  -->
   <string name="title_send_message">發送信息​​​​​​​​</string>
   <!-- Toast when the subject is full -->
@@ -123,19 +124,69 @@
   <string name="prefs_title_export_sms_messages">匯出 SMS 訊息</string>
   <string name="prefs_title_import_sms_messages">匯入 SMS 訊息</string>
   <string name="pref_title_sms_delivery_reports_slot1">SIM 卡 1 的傳送回報</string>
+  <string name="pref_title_sms_delivery_reports_slot2">SIM 卡 2 的傳送回報</string>
   <!-- Status in "Report" window -->
+  <string name="status_deleted_unread">未讀即被刪除</string>
   <!-- Disk Storage Full Error Notification dialog text. -->
+  <string name="disk_storage_full_error">錯誤：儲存空間已滿。</string>
   <!-- Mms size is too large dialog text. -->
+  <string name="mms_too_large">訊息過大無法下載。</string>
+  <string name="send_failed_retry">訊息傳送失敗，正在重試\u2026</string>
+  <string name="download_failed_retry">訊息下載失敗，正在重試\u2026</string>
+  <string name="system_audio_item">鈴聲</string>
+  <string name="external_audio_item">音樂</string>
   <!-- Menu item to connect the extract url in WwwContextMenuActivity  -->
+  <string name="menu_connect_url">開啟網址</string>
+  <string name="do_not_show_connect_warning">不再顯示此警告</string>
   <!-- Menu item to add the extract url to boomark in WwwContextMenuActivity  -->
+  <string name="menu_add_to_label">新增至書籤</string>
+  <string name="loadurlinfo_str">來自未知寄件者的網址可能是網路釣魚。如果您不確定，請不要開啟此連結。</string>
   <!-- Message Template -->
+  <string name="pref_title_message_template">訊息範本</string>
+  <string name="title_new_message_template">新範本</string>
+  <string name="summary_new_message_template">撰寫新訊息範本</string>
+  <string name="dialog_editSMSTemplate_title">編輯範本</string>
+  <string name="import_message_template">插入範本</string>
+  <string name="template_full">範本文字已達最大長度。</string>
+  <string name="pref_sms_signature_title">SMS 簽名</string>
+  <string name="pref_title_enable_signature">新增簽名至訊息</string>
+  <string name="pref_title_edit_signature">編輯簽名</string>
   <!-- Copy message to sim -->
+  <string name="menu_copy_to">複製</string>
+  <string name="operation_to_card_memory">複製訊息至 SIM 卡</string>
   <!-- SMSC -->
+  <string name="pref_smsc_title">SMS 服務中心</string>
+  <string name="pref_one_smcs">SMSC 號碼</string>
+  <string name="pref_more_smcs">SIM 卡 <xliff:g id="slot_number">%d</xliff:g> SMSC 號碼</string>
+  <string name="set_smsc_error">無法設定 SMSC 號碼</string>
+  <string name="set_smsc_success">SMSC 號碼設定成功</string>
+  <string name="set_smsc_confirm_message">更改 SMSC 可能導致 SMS 傳遞失敗。您確定要繼續嗎？</string>
   <!-- Copy message to sim -->
+  <string name="copy_to_sim">複製訊息至 SIM 卡</string>
+  <string name="copy_to_sim_success"><xliff:g id="total">%2$d</xliff:g> 則中的 <xliff:g id="count">%1$d</xliff:g> 則訊息已儲存至 SIM 卡。</string>
+  <string name="copy_to_sim_fail">無法儲存訊息</string>
+  <string name="copy_to_phone_success">訊息已儲存</string>
+  <string name="copy_to_phone_fail">無法儲存訊息</string>
+  <string name="contact_app_not_found">無法開啟聯絡人應用程式</string>
   <!-- Gray hint displayed in the search field in Contacts when empty -->
+  <string name="search_bar_hint">搜尋聯絡人</string>
   <!-- Add for share contact feature -->
+  <string name="type_vcard">vCard</string>
+  <string name="import_vcard">匯入</string>
+  <string name="attach_add_contact_as_vcard">聯絡人 vCard</string>
+  <string name="attach_add_contact_as_text">聯絡人資料 (文字模式)</string>
+  <string name="contact_info_text_as_name">姓名：</string>
+  <string name="contact_info_text_as_phone">電話：</string>
+  <string name="contact_info_text_as_email">電子郵件：</string>
   <!-- Sharing vcs files from Calendar -->
+  <string name="type_vcal">日曆事件</string>
+  <string name="pref_wap_push_title">推送服務訊息</string>
+  <string name="pref_title_wap_push_enabled">WAP 推送服務</string>
+  <string name="pref_summary_wap_push_enabled">接收網路服務訊息</string>
   <!-- String used in MemoryStatusActivity.java -->
+  <string name="memory_status_title">記憶體狀態</string>
+  <string name="sms_phone_memory_usage">SMS：<xliff:g id="total">%2$d</xliff:g> 則中已使用 <xliff:g id="used">%1$d</xliff:g> 則</string>
+  <string name="mms_phone_memory_usage">MMS：<xliff:g id="total">%2$d</xliff:g> 則中已使用 <xliff:g id="used">%1$d</xliff:g> 則</string>
   <!-- Settings item description for SMS and MMS Validity period -->
   <string name="pref_title_validity_period">有效期</string>
   <string name="pref_title_validity_period_slot1">SIM 卡 1 的有效期</string>
@@ -172,7 +223,7 @@
   <!-- Spinner item of slot type in mailbox-mode -->
   <string name="slot_type_select">選擇 SIM 卡</string>
   <!-- String used in SearchActivityExtend.java -->
-  <string name="search_title">訊息搜索</string>
+  <string name="search_title">訊息搜尋</string>
   <string name="search_key">搜尋關鍵字</string>
   <string name="search_mode">搜尋模式</string>
   <string name="search_as_name">名稱</string>
@@ -186,7 +237,7 @@
   <!-- batch delete message in ConversationList and MailBoxMessageList -->
   <string name="selected_all">全部選擇</string>
   <string name="deselected_all">取消全選</string>
-  <string name="selected_count"><xliff:g id="COUNT">%d </xliff:g>已選擇</string>
+  <string name="selected_count"><xliff:g id="COUNT">%d </xliff:g> 已選取</string>
   <!-- priority of cdma message -->
   <string name="cdma_priority_normal">正常</string>
   <string name="cdma_priority_interactive">互動</string>
@@ -194,15 +245,65 @@
   <string name="cdma_priority_emergency">應急</string>
   <string name="pref_title_cdma_priority">訊息優先度</string>
   <string name="pref_summary_cdma_priority">CDMA 訊息優先度</string>
-  <string name="download_dialog_title">下載這則 MMS 嗎?</string>
+  <string name="download_dialog_title">是否下載這則多媒體訊息？</string>
+  <string name="menu_email">傳送電子郵件</string>
   <!-- Settings item description for Preferred storage -->
+  <string name="pref_title_sms_store">主要的儲存空間</string>
+  <string name="pref_title_sms_store_card1">SIM 卡 1 的主要儲存空間</string>
+  <string name="pref_title_sms_store_card2">SIM 卡 2 的主要儲存空間</string>
+  <string name="pref_sms_store_phone">電話</string>
+  <string name="pref_sms_store_card">SIM 卡</string>
+  <string name="mms_size_indicator"><xliff:g id="mms_size">%1$d</xliff:g>/<xliff:g id="all_size">%2$d</xliff:g> KB</string>
+  <string name="pre_define_message_template_1">我稍後回電給你。</string>
+  <string name="pre_define_message_template_2">我在會議中！稍後回電給你。</string>
+  <string name="pre_define_message_template_3">請晚點再打給我。</string>
+  <string name="pre_define_message_template_4">可以請你回電給我嗎？</string>
+  <string name="menu_delete_all_entries">全部刪除</string>
+  <string name="menu_delete_sms">刪除 SMS</string>
+  <string name="menu_delete_mms">刪除 MMS</string>
+  <string name="import_sms_title">從儲存空間匯入</string>
+  <string name="export_sms_title">匯出至儲存空間</string>
+  <string name="delete_sms_title">刪除現有備份</string>
+  <string name="pick_sms_backup_title">選擇 SMS 備份</string>
+  <string name="delete_sms_toast">備份已刪除。</string>
+  <string name="import_sms_toast">訊息已匯入。</string>
+  <string name="export_sms_toast">訊息已匯出。</string>
+  <string name="export_sms_failed_toast">無法匯出訊息。</string>
+  <string name="import_sms_failed_toast">無法匯入訊息。</string>
+  <string name="perform_backup_title">正在匯出</string>
+  <string name="perform_restore_title">正在匯入</string>
+  <string name="wait_progress_message">請稍候\u2026</string>
+  <string name="backup_file_name_message">訊息已匯出至 \"%1$s\"</string>
+  <string name="manage_sdcard_messages">匯入／匯出訊息</string>
+  <string name="no_backups_found">未發現備份</string>
+  <string name="remove_subject">移除標題</string>
   <!-- QuickMessage Wear-->
+  <string name="qm_wear_sending_message">正在傳送回覆至 <xliff:g id="name">%s</xliff:g>\u2026</string>
+  <string name="qm_wear_messaged_failed">至 <xliff:g id="name">%s</xliff:g> 的訊息未傳送，請再試一次。</string>
+  <string name="qm_wear_voice_reply">您的回覆是？</string>
+  <string name="qm_wear_reply_by_voice">使用語音回覆</string>
   <!-- Copy message text-->
+  <string name="copy_empty_string">沒有文字可複製</string>
+  <string name="attach_add_calendar_events">日曆活動</string>
   <!-- friendlier text for an activity not found exception for calendar attachments -->
+  <string name="calendar_attachment_activity_not_found">找不到支援的日曆應用程式</string>
   <!-- Vibrate pattern -->
+  <string name="pref_title_mms_notification_vibrate_pattern">震動模式</string>
+  <string name="pref_summary_mms_notification_vibrate_pattern">更改震動模式</string>
+  <string name="pref_mms_notification_vibrate_normal">適中</string>
+  <string name="pref_mms_notification_vibrate_med_vib">中等震動</string>
+  <string name="pref_mms_notification_vibrate_long_vib">長震動</string>
+  <string name="pref_mms_notification_vibrate_mult_short">多次短震動</string>
+  <string name="pref_mms_notification_vibrate_mult_long">多次長震動</string>
   <!-- Menu item - Insert smiley -->
+  <string name="menu_insert_smiley">插入表情符號</string>
   <!-- Enable emoticons -->
+  <string name="pref_title_enable_emoticons">表情符號支援</string>
+  <string name="pref_summary_enable_emoticons">用相同的圖案替代文字表情符號</string>
   <!-- Conversation options -->
+  <string name="menu_conversation_options">對話選項</string>
+  <string name="pref_title_reset_convopt_to_default">重設為預設值</string>
+  <string name="pref_summary_reset_convopt_to_default">將會話設定重設為應用程式級別的設定</string>
   <!-- Full timestamps -->
   <string name="pref_title_mms_full_timestamp">完整時間戳記</string>
   <string name="pref_summary_mms_full_timestamp">在時間戳記中顯示日期和時間</string>
@@ -214,8 +315,8 @@
   <!-- Settings item description for boolean auto-enable data for MMS option -->
   <string name="pref_summary_mms_auto_enable_data">使用 MMS 自動啟用行動資料</string>
   <!-- Select recipients dialog -->
-  <string name="adding_selected_recipients_dialog_text">添加連絡人\u2026</string>
+  <string name="adding_selected_recipients_dialog_text">正在新增聯絡人\u2026</string>
   <!-- Smart Dialer -->
   <string name="pref_title_mms_smart_dialer">智能撥號</string>
-  <string name="pref_summary_mms_smart_dialer">通過將設備移至您的耳朵，自動向連絡人撥號</string>
+  <string name="pref_summary_mms_smart_dialer">透過將裝置移動至耳朵自動向聯絡人撥號</string>
 </resources>
